@@ -157,6 +157,13 @@ train:
   bc_epochs: 10                  # behaviour-cloning pretrain epochs
   checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)
   rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
+  # timelapse: capture the whole train-rl run and compress it to a fixed-length video
+  # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
+  timelapse: true                # record a training timelapse during train-rl
+  timelapse_seconds: 30          # length of the output video (exactly this many seconds)
+  timelapse_fps: 30              # output frame rate -> timelapse_seconds * timelapse_fps frames total
+  timelapse_width: 640           # downscale width for the timelapse frames
+  timelapse_path: "data/timelapse.mp4"
 
 # --- Live RL environment + in-match tower reward -------------------------
 # The RL loop plays real matches. Tower shaping rewards taking enemy towers and

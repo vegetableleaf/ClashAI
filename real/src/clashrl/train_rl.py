@@ -113,6 +113,17 @@ def train_rl(cfg) -> None:
         print("[train-rl] no capture region; set window.region in config.yaml.")
         return
 
+    tl = None
+    if bool(cfg.get("train", "timelapse", default=True)):
+        from .timelapse import TimelapseRecorder
+        tl = TimelapseRecorder(
+            cfg.path(cfg.get("train", "timelapse_path", default="data/timelapse.mp4")),
+            seconds=float(cfg.get("train", "timelapse_seconds", default=30.0)),
+            fps=int(cfg.get("train", "timelapse_fps", default=30)),
+            width=int(cfg.get("train", "timelapse_width", default=640)))
+        print(f"[train-rl] recording a {tl.target // tl.fps}s @ {tl.fps}fps timelapse to "
+              f"{tl.path} (whole run compressed to a fixed-length video)")
+
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
 
@@ -213,6 +224,8 @@ def train_rl(cfg) -> None:
                 eps = epsilon(step)
                 action = choose(obs, hand, nxt, eps, env.elixir)
                 nobs, reward, done, info = env.step(action)
+                if tl is not None:
+                    tl.add(env._last_frame)         # collect a frame for the training timelapse
                 nhand = env.hand_vec.copy()
                 nnxt = env.next_vec.copy()
                 replay.append((obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt))
@@ -238,8 +251,16 @@ def train_rl(cfg) -> None:
                     break
             if match % save_every == 0:
                 save()
+                if tl is not None:
+                    tl.save()
     except KeyboardInterrupt:
         pass
     finally:
         save()
+        if tl is not None:
+            p = tl.save()
+            if p is not None:
+                print(f"[train-rl] timelapse -> {p}  "
+                      f"({tl.target} frames @ {tl.fps}fps = {tl.target / tl.fps:.0f}s, "
+                      f"from {tl.seen} captured)")
         print(f"[train-rl] stopped after {match} match(es); saved policy to {rl_path}")
