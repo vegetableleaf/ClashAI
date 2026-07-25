@@ -163,7 +163,7 @@ train:
   # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
   timelapse: true                # record a training timelapse during train-rl
   timelapse_seconds: 30          # length of the output video (exactly this many seconds)
-  timelapse_fps: 30              # output frame rate -> timelapse_seconds * timelapse_fps frames total
+  timelapse_fps: 60              # output frame rate -> timelapse_seconds * timelapse_fps frames total
   timelapse_width: 640           # downscale width for the timelapse frames
   timelapse_dir: "data/timelapses"   # each train-rl run saves timelapse_<date_time>.mp4 in this folder
 
