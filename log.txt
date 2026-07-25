@@ -108,6 +108,15 @@ Newest entries are at the bottom.
   Frames are thinned in memory during the run and resampled to exactly the target
   count on save. Not a model/reward change. See clashrl/timelapse.py + config
   train.timelapse*.
+- Reduced defensive hesitancy. The RL play/wait balance had learned to WAIT (the
+  small patience reward + avoiding play penalties made sitting still locally safe),
+  and troop placements picked in the enemy half couldn't deploy at all (the card
+  tap selects but the arena tap can't place -> "shuffling"). Fixes: penalise idling
+  while a real enemy push is on the board (rewards.idle_penalty, env.threat_mass);
+  clamp TROOP placements to your half of the river so they actually deploy, spells
+  still target anywhere (action.deploy_top + ActionSpace.deploy_clamp, applied in
+  env + play); and make training exploration commit to plays more (lower
+  train.explore_wait_prob / min_play_elixir).
 
 
 ------------------------------------------------------------------------------

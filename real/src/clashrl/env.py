@@ -173,6 +173,8 @@ class LiveMatchEnv:
         self._recent_ranged = None
         self._steps = 0
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))
+        self.idle_penalty = float(cfg.get("rewards", "idle_penalty", default=-0.3))
+        self.threat_mass = float(cfg.get("env", "threat_mass", default=0.10))
         self.defeat_min = float(cfg.get("env", "defeat_min", default=0.005))
         self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))
         self.tesla_track_steps = int(cfg.get("env", "tesla_track_steps", default=10))
@@ -342,6 +344,7 @@ class LiveMatchEnv:
         if play:                                  # rocket -> weaker princess; Tesla/Ice Wizard -> defence
             cell = self._aim_rocket(card_id, cell)
             cell = self._place_defensive(card_id, cell)
+            cell = self.actions.deploy_clamp(card_id in self.spell_ids, cell)  # troops -> your deploy half
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
@@ -386,8 +389,11 @@ class LiveMatchEnv:
                     clean = my_hp >= self._prev_my_hp
                     reward += min(drop, self.defeat_cap) * self.troop_defeat * (
                         self.clean_kill_bonus if clean else 1.0)
-                if not play and cur_mass < self.quiet_frac:
-                    reward += self.patience          # holding cards while the board is quiet is fine
+                if not play:
+                    if cur_mass < self.quiet_frac:
+                        reward += self.patience          # holding cards while the board is quiet is fine
+                    elif cur_mass >= self.threat_mass:
+                        reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
             reward += self._tesla_reward(frame, bool(play), card_id, cell)
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:

@@ -14,6 +14,7 @@ class ActionSpace:
         self.gw, self.gh = cfg.get("action", "grid", default=[8, 12])
         self.a_top = float(cfg.get("label", "arena_top", default=0.10))
         self.a_bot = float(cfg.get("label", "arena_bottom", default=0.86))
+        self.deploy_top = float(cfg.get("action", "deploy_top", default=0.47))
         self.chat_box = cfg.get("buttons", "chat_avoid_box", default=None)
         self.n_slots = len(self.slots)
         self.n_cells = int(self.gw) * int(self.gh)
@@ -34,3 +35,18 @@ class ActionSpace:
         snx, sny = self.slots[slot]
         tnx, tny = self.cell_center(gx, gy)
         return snx, sny, tnx, tny
+
+    def deploy_clamp(self, is_spell: bool, cell: int) -> int:
+        """Troops can only deploy on YOUR half (below the river). A troop cell in the enemy
+        half can't be placed -- the card tap just selects it and the arena tap does nothing,
+        so the bot 'shuffles' cards without deploying. Clamp non-spell cells down to the
+        deploy line; spells (rocket/tornado/royal delivery) can target anywhere, so they pass
+        through unchanged."""
+        if is_spell:
+            return cell
+        gw, gh = int(self.gw), int(self.gh)
+        gx, gy = cell % gw, cell // gw
+        min_gy = int(round(self.deploy_top * gh))   # first grid row on your side of the river
+        if gy < min_gy:
+            gy = min_gy
+        return gy * gw + gx

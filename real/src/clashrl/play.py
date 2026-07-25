@@ -76,6 +76,8 @@ def play(cfg) -> None:
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     from .cards import CardDB
     _db = CardDB(cfg)
+    spell_ids = {i for i, key in enumerate(vision.deck_keys)
+                 if (_db.get(key[:-4] if key.endswith("_evo") else key) or {}).get("kind") == "spell"}
     defensive_kind = {}
     for i, key in enumerate(vision.deck_keys):
         base = key[:-4] if key.endswith("_evo") else key
@@ -151,6 +153,7 @@ def play(cfg) -> None:
         slot = next((s for s, c in enumerate(hand_ids) if c == card_id), -1)
         if slot < 0:
             return
+        cell = actions.deploy_clamp(card_id in spell_ids, cell)   # troops -> your deploy half (or the tap won't deploy)
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
 

@@ -88,6 +88,7 @@ observation:
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
   grid: [8, 12]                  # placement grid: columns x rows over the arena
+  deploy_top: 0.47               # troops can only deploy on YOUR half (below the river); a troop cell above this y is clamped down so the card actually deploys (spells can target anywhere)
 
 # --- Reward shaping (RL fine-tune) ---------------------------------------
 # Rocket-cycle wins on near-perfect DEFENCE, so defence is weighted well above
@@ -122,6 +123,7 @@ rewards:
   rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   patience: 0.02                 # small reward for holding cards while the board is quiet
+  idle_penalty: -0.3             # penalty for WAITING (no play) while a real enemy push is on the board -> defend, don't dawdle
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
@@ -149,8 +151,8 @@ train:
   epsilon_start: 1.0
   epsilon_end: 0.05
   epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
-  explore_wait_prob: 0.4         # while exploring, chance of a no-op (save elixir)
-  min_play_elixir: 3             # while exploring, don't play a card below this elixir
+  explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
+  min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
   target_sync: 500               # steps between target-network syncs
   save_every_matches: 1          # checkpoint cadence during RL
@@ -244,6 +246,7 @@ env:
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
+  threat_mass: 0.10              # at/above this arena troop mass a real enemy push is on -> waiting is penalised (idle_penalty)
   # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
   # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the
   # threatened side) a reduced depth (defense_center_depth_frac x the unit's range from
