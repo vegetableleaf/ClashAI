@@ -105,8 +105,8 @@ rewards:
   win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
   loss: -10.0                    # losing is very costly
   # -- tower HP chip (tower_hp) --
-  hp_scale: 1.0                  # enemy-princess chip (offence); a full tower's chip = this
-  hp_defense_scale: 3.0          # multiplier on HP lost from YOUR princess (defence)
+  hp_scale: 2.0                  # enemy-princess chip (offence); a full tower's chip = this
+  hp_defense_scale: 5.0          # multiplier on HP lost from YOUR princess (defence)
   # -- troop combat + spell effects (env) --
   troop_defeat: 3.0              # per unit of enemy-troop mass removed by ANY means (defeating troops)
   clean_kill_bonus: 2.0          # x multiplier when your towers took no HP that step (killed it early)
@@ -165,7 +165,7 @@ train:
   timelapse_seconds: 30          # length of the output video (exactly this many seconds)
   timelapse_fps: 30              # output frame rate -> timelapse_seconds * timelapse_fps frames total
   timelapse_width: 640           # downscale width for the timelapse frames
-  timelapse_path: "data/timelapse.mp4"
+  timelapse_dir: "data/timelapses"   # each train-rl run saves timelapse_<date_time>.mp4 in this folder
 
 # --- Live RL environment + in-match tower reward -------------------------
 # The RL loop plays real matches. Tower shaping rewards taking enemy towers and

@@ -103,11 +103,11 @@ Newest entries are at the bottom.
   rocket->tornado PATTERN + the troops the rocket killed. The live bot performs
   the actual sub-second timing.
 - (tooling, same day) train-rl now records a FIXED-LENGTH training timelapse
-  (data/timelapse.mp4): however long training runs, the mp4 is always
-  timelapse_seconds long at timelapse_fps (default 30 s @ 30 fps = 900 frames).
-  Frames are thinned in memory during the run and resampled to exactly the target
-  count on save. Not a model/reward change. See clashrl/timelapse.py + config
-  train.timelapse*.
+  (data/timelapses/timelapse_<date_time>.mp4 -- one timestamped file per run):
+  however long training runs, the mp4 is always timelapse_seconds long at
+  timelapse_fps (default 30 s @ 30 fps = 900 frames). Frames are thinned in memory
+  during the run and resampled to exactly the target count on save. Not a
+  model/reward change. See clashrl/timelapse.py + config train.timelapse*.
 - Reduced defensive hesitancy. The RL play/wait balance had learned to WAIT (the
   small patience reward + avoiding play penalties made sitting still locally safe),
   and troop placements picked in the enemy half couldn't deploy at all (the card

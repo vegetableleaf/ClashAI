@@ -116,8 +116,10 @@ def train_rl(cfg) -> None:
     tl = None
     if bool(cfg.get("train", "timelapse", default=True)):
         from .timelapse import TimelapseRecorder
+        tl_dir = cfg.path(cfg.get("train", "timelapse_dir", default="data/timelapses"))
+        stamp = time.strftime("%Y%m%d_%H%M%S")           # index each run's timelapse by date+time
         tl = TimelapseRecorder(
-            cfg.path(cfg.get("train", "timelapse_path", default="data/timelapse.mp4")),
+            tl_dir / f"timelapse_{stamp}.mp4",
             seconds=float(cfg.get("train", "timelapse_seconds", default=30.0)),
             fps=int(cfg.get("train", "timelapse_fps", default=30)),
             width=int(cfg.get("train", "timelapse_width", default=640)))
