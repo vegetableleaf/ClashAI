@@ -119,6 +119,7 @@ rewards:
   blocker_protect: 1.0           # play a tank/blocker (ronin/skeletons/ice spirit) to shield a ranged unit vs a heavy melee
   royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
   royal_delivery_kill: 5.0       # Royal Delivery, extra per unit of enemy mass it KILLS
+  rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   patience: 0.02                 # small reward for holding cards while the board is quiet
 
@@ -229,6 +230,10 @@ env:
   rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage (long -> needs movement prediction)
+  # rocket -> tornado combo (a tornado at the same spot right after a rocket that killed a clump)
+  combo_window_steps: 2          # the tornado must follow the rocket within this many steps
+  combo_radius: 0.10             # ...and land within this normalized distance of the rocket's spot
+  combo_kill_min: 0.06           # the rocket must have removed at least this much enemy mass (~2 medium troops)
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)

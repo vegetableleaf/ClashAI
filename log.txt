@@ -87,6 +87,24 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-25 (evening)  —  Rocket -> Tornado combo
+------------------------------------------------------------------------------
+- Added a rocket+tornado combo to the reward shaping (env.py / config.yaml):
+    * A tornado cast at the SAME spot right after a rocket that killed a clumped
+      group is treated as one play.
+    * It WAIVES the enemy-king penalty when that rocket hit a princess tower and
+      killed >=2 medium troops (so a legit tower combo isn't discouraged).
+    * It is rewarded for wiping a push (scaled by the enemy mass removed),
+      anywhere on the board — not only next to a tower.
+- Detection knobs: rewards.rocket_tornado_combo, env.combo_window_steps /
+  combo_radius / combo_kill_min.
+- Caveat: the training env evaluates each spell in a blocking window through its
+  flight, so it can't cast the tornado mid-rocket-flight; the reward teaches the
+  rocket->tornado PATTERN + the troops the rocket killed. The live bot performs
+  the actual sub-second timing.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

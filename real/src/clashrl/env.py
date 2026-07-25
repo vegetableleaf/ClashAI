@@ -162,6 +162,14 @@ class LiveMatchEnv:
         # play defensively: penalise a non-rocket, non-cycle card placed in the ENEMY half.
         self.offensive_penalty = float(cfg.get("rewards", "offensive_penalty", default=-0.5))
         self.offensive_half = float(cfg.get("env", "offensive_half_y", default=0.45))
+        # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
+        # clumped group. Waives the enemy-king penalty (when the rocket hit a princess tower and
+        # killed >=2 medium troops) and rewards wiping a push, anywhere on the board.
+        self.combo_reward = float(cfg.get("rewards", "rocket_tornado_combo", default=15.0))
+        self.combo_window = int(cfg.get("env", "combo_window_steps", default=2))
+        self.combo_radius = float(cfg.get("env", "combo_radius", default=0.10))
+        self.combo_kill_min = float(cfg.get("env", "combo_kill_min", default=0.06))
+        self._recent_rocket = None
         self._recent_ranged = None
         self._steps = 0
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))
@@ -201,6 +209,7 @@ class LiveMatchEnv:
         self.tower_hp.reset()
         self._tesla = None
         self._recent_ranged = None
+        self._recent_rocket = None
         while True:
             frame = self._grab()
             if frame is None:
@@ -428,28 +437,59 @@ class LiveMatchEnv:
 
     def _spell_effect_reward(self, before, samples, cell, is_rocket: bool, is_rd: bool = False) -> float:
         """Reward a spell by what it does at the target, sampled over the impact window.
-        Enemy-king damage -> heavy penalty. Royal Delivery (defensive area spell on your
-        half) -> reward the enemy mass it HITS + the mass it KILLS. A defensive tornado onto
-        YOUR king (only while both your princesses stand -- once one falls the king is auto
-        active and this is off) -> tank reward x the king's HP fraction. Otherwise the rocket
-        size/kill/combo/whiff logic. Validated on recorded casts.
+
+        Rocket -> Tornado COMBO: a tornado cast at the SAME spot right after a rocket that
+        killed a clumped group is treated as one play -- it WAIVES the enemy-king penalty
+        (when that rocket hit a princess tower and killed >=2 medium troops) and is rewarded
+        for wiping the push, anywhere on the board (not just at a tower). NOTE: the env
+        evaluates each spell in a blocking window through its flight, so it can't cast the
+        tornado mid-rocket-flight; this rewards the rocket->tornado PATTERN + the troops the
+        rocket killed (which teaches the sequence). Otherwise: enemy-king damage -> penalty;
+        Royal Delivery -> mass hit + killed; a defensive tornado onto YOUR king (both your
+        princesses up) -> tank reward; else the rocket size/kill/combo/whiff logic.
         """
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
-        if self._spell_hit_king(before, samples[-1]) or near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
-            return self.spell_king_penalty            # damaged / aimed at the enemy king -> heavy waste
         b = enemy_mass_at(before, cx, cy, self.spell_radius, self.cfg)
         masses = [enemy_mass_at(f, cx, cy, self.spell_radius, self.cfg) for f in samples]
         if not masses:
+            if is_rocket:
+                self._recent_rocket = None
             return 0.0
         peak_i = int(np.argmax(masses))
         peak = masses[peak_i]
         drop = peak - masses[-1]
         present = peak >= self.spell_present
+
+        # is this tornado the second half of a rocket->tornado combo (same spot, right after a
+        # rocket that actually killed a clump)?
+        is_tornado = not is_rocket and not is_rd
+        combo = None
+        if is_tornado and self._recent_rocket is not None:
+            rk = self._recent_rocket
+            near = ((cx - rk["cx"]) ** 2 + (cy - rk["cy"]) ** 2) ** 0.5 <= self.combo_radius
+            if (self._steps - rk["step"]) <= self.combo_window and near and rk["kills"] >= self.combo_kill_min:
+                combo = rk
+
+        king_here = self._spell_hit_king(before, samples[-1]) or near_enemy_king(
+            cx, cy, self.cfg, self.spell_aim_radius)
+        if king_here and not (combo is not None and combo["hit_tower"]):
+            return self.spell_king_penalty            # aimed at / damaged the enemy king -> waste
+            #   (waived only for a valid rocket[hit tower + kills]->tornado combo)
+        if is_rocket:                                 # remember this rocket for a following tornado
+            self._recent_rocket = {
+                "step": self._steps, "cx": cx, "cy": cy, "kills": max(0.0, drop),
+                "hit_tower": near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius),
+            }
+        if combo is not None:                         # rocket->tornado wiped a clumped push
+            self._recent_rocket = None                # credit the combo once
+            killed = min(max(combo["kills"], drop), self.spell_size_cap * 2.0)
+            return self.combo_reward * killed
+
         if is_rd:                                     # Royal Delivery: reward the GROUP it hits + kills
             cap = self.spell_size_cap * 2.0
             return min(peak, cap) * self.rd_hit + min(max(0.0, drop), cap) * self.rd_kill
-        if (not is_rocket and near_my_king(cx, cy, self.cfg, self.spell_aim_radius)
+        if (is_tornado and near_my_king(cx, cy, self.cfg, self.spell_aim_radius)
                 and all(self.tower.mine_alive[:2])):
             frac = self._my_king_hp_frac(samples[-1])
             if frac is not None:                      # tornado onto YOUR king (princesses up): tank it,
