@@ -66,6 +66,7 @@ class LiveMatchEnv:
         self._last_obs = np.zeros(self.obs_shape, dtype=np.uint8)
         self.last_outcome: Optional[str] = None
         self.elixir = 0                 # your current elixir (0-10), updated each step
+        self.elixir_vec = np.zeros(1, np.float32)   # normalized elixir [0,1] -> policy input
         self.n_cards = max(1, len(self.vision.deck_keys))
         self.hand_ids = [-1] * self.n_slots            # deck index in each tray slot
         self.hand_vec = np.zeros(self.n_cards, np.float32)   # multi-hot of cards in hand
@@ -78,6 +79,7 @@ class LiveMatchEnv:
         db = CardDB(cfg)
         self.spell_ids = set()
         self.rocket_ids = set()
+        self.tornado_ids = set()
         self.royal_delivery_ids = set()
         self.cheap_ids = set()
         self.tesla_ids = set()
@@ -91,6 +93,8 @@ class LiveMatchEnv:
                 self.spell_ids.add(i)
             if base == "rocket":
                 self.rocket_ids.add(i)
+            elif base == "tornado":
+                self.tornado_ids.add(i)
             elif base == "royal_delivery":          # defensive area spell on your half
                 self.royal_delivery_ids.add(i)
             if base in ("ice_spirit", "skeletons"):  # cheap cyclers -- OK to play anytime
@@ -110,6 +114,9 @@ class LiveMatchEnv:
                 self.ranged_ids.add(i)               # ranged units worth shielding
             elif base in ("ronin", "skeletons", "ice_spirit"):
                 self.blocker_ids.add(i)              # tanks/blockers that shield them
+        # only ROCKET and TORNADO may be cast ANYWHERE; every other card (troops, buildings,
+        # royal delivery) is restricted to YOUR half of the map.
+        self.anywhere_ids = self.rocket_ids | self.tornado_ids
         self.spell_troop_damage = float(cfg.get("rewards", "spell_troop_damage", default=5.0))
         self.spell_hit = float(cfg.get("rewards", "spell_hit", default=0.15))
         self.spell_combo = float(cfg.get("rewards", "spell_combo", default=0.6))
@@ -175,6 +182,8 @@ class LiveMatchEnv:
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))
         self.idle_penalty = float(cfg.get("rewards", "idle_penalty", default=-0.3))
         self.threat_mass = float(cfg.get("env", "threat_mass", default=0.10))
+        self.elixir_waste_penalty = float(cfg.get("rewards", "elixir_waste_penalty", default=-0.3))
+        self.full_elixir = int(cfg.get("env", "elixir_full", default=10))
         self.defeat_min = float(cfg.get("env", "defeat_min", default=0.005))
         self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))
         self.tesla_track_steps = int(cfg.get("env", "tesla_track_steps", default=10))
@@ -219,6 +228,7 @@ class LiveMatchEnv:
             state = self.vision.detect_state(frame)
             if state == GameState.IN_MATCH:
                 self.elixir = self.vision.read_elixir(frame)
+                self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)
                 self._read_hand(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame
@@ -344,7 +354,7 @@ class LiveMatchEnv:
         if play:                                  # rocket -> weaker princess; Tesla/Ice Wizard -> defence
             cell = self._aim_rocket(card_id, cell)
             cell = self._place_defensive(card_id, cell)
-            cell = self.actions.deploy_clamp(card_id in self.spell_ids, cell)  # troops -> your deploy half
+            cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # only rocket/tornado go anywhere
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
@@ -378,6 +388,7 @@ class LiveMatchEnv:
             reward = self.tower.step(frame) + self.tower_hp.step(frame)
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
+            cur_elixir = self.vision.read_elixir(frame)
             if eval_spell and before is not None and spell_samples:
                 reward += self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd)
             else:
@@ -394,6 +405,8 @@ class LiveMatchEnv:
                         reward += self.patience          # holding cards while the board is quiet is fine
                     elif cur_mass >= self.threat_mass:
                         reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
+                        if cur_elixir >= self.full_elixir:
+                            reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
             reward += self._tesla_reward(frame, bool(play), card_id, cell)
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
@@ -401,7 +414,8 @@ class LiveMatchEnv:
                     reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
-            self.elixir = self.vision.read_elixir(frame)
+            self.elixir = cur_elixir
+            self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
             self._read_hand(frame)
             self._last_obs = self.vision.observe(frame)
             self._last_frame = frame

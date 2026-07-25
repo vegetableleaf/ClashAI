@@ -124,6 +124,7 @@ rewards:
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   patience: 0.02                 # small reward for holding cards while the board is quiet
   idle_penalty: -0.3             # penalty for WAITING (no play) while a real enemy push is on the board -> defend, don't dawdle
+  elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
@@ -247,6 +248,7 @@ env:
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
   threat_mass: 0.10              # at/above this arena troop mass a real enemy push is on -> waiting is penalised (idle_penalty)
+  elixir_full: 10                # elixir at/above this (bar full) + a push + no play = wasted-elixir penalty
   # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
   # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the
   # threatened side) a reduced depth (defense_center_depth_frac x the unit's range from

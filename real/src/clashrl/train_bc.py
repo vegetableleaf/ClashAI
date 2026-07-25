@@ -20,7 +20,7 @@ from .model import PolicyNet
 
 def _load_datasets(root):
     files = sorted(glob.glob(str(root / "*" / "dataset.npz")))
-    obs, acts, hands, nexts, grid, deck = [], [], [], [], None, None
+    obs, acts, hands, nexts, elixirs, grid, deck = [], [], [], [], [], None, None
     for f in files:
         d = np.load(f, allow_pickle=True)
         if len(d["obs"]) == 0 or "hands" not in d:
@@ -29,18 +29,20 @@ def _load_datasets(root):
         acts.append(d["acts"])
         hands.append(d["hands"])
         nexts.append(d["nexts"] if "nexts" in d else np.zeros_like(d["hands"]))
+        elixirs.append(d["elixirs"] if "elixirs" in d
+                       else np.zeros((len(d["hands"]), 1), np.float32))
         grid = d["grid"]
         if "deck" in d:
             deck = [str(s) for s in d["deck"]]
     if not obs:
-        return None, None, None, None, None, None, 0
+        return None, None, None, None, None, None, None, 0
     return (np.concatenate(obs), np.concatenate(acts), np.concatenate(hands),
-            np.concatenate(nexts), grid, deck, len(files))
+            np.concatenate(nexts), np.concatenate(elixirs), grid, deck, len(files))
 
 
 def train_bc(cfg) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    obs, acts, hands, nexts, grid, deck, n_files = _load_datasets(root)
+    obs, acts, hands, nexts, elixirs, grid, deck, n_files = _load_datasets(root)
     if obs is None:
         print("[train-bc] no identity-labeled datasets found. Build hand templates "
               "(`hand-templates`), then `record` and `label --all`.")
@@ -79,10 +81,11 @@ def train_bc(cfg) -> None:
     x = torch.from_numpy(obs).float().permute(0, 3, 1, 2) / 255.0
     hand = torch.from_numpy(hands).float()
     nxt = torch.from_numpy(nexts).float()
+    elx = torch.from_numpy(elixirs).float()
     card = torch.from_numpy(acts[:, 0].astype("int64"))
     cell = torch.from_numpy((acts[:, 2] * gw + acts[:, 1]).astype("int64"))  # gy*gw + gx
 
-    loader = DataLoader(TensorDataset(x, hand, nxt, card, cell),
+    loader = DataLoader(TensorDataset(x, hand, nxt, elx, card, cell),
                         batch_size=int(cfg.get("train", "batch_size", default=64)),
                         shuffle=True)
 
@@ -94,10 +97,10 @@ def train_bc(cfg) -> None:
     for ep in range(1, epochs + 1):
         net.train()
         tot, sc, cc, n = 0.0, 0, 0, 0
-        for xb, hb, nb, cardb, cellb in loader:
-            xb, hb, nb = xb.to(device), hb.to(device), nb.to(device)
+        for xb, hb, nb, eb, cardb, cellb in loader:
+            xb, hb, nb, eb = xb.to(device), hb.to(device), nb.to(device), eb.to(device)
             cardb, cellb = cardb.to(device), cellb.to(device)
-            card_logits, cell_logits = net(xb, hb, nb)
+            card_logits, cell_logits = net(xb, hb, nb, eb)
             card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
             loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
             opt.zero_grad()

@@ -76,8 +76,8 @@ def play(cfg) -> None:
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     from .cards import CardDB
     _db = CardDB(cfg)
-    spell_ids = {i for i, key in enumerate(vision.deck_keys)
-                 if (_db.get(key[:-4] if key.endswith("_evo") else key) or {}).get("kind") == "spell"}
+    anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
+                    if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "tornado")}
     defensive_kind = {}
     for i, key in enumerate(vision.deck_keys):
         base = key[:-4] if key.endswith("_evo") else key
@@ -122,11 +122,13 @@ def play(cfg) -> None:
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
             return
         next_vec = vision.next_onehot(vision.recognize_next(frame))
+        elixir = vision.read_elixir(frame)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
+        ev = torch.tensor([[elixir / 10.0]], dtype=torch.float32, device=device)
         with torch.no_grad():
-            card_logits, cell_logits = net(x, hv, nv)
+            card_logits, cell_logits = net(x, hv, nv, ev)
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
         if random.random() < eps:
             card_id = random.choice([c for c in hand_ids if c >= 0])
@@ -153,7 +155,7 @@ def play(cfg) -> None:
         slot = next((s for s, c in enumerate(hand_ids) if c == card_id), -1)
         if slot < 0:
             return
-        cell = actions.deploy_clamp(card_id in spell_ids, cell)   # troops -> your deploy half (or the tap won't deploy)
+        cell = actions.deploy_clamp(card_id in anywhere_ids, cell)   # only rocket/tornado go anywhere
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
 

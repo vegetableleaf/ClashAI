@@ -36,13 +36,13 @@ class ActionSpace:
         tnx, tny = self.cell_center(gx, gy)
         return snx, sny, tnx, tny
 
-    def deploy_clamp(self, is_spell: bool, cell: int) -> int:
-        """Troops can only deploy on YOUR half (below the river). A troop cell in the enemy
-        half can't be placed -- the card tap just selects it and the arena tap does nothing,
-        so the bot 'shuffles' cards without deploying. Clamp non-spell cells down to the
-        deploy line; spells (rocket/tornado/royal delivery) can target anywhere, so they pass
-        through unchanged."""
-        if is_spell:
+    def deploy_clamp(self, anywhere: bool, cell: int) -> int:
+        """Only ROCKET and TORNADO may target anywhere; every other card (troops, buildings,
+        royal delivery) can only deploy on YOUR half of the river. A restricted card whose
+        cell is in the enemy half can't be placed -- the card tap just selects it and the arena
+        tap does nothing, so the bot 'shuffles' cards without deploying. Clamp such cells down
+        to the deploy line; ``anywhere`` cards pass through unchanged."""
+        if anywhere:
             return cell
         gw, gh = int(self.gw), int(self.gh)
         gx, gy = cell % gw, cell // gw

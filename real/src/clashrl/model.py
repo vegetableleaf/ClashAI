@@ -38,20 +38,25 @@ class PolicyNet(nn.Module):
         )
         self.hand_fc = nn.Sequential(nn.Linear(n_cards, 32), nn.ReLU(inplace=True))
         self.next_fc = nn.Sequential(nn.Linear(n_cards, 16), nn.ReLU(inplace=True))
-        self.embed_dim = 256 + 32 + 16
+        self.elixir_fc = nn.Sequential(nn.Linear(1, 8), nn.ReLU(inplace=True))
+        self.embed_dim = 256 + 32 + 16 + 8
         self.card_head = nn.Linear(self.embed_dim, n_cards)
         self.cell_head = nn.Linear(self.embed_dim, n_cells)
 
     def features_vec(self, x: torch.Tensor, hand: torch.Tensor,
-                     nxt: torch.Tensor | None = None) -> torch.Tensor:
-        """Shared embedding of (image, hand multi-hot, next-card one-hot). Exposed so RL
-        can add heads. ``nxt`` may be None (treated as all-zero = next card unknown)."""
+                     nxt: torch.Tensor | None = None, elx: torch.Tensor | None = None) -> torch.Tensor:
+        """Shared embedding of (image, hand multi-hot, next-card one-hot, normalized elixir).
+        Exposed so RL can add heads. ``nxt``/``elx`` may be None (treated as all-zero =
+        next card unknown / elixir 0)."""
         z = self.trunk(self.features(x))
         if nxt is None:
             nxt = torch.zeros(hand.shape[0], self.n_cards, device=hand.device, dtype=hand.dtype)
-        return torch.cat([z, self.hand_fc(hand), self.next_fc(nxt)], dim=1)
+        if elx is None:
+            elx = torch.zeros(hand.shape[0], 1, device=hand.device, dtype=hand.dtype)
+        return torch.cat([z, self.hand_fc(hand), self.next_fc(nxt), self.elixir_fc(elx)], dim=1)
 
-    def forward(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None):
-        z = self.features_vec(x, hand, nxt)
+    def forward(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
+                elx: torch.Tensor | None = None):
+        z = self.features_vec(x, hand, nxt, elx)
         return self.card_head(z), self.cell_head(z)
 

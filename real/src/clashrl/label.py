@@ -96,7 +96,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     cap = cv2.VideoCapture(str(video))
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     vision = Vision(cfg)
-    obs, acts, hands, nexts = [], [], [], []
+    obs, acts, hands, nexts, elixirs = [], [], [], [], []
     skipped = 0
     dbg_dir = session / "labeled"
     if debug:
@@ -121,6 +121,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
         acts.append([card, gx, gy, p["slot"]])
         hands.append(vision.hand_multihot(hand_ids))
         nexts.append(vision.next_onehot(vision.recognize_next(frame)))
+        elixirs.append([vision.read_elixir(frame) / 10.0])
         if debug:
             f = frame.copy()
             sx, sy = slots[p["slot"]]
@@ -140,6 +141,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
             acts=np.asarray(acts, dtype=np.float32),
             hands=np.asarray(hands, dtype=np.float32),
             nexts=np.asarray(nexts, dtype=np.float32),
+            elixirs=np.asarray(elixirs, dtype=np.float32),
             grid=np.asarray([int(gw), int(gh)], dtype=np.int64),
             deck=np.asarray(vision.deck_keys),
         )

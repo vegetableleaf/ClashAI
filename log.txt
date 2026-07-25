@@ -117,6 +117,17 @@ Newest entries are at the bottom.
   still target anywhere (action.deploy_top + ActionSpace.deploy_clamp, applied in
   env + play); and make training exploration commit to plays more (lower
   train.explore_wait_prob / min_play_elixir).
+- Placement rule refined + elixir awareness (ARCHITECTURE CHANGE). (1) Only ROCKET
+  and TORNADO may be cast ANYWHERE; every other card -- troops, buildings, AND
+  Royal Delivery -- is now clamped to your half of the river (deploy_clamp keys off
+  rocket/tornado, no longer off "is a spell"). (2) The elixir counter is now a
+  POLICY INPUT: the normalized current elixir (0-1, read off the bar, ported from
+  trol) is fed to the network via a new elixir_fc branch alongside the arena image,
+  hand, and next card -- so the bot can learn elixir conservation. Threaded through
+  the env, live play, dataset labeling, and BC + RL training. (3) Sitting on a FULL
+  elixir bar with an enemy push and playing nothing now costs elixir_waste_penalty.
+  The elixir input changes the model, so it needs a re-label + retrain
+  (label --all -> train-bc -> train-rl).
 
 
 ------------------------------------------------------------------------------
