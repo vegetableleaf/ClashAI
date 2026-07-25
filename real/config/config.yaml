@@ -1,0 +1,262 @@
+# =====================================================================
+# Learning ClashBot ("real") configuration.
+# Play + capture happen on PC via Google Play Games, so the agent trains on
+# and plays on the exact same rendering. Region is in PHYSICAL pixels (the
+# process runs DPI-aware), reused from the trol calibration.
+# =====================================================================
+
+window:
+  title_contains: "Clash Royale"
+  region: [739, 38, 669, 1182]   # physical px of the game render (from trol calibration)
+
+capture:
+  work_width: 480                # frames scaled to this width for vision
+
+# --- Hand card slots (normalized centres, from the trol calibration) ------
+hand:
+  slots: [[0.308, 0.887], [0.485, 0.887], [0.660, 0.884], [0.854, 0.884]]
+  click_radius: 0.06            # a click near a slot's x, in the tray band, = selecting that card
+  # Card-identity recognition: the policy acts on WHICH card identity to play (not
+  # the tray slot, which cycles). An EVOLVED card is its own identity (`<key>_evo`)
+  # separate from the normal card, since it plays differently; champions are their
+  # own cards already. Each slot's portrait is cropped (card_w/card_h are half-
+  # width/half-height around the slot centre) and matched against
+  # templates/cards/<identity>.png -- extra crops of one identity are allowed and
+  # help (name them <identity>_2.png, ...). Build these from a recording with
+  # `run.py hand-templates` and check with `run.py verify --hand`.
+  templates_dir: "templates/cards"
+  card_w: 0.055                 # half-width of a hand-card portrait crop (normalized)
+  card_h: 0.045                 # half-height of a hand-card portrait crop (normalized)
+  match_threshold: 0.5          # min normalized template-match score to accept an identity
+  # The "next card" preview sits to the LEFT of the tray and is drawn smaller. Feeding its
+  # identity to the policy lets it plan cycles (hold a cheap card to line up a counter).
+  # The values below are an ESTIMATE -- calibrate with `run.py verify --hand`: the next-card
+  # box is drawn in cyan; nudge next_slot / next_card_w / next_card_h until it frames it.
+  next_slot: [0.090, 0.965]     # normalized centre of the next-card PORTRAIT (the card, below the "Next:" label)
+  next_card_w: 0.045            # half-width of the next-card crop
+  next_card_h: 0.030            # half-height of the next-card crop
+  next_top_frac: 0.6            # match only the TOP fraction of the card (skip the elixir badge + "1sec" cycle timer)
+  next_templates_dir: "templates/next"  # the next preview is a SMALLER, blue-tinted rendering -> its own template set
+
+# --- Elixir bar reading (YOUR elixir; from the trol calibration) ---------
+# Only your elixir is on screen (the opponent's is hidden), so this gives your
+# affordability, not a full elixir trade. Counts filled (magenta) pips.
+elixir:
+  bar_y: 0.971
+  pip_xs: [0.312, 0.369, 0.440, 0.506, 0.577, 0.635, 0.708, 0.775, 0.850, 0.917]
+  filled_hsv_lower: [140, 60, 120]
+  filled_hsv_upper: [175, 255, 255]
+
+# --- Scripted menu navigation (reused from trol) --------------------------
+# The learned policy only plays cards in-match; queueing/exiting is scripted so
+# the bot runs match-to-match unattended. Values + templates come from trol.
+buttons:
+  battle_button: [0.492, 0.771]  # HOME -> opens the 2v2 party menu
+  quick_match:   [0.690, 0.555]  # PARTY -> starts a quick match
+  results_ok:    [0.138, 0.948]  # results screen, teammate ONLINE ("Exit")
+  results_ok_dc: [0.490, 0.870]  # results screen, teammate DISCONNECTED ("OK")
+  # In-match emote/chat icon (bottom-left). Tapping it opens the emote wheel and the bot
+  # gets stuck, so card placements are nudged UP out of this box (from trol's emote button).
+  chat_avoid_box: [0.0, 0.79, 0.185, 0.90]
+
+states:
+  home_menu:  {template: "home_menu.png",  threshold: 0.55}   # lowered: the "Daily Bonus" sub-banner + capture drift drop the Battle-button match (~0.6); nav taps where it locates it
+  party_menu: {template: "party_menu.png", threshold: 0.80}
+  in_match:   {template: "in_match.png",   threshold: 0.80}
+  match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
+
+nav:
+  poll_hz: 6                     # how often play() re-checks the screen state
+  menu_delay: 1.0                # wait after a menu tap before re-checking
+
+# --- Recording human play (screen + mouse) for imitation data ------------
+record:
+  fps: 12                        # frames/sec captured while you play
+  out_dir: "data/sessions"       # each session saved under real/data/sessions/<timestamp>/
+  log_moves: false               # also log mouse-move paths during drags (bigger files)
+
+# --- Labeling: pair your clicks into card plays (select slot -> place) -----
+label:
+  pair_timeout: 3.0              # max seconds between selecting a card and placing it
+  arena_top: 0.10               # placement clicks fall in this normalized y-band...
+  arena_bottom: 0.86            # ...below this is the card tray (slot selects)
+
+# --- Observation the agent sees (used by the imitation + RL pipeline) -----
+observation:
+  arena_size: [64, 96]           # downscaled arena image (w, h) fed to the CNN
+
+# --- Discrete action space (card slot x placement grid) ------------------
+action:
+  grid: [8, 12]                  # placement grid: columns x rows over the arena
+
+# --- Reward shaping (RL fine-tune) ---------------------------------------
+# Rocket-cycle wins on near-perfect DEFENCE, so defence is weighted well above
+# offence: losing your own tower / tower HP costs much more than chipping the
+# enemy earns. Spells are rewarded for damage dealt to TROOPS (kills = big
+# reward), lightly for chipping the enemy princess, and PENALISED for whiffing
+# (empty ground / the enemy king). Holding cards while the board is quiet is fine
+# (patience). Spell/troop effects are coarse red-pixel proxies -- calibrate the
+# env.* detection params with `verify --spells`.
+rewards:
+  # -- match + tower outcomes --
+  take_enemy_tower: 1.0          # destroy an enemy tower (offence)
+  lose_own_tower: -3.0           # lose one of yours (defence -- weighted heavier)
+  win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
+  loss: -10.0                    # losing is very costly
+  # -- tower HP chip (tower_hp) --
+  hp_scale: 1.0                  # enemy-princess chip (offence); a full tower's chip = this
+  hp_defense_scale: 3.0          # multiplier on HP lost from YOUR princess (defence)
+  # -- troop combat + spell effects (env) --
+  troop_defeat: 3.0              # per unit of enemy-troop mass removed by ANY means (defeating troops)
+  clean_kill_bonus: 2.0          # x multiplier when your towers took no HP that step (killed it early)
+  spell_troop_damage: 5.0        # rocket KILL reward per unit of hit-unit SIZE (biggest blob caught)
+  spell_hit: 2.0                 # rocket HIT (unit caught but survived) reward per unit of its size
+  spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
+  spell_whiff: -0.5              # a spell cast on empty ground (nothing to hit)
+  spell_king_penalty: -4.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful, wakes it)
+  tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
+  king_tank_reward: 1.0          # tornado onto YOUR king to tank + activate it (x your king's remaining HP fraction)
+  blocker_protect: 1.0           # play a tank/blocker (ronin/skeletons/ice spirit) to shield a ranged unit vs a heavy melee
+  royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
+  royal_delivery_kill: 5.0       # Royal Delivery, extra per unit of enemy mass it KILLS
+  offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
+  patience: 0.02                 # small reward for holding cards while the board is quiet
+
+# --- Automatic win/loss detection (results scoreboard) -------------------
+# Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
+# (red) on TOP, each with 3 crown cushions above its name banner. Detection
+# anchors to the coloured banners (found by a row-wise colour vote) so it is
+# robust to the banners sliding in, then counts gold crowns per team. Used by
+# `run.py outcomes` and, later, as the RL terminal reward. HSV is OpenCV-style
+# (H 0-179). Override only if a UI/theme change breaks detection.
+outcome:
+  gold_frac: 0.10                # min gold fraction in a cushion cell to count a crown
+  cushion_xs: [0.25, 0.49, 0.72] # normalized x-centres of the 3 crown cushions
+  cushion_offsets: [0.06, 0.08, 0.10, 0.12, 0.14]  # y-gaps above a banner to scan for its crowns
+  banner_min_frac: 0.45          # a name banner must span >= this fraction of the width
+  settle_reads: 8                # keep reading the results screen until the crown total holds
+                                 # steady this many frames -- crowns animate in one-by-one, so
+                                 # stopping as soon as the board appears can miss the last crown
+
+# --- DQN / training hyperparameters (RL fine-tune) -----------------------
+train:
+  device: "cuda"                 # "cuda" (GPU) or "cpu"
+  gamma: 0.99
+  lr: 0.0001
+  batch_size: 64
+  replay_size: 100000
+  epsilon_start: 1.0
+  epsilon_end: 0.05
+  epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
+  explore_wait_prob: 0.4         # while exploring, chance of a no-op (save elixir)
+  min_play_elixir: 3             # while exploring, don't play a card below this elixir
+  min_replay: 200                # transitions to collect before learning starts
+  target_sync: 500               # steps between target-network syncs
+  save_every_matches: 1          # checkpoint cadence during RL
+  bc_epochs: 10                  # behaviour-cloning pretrain epochs
+  checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)
+  rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
+
+# --- Live RL environment + in-match tower reward -------------------------
+# The RL loop plays real matches. Tower shaping rewards taking enemy towers and
+# penalises losing yours; a tower is read "alive" by team colour at its anchor
+# and only latched destroyed after a few sustained empty reads (rubble is grey,
+# towers never rebuild), so troop occlusion won't fake it. Set tower_shaping
+# false to learn from the (robust) win/loss reward alone. Anchors are normalized
+# (x, y); order is [left princess, right princess, king]. Calibrate if a tower
+# event never/always fires.
+env:
+  tower_shaping: true
+  tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
+  tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
+  results_timeout: 30.0          # max seconds to wait for the results screen at match end
+  enemy_towers: [[0.25, 0.21], [0.72, 0.21], [0.48, 0.12]]
+  my_towers:    [[0.25, 0.61], [0.72, 0.61], [0.48, 0.72]]
+  # Chip-damage reward: read each princess tower's printed HP with a digit CNN
+  # and reward *partial* HP loss (rocket chip, etc.) even when the tower survives.
+  # HP is piecewise-constant + monotonic, so a value is only accepted after it
+  # reads the same on `hp_consensus` frames -> near-zero false damage. Damage is
+  # normalized by hp_full (a full tower's worth of chip = rewards.hp_scale).
+  # Boxes are white HP-number crops (crown excluded), normalized [x0,y0,x1,y1]. They can
+  # be TALL: the reader locks onto the digit row band inside the box (a strict near-white
+  # mask), so the same box tolerates HP bars sitting at different heights (different tower
+  # troops -- Cannoneer / Dagger Duchess / Royal Chef) and small window drift. Check the
+  # alignment with verify --towers; keep the box centred over where the number can appear.
+  # Needs torch + hp_digits.npz; falls back to no-op if missing. hp_reward false
+  # disables it (relies on the destruction latch + win/loss instead).
+  hp_reward: true
+  hp_full: 3052                  # princess full HP (2v2, level 11) -- the reset baseline
+  hp_consensus: 2                # consecutive equal reads before a new HP is confirmed
+  hp_min_conf: 0.55              # min mean per-digit CNN confidence to use a read
+  hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
+  enemy_tower_hp_boxes: [[0.196, 0.150, 0.300, 0.198], [0.700, 0.150, 0.804, 0.198]]
+  my_tower_hp_boxes:    [[0.203, 0.612, 0.307, 0.660], [0.703, 0.612, 0.807, 0.660]]
+  # KING HP numbers (only shown once a king is hit). Enemy king (top-centre) -> catch a
+  # rocket/tornado that damages it (rewards.spell_king_penalty). YOUR king (bottom-centre) ->
+  # reward a defensive tornado that tanks + activates it (rewards.king_tank_reward). Boxes are
+  # tall; the digit reader locks onto the number. Calibrate with verify --towers (E-king / M-king).
+  enemy_king_hp_box: [0.41, 0.015, 0.55, 0.08]
+  king_hp_margin: 40             # min enemy-king HP drop (across a spell) to count as a fresh hit
+  my_king_hp_box:    [0.41, 0.690, 0.55, 0.77]
+  my_king_full: 4824             # your king's full HP (level 11) -- scales the tornado-tank reward
+  # Troop-combat + spell rewards (calibrated on recorded casts; tune with
+  # `verify --spells`). enemy_mass = enemy-troop (red) pixel fraction over arena_region
+  # [x0,y0,x1,y1] (HUD/tray + enemy towers excluded). Each step a DROP in enemy_mass >
+  # defeat_min (capped at defeat_cap) rewards defeating troops (rewards.troop_defeat),
+  # x rewards.clean_kill_bonus if your towers took no HP. When a SPELL is cast its effect
+  # is sampled over a window around the predicted impact (a rocket's travel time grows
+  # ~linearly with distance from rocket_origin at rocket_travel_rate s/unit + rocket_base_time;
+  # a tornado lands in tornado_time): the peak enemy-troop mass in a box of half-size
+  # spell_radius at the target = troops in the blast; a peak->settled drop >= spell_min_drop
+  # = a rocket kill. The midfield hit/kill reward SCALES with the size of the biggest unit
+  # caught (largest connected red blob, capped at spell_size_cap) so a rocket on a swarm of
+  # skeletons/goblins earns little and one on a fat high-HP unit (Witch/Bowler/Balloon)
+  # earns more. On the enemy princess a kill or peak >= spell_combo_present = a tower+troop
+  # combo (flat -- the tower's own red makes size unreliable there), else a chip (tower_hp);
+  # empty ground (< spell_present) = a whiff. spell_effect_reward false disables it.
+  spell_effect_reward: true
+  arena_region: [0.03, 0.10, 0.97, 0.86]
+  defeat_min: 0.005              # min arena enemy-mass drop/step to count as defeating troops
+  defeat_cap: 0.15               # cap the per-step drop (guards against artifacts)
+  spell_radius: 0.12             # box half-size around a spell's target for its effect
+  spell_min_drop: 0.03           # min peak->settled enemy-mass drop at the target = a rocket kill
+  spell_present: 0.04            # min enemy mass in the target box to count as troops in the blast
+  spell_combo_present: 0.18      # min target-box mass on the enemy princess for a combo (beats tower red)
+  spell_size_cap: 0.20           # cap on the biggest-unit blob fraction (bounds merged clumps/tower red)
+  spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)
+  rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
+  rocket_base_time: 0.3          # fixed part of rocket flight time (s)
+  rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
+  tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
+  royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage (long -> needs movement prediction)
+  offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
+  spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
+  enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
+  # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
+  # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the
+  # threatened side) a reduced depth (defense_center_depth_frac x the unit's range from
+  # range_offsets) behind the enemy front -- the horizontal gap to an edge push adds to the
+  # vertical one (maximises the distance the push must close under fire) and pulls it to the
+  # middle where BOTH princess towers help. No clear threat -> the model places it (Tesla
+  # also earns rewards.tesla_kill). Evo Musketeer always goes to the very back.
+  range_offsets: {long: 0.15, short: 0.12, melee: 0.05}  # unit attack reach (normalized y), by KB range
+  defense_center_bias: 0.10            # x offset from centre (0.48) toward the threatened side
+  defense_center_depth_frac: 0.6       # depth behind the front = this x the unit's range (centre covers the rest)
+  defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
+  musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
+  # Tesla kill-credit (rewards.tesla_kill): after a Tesla is placed, count enemy troops it
+  # kills within tesla_radius of its spot for tesla_track_steps steps -- a live Tesla keeps
+  # killing so keeps earning, and a central one kills most.
+  tesla_track_steps: 10                # steps to credit a placed Tesla with kills near it
+  tesla_radius: 0.16                   # box half-size around the Tesla for its kill credit
+  # Shield-a-ranged-unit combo (rewards.blocker_protect): a blocker (ronin/skeletons/ice_spirit)
+  # played within blocker_combo_steps of a ranged unit while a big red blob (>= blocker_threat_size)
+  # sits on that spot -- a coarse "heavy melee" proxy (no troop ID).
+  blocker_combo_steps: 3               # blocker must follow the ranged unit within this many steps
+  blocker_threat_size: 0.08            # min largest-red-blob fraction at the ranged unit = heavy melee present
+
+# --- Running the trained policy live -------------------------------------
+play:
+  act_period: 1.5                # seconds between actions (crude gate; RL adds a learned no-op)
+  select_delay: 0.08             # delay between selecting a card and placing it
+  epsilon: 0.0                   # random-action rate while playing (0 = greedy)

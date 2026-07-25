@@ -1,0 +1,3 @@
+# Place state/button templates here (captured with `python run.py capture-template <name>`):
+#   home_menu.png   party_menu.png   in_match.png   match_end.png
+# Card art templates go in the cards/ subfolder.

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+learning_state.json
+dqn_state.pt
+templates/*.png
+templates/cards/*.png
+!templates/.gitkeep
+!templates/cards/.gitkeep

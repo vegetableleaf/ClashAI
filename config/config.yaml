@@ -1,0 +1,120 @@
+# =====================================================================
+# ClashBot configuration
+# ---------------------------------------------------------------------
+# All on-screen positions are NORMALIZED to the game's client area:
+#   [x, y] where x and y are fractions in the range 0.0 .. 1.0.
+# This keeps the bot resolution-independent. Use `python run.py calibrate`
+# to visually verify/adjust every coordinate below.
+# =====================================================================
+
+window:
+  # Substring of the Google Play Games / Clash Royale window title used to
+  # locate it automatically. If auto-detection is unreliable, set `region`
+  # to an explicit [left, top, width, height] of the GAME render area only
+  # (exclude the Google Play Games sidebar/title bar).
+  title_contains: "Clash Royale"
+  # PHYSICAL pixels (mss + pyautogui both run DPI-aware at 125% scaling, so the
+  # region must be physical, not the logical 584,0,542,976 that pygetwindow
+  # reports). Measured game render. Keep the game window at this exact spot/size.
+  region: [739, 38, 669, 1182]
+
+capture:
+  work_width: 480         # frames are scaled to this width for matching
+
+# --- Menu navigation buttons (normalized) --------------------------------
+# Navigation is two steps: HOME --(battle_button)--> PARTY --(quick_match)--> match.
+# The game keeps 2v2 selected, so quick_match starts a 2v2 match directly.
+buttons:
+  battle_button: [0.492, 0.771]  # on the HOME page: opens the 2v2 party menu
+  quick_match:   [0.690, 0.555]  # on the PARTY (2v2) menu: starts a quick match
+  results_ok:    [0.138, 0.948]  # results screen, teammate ONLINE: the "Exit" button
+  results_ok_dc: [0.490, 0.870]  # results screen, teammate DISCONNECTED: the "OK" button
+
+# --- The "Good game!" text emote flow ------------------------------------
+emote:
+  button:    [0.094, 0.846]  # emote button shown during a battle
+  good_game: [0.577, 0.913]  # position of the "Good game!" entry in the wheel
+  open_delay: 0.4            # seconds to wait after opening the emote wheel
+  send_delay: 0.6            # seconds to let the match-end emote send before exiting
+
+# --- Your all-spell deck (names must match templates/cards/<name>.png) ----
+# `cost` is the elixir cost, used to decide when a spell is affordable.
+deck:
+  cards:
+    - {name: "zap",          cost: 2}
+    - {name: "rage",         cost: 2}
+    - {name: "snowball",     cost: 2}
+    - {name: "goblin curse", cost: 2}
+    - {name: "void",         cost: 3}
+    - {name: "earthquake",   cost: 3}
+    - {name: "fireball",     cost: 4}
+    - {name: "poison",       cost: 4}
+    
+    
+
+# --- The 4 in-hand card slots (normalized centers) -----------------------
+hand:
+  slots:
+    - [0.308, 0.887]
+    - [0.485, 0.887]
+    - [0.660, 0.884]
+    - [0.854, 0.884]
+  slot_size: [0.14, 0.09]    # crop size used to identify each slot's card
+  identify_threshold: 0.60   # min match score to accept a card identification
+
+# --- Elixir bar reading --------------------------------------------------
+elixir:
+  bar_y: 0.971               # normalized y of the elixir pips
+  pip_xs: [0.312, 0.369, 0.440, 0.506, 0.577, 0.635, 0.708, 0.775, 0.850, 0.917]
+  filled_hsv_lower: [140, 60, 120]   # HSV lower bound for a "filled" pip (magenta)
+  filled_hsv_upper: [175, 255, 255]
+
+# --- Spell target: the TOP-LEFT CORNER of the screen (not the king tower) -----
+target:
+  tower_center: [0.06, 0.06] # aim point near the top-left corner (small inset so jitter stays on-screen)
+  jitter_radius: 0.04        # randomize placement within this radius of the aim point
+
+# --- State detection templates (in templates/, captured via capture-template) ---
+states:
+  home_menu:  {template: "home_menu.png",  threshold: 0.80}
+  party_menu: {template: "party_menu.png", threshold: 0.80}
+  in_match:   {template: "in_match.png",   threshold: 0.80}
+  # MATCH_END has two variants in 2v2: teammate online vs teammate disconnected.
+  # Any listed template that matches triggers MATCH_END.
+  match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
+
+# --- Timing / loop behavior ----------------------------------------------
+timing:
+  loop_hz: 10
+  select_delay: 0.05         # delay between tapping a card and placing it
+  spell_replay_cooldown: 0.25
+  menu_timeout: 8            # max seconds to wait for HOME -> PARTY
+  queue_timeout: 25          # max seconds to wait for a match to start
+  exit_timeout: 15           # max seconds to wait to return to the HOME page
+
+# --- Unknown-screen recovery ---------------------------------------------
+# When the screen isn't a known state, the bot checks these popups and taps
+# `dismiss` to close whichever matches (rewards, level-up, season banners,
+# "reconnect", etc.). Capture each with `python run.py capture-template <name>`
+# (saved to templates/), then list it here. If none match, the bot just keeps
+# polling (no timeout, no auto-stop). Checked top to bottom.
+recovery:
+  enabled: true
+  popups: []
+    # - {template: "popup_ok.png",  threshold: 0.80, dismiss: [0.50, 0.90]}
+    # - {template: "reconnect.png", threshold: 0.80, dismiss: [0.50, 0.62]}
+
+# --- Adaptive learning ---------------------------------------------------
+# The learner tunes how long to wait after each menu/queue button press so
+# it transitions between matches as fast as reliably possible.
+learning:
+  enabled: true
+  backend: "bandit"          # "bandit" (no extra deps) or "dqn" (needs torch)
+  epsilon: 0.15              # exploration rate
+  lr: 0.001                  # learning rate (dqn backend only)
+  # Wait options (seconds) the learner picks from per transition. Extra small
+  # values give it room to find faster transitions; the big ones stay for slow
+  # menus/matchmaking. Changing this list's length resets learning_state.json.
+  candidate_delays: [0.1, 0.15, 0.2, 0.3, 0.5, 0.8, 1.2, 1.8, 2.5]
+  state_file: "learning_state.json"
+  transitions: ["home_to_party", "party_to_queue", "results_to_home"]

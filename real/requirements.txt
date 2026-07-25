@@ -1,0 +1,14 @@
+# Learning bot (imitation learning -> RL). Play + capture on PC via Google Play Games.
+mss>=9.0.1            # screen capture
+opencv-python>=4.9.0 # video read/write, image ops
+numpy>=1.26
+PyYAML>=6.0          # config
+pygetwindow>=0.0.9   # locate the game window
+pyautogui>=0.9.54    # bot input (used when the trained agent plays)
+pynput>=1.7          # logs YOUR mouse while you play, to label imitation actions
+
+# PyTorch is required for the CNN policy (behaviour cloning + DQN), but install the
+# build that matches your GPU/CUDA from https://pytorch.org/get-started/locally/
+# e.g. CUDA 12.1:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+# (not pinned here so pip doesn't pull a CPU-only build over your CUDA one)

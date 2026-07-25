@@ -1,0 +1,97 @@
+ClashAI — Model & Architecture Change Log
+=========================================
+
+Tracks changes to the agents' models, learning architecture, and the
+vision / training pipeline. Dates are local (file history + working notes).
+Newest entries are at the bottom.
+
+
+------------------------------------------------------------------------------
+2026-07-23  —  Project inception: the scripted bot  (trol/)
+------------------------------------------------------------------------------
+- First bot: a rule-based agent with a DQN scaffold (trol/src/clashbot/).
+- Screen capture, window calibration, and template-matching vision.
+- Mouse controller, and a home/match/end state machine for navigating menus.
+- DQN + online-learning scaffolding (dqn.py, learning.py, learning_state.json).
+- Outcome: workable for scripted behaviour, but hard to make it genuinely
+  "play". Led to the rethink below.
+
+
+------------------------------------------------------------------------------
+2026-07-24  —  New direction: the learning bot  (real/)
+------------------------------------------------------------------------------
+- Started a second agent built around IMITATION LEARNING first, then RL
+  fine-tuning (real/src/clashrl/).
+- Recording pipeline: capture the game region + mouse clicks to
+  data/sessions/<timestamp>/ (record.py; video.mp4 + events.jsonl + meta.json).
+- Config-driven capture / observation / action space (config.py, config.yaml).
+- Match-outcome detection: read win/loss (crowns per team) off the results
+  screen automatically (outcome.py).
+- Card knowledge base imported from open card data (card_import.py, cards.yaml)
+  so rewards/placement can reason about card stats and ranges.
+
+
+------------------------------------------------------------------------------
+2026-07-25 (morning)  —  RL infrastructure, the policy model, reward shaping
+------------------------------------------------------------------------------
+- Tower & King HP reader: a small CNN digit OCR (tower_hp.py + hp_digits.npz)
+  reads tower/king HP off the screen to drive reward shaping.
+- Action space + grid placement helper (actions.py); menu-navigation
+  diagnostics (diagnose.py, the `diag` command).
+- POLICY MODEL (model.py, PolicyNet): a shared CNN trunk over the downscaled
+  arena image, concatenated with a hand multi-hot, feeding two heads:
+    * card head  — which card IDENTITY to play (an evolved card is its own
+      identity, since it plays differently — not the tray slot, which cycles)
+    * cell head  — which grid cell to place it on
+- Behaviour cloning (train_bc.py) pretrains the policy to copy your recorded
+  plays (card head trained with a mask over the cards actually in hand).
+- RL fine-tune (train_rl.py): a DQN wrapper adds a wait/play GATE head over the
+  shared embedding; target network + replay; epsilon-greedy with elixir-aware
+  exploration.
+- Live RL environment (env.py) + reward shaping (reward.py):
+    * +take enemy tower, -lose own tower, +win / -loss
+    * defend-your-towers (tower-HP based), troop-defeat + patience
+      (enemy-mass detection)
+    * spell rewards scaled by the troops HIT / KILLED; Rocket auto-aims the
+      weaker enemy princess tower
+    * range-aware, center-biased DEFENSIVE placement for troop cards
+    * tornado-onto-your-own-king "tank / activate" reward (king-HP based)
+
+
+------------------------------------------------------------------------------
+2026-07-25 (afternoon)  —  Deck change, defensive doctrine, "next card" input
+------------------------------------------------------------------------------
+- DECK CHANGE: replaced Evolved Musketeer with ROYAL DELIVERY. Deck identities
+  went 10 -> 9; the policy is rebuilt on the next `train-bc`.
+- Royal Delivery reward: a delayed area spell cast on your own half — rewarded
+  for the enemy mass it lands on, and more for the mass it kills.
+- King-activation gating: the "tornado onto your own king to tank/activate it"
+  reward now only applies while BOTH your princess towers still stand (once one
+  falls, the king is auto-active and the mechanic is off).
+- DEFENSIVE DOCTRINE: any non-Rocket, non-cycle card played in the enemy half is
+  penalised. The Rocket is the only sanctioned offensive card (weaker princess);
+  cheap cycle cards (Ice Spirit, Skeletons) are exempt so they can cycle freely.
+- ARCHITECTURE CHANGE — "next card" input: PolicyNet now also takes the NEXT
+  (preview) card as a one-hot, via a new next_fc branch (shared embedding grew
+  from 256+32 to 256+32+16). Threaded end-to-end through the live env, live play,
+  dataset labeling (dataset.npz gains a `nexts` array), BC training, and the RL
+  replay/DQN. This lets the policy plan its cycle (e.g. hold a cheap card to line
+  up the counter that's coming). Requires re-labeling + retraining to take effect.
+- Next-card VISION: the preview is a smaller, blue-tinted rendering that does NOT
+  reliably match the in-hand card templates, so it uses its OWN template set
+  under templates/next/. `hand-templates` now also extracts next-preview
+  candidates for labeling; `verify --hand` overlays the next-card match.
+- Evolved Tesla's next-preview template was recovered from existing recordings
+  via its unique purple evolution frame (it needs a separate template from the
+  regular Tesla).
+
+
+------------------------------------------------------------------------------
+Notes / caveats
+------------------------------------------------------------------------------
+- Reward-shaping changes only take effect after an RL run (`train-rl`) — they
+  steer learning; they are not hard-coded behaviour.
+- Card recognition is template matching (no learned classifier), so it needs
+  per-deck templates built from your own recordings (`hand-templates`).
+- Model weights (data/*.pt) and recordings (data/sessions/) are intentionally
+  NOT committed — they are large and regenerable. Retrain to reproduce.

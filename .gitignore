@@ -1,0 +1,35 @@
+# --- Virtual environments (huge; recreate from requirements.txt) ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Python caches ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Recordings, datasets & trained weights (large / regenerable) ---
+# Gameplay videos, labeled datasets, and policy checkpoints live under data/.
+data/
+*.mp4
+*.avi
+*.mkv
+
+# --- Scratch / diagnostics ---
+**/tmp_*.py
+**/diag_*.png
+**/_cand_*.png
+**/_candidates.png
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png

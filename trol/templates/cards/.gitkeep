@@ -1,0 +1,3 @@
+# Place one PNG per spell here, named to match config.yaml deck entries, e.g.:
+#   fireball.png  rocket.png  zap.png  log.png  ...
+# Capture with: python run.py capture-template fireball --card

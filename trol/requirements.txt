@@ -1,0 +1,10 @@
+# Core dependencies for the spell-cycle bot
+mss>=9.0.1            # fast screen capture
+opencv-python>=4.9.0 # template matching / image processing
+numpy>=1.26
+PyYAML>=6.0          # config loading
+pygetwindow>=0.0.9   # locate the Google Play Games window
+pyautogui>=0.9.54    # mouse automation (clicks / card placement)
+
+# Optional: only needed if you set learning.backend: "dqn" in config.yaml
+# torch>=2.2

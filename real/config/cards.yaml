@@ -1,0 +1,563 @@
+# =====================================================================
+# Card knowledge base.  2v2 mode => all cards are level 11.
+#
+# Two kinds of data:
+#   * STABLE  (elixir, kind, targets, movement, splash, flags, evolution):
+#     safe to hand-maintain; rarely changes.
+#   * VOLATILE (hitpoints / damage / hit_speed / dps @ level 11): scales with
+#     level and shifts on balance updates -> treat as REFRESHABLE. These are
+#     left null here; import them from a stats source and bump `meta.updated`.
+#
+# `verified: false` marks an entry whose stable fields still need a source check.
+# Loaded by src/clashrl/cards.py (CardDB).
+# =====================================================================
+
+meta:
+  level: 11
+  mode: "2v2"
+  updated: "2026-07-24"
+  stats_source: null        # e.g. "RoyaleAPI" once combat stats are imported
+  notes: >
+    Elixir + categorical fields populated. Combat stats (hitpoints/damage/
+    hit_speed) pending import from a stats source (see README refresh note).
+
+# Your deck (rocket cycle: perfect defence + positive elixir trades to rocket
+# the enemy princess tower). `evolved: true` uses the Evolution variant.
+deck:
+  name: "Rocket Cycle (2v2)"
+  cards:
+    - {card: royal_delivery}
+    - {card: tesla,     evolved: true}
+    - {card: ice_wizard}
+    - {card: tornado}
+    - {card: rocket}
+    - {card: ronin}
+    - {card: ice_spirit}
+    - {card: skeletons}
+
+# ---------------------------------------------------------------------
+# card fields:
+#   elixir      int
+#   kind        troop | building | spell
+#   rarity      common | rare | epic | legendary | champion
+#   attacks     which target types it can damage: [ground], [air, ground], [] (spell hits per radius)
+#   movement    ground | air | none
+#   speed       slow | medium | fast | very_fast | null
+#   range       melee | short | long | null   (attack reach; ranged if long/short)
+#   splash      true if area damage
+#   count       units deployed
+#   win_condition   true for building-targeting pushers / primary tower threats
+#   targets     buildings_only | any | null   (what a troop prefers to attack)
+#   flags       [ranged, flying, spawner, kamikaze, dash, charge, stun, freeze,
+#                knockback, pull, shield, splash_air, building_targeting, swarm]
+#   evolution   {available, cycles, effect, gains:[...]}   (null if none)
+#   hitpoints/damage/hit_speed/dps   @ meta.level (null => import)
+#   crown_tower_damage   spells' reduced damage to crown towers @ meta.level
+#                        (null => import; troops/un-reduced spells hit towers for full damage)
+# ---------------------------------------------------------------------
+cards:
+
+  # ---- your deck --------------------------------------------------
+  musketeer:
+    display: "Musketeer"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged]
+    evolution: {available: true, cycles: 1, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  tesla:
+    display: "Tesla"
+    elixir: 4
+    kind: building
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: short
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, hides]
+    evolution: {available: true, cycles: 1, effect: "periodic electric pulse that damages and briefly stuns nearby enemies", gains: [stun, area_shock]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  bomber:
+    display: "Bomber"
+    elixir: 2
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: short
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, ground_only]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  ice_wizard:
+    display: "Ice Wizard"
+    elixir: 3
+    kind: troop
+    rarity: legendary
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, slow]        # hits slow their targets' movement + attack
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  tornado:
+    display: "Tornado"
+    elixir: 3
+    kind: spell
+    rarity: epic
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [pull, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  rocket:
+    display: "Rocket"
+    elixir: 6
+    kind: spell
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: true          # this deck's tower-chip win condition
+    targets: null
+    flags: [splash, splash_air, knockback, building_targeting]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  ronin:
+    display: "Ronin"
+    elixir: 5
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [melee, parry, reflect, stun]
+    ability: {name: "Parry", effect: "reflects the next MELEE attack: takes no damage, stuns the attacker, deals 200% of its attack damage back", cooldown_s: 3.5}
+    counters: [prince, dark_prince, bandit, boss_bandit, pekka, mini_pekka, mega_knight]
+    evolution: null
+    verified: true
+    hitpoints: 1779
+    damage: 371
+    hit_speed: 1.4
+    dps: 265                       # 371 dmg / 1.4s (medium melee range, fast move)
+
+  ice_spirit:
+    display: "Ice Spirit"
+    elixir: 1
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [kamikaze, freeze, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  skeletons:
+    display: "Skeletons"
+    elixir: 1
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 3
+    win_condition: false
+    targets: any
+    flags: [swarm]
+    evolution: {available: true, cycles: 1, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  # ---- common opponent cards (categorical only, for counter reasoning) ----
+  knight:
+    display: "Knight"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [mini_tank]
+    evolution: {available: true, cycles: 2, effect: "shield + damage reduction dash on cycle", gains: [shield]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  archers:
+    display: "Archers"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: false
+    count: 2
+    win_condition: false
+    targets: any
+    flags: [ranged]
+    evolution: {available: true, cycles: 1, effect: "extra range / speed", gains: [extra_range]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  minions:
+    display: "Minions"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: false
+    count: 3
+    win_condition: false
+    targets: any
+    flags: [flying, ranged]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  hog_rider:
+    display: "Hog Rider"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, jump]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  giant:
+    display: "Giant"
+    elixir: 5
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: slow
+    range: melee
+    splash: false
+    count: 1
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  valkyrie:
+    display: "Valkyrie"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [splash, mini_tank]
+    evolution: {available: true, cycles: 1, effect: "spin knockback / lifesteal", gains: [knockback]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  mini_pekka:
+    display: "Mini P.E.K.K.A"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [high_damage]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  wizard:
+    display: "Wizard"
+    elixir: 5
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  baby_dragon:
+    display: "Baby Dragon"
+    elixir: 4
+    kind: troop
+    rarity: epic
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [flying, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  mega_minion:
+    display: "Mega Minion"
+    elixir: 3
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: air
+    speed: medium
+    range: short
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [flying]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  balloon:
+    display: "Balloon"
+    elixir: 5
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: air
+    speed: medium
+    range: melee
+    splash: true
+    count: 1
+    win_condition: true
+    targets: buildings_only
+    flags: [flying, building_targeting, splash, death_damage]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  skeleton_army:
+    display: "Skeleton Army"
+    elixir: 3
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 15
+    win_condition: false
+    targets: any
+    flags: [swarm]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  fireball:
+    display: "Fireball"
+    elixir: 4
+    kind: spell
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air, knockback]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  zap:
+    display: "Zap"
+    elixir: 2
+    kind: spell
+    rarity: common
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air, stun, reset]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  arrows:
+    display: "Arrows"
+    elixir: 3
+    kind: spell
+    rarity: common
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  goblin_barrel:
+    display: "Goblin Barrel"
+    elixir: 3
+    kind: spell
+    rarity: epic
+    attacks: [ground]
+    movement: none
+    speed: null
+    range: null
+    splash: false
+    count: 3
+    win_condition: true
+    targets: null
+    flags: [spawner, swarm]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
