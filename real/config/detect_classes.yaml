@@ -217,3 +217,27 @@ classes:
   - monk_ability
   - skeleton_king_ability
   - terry_ability
+
+  # --- spell target/impact indicators (the on-ground AoE circle; team-agnostic) ---
+  - arrows_aoe
+  - barbarian_barrel_aoe
+  - clone_aoe
+  - earthquake_aoe
+  - fireball_aoe
+  - freeze_aoe
+  - giant_snowball_aoe
+  - goblin_barrel_aoe
+  - goblin_curse_aoe
+  - graveyard_aoe
+  - heal_aoe
+  - lightning_aoe
+  - poison_aoe
+  - rage_aoe
+  - rocket_aoe
+  - royal_delivery_aoe
+  - the_log_aoe
+  - tornado_aoe
+  - vines_aoe
+  - void_aoe
+  - warmth_aoe
+  - zap_aoe
