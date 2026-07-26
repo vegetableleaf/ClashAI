@@ -190,3 +190,19 @@ classes:
   - witch_evo
   - wizard_evo
   - zap_evo
+
+  # --- hero variants (recent CR addition; user-provided list, not yet in the card-stats KB) ---
+  - knight_hero
+  - musketeer_hero
+  - mini_pekka_hero
+  - goblins_hero
+  - giant_hero
+  - balloon_hero
+  - wizard_hero
+  - dark_prince_hero
+  - bowler_hero
+  - ice_golem_hero
+  - mega_minion_hero
+  - magic_archer_hero
+  - tombstone_hero
+  - barbarian_barrel_hero
