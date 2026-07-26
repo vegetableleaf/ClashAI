@@ -206,3 +206,14 @@ classes:
   - magic_archer_hero
   - tombstone_hero
   - barbarian_barrel_hero
+
+  # --- champion ability activations (each has its own visual effect) ---
+  - archer_queen_ability
+  - boss_bandit_ability
+  - goblinstein_ability
+  - golden_knight_ability
+  - little_prince_ability
+  - mighty_miner_ability
+  - monk_ability
+  - skeleton_king_ability
+  - terry_ability
