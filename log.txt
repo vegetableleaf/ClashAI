@@ -371,6 +371,10 @@ Newest entries are at the bottom.
   own units -- must hand-label those on each frame (a few hundred) before training, else the
   detector learns them as background. NEXT stages: (2) hand-label seed + active-learning + colour
   transfer for the enemy; (3) detections -> semantic-map channels into PolicyNet; (4) retrain BC+RL.
+- FOLLOWUP: switched the default detector to RT-DETR-L (user: more accurate than YOLO11, worth the
+  slower speed). tools/detect/train.py now auto-selects RTDETR vs YOLO by the --model name (default
+  rtdetr-l.pt; --model yolo11s.pt for YOLO), auto-batch (-1) since RT-DETR-L is heavier, 120 epochs.
+  Dataset / autolabel / taxonomy are detector-agnostic -- unchanged.
 
 
 ------------------------------------------------------------------------------
