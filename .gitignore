@@ -21,6 +21,10 @@ data/
 *.avi
 *.mkv
 
+# --- Label Studio exports & detector training output (transient working artifacts) ---
+annotation_export*/
+runs/
+
 # --- Scratch / diagnostics ---
 **/tmp_*.py
 **/diag_*.png
