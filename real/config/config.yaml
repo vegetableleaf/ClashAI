@@ -67,7 +67,7 @@ states:
 
 nav:
   poll_hz: 6                     # how often play() re-checks the screen state
-  menu_delay: 1.0                # wait after a menu tap before re-checking
+  menu_delay: 0.5                # wait after a menu tap before re-checking (lower = faster match-to-match transitions)
 
 # --- Recording human play (screen + mouse) for imitation data ------------
 record:
@@ -113,6 +113,7 @@ rewards:
   spell_troop_damage: 5.0        # rocket KILL reward per unit of hit-unit SIZE (biggest blob caught)
   spell_hit: 2.0                 # rocket HIT (unit caught but survived) reward per unit of its size
   spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
+  rocket_tower_reward: 1.0      # launching a rocket AT an enemy princess tower (offensive chip -- cycle to the rocket and fire it!)
   spell_whiff: -0.5              # a spell cast on empty ground (nothing to hit)
   spell_king_penalty: -4.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful, wakes it)
   tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
@@ -125,6 +126,7 @@ rewards:
   patience: 0.02                 # small reward for holding cards while the board is quiet
   idle_penalty: -0.3             # penalty for WAITING (no play) while a real enemy push is on the board -> defend, don't dawdle
   elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
+  cycle_reward: 0.15             # play a cheap card (ice spirit / skeletons) while the ROCKET is NOT in hand -> cycles toward it
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy

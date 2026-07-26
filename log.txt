@@ -128,6 +128,15 @@ Newest entries are at the bottom.
   elixir bar with an enemy push and playing nothing now costs elixir_waste_penalty.
   The elixir input changes the model, so it needs a re-label + retrain
   (label --all -> train-bc -> train-rl).
+- Faster match transitions + rocket-cycle incentives. (1) nav.menu_delay 1.0 -> 0.5
+  so the bot doesn't idle on the home screen after a match before hitting Battle
+  (the delay was the post-menu-tap sleep). (2) Rocket-cycle shaping: launching a
+  rocket at an enemy princess tower now earns rocket_tower_reward (+ the troop combo
+  if it also catches a clump), and playing a cheap card while the rocket ISN'T in
+  hand earns cycle_reward -- together these teach the deck's cycle-to-rocket plan
+  (chip the tower when safe; defend + the rocket->tornado combo when a big push
+  comes) and give the still-hesitant policy clear positive things to do. Reward-only
+  (no retrain needed beyond the pending elixir-input rebuild).
 
 
 ------------------------------------------------------------------------------

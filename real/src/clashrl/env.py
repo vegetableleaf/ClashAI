@@ -169,6 +169,8 @@ class LiveMatchEnv:
         # play defensively: penalise a non-rocket, non-cycle card placed in the ENEMY half.
         self.offensive_penalty = float(cfg.get("rewards", "offensive_penalty", default=-0.5))
         self.offensive_half = float(cfg.get("env", "offensive_half_y", default=0.45))
+        self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
+        self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
         # clumped group. Waives the enemy-king penalty (when the rocket hit a princess tower and
         # killed >=2 medium troops) and rewards wiping a push, anywhere on the board.
@@ -412,6 +414,8 @@ class LiveMatchEnv:
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
                     reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
+            if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
+                reward += self.cycle_reward           # cheap card played while rocket isn't in hand -> cycling to it
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
@@ -515,8 +519,11 @@ class LiveMatchEnv:
             if frac is not None:                      # tornado onto YOUR king (princesses up): tank it,
                 return self.king_tank_reward * frac   # worth less as the king's own HP falls
         if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-            if is_rocket and (drop >= self.spell_min_drop or peak >= self.spell_combo_present):
-                return self.spell_combo                   # rocket hit the tower AND troops
+            if is_rocket:
+                r = self.rocket_tower_reward              # launching a rocket at the enemy princess tower
+                if drop >= self.spell_min_drop or peak >= self.spell_combo_present:
+                    r += self.spell_combo                 # ...that also caught troops
+                return r
             return 0.0                                    # chip -> tower_hp handles it
         # scale by the size of the biggest unit caught (swarm -> small, fat unit -> large)
         size = min(troop_size_at(samples[peak_i], cx, cy, self.spell_radius, self.cfg),
