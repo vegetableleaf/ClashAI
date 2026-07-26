@@ -210,6 +210,10 @@ class LiveMatchEnv:
         self.threat_counter_delivery = float(cfg.get("rewards", "threat_counter_delivery", default=4.0))
         self.threat_tornado_pull = float(cfg.get("rewards", "threat_tornado_pull", default=4.0))
         self.siege_counter = float(cfg.get("rewards", "siege_counter", default=4.0))
+        # save the Tesla for the enemy's win condition (a tower-targeting troop): reward using it
+        # against an ACTIVE one, penalise spending it early when one is known but not on the board.
+        self.wc_tesla_defend = float(cfg.get("rewards", "wc_tesla_defend", default=2.0))
+        self.tesla_hold_penalty = float(cfg.get("rewards", "tesla_hold_penalty", default=-1.5))
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -502,6 +506,12 @@ class LiveMatchEnv:
                         if cur_elixir >= self.full_elixir:
                             reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
             reward += self._tesla_reward(frame, bool(play), card_id, cell)
+            if play and card_id in self.tesla_ids:
+                # keep the Tesla for the enemy's win condition (a tower-targeting troop)
+                if self.threat_tracker.wc_active:
+                    reward += self.wc_tesla_defend     # deployed to defend an ACTIVE win condition -- good
+                elif self.threat_tracker.should_hold_tesla():
+                    reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:

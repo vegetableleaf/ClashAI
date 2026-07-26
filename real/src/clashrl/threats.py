@@ -132,6 +132,7 @@ class Threat:
     behind_centroid: Optional[Tuple[float, float]] = None
     siege: bool = False                                 # a sitting behind-bridge threat (X-Bow/Mortar/Princess)
     proj: Optional[Projectile] = None
+    tower_targeter: bool = False                        # a unit going straight for your tower (a win condition)
 
     # ---- readable classification (for analysis + reward shaping) ----------
     def active(self) -> bool:
@@ -292,6 +293,14 @@ class ThreatTracker:
         self.cfg = cfg
         _, self._enemy_a, _ = _anchors(cfg)
         self._mine_a, _, _ = _anchors(cfg)
+        # win-condition (tower-targeting troop) detection thresholds
+        def _wc(key, d):
+            return cfg.get("env", key, default=d) if cfg else d
+        self.wc_depth = float(_wc("wc_depth", 0.5))
+        self.wc_fast_speed = float(_wc("wc_fast_speed", 0.30))
+        self.wc_min_mass = float(_wc("wc_min_mass", 0.004))
+        self.wc_confirm = int(_wc("wc_confirm", 2))
+        self.wc_release = int(_wc("wc_release", 3))
         self.reset()
 
     def reset(self) -> None:
@@ -301,6 +310,12 @@ class ThreatTracker:
         self._tracks: List[dict] = []      # motion tracks: {pts: [(t,nx,ny)...], last: t}
         self._behind_streak = 0            # consecutive reads a behind-bridge threat has sat still
         self._prev_behind_c: Optional[Tuple[float, float]] = None
+        # win-condition latch (per match): a tower-targeting troop seen -> enemy_has_wc;
+        # wc_active tracks one being on the board (hysteresis via streak/gap).
+        self.enemy_has_wc = False
+        self.wc_active = False
+        self._wc_streak = 0
+        self._wc_gap = 0
 
     # ---- projectile helpers ----------------------------------------------
     def _toward_tower(self, x, y, vx, vy) -> Tuple[bool, Optional[str]]:
@@ -459,7 +474,34 @@ class ThreatTracker:
                 thr.speed = max(0.0, (thr.depth - self._prev_depth) / dt)
                 thr.proj = self._detect_projectile(gray, t, dt)
         self._prev_gray, self._prev_t, self._prev_depth = gray, t, thr.depth
+
+        # WIN CONDITION (tower-targeting troop): a unit that penetrates DEEP into your half
+        # toward your tower, or CROSSES fast heading down -- it goes for the tower instead of
+        # stopping to fight. Latch enemy_has_wc on first sighting; wc_active tracks one being on
+        # the board (hysteresis so a brief occlusion doesn't drop it mid-defence).
+        wc_now = (thr.my_side_mass >= self.wc_min_mass
+                  and (thr.depth >= self.wc_depth or thr.speed >= self.wc_fast_speed))
+        thr.tower_targeter = wc_now
+        if wc_now:
+            self._wc_streak += 1
+            self._wc_gap = 0
+        else:
+            self._wc_gap += 1
+        if self._wc_streak >= self.wc_confirm:
+            self.wc_active = True
+        if self._wc_gap >= self.wc_release:
+            self.wc_active = False
+            self._wc_streak = 0
+        if self.wc_active:
+            self.enemy_has_wc = True
         return thr
+
+    def should_hold_tesla(self) -> bool:
+        """Hold Tesla when the enemy is known to run a win condition but none is on the board
+        right now -- save it to defend that win condition. Released while one is active
+        (``wc_active``); if none has ever been seen (``enemy_has_wc`` False) Tesla plays
+        defensively as normal."""
+        return self.enemy_has_wc and not self.wc_active
 
 
 def ay_bottom(cfg=None) -> float:
@@ -501,6 +543,9 @@ def annotate(frame: np.ndarray, thr: Threat, cfg=None) -> np.ndarray:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
     cv2.putText(out, thr.type_label(), (X0 + 4, Y0 + 18),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+    if thr.tower_targeter:
+        cv2.putText(out, "WIN-COND (tower targeter)", (X0 + 4, Y0 + 40),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
     cv2.putText(out, f"mass{thr.mass:.3f} big{thr.largest_blob:.3f} n{thr.count} "
                      f"grn{thr.green:.3f} dep{thr.depth:.2f} spd{thr.speed:.2f} "
                      f"bhd{thr.behind_mass:.3f}{' SIEGE' if thr.siege else ''}",

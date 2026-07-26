@@ -128,6 +128,8 @@ rewards:
   spell_whiff: -0.5              # a spell cast on empty ground (nothing to hit)
   spell_king_penalty: -4.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful, wakes it)
   tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
+  wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
+  tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
   king_tank_reward: 1.0          # tornado onto YOUR king to tank + activate it (x your king's remaining HP fraction)
   blocker_protect: 1.0           # play a tank/blocker (ronin/skeletons/ice spirit) to shield a ranged unit vs a heavy melee
   royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
@@ -299,6 +301,19 @@ env:
   # sits on that spot -- a coarse "heavy melee" proxy (no troop ID).
   blocker_combo_steps: 3               # blocker must follow the ranged unit within this many steps
   blocker_threat_size: 0.08            # min largest-red-blob fraction at the ranged unit = heavy melee present
+  # Win-condition (tower-targeting troop) detection -> SAVE the Tesla for it. A "win condition"
+  # is a troop that heads straight for your tower instead of fighting: it PENETRATES deep into
+  # your half (wc_depth: 0 at the river .. 1 at your king) OR CROSSES fast toward it (wc_fast_speed,
+  # in delta-depth/second). Seeing one latches "enemy has a win condition" for the match; wc_active
+  # tracks one being on the board (wc_confirm reads to arm, wc_release quiet reads to clear). While
+  # the enemy has a win condition but none is active the Tesla is HELD (in play + reward-shaped in
+  # training); with a win condition active, or none ever seen, the Tesla plays as normal. Calibrate
+  # wc_depth / wc_fast_speed with `verify --threats` (a red "WIN-COND" label marks a detection).
+  wc_depth: 0.5                        # enemy depth into your half (river 0 -> king 1) that reads as tower-bound
+  wc_fast_speed: 0.30                  # OR advance speed (delta-depth/s) flagging a fast tower-targeter (Hog/Ram/Balloon)
+  wc_min_mass: 0.004                   # min enemy mass in your half for it to be a real unit (not noise)
+  wc_confirm: 2                        # consecutive reads before a win condition is called "active"
+  wc_release: 3                        # consecutive quiet reads before "active" clears (hysteresis)
 
 # --- Running the trained policy live -------------------------------------
 play:

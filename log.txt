@@ -294,6 +294,33 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26  —  Save the Tesla for the enemy's win condition (tower-targeter)
+------------------------------------------------------------------------------
+- Goal: if the enemy runs a WIN CONDITION (a troop that heads straight for your tower and
+  ignores your troops -- Hog / Ram / Balloon / Giant / Royal Giant / Miner ...), HOLD the
+  Tesla and only deploy it to defend that win condition; don't spend it early. If the enemy
+  has NO win condition, the Tesla plays defensively as normal.
+- PERCEPTION (threats.py ThreatTracker): a "win condition" is detected BEHAVIOURALLY (no
+  enemy-card ID is possible from the vision) -- an enemy unit that PENETRATES deep into your
+  half (depth >= env.wc_depth, 0 at the river .. 1 at your king) OR CROSSES fast toward it
+  (speed >= env.wc_fast_speed), with a real unit present (my_side_mass >= env.wc_min_mass).
+  Per match: seeing one latches `enemy_has_wc`; `wc_active` tracks one being on the board
+  (wc_confirm reads to arm, wc_release quiet reads to clear -- hysteresis). New helper
+  `should_hold_tesla() = enemy_has_wc and not wc_active`.
+- BEHAVIOUR: live play (play.py) MASKS the Tesla out of the card choice while should_hold_tesla
+  (it waits if the Tesla is the only card) -> the Tesla is saved. Training (env.py) REWARD-SHAPES
+  the same policy: +rewards.wc_tesla_defend for playing Tesla against an ACTIVE win condition,
+  rewards.tesla_hold_penalty for spending it early when one is known but off the board.
+- Honest limits (told user): behavioural, so the FIRST win condition of a match can't be known
+  in advance (it latches on first sighting, then the Tesla is saved for the recurring cycles);
+  a deep undefended non-WC push can latch it too (still sensible -- Tesla answers deep threats).
+  Thresholds are coarse pixel proxies -- calibrate wc_depth / wc_fast_speed with `verify --threats`
+  (a red "WIN-COND" label marks a per-frame detection).
+- config: rewards.wc_tesla_defend / tesla_hold_penalty; env.wc_depth / wc_fast_speed / wc_min_mass
+  / wc_confirm / wc_release. Live gate is immediate; the reward shaping needs a train-rl run.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

@@ -94,6 +94,8 @@ def play(cfg) -> None:
             defensive_kind[i] = "musketeer"
         elif key == "musketeer_evo":
             defensive_kind[i] = "musketeer_evo"
+    tesla_ids = {i for i, key in enumerate(vision.deck_keys)
+                 if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
     _rmap = cfg.get("env", "range_offsets", default={"long": 0.15, "short": 0.12, "melee": 0.05})
     defense_params = {
         "musketeer_evo": cfg.get("env", "musketeer_evo_center", default=[0.48, 0.82]),
@@ -137,10 +139,22 @@ def play(cfg) -> None:
         with torch.no_grad():
             card_logits, cell_logits = net(x, hv, nv, ev, tv)
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
+        # SAVE THE TESLA for a win condition: if the enemy runs a tower-targeting troop and none
+        # is on the board right now, don't let the model spend Tesla -- mask it out so it defends
+        # win conditions only. Tesla plays normally once one is active, or if the enemy has none.
+        hold_tesla = threat_tracker.should_hold_tesla()
+        if hold_tesla:
+            for i in tesla_ids:
+                card_logits[0, i] = float("-inf")
         if random.random() < eps:
-            card_id = random.choice([c for c in hand_ids if c >= 0])
+            choices = [c for c in hand_ids if c >= 0 and not (hold_tesla and c in tesla_ids)]
+            if not choices:
+                return                          # only a held Tesla in hand -> wait, save it
+            card_id = random.choice(choices)
             cell = random.randrange(n_cells)
         else:
+            if bool(torch.isinf(card_logits).all()):
+                return                          # only a held Tesla in hand -> wait, save it
             card_id = int(card_logits.argmax(1).item())
             cell = int(cell_logits.argmax(1).item())
         if card_id in rocket_ids:             # a rocket at a princess -> aim the weaker one
