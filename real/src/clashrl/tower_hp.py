@@ -225,6 +225,7 @@ class TowerHpTracker:
         # magnitude per tower (== |lose_own_tower|) and topped up to it on destruction -- so
         # chip damage costs proportionally rather than a flat hit only when the tower falls.
         self.lose_mag = abs(float(cfg.get("rewards", "lose_own_tower", default=-3.0))) if cfg else 3.0
+        self.last_enemy_chip = 0.0     # + enemy-tower chip from the last step() (env rocket accounting)
         self.enemy_boxes, self.my_boxes = _boxes(cfg)
         self.reader = reader if reader is not None else (DigitReader() if self.enabled else None)
         if not (self.reader and self.reader.ok):
@@ -288,8 +289,9 @@ class TowerHpTracker:
     def step(self, frame: np.ndarray) -> float:
         """Chip-damage reward since the last step (0 if disabled): the enemy offence chip
         (scaled by hp_scale) minus YOUR gradual defence penalty (accumulating to lose_mag)."""
+        self.last_enemy_chip = 0.0
         if not self.enabled:
             return 0.0
-        r = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, self.full) * self.scale
-        r += self._update_my(frame)
-        return r
+        e = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, self.full) * self.scale
+        self.last_enemy_chip = e                       # remember the offence chip for the env's rocket accounting
+        return e + self._update_my(frame)

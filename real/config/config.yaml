@@ -117,6 +117,7 @@ rewards:
   spell_hit: 2.0                 # rocket HIT (unit caught but survived) reward per unit of its size
   spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
   rocket_tower_reward: 1.0      # launching a rocket AT an enemy princess tower (offensive chip -- cycle to the rocket and fire it!)
+  bad_rocket_penalty: -3.0      # EXTRA penalty if a rocket is followed by heavy own-tower damage (a bad elixir investment); its chip reward is also withheld
   spell_whiff: -0.5              # a spell cast on empty ground (nothing to hit)
   spell_king_penalty: -4.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful, wakes it)
   tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
@@ -254,6 +255,12 @@ env:
   combo_window_steps: 2          # the tornado must follow the rocket within this many steps
   combo_radius: 0.10             # ...and land within this normalized distance of the rocket's spot
   combo_kill_min: 0.06           # the rocket must have removed at least this much enemy mass (~2 medium troops)
+  # rocket as an elixir INVESTMENT: its chip reward is DEFERRED and only paid out if a successful
+  # defence follows. If your towers lose >= rocket_bad_heavy_frac of a tower's HP (or a princess
+  # falls) within rocket_defense_window steps after the rocket, the chip is withheld AND the
+  # rewards.bad_rocket_penalty applies -- so a rocket that leaves you unable to defend is punished.
+  rocket_defense_window: 3       # steps after a rocket to watch own-tower damage before paying the chip
+  rocket_bad_heavy_frac: 0.33    # own-tower HP fraction lost in that window that flags a bad investment
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)

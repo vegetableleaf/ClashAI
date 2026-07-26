@@ -224,6 +224,18 @@ Newest entries are at the bottom.
   emits the flat lose penalty for the KING (princesses are gradual, so no double-count). Verified
   a fully-lost princess = exactly -3.000 (gradual), and a burst-without-HP-reads = -3.0 (fallback).
   Reward change -> effective on the next train-rl.
+- Rocket as an ELIXIR INVESTMENT (deferred / conditional chip). A rocket's chip reward (its
+  rewards.rocket_tower_reward + the enemy-tower HP chip it deals) is no longer paid on impact --
+  it is DEFERRED and only paid out if a SUCCESSFUL DEFENCE follows. If your towers lose
+  >= env.rocket_bad_heavy_frac (0.33) of a tower's HP, or a princess falls, within
+  env.rocket_defense_window (3) steps after the rocket, the chip is WITHHELD and an extra
+  rewards.bad_rocket_penalty (-3) is applied -- so a rocket that leaves you unable to defend
+  (a bad 6-elixir investment) is punished instead of rewarded, and chip damage only pays when
+  the defence holds. Implemented in env (a pending-rocket state that folds the rocket's delayed
+  HP chip -- tower_hp.last_enemy_chip -- into the deferred amount, then resolves: pay on a clean
+  window, withhold + penalise on heavy damage / a felled princess). The learner is a per-step
+  DQN, so this delayed reward is bootstrapped back onto the rocket via the value function.
+  Reward change -> effective on the next train-rl.
 
 
 ------------------------------------------------------------------------------

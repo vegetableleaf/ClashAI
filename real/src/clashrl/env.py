@@ -180,6 +180,14 @@ class LiveMatchEnv:
         self.combo_window = int(cfg.get("env", "combo_window_steps", default=2))
         self.combo_radius = float(cfg.get("env", "combo_radius", default=0.10))
         self.combo_kill_min = float(cfg.get("env", "combo_kill_min", default=0.06))
+        # A rocket is a 6-elixir OFFENSIVE investment: its chip reward is DEFERRED and only paid
+        # out if a successful defence follows. If heavy own-tower damage lands within the window
+        # after a rocket, the chip is withheld AND an extra penalty applies (a bad investment).
+        self.rocket_window = int(cfg.get("env", "rocket_defense_window", default=3))
+        self.rocket_bad_heavy = float(cfg.get("env", "rocket_bad_heavy_frac", default=0.33))
+        self.bad_rocket_penalty = float(cfg.get("rewards", "bad_rocket_penalty", default=-3.0))
+        self._pending_rocket = None       # deferred rocket chip: {"chip", "steps", "hp0", "destroyed"}
+        self._last_spell_chip = False     # did the last spell resolve as a rocket-at-princess chip?
         self._recent_rocket = None
         self._recent_ranged = None
         self._steps = 0
@@ -237,6 +245,7 @@ class LiveMatchEnv:
         self._tesla = None
         self._recent_ranged = None
         self._recent_rocket = None
+        self._pending_rocket = None
         while True:
             frame = self._grab()
             if frame is None:
@@ -399,6 +408,26 @@ class LiveMatchEnv:
                 r += self.siege_counter
         return r
 
+    def _resolve_pending_rocket(self, my_hp: float, princess_fell: bool) -> float:
+        """Resolve a DEFERRED rocket-chip investment. The chip is paid out only once the AI
+        survives the defence window without heavy own-tower damage; if a princess falls or the
+        towers lose >= ``rocket_bad_heavy`` of a tower's HP within the window, the chip is
+        WITHHELD and an extra penalty applies (the rocket was a bad elixir investment)."""
+        p = self._pending_rocket
+        if p is None:
+            return 0.0
+        if princess_fell:
+            p["destroyed"] = True
+        lost_frac = max(0.0, p["hp0"] - my_hp) / max(1.0, self.tower_hp.my_full)
+        if p["destroyed"] or lost_frac >= self.rocket_bad_heavy:
+            self._pending_rocket = None
+            return self.bad_rocket_penalty               # bad investment: chip withheld + extra penalty
+        p["steps"] -= 1
+        if p["steps"] <= 0:
+            self._pending_rocket = None
+            return p["chip"]                             # survived the window -> the chip is earned
+        return 0.0
+
     def step(self, action: Action):
         play, card_id, cell = action
         if play:                                  # rocket -> weaker princess; Tesla/Ice Wizard -> defence
@@ -439,14 +468,18 @@ class LiveMatchEnv:
             reward = self.tower.step(frame) + self.tower_hp.step(frame)
             # a felled princess -> top its GRADUAL HP penalty up to the full lose_own_tower
             # (covers a tower bursted faster than its HP could be read, or hp_reward off)
+            princess_fell = False
             for i in range(len(prev_princess)):
                 if prev_princess[i] and not self.tower.mine_alive[i]:
                     reward += self.tower_hp.on_my_tower_destroyed(i)
+                    princess_fell = True
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
+            spell_r = 0.0
             if eval_spell and before is not None and spell_samples:
-                reward += self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd)
+                spell_r = self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd)
+                reward += spell_r
             else:
                 # general troop-defeat reward: enemy-troop mass removed since last step
                 # (by any means), scaled by the amount; a clean kill (your towers took
@@ -471,6 +504,24 @@ class LiveMatchEnv:
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
                 reward += self.cycle_reward           # cheap card played while rocket isn't in hand -> cycling to it
             reward += self._threat_counter_reward(bool(play), card_id, cell)   # foresight counters
+            # rocket = a 6-elixir OFFENSIVE investment: resolve any prior rocket (pay its chip
+            # only after a successful defence; withhold it + penalise if heavy own-tower damage
+            # followed), then defer THIS rocket's chip if it was a tower chip.
+            if self._pending_rocket is not None and self.tower_hp.last_enemy_chip > 0.0:
+                # the rocket's own HP chip confirms a frame or two after impact -> fold it into
+                # the deferred amount so it, too, waits on a successful defence.
+                reward -= self.tower_hp.last_enemy_chip
+                self._pending_rocket["chip"] += self.tower_hp.last_enemy_chip
+            reward += self._resolve_pending_rocket(my_hp, princess_fell)
+            if is_rocket and play and self._last_spell_chip:
+                if self._pending_rocket is not None:     # a new rocket supersedes an unresolved one -> pay it (it survived)
+                    reward += self._pending_rocket["chip"]
+                    self._pending_rocket = None
+                chip = max(0.0, spell_r) + max(0.0, self.tower_hp.last_enemy_chip)
+                if chip > 0.0:
+                    reward -= chip                        # withhold the chip until a successful defence follows
+                    self._pending_rocket = {"chip": chip, "steps": self.rocket_window,
+                                            "hp0": my_hp, "destroyed": False}
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
@@ -530,6 +581,7 @@ class LiveMatchEnv:
         """
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
+        self._last_spell_chip = False             # set True only if this resolves as a rocket-at-princess chip
         b = enemy_mass_at(before, cx, cy, self.spell_radius, self.cfg)
         masses = [enemy_mass_at(f, cx, cy, self.spell_radius, self.cfg) for f in samples]
         if not masses:
@@ -576,6 +628,7 @@ class LiveMatchEnv:
                 return self.king_tank_reward * frac   # worth less as the king's own HP falls
         if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
             if is_rocket:
+                self._last_spell_chip = True              # a rocket-at-tower CHIP -> its reward is deferred
                 r = self.rocket_tower_reward              # launching a rocket at the enemy princess tower
                 if drop >= self.spell_min_drop or peak >= self.spell_combo_present:
                     r += self.spell_combo                 # ...that also caught troops
