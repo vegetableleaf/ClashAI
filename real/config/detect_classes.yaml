@@ -87,3 +87,63 @@ classes:
   - tornado
   - rocket
   - lightning
+
+  # --- all other Clash Royale cards (auto-added from the card KB; evolutions folded into base) ---
+  - archer_queen
+  - barbarian_barrel
+  - barbarian_hut
+  - barbarian_launcher
+  - battle_healer
+  - berserker
+  - bomber
+  - boss_bandit
+  - cannon_cart
+  - clone
+  - earthquake
+  - electro_dragon
+  - electro_spirit
+  - elixir_collector
+  - elixir_golem
+  - fire_spirit
+  - flying_machine
+  - freeze
+  - furnace
+  - giant_skeleton
+  - giant_snowball
+  - goblin_curse
+  - goblin_demolisher
+  - goblin_hut
+  - goblin_machine
+  - goblinstein
+  - golden_knight
+  - guards
+  - heal
+  - heal_spirit
+  - ice_golem
+  - little_prince
+  - lumberjack
+  - mighty_miner
+  - mirror
+  - monk
+  - mother_witch
+  - rage
+  - raging_prince
+  - rascals
+  - rocket_silo
+  - royal_delivery
+  - royal_ghost
+  - royal_hogs
+  - royal_recruits
+  - rune_giant
+  - santa_hog_rider
+  - skeleton_dragons
+  - skeleton_king
+  - spirit_empress
+  - suspicious_bush
+  - terry
+  - three_musketeers
+  - vines
+  - void
+  - warmth
+  - wizard_trio
+  - zappies
