@@ -106,13 +106,16 @@ rewards:
                                  # GRADUALLY as it loses HP (see tower_hp) up to this, then topped
                                  # up to it on destruction; for the KING it's a flat hit on its fall
   win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
-  loss: -10.0                    # losing is very costly
+  loss: -12.0                    # losing is VERY costly -- must dominate all within-match shaping so a
+                                 # three-crown loss is ALWAYS net-negative (was -10, could be out-summed)
   # -- tower HP chip (tower_hp) --
   hp_scale: 2.0                  # enemy-princess chip (offence); a full tower's chip = this
                                  # (your princess chip is penalised gradually up to |lose_own_tower|, not hp_scale)
   # -- troop combat + spell effects (env) --
-  troop_defeat: 3.0              # per unit of enemy-troop mass removed by ANY means (defeating troops)
-  clean_kill_bonus: 2.0          # x multiplier when your towers took no HP that step (killed it early)
+  troop_defeat: 3.0              # x the SIGNED per-step change in on-board enemy mass (POTENTIAL-BASED:
+                                 # + when you clear troops, - when a push builds; telescopes -> idling can't farm it)
+  clean_kill_bonus: 1.0          # DEPRECATED / no longer applied: the troop term is now potential-based. The
+                                 # old x2 "clean kill" bonus was asymmetric and re-opened the inaction farm.
   spell_troop_damage: 5.0        # rocket KILL reward per unit of hit-unit SIZE (biggest blob caught)
   spell_hit: 2.0                 # rocket HIT (unit caught but survived) reward per unit of its size
   spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
@@ -131,8 +134,10 @@ rewards:
   siege_counter: 4.0             # rocket a SITTING behind-bridge siege (X-Bow / Mortar / Princess) that chips your towers from the enemy side without crossing
   rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
-  patience: 0.02                 # small reward for holding cards while the board is quiet
-  idle_penalty: -0.3             # penalty for WAITING (no play) while a real enemy push is on the board -> defend, don't dawdle
+  patience: 0.0                  # waiting at a quiet board is NEUTRAL now (was 0.02): a standing per-step
+                                 # reward for doing nothing was itself the incentive for the hesitation loop
+  idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):
+                                 # bigger than any single-step positive shaping so ACTING on a push always wins
   elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
   cycle_reward: 0.15             # play a cheap card (ice spirit / skeletons) while the ROCKET is NOT in hand -> cycles toward it
 
@@ -223,9 +228,9 @@ env:
   my_king_full: 4824             # your king's full HP (level 11) -- scales the tornado-tank reward
   # Troop-combat + spell rewards (calibrated on recorded casts; tune with
   # `verify --spells`). enemy_mass = enemy-troop (red) pixel fraction over arena_region
-  # [x0,y0,x1,y1] (HUD/tray + enemy towers excluded). Each step a DROP in enemy_mass >
-  # defeat_min (capped at defeat_cap) rewards defeating troops (rewards.troop_defeat),
-  # x rewards.clean_kill_bonus if your towers took no HP. When a SPELL is cast its effect
+  # [x0,y0,x1,y1] (HUD/tray + enemy towers excluded). Each step the SIGNED change in enemy_mass
+  # (clipped to +/-defeat_cap, deadband defeat_min) is rewarded x rewards.troop_defeat --
+  # POTENTIAL-BASED, so it telescopes over the match and idling can't farm it. When a SPELL is cast its effect
   # is sampled over a window around the predicted impact (a rocket's travel time grows
   # ~linearly with distance from rocket_origin at rocket_travel_rate s/unit + rocket_base_time;
   # a tornado lands in tornado_time): the peak enemy-troop mass in a box of half-size
@@ -263,7 +268,8 @@ env:
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
-  threat_mass: 0.10              # at/above this arena troop mass a real enemy push is on -> waiting is penalised (idle_penalty)
+  threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised
+                                 # (idle_penalty); lowered from 0.10 so dawdling on a smaller push is caught sooner
   elixir_full: 10                # elixir at/above this (bar full) + a push + no play = wasted-elixir penalty
   # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
   # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the

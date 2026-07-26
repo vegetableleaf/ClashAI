@@ -206,10 +206,11 @@ from a recording that has that tower type.
 **gradually** as it's chipped — accumulating up to `|rewards.lose_own_tower|` per tower
 (and topped up to it on destruction) — so chip damage costs proportionally rather than a
 flat hit only when the tower falls. **Defeating enemy troops** by any means is
-rewarded each step by the drop in enemy-troop (red) pixel mass over the arena
-(`rewards.troop_defeat`, scaled by how much is removed), with a
-`rewards.clean_kill_bonus`× multiplier when your towers took no HP that step (you
-killed it before it could damage you). **Spells** add to that: when one is cast, its
+rewarded each step by the **signed** change in enemy-troop (red) pixel mass over the
+arena (`rewards.troop_defeat`): mass falling (you cleared troops) is positive, mass
+rising (a push is building) is negative. It is **potential-based** — symmetric, so it
+telescopes over a match and can't be farmed by idling while the enemy army naturally
+ebbs and flows. **Spells** add to that: when one is cast, its
 effect is sampled over a short window around its **predicted impact**. A rocket's
 flight time scales ~linearly with the distance it travels, so the impact moment is
 estimated per cast (`rocket_base_time + rocket_travel_rate ×` distance from
@@ -223,8 +224,10 @@ more** (a big high-HP blob). A caught unit that then dies earns `size × spell_t
 one that **survives** earns the smaller `size × spell_hit`; a rocket that hits the
 **enemy princess and troops at once** earns a flat `spell_combo` (a value play); a cast
 on empty ground is a `spell_whiff` (this is what stops the random throwing / king
-activations); aimed at a princess alone is the small tower-HP chip. Holding cards while
-the board is quiet earns a small `patience` reward.
+activations); aimed at a princess alone is the small tower-HP chip. Waiting while the
+board is quiet is **neutral** (the old standing `patience` reward is now `0` — a per-step
+bonus for doing nothing was itself an incentive to stall); waiting while a real enemy
+push is on the board is penalised (`rewards.idle_penalty`).
 This was **calibrated on your recorded casts** (correlating `events.jsonl` cast times
 to the frames): the reliable signal is the troop-mass change *at the spell's target in
 the seconds after the cast* (not the explosion/ring, which is always present and whose

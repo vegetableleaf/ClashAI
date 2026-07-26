@@ -240,6 +240,35 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26  —  Anti-hesitation: potential-based troop reward + reweighting
+------------------------------------------------------------------------------
+- BUG: a hesitant agent could END a match NET POSITIVE (+7.7) while being
+  three-crowned (a loss). Root cause was reward-SHAPE, not just magnitudes: the
+  per-step troop-defeat reward used a RECTIFIED delta -- max(0, prev_mass - cur_mass)
+  -- so it paid out on every DOWN-swing of the noisy enemy-mass signal (troops
+  ebbing / dying at the towers, occlusion) but never charged the matching UP-swings.
+  Summed over a ~150-step match this drift, plus a standing +patience per idle step,
+  banked more than the -10 loss. It fired even on pure no-op steps, so DOING NOTHING
+  was literally profitable.
+- FIX (env.py): the troop term is now POTENTIAL-BASED -- the SIGNED per-step change
+  in on-board enemy mass, clipped to +/-defeat_cap x rewards.troop_defeat. Being
+  symmetric it telescopes over the match (board starts ~empty and, in a loss, ends
+  non-empty -> the term is <= ~0 for a loss), so idling can't farm it and a growing
+  push is penalised immediately. Removed the asymmetric clean_kill_bonus x2 from this
+  term (it re-opened the same farm); killing troops before they reach your tower is
+  still favoured because tower chip + tower loss are the (larger) negatives.
+- REWEIGHTING (config.yaml) to guarantee a loss is always net-negative and acting
+  beats stalling: patience 0.02 -> 0.0 (a quiet board is NEUTRAL, not rewarded);
+  idle_penalty -0.3 -> -0.5 (bigger than any single-step positive shaping);
+  loss -10 -> -12 (dominates residual shaping); env.threat_mass 0.10 -> 0.06 (the
+  idle penalty engages on smaller pushes); clean_kill_bonus 2.0 -> 1.0 (deprecated).
+- Net effect: a three-crown loss now nets clearly negative (loss + own-tower
+  penalties + a <=0 telescoped troop term), and the standing incentive to sit idle is
+  gone. Reward-shaping change -> effective on the next train-rl (consider deleting
+  data/policy_rl.pt so the wait/play gate re-learns from the BC start).
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

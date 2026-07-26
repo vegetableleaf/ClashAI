@@ -482,17 +482,20 @@ class LiveMatchEnv:
                 spell_r = self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd)
                 reward += spell_r
             else:
-                # general troop-defeat reward: enemy-troop mass removed since last step
-                # (by any means), scaled by the amount; a clean kill (your towers took
-                # no HP that step -- defeated before it could damage you) is worth more.
-                drop = max(0.0, self._prev_mass - cur_mass)
-                if drop > self.defeat_min:
-                    clean = my_hp >= self._prev_my_hp
-                    reward += min(drop, self.defeat_cap) * self.troop_defeat * (
-                        self.clean_kill_bonus if clean else 1.0)
+                # POTENTIAL-BASED troop shaping: reward the SIGNED change in on-board enemy
+                # mass (mass falling = troops cleared -> +; mass rising = a push building -> -).
+                # Because it is symmetric it telescopes over a match, so idling CANNOT farm it:
+                # the old rectified `max(0, drop)` paid out every down-swing of the noisy
+                # enemy-mass signal but never charged the matching up-swings, so a hesitant agent
+                # banked a large positive sum from enemy troops naturally ebbing / dying at the
+                # towers -- even while being three-crowned (the bulk of the bogus "+reward for
+                # losing"). Clipped both ways for artifact robustness.
+                delta = self._prev_mass - cur_mass
+                if abs(delta) > self.defeat_min:
+                    reward += float(np.clip(delta, -self.defeat_cap, self.defeat_cap)) * self.troop_defeat
                 if not play:
                     if cur_mass < self.quiet_frac:
-                        reward += self.patience          # holding cards while the board is quiet is fine
+                        reward += self.patience          # 0 by default: a quiet board is NEUTRAL, not rewarded
                     elif cur_mass >= self.threat_mass:
                         reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
                         if cur_elixir >= self.full_elixir:
