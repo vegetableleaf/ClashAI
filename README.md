@@ -13,8 +13,7 @@ There are two very different agents in this repo:
 
 > ⚠️ **Please use this responsibly.** Automating Clash Royale violates Supercell's
 > Terms of Service. This project only exists as a learning exercise. If you run
-> it, use a throwaway account in private matches with people who have agreed to
-> it — don't ruin real ladder games for real people.
+> it, use a throwaway account. I am not responsible for any lost accounts due to breaking of ToS.
 
 ---
 
