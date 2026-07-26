@@ -131,6 +131,22 @@ def _write_data_yaml(root: Path, names: list[str]) -> None:
         encoding="utf-8")
 
 
+def _write_label_studio_helpers(root: Path, names: list[str]) -> None:
+    """Helpers for hand-labelling in Label Studio: a ``classes.txt`` (newline-separated names,
+    which ``label-studio-converter import yolo`` needs to pull the auto boxes in as
+    pre-annotations) and a ready-to-paste labelling-config XML with every class as a box label
+    (so you don't hand-type the taxonomy into the project)."""
+    (root / "classes.txt").write_text("\n".join(names) + "\n", encoding="utf-8")
+    labels = "\n".join(f'    <Label value="{n}"/>' for n in names)
+    (root / "label_studio_config.xml").write_text(
+        '<View>\n'
+        '  <Image name="image" value="$image" zoom="true" zoomControl="true"/>\n'
+        '  <RectangleLabels name="label" toName="image">\n'
+        f'{labels}\n'
+        '  </RectangleLabels>\n'
+        '</View>\n', encoding="utf-8")
+
+
 def _autolabel_session(cfg, session: Path, vision: Vision, names, card_class,
                        writer: _Writer, params, preview_dir):
     meta = json.loads((session / "meta.json").read_text(encoding="utf-8"))
@@ -264,12 +280,17 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
         seeded += a
         generals += g
     _write_data_yaml(out_root, names)
+    _write_label_studio_helpers(out_root, names)
 
     print(f"[autolabel] wrote {writer.n_img} images ({writer.n_seed} with auto boxes, "
           f"{writer.n_box} boxes) to {out_root}")
     print(f"[autolabel] {len(names)} classes -> {out_root / 'data.yaml'}")
-    print("[autolabel] NEXT: open the images in a labeller (Label Studio / Roboflow / CVAT), add "
-          "the ENEMY units + any own units the auto-pass missed on every frame, then train:")
-    print("[autolabel]   pip install ultralytics && python tools/detect/train.py")
+    print("[autolabel] NEXT: hand-label the ENEMY units (+ any own units the auto-pass missed) on "
+          "every frame, then train. Label Studio:")
+    print(f"[autolabel]   1) import the images/ folder as tasks (Settings -> Cloud Storage -> Local files)")
+    print(f"[autolabel]   2) paste {out_root / 'label_studio_config.xml'} as the labelling config")
+    print(f"[autolabel]   3) (optional) bring the auto boxes in as pre-annotations with "
+          "label-studio-converter (uses classes.txt)")
+    print("[autolabel]   then: pip install ultralytics && python tools/detect/train.py")
     if preview:
         print(f"[autolabel] auto-box previews (sanity check the own-troop boxes): {preview_dir}")
