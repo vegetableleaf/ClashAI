@@ -201,6 +201,7 @@ class LiveMatchEnv:
         self._last_threat = Threat()              # threat at action-selection time (for reward)
         self.threat_counter_delivery = float(cfg.get("rewards", "threat_counter_delivery", default=4.0))
         self.threat_tornado_pull = float(cfg.get("rewards", "threat_tornado_pull", default=4.0))
+        self.siege_counter = float(cfg.get("rewards", "siege_counter", default=4.0))
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -389,6 +390,13 @@ class LiveMatchEnv:
                 r += self.threat_counter_delivery
         if card_id in self.tornado_ids and goblins and near_my_king(cx, cy, self.cfg):
             r += self.threat_tornado_pull
+        # counter a SITTING behind-bridge siege (X-Bow / Mortar / Princess chipping your
+        # towers from the enemy side): land a spell on it -- the rocket is the only card that
+        # reaches across the river, so this teaches "rocket the siege".
+        if thr.siege and card_id in self.spell_ids and thr.behind_centroid is not None:
+            bx, by = thr.behind_centroid
+            if abs(cx - bx) <= self.spell_radius and abs(cy - by) <= self.spell_radius:
+                r += self.siege_counter
         return r
 
     def step(self, action: Action):

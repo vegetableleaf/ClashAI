@@ -200,6 +200,19 @@ Newest entries are at the bottom.
   `label --all` -> `train-bc` -> (delete data/policy_rl.pt) -> `train-rl`. NOTE: the threat
   thresholds are tuned to the current (clean) arena; recordings on the older red-tint arena give
   noisier threat features.
+- Reactive-play: behind-the-bridge SIEGE detection + counter. Buildings (X-Bow, Mortar) and
+  troops (Princess) chip your towers from the ENEMY side WITHOUT crossing, so the your-half
+  signals (my_side_mass / depth) read them as low threat. threats.py now measures `behind_mass`
+  (enemy red in the band just above the river) and flags `siege` when that mass PERSISTS and does
+  NOT advance/cross into your half over several reads -- a walking push advances (its centroid
+  moves toward you) and crosses (my_side_mass rises), breaking the streak, while a siege sits so
+  the streak builds. Wired in: the threat vector grows THREAT_DIM 14 -> 16 (behind_mass + siege)
+  so the policy conditions on it (BC-loader pads/truncates old-width arrays for safety); the
+  `analyze` report + patterns.json + `verify --threats` overlay surface it (a "siege-<lane>" label
+  + an orange band/marker); and env rewards rocketing a sitting siege with rewards.siege_counter
+  (the rocket is the only card that crosses the river to reach it). Takes effect after the full
+  rebuild (label --all -> train-bc -> del data/policy_rl.pt -> train-rl). NOTE: the siege
+  thresholds (_BEHIND_MIN / _SIEGE_*) in threats.py are best-effort; tune with verify --threats.
 
 
 ------------------------------------------------------------------------------

@@ -120,6 +120,7 @@ def analyze_session(cfg, session: Path, window: int, debug: bool, records: list)
             "size": at.size_label(), "color": at.color_label(), "lane": at.lane_label(),
             "depth": round(at.depth, 2), "speed": at.speed_label(),
             "my_side_mass": round(at.my_side_mass, 4), "count": at.count,
+            "siege": bool(at.siege), "behind_mass": round(at.behind_mass, 4),
             "projectile": None if proj is None else {"target": proj.target,
                                                      "toward_tower": proj.toward_tower},
         }
@@ -165,15 +166,15 @@ def _report(records: list) -> dict:
         if c["projectile"]:
             print(f"    * {c['projectile']} play(s) responded to a projectile in flight")
 
-    # foresight highlights: reactions to a projectile or a fast/deep push
-    hi = [r for r in records if r["projectile"] is not None
+    # foresight highlights: reactions to a projectile, a sitting behind-bridge siege, or a fast/deep push
+    hi = [r for r in records if r["projectile"] is not None or r.get("siege")
           or (r["speed"] == "fast" and r["depth"] >= 0.4)]
     if hi:
         print("\n" + "-" * 68)
-        print("FORESIGHT MOMENTS (projectile / fast deep push -> your response):")
-        for r in hi[:16]:
-            proj = f" proj->{r['projectile']['target']}" if r["projectile"] else ""
-            print(f"  t={r['t']:>6}  {r['card']:<16} {r['threat']:<22} -> {r['zone']}{proj}")
+        print("FORESIGHT MOMENTS (projectile / siege / fast deep push -> your response):")
+        for r in hi[:20]:
+            tag = " proj->{}".format(r["projectile"]["target"]) if r["projectile"] else (" SIEGE" if r.get("siege") else "")
+            print(f"  t={r['t']:>6}  {r['card']:<16} {r['threat']:<22} -> {r['zone']}{tag}")
 
     summary = {name: {"plays": c["plays"], "threats": dict(c["threats"]),
                       "placements": dict(c["placements"]), "projectile": c["projectile"]}

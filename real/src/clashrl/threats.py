@@ -39,7 +39,7 @@ import numpy as np
 from .reward import _anchors, _arena_region
 
 # Length of the feature vector fed to the policy (keep in sync with vector()).
-THREAT_DIM = 14
+THREAT_DIM = 16
 
 # --- intrinsic troop colour buckets (OpenCV HSV: H 0-179) -----------------
 # Saturated buckets so background grass / tower foliage doesn't count as a unit.
@@ -64,6 +64,19 @@ _ENGAGE_BOT = 0.74       # just above your king base (skip the red arena border 
 _ENGAGE_X0, _ENGAGE_X1 = 0.12, 0.88   # inside the arena border (skip the red/lava frame)
 _RIVER_Y = 0.52          # troops below this are in YOUR half (the immediate threat)
 _KING_Y = 0.74           # ~your king row -- the deepest a push gets before it's on the king
+
+# --- behind-the-bridge SIEGE (X-Bow / Mortar / Princess hit your towers from the ENEMY
+# side WITHOUT crossing): persistent, stationary enemy mass above the river with little
+# incursion into your half. Detected by presence in the enemy-side band that persists and
+# does NOT advance (a walking push would cross; a siege sits). ---
+_BEHIND_TOP = 0.38           # JUST behind the bridge (enemy side) -- below the enemy back line
+_BEHIND_BOT = _RIVER_Y       # ... down to the river
+_BEHIND_MIN = 0.010          # min enemy mass in the band (well above the ~0.002-0.006 baseline)
+_BEHIND_BLOB_MIN = 0.005     # largest connected blob in the band (frac of band) -- a REAL unit,
+                             # not diffuse baseline red -> rejects the enemy back-line noise
+_SIEGE_FRAMES = 3            # consecutive reads present + not advancing => a sitting siege
+_SIEGE_MOVE = 0.04           # centroid advance toward you (per read) above this = a crossing troop
+_SIEGE_CROSS_MAX = 0.005     # enemy mass in YOUR half above this = a push, not a sitting siege
 
 # --- classification thresholds (raw fractions unless noted) ---------------
 _QUIET = 0.003           # arena red frac below this => no real threat on the board (baseline ~0.0015)
@@ -115,11 +128,21 @@ class Threat:
     lanes: Tuple[float, float, float] = (0.0, 0.0, 0.0)  # enemy mass in L/C/R of your half
     speed: float = 0.0                                  # advance speed (Δdepth / second)
     centroid: Optional[Tuple[float, float]] = None      # enemy mass centroid (nx, ny)
+    behind_mass: float = 0.0                            # enemy mass in the enemy-side band (behind the bridge)
+    behind_centroid: Optional[Tuple[float, float]] = None
+    siege: bool = False                                 # a sitting behind-bridge threat (X-Bow/Mortar/Princess)
     proj: Optional[Projectile] = None
 
     # ---- readable classification (for analysis + reward shaping) ----------
     def active(self) -> bool:
-        return self.mass >= _QUIET or self.proj is not None
+        return self.mass >= _QUIET or self.proj is not None or self.siege
+
+    def behind_lane(self) -> str:
+        """Which lane the behind-bridge siege sits in (from its centroid), or 'none'."""
+        if self.behind_centroid is None:
+            return "none"
+        x = self.behind_centroid[0]
+        return "left" if x < 0.37 else "right" if x > 0.63 else "center"
 
     def size_label(self) -> str:
         if self.mass < _QUIET:
@@ -147,9 +170,11 @@ class Threat:
         return "fast" if self.speed >= _FAST_DEPTH else "slow"
 
     def type_label(self) -> str:
-        """Compact key for aggregation, e.g. 'green-swarm-left' / 'single_big-right'."""
+        """Compact key for aggregation, e.g. 'green-swarm-left' / 'single_big-right' / 'siege-left'."""
         if self.proj is not None:
             return "projectile-green" if self.green >= _COLOR_MIN else "projectile"
+        if self.siege:
+            return f"siege-{self.behind_lane()}"
         if not self.active():
             return "quiet"
         color = self.color_label()
@@ -176,6 +201,8 @@ class Threat:
             1.0 if p is not None else 0.0,
             p.x if p is not None else 0.5,
             1.0 if (p is not None and p.toward_tower) else 0.0,
+            g(self.behind_mass, _MASS_GAIN),
+            1.0 if self.siege else 0.0,
         ], dtype=np.float32)
 
     @staticmethod
@@ -272,6 +299,8 @@ class ThreatTracker:
         self._prev_t: Optional[float] = None
         self._prev_depth: float = 0.0
         self._tracks: List[dict] = []      # motion tracks: {pts: [(t,nx,ny)...], last: t}
+        self._behind_streak = 0            # consecutive reads a behind-bridge threat has sat still
+        self._prev_behind_c: Optional[Tuple[float, float]] = None
 
     # ---- projectile helpers ----------------------------------------------
     def _toward_tower(self, x, y, vx, vy) -> Tuple[bool, Optional[str]]:
@@ -397,6 +426,31 @@ class ThreatTracker:
                 deepest_y = _RIVER_Y + (hits.max() / max(1, my_half.shape[0])) * (_ENGAGE_BOT - _RIVER_Y)
                 thr.depth = float(min(1.0, max(0.0, (deepest_y - _RIVER_Y) / (_KING_Y - _RIVER_Y))))
 
+        # behind-the-bridge SIEGE: persistent, stationary enemy mass above the river that
+        # doesn't cross into your half (X-Bow / Mortar / Princess chipping your towers from
+        # range). A walking push advances (centroid moves toward you) and crosses (my_side_mass
+        # rises), breaking the streak; a siege sits, so the streak builds -> siege flag.
+        btop, bbot = int(_BEHIND_TOP * h), int(_BEHIND_BOT * h)
+        band = mask[btop:bbot, X0:X1]
+        thr.behind_mass = float(band.mean()) / 255.0 if band.size else 0.0
+        bc = None
+        big = 0.0
+        if band.size and thr.behind_mass >= _BEHIND_MIN:
+            bclean = cv2.morphologyEx(band, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+            nb, _, bstats, bcents = cv2.connectedComponentsWithStats(bclean, connectivity=8)
+            if nb > 1:
+                k = 1 + int(np.argmax(bstats[1:, cv2.CC_STAT_AREA]))
+                big = float(bstats[k, cv2.CC_STAT_AREA]) / float(band.size)
+                bc = ((X0 + float(bcents[k][0])) / w, (btop + float(bcents[k][1])) / h)
+        thr.behind_centroid = bc
+        present = (thr.behind_mass >= _BEHIND_MIN and big >= _BEHIND_BLOB_MIN
+                   and thr.my_side_mass < _SIEGE_CROSS_MAX)
+        advancing = (bc is not None and self._prev_behind_c is not None
+                     and bc[1] - self._prev_behind_c[1] > _SIEGE_MOVE)   # centroid toward you = crossing
+        self._behind_streak = self._behind_streak + 1 if (present and not advancing) else 0
+        thr.siege = self._behind_streak >= _SIEGE_FRAMES
+        self._prev_behind_c = bc
+
         # motion: approach speed + projectile (needs a previous frame + dt)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if self._prev_gray is not None and t is not None and self._prev_t is not None:
@@ -428,6 +482,13 @@ def annotate(frame: np.ndarray, thr: Threat, cfg=None) -> np.ndarray:
     for i in (1, 2):
         x = X0 + (X1 - X0) * i // 3
         cv2.line(out, (x, int(_RIVER_Y * h)), (x, Y1), (60, 120, 60), 1)
+    # behind-the-bridge band (enemy side, above the river) + any sitting siege
+    cv2.line(out, (X0, int(_BEHIND_TOP * h)), (X1, int(_BEHIND_TOP * h)), (0, 140, 255), 1)
+    if thr.behind_centroid is not None:
+        bx, by = int(thr.behind_centroid[0] * w), int(thr.behind_centroid[1] * h)
+        cv2.circle(out, (bx, by), 11, (0, 140, 255), 2)
+        if thr.siege:
+            cv2.putText(out, "SIEGE", (bx + 10, by - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 140, 255), 2)
     if thr.centroid:
         cx, cy = int(thr.centroid[0] * w), int(thr.centroid[1] * h)
         cv2.drawMarker(out, (cx, cy), (0, 255, 255), cv2.MARKER_CROSS, 20, 2)
@@ -441,6 +502,7 @@ def annotate(frame: np.ndarray, thr: Threat, cfg=None) -> np.ndarray:
     cv2.putText(out, thr.type_label(), (X0 + 4, Y0 + 18),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
     cv2.putText(out, f"mass{thr.mass:.3f} big{thr.largest_blob:.3f} n{thr.count} "
-                     f"grn{thr.green:.3f} dep{thr.depth:.2f} spd{thr.speed:.2f}",
+                     f"grn{thr.green:.3f} dep{thr.depth:.2f} spd{thr.speed:.2f} "
+                     f"bhd{thr.behind_mass:.3f}{' SIEGE' if thr.siege else ''}",
                 (X0 + 4, Y1 - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (0, 255, 255), 1)
     return out

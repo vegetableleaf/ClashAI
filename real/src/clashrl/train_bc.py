@@ -32,8 +32,12 @@ def _load_datasets(root):
         nexts.append(d["nexts"] if "nexts" in d else np.zeros_like(d["hands"]))
         elixirs.append(d["elixirs"] if "elixirs" in d
                        else np.zeros((len(d["hands"]), 1), np.float32))
-        threats.append(d["threats"] if "threats" in d
-                       else np.zeros((len(d["hands"]), THREAT_DIM), np.float32))
+        t = d["threats"] if "threats" in d else np.zeros((len(d["hands"]), THREAT_DIM), np.float32)
+        if t.shape[1] != THREAT_DIM:            # a relabel changed the width -> pad/truncate to fit
+            fixed = np.zeros((len(t), THREAT_DIM), np.float32)
+            fixed[:, :min(t.shape[1], THREAT_DIM)] = t[:, :min(t.shape[1], THREAT_DIM)]
+            t = fixed
+        threats.append(t)
         grid = d["grid"]
         if "deck" in d:
             deck = [str(s) for s in d["deck"]]
