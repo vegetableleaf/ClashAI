@@ -2,7 +2,7 @@
 
 Homemade bots that learn to play **2v2 Clash Royale** on PC (through Google Play
 Games). This is a hobby / research project about getting an agent to *actually
-play* a live real-time game — not a polished cheat tool.
+play* a live real-time game.
 
 There are two very different agents in this repo:
 
