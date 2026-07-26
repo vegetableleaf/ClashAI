@@ -184,7 +184,6 @@ class LiveMatchEnv:
         # out if a successful defence follows. If heavy own-tower damage lands within the window
         # after a rocket, the chip is withheld AND an extra penalty applies (a bad investment).
         self.rocket_window = int(cfg.get("env", "rocket_defense_window", default=3))
-        self.rocket_bad_heavy = float(cfg.get("env", "rocket_bad_heavy_frac", default=0.33))
         self.bad_rocket_penalty = float(cfg.get("rewards", "bad_rocket_penalty", default=-3.0))
         self._pending_rocket = None       # deferred rocket chip: {"chip", "steps", "hp0", "destroyed"}
         self._last_spell_chip = False     # did the last spell resolve as a rocket-at-princess chip?
@@ -410,22 +409,24 @@ class LiveMatchEnv:
 
     def _resolve_pending_rocket(self, my_hp: float, princess_fell: bool) -> float:
         """Resolve a DEFERRED rocket-chip investment. The chip is paid out only once the AI
-        survives the defence window without heavy own-tower damage; if a princess falls or the
-        towers lose >= ``rocket_bad_heavy`` of a tower's HP within the window, the chip is
-        WITHHELD and an extra penalty applies (the rocket was a bad elixir investment)."""
+        survives the defence window WITHOUT your towers taking more damage than the rocket dealt
+        the enemy tower; if your towers lose MORE HP than the rocket removed (or a princess
+        falls) within the window, the chip is WITHHELD and an extra penalty applies (a bad
+        elixir trade -- you lost more than you gained)."""
         p = self._pending_rocket
         if p is None:
             return 0.0
         if princess_fell:
             p["destroyed"] = True
-        lost_frac = max(0.0, p["hp0"] - my_hp) / max(1.0, self.tower_hp.my_full)
-        if p["destroyed"] or lost_frac >= self.rocket_bad_heavy:
-            self._pending_rocket = None
-            return self.bad_rocket_penalty               # bad investment: chip withheld + extra penalty
+        own_hp = max(0.0, p["hp0"] - my_hp)                    # HP your towers lost since the rocket
+        rocket_hp = p["rocket_frac"] * self.tower_hp.full     # HP the rocket took off the enemy tower
+        if p["destroyed"] or own_hp > rocket_hp:
+            self._pending_rocket = None                       # your towers took MORE damage than the rocket dealt
+            return self.bad_rocket_penalty                    # -> bad trade: chip withheld + extra penalty
         p["steps"] -= 1
         if p["steps"] <= 0:
             self._pending_rocket = None
-            return p["chip"]                             # survived the window -> the chip is earned
+            return p["chip"]                                 # survived the window as a good trade -> chip earned
         return 0.0
 
     def step(self, action: Action):
@@ -509,9 +510,10 @@ class LiveMatchEnv:
             # followed), then defer THIS rocket's chip if it was a tower chip.
             if self._pending_rocket is not None and self.tower_hp.last_enemy_chip > 0.0:
                 # the rocket's own HP chip confirms a frame or two after impact -> fold it into
-                # the deferred amount so it, too, waits on a successful defence.
+                # the deferred amount + its measured tower damage so both wait on a good defence.
                 reward -= self.tower_hp.last_enemy_chip
                 self._pending_rocket["chip"] += self.tower_hp.last_enemy_chip
+                self._pending_rocket["rocket_frac"] += self.tower_hp.last_enemy_frac
             reward += self._resolve_pending_rocket(my_hp, princess_fell)
             if is_rocket and play and self._last_spell_chip:
                 if self._pending_rocket is not None:     # a new rocket supersedes an unresolved one -> pay it (it survived)
@@ -520,8 +522,8 @@ class LiveMatchEnv:
                 chip = max(0.0, spell_r) + max(0.0, self.tower_hp.last_enemy_chip)
                 if chip > 0.0:
                     reward -= chip                        # withhold the chip until a successful defence follows
-                    self._pending_rocket = {"chip": chip, "steps": self.rocket_window,
-                                            "hp0": my_hp, "destroyed": False}
+                    self._pending_rocket = {"chip": chip, "steps": self.rocket_window, "hp0": my_hp,
+                                            "rocket_frac": self.tower_hp.last_enemy_frac, "destroyed": False}
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
