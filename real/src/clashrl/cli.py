@@ -114,6 +114,11 @@ def _cmd_analyze(args) -> None:
     analyze(Config.load(args.config), args.session, args.all, args.window, args.debug)
 
 
+def _cmd_autolabel(args) -> None:
+    from .detect import autolabel
+    autolabel(Config.load(args.config), args.session, args.all, args.preview)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -183,6 +188,14 @@ def main() -> None:
                      help="frames before each play to read the threat over (motion + projectile)")
     ana.add_argument("--debug", action="store_true", help="save annotated frames of each analyzed play")
     ana.set_defaults(func=_cmd_analyze)
+
+    atl = sub.add_parser("autolabel",
+                         help="bootstrap a YOLO detection dataset: auto-box your own troops + export frames to hand-label")
+    atl.add_argument("--session", default=None, help="session folder (default: latest)")
+    atl.add_argument("--all", action="store_true", help="use every recorded session")
+    atl.add_argument("--preview", action="store_true",
+                     help="save overlays of the auto (own-troop) boxes to sanity-check them")
+    atl.set_defaults(func=_cmd_autolabel)
 
     args = parser.parse_args()
     args.func(args)

@@ -1,0 +1,89 @@
+# Object-detection class taxonomy for the board detector (Ultralytics YOLO11).
+#
+# Ordered list -> class index = position in this list. Edit freely (add/remove/reorder),
+# then re-run `run.py autolabel` and re-label. Names match your card KB keys
+# (config/cards.yaml) where possible. Team (yours vs enemy) is inferred at inference time
+# from colour, so classes are team-agnostic (a Musketeer is "musketeer" on either side).
+#
+# The auto-labeller only fills in YOUR deck's troops/buildings (the ones you play); every
+# other class here is one you hand-label on the exported frames. Trim the list to what you
+# actually intend to label -- fewer, well-labelled classes beat many sparse ones.
+classes:
+  # --- your deck (AUTO-labelled from your own plays) ---
+  - tesla
+  - ice_wizard
+  - ronin
+  - ice_spirit
+  - skeletons
+  - royal_recruit          # the unit Royal Delivery drops
+  # --- common win conditions (hand-label) ---
+  - hog_rider
+  - giant
+  - golem
+  - royal_giant
+  - balloon
+  - lava_hound
+  - x_bow
+  - mortar
+  - miner
+  - graveyard
+  - ram_rider
+  - battle_ram
+  - wall_breakers
+  - goblin_barrel
+  - skeleton_barrel
+  - goblin_drill
+  - sparky
+  - mega_knight
+  - pekka
+  - electro_giant
+  - goblin_giant
+  # --- common support troops (hand-label) ---
+  - musketeer
+  - wizard
+  - electro_wizard
+  - magic_archer
+  - witch
+  - night_witch
+  - valkyrie
+  - knight
+  - mini_pekka
+  - baby_dragon
+  - inferno_dragon
+  - dart_goblin
+  - princess
+  - archers
+  - goblins
+  - spear_goblins
+  - goblin_gang
+  - skeleton_army
+  - bats
+  - minions
+  - minion_horde
+  - mega_minion
+  - bandit
+  - prince
+  - dark_prince
+  - hunter
+  - executioner
+  - bowler
+  - firecracker
+  - phoenix
+  - fisherman
+  - elite_barbarians
+  - barbarians
+  # --- common buildings (hand-label) ---
+  - cannon
+  - inferno_tower
+  - bomb_tower
+  - tombstone
+  - goblin_cage
+  # --- common spells / effects (hand-label) ---
+  - fireball
+  - arrows
+  - zap
+  - the_log
+  - poison
+  - tornado
+  - rocket
+  - lightning

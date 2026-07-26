@@ -344,6 +344,36 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26  —  Object detection (YOLO11) — Stage 1: dataset bootstrap
+------------------------------------------------------------------------------
+- Direction: replace the coarse red-blob threat proxies with real per-unit OBJECT DETECTION so
+  the policy has a robust "what troop/spell is where" read (the model was "guessing every turn").
+  Chosen: Ultralytics YOLO11 (over vanilla DETR -- far more trainable on limited, custom data;
+  RT-DETR is a drop-in later since the dataset format is identical). ~55-73 class taxonomy.
+- Stage 1 (this change) = the DATA pipeline, since labels are the real bottleneck:
+  * config/detect_classes.yaml -- ordered class taxonomy (your deck + common ladder cards +
+    spells), team-agnostic (team inferred from colour at inference).
+  * clashrl/detect.py + `run.py autolabel [--all] [--preview]` -- builds an Ultralytics dataset
+    under data/detect (images/ + labels/ + data.yaml). AUTO-boxes YOUR OWN just-spawned troops
+    for free: reuses label._extract_plays (your select+placement clicks) -> a known class at a
+    known tap; the unit that appears is localised by a frame-diff around the tap (unions near-tap
+    blobs so a Skeletons group boxes as one). Also exports extra active in-match frames (sampled
+    AROUND your plays -- detect_state is a weak in-match positive, reads most in-match frames as
+    UNKNOWN, so it's NOT used) with empty labels for you to hand-label the ENEMY on.
+  * tools/detect/train.py -- Ultralytics trainer (yolo11n, imgsz 960, HSV jitter so blue-troop
+    labels transfer to the red enemy side, no h-flip since lanes are asymmetric). Needs
+    `pip install ultralytics`.
+  * config.yaml detect: section (spawn_delay/search_radius/diff_thresh/general_per_session/...).
+- VALIDATED on a real session: 26 plays -> 19 accurate own-troop boxes (Ronin/Ice Wizard/Ice
+  Spirit/Skeletons) + 40 frames to hand-label; data.yaml valid (nc + names). Preview overlay
+  confirmed the auto boxes land on the spawned unit. data/detect is gitignored (regenerable).
+- CAVEAT (told user): auto labels only cover YOUR troops and a frame also holds enemy + other
+  own units -- must hand-label those on each frame (a few hundred) before training, else the
+  detector learns them as background. NEXT stages: (2) hand-label seed + active-learning + colour
+  transfer for the enemy; (3) detections -> semantic-map channels into PolicyNet; (4) retrain BC+RL.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

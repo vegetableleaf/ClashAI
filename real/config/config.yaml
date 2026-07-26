@@ -322,3 +322,25 @@ play:
   act_period: 1.5                # seconds between actions (crude gate; RL adds a learned no-op)
   select_delay: 0.08             # delay between selecting a card and placing it
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
+
+# --- Board object detection (YOLO11) dataset bootstrap -------------------
+# `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your
+# recordings. It AUTO-boxes YOUR OWN just-spawned troops -- a card you play is a known class
+# at a known spot, so the unit that appears at the tap (found by a frame diff) is boxed for
+# free -- and also exports extra active in-match frames with EMPTY labels for you to hand-label
+# the enemy troops/spells in a tool (Label Studio / Roboflow / CVAT). Then train with
+# tools/detect/train.py. Class taxonomy: detect.classes_file. The auto labels are a STARTING
+# POINT: open each frame and add the units the auto-pass couldn't know (enemy + extra own),
+# else the detector learns to treat them as background.
+detect:
+  classes_file: config/detect_classes.yaml
+  dataset_dir: data/detect
+  spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
+  spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
+  search_radius: 0.10            # look this far (normalized) around the tap for the new unit
+  diff_thresh: 22                # frame-diff threshold to find the spawned unit
+  min_blob_px: 30                # ignore diff blobs smaller than this (noise)
+  box_pad: 0.008                 # pad the auto box by this (normalized) so it isn't too tight
+  general_per_session: 40        # extra active in-match frames per session to hand-label (enemy)
+  val_frac: 0.15                 # fraction of exported images held out for validation
+  jpeg_quality: 92               # exported frames are JPEG at this quality (labelling-friendly, small)
