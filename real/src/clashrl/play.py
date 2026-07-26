@@ -14,7 +14,7 @@ import time
 from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
-from .reward import TowerTracker, defensive_cell, threat_front, threat_side, weaker_princess_cell
+from .reward import TowerTracker, weaker_princess_cell
 from .states import GameState
 from .threats import ThreatTracker
 from .tower_hp import TowerHpTracker
@@ -77,36 +77,10 @@ def play(cfg) -> None:
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
-    from .cards import CardDB
-    _db = CardDB(cfg)
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
                     if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "tornado")}
-    defensive_kind = {}
-    for i, key in enumerate(vision.deck_keys):
-        base = key[:-4] if key.endswith("_evo") else key
-        if base == "tesla":
-            defensive_kind[i] = "tesla"
-        elif base == "ice_wizard":
-            defensive_kind[i] = "ice_wizard"
-        elif base == "ronin":
-            defensive_kind[i] = "ronin"
-        elif key == "musketeer":
-            defensive_kind[i] = "musketeer"
-        elif key == "musketeer_evo":
-            defensive_kind[i] = "musketeer_evo"
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
-    _rmap = cfg.get("env", "range_offsets", default={"long": 0.15, "short": 0.12, "melee": 0.05})
-    defense_params = {
-        "musketeer_evo": cfg.get("env", "musketeer_evo_center", default=[0.48, 0.82]),
-        "range_offsets": {k: float(_rmap.get(_db.attack_range(k) or "long", 0.13))
-                          for k in ("tesla", "ice_wizard", "musketeer", "ronin")},
-        "a_bot": actions.a_bot,
-        "center_bias": float(cfg.get("env", "defense_center_bias", default=0.10)),
-        "center_depth_frac": float(cfg.get("env", "defense_center_depth_frac", default=0.6)),
-        "back_limit": float(cfg.get("env", "defense_back_limit", default=0.58)),
-    }
-    threat_min_frac = float(cfg.get("env", "defense_threat_frac", default=0.02))
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))
@@ -164,15 +138,9 @@ def play(cfg) -> None:
                                        hp_tracker.enemy_hp, tower_tracker.enemy_alive, gw, gh)
             if tgt is not None:
                 cell = tgt
-        elif card_id in defensive_kind:       # ranged defender -> range-aware placement
-            kind = defensive_kind[card_id]
-            if kind == "musketeer_evo":
-                cell = defensive_cell(kind, 0, 0.0, gw, gh, defense_params)
-            else:
-                side = threat_side(frame, cfg, threat_min_frac)
-                front = threat_front(frame, side, cfg, threat_min_frac) if side != 0 else None
-                if front is not None:
-                    cell = defensive_cell(kind, side, front, gw, gh, defense_params)
+        # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the
+        # model chooses where to place them (centre is only a rewarded default in training), so it
+        # can block a lane or drop a Ronin up front to catch a ranged unit when that's better.
         slot = next((s for s, c in enumerate(hand_ids) if c == card_id), -1)
         if slot < 0:
             return

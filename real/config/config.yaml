@@ -140,6 +140,8 @@ rewards:
   siege_counter: 4.0             # rocket a SITTING behind-bridge siege (X-Bow / Mortar / Princess) that chips your towers from the enemy side without crossing
   rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
+  defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
+                                 # a better lane-block or forward play earns more via troop_defeat / tesla_kill, so it can deviate
   patience: 0.0                  # waiting at a quiet board is NEUTRAL now (was 0.02): a standing per-step
                                  # reward for doing nothing was itself the incentive for the hesitation loop
   idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):

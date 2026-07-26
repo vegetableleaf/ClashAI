@@ -321,6 +321,29 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26  —  Centre defensive placement is a RECOMMENDATION, not a mandate
+------------------------------------------------------------------------------
+- User: the centre placement is NOT a must -- it's a recommended default; in some cases other
+  placements are better (block a lane so a troop can't reach your tower; drop a Ronin up front
+  to catch an enemy ranged unit off guard). Let the model choose.
+- Before: the range-aware centre spot was a HARD OVERRIDE -- env.step and play.act REPLACED the
+  model's chosen cell for Tesla / Ice Wizard / Ronin whenever a threat was up, so the model could
+  never place them anywhere else.
+- Now: the override is REMOVED (env + live play). The model's own placement stands (still passed
+  through deploy_clamp -> your half + off your king, unchanged). Centre is kept as a SOFT DEFAULT
+  via a small reward: env._recommended_defense_cell (was _place_defensive) computes the suggested
+  centre spot and env._defense_placement_reward gives rewards.defense_center_bonus (0.15) when the
+  model places within a cell of it -- and NOTHING otherwise (no penalty for placing elsewhere). A
+  better lane block / forward play earns more through the troop-defeat + Tesla-kill rewards, so the
+  model deviates from centre when that's stronger.
+- play.py: dropped the defensive-override branch + its now-dead setup (CardDB/_db, defensive_kind,
+  defense_params, threat_min_frac, and the defensive_cell/threat_front/threat_side imports); kept
+  the Tesla win-condition hold gate and the rocket weaker-princess aim. config: rewards.defense_center_bonus.
+- Live effect is immediate (the override is gone); the centre-default nudge shapes the policy on
+  the next train-rl. The earlier deploy_clamp king-avoidance still keeps every placement deployable.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

@@ -172,6 +172,8 @@ class LiveMatchEnv:
         # play defensively: penalise a non-rocket, non-cycle card placed in the ENEMY half.
         self.offensive_penalty = float(cfg.get("rewards", "offensive_penalty", default=-0.5))
         self.offensive_half = float(cfg.get("env", "offensive_half_y", default=0.45))
+        # centre is only the RECOMMENDED default defensive spot (a small reward), never forced
+        self.defense_center_bonus = float(cfg.get("rewards", "defense_center_bonus", default=0.15))
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -302,24 +304,38 @@ class LiveMatchEnv:
                                    self.gw, self.gh)
         return tgt if tgt is not None else cell
 
-    def _place_defensive(self, card_id: int, cell: int) -> int:
-        """Ranged defenders (Tesla / Ice Wizard / Musketeer) are placed a unit's attack reach
-        BEHIND the enemy front on the threatened lane, so the push closes the gap under fire
-        instead of landing on top of the unit; Evo Musketeer goes to the very back. Only
-        overrides when there's a clear threat -- otherwise the model places it (so Tesla stays
-        reward-shaped when there's nothing to defend)."""
+    def _recommended_defense_cell(self, card_id: int):
+        """The RECOMMENDED central defensive spot for a defensive card given the current threat
+        -- a suggestion the reward gently nudges toward, NOT a hard override. The model is free to
+        place elsewhere (block a lane, drop a Ronin up front to catch a ranged unit off guard) and
+        the troop-defeat / Tesla-kill rewards will favour that when it is the better play. Returns
+        a grid cell, or None when the card isn't a defender or there's no clear threat to react to."""
         kind = self.defensive_kind.get(card_id)
         if kind is None or self._last_frame is None:
-            return cell
+            return None
         if kind == "musketeer_evo":
             return defensive_cell(kind, 0, 0.0, self.gw, self.gh, self.defense_params)
         side = threat_side(self._last_frame, self.cfg, self.threat_min_frac)
         if side == 0:
-            return cell
+            return None
         front = threat_front(self._last_frame, side, self.cfg, self.threat_min_frac)
         if front is None:
-            return cell
+            return None
         return defensive_cell(kind, side, front, self.gw, self.gh, self.defense_params)
+
+    def _defense_placement_reward(self, card_id: int, cell: int) -> float:
+        """Small bonus for placing a defender at (or next to) the RECOMMENDED central spot -- a
+        soft DEFAULT, not a mandate. Placing elsewhere isn't penalised here; a better lane block
+        or forward play earns more through the troop-defeat + Tesla-kill rewards instead, so the
+        model can deviate from the centre whenever that's the stronger move."""
+        rec = self._recommended_defense_cell(card_id)
+        if rec is None:
+            return 0.0
+        gx, gy = cell % self.gw, cell // self.gw
+        rx, ry = rec % self.gw, rec // self.gw
+        if abs(gx - rx) <= 1 and abs(gy - ry) <= 1:      # within a cell of the recommended centre
+            return self.defense_center_bonus
+        return 0.0
 
     def _tesla_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
         """Reward a placed Tesla by the enemy troops it kills near it over its life. A
@@ -436,9 +452,8 @@ class LiveMatchEnv:
 
     def step(self, action: Action):
         play, card_id, cell = action
-        if play:                                  # rocket -> weaker princess; Tesla/Ice Wizard -> defence
+        if play:                                  # rocket -> aim the weaker enemy princess tower
             cell = self._aim_rocket(card_id, cell)
-            cell = self._place_defensive(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # only rocket/tornado go anywhere
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
@@ -512,6 +527,8 @@ class LiveMatchEnv:
                     reward += self.wc_tesla_defend     # deployed to defend an ACTIVE win condition -- good
                 elif self.threat_tracker.should_hold_tesla():
                     reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
+            if play and card_id in self.defensive_kind:
+                reward += self._defense_placement_reward(card_id, cell)  # soft nudge to the recommended centre
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
