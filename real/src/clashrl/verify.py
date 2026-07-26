@@ -29,7 +29,7 @@ def _load_events(session: Path):
     return events
 
 
-def verify(cfg, session_arg=None, towers=False, hand=False, spells=False) -> None:
+def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threats=False) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     session = Path(session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
@@ -53,6 +53,9 @@ def verify(cfg, session_arg=None, towers=False, hand=False, spells=False) -> Non
 
     if towers:
         _verify_towers(cfg, session, meta, video)
+        return
+    if threats:
+        _verify_threats(cfg, session, meta, video)
         return
     if hand:
         _verify_hand(cfg, session, video)
@@ -207,6 +210,50 @@ def _verify_hand(cfg, session: Path, video: Path) -> None:
     print("[verify] green = recognized card (key + match score), red = unrecognized, "
           "cyan = next-card preview. Rebuild templates (`hand-templates`) or tune "
           "hand.card_w / card_h / match_threshold (or next_slot / next_card_w / next_card_h) if wrong.")
+
+
+def _verify_threats(cfg, session: Path, meta: dict, video: Path) -> None:
+    """Overlay the enemy-threat read on in-match frames to calibrate reactive play.
+
+    Green tint = detected enemy troops; the label shows the classified threat type
+    (colour / size / count / lane); a yellow cross marks the threat centroid; a magenta
+    arrow marks any projectile in flight. Tune the thresholds in ``clashrl.threats``
+    (or run ``analyze``) if the read looks wrong.
+    """
+    from .reward import _red_mask
+    from .threats import ThreatTracker, annotate
+
+    times = meta.get("frame_times", [])
+    cap = cv2.VideoCapture(str(video))
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    out_dir = session / "annotated_threats"
+    out_dir.mkdir(exist_ok=True)
+    saved = 0
+    for k in range(24):
+        fi = int((k + 0.5) / 24 * total)
+        tk = ThreatTracker(cfg)                 # a few consecutive frames -> motion history
+        thr = None
+        for j in range(max(0, fi - 4), fi + 1):
+            cap.set(cv2.CAP_PROP_POS_FRAMES, j)
+            ok, frame = cap.read()
+            if not ok:
+                break
+            if float(_red_mask(cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)).mean()) / 255.0 > 0.15:
+                thr = None                      # red menu / searching / results -> skip
+                break
+            thr = tk.update(frame, times[j] if j < len(times) else j / 12.0)
+        if thr is None:
+            continue
+        cap.set(cv2.CAP_PROP_POS_FRAMES, fi)
+        ok, frame = cap.read()
+        if not ok:
+            continue
+        cv2.imwrite(str(out_dir / f"threats_{fi:06d}.png"), annotate(frame, thr, cfg))
+        saved += 1
+    cap.release()
+    print(f"[verify] threats: saved {saved} annotated in-match frames to {out_dir}")
+    print("[verify] green tint = enemy troops; label = threat type; yellow cross = centroid; "
+          "magenta arrow = projectile. Tune clashrl.threats thresholds if the read looks wrong.")
 
 
 def _verify_towers(cfg, session: Path, meta: dict, video: Path) -> None:

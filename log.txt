@@ -166,6 +166,25 @@ Newest entries are at the bottom.
   (env.my_hp_full 4424, ~level 15) separate from the enemy's (env.hp_full 4032,
   ~level 14) so defence chip is seeded + normalised on the correct baseline. The
   reward change takes effect on the next train-rl.
+- Reactive-play PERCEPTION + replay analysis (foresight groundwork). New enemy-threat
+  reader (clashrl/threats.py): from a frame it classifies the incoming push by COLOUR
+  (saturated green = Goblins, since this deck plays none; purple; neutral), SIZE (one
+  big unit vs a swarm), COUNT, LANE and DEPTH over an "engagement zone" (midfield + your
+  half, with the enemy back line, YOUR towers and the arena border masked out so only a
+  real push registers), plus APPROACH SPEED and a best-effort PROJECTILE-IN-FLIGHT
+  detector (a small blob tracked over several frames on a fast, near-straight arc toward
+  a tower -- e.g. a thrown Goblin Barrel). It exposes a 14-value feature vector (for the
+  policy, next phase) and a readable label. New `analyze` command (clashrl/analyze.py):
+  for every card play in your recordings it reads the threat in the window before the
+  play and aggregates WHICH CARD you play against WHICH threat type, and WHERE (on /
+  behind the threat, your king, the enemy tower, ...), writing data/analysis/patterns.json
+  + a report. On the latest session it recovered real habits: rocket -> enemy princess,
+  ice wizard placed BEHIND the push, tesla ON the push, tornado onto your king, cheap
+  cycle cards on/behind the threat; ~76% of plays are reactions. New `verify --threats`
+  overlay to eyeball + tune the reader. ANALYSIS ONLY -- no model/reward change yet. Next:
+  feed the threat vector into PolicyNet + reward the key foresight counters (Royal Delivery
+  onto a threatened tower; tornado pulling a landed goblin swarm to your king) -- that step
+  needs a re-label + retrain.
 
 
 ------------------------------------------------------------------------------

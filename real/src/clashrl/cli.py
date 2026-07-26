@@ -23,7 +23,7 @@ def _cmd_record(args) -> None:
 
 def _cmd_verify(args) -> None:
     from .verify import verify
-    verify(Config.load(args.config), args.session, args.towers, args.hand, args.spells)
+    verify(Config.load(args.config), args.session, args.towers, args.hand, args.spells, args.threats)
 
 
 def _cmd_hand_templates(args) -> None:
@@ -109,6 +109,11 @@ def _cmd_diag(args) -> None:
     diagnose(Config.load(args.config))
 
 
+def _cmd_analyze(args) -> None:
+    from .analyze import analyze
+    analyze(Config.load(args.config), args.session, args.all, args.window, args.debug)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -128,6 +133,8 @@ def main() -> None:
                      help="overlay hand-card recognition on in-match frames to calibrate identity actions")
     ver.add_argument("--spells", action="store_true",
                      help="overlay enemy-troop-mass detection to calibrate spell + patience rewards")
+    ver.add_argument("--threats", action="store_true",
+                     help="overlay the enemy-threat read (color/size/count/lane + projectiles) to calibrate reactive play")
     ver.set_defaults(func=_cmd_verify)
 
     lab = sub.add_parser("label", help="build an (observation, action) dataset from recordings")
@@ -167,6 +174,15 @@ def main() -> None:
 
     dia = sub.add_parser("diag", help="diagnose menu navigation: state-template match scores on the current screen")
     dia.set_defaults(func=_cmd_diag)
+
+    ana = sub.add_parser("analyze",
+                         help="mine recordings for which card you play vs which enemy-threat type (color/size/count)")
+    ana.add_argument("--session", default=None, help="session folder (default: latest)")
+    ana.add_argument("--all", action="store_true", help="analyze every recorded session")
+    ana.add_argument("--window", type=int, default=12,
+                     help="frames before each play to read the threat over (motion + projectile)")
+    ana.add_argument("--debug", action="store_true", help="save annotated frames of each analyzed play")
+    ana.set_defaults(func=_cmd_analyze)
 
     args = parser.parse_args()
     args.func(args)
