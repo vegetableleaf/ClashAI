@@ -53,8 +53,9 @@ elixir:
 buttons:
   battle_button: [0.492, 0.771]  # HOME -> queues a 1v1 match directly (auto-queue; no party/quick-match step)
   quick_match:   [0.690, 0.555]  # (unused in 1v1; kept for reference)
-  results_ok:    [0.138, 0.948]  # results screen, teammate ONLINE ("Exit")
-  results_ok_dc: [0.490, 0.870]  # results screen, teammate DISCONNECTED ("OK")
+  play_again:    [0.335, 0.905]  # 1v1 results screen -> re-queue immediately ("Play Again", bottom-left); tapped by default so the match loop continues without returning HOME
+  results_ok:    [0.645, 0.905]  # 1v1 results screen -> "OK" (bottom-right, returns HOME) -- fallback only
+  results_ok_dc: [0.645, 0.905]  # no disconnect screen in 1v1 -> same as OK
   # In-match emote/chat icon (bottom-left). Tapping it opens the emote wheel and the bot
   # gets stuck, so card placements are nudged UP out of this box (from trol's emote button).
   chat_avoid_box: [0.0, 0.79, 0.185, 0.90]
@@ -197,13 +198,14 @@ env:
   # alignment with verify --towers; keep the box centred over where the number can appear.
   # Needs torch + hp_digits.npz; falls back to no-op if missing. hp_reward false
   # disables it (relies on the destruction latch + win/loss instead).
-  hp_reward: false               # 1v1: DISABLED -- the digit OCR (hp_digits.npz) was trained on 2v2 lvl-11 towers and misreads the 1v1 (lvl 14-15) HP numbers; re-enable after retraining the digit model (relies on the tower-destruction latch + win/loss meanwhile)
-  hp_full: 4032                  # princess full HP at ~level 14 (1v1); varies by tower level -- reset baseline / normalizer
+  hp_reward: true                # 1v1: read printed tower HP -> chip-damage reward (digit CNN retrained on 1v1 lvl 14-15 towers via tools/hp_ocr)
+  hp_full: 4032                  # ENEMY princess full HP (~level 14, 1v1) -- enemy seed + offence-chip normaliser
+  my_hp_full: 4424               # YOUR princess full HP (~level 15, 1v1) -- your seed + defence-chip normaliser
   hp_consensus: 2                # consecutive equal reads before a new HP is confirmed
   hp_min_conf: 0.55              # min mean per-digit CNN confidence to use a read
   hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
-  enemy_tower_hp_boxes: [[0.205, 0.118, 0.330, 0.152], [0.705, 0.118, 0.808, 0.152]]
-  my_tower_hp_boxes:    [[0.180, 0.632, 0.315, 0.666], [0.688, 0.632, 0.778, 0.666]]
+  enemy_tower_hp_boxes: [[0.147, 0.110, 0.278, 0.157], [0.645, 0.110, 0.797, 0.157]]
+  my_tower_hp_boxes:    [[0.185, 0.612, 0.298, 0.657], [0.685, 0.612, 0.798, 0.657]]
   # KING HP numbers (only shown once a king is hit). Enemy king (top-centre) -> catch a
   # rocket/tornado that damages it (rewards.spell_king_penalty). YOUR king (bottom-centre) ->
   # reward a defensive tornado that tanks + activates it (rewards.king_tank_reward). Boxes are

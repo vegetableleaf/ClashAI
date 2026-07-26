@@ -52,10 +52,11 @@ def _digit_band(crop: np.ndarray, pad: int = 2) -> Optional[Tuple[int, int]]:
     Lets the box be tall enough to cover several tower types (whose HP bars sit at
     different heights) without the digits getting squished: the digits are bright,
     near-white and form the row with the most such pixels, so we lock onto the
-    brightest row and grow a band while the white count stays high. A strict white
-    threshold keeps tan/blue tower structure out. Returns (y0, y1) rows, or None.
+    brightest row and grow a band while the white count stays high. A moderate white
+    threshold keeps tan/blue tower structure out while still catching the blue-tinted
+    HP digits on YOUR (blue-bar) towers. Returns (y0, y1) rows, or None.
     """
-    strict = cv2.inRange(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV), (0, 0, 205), (179, 65, 255))
+    strict = cv2.inRange(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV), (0, 0, 190), (179, 110, 255))
     rowsum = (strict > 0).sum(1).astype(float)
     if rowsum.max() < 6:
         return None
@@ -212,6 +213,9 @@ class TowerHpTracker:
         self.cfg = cfg
         self.enabled = bool(cfg.get("env", "hp_reward", default=True)) if cfg else True
         self.full = float(cfg.get("env", "hp_full", default=3052.0)) if cfg else 3052.0
+        # YOUR princess towers can be a different level than the enemy's, so they have a
+        # different full HP; seed + normalise each side by its own full (defaults to hp_full).
+        self.my_full = float(cfg.get("env", "my_hp_full", default=self.full)) if cfg else self.full
         self.consensus = int(cfg.get("env", "hp_consensus", default=2)) if cfg else 2
         self.min_conf = float(cfg.get("env", "hp_min_conf", default=0.55)) if cfg else 0.55
         self.max_chip = float(cfg.get("env", "hp_max_chip", default=1500.0)) if cfg else 1500.0
@@ -228,11 +232,11 @@ class TowerHpTracker:
     def reset(self) -> None:
         # princess towers start at full HP -- seed there so a low first misread can't lock in
         self.enemy_hp = [self.full] * len(self.enemy_boxes)
-        self.my_hp = [self.full] * len(self.my_boxes)
+        self.my_hp = [self.my_full] * len(self.my_boxes)
         self._enemy_cand: List[Tuple[Optional[int], int]] = [(None, 0)] * len(self.enemy_boxes)
         self._my_cand: List[Tuple[Optional[int], int]] = [(None, 0)] * len(self.my_boxes)
 
-    def _update_side(self, frame, boxes, hp, cand, enemy: bool) -> float:
+    def _update_side(self, frame, boxes, hp, cand, enemy: bool, full: float) -> float:
         reward = 0.0
         for i, box in enumerate(boxes):
             val, conf = self.reader.read(_crop(frame, box))
@@ -243,7 +247,7 @@ class TowerHpTracker:
             if cand[i][1] < self.consensus:
                 continue
             if val < hp[i] and (hp[i] - val) <= self.max_chip:
-                dmg = (hp[i] - val) / self.full
+                dmg = (hp[i] - val) / full
                 hp[i] = val
                 reward += dmg if enemy else -dmg * self.defense_scale
         return reward
@@ -252,6 +256,6 @@ class TowerHpTracker:
         """Normalized chip-damage reward since the last step (0 if disabled)."""
         if not self.enabled:
             return 0.0
-        r = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, True)
-        r += self._update_side(frame, self.my_boxes, self.my_hp, self._my_cand, False)
+        r = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, True, self.full)
+        r += self._update_side(frame, self.my_boxes, self.my_hp, self._my_cand, False, self.my_full)
         return r * self.scale

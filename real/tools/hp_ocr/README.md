@@ -7,10 +7,14 @@ Trains the small digit CNN that reads each princess tower's printed HP, used by
 ## Files
 
 - `labeled_digits.npz` — 81 hand-labeled HP-number strips (white-masked + grayscale,
-  20×56 each) with their string labels. The training data.
-- `train.py` — slices each strip into digits, augments, trains a `DigitNet`, prints
-  accuracy, and exports weights to `../../src/clashrl/hp_digits.npz` (what the
-  package loads at runtime).
+  20×56 each) with their string labels. The 2v2 base set (full 0-9 digit coverage,
+  incl. low 3-digit values).
+- `labeled_digits_1v1.npz` — 47 strips from a 1v1 match (level 14-15 towers), the
+  current tower rendering. `train.py` upweights these (×3) so the CNN adapts to the
+  1v1 digits while keeping the 2v2 set's digit coverage.
+- `train.py` — loads both sets, slices each strip into digits, augments, trains a
+  `DigitNet`, prints accuracy, and exports weights to
+  `../../src/clashrl/hp_digits.npz` (what the package loads at runtime).
 
 ## Retrain
 

@@ -149,6 +149,23 @@ Newest entries are at the bottom.
   towers and MISREADS the 1v1 (level 14-15) tower HP, so hp_reward is DISABLED for
   now to avoid injecting false chip rewards -- re-enable after retraining the digit
   model on 1v1 samples. Tower destruction (crowns) + win/loss still drive the reward.
+- 1v1 match-end loop + tower reader RETRAINED (defence/offence chip re-enabled).
+  (1) The 1v1 results screen puts "Play Again" (bottom-left) and "OK" (bottom-right)
+  in new spots; the bot now taps PLAY AGAIN by default (buttons.play_again) from both
+  nav loops (env.reset + play) and the RL results-read, so it re-queues straight into
+  the next match without a detour through HOME.
+  (2) Retrained the tower-HP digit CNN for 1v1. First fixed the HP-number boxes: the
+  enemy boxes were clipping the last digit, and the "white" digits on YOUR blue bars
+  are blue-tinted, so tower_hp._digit_band's strict mask was relaxed to catch them
+  (the main white mask was already fine -- do NOT loosen it). Then labelled 47 HP
+  strips from a real 1v1 recording (tools/hp_ocr/labeled_digits_1v1.npz) and retrained
+  hp_digits.npz (2v2 base for digit coverage + 1v1 upweighted x3; ~97% per-digit). All
+  four princess towers now read correctly -- verified end-to-end with clean, monotonic
+  chip timelines (e.g. an enemy princess 4032->3499->2966->2553->1727).
+  (3) Re-enabled hp_reward, and gave YOUR princess towers their own full HP
+  (env.my_hp_full 4424, ~level 15) separate from the enemy's (env.hp_full 4032,
+  ~level 14) so defence chip is seeded + normalised on the correct baseline. The
+  reward change takes effect on the next train-rl.
 
 
 ------------------------------------------------------------------------------

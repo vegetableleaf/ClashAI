@@ -57,6 +57,7 @@ class LiveMatchEnv:
         self.quick = cfg.get("buttons", "quick_match", default=[0.5, 0.55])
         self.results_ok = cfg.get("buttons", "results_ok", default=[0.5, 0.9])
         self.results_dc = cfg.get("buttons", "results_ok_dc", default=self.results_ok)
+        self.play_again = cfg.get("buttons", "play_again", default=self.results_ok)
         _home = cfg.get("states", "home_menu", default={}) or {}
         self._home_tpl = _home.get("template", "home_menu.png")
         self._home_thr = float(_home.get("threshold", 0.8))
@@ -245,7 +246,7 @@ class LiveMatchEnv:
                 self.controller.tap(*pt)
                 time.sleep(self.menu_delay)
             elif state == GameState.MATCH_END:
-                self.controller.tap(*(self.results_dc if self.vision.match_end_is_dc(frame) else self.results_ok))
+                self.controller.tap(*self.play_again)   # 1v1: re-queue immediately (loop continues)
                 time.sleep(self.menu_delay)
             else:  # UNKNOWN / QUEUING -> wait for a known screen
                 time.sleep(self.poll_dt)
@@ -546,7 +547,6 @@ class LiveMatchEnv:
         blue = [0.0, 0.0, 0.0]
         seen = stable = 0
         last_total = -1
-        dc = False
         while time.time() < deadline:
             frame = self._grab()
             if frame is None:
@@ -555,7 +555,6 @@ class LiveMatchEnv:
             if sb.present:
                 red = [max(a, b) for a, b in zip(red, sb.red_fracs)]
                 blue = [max(a, b) for a, b in zip(blue, sb.blue_fracs)]
-                dc = self.vision.match_end_is_dc(frame)
                 seen += 1
                 # Crowns animate in one-by-one, so keep reading (taking the max per
                 # cushion) until the crown total holds steady -- not just until the
@@ -581,8 +580,9 @@ class LiveMatchEnv:
         else:
             outcome = "win" if blue_c > red_c else "loss" if red_c > blue_c else "draw"
         reward = outcome_reward(outcome, self.cfg) if outcome else 0.0
-        # leave the results screen so reset() can queue the next match
-        self.controller.tap(*(self.results_dc if dc else self.results_ok))
+        # leave the results screen by re-queueing (1v1 "Play Again") so the next match
+        # starts without a detour through HOME; reset() then picks up QUEUING/IN_MATCH.
+        self.controller.tap(*self.play_again)
         time.sleep(self.menu_delay)
         detail = {"crowns": (blue_c, red_c), "scoreboard": (sb_blue, sb_red), "towers": (t_blue, t_red)}
         return reward, outcome, detail

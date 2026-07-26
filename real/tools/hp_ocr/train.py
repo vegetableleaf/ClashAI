@@ -81,12 +81,23 @@ class DigitNet(nn.Module):
         return self.f(x)
 
 
+def load_set(path, repeat=1):
+    """Load (wmask, gray, label) strips from an npz, repeated `repeat` times."""
+    if not path.exists():
+        return []
+    d = np.load(path, allow_pickle=True)
+    items = list(zip(d["wmasks"], d["grays"], [str(s) for s in d["labels"]]))
+    return items * repeat
+
+
 def main():
-    data = np.load(BASE / "labeled_digits.npz")
-    wmasks, grays, labels = data["wmasks"], data["grays"], [str(s) for s in data["labels"]]
+    # 2v2 base set (full digit 0-9 coverage incl. low 3-digit values) + the 1v1 set
+    # (the current tower rendering), upweighted so the CNN adapts to the 1v1 digits.
+    items = load_set(BASE / "labeled_digits.npz")
+    items += load_set(BASE / "labeled_digits_1v1.npz", repeat=3)
 
     X, y, val_items, n_full = [], [], [], 0
-    for wm, gray, num in zip(wmasks, grays, labels):
+    for wm, gray, num in items:
         if num == "3052":
             n_full += 1
             if n_full > MAX_FULL:

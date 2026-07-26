@@ -110,6 +110,7 @@ def play(cfg) -> None:
     quick = cfg.get("buttons", "quick_match", default=[0.5, 0.55])
     results_ok = cfg.get("buttons", "results_ok", default=[0.5, 0.9])
     results_dc = cfg.get("buttons", "results_ok_dc", default=results_ok)
+    play_again = cfg.get("buttons", "play_again", default=results_ok)
     _home = cfg.get("states", "home_menu", default={}) or {}
     home_tpl, home_thr = _home.get("template", "home_menu.png"), float(_home.get("threshold", 0.8))
 
@@ -184,7 +185,7 @@ def play(cfg) -> None:
             controller.tap(*(vision.locate(frame, home_tpl, home_thr) or battle))
             time.sleep(menu_delay)
         elif state == GameState.MATCH_END:
-            controller.tap(*(results_dc if vision.match_end_is_dc(frame) else results_ok))
+            controller.tap(*play_again)   # 1v1: re-queue immediately (loop continues)
             time.sleep(menu_delay)
         elif state == GameState.IN_MATCH:
             now = time.time()
