@@ -90,15 +90,6 @@ Training needs a GPU build of PyTorch; recording and labeling do not.
 
 ---
 
-## Honest expectations
-
-Learning to play a **live** game from scratch is genuinely hard: matches run in
-real time (you can't fast-forward or run 1000 in parallel), and every reward has
-to be read off the screen. That's why the bot **imitates you first** and only
-then fine-tunes with reinforcement learning. Think of this as a
-*train-it-yourself* framework — how good it gets depends on how much you record
-and train. It is not a turnkey pro player.
-
 ## Repo layout
 
 ```
