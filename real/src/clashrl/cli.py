@@ -119,6 +119,11 @@ def _cmd_autolabel(args) -> None:
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
 
 
+def _cmd_detect_import(args) -> None:
+    from .detect import detect_import
+    detect_import(Config.load(args.config), args.export, args.val_frac)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -196,6 +201,12 @@ def main() -> None:
     atl.add_argument("--preview", action="store_true",
                      help="save overlays of the auto (own-troop) boxes to sanity-check them")
     atl.set_defaults(func=_cmd_autolabel)
+
+    din = sub.add_parser("detect-import",
+                         help="import a Label Studio YOLO export into the training dataset (remaps classes by name + train/val split)")
+    din.add_argument("--export", required=True, help="path to the unzipped Label Studio YOLO export folder")
+    din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
+    din.set_defaults(func=_cmd_detect_import)
 
     args = parser.parse_args()
     args.func(args)

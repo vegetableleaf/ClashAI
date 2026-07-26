@@ -297,3 +297,98 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     print("[autolabel]   then: pip install ultralytics && python tools/detect/train.py")
     if preview:
         print(f"[autolabel] auto-box previews (sanity check the own-troop boxes): {preview_dir}")
+
+
+def detect_import(cfg, export_dir, val_frac=None) -> None:
+    """Ingest a Label Studio **YOLO export** into the training dataset. Fixes the two things that
+    otherwise bite you: (1) it REMAPS the export's class ids to the taxonomy by NAME (so it doesn't
+    matter if Label Studio reordered or compacted the class list), and (2) it lays the images +
+    labels into the Ultralytics train/val split the trainer expects and rebuilds data.yaml. The
+    export becomes the source of truth, so the previous (auto-labelled) split is replaced.
+
+    Point ``export_dir`` at the unzipped export (a folder with ``classes.txt`` + ``labels/`` and,
+    for a 'YOLO with images' export, ``images/``). If the export has no images/, the images are
+    taken from the current dataset by matching label filenames to image stems.
+    """
+    export = Path(export_dir)
+    names = _load_classes(cfg)
+    name_to_idx = {n: i for i, n in enumerate(names)}
+    cls_file = export / "classes.txt"
+    lbl_dir = export / "labels"
+    if not cls_file.exists() or not lbl_dir.exists():
+        print(f"[detect-import] expected {cls_file.name} + labels/ under {export} "
+              "(export from Label Studio as YOLO).")
+        return
+    export_names = [ln.strip() for ln in cls_file.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    remap, unknown = {}, []
+    for i, nm in enumerate(export_names):
+        if nm in name_to_idx:
+            remap[i] = name_to_idx[nm]
+        else:
+            unknown.append(nm)
+
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    existing = {}                                        # image stem -> path (fallback source)
+    for split in ("train", "val"):
+        d = root / "images" / split
+        if d.exists():
+            for p in d.glob("*"):
+                if p.suffix.lower() in (".jpg", ".jpeg", ".png"):
+                    existing[p.stem] = p
+    exp_imgs = export / "images"
+
+    pairs, unmatched = [], 0                             # (stem, image_ndarray, [remapped label lines])
+    for lf in sorted(lbl_dir.glob("*.txt")):
+        stem = lf.stem
+        src = None
+        if exp_imgs.exists():
+            cands = list(exp_imgs.glob(stem + ".*"))
+            src = cands[0] if cands else None
+        if src is None:                                  # match to a current dataset image by stem
+            src = existing.get(stem) or next(
+                (existing[s] for s in existing if s == stem or stem.endswith("_" + s) or s in stem), None)
+        if src is None:
+            unmatched += 1
+            continue
+        img = cv2.imread(str(src))
+        if img is None:
+            unmatched += 1
+            continue
+        lines = []
+        for ln in lf.read_text(encoding="utf-8").splitlines():
+            p = ln.split()
+            if len(p) >= 5 and int(float(p[0])) in remap:
+                lines.append(" ".join([str(remap[int(float(p[0]))])] + p[1:5]))
+        pairs.append((stem, img, lines))
+
+    if not pairs:
+        print("[detect-import] matched 0 label files to images -- check the export layout / filenames.")
+        return
+    # the export is now the source of truth -> clear the old auto-labelled split, then write fresh
+    for sub in ("images/train", "images/val", "labels/train", "labels/val"):
+        d = root / sub
+        d.mkdir(parents=True, exist_ok=True)
+        for p in d.glob("*"):
+            p.unlink()
+    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
+    q = int(cfg.get("detect", "jpeg_quality", default=92))
+    rng = random.Random(0)
+    n_val = n_box = 0
+    for stem, img, lines in pairs:
+        split = "val" if rng.random() < vf else "train"
+        n_val += split == "val"
+        n_box += len(lines)
+        cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, q])
+        (root / "labels" / split / f"{stem}.txt").write_text(
+            "\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+    _write_data_yaml(root, names)
+    _write_label_studio_helpers(root, names)
+
+    print(f"[detect-import] imported {len(pairs)} images ({len(pairs) - n_val} train / {n_val} val), "
+          f"{n_box} boxes -> {root}")
+    if unknown:
+        print(f"[detect-import] {len(unknown)} export class(es) not in the taxonomy (their boxes were "
+              f"skipped): {', '.join(unknown[:12])}")
+    if unmatched:
+        print(f"[detect-import] {unmatched} label file(s) had no matching image (skipped)")
+    print("[detect-import] ready to train:  python tools/detect/train.py")
