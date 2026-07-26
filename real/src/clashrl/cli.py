@@ -124,6 +124,11 @@ def _cmd_detect_import(args) -> None:
     detect_import(Config.load(args.config), args.export, args.val_frac)
 
 
+def _cmd_detect_frames(args) -> None:
+    from .detect import add_frames
+    add_frames(Config.load(args.config), args.session, args.count)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -207,6 +212,12 @@ def main() -> None:
     din.add_argument("--export", required=True, help="path to the unzipped Label Studio YOLO export folder")
     din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
     din.set_defaults(func=_cmd_detect_import)
+
+    dfr = sub.add_parser("detect-frames",
+                         help="add more in-match frames from a session to data/detect for hand-labelling (non-destructive)")
+    dfr.add_argument("--session", default=None, help="session folder name or path (default: latest)")
+    dfr.add_argument("--count", type=int, default=120, help="how many new frames to add")
+    dfr.set_defaults(func=_cmd_detect_frames)
 
     args = parser.parse_args()
     args.func(args)

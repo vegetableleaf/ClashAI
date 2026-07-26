@@ -1,0 +1,877 @@
+{
+  "categories": [
+    {
+      "id": 0,
+      "name": "archer_queen"
+    },
+    {
+      "id": 1,
+      "name": "archer_queen_ability"
+    },
+    {
+      "id": 2,
+      "name": "archers"
+    },
+    {
+      "id": 3,
+      "name": "archers_evo"
+    },
+    {
+      "id": 4,
+      "name": "arrows"
+    },
+    {
+      "id": 5,
+      "name": "arrows_aoe"
+    },
+    {
+      "id": 6,
+      "name": "baby_dragon"
+    },
+    {
+      "id": 7,
+      "name": "baby_dragon_evo"
+    },
+    {
+      "id": 8,
+      "name": "balloon"
+    },
+    {
+      "id": 9,
+      "name": "balloon_hero"
+    },
+    {
+      "id": 10,
+      "name": "bandit"
+    },
+    {
+      "id": 11,
+      "name": "barbarian_barrel"
+    },
+    {
+      "id": 12,
+      "name": "barbarian_barrel_aoe"
+    },
+    {
+      "id": 13,
+      "name": "barbarian_barrel_hero"
+    },
+    {
+      "id": 14,
+      "name": "barbarian_hut"
+    },
+    {
+      "id": 15,
+      "name": "barbarian_launcher"
+    },
+    {
+      "id": 16,
+      "name": "barbarians"
+    },
+    {
+      "id": 17,
+      "name": "barbarians_evo"
+    },
+    {
+      "id": 18,
+      "name": "bats"
+    },
+    {
+      "id": 19,
+      "name": "bats_evo"
+    },
+    {
+      "id": 20,
+      "name": "battle_healer"
+    },
+    {
+      "id": 21,
+      "name": "battle_ram"
+    },
+    {
+      "id": 22,
+      "name": "battle_ram_evo"
+    },
+    {
+      "id": 23,
+      "name": "berserker"
+    },
+    {
+      "id": 24,
+      "name": "bomb_tower"
+    },
+    {
+      "id": 25,
+      "name": "bomber"
+    },
+    {
+      "id": 26,
+      "name": "bomber_evo"
+    },
+    {
+      "id": 27,
+      "name": "boss_bandit"
+    },
+    {
+      "id": 28,
+      "name": "boss_bandit_ability"
+    },
+    {
+      "id": 29,
+      "name": "bowler"
+    },
+    {
+      "id": 30,
+      "name": "bowler_hero"
+    },
+    {
+      "id": 31,
+      "name": "cannon"
+    },
+    {
+      "id": 32,
+      "name": "cannon_cart"
+    },
+    {
+      "id": 33,
+      "name": "cannon_evo"
+    },
+    {
+      "id": 34,
+      "name": "clone"
+    },
+    {
+      "id": 35,
+      "name": "clone_aoe"
+    },
+    {
+      "id": 36,
+      "name": "dark_prince"
+    },
+    {
+      "id": 37,
+      "name": "dark_prince_hero"
+    },
+    {
+      "id": 38,
+      "name": "dart_goblin"
+    },
+    {
+      "id": 39,
+      "name": "dart_goblin_evo"
+    },
+    {
+      "id": 40,
+      "name": "earthquake"
+    },
+    {
+      "id": 41,
+      "name": "earthquake_aoe"
+    },
+    {
+      "id": 42,
+      "name": "electro_dragon"
+    },
+    {
+      "id": 43,
+      "name": "electro_dragon_evo"
+    },
+    {
+      "id": 44,
+      "name": "electro_giant"
+    },
+    {
+      "id": 45,
+      "name": "electro_spirit"
+    },
+    {
+      "id": 46,
+      "name": "electro_wizard"
+    },
+    {
+      "id": 47,
+      "name": "elite_barbarians"
+    },
+    {
+      "id": 48,
+      "name": "elixir_collector"
+    },
+    {
+      "id": 49,
+      "name": "elixir_golem"
+    },
+    {
+      "id": 50,
+      "name": "executioner"
+    },
+    {
+      "id": 51,
+      "name": "executioner_evo"
+    },
+    {
+      "id": 52,
+      "name": "fire_spirit"
+    },
+    {
+      "id": 53,
+      "name": "fireball"
+    },
+    {
+      "id": 54,
+      "name": "fireball_aoe"
+    },
+    {
+      "id": 55,
+      "name": "firecracker"
+    },
+    {
+      "id": 56,
+      "name": "firecracker_evo"
+    },
+    {
+      "id": 57,
+      "name": "fisherman"
+    },
+    {
+      "id": 58,
+      "name": "flying_machine"
+    },
+    {
+      "id": 59,
+      "name": "freeze"
+    },
+    {
+      "id": 60,
+      "name": "freeze_aoe"
+    },
+    {
+      "id": 61,
+      "name": "furnace"
+    },
+    {
+      "id": 62,
+      "name": "furnace_evo"
+    },
+    {
+      "id": 63,
+      "name": "giant"
+    },
+    {
+      "id": 64,
+      "name": "giant_hero"
+    },
+    {
+      "id": 65,
+      "name": "giant_skeleton"
+    },
+    {
+      "id": 66,
+      "name": "giant_snowball"
+    },
+    {
+      "id": 67,
+      "name": "giant_snowball_aoe"
+    },
+    {
+      "id": 68,
+      "name": "giant_snowball_evo"
+    },
+    {
+      "id": 69,
+      "name": "goblin_barrel"
+    },
+    {
+      "id": 70,
+      "name": "goblin_barrel_aoe"
+    },
+    {
+      "id": 71,
+      "name": "goblin_barrel_evo"
+    },
+    {
+      "id": 72,
+      "name": "goblin_cage"
+    },
+    {
+      "id": 73,
+      "name": "goblin_cage_evo"
+    },
+    {
+      "id": 74,
+      "name": "goblin_curse"
+    },
+    {
+      "id": 75,
+      "name": "goblin_curse_aoe"
+    },
+    {
+      "id": 76,
+      "name": "goblin_demolisher"
+    },
+    {
+      "id": 77,
+      "name": "goblin_drill"
+    },
+    {
+      "id": 78,
+      "name": "goblin_drill_evo"
+    },
+    {
+      "id": 79,
+      "name": "goblin_gang"
+    },
+    {
+      "id": 80,
+      "name": "goblin_giant"
+    },
+    {
+      "id": 81,
+      "name": "goblin_giant_evo"
+    },
+    {
+      "id": 82,
+      "name": "goblin_hut"
+    },
+    {
+      "id": 83,
+      "name": "goblin_machine"
+    },
+    {
+      "id": 84,
+      "name": "goblins"
+    },
+    {
+      "id": 85,
+      "name": "goblins_hero"
+    },
+    {
+      "id": 86,
+      "name": "goblinstein"
+    },
+    {
+      "id": 87,
+      "name": "goblinstein_ability"
+    },
+    {
+      "id": 88,
+      "name": "golden_knight"
+    },
+    {
+      "id": 89,
+      "name": "golden_knight_ability"
+    },
+    {
+      "id": 90,
+      "name": "golem"
+    },
+    {
+      "id": 91,
+      "name": "graveyard"
+    },
+    {
+      "id": 92,
+      "name": "graveyard_aoe"
+    },
+    {
+      "id": 93,
+      "name": "guards"
+    },
+    {
+      "id": 94,
+      "name": "heal"
+    },
+    {
+      "id": 95,
+      "name": "heal_aoe"
+    },
+    {
+      "id": 96,
+      "name": "heal_spirit"
+    },
+    {
+      "id": 97,
+      "name": "hog_rider"
+    },
+    {
+      "id": 98,
+      "name": "hunter"
+    },
+    {
+      "id": 99,
+      "name": "hunter_evo"
+    },
+    {
+      "id": 100,
+      "name": "ice_golem"
+    },
+    {
+      "id": 101,
+      "name": "ice_golem_hero"
+    },
+    {
+      "id": 102,
+      "name": "ice_spirit"
+    },
+    {
+      "id": 103,
+      "name": "ice_spirit_evo"
+    },
+    {
+      "id": 104,
+      "name": "ice_wizard"
+    },
+    {
+      "id": 105,
+      "name": "inferno_dragon"
+    },
+    {
+      "id": 106,
+      "name": "inferno_dragon_evo"
+    },
+    {
+      "id": 107,
+      "name": "inferno_tower"
+    },
+    {
+      "id": 108,
+      "name": "knight"
+    },
+    {
+      "id": 109,
+      "name": "knight_evo"
+    },
+    {
+      "id": 110,
+      "name": "knight_hero"
+    },
+    {
+      "id": 111,
+      "name": "lava_hound"
+    },
+    {
+      "id": 112,
+      "name": "lightning"
+    },
+    {
+      "id": 113,
+      "name": "lightning_aoe"
+    },
+    {
+      "id": 114,
+      "name": "little_prince"
+    },
+    {
+      "id": 115,
+      "name": "little_prince_ability"
+    },
+    {
+      "id": 116,
+      "name": "lumberjack"
+    },
+    {
+      "id": 117,
+      "name": "lumberjack_evo"
+    },
+    {
+      "id": 118,
+      "name": "magic_archer"
+    },
+    {
+      "id": 119,
+      "name": "magic_archer_hero"
+    },
+    {
+      "id": 120,
+      "name": "mega_knight"
+    },
+    {
+      "id": 121,
+      "name": "mega_knight_evo"
+    },
+    {
+      "id": 122,
+      "name": "mega_minion"
+    },
+    {
+      "id": 123,
+      "name": "mega_minion_hero"
+    },
+    {
+      "id": 124,
+      "name": "mighty_miner"
+    },
+    {
+      "id": 125,
+      "name": "mighty_miner_ability"
+    },
+    {
+      "id": 126,
+      "name": "miner"
+    },
+    {
+      "id": 127,
+      "name": "mini_pekka"
+    },
+    {
+      "id": 128,
+      "name": "mini_pekka_hero"
+    },
+    {
+      "id": 129,
+      "name": "minion_horde"
+    },
+    {
+      "id": 130,
+      "name": "minion_horde_evo"
+    },
+    {
+      "id": 131,
+      "name": "minions"
+    },
+    {
+      "id": 132,
+      "name": "mirror"
+    },
+    {
+      "id": 133,
+      "name": "monk"
+    },
+    {
+      "id": 134,
+      "name": "monk_ability"
+    },
+    {
+      "id": 135,
+      "name": "mortar"
+    },
+    {
+      "id": 136,
+      "name": "mortar_evo"
+    },
+    {
+      "id": 137,
+      "name": "mother_witch"
+    },
+    {
+      "id": 138,
+      "name": "musketeer"
+    },
+    {
+      "id": 139,
+      "name": "musketeer_evo"
+    },
+    {
+      "id": 140,
+      "name": "musketeer_hero"
+    },
+    {
+      "id": 141,
+      "name": "night_witch"
+    },
+    {
+      "id": 142,
+      "name": "pekka"
+    },
+    {
+      "id": 143,
+      "name": "pekka_evo"
+    },
+    {
+      "id": 144,
+      "name": "phoenix"
+    },
+    {
+      "id": 145,
+      "name": "poison"
+    },
+    {
+      "id": 146,
+      "name": "poison_aoe"
+    },
+    {
+      "id": 147,
+      "name": "prince"
+    },
+    {
+      "id": 148,
+      "name": "princess"
+    },
+    {
+      "id": 149,
+      "name": "princess_evo"
+    },
+    {
+      "id": 150,
+      "name": "rage"
+    },
+    {
+      "id": 151,
+      "name": "rage_aoe"
+    },
+    {
+      "id": 152,
+      "name": "raging_prince"
+    },
+    {
+      "id": 153,
+      "name": "ram_rider"
+    },
+    {
+      "id": 154,
+      "name": "rascals"
+    },
+    {
+      "id": 155,
+      "name": "rocket"
+    },
+    {
+      "id": 156,
+      "name": "rocket_aoe"
+    },
+    {
+      "id": 157,
+      "name": "rocket_silo"
+    },
+    {
+      "id": 158,
+      "name": "ronin"
+    },
+    {
+      "id": 159,
+      "name": "royal_delivery"
+    },
+    {
+      "id": 160,
+      "name": "royal_delivery_aoe"
+    },
+    {
+      "id": 161,
+      "name": "royal_ghost"
+    },
+    {
+      "id": 162,
+      "name": "royal_ghost_evo"
+    },
+    {
+      "id": 163,
+      "name": "royal_giant"
+    },
+    {
+      "id": 164,
+      "name": "royal_giant_evo"
+    },
+    {
+      "id": 165,
+      "name": "royal_hogs"
+    },
+    {
+      "id": 166,
+      "name": "royal_hogs_evo"
+    },
+    {
+      "id": 167,
+      "name": "royal_recruit"
+    },
+    {
+      "id": 168,
+      "name": "royal_recruits"
+    },
+    {
+      "id": 169,
+      "name": "royal_recruits_evo"
+    },
+    {
+      "id": 170,
+      "name": "rune_giant"
+    },
+    {
+      "id": 171,
+      "name": "santa_hog_rider"
+    },
+    {
+      "id": 172,
+      "name": "skeleton_army"
+    },
+    {
+      "id": 173,
+      "name": "skeleton_army_evo"
+    },
+    {
+      "id": 174,
+      "name": "skeleton_barrel"
+    },
+    {
+      "id": 175,
+      "name": "skeleton_barrel_evo"
+    },
+    {
+      "id": 176,
+      "name": "skeleton_dragons"
+    },
+    {
+      "id": 177,
+      "name": "skeleton_king"
+    },
+    {
+      "id": 178,
+      "name": "skeleton_king_ability"
+    },
+    {
+      "id": 179,
+      "name": "skeletons"
+    },
+    {
+      "id": 180,
+      "name": "skeletons_evo"
+    },
+    {
+      "id": 181,
+      "name": "sparky"
+    },
+    {
+      "id": 182,
+      "name": "spear_goblins"
+    },
+    {
+      "id": 183,
+      "name": "spirit_empress"
+    },
+    {
+      "id": 184,
+      "name": "suspicious_bush"
+    },
+    {
+      "id": 185,
+      "name": "terry"
+    },
+    {
+      "id": 186,
+      "name": "terry_ability"
+    },
+    {
+      "id": 187,
+      "name": "tesla"
+    },
+    {
+      "id": 188,
+      "name": "tesla_evo"
+    },
+    {
+      "id": 189,
+      "name": "the_log"
+    },
+    {
+      "id": 190,
+      "name": "the_log_aoe"
+    },
+    {
+      "id": 191,
+      "name": "three_musketeers"
+    },
+    {
+      "id": 192,
+      "name": "tombstone"
+    },
+    {
+      "id": 193,
+      "name": "tombstone_hero"
+    },
+    {
+      "id": 194,
+      "name": "tornado"
+    },
+    {
+      "id": 195,
+      "name": "tornado_aoe"
+    },
+    {
+      "id": 196,
+      "name": "valkyrie"
+    },
+    {
+      "id": 197,
+      "name": "valkyrie_evo"
+    },
+    {
+      "id": 198,
+      "name": "vines"
+    },
+    {
+      "id": 199,
+      "name": "vines_aoe"
+    },
+    {
+      "id": 200,
+      "name": "void"
+    },
+    {
+      "id": 201,
+      "name": "void_aoe"
+    },
+    {
+      "id": 202,
+      "name": "wall_breakers"
+    },
+    {
+      "id": 203,
+      "name": "wall_breakers_evo"
+    },
+    {
+      "id": 204,
+      "name": "warmth"
+    },
+    {
+      "id": 205,
+      "name": "warmth_aoe"
+    },
+    {
+      "id": 206,
+      "name": "witch"
+    },
+    {
+      "id": 207,
+      "name": "witch_evo"
+    },
+    {
+      "id": 208,
+      "name": "wizard"
+    },
+    {
+      "id": 209,
+      "name": "wizard_evo"
+    },
+    {
+      "id": 210,
+      "name": "wizard_hero"
+    },
+    {
+      "id": 211,
+      "name": "wizard_trio"
+    },
+    {
+      "id": 212,
+      "name": "x_bow"
+    },
+    {
+      "id": 213,
+      "name": "zap"
+    },
+    {
+      "id": 214,
+      "name": "zap_aoe"
+    },
+    {
+      "id": 215,
+      "name": "zap_evo"
+    },
+    {
+      "id": 216,
+      "name": "zappies"
+    }
+  ],
+  "info": {
+    "year": 2026,
+    "version": "1.0",
+    "contributor": "Label Studio"
+  }
+}

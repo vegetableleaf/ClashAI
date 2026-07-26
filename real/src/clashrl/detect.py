@@ -392,3 +392,67 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     if unmatched:
         print(f"[detect-import] {unmatched} label file(s) had no matching image (skipped)")
     print("[detect-import] ready to train:  python tools/detect/train.py")
+
+
+def add_frames(cfg, session_arg=None, count=120) -> None:
+    """Extract COUNT extra in-match frames from a recording into the detect dataset, as empty-label
+    images to hand-label. ADDITIVE + NON-DESTRUCTIVE: it only writes NEW frame indices (skipping any
+    already in data/detect) into images/train, so existing images -- and any Label Studio project
+    pointing at them -- are left untouched. Frames are sampled around your plays (guaranteed in-match).
+    """
+    root_sessions = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
+    if session_arg and Path(session_arg).exists():
+        session = Path(session_arg)
+    elif session_arg:
+        session = Path(root_sessions) / session_arg
+    else:
+        session = _latest_session(Path(root_sessions))
+    if session is None or not (session / "meta.json").exists():
+        print(f"[detect-frames] no such session: {session_arg}")
+        return
+    meta = json.loads((session / "meta.json").read_text(encoding="utf-8"))
+    events = [json.loads(ln) for ln in
+              (session / "events.jsonl").read_text(encoding="utf-8").splitlines() if ln.strip()]
+    video = next((session / n for n in ("video.mp4", "video.avi") if (session / n).exists()), None)
+    if video is None:
+        print(f"[detect-frames] {session.name}: no video")
+        return
+    region, frame_times = meta["region"], meta["frame_times"]
+    plays = _extract_plays(events, region, cfg.get("hand", "slots", default=[]),
+                           float(cfg.get("hand", "click_radius", default=0.06)),
+                           float(cfg.get("label", "pair_timeout", default=3.0)),
+                           float(cfg.get("label", "arena_top", default=0.10)),
+                           float(cfg.get("label", "arena_bottom", default=0.86)))
+    if not plays:
+        print(f"[detect-frames] {session.name}: no plays found (can't locate in-match frames)")
+        return
+
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    (root / "images" / "train").mkdir(parents=True, exist_ok=True)
+    (root / "labels" / "train").mkdir(parents=True, exist_ok=True)
+    existing = set()                                    # frame indices already in the dataset (any split)
+    for split in ("train", "val"):
+        for p in (root / "images" / split).glob(f"{session.name}_g*.jpg"):
+            try:
+                existing.add(int(p.stem.rsplit("_g", 1)[1]))
+            except (ValueError, IndexError):
+                pass
+
+    cap = cv2.VideoCapture(str(video))
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    q = int(cfg.get("detect", "jpeg_quality", default=92))
+    rng = random.Random()                               # unseeded: fresh frames each call
+    added = tries = 0
+    while added < count and tries < count * 12:
+        tries += 1
+        frame, fi = _read_at(cap, frame_times, rng.choice(plays)["t"] + rng.uniform(-2.0, 6.0), total)
+        if frame is None or fi in existing:
+            continue
+        existing.add(fi)
+        stem = f"{session.name}_g{fi:06d}"
+        cv2.imwrite(str(root / "images" / "train" / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
+        (root / "labels" / "train" / f"{stem}.txt").write_text("", encoding="utf-8")
+        added += 1
+    cap.release()
+    print(f"[detect-frames] {session.name}: added {added} new frames -> {root / 'images' / 'train'} "
+          f"(empty labels). Existing images + splits untouched -- re-sync Local Storage in Label Studio to pick them up.")
