@@ -16,11 +16,12 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
 from .model import PolicyNet
+from .threats import THREAT_DIM
 
 
 def _load_datasets(root):
     files = sorted(glob.glob(str(root / "*" / "dataset.npz")))
-    obs, acts, hands, nexts, elixirs, grid, deck = [], [], [], [], [], None, None
+    obs, acts, hands, nexts, elixirs, threats, grid, deck = [], [], [], [], [], [], None, None
     for f in files:
         d = np.load(f, allow_pickle=True)
         if len(d["obs"]) == 0 or "hands" not in d:
@@ -31,18 +32,21 @@ def _load_datasets(root):
         nexts.append(d["nexts"] if "nexts" in d else np.zeros_like(d["hands"]))
         elixirs.append(d["elixirs"] if "elixirs" in d
                        else np.zeros((len(d["hands"]), 1), np.float32))
+        threats.append(d["threats"] if "threats" in d
+                       else np.zeros((len(d["hands"]), THREAT_DIM), np.float32))
         grid = d["grid"]
         if "deck" in d:
             deck = [str(s) for s in d["deck"]]
     if not obs:
-        return None, None, None, None, None, None, None, 0
+        return None, None, None, None, None, None, None, None, 0
     return (np.concatenate(obs), np.concatenate(acts), np.concatenate(hands),
-            np.concatenate(nexts), np.concatenate(elixirs), grid, deck, len(files))
+            np.concatenate(nexts), np.concatenate(elixirs), np.concatenate(threats),
+            grid, deck, len(files))
 
 
 def train_bc(cfg) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    obs, acts, hands, nexts, elixirs, grid, deck, n_files = _load_datasets(root)
+    obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root)
     if obs is None:
         print("[train-bc] no identity-labeled datasets found. Build hand templates "
               "(`hand-templates`), then `record` and `label --all`.")
@@ -82,14 +86,16 @@ def train_bc(cfg) -> None:
     hand = torch.from_numpy(hands).float()
     nxt = torch.from_numpy(nexts).float()
     elx = torch.from_numpy(elixirs).float()
+    thr = torch.from_numpy(threats).float()
     card = torch.from_numpy(acts[:, 0].astype("int64"))
     cell = torch.from_numpy((acts[:, 2] * gw + acts[:, 1]).astype("int64"))  # gy*gw + gx
 
-    loader = DataLoader(TensorDataset(x, hand, nxt, elx, card, cell),
+    loader = DataLoader(TensorDataset(x, hand, nxt, elx, thr, card, cell),
                         batch_size=int(cfg.get("train", "batch_size", default=64)),
                         shuffle=True)
 
-    net = PolicyNet(in_ch=3, n_cards=n_cards, n_cells=n_cells).to(device)
+    threat_dim = int(thr.shape[1])
+    net = PolicyNet(in_ch=3, n_cards=n_cards, n_cells=n_cells, threat_dim=threat_dim).to(device)
     opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)))
     ce = nn.CrossEntropyLoss()
     epochs = int(cfg.get("train", "bc_epochs", default=10))
@@ -97,10 +103,10 @@ def train_bc(cfg) -> None:
     for ep in range(1, epochs + 1):
         net.train()
         tot, sc, cc, n = 0.0, 0, 0, 0
-        for xb, hb, nb, eb, cardb, cellb in loader:
-            xb, hb, nb, eb = xb.to(device), hb.to(device), nb.to(device), eb.to(device)
+        for xb, hb, nb, eb, tb, cardb, cellb in loader:
+            xb, hb, nb, eb, tb = xb.to(device), hb.to(device), nb.to(device), eb.to(device), tb.to(device)
             cardb, cellb = cardb.to(device), cellb.to(device)
-            card_logits, cell_logits = net(xb, hb, nb, eb)
+            card_logits, cell_logits = net(xb, hb, nb, eb, tb)
             card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
             loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
             opt.zero_grad()
@@ -121,6 +127,7 @@ def train_bc(cfg) -> None:
         "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96])),
         "n_cards": n_cards,
         "n_cells": n_cells,
+        "threat_dim": threat_dim,
         "deck": deck,
     }, ckpt)
     print(f"[train-bc] saved policy to {ckpt}")

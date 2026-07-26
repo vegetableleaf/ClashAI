@@ -16,6 +16,7 @@ from .capture import WindowCapture
 from .controller import Controller
 from .reward import TowerTracker, defensive_cell, threat_front, threat_side, weaker_princess_cell
 from .states import GameState
+from .threats import ThreatTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -56,8 +57,9 @@ def play(cfg) -> None:
     ckpt = torch.load(ckpt_path, map_location="cpu")
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
+    threat_dim = int(ckpt.get("threat_dim", 14))
     device = _pick_device(cfg)
-    net = PolicyNet(3, n_cards, n_cells).to(device)
+    net = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim).to(device)
     net.load_state_dict(ckpt["model"])
     net.eval()
 
@@ -73,6 +75,7 @@ def play(cfg) -> None:
                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
     hp_tracker = TowerHpTracker(cfg)          # enemy princess HP, for the rocket redirect
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
+    threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     from .cards import CardDB
     _db = CardDB(cfg)
@@ -124,12 +127,14 @@ def play(cfg) -> None:
             return
         next_vec = vision.next_onehot(vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
+        threat_vec = threat_tracker.update(frame, time.time()).vector()
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
         ev = torch.tensor([[elixir / 10.0]], dtype=torch.float32, device=device)
+        tv = torch.from_numpy(threat_vec).unsqueeze(0).float().to(device)
         with torch.no_grad():
-            card_logits, cell_logits = net(x, hv, nv, ev)
+            card_logits, cell_logits = net(x, hv, nv, ev, tv)
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
         if random.random() < eps:
             card_id = random.choice([c for c in hand_ids if c >= 0])
@@ -179,6 +184,7 @@ def play(cfg) -> None:
             if state == GameState.IN_MATCH:   # new match -> reset the tower trackers
                 hp_tracker.reset()
                 tower_tracker.reset()
+                threat_tracker.reset()
             prev = state
 
         if state == GameState.HOME:

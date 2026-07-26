@@ -42,18 +42,18 @@ def _pick_device(cfg):
         return "cpu"
 
 
-def _build_net(cfg, device, n_cards, n_cells):
+def _build_net(cfg, device, n_cards, n_cells, threat_dim=14):
     import torch.nn as nn
     from .model import PolicyNet
 
     class DQN(nn.Module):
         def __init__(self):
             super().__init__()
-            self.policy = PolicyNet(3, n_cards, n_cells)
+            self.policy = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim)
             self.gate = nn.Linear(self.policy.embed_dim, 2)  # [wait, play]
 
-        def forward(self, x, hand, nxt=None, elx=None):
-            z = self.policy.features_vec(x, hand, nxt, elx)
+        def forward(self, x, hand, nxt=None, elx=None, thr=None):
+            z = self.policy.features_vec(x, hand, nxt, elx, thr)
             return self.policy.card_head(z), self.policy.cell_head(z), self.gate(z)
 
     return DQN().to(device)
@@ -80,13 +80,14 @@ def train_rl(cfg) -> None:
     ckpt = torch.load(init_path, map_location="cpu")
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
+    threat_dim = int(ckpt.get("threat_dim", 14))
     deck = ckpt.get("deck")
 
-    net = _build_net(cfg, device, n_cards, n_cells)
+    net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
     net.policy.load_state_dict(ckpt["model"])
     if "gate" in ckpt:
         net.gate.load_state_dict(ckpt["gate"])
-    target = _build_net(cfg, device, n_cards, n_cells)
+    target = _build_net(cfg, device, n_cards, n_cells, threat_dim)
     target.load_state_dict(net.state_dict())
     target.eval()
     print(f"[train-rl] initialised from {init_path.name} on {device} "
@@ -140,7 +141,7 @@ def train_rl(cfg) -> None:
     def hand_to_tensor(hand_vec):
         return torch.from_numpy(np.asarray(hand_vec, np.float32)).unsqueeze(0).to(device)
 
-    def choose(obs, hand_vec, next_vec, elixir_vec, eps, elixir):
+    def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir):
         in_hand = [i for i, v in enumerate(hand_vec) if v > 0.5]
         if not in_hand:                      # no card recognized -> can only wait
             return (0, 0, 0)
@@ -153,8 +154,9 @@ def train_rl(cfg) -> None:
         hv = hand_to_tensor(hand_vec)
         nv = hand_to_tensor(next_vec)
         ev = hand_to_tensor(elixir_vec)
+        tv = hand_to_tensor(threat_vec)
         with torch.no_grad():
-            cq, ceq, gq = net(obs_to_tensor(obs), hv, nv, ev)
+            cq, ceq, gq = net(obs_to_tensor(obs), hv, nv, ev, tv)
         cq = cq.masked_fill(hv < 0.5, float("-inf"))     # only cards in hand
         play_val = gq[0, 1] + cq.max() + ceq.max()
         wait_val = gq[0, 0]
@@ -174,6 +176,8 @@ def train_rl(cfg) -> None:
         nnxt = torch.cat([hand_to_tensor(b[8]) for b in batch])
         elx = torch.cat([hand_to_tensor(b[9]) for b in batch])
         nelx = torch.cat([hand_to_tensor(b[10]) for b in batch])
+        thr = torch.cat([hand_to_tensor(b[11]) for b in batch])
+        nthr = torch.cat([hand_to_tensor(b[12]) for b in batch])
         play = torch.tensor([b[2][0] for b in batch], device=device)
         card = torch.tensor([b[2][1] for b in batch], device=device).unsqueeze(1)
         cell = torch.tensor([b[2][2] for b in batch], device=device).unsqueeze(1)
@@ -181,12 +185,12 @@ def train_rl(cfg) -> None:
         done = torch.tensor([b[4] for b in batch], dtype=torch.float32, device=device)
 
         net.train()
-        cq, ceq, gq = net(obs, hand, nxt, elx)
+        cq, ceq, gq = net(obs, hand, nxt, elx, thr)
         q_wait = gq[:, 0]
         q_play = gq[:, 1] + cq.gather(1, card).squeeze(1) + ceq.gather(1, cell).squeeze(1)
         q_sa = torch.where(play == 1, q_play, q_wait)
         with torch.no_grad():
-            cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx)
+            cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
             cq2 = cq2.masked_fill(nhand < 0.5, float("-inf"))
             card_max = torch.nan_to_num(cq2.max(1).values, neginf=0.0)   # empty hand -> 0
             v_play = gq2[:, 1] + card_max + ceq2.max(1).values
@@ -204,6 +208,7 @@ def train_rl(cfg) -> None:
             "model": net.policy.state_dict(),
             "gate": net.gate.state_dict(),
             "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
+            "threat_dim": threat_dim,
             "deck": deck,
             "arena_size": ckpt.get("arena_size", list(cfg.get("observation", "arena_size", default=[64, 96]))),
         }, rl_path)
@@ -226,17 +231,19 @@ def train_rl(cfg) -> None:
             hand = env.hand_vec.copy()
             nxt = env.next_vec.copy()
             elx = env.elixir_vec.copy()
+            thr = env.threat_vec.copy()
             while running["v"]:
                 eps = epsilon(step)
-                action = choose(obs, hand, nxt, elx, eps, env.elixir)
+                action = choose(obs, hand, nxt, elx, thr, eps, env.elixir)
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
                     tl.add(env._last_frame)         # collect a frame for the training timelapse
                 nhand = env.hand_vec.copy()
                 nnxt = env.next_vec.copy()
                 nelx = env.elixir_vec.copy()
-                replay.append((obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx))
-                obs, hand, nxt, elx = nobs, nhand, nnxt, nelx
+                nthr = env.threat_vec.copy()
+                replay.append((obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx, thr, nthr))
+                obs, hand, nxt, elx, thr = nobs, nhand, nnxt, nelx, nthr
                 ep_reward += reward
                 plays += action[0]
                 loss = optimise()

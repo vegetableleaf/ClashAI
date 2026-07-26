@@ -17,6 +17,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from .threats import read_threat_window
 from .vision import Vision
 
 
@@ -96,7 +97,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     cap = cv2.VideoCapture(str(video))
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     vision = Vision(cfg)
-    obs, acts, hands, nexts, elixirs = [], [], [], [], []
+    obs, acts, hands, nexts, elixirs, threats = [], [], [], [], [], []
     skipped = 0
     dbg_dir = session / "labeled"
     if debug:
@@ -105,9 +106,10 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     for k, p in enumerate(plays):
         fi = bisect.bisect_left(frame_times, p["t"])
         fi = max(0, min(fi, max(total - 1, 0)))
-        cap.set(cv2.CAP_PROP_POS_FRAMES, fi)
-        ok, frame = cap.read()
-        if not ok:
+        # read the enemy threat over the short window ending at the play (motion + projectile),
+        # so the dataset carries the same threat vector the live env feeds the policy.
+        thr, frame = read_threat_window(cap, fi, frame_times, cfg)
+        if frame is None:
             continue
         # identity of the played card: recognize the hand, take the selected slot
         hand_ids = vision.recognize_hand(frame)
@@ -122,6 +124,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
         hands.append(vision.hand_multihot(hand_ids))
         nexts.append(vision.next_onehot(vision.recognize_next(frame)))
         elixirs.append([vision.read_elixir(frame) / 10.0])
+        threats.append(thr.vector())
         if debug:
             f = frame.copy()
             sx, sy = slots[p["slot"]]
@@ -142,6 +145,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
             hands=np.asarray(hands, dtype=np.float32),
             nexts=np.asarray(nexts, dtype=np.float32),
             elixirs=np.asarray(elixirs, dtype=np.float32),
+            threats=np.asarray(threats, dtype=np.float32),
             grid=np.asarray([int(gw), int(gh)], dtype=np.int64),
             deck=np.asarray(vision.deck_keys),
         )

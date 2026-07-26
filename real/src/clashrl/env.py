@@ -29,6 +29,7 @@ from .reward import (TowerTracker, defensive_cell, enemy_mass, enemy_mass_at,
                      near_enemy_king, near_enemy_princess, near_my_king, threat_front,
                      threat_side, troop_size_at, weaker_princess_cell)
 from .states import GameState
+from .threats import ThreatTracker, Threat
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -194,6 +195,12 @@ class LiveMatchEnv:
         self._prev_mass = 0.0
         self._prev_my_hp = 0.0
         self._tesla = None
+        # --- reactive play: live enemy-threat vector (policy input) + foresight rewards ---
+        self.threat_tracker = ThreatTracker(cfg)
+        self.threat_vec = Threat.zeros()          # normalized threat features -> policy input
+        self._last_threat = Threat()              # threat at action-selection time (for reward)
+        self.threat_counter_delivery = float(cfg.get("rewards", "threat_counter_delivery", default=4.0))
+        self.threat_tornado_pull = float(cfg.get("rewards", "threat_tornado_pull", default=4.0))
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -216,6 +223,11 @@ class LiveMatchEnv:
         self.next_id = self.vision.recognize_next(frame)
         self.next_vec = self.vision.next_onehot(self.next_id)
 
+    def _update_threat(self, frame) -> None:
+        """Advance the live enemy-threat read from the current frame -> policy input vector."""
+        self._last_threat = self.threat_tracker.update(frame, time.time())
+        self.threat_vec = self._last_threat.vector()
+
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
         """Navigate menus until a match starts; return the first observation."""
@@ -233,6 +245,8 @@ class LiveMatchEnv:
                 self.elixir = self.vision.read_elixir(frame)
                 self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)
                 self._read_hand(frame)
+                self.threat_tracker.reset()
+                self._update_threat(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame
                 self._prev_mass = enemy_mass(frame, self.cfg)
@@ -350,6 +364,33 @@ class LiveMatchEnv:
                     self._recent_ranged = None            # credit the combo once
         return r
 
+    def _threat_counter_reward(self, play: bool, card_id: int, cell: int) -> float:
+        """Foresight counters keyed off the enemy-threat read at action-selection time:
+        * Royal Delivery dropped ON a landing goblin (green) swarm, or onto the tower a
+          projectile (e.g. a thrown Goblin Barrel) is arcing toward -> threat_counter_delivery.
+        * Tornado near YOUR king while a goblin swarm is present -> threat_tornado_pull
+          (pull the goblins onto the king to tank + kill them as they land).
+        These teach the small-foresight plays the CNN can't read off the tiny arena image."""
+        if not play:
+            return 0.0
+        thr = self._last_threat
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        goblins = thr.color_label() == "green" and thr.size_label() in ("swarm", "single_big")
+        r = 0.0
+        if card_id in self.royal_delivery_ids:
+            on_threat = (thr.centroid is not None
+                         and abs(cx - thr.centroid[0]) <= self.spell_radius
+                         and abs(cy - thr.centroid[1]) <= self.spell_radius)
+            proj = thr.proj
+            proj_at_my_tower = (proj is not None and proj.toward_tower
+                                and str(proj.target or "").startswith("M"))
+            if (goblins and on_threat) or proj_at_my_tower:
+                r += self.threat_counter_delivery
+        if card_id in self.tornado_ids and goblins and near_my_king(cx, cy, self.cfg):
+            r += self.threat_tornado_pull
+        return r
+
     def step(self, action: Action):
         play, card_id, cell = action
         if play:                                  # rocket -> weaker princess; Tesla/Ice Wizard -> defence
@@ -415,11 +456,13 @@ class LiveMatchEnv:
                     reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
                 reward += self.cycle_reward           # cheap card played while rocket isn't in hand -> cycling to it
+            reward += self._threat_counter_reward(bool(play), card_id, cell)   # foresight counters
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
             self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
             self._read_hand(frame)
+            self._update_threat(frame)
             self._last_obs = self.vision.observe(frame)
             self._last_frame = frame
             return self._last_obs, reward, False, {"elixir": self.elixir}

@@ -235,6 +235,28 @@ def read_threat(frame: np.ndarray, cfg=None) -> Threat:
     return ThreatTracker(cfg).update(frame, t=None)
 
 
+def read_threat_window(cap, fi: int, times, cfg=None, window: int = 8):
+    """Run a fresh ThreatTracker over frames [fi-window, fi] of an open cv2.VideoCapture
+    and return (Threat at fi, frame at fi). The short run gives the tracker the history it
+    needs for approach speed + projectile detection. Used by the labeler so the dataset
+    carries the same threat vector the live env will feed the policy. Returns (Threat(), None)
+    if the frame can't be read.
+    """
+    tk = ThreatTracker(cfg)
+    start = max(0, fi - window)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, start)
+    thr = Threat()
+    frame = None
+    for k in range(start, fi + 1):
+        ok, f = cap.read()
+        if not ok:
+            break
+        frame = f
+        t = times[k] if k < len(times) else k / 12.0
+        thr = tk.update(f, t)
+    return thr, frame
+
+
 class ThreatTracker:
     """Stateful threat reader: feed frames in order to get approach speed + a
     best-effort projectile-in-flight detector. Reset per match."""

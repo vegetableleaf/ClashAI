@@ -185,6 +185,21 @@ Newest entries are at the bottom.
   feed the threat vector into PolicyNet + reward the key foresight counters (Royal Delivery
   onto a threatened tower; tornado pulling a landed goblin swarm to your king) -- that step
   needs a re-label + retrain.
+- Reactive-play PHASE 2 -- enemy-threat vector as a POLICY INPUT + foresight reward shaping.
+  (1) ARCHITECTURE: PolicyNet gains a threat branch (threat_fc; embed 256+32+16+8 -> +16 =
+  328). The 14-value threat vector (colour / size / count / lane / depth / speed + projectile,
+  from clashrl.threats) is fed alongside the image / hand / next-card / elixir and threaded
+  end-to-end: the labeler writes a `threats` array into dataset.npz, BC trains on it, and the
+  live env + live play + the RL replay/DQN all carry it -- so behaviour-cloning learns your
+  card-vs-threat habits and RL keeps + sharpens them. Back-compatible (old datasets/checkpoints
+  default to zero threats). (2) FORESIGHT REWARDS (env): Royal Delivery dropped ON a landing
+  goblin (green) swarm -- or onto the tower a projectile (Goblin Barrel) is arcing toward --
+  earns rewards.threat_counter_delivery; a Tornado by YOUR king while a goblin swarm is present
+  earns rewards.threat_tornado_pull (pull them into the king to tank + kill). Both are keyed off
+  the live ThreatTracker read at action-selection time. Takes effect after the FULL rebuild:
+  `label --all` -> `train-bc` -> (delete data/policy_rl.pt) -> `train-rl`. NOTE: the threat
+  thresholds are tuned to the current (clean) arena; recordings on the older red-tint arena give
+  noisier threat features.
 
 
 ------------------------------------------------------------------------------
