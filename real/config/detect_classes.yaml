@@ -147,3 +147,46 @@ classes:
   - warmth
   - wizard_trio
   - zappies
+
+  # --- evolution variants (auto-added from the card KB) ---
+  - archers_evo
+  - baby_dragon_evo
+  - barbarians_evo
+  - bats_evo
+  - battle_ram_evo
+  - bomber_evo
+  - cannon_evo
+  - dart_goblin_evo
+  - electro_dragon_evo
+  - executioner_evo
+  - firecracker_evo
+  - furnace_evo
+  - giant_snowball_evo
+  - goblin_barrel_evo
+  - goblin_cage_evo
+  - goblin_drill_evo
+  - goblin_giant_evo
+  - hunter_evo
+  - ice_spirit_evo
+  - inferno_dragon_evo
+  - knight_evo
+  - lumberjack_evo
+  - mega_knight_evo
+  - minion_horde_evo
+  - mortar_evo
+  - musketeer_evo
+  - pekka_evo
+  - princess_evo
+  - royal_ghost_evo
+  - royal_giant_evo
+  - royal_hogs_evo
+  - royal_recruits_evo
+  - skeleton_army_evo
+  - skeleton_barrel_evo
+  - skeletons_evo
+  - tesla_evo
+  - valkyrie_evo
+  - wall_breakers_evo
+  - witch_evo
+  - wizard_evo
+  - zap_evo

@@ -239,13 +239,16 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}
     vision = Vision(cfg)
-    # map deck card index -> detection class index (only cards whose base key is in the taxonomy;
-    # spells like rocket/tornado/royal_delivery don't spawn a trackable unit at the tap -> skipped)
+    # map deck card index -> detection class index. Prefer the EXACT deck key so an evolved
+    # card (e.g. tesla_evo) auto-labels as its own class when that class exists, falling back to
+    # the base key otherwise. Spells (rocket/tornado/royal_delivery) don't spawn a trackable unit
+    # at the tap, so they simply won't have a mappable troop class and are skipped.
     card_class = {}
     for i, key in enumerate(vision.deck_keys):
         base = key[:-4] if key.endswith("_evo") else key
-        if base in name_to_idx:
-            card_class[i] = name_to_idx[base]
+        cls = name_to_idx.get(key, name_to_idx.get(base))
+        if cls is not None:
+            card_class[i] = cls
 
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     if do_all:
