@@ -102,6 +102,7 @@ def play(cfg) -> None:
         "a_bot": actions.a_bot,
         "center_bias": float(cfg.get("env", "defense_center_bias", default=0.10)),
         "center_depth_frac": float(cfg.get("env", "defense_center_depth_frac", default=0.6)),
+        "back_limit": float(cfg.get("env", "defense_back_limit", default=0.58)),
     }
     threat_min_frac = float(cfg.get("env", "defense_threat_frac", default=0.02))
 

@@ -255,6 +255,11 @@ def defensive_cell(kind, side, front_y, gw, gh, params):
     middle where BOTH princess towers help. Because the centre offset covers part of the
     reach, the depth behind the front is only ``center_depth_frac`` x the unit's range.
     ``side`` is -1 left / +1 right; ``front_y`` is the deepest enemy troop y on that lane.
+
+    The depth is capped at ``back_limit`` so the placement stays on the central grass in FRONT
+    of your king tower. The centre column deeper than that is the king tower's own footprint,
+    where a troop can't be deployed -- an uncapped defender aimed there just fails to place (the
+    card is selected but the arena tap is a no-op), so the bot 'shuffles' it instead of playing.
     """
     if kind == "musketeer_evo":
         nx, ny = params["musketeer_evo"]
@@ -262,6 +267,7 @@ def defensive_cell(kind, side, front_y, gw, gh, params):
         rng = params["range_offsets"].get(kind, 0.13)
         nx = 0.48 + side * params["center_bias"]
         ny = min(front_y + rng * params["center_depth_frac"], params["a_bot"])
+        ny = min(ny, params.get("back_limit", 0.58))   # stay on the central grass, off the king tower
     gx = min(max(int(nx * gw), 0), gw - 1)
     gy = min(max(int(ny * gh), 0), gh - 1)
     return gy * gw + gx

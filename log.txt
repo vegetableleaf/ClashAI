@@ -269,6 +269,31 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26  —  Defensive cards wouldn't deploy: placed ON your king tower
+------------------------------------------------------------------------------
+- BUG: Tesla / Ice Wizard / Ronin (the defensive_kind cards) "tapped rapidly but
+  never played", even at full elixir. Cause: the centre-placement change (2026-07-25)
+  places these at nx~=0.48 (dead centre), depth = front + range behind the enemy front.
+  For anything but a shallow push that depth is ny 0.67-0.81 -- exactly YOUR king
+  tower's footprint (my_towers king anchor 0.48,0.72). You can't deploy a troop on your
+  own tower, so the arena tap is a no-op: the card stays selected and the bot shuffles.
+  Spells (rocket/tornado) and the cheap cyclers aren't centre-overridden, so they played
+  fine -- which is why only these three failed. Confirmed on a real frame + placement math.
+- FIX (keeps the "central grass" intent the user drew, just off the tower):
+  * reward.defensive_cell caps the depth at env.defense_back_limit (0.58) -> defenders land
+    on the central grass IN FRONT of the king (the red-box area), never on it.
+  * actions.deploy_clamp now also KING-AVOIDS: any troop cell landing on your king footprint
+    (my_towers king anchor +/- action.king_avoid_half [0.09,0.06]) is pulled to the row just
+    in front -- a general guard covering the no-threat / model-cell path too.
+  * action.deploy_top 0.47 -> 0.44: opens the central grass just below the river (the humans'
+    own deploy range starts there) so more of that space is usable.
+  * back_limit threaded through env + play defense_params.
+- Validated: for side +/-1 and fronts 0.46-0.80, all three cards now place at
+  (0.44/0.56, 0.46-0.54) -- central grass, off the king (0.66-0.78); a dead-on-king cell is
+  pulled to (0.44,0.54). MECHANICAL fix (env + live play) -- effective immediately, no retrain.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

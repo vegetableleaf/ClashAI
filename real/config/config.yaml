@@ -89,7 +89,11 @@ observation:
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
   grid: [8, 12]                  # placement grid: columns x rows over the arena
-  deploy_top: 0.47               # troops can only deploy on YOUR half (below the river); a troop cell above this y is clamped down so the card actually deploys (spells can target anywhere)
+  deploy_top: 0.44               # troops can only deploy on YOUR half (below the river); a cell above this y is clamped
+                                 # DOWN so the card actually deploys (spells target anywhere). 0.44 (was 0.47) opens the
+                                 # central grass just below the river -- the deployable space in front of your towers.
+  king_avoid_half: [0.09, 0.06]  # half-size of YOUR king tower's footprint (around the my_towers king anchor). A troop
+                                 # cell landing on it is pulled to the row just in front -- you can't deploy on your own tower.
 
 # --- Reward shaping (RL fine-tune) ---------------------------------------
 # Rocket-cycle wins on near-perfect DEFENCE, so defence is weighted well above
@@ -281,6 +285,8 @@ env:
   range_offsets: {long: 0.15, short: 0.12, melee: 0.05}  # unit attack reach (normalized y), by KB range
   defense_center_bias: 0.10            # x offset from centre (0.48) toward the threatened side
   defense_center_depth_frac: 0.6       # depth behind the front = this x the unit's range (centre covers the rest)
+  defense_back_limit: 0.58             # DEEPEST a defender is placed (normalized y): keeps it on the central grass in FRONT
+                                       # of your king tower. Deeper lands ON the king (undeployable) so the card never plays.
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Tesla kill-credit (rewards.tesla_kill): after a Tesla is placed, count enemy troops it

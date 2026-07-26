@@ -154,6 +154,7 @@ class LiveMatchEnv:
             "a_bot": self.actions.a_bot,
             "center_bias": float(cfg.get("env", "defense_center_bias", default=0.10)),
             "center_depth_frac": float(cfg.get("env", "defense_center_depth_frac", default=0.6)),
+            "back_limit": float(cfg.get("env", "defense_back_limit", default=0.58)),
         }
         # king HP boxes (only shown once a king is hit): enemy -> spell penalty; mine -> tank reward
         self._king_box = cfg.get("env", "enemy_king_hp_box", default=[0.41, 0.015, 0.55, 0.08])

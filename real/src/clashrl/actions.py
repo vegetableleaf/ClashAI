@@ -16,6 +16,9 @@ class ActionSpace:
         self.a_bot = float(cfg.get("label", "arena_bottom", default=0.86))
         self.deploy_top = float(cfg.get("action", "deploy_top", default=0.47))
         self.chat_box = cfg.get("buttons", "chat_avoid_box", default=None)
+        _my_towers = cfg.get("env", "my_towers", default=[[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]])
+        self.king_xy = _my_towers[2] if len(_my_towers) >= 3 else [0.48, 0.72]
+        self.king_half = cfg.get("action", "king_avoid_half", default=[0.09, 0.06])
         self.n_slots = len(self.slots)
         self.n_cells = int(self.gw) * int(self.gh)
 
@@ -41,7 +44,8 @@ class ActionSpace:
         royal delivery) can only deploy on YOUR half of the river. A restricted card whose
         cell is in the enemy half can't be placed -- the card tap just selects it and the arena
         tap does nothing, so the bot 'shuffles' cards without deploying. Clamp such cells down
-        to the deploy line; ``anywhere`` cards pass through unchanged."""
+        to the deploy line; ``anywhere`` cards pass through unchanged. A cell landing on YOUR OWN
+        king tower is likewise undeployable, so it's pulled to the row just in front of the king."""
         if anywhere:
             return cell
         gw, gh = int(self.gw), int(self.gh)
@@ -49,4 +53,12 @@ class ActionSpace:
         min_gy = int(round(self.deploy_top * gh))   # first grid row on your side of the river
         if gy < min_gy:
             gy = min_gy
+        # A troop can't be deployed ON your king tower (centre-back): the place-tap is a no-op
+        # and the card just 'shuffles'. If the cell sits on the king's footprint, pull it to the
+        # row just in FRONT of the king (toward the river), where it actually deploys.
+        kx, ky = self.king_xy
+        khx, khy = self.king_half
+        nx, ny = (gx + 0.5) / gw, (gy + 0.5) / gh
+        if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
+            gy = max(min_gy, int((ky - khy) * gh) - 1)
         return gy * gw + gx
