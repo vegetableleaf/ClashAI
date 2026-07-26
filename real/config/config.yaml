@@ -102,12 +102,14 @@ action:
 rewards:
   # -- match + tower outcomes --
   take_enemy_tower: 1.0          # destroy an enemy tower (offence)
-  lose_own_tower: -3.0           # lose one of yours (defence -- weighted heavier)
+  lose_own_tower: -3.0           # MAX penalty for losing one of your princess towers -- charged
+                                 # GRADUALLY as it loses HP (see tower_hp) up to this, then topped
+                                 # up to it on destruction; for the KING it's a flat hit on its fall
   win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
   loss: -10.0                    # losing is very costly
   # -- tower HP chip (tower_hp) --
   hp_scale: 2.0                  # enemy-princess chip (offence); a full tower's chip = this
-  hp_defense_scale: 5.0          # multiplier on HP lost from YOUR princess (defence)
+                                 # (your princess chip is penalised gradually up to |lose_own_tower|, not hp_scale)
   # -- troop combat + spell effects (env) --
   troop_defeat: 3.0              # per unit of enemy-troop mass removed by ANY means (defeating troops)
   clean_kill_bonus: 2.0          # x multiplier when your towers took no HP that step (killed it early)

@@ -202,11 +202,12 @@ def read_tower_hp(frame: np.ndarray, cfg=None, reader: Optional[DigitReader] = N
 class TowerHpTracker:
     """Consensus + monotonic HP tracker that emits the chip-damage reward.
 
-    Reward per step = normalized HP lost since the last confirmed value, summed
-    over towers: chipping an **enemy** princess is positive, losing HP on **your**
-    princess is negative. Normalized so a full tower's worth of chip damage
-    (``hp_full``) equals ``rewards.hp_scale`` (default 1.0), matching the ~±1.0
-    scale of the destruction reward.
+    Reward per step = HP lost since the last confirmed value. Chipping an **enemy**
+    princess is positive (a full tower's chip = ``rewards.hp_scale``). Losing HP on
+    **your** princess is negative and GRADUAL: it accumulates to at most
+    ``|rewards.lose_own_tower|`` per tower (the env tops it up to the full amount when the
+    tower is destroyed), so chip damage on your tower costs PROPORTIONALLY instead of a
+    flat hit only when it falls.
     """
 
     def __init__(self, cfg=None, reader: Optional[DigitReader] = None):
@@ -220,9 +221,10 @@ class TowerHpTracker:
         self.min_conf = float(cfg.get("env", "hp_min_conf", default=0.55)) if cfg else 0.55
         self.max_chip = float(cfg.get("env", "hp_max_chip", default=1500.0)) if cfg else 1500.0
         self.scale = float(cfg.get("rewards", "hp_scale", default=1.0)) if cfg else 1.0
-        # defence weighted heavier than offence: losing HP on YOUR princess costs more
-        # than the reward for the same chip on the enemy's (rocket-cycle lives on defence).
-        self.defense_scale = float(cfg.get("rewards", "hp_defense_scale", default=1.0)) if cfg else 1.0
+        # Defence penalty for YOUR princess HP loss is GRADUAL, accumulating to at most this
+        # magnitude per tower (== |lose_own_tower|) and topped up to it on destruction -- so
+        # chip damage costs proportionally rather than a flat hit only when the tower falls.
+        self.lose_mag = abs(float(cfg.get("rewards", "lose_own_tower", default=-3.0))) if cfg else 3.0
         self.enemy_boxes, self.my_boxes = _boxes(cfg)
         self.reader = reader if reader is not None else (DigitReader() if self.enabled else None)
         if not (self.reader and self.reader.ok):
@@ -235,8 +237,10 @@ class TowerHpTracker:
         self.my_hp = [self.my_full] * len(self.my_boxes)
         self._enemy_cand: List[Tuple[Optional[int], int]] = [(None, 0)] * len(self.enemy_boxes)
         self._my_cand: List[Tuple[Optional[int], int]] = [(None, 0)] * len(self.my_boxes)
+        self._my_applied = [0.0] * len(self.my_boxes)   # defence penalty already charged per my tower
 
-    def _update_side(self, frame, boxes, hp, cand, enemy: bool, full: float) -> float:
+    def _update_side(self, frame, boxes, hp, cand, full: float) -> float:
+        """Enemy OFFENCE chip: + fraction of a tower's HP lost since the last confirmed read."""
         reward = 0.0
         for i, box in enumerate(boxes):
             val, conf = self.reader.read(_crop(frame, box))
@@ -247,15 +251,45 @@ class TowerHpTracker:
             if cand[i][1] < self.consensus:
                 continue
             if val < hp[i] and (hp[i] - val) <= self.max_chip:
-                dmg = (hp[i] - val) / full
+                reward += (hp[i] - val) / full
                 hp[i] = val
-                reward += dmg if enemy else -dmg * self.defense_scale
         return reward
 
+    def _update_my(self, frame) -> float:
+        """DEFENCE: penalise YOUR princess HP loss GRADUALLY, accumulating to at most
+        ``lose_mag`` per tower (absolute reward units, independent of hp_scale)."""
+        reward = 0.0
+        for i, box in enumerate(self.my_boxes):
+            val, conf = self.reader.read(_crop(frame, box))
+            if val is None or conf < self.min_conf:
+                continue
+            cv, cc = self._my_cand[i]
+            self._my_cand[i] = (val, cc + 1) if val == cv else (val, 1)
+            if self._my_cand[i][1] < self.consensus:
+                continue
+            if val < self.my_hp[i] and (self.my_hp[i] - val) <= self.max_chip:
+                frac = (self.my_hp[i] - val) / self.my_full
+                self.my_hp[i] = val
+                pen = min(frac * self.lose_mag, max(0.0, self.lose_mag - self._my_applied[i]))
+                self._my_applied[i] += pen
+                reward -= pen
+        return reward
+
+    def on_my_tower_destroyed(self, i: int) -> float:
+        """Top-up when YOUR princess tower ``i`` is latched destroyed: the part of the full
+        -lose_mag that gradual chip hasn't already charged (covers a tower bursted faster than
+        its HP could be read, or read while hp_reward is off). Returns a <= 0 reward."""
+        if not (0 <= i < len(self._my_applied)):
+            return 0.0
+        rem = max(0.0, self.lose_mag - self._my_applied[i])
+        self._my_applied[i] = self.lose_mag
+        return -rem
+
     def step(self, frame: np.ndarray) -> float:
-        """Normalized chip-damage reward since the last step (0 if disabled)."""
+        """Chip-damage reward since the last step (0 if disabled): the enemy offence chip
+        (scaled by hp_scale) minus YOUR gradual defence penalty (accumulating to lose_mag)."""
         if not self.enabled:
             return 0.0
-        r = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, True, self.full)
-        r += self._update_side(frame, self.my_boxes, self.my_hp, self._my_cand, False, self.my_full)
-        return r * self.scale
+        r = self._update_side(frame, self.enemy_boxes, self.enemy_hp, self._enemy_cand, self.full) * self.scale
+        r += self._update_my(frame)
+        return r

@@ -435,7 +435,13 @@ class LiveMatchEnv:
 
         state = self.vision.detect_state(frame)
         if state == GameState.IN_MATCH:
+            prev_princess = list(self.tower.mine_alive[:2])
             reward = self.tower.step(frame) + self.tower_hp.step(frame)
+            # a felled princess -> top its GRADUAL HP penalty up to the full lose_own_tower
+            # (covers a tower bursted faster than its HP could be read, or hp_reward off)
+            for i in range(len(prev_princess)):
+                if prev_princess[i] and not self.tower.mine_alive[i]:
+                    reward += self.tower_hp.on_my_tower_destroyed(i)
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)

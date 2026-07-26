@@ -213,6 +213,17 @@ Newest entries are at the bottom.
   (the rocket is the only card that crosses the river to reach it). Takes effect after the full
   rebuild (label --all -> train-bc -> del data/policy_rl.pt -> train-rl). NOTE: the siege
   thresholds (_BEHIND_MIN / _SIEGE_*) in threats.py are best-effort; tune with verify --threats.
+- GRADUAL own-tower penalty (better per-play credit). Losing HP on YOUR princess tower is now
+  penalised PROPORTIONALLY as it's chipped -- accumulating up to |rewards.lose_own_tower| (-3)
+  per tower and topped up to exactly that on destruction -- instead of a flat -3 only when the
+  tower fell. So a play that concedes chip is penalised at that moment (easier for the DQN's
+  per-step credit assignment to attribute), and a fully-lost princess still totals -3.
+  tower_hp.TowerHpTracker owns the gradual charge (_update_my, capped + accumulated in
+  _my_applied, in absolute units -- no longer x hp_scale x hp_defense_scale, which is retired);
+  env tops it up on a princess fall via on_my_tower_destroyed(i); reward.TowerTracker now only
+  emits the flat lose penalty for the KING (princesses are gradual, so no double-count). Verified
+  a fully-lost princess = exactly -3.000 (gradual), and a burst-without-HP-reads = -3.0 (fallback).
+  Reward change -> effective on the next train-rl.
 
 
 ------------------------------------------------------------------------------

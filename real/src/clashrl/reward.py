@@ -305,8 +305,14 @@ class TowerTracker:
         if not self.enabled:
             return 0.0
         enemy_down = self._update_side(frame, self.enemy_a, self.enemy_alive, self._enemy_low, True)
-        mine_down = self._update_side(frame, self.mine_a, self.mine_alive, self._mine_low, False)
-        return enemy_down * self.take + mine_down * self.lose  # lose is negative in config
+        # Latch ALL your towers (crown_counts / win-loss reads them), but only the KING adds the
+        # flat lose penalty here: princess HP loss is penalised GRADUALLY by TowerHpTracker (the
+        # env tops it up to the full lose_own_tower on destruction), so they don't double-count.
+        king_i = len(self.mine_a) - 1
+        king_before = self.mine_alive[king_i] if self.mine_a else False
+        self._update_side(frame, self.mine_a, self.mine_alive, self._mine_low, False)
+        king_down = 1 if (king_before and king_i >= 0 and not self.mine_alive[king_i]) else 0
+        return enemy_down * self.take + king_down * self.lose  # lose is negative in config
 
     def crown_counts(self) -> Tuple[int, int, bool, bool]:
         """Crowns implied by latched tower falls: (blue, red, enemy_king_down, my_king_down).

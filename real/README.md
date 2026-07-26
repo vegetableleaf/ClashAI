@@ -202,10 +202,10 @@ Duchess / Royal Chef) puts its bar at a different height, so recalibrate the box
 (and, if needed, re-collect crops and retrain, see [tools/hp_ocr/](tools/hp_ocr/README.md))
 from a recording that has that tower type.
 
-**Combat, spell & defense rewards.** Rocket-cycle wins on defence, so defence is
-weighted above offence: HP lost on **your** princess is penalised
-`rewards.hp_defense_scale`× (default 3) harder than the same chip on the enemy
-earns, and `lose_own_tower` is heavier. **Defeating enemy troops** by any means is
+**Combat, spell & defense rewards.** HP lost on **your** princess tower is penalised
+**gradually** as it's chipped — accumulating up to `|rewards.lose_own_tower|` per tower
+(and topped up to it on destruction) — so chip damage costs proportionally rather than a
+flat hit only when the tower falls. **Defeating enemy troops** by any means is
 rewarded each step by the drop in enemy-troop (red) pixel mass over the arena
 (`rewards.troop_defeat`, scaled by how much is removed), with a
 `rewards.clean_kill_bonus`× multiplier when your towers took no HP that step (you
