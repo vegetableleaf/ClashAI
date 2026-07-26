@@ -137,6 +137,18 @@ Newest entries are at the bottom.
   (chip the tower when safe; defend + the rocket->tornado combo when a big push
   comes) and give the still-hesitant policy clear positive things to do. Reward-only
   (no retrain needed beyond the pending elixir-input rebuild).
+- 1v1 migration. (1) The Battle button now auto-queues, so the PARTY / quick-match
+  step was removed from both nav loops (env.reset + play). (2) Deck card levels are
+  recorded per card in cards.yaml (1v1 levels vary: e.g. Evo Tesla 14, Rocket 13,
+  Skeletons 13, Ice Wizard 11); CardDB scales the level-11 base stats to the
+  configured level (deck() + a level() accessor). Card stats don't drive the vision
+  / RL rewards, so this is informational -- it doesn't change how the bot plays.
+  (3) Towers recalibrated for 1v1 from a real recording: nudged the tower anchors
+  and repositioned the princess HP-number boxes, and set hp_full to a level-14
+  princess. IMPORTANT: the digit OCR (hp_digits.npz) was trained on 2v2 level-11
+  towers and MISREADS the 1v1 (level 14-15) tower HP, so hp_reward is DISABLED for
+  now to avoid injecting false chip rewards -- re-enable after retraining the digit
+  model on 1v1 samples. Tower destruction (crowns) + win/loss still drive the reward.
 
 
 ------------------------------------------------------------------------------

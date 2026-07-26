@@ -240,11 +240,9 @@ class LiveMatchEnv:
             if state == GameState.HOME:
                 # tap the Battle button where its template actually matched (robust to the
                 # home layout shifting) -- fall back to the configured point if not located.
+                # 1v1: the Battle button queues a match directly (no party/quick-match step).
                 pt = self.vision.locate(frame, self._home_tpl, self._home_thr) or self.battle
                 self.controller.tap(*pt)
-                time.sleep(self.menu_delay)
-            elif state == GameState.PARTY:
-                self.controller.tap(*self.quick)
                 time.sleep(self.menu_delay)
             elif state == GameState.MATCH_END:
                 self.controller.tap(*(self.results_dc if self.vision.match_end_is_dc(frame) else self.results_ok))

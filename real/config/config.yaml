@@ -51,8 +51,8 @@ elixir:
 # The learned policy only plays cards in-match; queueing/exiting is scripted so
 # the bot runs match-to-match unattended. Values + templates come from trol.
 buttons:
-  battle_button: [0.492, 0.771]  # HOME -> opens the 2v2 party menu
-  quick_match:   [0.690, 0.555]  # PARTY -> starts a quick match
+  battle_button: [0.492, 0.771]  # HOME -> queues a 1v1 match directly (auto-queue; no party/quick-match step)
+  quick_match:   [0.690, 0.555]  # (unused in 1v1; kept for reference)
   results_ok:    [0.138, 0.948]  # results screen, teammate ONLINE ("Exit")
   results_ok_dc: [0.490, 0.870]  # results screen, teammate DISCONNECTED ("OK")
   # In-match emote/chat icon (bottom-left). Tapping it opens the emote wheel and the bot
@@ -183,8 +183,8 @@ env:
   tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
   tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
   results_timeout: 30.0          # max seconds to wait for the results screen at match end
-  enemy_towers: [[0.25, 0.21], [0.72, 0.21], [0.48, 0.12]]
-  my_towers:    [[0.25, 0.61], [0.72, 0.61], [0.48, 0.72]]
+  enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.48, 0.11]]
+  my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]]
   # Chip-damage reward: read each princess tower's printed HP with a digit CNN
   # and reward *partial* HP loss (rocket chip, etc.) even when the tower survives.
   # HP is piecewise-constant + monotonic, so a value is only accepted after it
@@ -197,13 +197,13 @@ env:
   # alignment with verify --towers; keep the box centred over where the number can appear.
   # Needs torch + hp_digits.npz; falls back to no-op if missing. hp_reward false
   # disables it (relies on the destruction latch + win/loss instead).
-  hp_reward: true
-  hp_full: 3052                  # princess full HP (2v2, level 11) -- the reset baseline
+  hp_reward: false               # 1v1: DISABLED -- the digit OCR (hp_digits.npz) was trained on 2v2 lvl-11 towers and misreads the 1v1 (lvl 14-15) HP numbers; re-enable after retraining the digit model (relies on the tower-destruction latch + win/loss meanwhile)
+  hp_full: 4032                  # princess full HP at ~level 14 (1v1); varies by tower level -- reset baseline / normalizer
   hp_consensus: 2                # consecutive equal reads before a new HP is confirmed
   hp_min_conf: 0.55              # min mean per-digit CNN confidence to use a read
   hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
-  enemy_tower_hp_boxes: [[0.196, 0.150, 0.300, 0.198], [0.700, 0.150, 0.804, 0.198]]
-  my_tower_hp_boxes:    [[0.203, 0.612, 0.307, 0.660], [0.703, 0.612, 0.807, 0.660]]
+  enemy_tower_hp_boxes: [[0.205, 0.118, 0.330, 0.152], [0.705, 0.118, 0.808, 0.152]]
+  my_tower_hp_boxes:    [[0.180, 0.632, 0.315, 0.666], [0.688, 0.632, 0.778, 0.666]]
   # KING HP numbers (only shown once a king is hit). Enemy king (top-centre) -> catch a
   # rocket/tornado that damages it (rewards.spell_king_penalty). YOUR king (bottom-centre) ->
   # reward a defensive tornado that tanks + activates it (rewards.king_tank_reward). Boxes are

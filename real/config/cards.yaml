@@ -1,5 +1,6 @@
 # =====================================================================
-# Card knowledge base.  2v2 mode => all cards are level 11.
+# Card knowledge base.  Combat stats below are the LEVEL-11 base; per-card
+# levels are set in the deck (1v1 mode -> levels vary) and scaled from level 11.
 #
 # Two kinds of data:
 #   * STABLE  (elixir, kind, targets, movement, splash, flags, evolution):
@@ -14,7 +15,7 @@
 
 meta:
   level: 11
-  mode: "2v2"
+  mode: "1v1"
   updated: "2026-07-24"
   stats_source: null        # e.g. "RoyaleAPI" once combat stats are imported
   notes: >
@@ -24,16 +25,16 @@ meta:
 # Your deck (rocket cycle: perfect defence + positive elixir trades to rocket
 # the enemy princess tower). `evolved: true` uses the Evolution variant.
 deck:
-  name: "Rocket Cycle (2v2)"
+  name: "Rocket Cycle (1v1)"
   cards:
-    - {card: royal_delivery}
-    - {card: tesla,     evolved: true}
-    - {card: ice_wizard}
-    - {card: tornado}
-    - {card: rocket}
-    - {card: ronin}
-    - {card: ice_spirit}
-    - {card: skeletons}
+    - {card: royal_delivery, level: 12}
+    - {card: tesla,     evolved: true, level: 14}
+    - {card: ice_wizard, level: 11}
+    - {card: tornado, level: 12}
+    - {card: rocket, level: 13}
+    - {card: ronin, level: 12}
+    - {card: ice_spirit, level: 12}
+    - {card: skeletons, level: 13}
 
 # ---------------------------------------------------------------------
 # card fields:

@@ -183,9 +183,6 @@ def play(cfg) -> None:
         if state == GameState.HOME:
             controller.tap(*(vision.locate(frame, home_tpl, home_thr) or battle))
             time.sleep(menu_delay)
-        elif state == GameState.PARTY:
-            controller.tap(*quick)
-            time.sleep(menu_delay)
         elif state == GameState.MATCH_END:
             controller.tap(*(results_dc if vision.match_end_is_dc(frame) else results_ok))
             time.sleep(menu_delay)

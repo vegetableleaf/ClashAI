@@ -128,12 +128,27 @@ class CardDB:
                     for kk, vv in evo.items():
                         if vv is not None and kk not in ("display", "base", "evolution", "champion"):
                             merged[kk] = vv
+            lvl = entry.get("level")
+            if lvl:                                   # KB stats are level 11; scale ~10%/level
+                merged["level"] = int(lvl)
+                mult = 1.1 ** (int(lvl) - 11)
+                for kk in ("hitpoints", "damage", "crown_tower_damage", "dps", "damage_per_second"):
+                    if merged.get(kk) is not None:
+                        merged[kk] = int(round(merged[kk] * mult))
             out.append(merged)
         return out
 
     def evolution(self, name: str) -> Optional[dict]:
         """Imported Evolution stats for a card, if any (keyed `<base>_evo`)."""
         return self.cards.get(_key(name) + "_evo")
+
+    def level(self, name: str) -> Optional[int]:
+        """Configured deck level for a card (from cards.yaml `deck`), or None."""
+        k = _key(name)
+        for e in self._deck.get("cards", []):
+            if _key(e.get("card")) == k:
+                return e.get("level")
+        return None
 
     def champions(self) -> List[str]:
         """Keys of champion (hero) cards in the KB."""
