@@ -129,6 +129,11 @@ def _cmd_detect_frames(args) -> None:
     add_frames(Config.load(args.config), args.session, args.count)
 
 
+def _cmd_detect_preview(args) -> None:
+    from .detect import detect_preview
+    detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -218,6 +223,14 @@ def main() -> None:
     dfr.add_argument("--session", default=None, help="session folder name or path (default: latest)")
     dfr.add_argument("--count", type=int, default=120, help="how many new frames to add")
     dfr.set_defaults(func=_cmd_detect_frames)
+
+    dpv = sub.add_parser("detect-preview",
+                         help="run the trained detector on RANDOM in-match frames and save annotated images (gauge accuracy, unbiased)")
+    dpv.add_argument("--session", default=None, help="restrict to one session (default: sample across ALL sessions)")
+    dpv.add_argument("--count", type=int, default=24, help="how many random frames to annotate")
+    dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
+    dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
+    dpv.set_defaults(func=_cmd_detect_preview)
 
     args = parser.parse_args()
     args.func(args)

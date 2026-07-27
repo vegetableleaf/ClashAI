@@ -23,6 +23,8 @@ from __future__ import annotations
 import bisect
 import json
 import random
+from collections import Counter, defaultdict
+from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -456,3 +458,116 @@ def add_frames(cfg, session_arg=None, count=120) -> None:
     cap.release()
     print(f"[detect-frames] {session.name}: added {added} new frames -> {root / 'images' / 'train'} "
           f"(empty labels). Existing images + splits untouched -- re-sync Local Storage in Label Studio to pick them up.")
+
+
+def _resolve_weights(cfg, weights):
+    """Return the detector weights path: the given --weights, else the most recently trained
+    runs/detect/*/weights/best.pt."""
+    runs = Path(cfg.path("runs/detect"))
+    if weights:
+        return Path(weights), runs
+    cands = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime)
+    return (cands[-1] if cands else None), runs
+
+
+def detect_preview(cfg, session_arg=None, count=24, weights=None, conf=0.25) -> None:
+    """Run the trained detector on RANDOM in-match frames and save annotated images so you can gauge
+    detection quality on frames it never trained on.
+
+    UNBIASED sampling: frames are drawn uniformly at random from the pooled match window of EVERY
+    session (first->last play, padded) -- not clustered around plays (unlike autolabel/detect-frames)
+    and not weighted by session beyond its real share of playtime. Read-only: touches nothing in the
+    dataset. Unseeded, so each run is a fresh random draw.
+    """
+    wpath, runs = _resolve_weights(cfg, weights)
+    if wpath is None:
+        print("[detect-preview] no weights found under runs/detect/*/weights/best.pt -- train first: "
+              "python tools/detect/train.py")
+        return
+    if not wpath.exists():
+        print(f"[detect-preview] no such weights: {wpath}")
+        return
+    try:                                                 # a best.pt loads for its own family
+        from ultralytics import YOLO
+        model = YOLO(str(wpath))
+    except Exception:
+        from ultralytics import RTDETR
+        model = RTDETR(str(wpath))
+
+    root_sessions = Path(cfg.path(cfg.get("record", "out_dir", default="data/sessions")))
+    if session_arg and Path(session_arg).exists():
+        sessions = [Path(session_arg)]
+    elif session_arg:
+        sessions = [root_sessions / session_arg]
+    else:
+        sessions = sorted(d for d in root_sessions.iterdir() if (d / "meta.json").exists())
+
+    pre = float(cfg.get("detect", "preview_pre_s", default=8.0))
+    post = float(cfg.get("detect", "preview_post_s", default=10.0))
+    info: dict[str, Path] = {}                            # session name -> video path
+    pool: list[tuple[str, int]] = []                     # every in-match (session, frame index)
+    for s in sessions:
+        if not (s / "meta.json").exists():
+            print(f"[detect-preview] skip {s.name}: no meta.json")
+            continue
+        meta = json.loads((s / "meta.json").read_text(encoding="utf-8"))
+        ev = s / "events.jsonl"
+        events = [json.loads(ln) for ln in ev.read_text(encoding="utf-8").splitlines()
+                  if ln.strip()] if ev.exists() else []
+        video = next((s / n for n in ("video.mp4", "video.avi") if (s / n).exists()), None)
+        if video is None:
+            print(f"[detect-preview] skip {s.name}: no video")
+            continue
+        region, frame_times = meta["region"], meta["frame_times"]
+        plays = _extract_plays(events, region, cfg.get("hand", "slots", default=[]),
+                               float(cfg.get("hand", "click_radius", default=0.06)),
+                               float(cfg.get("label", "pair_timeout", default=3.0)),
+                               float(cfg.get("label", "arena_top", default=0.10)),
+                               float(cfg.get("label", "arena_bottom", default=0.86)))
+        if not plays:
+            print(f"[detect-preview] skip {s.name}: no plays (can't bound the match)")
+            continue
+        t0 = min(p["t"] for p in plays) - pre
+        t1 = max(p["t"] for p in plays) + post
+        lo = max(0, bisect.bisect_left(frame_times, t0))
+        hi = min(len(frame_times), bisect.bisect_right(frame_times, t1))
+        if hi <= lo:
+            continue
+        info[s.name] = video
+        pool.extend((s.name, fi) for fi in range(lo, hi))
+
+    if not pool:
+        print("[detect-preview] no in-match frames found across the selected session(s).")
+        return
+    rng = random.Random()                                # unseeded: a fresh random draw each run
+    picks = rng.sample(pool, min(count, len(pool)))
+
+    out_dir = runs / "preview" / datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    by_session: dict[str, list[int]] = defaultdict(list)
+    for name, fi in picks:
+        by_session[name].append(fi)
+
+    saved = total_dets = 0
+    class_counts: Counter = Counter()
+    for name, fis in by_session.items():
+        cap = cv2.VideoCapture(str(info[name]))
+        for fi in sorted(fis):
+            cap.set(cv2.CAP_PROP_POS_FRAMES, fi)
+            ok, frame = cap.read()
+            if not ok or frame is None:
+                continue
+            res = model.predict(frame, conf=conf, verbose=False)[0]
+            cv2.imwrite(str(out_dir / f"{name}_g{fi:06d}.jpg"), res.plot())
+            saved += 1
+            total_dets += len(res.boxes)
+            for c in res.boxes.cls.tolist():
+                class_counts[model.names[int(c)]] += 1
+        cap.release()
+
+    top = ", ".join(f"{k}:{v}" for k, v in class_counts.most_common(12)) or "(none)"
+    print(f"[detect-preview] {saved} random frames from {len(by_session)} session(s), "
+          f"{total_dets} detections (avg {total_dets / max(saved, 1):.1f}/frame) @conf>={conf}, "
+          f"weights={wpath.parent.parent.name}")
+    print(f"[detect-preview] classes seen: {top}")
+    print(f"[detect-preview] annotated images -> {out_dir}")
