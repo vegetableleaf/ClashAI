@@ -54,6 +54,8 @@ buttons:
   battle_button: [0.492, 0.771]  # HOME -> queues a 1v1 match directly (auto-queue; no party/quick-match step)
   quick_match:   [0.690, 0.555]  # (unused in 1v1; kept for reference)
   play_again:    [0.335, 0.905]  # 1v1 results screen -> re-queue immediately ("Play Again", bottom-left); tapped by default so the match loop continues without returning HOME
+  play_again_template: null      # optional PNG in templates/ (e.g. play_again.png) to LOCATE the button each frame -- robust
+  play_again_threshold: 0.8      # to layout/window drift. null => fixed play_again coord + the OK-button escalation only.
   results_ok:    [0.645, 0.905]  # 1v1 results screen -> "OK" (bottom-right, returns HOME) -- fallback only
   results_ok_dc: [0.645, 0.905]  # no disconnect screen in 1v1 -> same as OK
   # In-match emote/chat icon (bottom-left). Tapping it opens the emote wheel and the bot
@@ -69,6 +71,8 @@ states:
 nav:
   poll_hz: 6                     # how often play() re-checks the screen state
   menu_delay: 0.5                # wait after a menu tap before re-checking (lower = faster match-to-match transitions)
+  match_end_timeout: 6           # seconds tapping "Play Again" with NO progress before ESCALATING to the OK button
+                                 # (-> HOME -> located Battle), so a drifted/covered Play Again button can't hang nav
 
 # --- Recording human play (screen + mouse) for imitation data ------------
 record:

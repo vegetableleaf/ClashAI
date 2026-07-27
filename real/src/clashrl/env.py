@@ -29,6 +29,7 @@ from .reward import (TowerTracker, defensive_cell, enemy_mass, enemy_mass_at,
                      near_enemy_king, near_enemy_princess, near_my_king, threat_front,
                      threat_side, troop_size_at, weaker_princess_cell)
 from .states import GameState
+from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from .tower_hp import TowerHpTracker
 from .vision import Vision
@@ -62,6 +63,7 @@ class LiveMatchEnv:
         _home = cfg.get("states", "home_menu", default={}) or {}
         self._home_tpl = _home.get("template", "home_menu.png")
         self._home_thr = float(_home.get("threshold", 0.8))
+        self._nav = MenuNavigator(cfg, self.controller, self.vision, label="train-rl")
 
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         self.obs_shape = (int(oh), int(ow), 3)
@@ -264,6 +266,7 @@ class LiveMatchEnv:
         self._recent_ranged = None
         self._recent_rocket = None
         self._pending_rocket = None
+        self._nav.reset_state()
         while True:
             frame = self._grab()
             if frame is None:
@@ -280,18 +283,7 @@ class LiveMatchEnv:
                 self._prev_mass = enemy_mass(frame, self.cfg)
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
                 return self._last_obs
-            if state == GameState.HOME:
-                # tap the Battle button where its template actually matched (robust to the
-                # home layout shifting) -- fall back to the configured point if not located.
-                # 1v1: the Battle button queues a match directly (no party/quick-match step).
-                pt = self.vision.locate(frame, self._home_tpl, self._home_thr) or self.battle
-                self.controller.tap(*pt)
-                time.sleep(self.menu_delay)
-            elif state == GameState.MATCH_END:
-                self.controller.tap(*self.play_again)   # 1v1: re-queue immediately (loop continues)
-                time.sleep(self.menu_delay)
-            else:  # UNKNOWN / QUEUING -> wait for a known screen
-                time.sleep(self.poll_dt)
+            self._nav.handle(frame, state)   # robust menu nav: located buttons + MATCH_END escalation + popup watchdog + logging
 
     def _execute(self, action: Action) -> None:
         play, card_id, cell = action

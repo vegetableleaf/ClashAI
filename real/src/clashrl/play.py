@@ -172,11 +172,10 @@ def play(cfg) -> None:
         "for the failsafe. It navigates menus and plays in-match on its own.")
     log(f"[play] logging to {log_path}")
 
+    from .nav import MenuNavigator
+    nav = MenuNavigator(cfg, controller, vision, label="play", log=log)
     prev = None
     last_act = 0.0
-    stuck_since = None
-    stuck_timeout = float(cfg.get("play", "stuck_timeout", default=25.0))
-    stuck_tap = cfg.get("play", "stuck_tap", default=results_ok)
     while running["v"]:
         try:
             frame = capture.grab()
@@ -193,41 +192,15 @@ def play(cfg) -> None:
                     threat_tracker.reset()
                 prev = state
 
-            if state == GameState.HOME:
-                stuck_since = None
-                located = vision.locate(frame, home_tpl, home_thr)
-                tgt = located or battle
-                log(f"[play] HOME -> tap {'home_tpl' if located else 'battle'} "
-                    f"({tgt[0]:.3f},{tgt[1]:.3f})")
-                controller.tap(*tgt)
-                time.sleep(menu_delay)
-            elif state == GameState.MATCH_END:
-                stuck_since = None
-                log(f"[play] MATCH_END -> tap play_again ({play_again[0]:.3f},{play_again[1]:.3f})")
-                controller.tap(*play_again)   # 1v1: re-queue immediately (loop continues)
-                time.sleep(menu_delay)
-            elif state == GameState.IN_MATCH:
-                stuck_since = None
+            if state == GameState.IN_MATCH:
+                nav.reset_state()             # not on a menu -> clear the nav stuck timers
                 now = time.time()
                 if now - last_act >= act_period:
                     act_in_match(frame)
                     last_act = now
                 time.sleep(poll_dt)
-            else:  # UNKNOWN / QUEUING: normally just wait -- BUT if we sit on an unrecognised screen
-                   # too long it's a post-match popup (chest / level-up / season pass / shop offer) the
-                   # state templates don't cover; tap to dismiss it (also cancels a hung search so the
-                   # loop re-queues from HOME) instead of hanging here forever.
-                now = time.time()
-                if stuck_since is None:
-                    stuck_since = now
-                elif now - stuck_since >= stuck_timeout:
-                    log(f"[play] stuck on {state.name} ~{stuck_timeout:.0f}s -> "
-                        f"tap dismiss ({stuck_tap[0]:.3f},{stuck_tap[1]:.3f})")
-                    controller.tap(*stuck_tap)
-                    stuck_since = now          # re-arm: keep tapping until a known screen
-                    time.sleep(menu_delay)
-                else:
-                    time.sleep(poll_dt)
+            else:
+                nav.handle(frame, state)      # HOME / MATCH_END / UNKNOWN: located buttons + escalation + watchdog
         except KeyboardInterrupt:
             break
         except Exception as exc:  # noqa: BLE001 -- log + keep navigating instead of dying silently
