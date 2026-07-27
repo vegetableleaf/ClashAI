@@ -732,8 +732,7 @@ cards:
   # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
   # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
   # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
-  # Left UNCURATED on purpose (mixed/uncertain/newer): goblin_machine, goblin_demolisher,
-  # goblinstein, terry, spirit_empress, wizard_trio, furnace.
+  # Left UNCURATED on purpose: terry, wizard_trio (special troops -- not in normal 1v1s).
   # -- melee --
   bandit: {range: melee, verified: false}
   barbarians: {range: melee, verified: false}
@@ -791,3 +790,9 @@ cards:
   spear_goblins: {range: long, verified: false}
   witch: {range: long, verified: false}
   zappies: {range: long, verified: false}
+  # -- clarified dual / special-attack troops (user-provided) --
+  furnace: {range: long, verified: false}                                       # long-range single target
+  goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
+  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
+  goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
+  spirit_empress: {range: melee, verified: false}                               # GROUND form (3e single-target melee); air form is ranged flying
