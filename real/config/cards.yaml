@@ -641,7 +641,7 @@ cards:
     display: "Skeleton Barrel"
     win_condition: true
     targets: buildings_only
-    flags: [flying, building_targeting]
+    flags: [flying, building_targeting, swarm]
     verified: false
 
   santa_hog_rider:
@@ -662,7 +662,7 @@ cards:
     display: "Graveyard"
     win_condition: true
     targets: null
-    flags: [spawner]
+    flags: [spawner, swarm]
     verified: false
 
   miner:
@@ -684,6 +684,13 @@ cards:
     win_condition: true
     targets: any
     flags: [splash, siege]
+    verified: false
+
+  three_musketeers:
+    display: "Three Musketeers"
+    win_condition: true
+    targets: any
+    flags: [ranged]
     verified: false
 
   # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
