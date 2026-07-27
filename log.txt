@@ -536,6 +536,33 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-27  —  Detector: switch default RT-DETR-L -> YOLO11m (memory + small-data fit)
+------------------------------------------------------------------------------
+- Context: RT-DETR-L hit MEMORY pressure in training. Decision (weighed for THIS project): switch the
+  detector default to YOLO11. The usual "RT-DETR = more accurate but heavier" tradeoff does NOT hold here.
+- Reasoning:
+  * Benchmark parity: YOLO11l ~= RT-DETR-L on COCO (~53 mAP), YOLO11x exceeds it -- little/no ceiling lost
+    even before data effects (the earlier "RT-DETR more accurate" note was the big-data intuition).
+  * Data regime is decisive: the dataset is small + label-bottlenecked with 217 classes; DETR-family
+    transformers are data-hungry (learn queries + bipartite matching without CNN priors) and typically
+    UNDERperform a CNN on sparse custom data -- the transformer's edge needs volume we don't have.
+  * Small objects need a high imgsz (~960): RT-DETR-L's memory forced cutting imgsz/batch, which
+    disproportionately kills small-unit recall (skeletons / spirits) -- exactly the defensive reads the
+    policy needs. YOLO11 keeps 960 affordable, so the memory fix and the accuracy need align.
+  * Scalable knob: Ultralytics RT-DETR ships only L/X (can't scale DOWN); YOLO11 is n/s/m/l/x, so VRAM can
+    be dialed precisely while holding imgsz.
+  * Live budget: the detector runs during live play + live RL alongside capture + the policy; YOLO11 is
+    faster + lighter and competes less for VRAM during train-rl.
+- Steelman for RT-DETR (revisit later): NMS-free decoding helps dense/occluded crowds and it has a higher
+  ceiling -- but only with a large, densely-labelled dataset. Not the current regime; zero-cost to revisit
+  since the YOLO-format labels are detector-agnostic.
+- Change: tools/detect/train.py default --model rtdetr-l.pt -> yolo11m.pt (lighter than the rtdetr-l already
+  running, so memory improves immediately; auto-batch keeps imgsz 960 fitting). --model yolo11s.pt if VRAM
+  is still tight; --model rtdetr-l.pt to go back. Dataset / taxonomy / autolabel / detect-preview pipeline
+  unchanged. (User exports annotations as YOLO, so model choice is free.)
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

@@ -1,8 +1,11 @@
 """Train the board object detector (Ultralytics) on the dataset built by
 `run.py autolabel` plus your hand-labelled frames.
 
-Defaults to RT-DETR (a transformer detector -- more accurate than YOLO, a bit slower; inference
-is still real-time and the bot only acts every ~1.5s). Pass a yolo* model to use YOLO instead --
+Defaults to YOLO11 (a CNN detector). Chosen over RT-DETR for THIS project: on a small,
+label-bottlenecked, many-class (200+) custom dataset the transformer's accuracy edge doesn't
+materialise (DETR-family models are data-hungry), while YOLO11 uses far less memory, keeps a
+high imgsz affordable (CR units are small), trains faster, and is lighter to run live alongside
+the policy. YOLO11m ~= RT-DETR-L on COCO anyway. Pass an rtdetr* model to use RT-DETR instead --
 the dataset format is identical, so nothing else in the pipeline changes.
 
 One-time setup (installs Ultralytics; it will pull a compatible torch if needed):
@@ -11,9 +14,10 @@ One-time setup (installs Ultralytics; it will pull a compatible torch if needed)
 
 Then, from the `real/` folder:
 
-    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py                       # RT-DETR-L (default)
-    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model rtdetr-x.pt   # bigger RT-DETR
-    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model yolo11s.pt    # YOLO instead
+    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py                       # YOLO11m (default)
+    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model yolo11s.pt    # lighter (tight VRAM)
+    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model yolo11l.pt    # heavier (more headroom)
+    real\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model rtdetr-l.pt   # RT-DETR instead
 
 Weights land in runs/detect/board/weights/best.pt. Once you're happy with the mAP, wire the
 detector into the observation (Stage 3): render its detections into semantic map channels fed
@@ -31,13 +35,13 @@ from pathlib import Path
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics RT-DETR / YOLO).")
-    ap.add_argument("--model", default="rtdetr-l.pt",
-                    help="base weights: rtdetr-l/x.pt (RT-DETR, default) or yolo11n/s/m.pt (YOLO)")
-    ap.add_argument("--epochs", type=int, default=120, help="RT-DETR converges a bit slower than YOLO")
+    ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
+    ap.add_argument("--model", default="yolo11m.pt",
+                    help="base weights: yolo11n/s/m/l/x.pt (YOLO, default) or rtdetr-l/x.pt (RT-DETR)")
+    ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
     ap.add_argument("--batch", type=int, default=-1,
-                    help="images per batch; -1 auto-sizes to your GPU (RT-DETR-L is heavier than YOLO)")
+                    help="images per batch; -1 auto-sizes to your GPU (drop to yolo11s.pt if VRAM is tight)")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
     args = ap.parse_args()
 
