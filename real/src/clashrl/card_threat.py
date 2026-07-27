@@ -67,6 +67,8 @@ class ThreatProfile:
     hitpoints: Optional[int] = None
     dps: Optional[int] = None
     tower_damage: Optional[int] = None
+    attack_range: Optional[str] = None   # attack reach: melee | short | long (from CardDB.attack_range)
+    melee: bool = False                  # a melee attacker (reach == melee) -- e.g. a tornado-pull target
 
     def roles(self) -> List[str]:
         """Active role tags, most strategically salient first (for display / aggregation)."""
@@ -113,6 +115,7 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
     building = kind == "building"
     building_targeting = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     dps = c.get("dps") if c.get("dps") is not None else c.get("damage_per_second")
+    reach = db.attack_range(base)                        # melee | short | long | None
     return ThreatProfile(
         name=base,
         known=True,
@@ -133,6 +136,8 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         hitpoints=c.get("hitpoints"),
         dps=dps,
         tower_damage=db.tower_damage(base),
+        attack_range=reach,
+        melee=reach == "melee",
     )
 
 
@@ -153,6 +158,8 @@ def _fmt(p: ThreatProfile) -> str:
         stats.append(f"{p.hitpoints}hp")
     if p.dps is not None:
         stats.append(f"{p.dps}dps")
+    if p.attack_range:
+        stats.append(p.attack_range)
     return f"[{p.kind or '?'}] {', '.join(p.roles())}   {' '.join(stats)}".rstrip()
 
 
@@ -166,8 +173,8 @@ def roles_report(cfg=None, show_all: bool = False, card: Optional[str] = None) -
         print(f"{card}  ->  base '{p.name}'")
         print(f"  {_fmt(p)}")
         print(f"  known={p.known} tagged={p.tagged} win_condition={p.win_condition} "
-              f"siege={p.siege} flying={p.flying} attacks_air={p.attacks_air} "
-              f"building_targeting={p.building_targeting} tower_damage={p.tower_damage}")
+              f"siege={p.siege} flying={p.flying} attacks_air={p.attacks_air} melee={p.melee} "
+              f"reach={p.attack_range} building_targeting={p.building_targeting} tower_damage={p.tower_damage}")
         return
 
     classes = _detect_classes(cfg)

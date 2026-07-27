@@ -243,6 +243,8 @@ def _overlay_card_threats(out, frame, model, db, conf, card_profile, troop_red_m
             stats.append(f"{p.dps}dps")
         if p.tower_damage is not None:
             stats.append(f"twr{p.tower_damage}")
+        if p.attack_range:
+            stats.append(p.attack_range)
         if stats:
             cv2.putText(out, " ".join(stats), (x0, max(22, y0 - 2)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)

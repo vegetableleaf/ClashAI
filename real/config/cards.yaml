@@ -572,6 +572,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [ranged, building_targeting]
+    range: long
     verified: false
 
   golem:
@@ -579,6 +580,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [tank, building_targeting]
+    range: melee
     verified: false
 
   lava_hound:
@@ -586,6 +588,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [flying, building_targeting]
+    range: melee
     verified: false
 
   ram_rider:
@@ -593,6 +596,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, charge]
+    range: melee
     verified: false
 
   battle_ram:
@@ -600,6 +604,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, charge]
+    range: melee
     verified: false
 
   wall_breakers:
@@ -607,6 +612,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, kamikaze]
+    range: melee
     verified: false
 
   goblin_giant:
@@ -614,6 +620,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [tank, building_targeting, spawner]
+    range: melee
     verified: false
 
   elixir_golem:
@@ -621,6 +628,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting]
+    range: melee
     verified: false
 
   royal_hogs:
@@ -628,6 +636,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, swarm]
+    range: melee
     verified: false
 
   electro_giant:
@@ -635,6 +644,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [tank, building_targeting]
+    range: melee
     verified: false
 
   skeleton_barrel:
@@ -642,6 +652,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [flying, building_targeting, swarm]
+    range: melee
     verified: false
 
   santa_hog_rider:
@@ -649,6 +660,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, jump]
+    range: melee
     verified: false
 
   goblin_drill:
@@ -670,6 +682,7 @@ cards:
     win_condition: true
     targets: any
     flags: []
+    range: melee
     verified: false
 
   x_bow:
@@ -677,6 +690,7 @@ cards:
     win_condition: true
     targets: any
     flags: [ranged, siege]
+    range: long
     verified: false
 
   mortar:
@@ -684,6 +698,7 @@ cards:
     win_condition: true
     targets: any
     flags: [splash, siege]
+    range: long
     verified: false
 
   three_musketeers:
@@ -691,6 +706,7 @@ cards:
     win_condition: true
     targets: any
     flags: [ranged]
+    range: long
     verified: false
 
   # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
@@ -712,3 +728,66 @@ cards:
     flags: [shield]
     evolution: null
     verified: false
+
+  # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
+  # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
+  # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
+  # Left UNCURATED on purpose (mixed/uncertain/newer): goblin_machine, goblin_demolisher,
+  # goblinstein, terry, spirit_empress, wizard_trio, furnace.
+  # -- melee --
+  bandit: {range: melee, verified: false}
+  barbarians: {range: melee, verified: false}
+  bats: {range: melee, verified: false}
+  battle_healer: {range: melee, verified: false}
+  berserker: {range: melee, verified: false}
+  boss_bandit: {range: melee, verified: false}
+  dark_prince: {range: melee, verified: false}
+  elite_barbarians: {range: melee, verified: false}
+  fire_spirit: {range: melee, verified: false}
+  fisherman: {range: melee, verified: false}
+  giant_skeleton: {range: melee, verified: false}
+  goblins: {range: melee, verified: false}
+  goblin_gang: {range: melee, verified: false}
+  golden_knight: {range: melee, verified: false}
+  guards: {range: melee, verified: false}
+  heal_spirit: {range: melee, verified: false}
+  ice_golem: {range: melee, verified: false}
+  lumberjack: {range: melee, verified: false}
+  mega_knight: {range: melee, verified: false}
+  mighty_miner: {range: melee, verified: false}
+  monk: {range: melee, verified: false}
+  night_witch: {range: melee, verified: false}
+  pekka: {range: melee, verified: false}
+  prince: {range: melee, verified: false}
+  raging_prince: {range: melee, verified: false}
+  rascals: {range: melee, verified: false}
+  royal_ghost: {range: melee, verified: false}
+  royal_recruits: {range: melee, verified: false}
+  rune_giant: {range: melee, verified: false}
+  skeleton_king: {range: melee, verified: false}
+  suspicious_bush: {range: melee, verified: false}
+  # -- short --
+  electro_spirit: {range: short, verified: false}
+  hunter: {range: short, verified: false}
+  minion_horde: {range: short, verified: false}
+  phoenix: {range: short, verified: false}
+  skeleton_dragons: {range: short, verified: false}
+  # -- long --
+  archer_queen: {range: long, verified: false}
+  bowler: {range: long, verified: false}
+  cannon_cart: {range: long, verified: false}
+  dart_goblin: {range: long, verified: false}
+  electro_dragon: {range: long, verified: false}
+  electro_wizard: {range: long, verified: false}
+  executioner: {range: long, verified: false}
+  firecracker: {range: long, verified: false}
+  flying_machine: {range: long, verified: false}
+  inferno_dragon: {range: long, verified: false}
+  little_prince: {range: long, verified: false}
+  magic_archer: {range: long, verified: false}
+  mother_witch: {range: long, verified: false}
+  princess: {range: long, verified: false}
+  sparky: {range: long, verified: false}
+  spear_goblins: {range: long, verified: false}
+  witch: {range: long, verified: false}
+  zappies: {range: long, verified: false}
