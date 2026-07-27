@@ -114,6 +114,10 @@ def train_rl(cfg) -> None:
         print("[train-rl] no capture region; set window.region in config.yaml.")
         return
 
+    from .monitor import DiscordMonitor
+    monitor = DiscordMonitor(cfg, label="train-rl")
+    monitor.start()
+
     tl = None
     if bool(cfg.get("train", "timelapse", default=True)):
         from .timelapse import TimelapseRecorder

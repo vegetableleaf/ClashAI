@@ -331,6 +331,17 @@ play:
                                  # typical matchmaking wait so a real search is not cancelled early.
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
 
+# --- Remote monitoring (optional Discord screenshots during long runs) ---
+# Posts a screenshot of the game window to Discord every `interval_min` minutes while train-rl
+# runs, so you can tell remotely whether it's progressing or stuck. The webhook URL is a SECRET:
+# NEVER put it here (this file is committed). Set the env var named below, or write the URL into
+# the git-ignored file `webhook_file` (one line). If neither is set, monitoring is simply off.
+monitor:
+  interval_min: 30                       # minutes between screenshots (0 not allowed; min 1)
+  webhook_env: CLASHRL_DISCORD_WEBHOOK   # env var holding your Discord webhook URL (preferred)
+  webhook_file: data/discord_webhook.txt # git-ignored fallback file with the URL (data/ is ignored)
+  jpeg_quality: 70                       # screenshot JPEG quality (lower = smaller/faster upload)
+
 # --- Board object detection (YOLO11) dataset bootstrap -------------------
 # `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your
 # recordings. It AUTO-boxes YOUR OWN just-spawned troops -- a card you play is a known class
