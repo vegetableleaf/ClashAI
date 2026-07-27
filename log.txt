@@ -508,6 +508,34 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-27  —  Defensive kill-credit: lower Tesla, tiny credit for all defenders, direct+indirect kills
+------------------------------------------------------------------------------
+- BUG/CONCERN (user): the Tesla kill reward (mass drop near the Tesla x rewards.tesla_kill) was strong
+  enough that a Tesla catching a Skeletons swarm could FARM enough kill points to make a THREE-CROWN LOSS
+  net-positive -- the same "shaping outfarms the -loss" failure mode as the 07-26 troop-reward fix, but
+  local to the Tesla.
+- FIX (env.py + config): (1) LOWERED rewards.tesla_kill 3.0 -> 1.5. (2) Added a per-placement ANTI-FARM
+  CAP rewards.defense_kill_cap (1.5): a single defensive placement can accumulate at most that much kill
+  credit over its window, so a swarm-catch is bounded (verified: a Tesla on a big swarm totals exactly
+  1.5, and 4 maxed defenders = 6.0 < the -12 loss, so a loss stays net-negative).
+- FEATURE (user): TINY kill credit for the OTHER defensive cards too -- Ice Wizard / Ice Spirit /
+  Skeletons / Ronin -- via rewards.defense_kill (0.5). The single-Tesla tracker (env._tesla /
+  _tesla_reward) is generalised to a LIST of tracked defenders (env._defenders / _defense_kill_reward):
+  each placement of a defensive card starts its own kill tracker (weight = tesla_kill for the Tesla,
+  defense_kill for the rest), reusing the same tesla_radius / tesla_track_steps.
+- INDIRECT KILLS (user): the credit is the drop in enemy (red) mass NEAR the card, which already counts a
+  troop that dies there no matter WHAT killed it -- so a defender that blocks/distracts a troop long
+  enough that YOUR PRINCESS TOWER finishes it off near the card is credited the kill, exactly as asked
+  (added to the Tesla and to every other defender by construction). And because a troop that instead
+  reaches your tower triggers the (separate) GRADUAL own-tower penalty, the NET only pays for a kill that
+  actually SAVED the tower -- no explicit tower-damage gate needed.
+- DEFERRED (user, post-Stage-3): scale the reward by REAL per-unit damage dealt instead of the red-mass
+  proxy -- needs the object detector / per-unit HP (troop_hp.py). Noted in config + the code docstring.
+- config: rewards.tesla_kill 3.0->1.5, new rewards.defense_kill / defense_kill_cap; env kill-credit
+  comment generalised. Reward-shaping change -> effective on the next train-rl.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

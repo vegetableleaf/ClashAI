@@ -130,7 +130,14 @@ rewards:
                                  # after one lucky graze; -1.5 makes the expected value of a random cast clearly negative.
   spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
                                  # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
-  tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
+  tesla_kill: 1.5                # per unit of enemy-troop mass a placed Tesla kills near it -- DIRECT (it zaps the troop) OR INDIRECT (it
+                                 # blocks/distracts the troop so your tower finishes it near the Tesla). Lowered 3.0->1.5 and capped
+                                 # (defense_kill_cap) so catching a Skeletons swarm can't farm enough to flip a lost match net-positive.
+                                 # Post-Stage-3 idea: scale by REAL damage dealt (needs the detector / per-unit HP), not a mass proxy.
+  defense_kill: 0.5              # TINY kill credit for the other defenders (ice wizard / ice spirit / skeletons / ronin) -- same
+                                 # direct-or-indirect near-card enemy-mass drop, so a distracting block that lets your tower finish the
+                                 # troop counts as their kill too
+  defense_kill_cap: 1.5          # max TOTAL kill credit a single defensive placement can earn over its window (anti-farm ceiling)
   wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
   tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
   king_tank_reward: 1.0          # tornado onto YOUR king to tank + activate it (x your king's remaining HP fraction)
@@ -299,10 +306,13 @@ env:
                                        # of your king tower. Deeper lands ON the king (undeployable) so the card never plays.
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
-  # Tesla kill-credit (rewards.tesla_kill): after a Tesla is placed, count enemy troops it
-  # kills within tesla_radius of its spot for tesla_track_steps steps -- a live Tesla keeps
-  # killing so keeps earning, and a central one kills most.
-  tesla_track_steps: 10                # steps to credit a placed Tesla with kills near it
+  # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
+  # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy
+  # troops that die within tesla_radius of its spot for tesla_track_steps steps -- crediting a DIRECT
+  # kill (the card attacks) OR an INDIRECT one (it blocks/distracts the troop so your tower finishes it
+  # near the card). A live card keeps earning; a central one usually kills most. Reused for every
+  # defender via the same radius/window.
+  tesla_track_steps: 10                # steps to credit a placed defender with kills near it
   tesla_radius: 0.16                   # box half-size around the Tesla for its kill credit
   # Shield-a-ranged-unit combo (rewards.blocker_protect): a blocker (ronin/skeletons/ice_spirit)
   # played within blocker_combo_steps of a ranged unit while a big red blob (>= blocker_threat_size)

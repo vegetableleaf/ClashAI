@@ -124,7 +124,19 @@ class LiveMatchEnv:
         self.spell_combo = float(cfg.get("rewards", "spell_combo", default=0.6))
         self.spell_whiff = float(cfg.get("rewards", "spell_whiff", default=-0.5))
         self.spell_king_penalty = float(cfg.get("rewards", "spell_king_penalty", default=-1.5))
-        self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=3.0))
+        self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=1.5))
+        self.defense_kill = float(cfg.get("rewards", "defense_kill", default=0.5))
+        self.defense_kill_cap = float(cfg.get("rewards", "defense_kill_cap", default=1.5))
+        # Per-defender kill-credit weight: the Tesla plus a TINY credit for the other defenders.
+        # Covers a DIRECT kill (the card attacks the troop) and an INDIRECT one (it blocks/distracts
+        # the troop so your tower finishes it off near the card) -- both read as the local red-mass drop.
+        self.defense_kill_ids = {}
+        for _i, _key in enumerate(self.vision.deck_keys):
+            _base = _key[:-4] if _key.endswith("_evo") else _key
+            if _base == "tesla":
+                self.defense_kill_ids[_i] = self.tesla_kill
+            elif _base in ("ice_wizard", "ice_spirit", "skeletons", "ronin"):
+                self.defense_kill_ids[_i] = self.defense_kill
         self.patience = float(cfg.get("rewards", "patience", default=0.02))
         self.troop_defeat = float(cfg.get("rewards", "troop_defeat", default=3.0))
         self.clean_kill_bonus = float(cfg.get("rewards", "clean_kill_bonus", default=2.0))
@@ -204,7 +216,7 @@ class LiveMatchEnv:
         self.tesla_radius = float(cfg.get("env", "tesla_radius", default=0.16))
         self._prev_mass = 0.0
         self._prev_my_hp = 0.0
-        self._tesla = None
+        self._defenders = []          # active defensive-card kill trackers (tesla + ice wizard/spirit/skeletons/ronin)
         # --- reactive play: live enemy-threat vector (policy input) + foresight rewards ---
         self.threat_tracker = ThreatTracker(cfg)
         self.threat_vec = Threat.zeros()          # normalized threat features -> policy input
@@ -248,7 +260,7 @@ class LiveMatchEnv:
         """Navigate menus until a match starts; return the first observation."""
         self.tower.reset()
         self.tower_hp.reset()
-        self._tesla = None
+        self._defenders = []
         self._recent_ranged = None
         self._recent_rocket = None
         self._pending_rocket = None
@@ -337,29 +349,41 @@ class LiveMatchEnv:
             return self.defense_center_bonus
         return 0.0
 
-    def _tesla_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
-        """Reward a placed Tesla by the enemy troops it kills near it over its life. A
-        Tesla that survives and defends longer keeps killing (so keeps earning), which a
-        central placement does best -- troops funnel to it where both towers help. A dead
-        Tesla stops killing, so the reward naturally stops. Placement is the model's; this
-        just shapes it (no forced spot). Tesla's blue placement tint doesn't pollute the
-        red enemy-mass read."""
+    def _defense_kill_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
+        """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin) by
+        the enemy troops that die near it over its life -- a DIRECT kill (the card attacks the troop)
+        or an INDIRECT one (it blocks/distracts the troop long enough that your princess tower
+        finishes it off near the card). Both show up as the local enemy (red) mass dropping around
+        the card's spot, so one proxy credits either. Tracked per placement for tesla_track_steps
+        steps and capped at defense_kill_cap, so a single card -- e.g. a Tesla catching a whole
+        Skeletons group -- can't farm enough to flip a lost match net-positive. A dead card stops
+        killing, so its credit naturally ends; if the troop instead reaches and damages your tower,
+        the (separate) gradual own-tower penalty fires, so the NET only rewards a kill that actually
+        SAVED the tower. Placement stays the model's (no forced spot); the blue placement tint doesn't
+        pollute the red enemy-mass read. (Post-Stage-3: swap the mass proxy for real per-unit damage
+        from the detector.)"""
         r = 0.0
-        if self._tesla is not None:
-            tx, ty = self._tesla["cx"], self._tesla["cy"]
-            cur = enemy_mass_at(frame, tx, ty, self.tesla_radius, self.cfg)
-            drop = self._tesla["prev"] - cur
-            if drop > self.defeat_min:
-                r += min(drop, self.defeat_cap) * self.tesla_kill
-            self._tesla["prev"] = cur
-            self._tesla["steps"] -= 1
-            if self._tesla["steps"] <= 0:
-                self._tesla = None
-        if play and card_id in self.tesla_ids:        # (re)start tracking a freshly placed Tesla
+        alive = []
+        for d in self._defenders:
+            cur = enemy_mass_at(frame, d["cx"], d["cy"], self.tesla_radius, self.cfg)
+            drop = d["prev"] - cur
+            if drop > self.defeat_min and d["earned"] < self.defense_kill_cap:
+                credit = min(min(drop, self.defeat_cap) * d["weight"],
+                             self.defense_kill_cap - d["earned"])   # per-placement anti-farm cap
+                r += credit
+                d["earned"] += credit
+            d["prev"] = cur
+            d["steps"] -= 1
+            if d["steps"] > 0:
+                alive.append(d)
+        self._defenders = alive
+        if play and card_id in self.defense_kill_ids:   # start tracking a freshly placed defender
             gx, gy = cell % self.gw, cell // self.gw
             tx, ty = self.actions.cell_center(gx, gy)
-            self._tesla = {"cx": tx, "cy": ty, "steps": self.tesla_track_steps,
-                           "prev": enemy_mass_at(frame, tx, ty, self.tesla_radius, self.cfg)}
+            self._defenders.append({
+                "cx": tx, "cy": ty, "steps": self.tesla_track_steps,
+                "weight": self.defense_kill_ids[card_id], "earned": 0.0,
+                "prev": enemy_mass_at(frame, tx, ty, self.tesla_radius, self.cfg)})
         return r
 
     def _my_king_hp_frac(self, frame) -> Optional[float]:
@@ -520,7 +544,7 @@ class LiveMatchEnv:
                         reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
                         if cur_elixir >= self.full_elixir:
                             reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
-            reward += self._tesla_reward(frame, bool(play), card_id, cell)
+            reward += self._defense_kill_reward(frame, bool(play), card_id, cell)
             if play and card_id in self.tesla_ids:
                 # keep the Tesla for the enemy's win condition (a tower-targeting troop)
                 if self.threat_tracker.wc_active:
