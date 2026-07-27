@@ -638,8 +638,21 @@ class LiveMatchEnv:
                 self._recent_rocket = None
             return 0.0
         peak_i = int(np.argmax(masses))
-        peak = masses[peak_i]
-        drop = peak - masses[-1]
+        if is_rocket or is_rd:
+            # A rocket / Royal Delivery makes its OWN fiery impact, which the red mask reads as
+            # "enemy mass" -- so the peak DURING the window is the fireball, not troops, and its
+            # fade to the last sample looks like a kill. Measure instead the enemy mass present
+            # just BEFORE impact (the cast frame + the pre-impact sample) and how much of it was
+            # removed. This stops an EMPTY-ground rocket scoring its own explosion as a kill (the
+            # model was farming that by rocketing a safe spot on its own side).
+            pre = max(b, masses[0]) if len(masses) >= 3 else b
+            peak = pre
+            drop = max(0.0, pre - masses[-1])
+            size_frame = samples[0] if len(samples) >= 3 else before
+        else:
+            peak = masses[peak_i]
+            drop = peak - masses[-1]
+            size_frame = samples[peak_i]
         present = peak >= self.spell_present
 
         # is this tornado the second half of a rocket->tornado combo (same spot, right after a
@@ -686,7 +699,7 @@ class LiveMatchEnv:
                 return r
             return 0.0                                    # chip -> tower_hp handles it
         # scale by the size of the biggest unit caught (swarm -> small, fat unit -> large)
-        size = min(troop_size_at(samples[peak_i], cx, cy, self.spell_radius, self.cfg),
+        size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg),
                    self.spell_size_cap)
         if is_rocket and drop >= self.spell_min_drop:
             return size * self.spell_troop_damage         # killed a unit -> reward by its size
