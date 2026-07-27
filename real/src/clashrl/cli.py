@@ -134,6 +134,11 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_card_roles(args) -> None:
+    from .card_threat import roles_report
+    roles_report(Config.load(args.config), args.all, args.card)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -231,6 +236,12 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    crl = sub.add_parser("card-roles",
+                         help="review the strategic role (win condition / siege / spell / ...) derived from the KB for every detector class")
+    crl.add_argument("--all", action="store_true", help="dump every class, not just the categorized summary")
+    crl.add_argument("--card", default=None, help="inspect a single card / detected class name")
+    crl.set_defaults(func=_cmd_card_roles)
 
     args = parser.parse_args()
     args.func(args)
