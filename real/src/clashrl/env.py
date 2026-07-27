@@ -652,12 +652,14 @@ class LiveMatchEnv:
             return self.combo_reward * killed
 
         if is_rd:                                     # Royal Delivery: reward the GROUP it hits + kills
+            if not present:                           # landed on empty ground -> a whiff (random Royal Delivery)
+                return self.spell_whiff
             cap = self.spell_size_cap * 2.0
             return min(peak, cap) * self.rd_hit + min(max(0.0, drop), cap) * self.rd_kill
-        if (is_tornado and near_my_king(cx, cy, self.cfg, self.spell_aim_radius)
+        if (is_tornado and present and near_my_king(cx, cy, self.cfg, self.spell_aim_radius)
                 and all(self.tower.mine_alive[:2])):
             frac = self._my_king_hp_frac(samples[-1])
-            if frac is not None:                      # tornado onto YOUR king (princesses up): tank it,
+            if frac is not None:                      # tornado that PULLS a real push onto YOUR king: tank it,
                 return self.king_tank_reward * frac   # worth less as the king's own HP falls
         if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
             if is_rocket:

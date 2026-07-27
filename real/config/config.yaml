@@ -125,8 +125,11 @@ rewards:
   spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
   rocket_tower_reward: 1.0      # launching a rocket AT an enemy princess tower (offensive chip -- cycle to the rocket and fire it!)
   bad_rocket_penalty: -3.0      # EXTRA penalty if a rocket is followed by heavy own-tower damage (a bad elixir investment); its chip reward is also withheld
-  spell_whiff: -0.5              # a spell cast on empty ground (nothing to hit)
-  spell_king_penalty: -4.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful, wakes it)
+  spell_whiff: -1.5              # a spell cast on empty ground / with NO game-state impact (rocket / tornado /
+                                 # royal delivery thrown randomly). Was -0.5, which left random throwing net-positive
+                                 # after one lucky graze; -1.5 makes the expected value of a random cast clearly negative.
+  spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
+                                 # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
   tesla_kill: 3.0                # per unit of enemy-troop mass a placed Tesla kills near it (central/long-lived Tesla earns more)
   wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
   tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
