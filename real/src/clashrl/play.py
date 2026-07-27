@@ -155,6 +155,9 @@ def play(cfg) -> None:
 
     prev = None
     last_act = 0.0
+    stuck_since = None
+    stuck_timeout = float(cfg.get("play", "stuck_timeout", default=25.0))
+    stuck_tap = cfg.get("play", "stuck_tap", default=results_ok)
     while running["v"]:
         frame = capture.grab()
         if frame is None:
@@ -171,18 +174,35 @@ def play(cfg) -> None:
             prev = state
 
         if state == GameState.HOME:
+            stuck_since = None
             controller.tap(*(vision.locate(frame, home_tpl, home_thr) or battle))
             time.sleep(menu_delay)
         elif state == GameState.MATCH_END:
+            stuck_since = None
             controller.tap(*play_again)   # 1v1: re-queue immediately (loop continues)
             time.sleep(menu_delay)
         elif state == GameState.IN_MATCH:
+            stuck_since = None
             now = time.time()
             if now - last_act >= act_period:
                 act_in_match(frame)
                 last_act = now
             time.sleep(poll_dt)
-        else:  # UNKNOWN / QUEUING -> wait for a known screen
-            time.sleep(poll_dt)
+        else:  # UNKNOWN / QUEUING: normally just wait -- BUT if we sit on an unrecognised screen
+               # too long it's a post-match popup (chest / level-up / season pass / shop offer) that
+               # the state templates don't cover; tap to dismiss it (also cancels a hung search so the
+               # loop re-queues from HOME) instead of hanging here forever. This is what made the bot
+               # "stop navigating after several matches".
+            now = time.time()
+            if stuck_since is None:
+                stuck_since = now
+            elif now - stuck_since >= stuck_timeout:
+                print(f"[play] stuck on an unrecognised screen ~{stuck_timeout:.0f}s -> "
+                      "tapping to dismiss (popup or hung search)")
+                controller.tap(*stuck_tap)
+                stuck_since = now          # re-arm: keep tapping periodically until a known screen
+                time.sleep(menu_delay)
+            else:
+                time.sleep(poll_dt)
 
     print("[play] stopped.")

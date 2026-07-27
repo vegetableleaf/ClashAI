@@ -325,6 +325,11 @@ play:
   act_period: 1.5                # seconds between actions (crude gate; RL adds a learned no-op)
   select_delay: 0.08             # delay between selecting a card and placing it
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
+  stuck_timeout: 25              # seconds on an UNRECOGNISED screen before tapping to dismiss it. A
+                                 # post-match chest/level-up/season/offer popup that detect_state does
+                                 # not cover would otherwise hang navigation. Keep this LONGER than your
+                                 # typical matchmaking wait so a real search is not cancelled early.
+  stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
 
 # --- Board object detection (YOLO11) dataset bootstrap -------------------
 # `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your
