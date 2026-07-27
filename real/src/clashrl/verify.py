@@ -212,16 +212,80 @@ def _verify_hand(cfg, session: Path, video: Path) -> None:
           "hand.card_w / card_h / match_threshold (or next_slot / next_card_w / next_card_h) if wrong.")
 
 
+def _overlay_card_threats(out, frame, model, db, conf, card_profile, troop_red_mask) -> int:
+    """Draw each detected unit's card identity + FULL KB attribute profile onto ``out``.
+
+    Enemy units (red tint inside the box) are the threats -> drawn red with their
+    counter-relevant attributes (roles: win_condition / siege / spell / air / swarm / tank /
+    splash / death_damage / building_targeting) plus elixir / hp / dps / tower-damage; your
+    own units are drawn blue. Best-effort -- only as accurate as the current detector.
+    Returns the number of ENEMY units drawn.
+    """
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    res = model.predict(frame, conf=conf, verbose=False)[0]
+    enemies = 0
+    for box, cls in zip(res.boxes.xyxy.tolist(), res.boxes.cls.tolist()):
+        x0, y0, x1, y1 = (int(v) for v in box)
+        p = card_profile(db, model.names[int(cls)])
+        sub = hsv[max(0, y0):y1, max(0, x0):x1]
+        is_enemy = sub.size > 0 and float(troop_red_mask(sub).mean()) / 255.0 > 0.05
+        enemies += is_enemy
+        color = (40, 40, 235) if is_enemy else (235, 160, 40)
+        cv2.rectangle(out, (x0, y0), (x1, y1), color, 2)
+        cv2.putText(out, f"{p.name} [{','.join(p.roles())}]", (x0, max(10, y0 - 14)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.42, color, 1)
+        stats = []
+        if p.elixir is not None:
+            stats.append(f"{p.elixir}e")
+        if p.hitpoints is not None:
+            stats.append(f"{p.hitpoints}hp")
+        if p.dps is not None:
+            stats.append(f"{p.dps}dps")
+        if p.tower_damage is not None:
+            stats.append(f"twr{p.tower_damage}")
+        if stats:
+            cv2.putText(out, " ".join(stats), (x0, max(22, y0 - 2)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
+    return enemies
+
+
 def _verify_threats(cfg, session: Path, meta: dict, video: Path) -> None:
     """Overlay the enemy-threat read on in-match frames to calibrate reactive play.
 
-    Green tint = detected enemy troops; the label shows the classified threat type
-    (colour / size / count / lane); a yellow cross marks the threat centroid; a magenta
-    arrow marks any projectile in flight. Tune the thresholds in ``clashrl.threats``
-    (or run ``analyze``) if the read looks wrong.
+    Two layers are drawn:
+      * BEHAVIOURAL (always): green tint = enemy troops; the label shows the pixel-classified
+        threat type (colour / size / count / lane / depth / speed / siege / projectile / win-cond).
+      * CARD IDENTITY (only when a trained detector exists): each detected unit is boxed and
+        labelled with its card identity + KB attribute profile (win_condition / siege / spell /
+        air / swarm / tank / splash / death_damage + elixir / hp / dps / tower-damage), resolved
+        through ``card_threat.profile``. Enemy units (red tint) are the threats.
+
+    NOTE: this is the CALIBRATION VIEW of the identity-grounded threat features -- it does NOT
+    itself drive the policy. The model reads the threat VECTOR in its observation; wiring these
+    card attributes there (so it counters by type) is the retrain-time integration step. Tune the
+    behavioural thresholds in ``clashrl.threats``; retrain the detector (``detect-import`` ->
+    ``tools/detect/train.py``) to sharpen the identity layer.
     """
     from .reward import _red_mask
-    from .threats import ThreatTracker, annotate
+    from .threats import ThreatTracker, annotate, _troop_red_mask
+    from .cards import load as load_cards
+    from .card_threat import profile as card_profile
+    from .detect import _resolve_weights
+
+    db = load_cards(cfg)
+    model = None                                    # optional card-identity layer (needs a trained detector)
+    wpath, _ = _resolve_weights(cfg, None)
+    if wpath is not None and wpath.exists():
+        try:
+            from ultralytics import YOLO
+            model = YOLO(str(wpath))
+        except Exception:
+            try:
+                from ultralytics import RTDETR
+                model = RTDETR(str(wpath))
+            except Exception:
+                model = None
+    det_conf = float(cfg.get("detect", "preview_conf", default=0.25))
 
     times = meta.get("frame_times", [])
     cap = cv2.VideoCapture(str(video))
@@ -248,12 +312,20 @@ def _verify_threats(cfg, session: Path, meta: dict, video: Path) -> None:
         ok, frame = cap.read()
         if not ok:
             continue
-        cv2.imwrite(str(out_dir / f"threats_{fi:06d}.png"), annotate(frame, thr, cfg))
+        out = annotate(frame, thr, cfg)
+        if model is not None:
+            _overlay_card_threats(out, frame, model, db, det_conf, card_profile, _troop_red_mask)
+        cv2.imwrite(str(out_dir / f"threats_{fi:06d}.png"), out)
         saved += 1
     cap.release()
-    print(f"[verify] threats: saved {saved} annotated in-match frames to {out_dir}")
-    print("[verify] green tint = enemy troops; label = threat type; yellow cross = centroid; "
-          "magenta arrow = projectile. Tune clashrl.threats thresholds if the read looks wrong.")
+    layer = ("behavioural + card-identity" if model is not None
+             else "behavioural only -- no trained detector found; train one to add card attributes")
+    print(f"[verify] threats: saved {saved} annotated in-match frames to {out_dir}  [{layer}]")
+    print("[verify] green tint = enemy troops; label = behavioural threat type; yellow cross = centroid; "
+          "magenta arrow = projectile.")
+    if model is not None:
+        print("[verify] red boxes = detected ENEMY cards with their KB attributes "
+              "(roles + elixir/hp/dps/tower-dmg); blue = your units. Accuracy tracks the detector.")
 
 
 def _verify_towers(cfg, session: Path, meta: dict, video: Path) -> None:
