@@ -50,7 +50,8 @@ deck:
 #   win_condition   true for building-targeting pushers / primary tower threats
 #   targets     buildings_only | any | null   (what a troop prefers to attack)
 #   flags       [ranged, flying, spawner, kamikaze, dash, charge, stun, freeze,
-#                knockback, pull, shield, splash_air, building_targeting, swarm]
+#                knockback, pull, shield, splash_air, building_targeting, swarm,
+#                siege, tank, mini_tank, splash, jump]   (siege => X-Bow/Mortar)
 #   evolution   {available, cycles, effect, gains:[...]}   (null if none)
 #   hitpoints/damage/hit_speed/dps   @ meta.level (null => import)
 #   crown_tower_damage   spells' reduced damage to crown towers @ meta.level
@@ -562,3 +563,145 @@ cards:
     hitpoints: null
     damage: null
     hit_speed: null
+
+  # ---- pre-filled win conditions + siege (2026-07-26) -----------------------------
+  # STRATEGIC TAGS ONLY (win_condition/targets/flags); combat stats come from
+  # cards_stats.json by key. verified:false => please review. Add/remove as you see fit.
+  royal_giant:
+    display: "Royal Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [ranged, building_targeting]
+    verified: false
+
+  golem:
+    display: "Golem"
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting]
+    verified: false
+
+  lava_hound:
+    display: "Lava Hound"
+    win_condition: true
+    targets: buildings_only
+    flags: [flying, building_targeting]
+    verified: false
+
+  ram_rider:
+    display: "Ram Rider"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, charge]
+    verified: false
+
+  battle_ram:
+    display: "Battle Ram"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, charge]
+    verified: false
+
+  wall_breakers:
+    display: "Wall Breakers"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, kamikaze]
+    verified: false
+
+  goblin_giant:
+    display: "Goblin Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting, spawner]
+    verified: false
+
+  elixir_golem:
+    display: "Elixir Golem"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting]
+    verified: false
+
+  royal_hogs:
+    display: "Royal Hogs"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, swarm]
+    verified: false
+
+  electro_giant:
+    display: "Electro Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting]
+    verified: false
+
+  skeleton_barrel:
+    display: "Skeleton Barrel"
+    win_condition: true
+    targets: buildings_only
+    flags: [flying, building_targeting]
+    verified: false
+
+  santa_hog_rider:
+    display: "Santa Hog Rider"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, jump]
+    verified: false
+
+  goblin_drill:
+    display: "Goblin Drill"
+    win_condition: true
+    targets: buildings_only
+    flags: [spawner, building_targeting]
+    verified: false
+
+  graveyard:
+    display: "Graveyard"
+    win_condition: true
+    targets: null
+    flags: [spawner]
+    verified: false
+
+  miner:
+    display: "Miner"
+    win_condition: true
+    targets: any
+    flags: []
+    verified: false
+
+  x_bow:
+    display: "X-Bow"
+    win_condition: true
+    targets: any
+    flags: [ranged, siege]
+    verified: false
+
+  mortar:
+    display: "Mortar"
+    win_condition: true
+    targets: any
+    flags: [splash, siege]
+    verified: false
+
+  # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
+  # several individual recruits packed into the "royal_recruits" card). Its own class on
+  # purpose; NOT the same as royal_recruits. Not in cards_stats.json, so fuller entry here.
+  royal_recruit:
+    display: "Royal Recruit"
+    elixir: null
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [shield]
+    evolution: null
+    verified: false

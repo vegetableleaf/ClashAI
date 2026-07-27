@@ -116,10 +116,10 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         tagged=tagged,
         kind=kind,
         win_condition=wc,
-        siege=building and (wc or building_targeting),   # a building that goes for your towers
+        siege=("siege" in flags),                        # explicit siege flag (X-Bow / Mortar)
         spell=kind == "spell",
         building=building,
-        flying=db.is_flying(base),
+        flying=db.is_flying(base) or ("flying" in flags),
         attacks_air=db.attacks_air(base),
         swarm="swarm" in flags,
         tank=("tank" in flags) or ("mini_tank" in flags),
