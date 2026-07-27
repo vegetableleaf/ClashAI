@@ -556,10 +556,11 @@ Newest entries are at the bottom.
 - Steelman for RT-DETR (revisit later): NMS-free decoding helps dense/occluded crowds and it has a higher
   ceiling -- but only with a large, densely-labelled dataset. Not the current regime; zero-cost to revisit
   since the YOLO-format labels are detector-agnostic.
-- Change: tools/detect/train.py default --model rtdetr-l.pt -> yolo11m.pt (lighter than the rtdetr-l already
-  running, so memory improves immediately; auto-batch keeps imgsz 960 fitting). --model yolo11s.pt if VRAM
-  is still tight; --model rtdetr-l.pt to go back. Dataset / taxonomy / autolabel / detect-preview pipeline
-  unchanged. (User exports annotations as YOLO, so model choice is free.)
+- Change: tools/detect/train.py default --model rtdetr-l.pt -> YOLO11 (per user, set to yolo11x.pt -- the
+  LARGEST YOLO11, highest ceiling, to test). CAVEAT: yolo11x is bigger than rtdetr-l, so at imgsz 960
+  auto-batch may shrink the batch or OOM -- step down --model yolo11l/m/s.pt for less VRAM / faster training;
+  --model rtdetr-l.pt to go back. Dataset / taxonomy / autolabel / detect-preview pipeline unchanged. (User
+  exports annotations as YOLO, so model choice is free.)
 
 
 ------------------------------------------------------------------------------
