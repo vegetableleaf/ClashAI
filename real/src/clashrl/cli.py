@@ -139,6 +139,11 @@ def _cmd_card_roles(args) -> None:
     roles_report(Config.load(args.config), args.all, args.card)
 
 
+def _cmd_mine_replays(args) -> None:
+    from .replay_mine import mine_replays
+    mine_replays(Config.load(args.config), args.replays, args.weights, args.conf, args.stride)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="clashrl",
@@ -242,6 +247,14 @@ def main() -> None:
     crl.add_argument("--all", action="store_true", help="dump every class, not just the categorized summary")
     crl.add_argument("--card", default=None, help="inspect a single card / detected class name")
     crl.set_defaults(func=_cmd_card_roles)
+
+    mrp = sub.add_parser("mine-replays",
+                         help="distil strong-player replay videos into strategy priors (needs the trained detector; Stage 4)")
+    mrp.add_argument("--replays", default=None, help="folder of replay videos (default: replay_mine.replays_dir)")
+    mrp.add_argument("--weights", default=None, help="detector weights (default: latest runs/detect/*/weights/best.pt)")
+    mrp.add_argument("--conf", type=float, default=None, help="detector confidence threshold (default: replay_mine.detect_conf)")
+    mrp.add_argument("--stride", type=int, default=None, help="sample every Nth frame (default: replay_mine.frame_stride)")
+    mrp.set_defaults(func=_cmd_mine_replays)
 
     args = parser.parse_args()
     args.func(args)

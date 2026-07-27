@@ -141,6 +141,9 @@ rewards:
   threat_counter_delivery: 4.0   # Royal Delivery dropped ON a landing goblin (green) swarm, or onto the tower a projectile (Goblin Barrel) is arcing toward
   threat_tornado_pull: 4.0       # Tornado near YOUR king while a goblin swarm is present -> pull the goblins into the king to tank + kill them
   siege_counter: 4.0             # rocket a SITTING behind-bridge siege (X-Bow / Mortar / Princess) that chips your towers from the enemy side without crossing
+  strategy_prior_scale: 0.0      # Stage-4 ACTIVATION SWITCH (default OFF): weight of the strong-player strategy priors mined
+                                 # from external replays (run.py mine-replays -> data/analysis/strategy_priors.json). While 0 the
+                                 # priors never affect training; raise it (e.g. 0.5) only after the detector lands + you have mined footage.
   rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
@@ -363,3 +366,15 @@ detect:
   general_per_session: 40        # extra active in-match frames per session to hand-label (enemy)
   val_frac: 0.15                 # fraction of exported images held out for validation
   jpeg_quality: 92               # exported frames are JPEG at this quality (labelling-friendly, small)
+
+# --- External-replay strategy mining (Stage 4 groundwork) ----------------
+# `run.py mine-replays` distils strong-player rocket-cycle replay VIDEOS into deck-agnostic
+# strategy priors (data/analysis/strategy_priors.json): defensive placements, positive elixir
+# trades, and when to rocket a tower. It NEEDS the trained board detector (Stage 2/3) to read
+# footage that has no mouse log; until then the command reports readiness. Enable the priors in
+# training via rewards.strategy_prior_scale (default 0 = off). See clashrl/replay_mine.py.
+replay_mine:
+  replays_dir: data/replays      # drop pro/top-ladder rocket-cycle replay videos here (mp4/avi/mkv/mov/webm)
+  frame_stride: 3                # sample every Nth frame when mining (higher = faster, coarser)
+  detect_conf: 0.30              # detector confidence threshold for a unit to count
+  learn_side: bottom             # which player to imitate: the featured/blue player is usually on the bottom

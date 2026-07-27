@@ -378,6 +378,136 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-26 (afternoon)  —  Object detection Stage 1b: full taxonomy + Label Studio hand-label loop
+------------------------------------------------------------------------------
+- Since the enemy side has to be HAND-LABELLED (the auto-labeler only boxes YOUR just-spawned
+  troops), this pass built out the taxonomy + the labelling round-trip so the detector can see any
+  ladder card, not just your deck.
+- CLASS TAXONOMY grew 73 -> 217 (config/detect_classes.yaml), team-agnostic, keyed to the card KB:
+    * +the full Clash Royale card roster (73 -> 131) auto-added from config/cards.yaml (deck indices
+      preserved so the auto-labeler's own-troop classes don't shift).
+    * +all 41 EVOLUTION variants (<base>_evo, 131 -> 172); the auto-labeler now prefers the exact
+      evolved key (tesla_evo etc.) when you played the evolved card.
+    * +14 HERO variants (<base>_hero, user-provided post-cutoff cards, 172 -> 186).
+    * +9 champion ABILITY activations (<champion>_ability, distinct visual effects, 186 -> 195).
+    * +22 spell AOE classes (<spell>_aoe, the target/impact circle for every base spell, 195 -> 217)
+      so the detector can localise a spell's landing, not just its card.
+- LABEL STUDIO round-trip (labels are the real bottleneck, so this is the workflow):
+    * autolabel now also emits Label Studio helpers -- classes.txt + a ready-to-paste labelling-config
+      XML listing every class -- so hand-labelling is set up in one paste.
+    * `detect-frames` (add_frames): a NON-DESTRUCTIVE command to add more in-match frames from a
+      session into data/detect for hand-labelling (only NEW indices; existing images/splits untouched).
+    * `detect-import` (detect_import): ingest an unzipped Label Studio YOLO export -> remaps classes
+      BY NAME (order-proof, so LS reordering can't corrupt indices), rebuilds the train/val split and
+      data.yaml. Validated on a synthetic reordered export.
+    * `detect-preview` (detect_preview): run the trained detector on RANDOM, UNBIASED in-match frames
+      (pooled uniformly across ALL sessions, not clustered on your plays) and save annotated images to
+      gauge real accuracy.
+    * chore: stopped tracking Label Studio exports (annotation_export*/) and detector runs/ (regenerable
+      / large); untracked an accidentally-committed export.
+- troop_hp.py HP-BAR reader scaffold: reads a troop's health from the green fill fraction of the bar
+  above a detected box (groundwork for per-unit HP once the detector is live). Scaffold only -- not
+  wired into rewards yet.
+- Still Stage 1 (perception plumbing) -- no model/reward change to the policy yet.
+
+
+------------------------------------------------------------------------------
+2026-07-26 (evening)  —  Identity-grounded threat features (card_threat / card-roles)
+------------------------------------------------------------------------------
+- Direction: once the detector names the enemy card, the coarse colour/size threat proxies (threats.py)
+  can be REPLACED by what the card actually IS. New clashrl/card_threat.py resolves a detector class ->
+  a KB THREAT PROFILE (win_condition / siege / spell / air / swarm / tank + elixir / hp / dps /
+  tower-damage), the foundation for feeding identity-grounded threat features into PolicyNet.
+- `card-roles` command (card_threat.roles_report): prints each detector class's resolved role + stats
+  as a review report (`--all` / `--card <name>`), so the KB tagging can be audited.
+- KB TAGGING (config/cards.yaml + card_threat.py):
+    * pre-filled 17 win-condition / siege strategic tags + a singular royal_recruit; card_threat gained
+      an explicit `siege` flag and flag-based `flying` (air).
+    * tagged three_musketeers as a win condition.
+    * surfaced `death_damage` as a first-class threat attribute/role (Balloon's death bomb etc.).
+    * added a `melee` / `attack_range` attribute and curated range (melee / short / long) for ~70 troops
+      -- for the planned MELEE tornado-pull (only melee units can be pulled onto your king to be tanked).
+    * curated the 5 clarified special troops (furnace / goblin_machine / goblin_demolisher / goblinstein
+      / spirit_empress) from the user's reach info; only terry / wizard_trio remain uncurated.
+- `verify --threats` gained a CARD-IDENTITY layer: it now runs the detector + card_threat and draws each
+  enemy unit's resolved KB attributes (win_condition / siege / air / ... + elixir / hp / dps / tower-dmg)
+  on the frame -- the calibration view for the upcoming threat-vector integration.
+- ANALYSIS / PERCEPTION groundwork only -- the identity features are not fed into PolicyNet or the rewards
+  yet (that's the next stage, and needs a re-label + retrain).
+
+
+------------------------------------------------------------------------------
+2026-07-26 (evening)  —  Reward: close random-spell loopholes
+------------------------------------------------------------------------------
+- Tightened the anti-random-spell shaping (config.yaml / reward): spell-WHIFF penalty -0.5 -> -1.5 and
+  the enemy-KING-damage penalty -4 -> -6, so casting into empty ground or clipping the king is clearly
+  bad. Also started penalising ROYAL DELIVERY whiffs (it was previously exempt), and GATED the
+  own-king tornado "tank / activate" reward on a REAL push being present (so it can't be farmed by
+  tornado-ing your own king with nothing incoming).
+- Reward-shaping change -> effective on the next train-rl.
+
+
+------------------------------------------------------------------------------
+2026-07-27  —  Live-play robustness (watchdog + runtime log) + remote monitoring
+------------------------------------------------------------------------------
+- Long unattended train-rl / play runs were silently stalling on unexpected screens; this pass makes
+  the live loop self-heal and observable.
+- STUCK-SCREEN WATCHDOG (play.py): an UNRECOGNISED post-match popup (chest / level-up / season / offer)
+  no longer hangs navigation -- after play.stuck_timeout (25 s) on an unknown screen the bot taps to
+  dismiss it; also self-heals a hung matchmaking search.
+- RUNTIME LOG + crash guard (play.py): each run writes a per-run log (data/play_<ts>.log) of the states
+  it sees and the taps it makes, and the whole loop is wrapped in try/except so an exception LOGS A
+  TRACEBACK and keeps navigating instead of silently stopping on the results screen.
+- REMOTE MONITORING (clashrl/monitor.py, config monitor.*): optional Discord screenshot alerts during
+  train-rl. A dedicated DAEMON THREAD posts a screenshot of the game window every monitor.interval_min
+  (default 30, min 1) EVEN IF training itself hangs, so you can tell remotely whether a run is
+  progressing or stuck. The webhook URL is a SECRET -- read from the monitor.webhook_env env var
+  (CLASHRL_DISCORD_WEBHOOK, preferred) or the git-ignored monitor.webhook_file (data/discord_webhook.txt);
+  if neither is set, monitoring is simply off. Never committed.
+- MECHANICAL / tooling -- no model or reward change.
+
+
+------------------------------------------------------------------------------
+2026-07-27  —  Stage 4 groundwork: external-replay strategy mining (deferred, detector-gated)
+------------------------------------------------------------------------------
+- Motivation (user): the user isn't a pro, so BC from only their own play caps out. Idea: have the
+  bot learn from strong ROCKET-CYCLE players' replays -- their defensive placements, positive elixir
+  trades, and when they rocket the enemy tower. Assessed frame-by-frame BC from online footage as the
+  WRONG vehicle (hard blockers: external video has NO mouse log for labels; the whole vision stack --
+  card templates / elixir / tower / HP OCR -- is calibrated to the user's ONE rendering; pixel-BC
+  suffers domain shift across renderings; and a different "rocket cycle" deck doesn't match this deck's
+  card-identity action space). Chosen instead: STRATEGY DISTILLATION -- mine footage into compact,
+  DECK-AGNOSTIC priors that reward shaping leans on (the channel by which strategy already enters this
+  bot), not pixel cloning.
+- Built the groundwork now (the parts that don't need the detector), so it's ready to point at footage
+  the moment Stage 2/3 lands (clashrl/replay_mine.py, `run.py mine-replays`):
+    * DETECTOR PLUG-POINT: BoardDetector / load_detector wrap the SAME Ultralytics YOLO/RT-DETR weights
+      as detect-preview (runs/detect/*/weights/best.pt); team (mine/enemy) inferred from colour tint.
+      `.available` is False with no weights, so the miner reports READINESS + next steps instead of
+      crashing (verified: it prints the Stage-3 dependency and staging instructions).
+    * PRIOR SCHEMA (versioned JSON, schema_version 1): StrategyPriors aggregates placements
+      [threat_bucket][card][zone], elixir TRADES [threat_bucket][card] (n / delta-sum / positive), and
+      ROCKET-TOWER launch conditions (elixir histogram + board quiet-vs-pressured). Threat is bucketed
+      DECK-AGNOSTICALLY via card_threat (win_condition / siege / tank / air / swarm / spell / support),
+      which is what lets the priors transfer across decks.
+    * REWARD HOOKS (pure, ready for env at Stage 4): placement_bonus / trade_bonus / rocket_opportunity
+      each return ~[0,1]; empty priors (no data/file) return 0, so they're safe by construction. GATED
+      behind rewards.strategy_prior_scale (default 0.0 = OFF) -- nothing affects training until opted in.
+    * MINER: mine_replays runs the detector over videos in replay_mine.replays_dir (data/replays),
+      recovers each learn-side play (a new own-side unit = a play; coarse, documented), keeps only cards
+      in YOUR deck, and writes data/analysis/strategy_priors.json + strategy_records.json.
+- config: new replay_mine.* (replays_dir / frame_stride / detect_conf / learn_side) + rewards.
+  strategy_prior_scale. NOT wired into env.py yet (the reward hook needs the detector's enemy-identity
+  read IN the live env, which is Stage 3) -- deliberately left as ready-to-call functions, mirroring how
+  card_threat.py stages the detector bridge without touching the policy.
+- ANALYSIS-ONLY groundwork -- no model/reward/behaviour change. ACTIVATION (Stage 4): train the detector
+  (Stage 2/3) -> drop pro rocket-cycle replays into data/replays -> run.py mine-replays -> set
+  rewards.strategy_prior_scale > 0 and wire the hooks into env's per-step reward -> train-rl. CAVEATS
+  told to user: elixir/tower reads assume the user's rendering (external footage may misread them), and
+  only shared-deck cards yield usable placement/trade priors.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
