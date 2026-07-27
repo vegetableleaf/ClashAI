@@ -61,6 +61,7 @@ class ThreatProfile:
     swarm: bool = False
     tank: bool = False
     splash: bool = False
+    death_damage: bool = False      # deals area damage when it dies (Balloon / Golem / Giant Skeleton ...)
     building_targeting: bool = False
     elixir: Optional[int] = None
     hitpoints: Optional[int] = None
@@ -88,6 +89,8 @@ class ThreatProfile:
             out.append("air")
         if self.splash:
             out.append("splash")
+        if self.death_damage:
+            out.append("death_damage")
         if out:
             return out
         if not self.known:
@@ -124,6 +127,7 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         swarm="swarm" in flags,
         tank=("tank" in flags) or ("mini_tank" in flags),
         splash=db.has_splash(base) or ("splash" in flags),
+        death_damage="death_damage" in flags,
         building_targeting=building_targeting,
         elixir=c.get("elixir"),
         hitpoints=c.get("hitpoints"),
