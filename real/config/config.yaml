@@ -145,18 +145,18 @@ rewards:
   defense_kill_cap: 1.5          # max TOTAL kill credit a single defensive placement can earn over its window (anti-farm ceiling)
   wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
   tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
-  king_tank_reward: 1.0          # tornado onto YOUR king to tank + activate it (x your king's remaining HP fraction)
-  blocker_protect: 1.0           # play a tank/blocker (ronin/skeletons/ice spirit) to shield a ranged unit vs a heavy melee
+  king_tank_reward: 1.0          # (INACTIVE -- no Tornado in the Miner X-Bow deck) tornado onto YOUR king to tank + activate it
+  blocker_protect: 1.0           # play a tank/blocker (skeletons / electro spirit / miner) to shield a ranged unit (ice wizard) vs a heavy melee
   royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
   royal_delivery_kill: 5.0       # Royal Delivery, extra per unit of enemy mass it KILLS
   # -- reactive "foresight" counters (keyed off the enemy-threat read; learned from your replays) --
   threat_counter_delivery: 4.0   # Royal Delivery dropped ON a landing goblin (green) swarm, or onto the tower a projectile (Goblin Barrel) is arcing toward
-  threat_tornado_pull: 4.0       # Tornado near YOUR king while a goblin swarm is present -> pull the goblins into the king to tank + kill them
+  threat_tornado_pull: 4.0       # (INACTIVE -- no Tornado in the Miner X-Bow deck) Tornado near YOUR king vs a goblin swarm -> pull them into the king
   siege_counter: 4.0             # rocket a SITTING behind-bridge siege (X-Bow / Mortar / Princess) that chips your towers from the enemy side without crossing
   strategy_prior_scale: 0.0      # Stage-4 ACTIVATION SWITCH (default OFF): weight of the strong-player strategy priors mined
                                  # from external replays (run.py mine-replays -> data/analysis/strategy_priors.json). While 0 the
                                  # priors never affect training; raise it (e.g. 0.5) only after the detector lands + you have mined footage.
-  rocket_tornado_combo: 8.0      # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes). Lowered 15->8 so two combos can't out-sum a loss
+  rocket_tornado_combo: 8.0      # (INACTIVE -- no Tornado in the Miner X-Bow deck) rocket->tornado combo at the same spot
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
                                  # a better lane-block or forward play earns more via troop_defeat / tesla_kill, so it can deviate
@@ -173,13 +173,14 @@ rewards:
   xbow_defense_reward: 0.3       # X-Bow placed BACK-CENTRE as a defensive sniper (rocket-cycle fallback when the offensive X-Bow can't break through)
   xbow_misplace_penalty: -0.75   # X-Bow dropped forward but OUT of tower range (too far to chip, too exposed) -- the classic misplace
   miner_chip_reward: 0.6         # Miner dropped on/near an enemy princess tower -> chip damage (its bread-and-butter)
+  xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
   ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
   rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
   back_corner_penalty: -0.25     # slight: any card dumped in the far back corner (deep + against an edge) -- the ice-spirit/skeletons/royal-delivery spam
-  tornado_chip_penalty: -1.0     # a LONE tornado on the enemy princess (chip attempt) -- tornado is NOT a chip tool; a real rocket->tornado combo is exempt
+  tornado_chip_penalty: -1.0     # (INACTIVE -- no Tornado in the Miner X-Bow deck) a lone tornado chip attempt on the enemy princess
   premature_defense_penalty: -0.5 # a defender (tesla/ice wizard/ronin) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to
   shaping_match_cap: 8.0         # per-match ceiling on the repeatable one-sided bonuses (defense-kill + cycle + foresight counters) so they can't out-sum a loss
 

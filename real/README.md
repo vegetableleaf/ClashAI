@@ -1,5 +1,9 @@
 # Learning ClashBot (`real/`) — imitation learning → RL
 
+> 🔀 **Deck switch in progress (Miner X-Bow Control).** If you're picking this up on the
+> training device: read **[DECK_SWITCH.md](DECK_SWITCH.md)** first — it's the ordered runbook
+> (record → templates → label → train) plus the remaining code work and reward audit.
+
 A second, **learning** bot (separate from the scripted `../trol` bot). Goal: an
 agent that actually *plays* 2v2 Clash Royale, rewarded for **taking enemy
 towers**, **defending its own towers**, and **winning**, and punished for the

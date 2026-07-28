@@ -229,6 +229,7 @@ class LiveMatchEnv:
         self.xbow_defense_reward = float(cfg.get("rewards", "xbow_defense_reward", default=0.3))
         self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
         self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
+        self.xbow_wrong_lane_frac = float(cfg.get("rewards", "xbow_wrong_lane_frac", default=0.6))  # X-Bow leaving a LIVE push pays this share of wrong_lane_penalty
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
         self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits at/below this depth
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
@@ -471,16 +472,23 @@ class LiveMatchEnv:
         if card_id in self.ranged_ids:                           # RANGED unit dropped ON a troop
             if troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) >= self.ontop_size:
                 r += self.ranged_ontop_penalty
-        side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE -- every card
+        side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE
         off = cx - self.lane_split_x
-        lane_free = card_id in self.xbow_ids or card_id in self.miner_ids   # X-Bow opposite-lane / Miner anywhere = valid
-        if not lane_free and side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0):
-            rocket_ok = card_id in self.rocket_ids and (         # a rocket in the opposite lane is VALID when it
-                near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius)   # chips/finishes that tower, OR
-                or self._rocket_cleared)                         # erased a big clump there (split-lane push wipe)
-            if not rocket_ok:
-                scale = self.wrong_lane_cheap_frac if card_id in self.cheap_ids else 1.0
-                r += self.wrong_lane_penalty * scale             # committed to the lane OPPOSITE the push
+        opposite = side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0)
+        if opposite and card_id not in self.miner_ids:               # Miner deploys ANYWHERE -> never wrong-lane
+            if card_id in self.xbow_ids:
+                # An opposite-lane X-Bow is the deck's PUNISH of an over-committed / FAILED push -- fine once
+                # the push is spent. But if a REAL push is still LIVE, siting the X-Bow away from it leaves it
+                # undefendable -> a REDUCED penalty (the X-Bow still applies counter-pressure of its own).
+                if enemy_mass(frame, self.cfg) >= self.threat_mass:
+                    r += self.wrong_lane_penalty * self.xbow_wrong_lane_frac
+            else:
+                rocket_ok = card_id in self.rocket_ids and (         # a rocket in the opposite lane is VALID when it
+                    near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius)   # chips/finishes that tower, OR
+                    or self._rocket_cleared)                         # erased a big clump there (split-lane push wipe)
+                if not rocket_ok:
+                    scale = self.wrong_lane_cheap_frac if card_id in self.cheap_ids else 1.0
+                    r += self.wrong_lane_penalty * scale             # committed to the lane OPPOSITE the push
         return r
 
     def _bonus(self, credit: float) -> float:

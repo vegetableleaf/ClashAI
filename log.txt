@@ -689,6 +689,54 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-28  —  Miner X-Bow: reward-parameter audit + X-Bow opposite-lane nuance
+------------------------------------------------------------------------------
+- User: an opposite-lane X-Bow is a legit PUNISH of an over-committed / FAILED push, but it should STILL be
+  penalised if it leaves a live enemy push undefendable. Phase 1 had made the X-Bow fully wrong-lane-exempt
+  -- too permissive.
+- FIX (env._placement_penalty): the Miner stays fully wrong-lane-exempt (it deploys ANYWHERE). The X-Bow is
+  now NUANCED -- an opposite-lane X-Bow is free when the near-lane push is SPENT, but if a REAL push is still
+  live (enemy_mass >= env.threat_mass) it pays rewards.xbow_wrong_lane_frac (0.6) x wrong_lane_penalty (a
+  REDUCED share -- the X-Bow does apply its own counter-pressure). config: rewards.xbow_wrong_lane_frac.
+- FULL REWARD AUDIT for the new deck (decisions recorded in real/DECK_SWITCH.md §3): KEPT all the shared
+  defensive / spell / anti-farm shaping; ADDED the X-Bow (win-condition / defence / misplace) + Miner-chip
+  rewards (Phase 1) + the X-Bow lane nuance (this change); marked the Tornado/Ronin knobs INACTIVE in config
+  (king_tank_reward, threat_tornado_pull, rocket_tornado_combo, tornado_chip_penalty, env.combo_* -- their
+  code paths are already inert since tornado_ids is empty, but the comments now say so, so they aren't
+  re-tuned); left the offense WEIGHTS (xbow_wc vs rocket_tower vs miner_chip) to be re-tuned from train-rl
+  data rather than guessed. Reward change -> next train-rl.
+- HANDOFF: added real/DECK_SWITCH.md -- the single ordered runbook (user record/template/train steps + the
+  remaining AI/code work + the reward audit + the roadmap), linked from real/README.md, so the training-
+  device agent has everything in order. Waiting on the user to re-record before Phase 2.
+
+
+------------------------------------------------------------------------------
+2026-07-28  —  DESIGN NOTE (Stage 5, post-Stage-3): learned dynamics / world model
+------------------------------------------------------------------------------
+- User idea (via a programmer friend): add a PREDICTIVE component -- a transformer that predicts how the
+  game state progresses from the previous state + action (e.g. a placed troop advances toward its nearest
+  target along the shortest path) -- trained first, then RL on top. Verdict: promising and well-aligned with
+  this project's core bottleneck (live matches are slow + un-parallelisable, so sample efficiency is king),
+  but it is a POST-STAGE-3 endeavour and should be its own stage.
+- WHY post-Stage-3: a world model that predicts "the troop moves toward the nearest target" needs a
+  STRUCTURED state -- a list of entities {type, x, y, hp, team} -- to predict over. That is exactly what the
+  object detector (Stage 2/3) produces. Predicting raw PIXELS instead is far harder and less useful, and the
+  coarse red-blob threat proxies aren't enough. So the detector is the prerequisite.
+- WHAT it is: model-based RL (Dreamer / MuZero / Trajectory-Transformer family). "Train the predictor, then
+  RL" == learn a dynamics model, then use it to (a) pretrain the policy's representation, (b) plan short
+  look-aheads (roll imagined futures to score candidate actions), and/or (c) generate imagined rollouts to
+  train the policy with far fewer real matches.
+- HOW (phased, after Stage 3): collect (entity_state, action, next_entity_state) transitions from recordings
+  + RL rollouts -> train a transformer/graph dynamics model over the entity SET (predict next positions,
+  spawns, deaths, HP, tower chip) -> validate SHORT-horizon accuracy (error compounds over long rollouts) ->
+  wire in as representation pretraining first, then optional planning / imagined rollouts, then RL.
+- HONEST CAVEATS (told user): significant research scope; CR dynamics are complex (targeting, collisions,
+  spell timing) and PARTIALLY OBSERVED (enemy elixir/hand hidden), so keep horizons short and expect the
+  model to be a helper, not an oracle. Sequence it AFTER: the Miner X-Bow BC+RL baseline works AND the
+  detector reliably produces entity states. Tracked as Stage 5 in real/DECK_SWITCH.md.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
