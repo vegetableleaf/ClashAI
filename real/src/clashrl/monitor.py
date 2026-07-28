@@ -95,16 +95,21 @@ class DiscordMonitor:
         cap = WindowCapture(self.cfg.get("window", "title_contains", default=None),
                             self.cfg.get("window", "region", default=None))
         started = time.time()
-        self._send(cap, "monitor started")               # immediate post confirms it works
+        self._send(cap, "monitor started")               # immediate screenshot confirms it works
         while not self._stop.wait(self.interval):
-            self._send(cap, f"alive {(time.time() - started) / 3600:.1f}h")
+            self._send_clip(cap, f"alive {(time.time() - started) / 3600:.1f}h")
+
+    def _grab(self, cap: WindowCapture):
+        """A single window frame, retrying once via a region refresh; None if not found."""
+        frame = cap.grab()
+        if frame is None:
+            cap.refresh_region()
+            frame = cap.grab()
+        return frame
 
     def _send(self, cap: WindowCapture, note: str) -> None:
         try:
-            frame = cap.grab()
-            if frame is None:
-                cap.refresh_region()
-                frame = cap.grab()
+            frame = self._grab(cap)
             if frame is None:
                 print("[monitor] no frame to send (window not found?)")
                 return
@@ -112,6 +117,61 @@ class DiscordMonitor:
             if not ok:
                 return
             ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            _post_screenshot(self.url, buf.tobytes(), f"**{self.label}** — {note} — {ts}")
+            _post_file(self.url, buf.tobytes(), "screen.jpg", "image/jpeg",
+                       f"**{self.label}** — {note} — {ts}")
         except Exception as exc:  # noqa: BLE001 -- monitoring must never break the run
             print(f"[monitor] alert failed (ignored): {exc!r}")
+
+    def _record_clip(self, cap: WindowCapture) -> Optional[bytes]:
+        """Capture a ~clip_seconds real-time clip of the game window as mp4 bytes (or None).
+
+        Streams straight to a temp file via cv2.VideoWriter (so it never holds the whole clip
+        in RAM), then reads + deletes it. Frames are grabbed at clip_fps and optionally
+        downscaled (clip_scale) to keep the upload under Discord's webhook size limit.
+        """
+        first = self._grab(cap)
+        if first is None:
+            return None
+        if self.clip_scale and self.clip_scale != 1.0:
+            first = cv2.resize(first, None, fx=self.clip_scale, fy=self.clip_scale)
+        h, w = first.shape[:2]
+        tmp = Path(tempfile.gettempdir()) / f"clashrl_clip_{uuid.uuid4().hex}.mp4"
+        writer = cv2.VideoWriter(str(tmp), cv2.VideoWriter_fourcc(*"mp4v"), self.clip_fps, (w, h))
+        if not writer.isOpened():
+            print("[monitor] could not open the mp4 encoder (clip skipped).")
+            return None
+        dt = 1.0 / self.clip_fps
+        try:
+            writer.write(first)
+            for _ in range(max(1, int(self.clip_seconds * self.clip_fps)) - 1):
+                if self._stop.is_set():
+                    break
+                t0 = time.time()
+                f = self._grab(cap)
+                if f is not None:
+                    writer.write(cv2.resize(f, (w, h)))
+                time.sleep(max(0.0, dt - (time.time() - t0)))
+        finally:
+            writer.release()
+        try:
+            data = tmp.read_bytes()
+        except OSError:
+            data = None
+        tmp.unlink(missing_ok=True)
+        return data
+
+    def _send_clip(self, cap: WindowCapture, note: str) -> None:
+        try:
+            data = self._record_clip(cap)
+            if not data:
+                print("[monitor] no clip to send (window not found / encoder failed?)")
+                return
+            mb = len(data) / (1024 * 1024)
+            if mb > 8.0:                       # Discord webhook upload ceiling (no boost) ~8 MiB
+                print(f"[monitor] clip is {mb:.1f} MB (> ~8 MB Discord limit); lower "
+                      f"monitor.clip_scale / clip_fps / clip_seconds. Sending anyway.")
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            _post_file(self.url, data, "clip.mp4", "video/mp4",
+                       f"**{self.label}** — {note} — {ts}")
+        except Exception as exc:  # noqa: BLE001 -- monitoring must never break the run
+            print(f"[monitor] clip failed (ignored): {exc!r}")
