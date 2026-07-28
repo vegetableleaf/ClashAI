@@ -188,6 +188,18 @@ class LiveMatchEnv:
         self.offensive_half = float(cfg.get("env", "offensive_half_y", default=0.45))
         # centre is only the RECOMMENDED default defensive spot (a small reward), never forced
         self.defense_center_bonus = float(cfg.get("rewards", "defense_center_bonus", default=0.15))
+        # BAD-PLACEMENT penalties (judged vs the pre-action frame -- where the enemy was when the
+        # model chose): defend the wrong (empty) lane, drop a ranged unit on top of a troop, or dump
+        # a card in the far back corner (see _placement_penalty).
+        self.wrong_lane_penalty = float(cfg.get("rewards", "wrong_lane_penalty", default=-1.5))
+        self.ranged_ontop_penalty = float(cfg.get("rewards", "ranged_ontop_penalty", default=-0.75))
+        self.back_corner_penalty = float(cfg.get("rewards", "back_corner_penalty", default=-0.25))
+        self.lane_split_x = 0.48                       # left/right split -- matches reward.threat_side
+        self.wrong_lane_margin = float(cfg.get("env", "wrong_lane_margin", default=0.12))
+        self.ontop_radius = float(cfg.get("env", "ranged_ontop_radius", default=0.08))
+        self.ontop_size = float(cfg.get("env", "ranged_ontop_size", default=0.06))
+        self.back_corner_y = float(cfg.get("env", "back_corner_y", default=0.72))
+        self.back_corner_x = float(cfg.get("env", "back_corner_x", default=0.20))
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -340,6 +352,37 @@ class LiveMatchEnv:
         if abs(gx - rx) <= 1 and abs(gy - ry) <= 1:      # within a cell of the recommended centre
             return self.defense_center_bonus
         return 0.0
+
+    def _placement_penalty(self, play: bool, card_id: int, cell: int) -> float:
+        """Punish clearly BAD placements, judged against the pre-action frame (where the enemy was
+        when the model decided):
+          * WRONG LANE (hard): a defender (Tesla / Ice Wizard / Ronin) dropped in the EMPTY lane
+            while the enemy pushes the OTHER lane -- wasted elixir and an undefended push.
+          * RANGED ON TOP (moderate): a ranged unit (Tesla / Ice Wizard) dropped right on top of an
+            enemy troop instead of a kiting distance behind it -- it gets run down before it shoots.
+          * BACK CORNER (slight): any card dumped in the far back corner (deep AND against an edge),
+            where there's almost never a reason to play -- the ice-spirit / skeletons / royal-delivery
+            spam. Purely positional, so it applies to every card.
+        """
+        if not play:
+            return 0.0
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        r = 0.0
+        if cy >= self.back_corner_y and (cx <= self.back_corner_x or cx >= 1.0 - self.back_corner_x):
+            r += self.back_corner_penalty                        # useless far-back corner dump
+        frame = self._last_frame
+        if frame is None:
+            return r
+        if card_id in self.defensive_kind:                       # WRONG-LANE defence
+            side = threat_side(frame, self.cfg, self.threat_min_frac)   # -1 left / +1 right / 0 none
+            off = cx - self.lane_split_x
+            if side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0):
+                r += self.wrong_lane_penalty                     # placed in the lane OPPOSITE the push
+        if card_id in self.ranged_ids:                           # RANGED unit dropped ON a troop
+            if troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) >= self.ontop_size:
+                r += self.ranged_ontop_penalty
+        return r
 
     def _defense_kill_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
         """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin) by
@@ -549,6 +592,7 @@ class LiveMatchEnv:
             if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
                     reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
+            reward += self._placement_penalty(bool(play), card_id, cell)  # wrong-lane / ranged-on-top / back-corner
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
                 reward += self.cycle_reward           # cheap card played while rocket isn't in hand -> cycling to it
             reward += self._threat_counter_reward(bool(play), card_id, cell)   # foresight counters

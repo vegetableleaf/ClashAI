@@ -166,6 +166,10 @@ rewards:
                                  # bigger than any single-step positive shaping so ACTING on a push always wins
   elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
   cycle_reward: 0.15             # play a cheap card (ice spirit / skeletons) while the ROCKET is NOT in hand -> cycles toward it
+  # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
+  wrong_lane_penalty: -1.5       # HARD: a defender dropped in the EMPTY lane while the enemy pushes the OTHER lane (wasted elixir + undefended push)
+  ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
+  back_corner_penalty: -0.25     # slight: any card dumped in the far back corner (deep + against an edge) -- the ice-spirit/skeletons/royal-delivery spam
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
@@ -311,6 +315,13 @@ env:
   defense_back_limit: 0.58             # DEEPEST a defender is placed (normalized y): keeps it on the central grass in FRONT
                                        # of your king tower. Deeper lands ON the king (undeployable) so the card never plays.
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
+  # bad-placement penalty geometry (rewards.wrong_lane_penalty / ranged_ontop_penalty / back_corner_penalty)
+  wrong_lane_margin: 0.12              # deadband around the 0.48 lane split: a defender must be THIS far into the
+                                       # opposite lane (from a push) to count as wrong-lane -- central placements are exempt
+  ranged_ontop_radius: 0.08            # a ranged unit within this of a troop blob = dropped "on top" (no kiting gap)
+  ranged_ontop_size: 0.06              # min largest enemy-blob fraction at the drop to count as a real troop (not speckle)
+  back_corner_y: 0.72                  # at/below this depth (normalized y, toward your king) + an outer column = back corner
+  back_corner_x: 0.20                  # within this of either side edge = the corner (outer columns only)
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy
