@@ -100,11 +100,19 @@ PyTorch + a GPU (same as `train-bc`/`train-rl`).
 PowerShell (training device, from `real/`):
 ```powershell
 git pull origin main
-.\.venv\Scripts\python.exe run.py train-sim --matches 5000     # START (from scratch); prints a rolling win-rate
+# (optional) refresh opponents to the CURRENT top-200 meta decks — needs a free CR API token:
+#   set the token in env CLASHRL_CR_API_TOKEN (from developer.clashroyale.com, IP-locked), then:
+.\.venv\Scripts\python.exe run.py decks-import --limit 200      # else the curated 23-deck pool is used
+.\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16   # START (from scratch); K vectorized envs
 # monitor: watch the [train-sim] summary lines (winrate / avg_rew / m/s); policy_sim.pt updates every 50 matches
 # END: press Ctrl+C any time — it saves data/policy_sim.pt on exit
 .\.venv\Scripts\python.exe run.py train-sim --resume           # continue a previous run
 ```
+Opponents are sampled from a pool of real meta decks (`config/meta_decks.yaml`) and piloted by their
+inferred style (cycle / control / beatdown / siege). `--envs K` runs K matches in a vectorized learner
+(batched inference + shared replay; single-process, so it's GPU-amortisation not multi-core — the engine
+is cheap). Tune `sim.envs` and the pool/fidelity under the `sim:` config.
+
 To then **warm-start live RL from the sim prior:** `copy data\policy_sim.pt data\policy.pt` (dims match the
 deck/config), then `run.py train-rl` — it fine-tunes the sim policy on real matches to close the sim-to-real
 gap. (Or keep BC and sim as two separate warm-starts and compare.)

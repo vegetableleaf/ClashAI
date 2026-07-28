@@ -1,0 +1,30 @@
+# Meta opponent decks for the sim (each = 8 card keys from the card KB).
+#
+# `run.py decks-import` (official Clash Royale API + your free token) OVERWRITES this file with the
+# current top ~200 most-played decks from top-ladder battle logs. This committed set is a curated
+# fallback so the sim has varied, realistic opponents out of the box. Unknown keys are dropped and a
+# deck is used only if all 8 resolve in the KB. Optional `weight` biases how often it is sampled.
+decks:
+  - {name: hog_2.6,          weight: 12, cards: [hog_rider, musketeer, ice_spirit, skeletons, cannon, fireball, the_log, ice_golem]}
+  - {name: xbow_2.9,         weight: 9,  cards: [x_bow, tesla, archers, skeletons, ice_spirit, fireball, the_log, knight]}
+  - {name: mortar_cycle,     weight: 7,  cards: [mortar, musketeer, knight, skeletons, ice_spirit, fireball, the_log, bats]}
+  - {name: golem_beatdown,   weight: 8,  cards: [golem, baby_dragon, mega_minion, night_witch, lightning, tornado, barbarian_barrel, lumberjack]}
+  - {name: lavaloon,         weight: 8,  cards: [lava_hound, balloon, mega_minion, minions, tombstone, fireball, zap, skeleton_dragons]}
+  - {name: lumberloon,       weight: 6,  cards: [balloon, lumberjack, baby_dragon, mega_minion, tombstone, fireball, zap, barbarian_barrel]}
+  - {name: miner_poison,     weight: 10, cards: [miner, poison, valkyrie, musketeer, inferno_tower, skeletons, bats, the_log]}
+  - {name: miner_wallbreak,  weight: 7,  cards: [miner, wall_breakers, bomb_tower, skeletons, ice_spirit, fireball, the_log, knight]}
+  - {name: royal_giant,      weight: 9,  cards: [royal_giant, fireball, mega_minion, guards, hunter, skeletons, the_log, electro_spirit]}
+  - {name: giant_double_prince, weight: 6, cards: [giant, prince, dark_prince, mega_minion, electro_wizard, poison, zap, tornado]}
+  - {name: pekka_bridge_spam, weight: 9, cards: [pekka, battle_ram, bandit, royal_ghost, electro_wizard, poison, zap, magic_archer]}
+  - {name: mega_knight_bait, weight: 8,  cards: [mega_knight, goblin_gang, princess, dart_goblin, inferno_tower, goblin_barrel, bats, the_log]}
+  - {name: log_bait,         weight: 8,  cards: [goblin_barrel, princess, goblin_gang, inferno_tower, rocket, ice_spirit, knight, the_log]}
+  - {name: graveyard_poison, weight: 8,  cards: [graveyard, poison, musketeer, knight, tornado, baby_dragon, the_log, skeletons]}
+  - {name: three_musketeers, weight: 5,  cards: [three_musketeers, elixir_collector, battle_ram, minions, ice_golem, zap, the_log, dart_goblin]}
+  - {name: ram_rider_bait,   weight: 6,  cards: [ram_rider, bandit, goblin_gang, zappies, inferno_dragon, magic_archer, barbarian_barrel, earthquake]}
+  - {name: royal_hogs_eq,    weight: 7,  cards: [royal_hogs, zappies, flying_machine, hunter, fireball, earthquake, skeletons, barbarian_barrel]}
+  - {name: electro_giant,    weight: 5,  cards: [electro_giant, tornado, electro_wizard, fireball, dart_goblin, skeletons, giant_snowball, bandit]}
+  - {name: sparky_giant,     weight: 4,  cards: [giant, sparky, mega_minion, zappies, electro_wizard, fireball, zap, ice_golem]}
+  - {name: goblin_drill,     weight: 6,  cards: [goblin_drill, miner, mother_witch, bomber, earthquake, barbarian_barrel, skeletons, fireball]}
+  - {name: giant_beatdown,   weight: 6,  cards: [giant, witch, musketeer, mini_pekka, minions, arrows, zap, knight]}
+  - {name: balloon_freeze,   weight: 4,  cards: [balloon, lumberjack, baby_dragon, freeze, mega_minion, barbarian_barrel, arrows, tombstone]}
+  - {name: mirror_miner_xbow, weight: 3, cards: [x_bow, tesla, ice_wizard, rocket, miner, electro_spirit, skeletons, royal_delivery]}

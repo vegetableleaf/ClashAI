@@ -438,6 +438,7 @@ replay_mine:
 # from scratch. The result (data/policy_sim.pt) is a PRIOR to warm-start live train-rl, then
 # fine-tune on real matches. Medium fidelity -> expect a sim-to-real gap. See real/DECK_SWITCH.md.
 sim:
+  envs: 8                        # VECTORIZED match instances feeding one learner (batched inference + shared replay); --envs overrides
   agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir goes single -> double at (regulation-60s); triple in overtime
@@ -453,3 +454,8 @@ sim:
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
   log_every_matches: 25         # print a rolling win-rate/avg-reward summary this often
   save_every_matches: 50        # checkpoint data/policy_sim.pt this often
+  # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
+  # file from the official CR API (needs a free token in the env var below); else the curated set is used.
+  meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
+  api_token_env: CLASHRL_CR_API_TOKEN       # env var holding your official CR API token (developer.clashroyale.com; IP-locked)
+  api_base: https://api.clashroyale.com/v1  # official Clash Royale API base URL

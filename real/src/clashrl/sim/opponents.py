@@ -1,31 +1,23 @@
-"""Scripted opponent archetypes for the sim (team 1 = top). Deliberately simple heuristic bots so
-the agent faces varied, plausible pressure across MANY matches. Not meant to be strong -- just to
-cover defend / cycle-chip / beatdown / siege styles so the policy learns robust responses.
-
-Grow these (or add self-play) later; see real/DECK_SWITCH.md.
+"""Scripted opponents for the sim. Each bot PILOTS a real meta deck (sampled from the meta-deck pool,
+see meta_decks.py) with simple, deck-agnostic heuristics whose aggression is set by the deck's inferred
+STYLE (cycle / control / beatdown / siege). Not meant to be strong -- just varied, plausible pressure
+across MANY matches so the policy learns robust responses. Add self-play later; see real/DECK_SWITCH.md.
 """
 from __future__ import annotations
 
-from .engine import build_spec
+from typing import List
 
-# Representative decks of common ladder cards (must exist in the KB; missing -> harmless defaults).
-_DECKS = {
-    "hog_cycle":  ["hog_rider", "musketeer", "knight", "skeletons", "ice_spirit", "cannon", "fireball", "zap"],
-    "beatdown":   ["giant", "musketeer", "mini_pekka", "archers", "minions", "fireball", "arrows", "knight"],
-    "control":    ["valkyrie", "musketeer", "tesla", "skeletons", "ice_spirit", "fireball", "archers", "knight"],
-    "siege":      ["x_bow", "tesla", "archers", "skeletons", "ice_spirit", "fireball", "knight", "rocket"],
-}
+from .engine import build_spec
 
 
 class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
-    pressure per style (beatdown saves to ~full then commits; the rest chip more freely)."""
+    pressure per the deck's style (beatdown saves to ~full then commits; the rest chip more freely)."""
 
-    def __init__(self, cfg, db, rng, style: str):
+    def __init__(self, cfg, db, rng, cards: List[str], style: str):
         self.style = style
         self.rng = rng
-        deck = _DECKS.get(style, _DECKS["hog_cycle"])
-        self.specs = [build_spec(db, k) for k in deck]
+        self.specs = [build_spec(db, k) for k in cards]
 
     def act(self, eng) -> None:
         team = 1
@@ -65,7 +57,11 @@ class ScriptedBot:
             eng.deploy(team, self.rng.choice(wc), lane, 0.46)
 
 
-def make_opponent(cfg, db, rng) -> ScriptedBot:
-    """A random archetype (uniform over the four styles)."""
-    style = rng.choice(list(_DECKS.keys()))
-    return ScriptedBot(cfg, db, rng, style)
+def make_opponent(cfg, db, rng, pool: List[dict]) -> ScriptedBot:
+    """Sample a meta deck (weighted by its popularity) and pilot it per its inferred style."""
+    if not pool:
+        from .meta_decks import load_meta_decks
+        pool = load_meta_decks(cfg, db)
+    weights = [max(0.01, float(d.get("weight", 1.0))) for d in pool]
+    deck = rng.choices(pool, weights=weights, k=1)[0]
+    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"])

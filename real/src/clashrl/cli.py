@@ -113,7 +113,13 @@ def _cmd_train_sim(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
-    train_sim(Config.load(args.config), matches=args.matches, resume=args.resume, seed=args.seed)
+    train_sim(Config.load(args.config), matches=args.matches, resume=args.resume,
+              seed=args.seed, envs=args.envs)
+
+
+def _cmd_decks_import(args) -> None:
+    from .deck_import import import_decks
+    import_decks(Config.load(args.config), limit=args.limit, players=args.players)
 
 
 def _cmd_diag(args) -> None:
@@ -218,7 +224,15 @@ def main() -> None:
     tsi.add_argument("--matches", type=int, default=2000, help="max matches to play before stopping")
     tsi.add_argument("--resume", action="store_true", help="continue data/policy_sim.pt instead of training from scratch")
     tsi.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
+    tsi.add_argument("--envs", type=int, default=None,
+                     help="parallel (vectorized) match instances feeding one learner (default: sim.envs)")
     tsi.set_defaults(func=_cmd_train_sim)
+
+    dki = sub.add_parser("decks-import",
+                         help="import the current top meta decks from the official CR API into config/meta_decks.yaml")
+    dki.add_argument("--limit", type=int, default=200, help="how many top decks to keep")
+    dki.add_argument("--players", type=int, default=120, help="how many top-ladder players' battle logs to scan")
+    dki.set_defaults(func=_cmd_decks_import)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
     ply.set_defaults(func=_cmd_play)

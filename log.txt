@@ -775,6 +775,33 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-28  —  Sim upgrade: vectorized train-sim + meta-deck opponents (top-200 via CR API)
+------------------------------------------------------------------------------
+- VECTORIZED training (`run.py train-sim --envs K`, config sim.envs default 8): K match instances step
+  together and feed ONE learner -- a single BATCHED network forward picks all K actions and one optimiser
+  step runs per tick over a shared replay. Better GPU utilisation + sample diversity + throughput; K
+  matches progress at once. Single-process (GIL), so the K engine steps are serial -> this is VECTORISED
+  (batched), not multi-core parallelism; the engine is cheap so the win is GPU amortisation. (Multiprocess
+  actors could saturate cores later.) train_sim.py rewritten around a per-env state loop + choose_batch().
+- META-DECK OPPONENTS (replaces the 4 hardcoded archetypes): opponents now sample from a POOL of real
+  meta decks and pilot each by its inferred STYLE (cycle / control / beatdown / siege, from avg elixir +
+  siege/tank/win-condition flags). Files: sim/meta_decks.py (load_meta_decks + classify_style), rewired
+  sim/opponents.py (ScriptedBot takes cards+style; make_opponent samples weighted by popularity),
+  SimMatchEnv loads the pool once. config/meta_decks.yaml ships a curated 23-deck fallback (all keys
+  validated against the KB -> all 23 resolve; styles: 8 control / 7 cycle / 5 beatdown / 3 siege).
+- LIVE TOP-200 IMPORT (`run.py decks-import`, deck_import.py): pulls the current meta from the OFFICIAL
+  Clash Royale API (sanctioned, no scraping) -- top global players -> their battle logs -> 8-card decks
+  both sides used -> tallied -> top N -> written to config/meta_decks.yaml. Needs a FREE token (env
+  CLASHRL_CR_API_TOKEN from developer.clashroyale.com, IP-locked); card names mapped to KB keys (evolutions
+  fold to base). Best-effort (rankings endpoint/season can move); without a token or on error the curated
+  pool is kept. config: sim.envs / meta_decks_file / api_token_env / api_base.
+- VALIDATED here (no torch on this box): compile clean, both YAMLs parse, all 23 curated decks resolve +
+  classify, and the vectorized multi-env loop ran (4 envs -> 12 matches, sane outcomes). The torch training
+  path mirrors the proven train_rl update (batched); the live API import can't be tested without a token.
+  Ready to run on the GPU/torch training device -- `train-sim --envs 16` (+ optional decks-import).
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
