@@ -334,3 +334,12 @@ class TowerTracker:
         enemy_king = len(self.enemy_alive) >= 3 and not self.enemy_alive[2]
         my_king = len(self.mine_alive) >= 3 and not self.mine_alive[2]
         return blue, red, enemy_king, my_king
+
+    def king_trending_down(self) -> Tuple[bool, bool]:
+        """(enemy, mine) king that is destroyed OR was TRENDING destroyed (>=1 'gone' read) at the
+        moment the match ended. A king fall ends the match instantly, so its destruction latch (needs
+        ``confirm`` consecutive reads) frequently can't finish before the frame cuts to the results
+        screen -- this recovers that near-miss so a 3-crown finish is counted as 3, not under-read."""
+        ek = len(self.enemy_alive) >= 3 and (not self.enemy_alive[2] or self._enemy_low[2] >= 1)
+        mk = len(self.mine_alive) >= 3 and (not self.mine_alive[2] or self._mine_low[2] >= 1)
+        return ek, mk

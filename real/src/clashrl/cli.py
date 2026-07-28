@@ -23,7 +23,8 @@ def _cmd_record(args) -> None:
 
 def _cmd_verify(args) -> None:
     from .verify import verify
-    verify(Config.load(args.config), args.session, args.towers, args.hand, args.spells, args.threats)
+    verify(Config.load(args.config), args.session, args.towers, args.hand, args.spells, args.threats,
+           args.all)
 
 
 def _cmd_hand_templates(args) -> None:
@@ -165,6 +166,8 @@ def main() -> None:
                      help="overlay enemy-troop-mass detection to calibrate spell + patience rewards")
     ver.add_argument("--threats", action="store_true",
                      help="overlay the enemy-threat read (color/size/count/lane + projectiles) to calibrate reactive play")
+    ver.add_argument("--all", action="store_true",
+                     help="run the chosen overlay over EVERY recorded session (not just one)")
     ver.set_defaults(func=_cmd_verify)
 
     lab = sub.add_parser("label", help="build an (observation, action) dataset from recordings")

@@ -797,6 +797,16 @@ class LiveMatchEnv:
             outcome = None                        # never saw the scoreboard, no towers fell
         else:
             outcome = "win" if blue_c > red_c else "loss" if red_c > blue_c else "draw"
+        # A KING kill is a full 3-crown victory. The king ends the match the instant it falls, so its
+        # (and the last princess's) destruction latch often can't confirm before the frame cuts to the
+        # results screen -- which showed a real 3-0 as "1-0". For the WINNER only, force the count to 3
+        # when a king kill is evident (latched OR trending-destroyed at the cut). Display-only:
+        # outcome_reward keys off win/loss, not the crown count, so this cannot change the reward.
+        ek_soft, mk_soft = self.tower.king_trending_down()
+        if outcome == "win" and (enemy_king or ek_soft):
+            blue_c = 3
+        elif outcome == "loss" and (my_king or mk_soft):
+            red_c = 3
         reward = outcome_reward(outcome, self.cfg) if outcome else 0.0
         # leave the results screen by re-queueing (1v1 "Play Again") so the next match
         # starts without a detour through HOME; reset() then picks up QUEUING/IN_MATCH.

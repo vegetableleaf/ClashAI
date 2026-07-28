@@ -29,8 +29,18 @@ def _load_events(session: Path):
     return events
 
 
-def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threats=False) -> None:
+def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threats=False,
+           all_sessions=False) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
+    if all_sessions:                          # run the requested overlay over EVERY recorded session
+        sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
+        if not sessions:
+            print(f"[verify] no sessions found under {root}")
+            return
+        for s in sessions:
+            print(f"\n[verify] ===== session {s.name} =====")
+            verify(cfg, str(s), towers, hand, spells, threats, all_sessions=False)
+        return
     session = Path(session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
         print(f"[verify] no session found under {root}")
