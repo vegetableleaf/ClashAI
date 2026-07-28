@@ -197,6 +197,7 @@ train:
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
   target_sync: 500               # steps between target-network syncs
+  grad_clip: 10.0                # max global grad-norm per Double-DQN update (stabilises noisy TD targets)
   save_every_matches: 1          # checkpoint cadence during RL
   bc_epochs: 10                  # behaviour-cloning pretrain epochs
   checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)

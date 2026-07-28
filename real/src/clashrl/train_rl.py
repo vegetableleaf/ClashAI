@@ -99,6 +99,7 @@ def train_rl(cfg) -> None:
     replay_size = int(cfg.get("train", "replay_size", default=100000))
     min_replay = int(cfg.get("train", "min_replay", default=200))
     target_sync = int(cfg.get("train", "target_sync", default=500))
+    grad_clip = float(cfg.get("train", "grad_clip", default=10.0))
     eps_start = float(cfg.get("train", "epsilon_start", default=1.0))
     eps_end = float(cfg.get("train", "epsilon_end", default=0.05))
     eps_steps = int(cfg.get("train", "epsilon_decay_steps", default=3000))
@@ -194,15 +195,26 @@ def train_rl(cfg) -> None:
         q_play = gq[:, 1] + cq.gather(1, card).squeeze(1) + ceq.gather(1, cell).squeeze(1)
         q_sa = torch.where(play == 1, q_play, q_wait)
         with torch.no_grad():
+            # DOUBLE DQN: the ONLINE net selects the greedy next action (gate / card / cell); the
+            # TARGET net only EVALUATES it. Vanilla DQN took max() from the target for BOTH, which
+            # systematically OVERESTIMATES Q -- the bias behind the value-inflation / reward-farming
+            # this project keeps hitting. Off-policy replay (the sample-efficiency win that keeps this
+            # a DQN and not PPO) is untouched; this only de-biases the bootstrap.
+            cqn, ceqn, gqn = net(nobs, nhand, nnxt, nelx, nthr)
+            cqn = cqn.masked_fill(nhand < 0.5, float("-inf"))            # only cards in hand
+            sel_card = cqn.argmax(1, keepdim=True)                       # online greedy card
+            sel_cell = ceqn.argmax(1, keepdim=True)                      # online greedy cell
+            play_next = (gqn[:, 1] + cqn.max(1).values + ceqn.max(1).values) > gqn[:, 0]
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
             cq2 = cq2.masked_fill(nhand < 0.5, float("-inf"))
-            card_max = torch.nan_to_num(cq2.max(1).values, neginf=0.0)   # empty hand -> 0
-            v_play = gq2[:, 1] + card_max + ceq2.max(1).values
-            v_next = torch.maximum(gq2[:, 0], v_play)
+            q_play_next = (gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1)
+                           + ceq2.gather(1, sel_cell).squeeze(1))
+            v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action
             y = rew + gamma * v_next * (1.0 - done)
         loss = F.smooth_l1_loss(q_sa, y)
         opt.zero_grad()
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(net.parameters(), grad_clip)     # cap noisy TD gradients
         opt.step()
         return float(loss.item())
 
