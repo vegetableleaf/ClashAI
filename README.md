@@ -8,7 +8,7 @@ There are two very different agents in this repo:
 
 | Folder | Bot | Approach |
 | ------ | --- | -------- |
-| [`real/`](real/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. |
+| [`real/`](real/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. Follows a DDQN architecture.|
 | [`trol/`](trol/) | **Scripted bot** — the first experiment | Hand-written rules plus a DQN scaffold. Kept for reference. |
 
 > ⚠️ **Please use this responsibly.** Automating Clash Royale violates Supercell's
