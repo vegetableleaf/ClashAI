@@ -216,8 +216,14 @@ class LiveMatchEnv:
         # after a rocket, the chip is withheld AND an extra penalty applies (a bad investment).
         self.rocket_window = int(cfg.get("env", "rocket_defense_window", default=3))
         self.bad_rocket_penalty = float(cfg.get("rewards", "bad_rocket_penalty", default=-3.0))
+        # a rocket "erased a clump" (a valid opposite-lane wipe) if it removed at least this much enemy
+        # (red) mass; a rocket is a BAD 6-elixir investment if it neither chipped a tower nor erased a
+        # clump AND your towers then lose >= rocket_bad_min_hp within the defence window (couldn't defend).
+        self.rocket_clear_min = float(cfg.get("env", "rocket_clear_min", default=0.10))
+        self.rocket_bad_min_hp = float(cfg.get("env", "rocket_bad_min_hp", default=700.0))
         self._pending_rocket = None       # deferred rocket chip: {"chip", "steps", "hp0", "destroyed"}
         self._last_spell_chip = False     # did the last spell resolve as a rocket-at-princess chip?
+        self._rocket_cleared = False      # did the last rocket erase a real troop clump?
         self._recent_rocket = None
         self._recent_ranged = None
         self._steps = 0
@@ -360,9 +366,11 @@ class LiveMatchEnv:
         when the model decided):
           * WRONG LANE (hard): ANY card committed to the lane OPPOSITE the enemy push -- wasted
             elixir and an undefended push. Cheap cyclers (Ice Spirit / Skeletons) pay only a
-            wrong_lane_cheap_frac SHARE (dropping them anywhere to cycle is forgivable). A ROCKET
-            aimed at the opposite enemy PRINCESS tower is EXEMPT -- chipping / finishing that tower
-            is a real strategic play, not a lane-defence mistake.
+            wrong_lane_cheap_frac SHARE (dropping them anywhere to cycle is forgivable). A ROCKET is
+            EXEMPT when it chips/finishes the opposite enemy PRINCESS tower OR erases a big troop
+            clump there (a split-lane push wipe) -- both are real strategic plays. (A rocket that
+            does NEITHER, then leaves you unable to defend, is caught by the elixir-investment
+            bad-rocket penalty instead.)
           * ROYAL DELIVERY ON THE ENEMY HALF: Royal Delivery can only be cast on YOUR half; the
             deploy clamp silently pulls an enemy-half attempt back, so penalise the ATTEMPT (the raw
             pre-clamp cell) to teach the model to stop aiming it over there.
@@ -390,9 +398,10 @@ class LiveMatchEnv:
         side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE -- every card
         off = cx - self.lane_split_x
         if side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0):
-            rocket_tower = (card_id in self.rocket_ids            # strategic opposite-tower rocket -> exempt
-                            and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius))
-            if not rocket_tower:
+            rocket_ok = card_id in self.rocket_ids and (         # a rocket in the opposite lane is VALID when it
+                near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius)   # chips/finishes that tower, OR
+                or self._rocket_cleared)                         # erased a big clump there (split-lane push wipe)
+            if not rocket_ok:
                 scale = self.wrong_lane_cheap_frac if card_id in self.cheap_ids else 1.0
                 r += self.wrong_lane_penalty * scale             # committed to the lane OPPOSITE the push
         return r
@@ -513,9 +522,11 @@ class LiveMatchEnv:
             p["destroyed"] = True
         own_hp = max(0.0, p["hp0"] - my_hp)                    # HP your towers lost since the rocket
         rocket_hp = p["rocket_frac"] * self.tower_hp.full     # HP the rocket took off the enemy tower
-        if p["destroyed"] or own_hp > rocket_hp:
-            self._pending_rocket = None                       # your towers took MORE damage than the rocket dealt
-            return self.bad_rocket_penalty                    # -> bad trade: chip withheld + extra penalty
+        # BAD investment: a tower fell, OR your towers lost MORE than the rocket dealt AND that loss is
+        # HEAVY (>= rocket_bad_min_hp) -- you spent 6 elixir on the rocket and then couldn't defend.
+        if p["destroyed"] or own_hp > max(rocket_hp, self.rocket_bad_min_hp):
+            self._pending_rocket = None
+            return self.bad_rocket_penalty                    # chip withheld + extra penalty
         p["steps"] -= 1
         if p["steps"] <= 0:
             self._pending_rocket = None
@@ -620,15 +631,19 @@ class LiveMatchEnv:
                 self._pending_rocket["chip"] += self.tower_hp.last_enemy_chip
                 self._pending_rocket["rocket_frac"] += self.tower_hp.last_enemy_frac
             reward += self._resolve_pending_rocket(my_hp, princess_fell)
-            if is_rocket and play and self._last_spell_chip:
+            if is_rocket and play and eval_spell:
                 if self._pending_rocket is not None:     # a new rocket supersedes an unresolved one -> pay it (it survived)
                     reward += self._pending_rocket["chip"]
                     self._pending_rocket = None
-                chip = max(0.0, spell_r) + max(0.0, self.tower_hp.last_enemy_chip)
-                if chip > 0.0:
-                    reward -= chip                        # withhold the chip until a successful defence follows
-                    self._pending_rocket = {"chip": chip, "steps": self.rocket_window, "hp0": my_hp,
-                                            "rocket_frac": self.tower_hp.last_enemy_frac, "destroyed": False}
+                if self._last_spell_chip:                 # rocket-at-tower CHIP -> withhold until a good defence
+                    chip = max(0.0, spell_r) + max(0.0, self.tower_hp.last_enemy_chip)
+                    if chip > 0.0:
+                        reward -= chip                    # withhold the chip until a successful defence follows
+                        self._pending_rocket = {"chip": chip, "steps": self.rocket_window, "hp0": my_hp,
+                                                "rocket_frac": self.tower_hp.last_enemy_frac, "destroyed": False}
+                elif not self._rocket_cleared:            # neither chipped a tower NOR erased a clump = a wasted
+                    self._pending_rocket = {"chip": 0.0, "steps": self.rocket_window, "hp0": my_hp,  # 6-elixir bet
+                                            "rocket_frac": 0.0, "destroyed": False}                  # -> bad if punished
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
@@ -689,6 +704,7 @@ class LiveMatchEnv:
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
         self._last_spell_chip = False             # set True only if this resolves as a rocket-at-princess chip
+        self._rocket_cleared = False              # set True if this rocket erases a real troop clump
         b = enemy_mass_at(before, cx, cy, self.spell_radius, self.cfg)
         masses = [enemy_mass_at(f, cx, cy, self.spell_radius, self.cfg) for f in samples]
         if not masses:
@@ -712,6 +728,8 @@ class LiveMatchEnv:
             drop = peak - masses[-1]
             size_frame = samples[peak_i]
         present = peak >= self.spell_present
+        if is_rocket:
+            self._rocket_cleared = drop >= self.rocket_clear_min   # removed a real clump, not just a graze
 
         # is this tornado the second half of a rocket->tornado combo (same spot, right after a
         # rocket that actually killed a clump)?

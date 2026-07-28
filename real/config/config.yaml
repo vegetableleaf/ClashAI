@@ -298,6 +298,8 @@ env:
   # the rocket dealt the enemy tower (or a princess falls), the chip is withheld AND the
   # rewards.bad_rocket_penalty applies -- i.e. the rocket traded down (you lost more than you gained).
   rocket_defense_window: 3       # steps after a rocket to watch own-tower damage before paying the chip
+  rocket_clear_min: 0.10         # a rocket that removes at least this enemy (red) mass "erased a clump" -> a valid opposite-lane wipe (exempt from the wrong-lane penalty)
+  rocket_bad_min_hp: 700         # a rocket that neither chipped a tower nor erased a clump is a BAD investment if your towers then lose >= this much HP in the window (you couldn't defend)
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
