@@ -64,6 +64,15 @@ def play(cfg) -> None:
     net = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim).to(device)
     net.load_state_dict(ckpt["model"])
     net.eval()
+    # The RL checkpoint also carries the learned WAIT/PLAY gate head (train-rl's no-op). Load it so
+    # play is SYNCED with training: without it, play fired a card every act_period regardless (the
+    # old trol behaviour). A BC-only checkpoint has no gate -> play just gates on affordability.
+    gate = None
+    if "gate" in ckpt:
+        gate = torch.nn.Linear(net.embed_dim, 2).to(device)
+        gate.load_state_dict(ckpt["gate"])
+        gate.eval()
+    print(f"[play] policy {ckpt_path.name} loaded ({'RL gate ON' if gate is not None else 'BC, no gate'}).")
 
     capture = WindowCapture(cfg.get("window", "title_contains", default=None),
                             cfg.get("window", "region", default=None))
@@ -83,6 +92,12 @@ def play(cfg) -> None:
                     if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "tornado")}
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
+    # Connect each hand-card identity to its ELIXIR COST from the card DB, so play never taps a card
+    # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
+    from .cards import CardDB
+    _db = CardDB(cfg)
+    card_elixir = [(_db.elixir(k) or _db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
+                   for k in vision.deck_keys]
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))
@@ -113,24 +128,36 @@ def play(cfg) -> None:
         ev = torch.tensor([[elixir / 10.0]], dtype=torch.float32, device=device)
         tv = torch.from_numpy(threat_vec).unsqueeze(0).float().to(device)
         with torch.no_grad():
-            card_logits, cell_logits = net(x, hv, nv, ev, tv)
+            z = net.features_vec(x, hv, nv, ev, tv)
+            card_logits, cell_logits = net.card_head(z), net.cell_head(z)
+            gate_logits = gate(z) if gate is not None else None
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
-        # SAVE THE TESLA for a win condition: if the enemy runs a tower-targeting troop and none
-        # is on the board right now, don't let the model spend Tesla -- mask it out so it defends
-        # win conditions only. Tesla plays normally once one is active, or if the enemy has none.
+        # ELIXIR: mask out any card you can't currently AFFORD (cost from the card DB). This is the
+        # hand-card -> elixir-cost tracking: play never taps an unaffordable card (the old fixed
+        # 1.5s cadence tapped regardless, which just wasted the tap).
+        for i in range(n_cards):
+            if elixir + 1e-6 < card_elixir[i]:
+                card_logits[0, i] = float("-inf")
+        # SAVE THE TESLA for a win condition: enemy runs a tower-targeting troop and none is on the
+        # board now -> mask Tesla so it defends win conditions only.
         hold_tesla = threat_tracker.should_hold_tesla()
         if hold_tesla:
             for i in tesla_ids:
                 card_logits[0, i] = float("-inf")
+        if bool(torch.isinf(card_logits).all()):
+            return                              # nothing in hand is affordable / allowed -> wait
         if random.random() < eps:
-            choices = [c for c in hand_ids if c >= 0 and not (hold_tesla and c in tesla_ids)]
-            if not choices:
-                return                          # only a held Tesla in hand -> wait, save it
+            choices = [i for i in range(n_cards) if not bool(torch.isinf(card_logits[0, i]))]
             card_id = random.choice(choices)
             cell = random.randrange(n_cells)
         else:
-            if bool(torch.isinf(card_logits).all()):
-                return                          # only a held Tesla in hand -> wait, save it
+            # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best cell; value of
+            # WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
+            # cycle) instead of firing every act_period like the old trol bot.
+            if gate_logits is not None:
+                play_val = gate_logits[0, 1] + card_logits.max() + cell_logits.max()
+                if gate_logits[0, 0] >= play_val:
+                    return
             card_id = int(card_logits.argmax(1).item())
             cell = int(cell_logits.argmax(1).item())
         if card_id in rocket_ids:             # a rocket at a princess -> aim the weaker one

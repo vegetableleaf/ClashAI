@@ -31,6 +31,7 @@ class MenuNavigator:
         self.vision = vision
         self.battle = cfg.get("buttons", "battle_button", default=[0.5, 0.9])
         self.results_ok = cfg.get("buttons", "results_ok", default=[0.5, 0.9])
+        self.results_ok_center = cfg.get("buttons", "results_ok_center", default=[0.5, 0.905])
         self.play_again = cfg.get("buttons", "play_again", default=self.results_ok)
         self.menu_delay = float(cfg.get("nav", "menu_delay", default=1.0))
         self.poll_dt = 1.0 / float(cfg.get("nav", "poll_hz", default=6))
@@ -44,6 +45,7 @@ class MenuNavigator:
         self.pa_thr = float(cfg.get("buttons", "play_again_threshold", default=0.8))
         self._match_end_since: Optional[float] = None
         self._stuck_since: Optional[float] = None
+        self._escalate_alt = True                        # alternate center-OK / bottom-right-OK on escalation
         self._log = log or self._make_file_log(cfg, label)
 
     @staticmethod
@@ -68,6 +70,7 @@ class MenuNavigator:
         """Call when NOT on a menu (in-match / new episode) to clear the stuck timers."""
         self._match_end_since = None
         self._stuck_since = None
+        self._escalate_alt = True
 
     def _locate(self, frame, tpl, thr, fallback):
         pt = self.vision.locate(frame, tpl, thr) if tpl else None
@@ -88,11 +91,14 @@ class MenuNavigator:
             if self._match_end_since is None:
                 self._match_end_since = now
             if now - self._match_end_since >= self.match_end_timeout:
-                # Play Again taps aren't advancing (button drifted / covered) -> escalate to OK,
-                # which returns HOME, where the located Battle button re-queues reliably.
-                self._log(f"[nav] MATCH_END stuck ~{self.match_end_timeout:.0f}s -> escalate: OK "
-                          f"({self.results_ok[0]:.3f},{self.results_ok[1]:.3f})")
-                self.controller.tap(*self.results_ok)
+                # Play Again isn't advancing. Two results-screen variants: the normal one (OK is
+                # bottom-right) and the "OK only, centered" one (Play Again removed). Alternate the tap
+                # so whichever OK exists gets pressed -> returns HOME, where located Battle re-queues.
+                tgt = self.results_ok_center if self._escalate_alt else self.results_ok
+                self._escalate_alt = not self._escalate_alt
+                self._log(f"[nav] MATCH_END stuck ~{self.match_end_timeout:.0f}s -> escalate: tap OK "
+                          f"({tgt[0]:.3f},{tgt[1]:.3f})")
+                self.controller.tap(*tgt)
                 self._match_end_since = now                     # re-arm
             else:
                 pt, located = self._locate(frame, self.pa_tpl, self.pa_thr, self.play_again)
