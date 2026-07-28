@@ -54,10 +54,12 @@ learns *your* deck, including evolved cards (which count as their own card).
 
 ### The deck it's currently tuned for
 
-Royal Delivery, Tesla (Evolved), Ice Wizard, Tornado, Rocket, Ronin, Ice Spirit,
-Skeletons. The reward shaping teaches a **defensive** style: defend with troops,
-use the **Rocket** as the only real offense (aimed at the weaker princess tower),
-and cheaply cycle Ice Spirit / Skeletons.
+Royal Delivery, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, Electro Spirit,
+Skeletons — a **Miner X-Bow control** deck (Classic 1v1, all cards level 11). The
+reward shaping teaches: defend + cycle with the cheap cards, use the **X-Bow** as the
+win condition (placed forward, within firing range, to lock the enemy princess tower),
+the **Miner** to chip the tower / tank / snipe support (it deploys anywhere), and the
+**Rocket** to clear big pushes or cycle-chip the tower during double/triple elixir.
 
 ---
 

@@ -22,19 +22,21 @@ meta:
     Elixir + categorical fields populated. Combat stats (hitpoints/damage/
     hit_speed) pending import from a stats source (see README refresh note).
 
-# Your deck (rocket cycle: perfect defence + positive elixir trades to rocket
-# the enemy princess tower). `evolved: true` uses the Evolution variant.
+# Your deck (Miner X-Bow control: defend + cycle; X-Bow is the WIN CONDITION, placed
+# forward to lock the enemy princess tower; Miner chips / tanks / snipes support; Rocket
+# clears big pushes or cycle-chips in 2x/3x). `evolved: true` uses the Evolution variant.
+# Classic 1v1 -> ALL cards are level 11.
 deck:
-  name: "Rocket Cycle (1v1)"
+  name: "Miner X-Bow Control (Classic 1v1)"
   cards:
-    - {card: royal_delivery, level: 12}
-    - {card: tesla,     evolved: true, level: 14}
+    - {card: royal_delivery, level: 11}
+    - {card: tesla,     evolved: true, level: 11}
     - {card: ice_wizard, level: 11}
-    - {card: tornado, level: 12}
-    - {card: rocket, level: 13}
-    - {card: ronin, level: 12}
-    - {card: ice_spirit, level: 12}
-    - {card: skeletons, level: 13}
+    - {card: x_bow, level: 11}
+    - {card: rocket, level: 11}
+    - {card: miner, level: 11}
+    - {card: electro_spirit, level: 11}
+    - {card: skeletons, level: 11}
 
 # ---------------------------------------------------------------------
 # card fields:

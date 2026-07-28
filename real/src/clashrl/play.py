@@ -89,7 +89,7 @@ def play(cfg) -> None:
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
-                    if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "tornado")}
+                    if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "miner")}
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
     # Connect each hand-card identity to its ELIXIR COST from the card DB, so play never taps a card

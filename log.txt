@@ -648,6 +648,47 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-28  —  DECK SWITCH: Rocket Cycle -> Miner X-Bow Control (Phase 1: identities + placement + doctrine)
+------------------------------------------------------------------------------
+- User is switching decks (a pure rocket cycle is too much for a from-scratch agent). New deck (Classic
+  1v1, ALL cards level 11): Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons, Electro Spirit, Rocket, Royal
+  Delivery. Shared defensive core (Tesla / Ice Wizard / Skeletons / Rocket / Royal Delivery) is kept;
+  Electro Spirit replaces Ice Spirit, Miner replaces Ronin, X-Bow + Miner are new, and TORNADO is gone.
+- DOCTRINE INVERSION (the crux): the old shaping was "defend only, never play forward, rocket is the sole
+  offense". This deck's win condition is the X-Bow placed FORWARD to lock the enemy tower, plus the Miner
+  deployed ANYWHERE -- so several offensive penalties had to be re-scoped, not just card lists swapped.
+- Confirmed with user: Classic 1v1 (all level 11); ONLY Evo Tesla; X-Bow deploys on YOUR side just behind
+  the bridge (never across), two modes (forward win condition / back-centre defence); the X-Bow's ~11.5-tile
+  RANGE must gate the offensive reward so it isn't placed too far to reach the tower; 2x/3x elixir will be
+  read TIME-based (match clock); phased -- core first.
+- PHASE 1 (this change) -- the core so the user can record + BC + RL:
+  * cards.yaml: new deck (all L11, evo tesla). Miner / X-Bow already curated (win conditions); Electro
+    Spirit present. `run.py cards` verified all 8 resolve (avg elixir 3.38).
+  * Card identities (env.py + play.py): dropped tornado/ronin/ice_spirit; added miner_ids, xbow_ids;
+    cheap = electro_spirit + skeletons; ranged = ice_wizard (Tesla stays a building); blocker = skeletons /
+    electro_spirit / miner; defensive_kind = tesla / ice_wizard. building_ids = Tesla ONLY (X-Bow is a
+    building too but gets its OWN shaping, not the Tesla intercept-zone reward).
+  * Placement: anywhere_ids = ROCKET + MINER (was rocket + tornado) -- Miner can chip the enemy tower /
+    drop behind an enemy unit; X-Bow stays clamped to your half (its forward spot near the bridge is inside
+    it). deploy_clamp docstring updated.
+  * NEW rewards (env, all routed through the per-match shaping cap _bonus): _xbow_place_reward -- +xbow_wc_reward
+    when the X-Bow is WITHIN env.xbow_range (0.36 ~= 11.5 tiles) of the nearer enemy princess (a real forward
+    win condition), +xbow_defense_reward for a back-centre defensive X-Bow, xbow_misplace_penalty for a
+    forward X-Bow out of tower range; _miner_reward -- +miner_chip_reward for a Miner on/near an enemy princess.
+  * Doctrine exemptions: Miner + X-Bow are exempt from the enemy-half offensive_penalty and the wrong-lane
+    penalty (a Miner goes anywhere; an opposite-lane X-Bow to punish an overcommit is a real play). They're
+    also NOT in reactive_ids, so placing them on a quiet board is fine (proactive win-condition play).
+  * config: rewards.xbow_wc_reward / xbow_defense_reward / xbow_misplace_penalty / miner_chip_reward;
+    env.xbow_range / xbow_defense_y. README deck blurb updated.
+- YOUR SIDE (told user): the BC dataset is deck-specific -- RE-RECORD from scratch with the new deck (old
+  recordings teach dead cards), rebuild card templates (hand-templates -> rename to the new keys -> verify
+  --hand), re-verify tower calibration, then label --all -> train-bc -> train-rl.
+- PHASE 2 (deferred): time-based 2x/3x elixir reader gating the rocket-cycle-on-tower; Miner tank-for-X-Bow
+  + snipe-support-behind-a-tank; X-Bow-protect micro; Electro Spirit stun/reset. Mechanical/reward change
+  -> effective on the next train-rl (after the re-record + retrain).
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

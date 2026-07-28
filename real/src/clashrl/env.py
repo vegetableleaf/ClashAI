@@ -16,6 +16,7 @@ the labeler/`play`).
 """
 from __future__ import annotations
 
+import math
 import time
 from typing import Optional, Tuple
 
@@ -25,7 +26,7 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
-from .reward import (TowerTracker, defensive_cell, enemy_mass, enemy_mass_at,
+from .reward import (TowerTracker, _anchors, defensive_cell, enemy_mass, enemy_mass_at,
                      near_enemy_king, near_enemy_princess, near_my_king, threat_front,
                      threat_side, troop_size_at, weaker_princess_cell)
 from .states import GameState
@@ -90,42 +91,41 @@ class LiveMatchEnv:
         self.ranged_ids = set()
         self.blocker_ids = set()
         self.building_ids = set()
+        self.miner_ids = set()
+        self.xbow_ids = set()
         self.defensive_kind = {}
         for i, key in enumerate(self.vision.deck_keys):
             base = key[:-4] if key.endswith("_evo") else key
             c = db.get(base)
             if c and c.get("kind") == "spell":
                 self.spell_ids.add(i)
-            if c and c.get("kind") == "building":    # Tesla -> stationary; intercept-zone placement shaping
-                self.building_ids.add(i)
             if base == "rocket":
                 self.rocket_ids.add(i)
             elif base == "tornado":
                 self.tornado_ids.add(i)
             elif base == "royal_delivery":          # defensive area spell on your half
                 self.royal_delivery_ids.add(i)
-            if base in ("ice_spirit", "skeletons"):  # cheap cyclers -- OK to play anytime
+            elif base == "miner":                   # tank/chip -> deployed ANYWHERE (enemy tower, behind a tank)
+                self.miner_ids.add(i)
+            elif base == "x_bow":                   # siege WIN CONDITION -> forward (in tower range) or back-centre defence
+                self.xbow_ids.add(i)
+            if base in ("electro_spirit", "skeletons"):  # cheap cyclers -- OK to play anytime
                 self.cheap_ids.add(i)
-            if base == "tesla":                      # Tesla: kill-reward tracked + range-aware placement
+            if base == "tesla":                      # Tesla: kill-reward tracked + intercept-zone placement
                 self.tesla_ids.add(i)
                 self.defensive_kind[i] = "tesla"
+                self.building_ids.add(i)             # the DEFENSIVE building; X-Bow is OFFENSIVE -> its own shaping
             elif base == "ice_wizard":
                 self.defensive_kind[i] = "ice_wizard"
-            elif base == "ronin":                    # melee mini-tank -> placed to block the push
-                self.defensive_kind[i] = "ronin"
-            elif key == "musketeer":
-                self.defensive_kind[i] = "musketeer"
-            elif key == "musketeer_evo":
-                self.defensive_kind[i] = "musketeer_evo"
-            if base in ("musketeer", "ice_wizard"):  # MOBILE ranged troops (kited/shielded). NB Tesla is a
-                self.ranged_ids.add(i)               # BUILDING -> excluded: you WANT it in the push's path,
-            elif base in ("ronin", "skeletons", "ice_spirit"):   # so it must not get the 'dropped on a troop' penalty
-                self.blocker_ids.add(i)              # tanks/blockers that shield them
-        # only ROCKET and TORNADO may be cast ANYWHERE; every other card (troops, buildings,
-        # royal delivery) is restricted to YOUR half of the map.
-        self.anywhere_ids = self.rocket_ids | self.tornado_ids
+            if base == "ice_wizard":                 # MOBILE ranged troop (kited/shielded). Tesla is a BUILDING ->
+                self.ranged_ids.add(i)               # excluded (you WANT it in the push's path).
+            elif base in ("skeletons", "electro_spirit", "miner"):
+                self.blocker_ids.add(i)              # cheap tanks/blockers that shield a ranged unit
+        # ROCKET and MINER may target ANYWHERE (miner chips the enemy tower / tanks behind an enemy
+        # unit); every other card (troops, buildings incl. X-Bow, royal delivery) is your-half only.
+        self.anywhere_ids = self.rocket_ids | self.miner_ids
         # cards that should only be played to REACT to a threat (defensive troops + Royal Delivery);
-        # playing them on a QUIET board (no enemy anywhere) is premature -> penalised.
+        # playing them on a QUIET board is premature -> penalised. Miner/X-Bow are PROACTIVE -> excluded.
         self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids
         self.spell_troop_damage = float(cfg.get("rewards", "spell_troop_damage", default=5.0))
         self.spell_hit = float(cfg.get("rewards", "spell_hit", default=0.15))
@@ -223,6 +223,14 @@ class LiveMatchEnv:
         self.building_center_span = float(cfg.get("env", "building_center_span", default=0.25))
         self.building_center_reward = float(cfg.get("rewards", "building_center_reward", default=0.6))
         self.building_misplace_penalty = float(cfg.get("rewards", "building_misplace_penalty", default=-1.0))
+        # Miner X-Bow control deck: X-Bow is the WIN CONDITION (forward, in tower range) with a back-centre
+        # defensive mode; Miner chips the enemy tower / tanks anywhere. All positive parts go through _bonus.
+        self.xbow_wc_reward = float(cfg.get("rewards", "xbow_wc_reward", default=1.0))
+        self.xbow_defense_reward = float(cfg.get("rewards", "xbow_defense_reward", default=0.3))
+        self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
+        self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
+        self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
+        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits at/below this depth
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -401,6 +409,34 @@ class LiveMatchEnv:
         central = max(0.0, 1.0 - abs(cx - 0.48) / self.building_center_span)
         return self.building_center_reward * central          # in-band + a real push -> reward central x
 
+    def _xbow_place_reward(self, cell: int) -> float:
+        """Shape the X-Bow, the deck's WIN CONDITION. It reaches ~11.5 tiles, so from just behind the
+        bridge (on YOUR side) it can lock the enemy PRINCESS tower -- the offensive play. Reward placing
+        it WITHIN firing range (env.xbow_range) of the nearer enemy princess (a real forward win
+        condition); give a SMALLER reward for a BACK-CENTRE defensive X-Bow (the rocket-cycle fallback,
+        sniping troops when the offensive X-Bow can't break through); and PENALISE a forward X-Bow
+        dropped out of tower range -- too far back to chip, too exposed to defend (the classic misplace)."""
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        _, enemy_a, _ = _anchors(self.cfg)
+        princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
+        d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
+        if d <= self.xbow_range:
+            return self.xbow_wc_reward                        # in range of a tower -> a real win condition
+        if cy >= self.xbow_defense_y and abs(cx - 0.48) <= 0.18:
+            return self.xbow_defense_reward                   # back-centre -> defensive snipe (rocket-cycle mode)
+        return self.xbow_misplace_penalty                     # forward but out of range = wasted / exposed
+
+    def _miner_reward(self, cell: int) -> float:
+        """Miner deploys ANYWHERE; its bread-and-butter is chipping the enemy PRINCESS tower, so reward
+        dropping it on/near a princess. (Phase 2: tank-for-X-Bow + sniping a support card behind an enemy
+        tank. For now any other Miner spot is simply neutral -- it may go anywhere without penalty.)"""
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
+            return self.miner_chip_reward
+        return 0.0
+
     def _placement_penalty(self, play: bool, card_id: int, cell: int, raw_cell: int) -> float:
         """Punish clearly BAD placements, judged against the pre-action frame (where the enemy was
         when the model decided):
@@ -437,7 +473,8 @@ class LiveMatchEnv:
                 r += self.ranged_ontop_penalty
         side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE -- every card
         off = cx - self.lane_split_x
-        if side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0):
+        lane_free = card_id in self.xbow_ids or card_id in self.miner_ids   # X-Bow opposite-lane / Miner anywhere = valid
+        if not lane_free and side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0):
             rocket_ok = card_id in self.rocket_ids and (         # a rocket in the opposite lane is VALID when it
                 near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius)   # chips/finishes that tower, OR
                 or self._rocket_cleared)                         # erased a big clump there (split-lane push wipe)
@@ -588,7 +625,7 @@ class LiveMatchEnv:
         raw_cell = cell                           # the model's ATTEMPTED cell, before aim + deploy-clamp
         if play:                                  # rocket -> aim the weaker enemy princess tower
             cell = self._aim_rocket(card_id, cell)
-            cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # only rocket/tornado go anywhere
+            cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
@@ -663,12 +700,17 @@ class LiveMatchEnv:
                     reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
             if play and card_id in self.building_ids:  # Tesla -> intercept-zone placement (central, moderate depth)
                 reward += self._bonus(self._building_place_reward(card_id, cell, cur_mass >= self.quiet_frac))
+            if play and card_id in self.xbow_ids:      # X-Bow -> forward win condition (in tower range) vs back-centre defence
+                reward += self._bonus(self._xbow_place_reward(cell))
+            if play and card_id in self.miner_ids:     # Miner -> chip the enemy princess (deployed anywhere)
+                reward += self._bonus(self._miner_reward(cell))
             if play and card_id in self.defensive_kind:
                 reward += self._defense_placement_reward(card_id, cell)  # soft nudge to the recommended centre
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
-            if play and card_id not in self.rocket_ids and card_id not in self.cheap_ids:
+            if (play and card_id not in self.rocket_ids and card_id not in self.cheap_ids
+                    and card_id not in self.miner_ids and card_id not in self.xbow_ids):
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
-                    reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
+                    reward += self.offensive_penalty  # non-rocket/miner/xbow card in the enemy half = offence
             reward += self._placement_penalty(bool(play), card_id, cell, raw_cell)  # wrong-lane / on-top / corner / RD-half
             if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
                 reward += self.premature_defense_penalty   # a defender / Royal Delivery played with NO enemy on the board

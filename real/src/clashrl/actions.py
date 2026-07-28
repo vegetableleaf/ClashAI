@@ -40,8 +40,8 @@ class ActionSpace:
         return snx, sny, tnx, tny
 
     def deploy_clamp(self, anywhere: bool, cell: int) -> int:
-        """Only ROCKET and TORNADO may target anywhere; every other card (troops, buildings,
-        royal delivery) can only deploy on YOUR half of the river. A restricted card whose
+        """Only ROCKET and MINER may target anywhere; every other card (troops, buildings incl.
+        the X-Bow, royal delivery) can only deploy on YOUR half of the river. A restricted card whose
         cell is in the enemy half can't be placed -- the card tap just selects it and the arena
         tap does nothing, so the bot 'shuffles' cards without deploying. Clamp such cells down
         to the deploy line; ``anywhere`` cards pass through unchanged. A cell landing on YOUR OWN
