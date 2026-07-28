@@ -167,8 +167,10 @@ rewards:
   elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
   cycle_reward: 0.15             # play a cheap card (ice spirit / skeletons) while the ROCKET is NOT in hand -> cycles toward it
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
-  wrong_lane_penalty: -1.5       # HARD: a defender dropped in the EMPTY lane while the enemy pushes the OTHER lane (wasted elixir + undefended push)
+  wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
+  wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
   ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
+  rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
   back_corner_penalty: -0.25     # slight: any card dumped in the far back corner (deep + against an edge) -- the ice-spirit/skeletons/royal-delivery spam
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
