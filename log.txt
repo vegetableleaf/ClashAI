@@ -564,6 +564,90 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-27  —  Nav robustness: shared MenuNavigator fixes the match-end hang (train-rl + play)
+------------------------------------------------------------------------------
+- BUG: train-rl kept HANGING on the results screen. env.reset() (what train-rl uses for nav) and play had
+  each grown their OWN copy of the HOME / MATCH_END / UNKNOWN tap logic and DRIFTED -- play got a stuck
+  watchdog, env did not, so env stalled on unexpected post-match screens.
+- FIX: new clashrl/nav.py MenuNavigator -- the SINGLE source of truth for match-to-match nav, used by BOTH
+  env.reset() and play. Robustness over a fixed-coordinate tap: (1) buttons LOCATED by template (Battle via
+  the home template; Play Again via optional buttons.play_again_template) so a tap follows the button if the
+  layout/window shifts; (2) a MATCH_END not advancing after nav.match_end_timeout (6 s) ESCALATES to the OK
+  button -- alternating the CENTERED "OK only" variant and the bottom-right OK (buttons.results_ok_center /
+  results_ok) -> HOME, where located Battle re-queues; (3) an unrecognised popup past play.stuck_timeout is
+  tapped to dismiss; (4) every action logged to data/nav_<label>_<ts>.log.
+- play.py rewired onto MenuNavigator too, and its play/wait gate synced with train-rl (same gate + elixir-
+  COST affordability check) so live behaviour matches training. config: buttons.results_ok_center,
+  nav.match_end_timeout. MECHANICAL (nav + live) -- no model/reward change.
+
+
+------------------------------------------------------------------------------
+2026-07-27  —  Reward-farming loopholes closed + shaping capped below a loss (env.py / config)
+------------------------------------------------------------------------------
+- Theme: a run of fixes so shaping can NEVER sum past the terminal loss (the recurring "a hesitant/farming
+  agent ends a LOST match net-positive" failure). Reward-shaping changes -> effective on the next train-rl.
+- SELF-EXPLOSION FARM (bug): a rocket / Royal Delivery counted its OWN fireball as enemy mass killed, so the
+  model farmed +size x spell_troop_damage by rocketing its OWN empty side. Fix (reward): measure enemy mass
+  BEFORE impact (excludes the explosion flash), so an empty-ground rocket now scores a WHIFF, not a kill.
+- BAD-PLACEMENT PENALTIES (new env._placement_penalty, judged on the pre-action frame):
+    * WRONG LANE (rewards.wrong_lane_penalty -1.5): ANY card committed to the lane OPPOSITE the enemy push.
+      Cheap cyclers pay only wrong_lane_cheap_frac (0.3x); a ROCKET is EXEMPT when it chips the opposite
+      princess OR erases a big clump there (rocket_clear_min 0.10 mass = a split-lane wipe).
+    * ROYAL DELIVERY on the ENEMY half (rd_enemy_half_penalty -0.75): RD can only cast on your half; the
+      deploy clamp hides the misaim, so the ATTEMPT (raw pre-clamp cell) is penalised.
+    * RANGED ON TOP (ranged_ontop_penalty -0.75): Tesla / Ice Wizard dropped on a troop instead of a kiting
+      gap behind it (ranged_ontop_radius / _size).
+    * BACK CORNER (back_corner_penalty -0.25): a card dumped deep against an edge (back_corner_x/_y) -- the
+      cheap-card / RD corner spam.
+    * LONE TORNADO CHIP (tornado_chip_penalty -1.0): a tornado alone on the enemy princess -- it's not a chip
+      tool; a real rocket->tornado combo is exempt.
+    * PREMATURE DEFENSE (premature_defense_penalty -0.5): a defender / RD played on a QUIET board (no enemy
+      troops) -- nothing to react to.
+- TESLA BIMODAL-PLACEMENT FIX (env._building_place_reward): the Tesla was landing at the BRIDGE (bypassed /
+  focused) or DUMPED BEHIND your towers (can't reach the push). Now a building is rewarded for a MODERATE
+  depth in FRONT of your towers (building_front_y..building_back_y) AND toward CENTRE (building_center_reward
+  x centrality, building_center_span), and penalised outside that band (building_misplace_penalty). Buildings
+  are also excluded from the ranged-on-top penalty. Only rewards central when there's a real push.
+- PER-MATCH SHAPING CAP (env._bonus / rewards.shaping_match_cap 8.0): the repeatable one-sided bonuses
+  (defense-kill + cycle + foresight counters) are capped in TOTAL per match, so no amount of them can out-sum
+  a loss. Penalties pass through uncapped.
+- REWEIGHT: loss -12 -> -15; rocket_tornado_combo 15 -> 8 (two combos can't out-sum a loss). Rocket
+  elixir-investment penalty extended to ANY wasted rocket -- one that neither chipped a tower nor erased a
+  clump AND is followed by >= rocket_bad_min_hp (700) of own-tower HP loss is a bad investment.
+
+
+------------------------------------------------------------------------------
+2026-07-27  —  Learner: vanilla DQN -> Double DQN + gradient clipping (train_rl.py)
+------------------------------------------------------------------------------
+- Kept DQN over PPO (verdict: off-policy REPLAY is the sample-efficiency win that matters for one slow live
+  match at a time). But upgraded vanilla -> DOUBLE DQN: the ONLINE net selects the greedy next action
+  (gate / card / cell), the TARGET net only EVALUATES it. Vanilla took max() from the target for both, which
+  systematically OVERESTIMATES Q -- the value-inflation bias underneath the reward-farming this project keeps
+  fighting; Double DQN de-biases the bootstrap without touching replay.
+- Added GRADIENT CLIPPING (train.grad_clip 10.0): cap the global grad-norm per update to stabilise the noisy
+  live-match TD targets. ARCHITECTURE/learning change -> effective on the next train-rl.
+
+
+------------------------------------------------------------------------------
+2026-07-27  —  Crown under-count fixed on fast king-kills (reward.py) + verify --all
+------------------------------------------------------------------------------
+- BUG: a king fall ENDS the match instantly, so the king's destruction latch (needs `confirm` consecutive
+  "gone" reads) often couldn't finish before the frame cut to the results screen -- a 3-crown win read as 2,
+  muddying the terminal reward / W-L. FIX: TowerTracker.king_trending_down() also counts a king that was
+  TRENDING destroyed (>=1 "gone" read) at match end, recovering the near-miss so a 3-crown finish counts as 3.
+- Tooling: `verify --all` runs the overlay over EVERY session (cli.py flag).
+
+
+------------------------------------------------------------------------------
+2026-07-28  —  Monitor: periodic video CLIP instead of a screenshot
+------------------------------------------------------------------------------
+- clashrl/monitor.py now posts a startup SCREENSHOT, then a short VIDEO CLIP of the game window every
+  monitor.interval_min (was a still each interval) -- a clip shows whether the bot is actually PLAYING vs
+  frozen. New config: monitor.clip_seconds (30), clip_fps (10), clip_scale (0.5 -- downscaled to stay under
+  Discord's ~8 MB webhook limit). _post_screenshot generalised to _post_file (image OR video). Tooling only.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
