@@ -369,15 +369,18 @@ play:
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
 
 # --- Remote monitoring (optional Discord screenshots during long runs) ---
-# Posts a screenshot of the game window to Discord every `interval_min` minutes while train-rl
-# runs, so you can tell remotely whether it's progressing or stuck. The webhook URL is a SECRET:
-# NEVER put it here (this file is committed). Set the env var named below, or write the URL into
-# the git-ignored file `webhook_file` (one line). If neither is set, monitoring is simply off.
+# Posts a screenshot of the game window to Discord when train-rl starts, then a short video CLIP
+# every `interval_min` minutes, so you can tell remotely whether it's progressing or stuck. The
+# webhook URL is a SECRET: NEVER put it here (this file is committed). Set the env var named below,
+# or write the URL into the git-ignored file `webhook_file` (one line). If neither is set, off.
 monitor:
-  interval_min: 30                       # minutes between screenshots (0 not allowed; min 1)
+  interval_min: 30                       # minutes between clips (0 not allowed; min 1)
   webhook_env: CLASHRL_DISCORD_WEBHOOK   # env var holding your Discord webhook URL (preferred)
   webhook_file: data/discord_webhook.txt # git-ignored fallback file with the URL (data/ is ignored)
-  jpeg_quality: 70                       # screenshot JPEG quality (lower = smaller/faster upload)
+  jpeg_quality: 70                       # startup-screenshot JPEG quality (lower = smaller/faster upload)
+  clip_seconds: 30                       # length of each periodic video clip (seconds)
+  clip_fps: 10                           # clip frame rate (higher = smoother but a bigger upload)
+  clip_scale: 0.5                        # downscale the clip (0.5 = half size) to stay under Discord's ~8 MB webhook limit
 
 # --- Board object detection (YOLO11) dataset bootstrap -------------------
 # `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your

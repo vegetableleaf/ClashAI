@@ -1,6 +1,6 @@
-"""Optional Discord monitor: periodically posts a screenshot of the game window to a
-Discord webhook while a long run (e.g. train-rl) is going, so you can tell remotely
-whether the bot is progressing or stuck.
+"""Optional Discord monitor: posts a screenshot of the game window when a long run (e.g.
+train-rl) starts, then a short ~30s video CLIP of the window every N minutes, so you can
+tell remotely whether the bot is progressing or stuck.
 
 Runs in its OWN background daemon thread with its OWN screen capture, so it keeps posting
 even if the training/main thread is blocked -- which is exactly the "is it stuck?" case.
@@ -13,6 +13,7 @@ read from the environment variable named by ``monitor.webhook_env`` (default
 from __future__ import annotations
 
 import os
+import tempfile
 import threading
 import time
 import urllib.request
@@ -42,15 +43,16 @@ def _load_webhook(cfg) -> Optional[str]:
     return None
 
 
-def _post_screenshot(url: str, jpg: bytes, content: str, timeout: float = 15.0) -> None:
-    """POST a JPEG to a Discord webhook as multipart/form-data (stdlib only, no requests)."""
+def _post_file(url: str, data: bytes, filename: str, content_type: str, content: str,
+               timeout: float = 60.0) -> None:
+    """POST a file (image or video) to a Discord webhook as multipart/form-data (stdlib only)."""
     boundary = uuid.uuid4().hex
     pre = (f"--{boundary}\r\n"
            f'Content-Disposition: form-data; name="content"\r\n\r\n{content}\r\n'
            f"--{boundary}\r\n"
-           f'Content-Disposition: form-data; name="file"; filename="screen.jpg"\r\n'
-           f"Content-Type: image/jpeg\r\n\r\n").encode("utf-8")
-    body = pre + jpg + f"\r\n--{boundary}--\r\n".encode("utf-8")
+           f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+           f"Content-Type: {content_type}\r\n\r\n").encode("utf-8")
+    body = pre + data + f"\r\n--{boundary}--\r\n".encode("utf-8")
     req = urllib.request.Request(url, data=body, method="POST")
     req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
     req.add_header("User-Agent", "clashrl-monitor/1.0")
@@ -59,13 +61,17 @@ def _post_screenshot(url: str, jpg: bytes, content: str, timeout: float = 15.0) 
 
 
 class DiscordMonitor:
-    """Background thread that posts a game-window screenshot to Discord every N minutes."""
+    """Background thread: a screenshot on start, then a short video clip of the game window
+    every N minutes."""
 
     def __init__(self, cfg, label: str = "run"):
         self.cfg = cfg
         self.label = label
         self.interval = max(1.0, float(cfg.get("monitor", "interval_min", default=30.0))) * 60.0
         self.jpg_quality = int(cfg.get("monitor", "jpeg_quality", default=70))
+        self.clip_seconds = max(1.0, float(cfg.get("monitor", "clip_seconds", default=30.0)))
+        self.clip_fps = max(1, int(cfg.get("monitor", "clip_fps", default=10)))
+        self.clip_scale = float(cfg.get("monitor", "clip_scale", default=0.5))
         self.url = _load_webhook(cfg)
         self._thread: Optional[threading.Thread] = None
         self._stop = threading.Event()
@@ -79,7 +85,8 @@ class DiscordMonitor:
             return
         self._thread = threading.Thread(target=self._run, name="discord-monitor", daemon=True)
         self._thread.start()
-        print(f"[monitor] Discord alerts ON: a screenshot every {self.interval / 60:.0f} min.")
+        print(f"[monitor] Discord alerts ON: a screenshot now, then a {self.clip_seconds:.0f}s clip "
+              f"every {self.interval / 60:.0f} min.")
 
     def stop(self) -> None:
         self._stop.set()
