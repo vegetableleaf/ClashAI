@@ -72,13 +72,47 @@ DONE in Phase 1 / this change:
 
 ## 4. Roadmap / stages
 
-- **Stage 3:** object detector (YOLO11) → per-unit semantic obs into PolicyNet. Prereq for 4 & 5.
+- **Simulator / self-play gym (BUILT — usable now): `run.py train-sim`.** A headless, medium-fidelity,
+  stat-driven match engine (`clashrl/sim/`) driven by the card KB — elixir economy, lane movement with
+  bridge crossing, nearest-target combat with splash, princess/king towers, area spells, and scripted
+  opponent archetypes (hog-cycle / beatdown / control / siege). It trains the SAME `PolicyNet`/DQN with
+  NO vision and FROM SCRATCH, thousands of matches fast, writing `data/policy_sim.pt` — a PRIOR to
+  warm-start live RL. See §5.
+- **Stage 3:** object detector (YOLO11) → per-unit semantic obs into PolicyNet. Prereq for 4 & the world model.
 - **Stage 4:** external-replay strategy mining (`replay_mine.py`, gated by `rewards.strategy_prior_scale`).
-- **Stage 5 (NEW, post-Stage-3): learned dynamics / world model.** A model that predicts the NEXT board
+- **Stage 5 (post-Stage-3): learned dynamics / world model.** A model that predicts the NEXT board
   state from the current state + action (e.g. a placed troop advances toward its nearest target). Trained
   first (supervised on recorded transitions), then used to help RL — this is model-based RL (Dreamer /
-  MuZero family). It should operate on the DETECTOR's structured entity state (units = {type, x, y, hp,
-  team}), NOT raw pixels, which is why it is firmly POST-Stage-3. See log.txt for the full design note.
+  MuZero family). It operates on the DETECTOR's structured entity state (units = {type, x, y, hp, team}),
+  NOT raw pixels, which is why it is firmly POST-Stage-3. NOTE: the `train-sim` engine is a HAND-CODED
+  world model — the twin of this LEARNED one; they can converge later. See log.txt for the full note.
+
+## 5. Simulator training (`train-sim`) — READY NOW, runs in parallel with recording
+
+**Readiness decision: YES — start it.** The policy is ready to train in the engine from scratch: the sim
+emits the exact observation the CNN expects (validated end-to-end — obs `(96,64,3)`, hand/next/elixir/threat
+vectors, the same 9 card identities incl. Tesla's evo/normal split), matches terminate correctly, and the
+reward gives a clean gradient (losses land clearly negative, wins ~+10). Unlike live RL — which needs a BC
+warm-start because live matches are too scarce to learn from scratch — the sim provides effectively
+unlimited volume, so from-scratch is the whole point, and **no recordings are needed to start**. It needs
+PyTorch + a GPU (same as `train-bc`/`train-rl`).
+
+PowerShell (training device, from `real/`):
+```powershell
+git pull origin main
+.\.venv\Scripts\python.exe run.py train-sim --matches 5000     # START (from scratch); prints a rolling win-rate
+# monitor: watch the [train-sim] summary lines (winrate / avg_rew / m/s); policy_sim.pt updates every 50 matches
+# END: press Ctrl+C any time — it saves data/policy_sim.pt on exit
+.\.venv\Scripts\python.exe run.py train-sim --resume           # continue a previous run
+```
+To then **warm-start live RL from the sim prior:** `copy data\policy_sim.pt data\policy.pt` (dims match the
+deck/config), then `run.py train-rl` — it fine-tunes the sim policy on real matches to close the sim-to-real
+gap. (Or keep BC and sim as two separate warm-starts and compare.)
+
+**Honest limits:** medium fidelity — exact CR pathfinding/aggro/pushback/champions/evolutions are not
+modelled, and the observation is a crude synthetic top-down, so a sim-trained policy transfers as a
+strategic/elixir/timing PRIOR, not a finished real-game bot. Tune fidelity/opponents under the `sim:` config
+section; add self-play + more archetypes later.
 
 ## Conventions
 - Reward-shaping changes only take effect on the next `train-rl`.

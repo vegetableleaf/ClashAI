@@ -219,6 +219,7 @@ train:
   bc_epochs: 10                  # behaviour-cloning pretrain epochs
   checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)
   rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
+  sim_checkpoint: "data/policy_sim.pt" # SIMULATOR-trained prior (train-sim); warm-start live train-rl from it
   # timelapse: capture the whole train-rl run and compress it to a fixed-length video
   # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
   timelapse: true                # record a training timelapse during train-rl
@@ -430,3 +431,25 @@ replay_mine:
   frame_stride: 3                # sample every Nth frame when mining (higher = faster, coarser)
   detect_conf: 0.30              # detector confidence threshold for a unit to count
   learn_side: bottom             # which player to imitate: the featured/blue player is usually on the bottom
+
+# --- Headless simulator (train-sim): fast, no-vision RL from scratch ------
+# `run.py train-sim` trains the SAME policy against a medium-fidelity, stat-driven match engine
+# (clashrl.sim, driven by the card KB) so it can play THOUSANDS of matches with no capture and
+# from scratch. The result (data/policy_sim.pt) is a PRIOR to warm-start live train-rl, then
+# fine-tune on real matches. Medium fidelity -> expect a sim-to-real gap. See real/DECK_SWITCH.md.
+sim:
+  agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
+  sub_dt: 0.1                    # physics sub-tick within each agent step
+  regulation_s: 180             # elixir goes single -> double at (regulation-60s); triple in overtime
+  overtime_s: 60                # sudden-death window after regulation
+  princess_hp: 2600             # ~level-11 princess tower HP (Classic 1v1)
+  king_hp: 4800                 # ~level-11 king tower HP
+  tower_dps: 90                 # princess/king tower damage per second
+  tower_range: 0.20             # normalized princess-tower attack reach
+  king_range: 0.20              # normalized king-tower attack reach
+  siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
+  epsilon_start: 1.0            # from-scratch -> start fully random
+  epsilon_end: 0.05
+  epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
+  log_every_matches: 25         # print a rolling win-rate/avg-reward summary this often
+  save_every_matches: 50        # checkpoint data/policy_sim.pt this often

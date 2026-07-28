@@ -105,6 +105,17 @@ def _cmd_play(args) -> None:
     play(Config.load(args.config))
 
 
+def _cmd_train_sim(args) -> None:
+    try:
+        from .train_sim import train_sim
+    except ImportError as exc:
+        print(f"[train-sim] PyTorch is required ({exc}).\n"
+              "Install the CUDA build:\n"
+              "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
+        return
+    train_sim(Config.load(args.config), matches=args.matches, resume=args.resume, seed=args.seed)
+
+
 def _cmd_diag(args) -> None:
     from .diagnose import diagnose
     diagnose(Config.load(args.config))
@@ -201,6 +212,13 @@ def main() -> None:
 
     trl = sub.add_parser("train-rl", help="RL fine-tune the policy on live matches (tower/win rewards)")
     trl.set_defaults(func=_cmd_train_rl)
+
+    tsi = sub.add_parser("train-sim",
+                         help="train the policy in the headless SIMULATOR (thousands of matches, from scratch, no vision)")
+    tsi.add_argument("--matches", type=int, default=2000, help="max matches to play before stopping")
+    tsi.add_argument("--resume", action="store_true", help="continue data/policy_sim.pt instead of training from scratch")
+    tsi.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
+    tsi.set_defaults(func=_cmd_train_sim)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
     ply.set_defaults(func=_cmd_play)

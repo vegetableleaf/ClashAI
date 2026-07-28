@@ -737,6 +737,44 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-28  —  Headless SIMULATOR + train-sim: no-vision RL from scratch (clashrl/sim)
+------------------------------------------------------------------------------
+- User: can we simulate thousands of matches so the model gains experience WITHOUT the vision stack?
+  Verdict: yes -- and it's arguably the highest-leverage lever (RL one live match at a time is the wrong
+  regime). Built a MEDIUM-fidelity, stat-driven, headless engine (not a faithful CR clone) as a new track.
+- clashrl/sim/ (new package):
+  * engine.py -- SimEngine: normalized-coord arena (enemy top / you bottom, river 0.5, bridges 0.25/0.75),
+    entities built FROM the card KB (build_spec: hp / dps / reach / speed / count / flags), elixir economy
+    (single->double->triple by match time), lane movement with BRIDGE crossing, nearest-target acquisition
+    (building-only -> tower; siege -> nearest foe in sight else tower; else nearest), DPS combat + splash,
+    princess/king towers that fire + king activation on a princess fall, area spells (rocket instant / RD
+    delayed, reduced tower damage), win/loss/draw + crowns + regulation/overtime.
+  * opponents.py -- scripted archetypes (hog-cycle / beatdown / control / siege) with representative KB
+    decks; defend the deepest threat, else pressure per style. make_opponent() samples one per match.
+  * env.py -- SimMatchEnv: mirrors LiveMatchEnv's interface so the SAME PolicyNet trains here. Renders a
+    crude synthetic top-down obs at observation.arena_size (towers + unit blobs, blue=you/red=enemy) +
+    hand/next/elixir/threat vectors (threat is a best-effort approximation of threats.vector()); reward
+    from GROUND TRUTH using the SAME config weights (tower chip, crowns, potential-based troop shaping,
+    win/loss) + the deck's placement doctrine (X-Bow in tower range, Miner on the enemy tower), under the
+    shaping_match_cap. Agent decides every sim.agent_dt (1s) over sim.sub_dt (0.1s) physics ticks.
+- train_sim.py + `run.py train-sim [--matches N] [--resume] [--seed]`: trains the SAME PolicyNet/DQN
+  (reuses train_rl._build_net + the Double-DQN update) against the sim, FROM SCRATCH (no BC needed), fast,
+  no capture. Rolling win-rate/avg-reward summaries every sim.log_every_matches; checkpoints data/
+  policy_sim.pt every sim.save_every_matches; Ctrl+C saves + exits. Warm-start live RL by copying
+  policy_sim.pt -> policy.pt (dims match), then train-rl to fine-tune (close the sim-to-real gap).
+- config: new sim.* (agent_dt/sub_dt, tower HP/dps/range, regulation/overtime, siege_sight, epsilon
+  schedule, log/save cadence) + train.sim_checkpoint.
+- READINESS DECISION: YES -- start sim training now. Validated end-to-end here (no torch on this box, but
+  the engine/env ran 8 random-agent matches: correct termination, sane rewards -- losses ~-25, a win +10.4,
+  ~7/8 losses for a random policy = a learnable gradient). obs/vector contract matches the model (incl. the
+  9 identities from Tesla's evo/normal cycle). It can run in PARALLEL with the user's recording.
+- HONEST LIMITS (told user): medium fidelity (no exact pathfinding/aggro/pushback/champions/evolutions; a
+  synthetic top-down obs), so a sim-trained policy is a strategic/elixir/timing PRIOR to fine-tune live, not
+  a finished bot. Grow fidelity + add self-play later. This sim is also a HAND-CODED world model -- the
+  twin of the Stage-5 learned one.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
