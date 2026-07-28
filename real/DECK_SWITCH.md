@@ -100,9 +100,9 @@ PyTorch + a GPU (same as `train-bc`/`train-rl`).
 PowerShell (training device, from `real/`):
 ```powershell
 git pull origin main
-# (optional) refresh opponents to the CURRENT top-200 meta decks — needs a free CR API token:
+# (optional) refresh opponents to the CURRENT top-100 meta decks — needs a free CR API token:
 #   set the token in env CLASHRL_CR_API_TOKEN (from developer.clashroyale.com, IP-locked), then:
-.\.venv\Scripts\python.exe run.py decks-import --limit 200      # else the curated 23-deck pool is used
+.\.venv\Scripts\python.exe run.py decks-import --limit 100      # else the curated 100-deck pool is used
 .\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16   # START (from scratch); K vectorized envs
 # monitor: watch the [train-sim] summary lines (winrate / avg_rew / m/s); policy_sim.pt updates every 50 matches
 # END: press Ctrl+C any time — it saves data/policy_sim.pt on exit
