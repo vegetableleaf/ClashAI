@@ -115,8 +115,8 @@ rewards:
                                  # GRADUALLY as it loses HP (see tower_hp) up to this, then topped
                                  # up to it on destruction; for the KING it's a flat hit on its fall
   win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
-  loss: -12.0                    # losing is VERY costly -- must dominate all within-match shaping so a
-                                 # three-crown loss is ALWAYS net-negative (was -10, could be out-summed)
+  loss: -15.0                    # losing is VERY costly -- must dominate all within-match shaping so a
+                                 # three-crown loss is ALWAYS net-negative (raised -12 -> -15; shaping is now capped per match too)
   # -- tower HP chip (tower_hp) --
   hp_scale: 2.0                  # enemy-princess chip (offence); a full tower's chip = this
                                  # (your princess chip is penalised gradually up to |lose_own_tower|, not hp_scale)
@@ -156,7 +156,7 @@ rewards:
   strategy_prior_scale: 0.0      # Stage-4 ACTIVATION SWITCH (default OFF): weight of the strong-player strategy priors mined
                                  # from external replays (run.py mine-replays -> data/analysis/strategy_priors.json). While 0 the
                                  # priors never affect training; raise it (e.g. 0.5) only after the detector lands + you have mined footage.
-  rocket_tornado_combo: 15.0     # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes)
+  rocket_tornado_combo: 8.0      # x mass wiped: a tornado at the SAME spot right after a rocket that killed a clump (waives the king penalty, wipes pushes). Lowered 15->8 so two combos can't out-sum a loss
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
                                  # a better lane-block or forward play earns more via troop_defeat / tesla_kill, so it can deviate
@@ -172,6 +172,9 @@ rewards:
   ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
   rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
   back_corner_penalty: -0.25     # slight: any card dumped in the far back corner (deep + against an edge) -- the ice-spirit/skeletons/royal-delivery spam
+  tornado_chip_penalty: -1.0     # a LONE tornado on the enemy princess (chip attempt) -- tornado is NOT a chip tool; a real rocket->tornado combo is exempt
+  premature_defense_penalty: -0.5 # a defender (tesla/ice wizard/ronin) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to
+  shaping_match_cap: 8.0         # per-match ceiling on the repeatable one-sided bonuses (defense-kill + cycle + foresight counters) so they can't out-sum a loss
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy

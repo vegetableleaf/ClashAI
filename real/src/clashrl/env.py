@@ -121,6 +121,9 @@ class LiveMatchEnv:
         # only ROCKET and TORNADO may be cast ANYWHERE; every other card (troops, buildings,
         # royal delivery) is restricted to YOUR half of the map.
         self.anywhere_ids = self.rocket_ids | self.tornado_ids
+        # cards that should only be played to REACT to a threat (defensive troops + Royal Delivery);
+        # playing them on a QUIET board (no enemy anywhere) is premature -> penalised.
+        self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids
         self.spell_troop_damage = float(cfg.get("rewards", "spell_troop_damage", default=5.0))
         self.spell_hit = float(cfg.get("rewards", "spell_hit", default=0.15))
         self.spell_combo = float(cfg.get("rewards", "spell_combo", default=0.6))
@@ -202,6 +205,14 @@ class LiveMatchEnv:
         self.ontop_size = float(cfg.get("env", "ranged_ontop_size", default=0.06))
         self.back_corner_y = float(cfg.get("env", "back_corner_y", default=0.72))
         self.back_corner_x = float(cfg.get("env", "back_corner_x", default=0.20))
+        # a lone tornado on the enemy princess (chip attempt, not a combo) is wasteful; a reactive
+        # card (defender / Royal Delivery) on a QUIET board (nothing to react to) is premature.
+        self.tornado_chip_penalty = float(cfg.get("rewards", "tornado_chip_penalty", default=-1.0))
+        self.premature_defense_penalty = float(cfg.get("rewards", "premature_defense_penalty", default=-0.5))
+        # per-match ceiling on the repeatable one-sided shaping bonuses (defense-kill / cycle /
+        # foresight counters) so they can't accumulate past a loss -- see _bonus().
+        self.shaping_match_cap = float(cfg.get("rewards", "shaping_match_cap", default=8.0))
+        self._match_bonus = 0.0
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -286,6 +297,7 @@ class LiveMatchEnv:
         self._recent_ranged = None
         self._recent_rocket = None
         self._pending_rocket = None
+        self._match_bonus = 0.0
         self._nav.reset_state()
         while True:
             frame = self._grab()
@@ -405,6 +417,16 @@ class LiveMatchEnv:
                 scale = self.wrong_lane_cheap_frac if card_id in self.cheap_ids else 1.0
                 r += self.wrong_lane_penalty * scale             # committed to the lane OPPOSITE the push
         return r
+
+    def _bonus(self, credit: float) -> float:
+        """Cap the CUMULATIVE positive shaping bonus (defense-kill / cycle / foresight counters) per
+        match at shaping_match_cap so these repeatable one-sided rewards can't sum past a loss.
+        Penalties (<=0) pass through untouched."""
+        if credit <= 0.0:
+            return credit
+        allowed = min(credit, max(0.0, self.shaping_match_cap - self._match_bonus))
+        self._match_bonus += allowed
+        return allowed
 
     def _defense_kill_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
         """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin) by
@@ -604,7 +626,7 @@ class LiveMatchEnv:
                         reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
                         if cur_elixir >= self.full_elixir:
                             reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
-            reward += self._defense_kill_reward(frame, bool(play), card_id, cell)
+            reward += self._bonus(self._defense_kill_reward(frame, bool(play), card_id, cell))
             if play and card_id in self.tesla_ids:
                 # keep the Tesla for the enemy's win condition (a tower-targeting troop)
                 if self.threat_tracker.wc_active:
@@ -618,9 +640,11 @@ class LiveMatchEnv:
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
                     reward += self.offensive_penalty  # non-rocket card played in the enemy half = offence
             reward += self._placement_penalty(bool(play), card_id, cell, raw_cell)  # wrong-lane / on-top / corner / RD-half
+            if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
+                reward += self.premature_defense_penalty   # a defender / Royal Delivery played with NO enemy on the board
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
-                reward += self.cycle_reward           # cheap card played while rocket isn't in hand -> cycling to it
-            reward += self._threat_counter_reward(bool(play), card_id, cell)   # foresight counters
+                reward += self._bonus(self.cycle_reward)   # cheap card played while rocket isn't in hand -> cycling to it
+            reward += self._bonus(self._threat_counter_reward(bool(play), card_id, cell))   # foresight counters
             # rocket = a 6-elixir OFFENSIVE investment: resolve any prior rocket (pay its chip
             # only after a successful defence; withhold it + penalise if heavy own-tower damage
             # followed), then defer THIS rocket's chip if it was a tower chip.
@@ -773,17 +797,21 @@ class LiveMatchEnv:
                 if drop >= self.spell_min_drop or peak >= self.spell_combo_present:
                     r += self.spell_combo                 # ...that also caught troops
                 return r
+            if is_tornado:                                # a LONE tornado on a tower (a valid combo returned earlier)
+                return self.tornado_chip_penalty          # tornado is NOT a chip tool -> penalise
             return 0.0                                    # chip -> tower_hp handles it
         # scale by the size of the biggest unit caught (swarm -> small, fat unit -> large)
         size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg),
                    self.spell_size_cap)
-        if is_rocket and drop >= self.spell_min_drop:
-            return size * self.spell_troop_damage         # killed a unit -> reward by its size
-        if present:
-            return size * self.spell_hit                  # unit caught but survived -> by its size
-        if b < self.spell_present:
-            return self.spell_whiff                       # cast on empty ground / king
-        return 0.0                                        # aimed at troops that moved away
+        # Reward ONLY a real mass DROP (troops actually removed). "present" alone was farmable: a
+        # spell aimed at a static enemy structure or the reddish enemy-side floor reads red and used
+        # to pay size*spell_hit for nothing -- the top-left-corner rocket loophole. A rocket that
+        # removes nothing = a wasted 6 elixir -> whiff.
+        if drop >= self.spell_min_drop:
+            return size * (self.spell_troop_damage if is_rocket else self.spell_hit)
+        if is_rocket:
+            return self.spell_whiff
+        return self.spell_whiff if b < self.spell_present else 0.0
 
     def _resolve_terminal(self) -> Tuple[float, Optional[str], dict]:
         """Read the result: end-of-match scoreboard crowns cross-checked against the
