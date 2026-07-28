@@ -160,6 +160,8 @@ rewards:
   offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
   defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
                                  # a better lane-block or forward play earns more via troop_defeat / tesla_kill, so it can deviate
+  building_center_reward: 0.6    # Tesla placed in the strategic intercept band AND toward centre (x centrality) while a push is on
+  building_misplace_penalty: -1.0 # Tesla shoved to the bridge (too forward) or dumped behind your towers (too deep) -- the bimodal misplacement
   patience: 0.0                  # waiting at a quiet board is NEUTRAL now (was 0.02): a standing per-step
                                  # reward for doing nothing was itself the incentive for the hesitation loop
   idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):
@@ -329,6 +331,10 @@ env:
   ranged_ontop_size: 0.06              # min largest enemy-blob fraction at the drop to count as a real troop (not speckle)
   back_corner_y: 0.72                  # at/below this depth (normalized y, toward your king) + an outer column = back corner
   back_corner_x: 0.20                  # within this of either side edge = the corner (outer columns only)
+  # Building (Tesla) strategic-zone placement (rewards.building_center_reward / building_misplace_penalty)
+  building_front_y: 0.53               # a building ABOVE this y (toward the bridge) is TOO FORWARD (bypassed / focused)
+  building_back_y: 0.65                # a building BELOW this y (behind your towers) is TOO DEEP (can't reach the push)
+  building_center_span: 0.25           # x-distance from centre (0.48) over which the in-band central reward fades to 0
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy

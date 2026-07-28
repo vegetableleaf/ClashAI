@@ -89,12 +89,15 @@ class LiveMatchEnv:
         self.tesla_ids = set()
         self.ranged_ids = set()
         self.blocker_ids = set()
+        self.building_ids = set()
         self.defensive_kind = {}
         for i, key in enumerate(self.vision.deck_keys):
             base = key[:-4] if key.endswith("_evo") else key
             c = db.get(base)
             if c and c.get("kind") == "spell":
                 self.spell_ids.add(i)
+            if c and c.get("kind") == "building":    # Tesla -> stationary; intercept-zone placement shaping
+                self.building_ids.add(i)
             if base == "rocket":
                 self.rocket_ids.add(i)
             elif base == "tornado":
@@ -114,9 +117,9 @@ class LiveMatchEnv:
                 self.defensive_kind[i] = "musketeer"
             elif key == "musketeer_evo":
                 self.defensive_kind[i] = "musketeer_evo"
-            if base in ("tesla", "musketeer", "ice_wizard"):
-                self.ranged_ids.add(i)               # ranged units worth shielding
-            elif base in ("ronin", "skeletons", "ice_spirit"):
+            if base in ("musketeer", "ice_wizard"):  # MOBILE ranged troops (kited/shielded). NB Tesla is a
+                self.ranged_ids.add(i)               # BUILDING -> excluded: you WANT it in the push's path,
+            elif base in ("ronin", "skeletons", "ice_spirit"):   # so it must not get the 'dropped on a troop' penalty
                 self.blocker_ids.add(i)              # tanks/blockers that shield them
         # only ROCKET and TORNADO may be cast ANYWHERE; every other card (troops, buildings,
         # royal delivery) is restricted to YOUR half of the map.
@@ -213,6 +216,13 @@ class LiveMatchEnv:
         # foresight counters) so they can't accumulate past a loss -- see _bonus().
         self.shaping_match_cap = float(cfg.get("rewards", "shaping_match_cap", default=8.0))
         self._match_bonus = 0.0
+        # BUILDING (Tesla) placement: shape it toward the strategic INTERCEPT zone -- a moderate depth in
+        # FRONT of your towers (not shoved to the bridge, not dumped behind them) and toward the CENTRE.
+        self.building_front_y = float(cfg.get("env", "building_front_y", default=0.53))
+        self.building_back_y = float(cfg.get("env", "building_back_y", default=0.65))
+        self.building_center_span = float(cfg.get("env", "building_center_span", default=0.25))
+        self.building_center_reward = float(cfg.get("rewards", "building_center_reward", default=0.6))
+        self.building_misplace_penalty = float(cfg.get("rewards", "building_misplace_penalty", default=-1.0))
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -372,6 +382,24 @@ class LiveMatchEnv:
         if abs(gx - rx) <= 1 and abs(gy - ry) <= 1:      # within a cell of the recommended centre
             return self.defense_center_bonus
         return 0.0
+
+    def _building_place_reward(self, card_id: int, cell: int, threatened: bool) -> float:
+        """Shape a BUILDING (Tesla) toward the strategic defensive zone: a MODERATE depth in FRONT of
+        your towers (not shoved to the bridge, not dumped behind them) and toward the CENTRE, where
+        both princess towers support it and it pulls ground troops to the middle. A Tesla at the
+        bridge gets bypassed / focused; one behind your towers can't reach the push in time -- both
+        are penalised. The central reward only counts when there's actually a push to defend (a
+        premature building on a quiet board is handled by the premature-defense penalty)."""
+        if card_id not in self.building_ids:
+            return 0.0
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        if cy < self.building_front_y or cy > self.building_back_y:
+            return self.building_misplace_penalty            # at the bridge (too forward) OR behind your towers (too deep)
+        if not threatened:
+            return 0.0                                       # in-band but nothing to defend yet
+        central = max(0.0, 1.0 - abs(cx - 0.48) / self.building_center_span)
+        return self.building_center_reward * central          # in-band + a real push -> reward central x
 
     def _placement_penalty(self, play: bool, card_id: int, cell: int, raw_cell: int) -> float:
         """Punish clearly BAD placements, judged against the pre-action frame (where the enemy was
@@ -633,6 +661,8 @@ class LiveMatchEnv:
                     reward += self.wc_tesla_defend     # deployed to defend an ACTIVE win condition -- good
                 elif self.threat_tracker.should_hold_tesla():
                     reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
+            if play and card_id in self.building_ids:  # Tesla -> intercept-zone placement (central, moderate depth)
+                reward += self._bonus(self._building_place_reward(card_id, cell, cur_mass >= self.quiet_frac))
             if play and card_id in self.defensive_kind:
                 reward += self._defense_placement_reward(card_id, cell)  # soft nudge to the recommended centre
             reward += self._blocker_reward(frame, bool(play), card_id, cell)
