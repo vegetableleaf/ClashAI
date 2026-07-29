@@ -138,12 +138,17 @@ class LiveMatchEnv:
         # Per-defender kill-credit weight: the Tesla plus a TINY credit for the other defenders.
         # Covers a DIRECT kill (the card attacks the troop) and an INDIRECT one (it blocks/distracts
         # the troop so your tower finishes it off near the card) -- both read as the local red-mass drop.
+        # The MINER is included here too (defense_kill weight): played defensively it snipes an enemy
+        # support troop or tanks/distracts for your defenders, and either way the enemy it kills/holds
+        # dies as a local red-mass drop near its spot -- the same proxy. Its OFFENSIVE tower chip is
+        # scored separately by _miner_reward, and the per-placement + per-match anti-farm caps below
+        # keep this small (a coarse local-mass proxy; a true support-vs-tank read waits for Stage 3).
         self.defense_kill_ids = {}
         for _i, _key in enumerate(self.vision.deck_keys):
             _base = _key[:-4] if _key.endswith("_evo") else _key
             if _base == "tesla":
                 self.defense_kill_ids[_i] = self.tesla_kill
-            elif _base in ("ice_wizard", "ice_spirit", "skeletons", "ronin"):
+            elif _base in ("ice_wizard", "ice_spirit", "skeletons", "ronin", "miner"):
                 self.defense_kill_ids[_i] = self.defense_kill
         self.patience = float(cfg.get("rewards", "patience", default=0.02))
         self.troop_defeat = float(cfg.get("rewards", "troop_defeat", default=3.0))
@@ -506,7 +511,7 @@ class LiveMatchEnv:
         return allowed
 
     def _defense_kill_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
-        """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin) by
+        """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Skeletons / Miner played defensively) by
         the enemy troops that die near it over its life -- a DIRECT kill (the card attacks the troop)
         or an INDIRECT one (it blocks/distracts the troop long enough that your princess tower
         finishes it off near the card). Both show up as the local enemy (red) mass dropping around
