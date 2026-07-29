@@ -44,7 +44,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
    - **Miner** tank-for-X-Bow (drop at the bridge to pull troops off a fresh X-Bow) + snipe a support
      card behind an enemy tank.
    - **X-Bow-protect** micro (defend it while it chips).
-   - **The Log** knockback/reset + conditional cycle-chip shaping (only chip-cycle when Skeletons is unavailable, there are no enemy targets to Log, AND you're at full elixir).
+   - **The Log** knockback/reset + conditional cycle-chip shaping (only chip-cycle when Skeletons is unavailable, there are no enemy targets to Log, AND you're at full elixir). **[DONE (reward-shaping): `env._log_reward` + `log_cycle_ok` in `step()` — The Log now has its own path (was mis-scored as a Tornado). Coarse point-at-cast pixel proxy for now; a true roll-path read waits on the detector.]**
 3. Continue **Stage 2/3** (object detector → semantic obs) and **Stage 4** (replay strategy mining)
    on their own tracks — deck-agnostic, unaffected by this switch.
 

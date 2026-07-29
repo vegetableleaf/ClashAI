@@ -133,6 +133,9 @@ rewards:
   spell_whiff: -1.5              # a spell cast on empty ground / with NO game-state impact (rocket / tornado /
                                  # royal delivery thrown randomly). Was -0.5, which left random throwing net-positive
                                  # after one lucky graze; -1.5 makes the expected value of a random cast clearly negative.
+  # -- The Log (2-elixir rolling ground knockback/reset spell; poor tower chip). NOT scored as a rocket/tornado. --
+  log_reset_reward: 0.3          # The Log rolled THROUGH a real enemy push (knockback/reset buys time) -- valued even without a kill; + size*spell_hit for troops it clears
+  log_whiff: -0.3                # The Log cast with nothing to hit (small waste -- 2 elixir, not the -1.5 rocket whiff). Waived (0) for a justified last-resort cycle (no Skeletons in hand, board quiet, near-full bar)
   spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
                                  # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
   tesla_kill: 1.5                # per unit of enemy-troop mass a placed Tesla kills near it -- DIRECT (it zaps the troop) OR INDIRECT (it

@@ -93,6 +93,8 @@ class LiveMatchEnv:
         self.building_ids = set()
         self.miner_ids = set()
         self.xbow_ids = set()
+        self.log_ids = set()
+        self.skeletons_ids = set()
         self.defensive_kind = {}
         for i, key in enumerate(self.vision.deck_keys):
             base = key[:-4] if key.endswith("_evo") else key
@@ -111,6 +113,10 @@ class LiveMatchEnv:
                 self.xbow_ids.add(i)
             if base in ("the_log", "skeletons"):     # cheap cyclers (The Log = 2-elixir spell) -- OK to play anytime
                 self.cheap_ids.add(i)
+            if base == "the_log":                    # 2-elixir rolling knockback/reset spell (poor tower chip) -- own shaping
+                self.log_ids.add(i)
+            elif base == "skeletons":
+                self.skeletons_ids.add(i)
             if base == "tesla":                      # Tesla: kill-reward tracked + intercept-zone placement
                 self.tesla_ids.add(i)
                 self.defensive_kind[i] = "tesla"
@@ -131,6 +137,8 @@ class LiveMatchEnv:
         self.spell_hit = float(cfg.get("rewards", "spell_hit", default=0.15))
         self.spell_combo = float(cfg.get("rewards", "spell_combo", default=0.6))
         self.spell_whiff = float(cfg.get("rewards", "spell_whiff", default=-0.5))
+        self.log_reset_reward = float(cfg.get("rewards", "log_reset_reward", default=0.3))  # The Log rolled through a real push (knockback/reset buys time)
+        self.log_whiff = float(cfg.get("rewards", "log_whiff", default=-0.3))               # The Log cast with nothing to hit (small waste; 2 elixir, not rocket-scale)
         self.spell_king_penalty = float(cfg.get("rewards", "spell_king_penalty", default=-1.5))
         self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=1.5))
         self.defense_kill = float(cfg.get("rewards", "defense_kill", default=0.5))
@@ -685,6 +693,7 @@ class LiveMatchEnv:
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
         is_rd = card_id in self.royal_delivery_ids
+        is_log = card_id in self.log_ids
         before = self._last_frame if eval_spell else None
         self._execute(action)
         spell_samples = []
@@ -723,9 +732,16 @@ class LiveMatchEnv:
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
+            # The Log chip-cycle is only justified as a LAST RESORT: Skeletons not in hand (no cheaper
+            # cycle), the board quiet (nothing to Log defensively), AND a near-full bar (won't starve a
+            # defence). self._prev_mass = enemy mass on the PRE-action frame; elixir read pre-action too.
+            log_cycle_ok = False
+            if is_log and self._prev_mass < self.quiet_frac and not any(c in self.skeletons_ids for c in self.hand_ids):
+                pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
+                log_cycle_ok = pre_elixir >= self.defense_setup_elixir
             spell_r = 0.0
             if eval_spell and before is not None and spell_samples:
-                spell_r = self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd)
+                spell_r = self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd, is_log, log_cycle_ok)
                 reward += spell_r
             else:
                 # POTENTIAL-BASED troop shaping: reward the SIGNED change in on-board enemy
@@ -841,7 +857,22 @@ class LiveMatchEnv:
             return True                               # HP number appeared this spell -> newly hit
         return ka < kb - self.king_hp_margin          # HP dropped -> hit again
 
-    def _spell_effect_reward(self, before, samples, cell, is_rocket: bool, is_rd: bool = False) -> float:
+    def _log_reward(self, cx, cy, present, drop, size_frame, cycle_ok) -> float:
+        """The Log -- a cheap 2-elixir ROLLING, ground-only knockback/reset spell with poor tower chip.
+        Reward rolling it THROUGH a real enemy push: the knockback/reset buys time (valued even without a
+        kill), plus a bonus for troops it actually clears. Cast with NOTHING to hit = a wasted Log -> a
+        small whiff (2 elixir, not rocket-scale) -- UNLESS it's a justified last-resort cycle (Skeletons
+        not in hand, board quiet, near-full bar), which is neutral (0)."""
+        if present:                                   # rolled through a real push -> reset/knockback (+ any kill)
+            size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg), self.spell_size_cap)
+            r = self.log_reset_reward
+            if drop >= self.spell_min_drop:
+                r += size * self.spell_hit
+            return r
+        return 0.0 if cycle_ok else self.log_whiff    # nothing to hit: a waste, unless a justified cycle-chip
+
+    def _spell_effect_reward(self, before, samples, cell, is_rocket: bool, is_rd: bool = False,
+                             is_log: bool = False, log_cycle_ok: bool = False) -> float:
         """Reward a spell by what it does at the target, sampled over the impact window.
 
         Rocket -> Tornado COMBO: a tornado cast at the SAME spot right after a rocket that
@@ -883,6 +914,8 @@ class LiveMatchEnv:
         present = peak >= self.spell_present
         if is_rocket:
             self._rocket_cleared = drop >= self.rocket_clear_min   # removed a real clump, not just a graze
+        if is_log:                                    # THE LOG: cheap ROLLING knockback/reset -- its own shaping
+            return self._log_reward(cx, cy, present, drop, size_frame, log_cycle_ok)
 
         # is this tornado the second half of a rocket->tornado combo (same spot, right after a
         # rocket that actually killed a clump)?
