@@ -80,6 +80,22 @@ DONE in Phase 1 / this change:
   warm-start live RL. See §5.
 - **Stage 3:** object detector (YOLO11) → per-unit semantic obs into PolicyNet. Prereq for 4 & the world model.
 - **Stage 4:** external-replay strategy mining (`replay_mine.py`, gated by `rewards.strategy_prior_scale`).
+  - **Sub-task — BC refinement from pro icebow replays (YouTube / public media).** Goal: clone strong
+    icebow play so BC starts from a PRO-level policy (you're not a pro / don't know one). Now viable *in
+    principle* because the deck matches your action space — BUT **gated on the detector (Stage 3)**: a
+    video has no mouse log, so each play must be RECOVERED by the detector (spot a friendly unit spawn →
+    its card + cell + the board state). **YouTube-specific caveat (the crux):** public footage is a
+    DIFFERENT RENDERING than your Google Play window (resolution / skin / overlays / facecam), so (a) the
+    hand/elixir/tower readers misread it and (b) BC clones *pixels*→action, so **raw-pixel BC from YouTube
+    transfers poorly** — do NOT feed YouTube pixels straight into the image policy. Instead, once the
+    detector is up: detector → STRUCTURED play (card, cell, entity board) → then ONE of:
+    (i) **canonical re-render** the recovered play into your OWN synthetic top-down (like the sim's render)
+    and BC on that — normalizes the visual, bridges the domain gap; (ii) train on the detector's
+    **semantic obs** (the Stage-3 shared representation), rendering-independent by construction; or
+    (iii) use the recovered plays as **reward priors** (robust to domain shift) rather than raw BC.
+    Pipeline: `yt-dlp` the clips (personal research use; respect copyright/ToS) → per-frame detector read →
+    recover `(obs*, card, cell)` plays filtered to icebow cards → EXTEND `replay_mine.py` to emit a
+    `train-bc`-loadable `dataset.npz` (and/or priors). START only after the detector is trained + wired.
 - **Stage 5 (post-Stage-3): learned dynamics / world model.** A model that predicts the NEXT board
   state from the current state + action (e.g. a placed troop advances toward its nearest target). Trained
   first (supervised on recorded transitions), then used to help RL — this is model-based RL (Dreamer /

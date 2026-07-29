@@ -852,6 +852,24 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-29  —  DESIGN NOTE (Stage 4 sub-task): BC refinement from pro icebow replays (YouTube)
+------------------------------------------------------------------------------
+- User wants to refine BC by cloning strong icebow play mined from YouTube / public media (not a pro, no
+  pro contacts). Verdict: viable IN PRINCIPLE now that the deck matches the action space, but a LATER-STAGE
+  endeavour -- GATED ON THE DETECTOR (Stage 3): a video has no mouse log, so plays must be RECOVERED
+  (detect a friendly unit spawn -> its card + cell + board state).
+- YOUTUBE CAVEAT (the crux): public footage is a DIFFERENT RENDERING than the user's Google Play window
+  (resolution / skin / overlays / facecam), so the hand/elixir/tower readers misread it AND image-BC clones
+  pixels->action -> raw-pixel BC from YouTube transfers POORLY. Do NOT feed YouTube pixels into the image
+  policy. Instead (post-detector): detector -> structured play -> ONE of (i) CANONICAL RE-RENDER into the
+  bot's own synthetic top-down (like the sim render) then BC; (ii) train on the detector's SEMANTIC obs
+  (Stage-3 shared representation, rendering-independent); or (iii) use as REWARD PRIORS.
+- Plan: extend replay_mine.py to emit a train-bc-loadable dataset.npz from detector-recovered plays. Queued
+  as a Stage-4 sub-task in icebow/DECK_SWITCH.md. START only after the detector is trained + wired. No code
+  change yet.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
