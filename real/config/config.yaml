@@ -173,6 +173,7 @@ rewards:
   xbow_defense_reward: 0.3       # X-Bow placed BACK-CENTRE as a defensive sniper (rocket-cycle fallback when the offensive X-Bow can't break through)
   xbow_misplace_penalty: -0.75   # X-Bow dropped forward but OUT of tower range (too far to chip, too exposed) -- the classic misplace
   miner_chip_reward: 0.6         # Miner dropped on/near an enemy princess tower -> chip damage (its bread-and-butter)
+  miner_king_penalty: -2.0       # Miner dropped on the enemy KING tower -> ACTIVATES it early (wakes their defence for the match) -- bad trade
   xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)

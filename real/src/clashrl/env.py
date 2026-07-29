@@ -229,6 +229,7 @@ class LiveMatchEnv:
         self.xbow_defense_reward = float(cfg.get("rewards", "xbow_defense_reward", default=0.3))
         self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
         self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
+        self.miner_king_penalty = float(cfg.get("rewards", "miner_king_penalty", default=-2.0))
         self.xbow_wrong_lane_frac = float(cfg.get("rewards", "xbow_wrong_lane_frac", default=0.6))  # X-Bow leaving a LIVE push pays this share of wrong_lane_penalty
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
         self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits at/below this depth
@@ -430,10 +431,13 @@ class LiveMatchEnv:
 
     def _miner_reward(self, cell: int) -> float:
         """Miner deploys ANYWHERE; its bread-and-butter is chipping the enemy PRINCESS tower, so reward
-        dropping it on/near a princess. (Phase 2: tank-for-X-Bow + sniping a support card behind an enemy
-        tank. For now any other Miner spot is simply neutral -- it may go anywhere without penalty.)"""
+        dropping it on/near a princess. The enemy KING is the EXCEPTION -- a Miner on the king tower
+        wakes it early (activates their defence for the rest of the match), so that is penalised.
+        (Phase 2: tank-for-X-Bow + sniping a support card behind an enemy tank.) Any other spot is neutral."""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
+        if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
+            return self.miner_king_penalty          # Miner on the enemy KING wakes it early -> bad trade
         if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
             return self.miner_chip_reward
         return 0.0
