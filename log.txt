@@ -888,6 +888,11 @@ Newest entries are at the bottom.
 - USER records tonight to build the the_log template (hand-templates -> rename a crop to the_log.png ->
   verify --hand) so hand recognition + the elixir-cost link work. Opponent meta decks that run electro_spirit
   are left as-is (still a valid opponent card).
+- SIM auto-catches-up: the simulator is DECK-DRIVEN (reads cards.yaml deck), so on `git pull` the sim agent
+  uses The Log, not Electro Spirit -- verified (agent deck has the_log as a spell; no electro_spirit anywhere
+  in sim/). NO engine parameter change is needed for the swap itself. FIDELITY NOTE (Phase 2): build_spec
+  models The Log as a generic point-blast spell (radius 0.09, 266 dmg) -- it does NOT model the ROLL (a wide
+  forward LINE), the KNOCKBACK / charge-reset, or ground-only. Improve when tuning sim fidelity.
 - PHASE 2 (deferred): Log-specific shaping -- the knockback/reset-to-buy-defenders-time bonus and the
   CONDITIONAL bridge cycle-chip (only under the 3 conditions above). Reward change -> next train-rl/BC.
 

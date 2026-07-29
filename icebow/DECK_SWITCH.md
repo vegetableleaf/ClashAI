@@ -136,7 +136,10 @@ gap. (Or keep BC and sim as two separate warm-starts and compare.)
 **Honest limits:** medium fidelity — exact CR pathfinding/aggro/pushback/champions/evolutions are not
 modelled, and the observation is a crude synthetic top-down, so a sim-trained policy transfers as a
 strategic/elixir/timing PRIOR, not a finished real-game bot. Tune fidelity/opponents under the `sim:` config
-section; add self-play + more archetypes later.
+section; add self-play + more archetypes later. The engine is DECK-DRIVEN (reads `cards.yaml`), so deck
+changes auto-apply on `git pull` — e.g. the Electro-Spirit→The-Log swap needs no engine change. (Phase-2
+fidelity: The Log is modelled as a generic point-blast spell — the rolling LINE / knockback / ground-only
+are not yet simulated.)
 
 ## Conventions
 - Reward-shaping changes only take effect on the next `train-rl`.
