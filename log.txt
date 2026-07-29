@@ -802,6 +802,56 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-28  —  Repo: real/ -> icebow/ rename; DECK TEMPLATES recorded; nav-log + monitor fixes
+------------------------------------------------------------------------------
+- RENAMED the learning-bot project folder real/ -> icebow/ (git-tracked files only). NOTE: the git-ignored
+  data/ does NOT move with `git mv`, so on a device that has recordings/labels the old real/data/ (incl.
+  data/detect annotations) is left behind -- move it: `Move-Item real\data icebow\data`. All paths in newer
+  entries below use icebow/...; older entries' "real/..." are historical.
+- DECK TEMPLATES BUILT + committed: the user recorded Miner X-Bow play and built the hand-recognition
+  templates -- 213 PNGs now tracked under icebow/templates/cards/ + next/ (x_bow / miner / electro_spirit /
+  royal_delivery / tesla + evo / ice_wizard / skeletons, next-card previews, and a play_again button). So
+  `label` -> `train-bc` is unblocked for the new deck.
+- nav: menu-navigation logs now go to a data/nav/ subfolder (tidier than loose data/nav_*.log).
+- monitor: fixed a NameError from a half-reverted merge (the 30s periodic-CLIP feature was restored).
+- Housekeeping only -- no model/reward change.
+
+
+------------------------------------------------------------------------------
+2026-07-28  —  Miner X-Bow Phase 2: reward tuning from recorded play
+------------------------------------------------------------------------------
+- With real recordings in hand, tightened the Miner X-Bow doctrine (all in icebow/src/clashrl/env.py +
+  config). Reward-shaping changes -> effective on the next train-rl.
+- MINER discipline: dropping the Miner on the enemy KING tower ACTIVATES it early (wakes their defence for
+  the match) -> rewards.miner_king_penalty (-2.0). A Miner DUMPED in your own backfield (at/below
+  env.own_backfield_y 0.62) with no push to defend does nothing -> rewards.miner_backfield_penalty (-0.75;
+  defending a real push there is exempt). Conversely the Miner now EARNS the defensive kill-credit when it
+  tanks/snipes -- troops that die near it on defence are credited (same mechanic as the other defenders).
+- X-BOW: dropping the X-Bow right ONTO an oncoming push (a red blob within env.xbow_ontop_radius 0.10) gets
+  it swarmed before it chips -> rewards.xbow_exposed_penalty (-1.0). A "defensive" X-Bow shoved too deep
+  (past env.xbow_defense_back 0.70, i.e. onto your king) is a misplace, not defence.
+- STOP KING-TOWER HUDDLING + engage CLOSE pushes: once a push's deepest troop reaches your towers
+  (env.close_defense_y 0.58), a mobile defender stops kiting and is placed BETWEEN the push and your king to
+  body-block it (env.defense_close_side_bias 0.13 clears the king footprint, defense_close_depth 0.03 sits
+  it just behind the enemy front) -- instead of far-dumping defenders on/behind the king.
+- CYCLE / SETUP allowances: Electro Spirit + Skeletons are now EXEMPT from back_corner_penalty (the back
+  corner is exactly where you cycle them); and the premature-defense penalty is WAIVED at/above
+  env.defense_setup_elixir (9) -- pre-placing a defender on a FULL bar is an elixir-efficient setup, not a
+  premature waste.
+
+
+------------------------------------------------------------------------------
+2026-07-28  —  Sim: opponent pool 23 -> 100 meta decks; train-bc --init (sim prior + BC)
+------------------------------------------------------------------------------
+- Expanded the curated opponent pool (icebow/config/meta_decks.yaml) from 23 to 100 distinct, KB-valid meta
+  decks so the sim faces far more varied, realistic matchups; `run.py decks-import` now defaults to the
+  top-100.
+- train-bc gained `--init`: warm-start behaviour cloning FROM an existing checkpoint (e.g. the sim prior
+  data/policy_sim.pt) so BC COMBINES the simulator-learned policy with your recorded play, instead of
+  starting BC from scratch -- the sim-prior -> BC -> RL pipeline the sim was built to feed.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
