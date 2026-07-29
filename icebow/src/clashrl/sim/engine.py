@@ -65,10 +65,16 @@ class CardSpec:
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
+    level: int = 11           # card level (HP + damage scaled by 1.1^(level-11))
+    pulse_dmg: float = 0.0    # Evo Tesla area-shock: damage per pulse
+    pulse_r: float = 0.0      # pulse radius (normalized)
+    pulse_stun: float = 0.0   # STUN seconds applied by each pulse
+    pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
 
 
-def build_spec(db, key: str) -> CardSpec:
+def build_spec(db, key: str, level: int = 11) -> CardSpec:
     base = key[:-4] if key.endswith("_evo") else key
+    is_evo = key.endswith("_evo")
     c = db.get(base) or {}
     flags = set(db.flags(base))
     kind = c.get("kind", "troop")
@@ -77,6 +83,7 @@ def build_spec(db, key: str) -> CardSpec:
     dmg = float(c.get("damage") or 0.0)
     hit = float(c.get("hit_speed") or 1.0)
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
+    tower_dmg = float(db.tower_damage(base) or dmg)
     reach = _REACH.get(db.attack_range(base), 0.03)
     speed = _SPEED.get(c.get("speed"), 0.031)
     count = int(c.get("count") or 1)
@@ -88,20 +95,38 @@ def build_spec(db, key: str) -> CardSpec:
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
+    lifetime = 40.0 if kind == "building" else None
+    p_dmg = p_r = p_stun = p_int = 0.0
+    evo = c.get("evolution")
+    if is_evo and isinstance(evo, dict):                      # Evolution stat OVERRIDES (level-11 base)
+        hp = float(evo.get("hitpoints", hp))
+        dmg = float(evo.get("damage", dmg))
+        hit = float(evo.get("hit_speed", hit))
+        dps = float(evo.get("dps", dmg / hit if hit else dps))
+        tower_dmg = float(evo.get("tower_damage", tower_dmg))
+        if evo.get("lifetime"):
+            lifetime = float(evo["lifetime"])
+        p_dmg = float(evo.get("pulse_damage", 0.0))
+        p_r = float(evo.get("pulse_radius", 0.0)) * (_REACH["long"] / 5.5)   # tiles -> normalized
+        p_stun = float(evo.get("pulse_stun", 0.0))
+        p_int = float(evo.get("pulse_interval", 0.0))
+    sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
+    hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
     deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
-    radius = 0.03 if ("tank" in flags or hp >= 2000) else (0.014 if count >= 3 else 0.02)
+    radius = 0.03 if "tank" in flags else (0.014 if count >= 3 else 0.02)
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
-        kamikaze="kamikaze" in flags, lifetime=(40.0 if kind == "building" else None),
+        kamikaze="kamikaze" in flags, lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
-        spell_tower_dmg=float(db.tower_damage(base) or dmg), spell_delay=spell_delay,
+        spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
-        slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags))
+        slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
+        level=int(level), pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int)
 
 
 @dataclass
@@ -118,6 +143,7 @@ class Unit:
     deploy_left: float = 0.0     # deploy delay remaining (can't act while > 0)
     slow_left: float = 0.0       # SLOW status timer (halved move + attack speed)
     stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
+    pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
 
 
 @dataclass
@@ -212,6 +238,7 @@ class SimEngine:
             oy = y + (0.02 * ((i // 3) - 0.5)) if n > 1 else 0.0
             u = Unit(spec, team, min(max(x + ox, 0.03), 0.97), min(max(y + oy, 0.03), 0.97), spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
+            u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
             if spec.siege:
                 u.reach_extra = self.siege_sight - spec.reach
             self.units.append(u)
@@ -325,6 +352,11 @@ class SimEngine:
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
                 continue
+            if u.spec.pulse_interval > 0:                    # Evo Tesla area-shock: periodic AoE damage + stun
+                u.pulse_cd -= dt
+                if u.pulse_cd <= 0:
+                    self._pulse(u)
+                    u.pulse_cd = u.spec.pulse_interval
             spd = self.slow_factor if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
@@ -381,6 +413,16 @@ class SimEngine:
             e.stun_left = max(e.stun_left, self.stun_dur)
         if spec.slows:
             e.slow_left = max(e.slow_left, self.slow_dur)
+
+    def _pulse(self, u: Unit) -> None:
+        """Evo Tesla area-shock: damage + STUN every enemy within pulse_r of the tower."""
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0 or e.deploy_left > 0:
+                continue
+            if _dist(e.x, e.y, u.x, u.y) <= u.spec.pulse_r:
+                e.hp -= u.spec.pulse_dmg
+                if u.spec.pulse_stun > 0:
+                    e.stun_left = max(e.stun_left, u.spec.pulse_stun)
 
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
         rng = self.king_range if tw.king else self.tower_range

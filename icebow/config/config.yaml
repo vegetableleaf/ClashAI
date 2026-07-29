@@ -472,6 +472,8 @@ sim:
   stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)
   freeze_duration: 1.0          # seconds a FREEZE lasts (Ice Spirit / Freeze) -- a longer stun
   collision: true               # soft body-block: units can't stack, so a wall of troops holds up a tank
+  enemy_levels: [13, 14, 15, 16]      # opponent cards EACH roll a random level from here...
+  enemy_level_weights: [3, 5, 2, 1]   # ...weighted: 14 most likely, 16 least (like real ladder). YOUR deck levels are per-card in config/cards.yaml
   epsilon_start: 1.0            # from-scratch -> start fully random
   epsilon_end: 0.05
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)

@@ -14,10 +14,11 @@ class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
     pressure per the deck's style (beatdown saves to ~full then commits; the rest chip more freely)."""
 
-    def __init__(self, cfg, db, rng, cards: List[str], style: str):
+    def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None):
         self.style = style
         self.rng = rng
-        self.specs = [build_spec(db, k) for k in cards]
+        levels = levels or [11] * len(cards)
+        self.specs = [build_spec(db, k, lvl) for k, lvl in zip(cards, levels)]
 
     def act(self, eng) -> None:
         team = 1
@@ -58,10 +59,15 @@ class ScriptedBot:
 
 
 def make_opponent(cfg, db, rng, pool: List[dict]) -> ScriptedBot:
-    """Sample a meta deck (weighted by its popularity) and pilot it per its inferred style."""
+    """Sample a meta deck (weighted by its popularity) and pilot it per its inferred style. Each of its
+    cards rolls a RANDOM level (sim.enemy_levels weighted by sim.enemy_level_weights -- default 13-16
+    with 14 most likely, 16 least), so the opponent's card levels vary like a real ladder opponent."""
     if not pool:
         from .meta_decks import load_meta_decks
         pool = load_meta_decks(cfg, db)
     weights = [max(0.01, float(d.get("weight", 1.0))) for d in pool]
     deck = rng.choices(pool, weights=weights, k=1)[0]
-    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"])
+    lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
+    lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
+    levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in deck["cards"]]
+    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels)

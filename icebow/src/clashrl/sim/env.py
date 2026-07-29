@@ -35,8 +35,9 @@ class SimMatchEnv:
         self.gw, self.gh = int(self.actions.gw), int(self.actions.gh)
         self.n_cells = int(self.actions.n_cells)
         self.deck_keys = self.db.deck_identities()
+        self.deck_card_levels = self.db.deck_levels()
         self.n_cards = max(1, len(self.deck_keys))
-        self.specs = [build_spec(self.db, k) for k in self.deck_keys]
+        self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, self.deck_card_levels)]
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         self.obs_shape = (int(oh), int(ow), 3)
