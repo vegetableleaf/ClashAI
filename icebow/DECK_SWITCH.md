@@ -5,12 +5,12 @@ deck before Phase 2. This file is the single ordered source of truth for the swi
 first (human steps in §1, AI/code steps in §2, reward audit in §3, roadmap in §4).
 
 **Deck (Classic 1v1, ALL cards level 11):** Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons,
-Electro Spirit, Rocket, Royal Delivery. (Gone vs the old deck: Tornado, Ronin, Ice Spirit.)
+The Log, Rocket, Royal Delivery. (Gone vs the old deck: Tornado, Ronin, Ice Spirit, Electro Spirit.)
 
 **Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
 its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
 fallback). Miner = chip the tower / tank / snipe support, deploys ANYWHERE. Rocket = clear big
-pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (Electro Spirit / Skeletons) cycle
+pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log / Skeletons) cycle
 and stall; defenders (Tesla / Ice Wizard) clean up.
 
 ---
@@ -24,7 +24,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
 3. **Rebuild card templates** (needed before labeling — hand recognition is template matching):
    `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
    `royal_delivery.png`, `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
-   `miner.png`, `electro_spirit.png`, `skeletons.png` (extra crops of one card: `<key>_2.png`).
+   `miner.png`, `the_log.png`, `skeletons.png` (extra crops of one card: `<key>_2.png`).
    Then the next-card previews under `templates/next/`. Verify: `python run.py verify --hand`.
 4. **Re-verify tower calibration:** `python run.py verify --towers` (should be unchanged; recalibrate
    only if the window moved).
@@ -44,7 +44,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
    - **Miner** tank-for-X-Bow (drop at the bridge to pull troops off a fresh X-Bow) + snipe a support
      card behind an enemy tank.
    - **X-Bow-protect** micro (defend it while it chips).
-   - **Electro Spirit** stun/reset shaping.
+   - **The Log** knockback/reset + conditional cycle-chip shaping (only chip-cycle when Skeletons is unavailable, there are no enemy targets to Log, AND you're at full elixir).
 3. Continue **Stage 2/3** (object detector → semantic obs) and **Stage 4** (replay strategy mining)
    on their own tracks — deck-agnostic, unaffected by this switch.
 

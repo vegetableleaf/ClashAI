@@ -35,7 +35,7 @@ deck:
     - {card: x_bow, level: 11}
     - {card: rocket, level: 11}
     - {card: miner, level: 11}
-    - {card: electro_spirit, level: 11}
+    - {card: the_log, level: 11}
     - {card: skeletons, level: 11}
 
 # ---------------------------------------------------------------------
@@ -678,6 +678,19 @@ cards:
     targets: null
     flags: [spawner, swarm]
     verified: false
+
+  the_log:
+    display: "The Log"
+    elixir: 2
+    kind: spell
+    rarity: legendary
+    attacks: [ground]          # rolling log -- GROUND ONLY (cannot hit air)
+    splash: true               # area damage along its roll path (a lane-wide LINE, not a circle)
+    range: long                # rolls forward a long line from the cast point
+    targets: any
+    flags: [knockback, splash] # knocks back / resets ground troops as it rolls
+    verified: true
+    # cast point is YOUR half only (it ROLLS to the enemy side); L11 stats: damage 266, crown_tower_damage 40 (poor tower chip)
 
   miner:
     display: "Miner"

@@ -870,6 +870,29 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-29  —  Deck tweak: Electro Spirit -> The Log (icebow)
+------------------------------------------------------------------------------
+- User swapped Electro Spirit out for THE LOG (a 2-elixir Legendary SPELL). DB check: kind spell, elixir 2,
+  damage 266, crown_tower_damage 40 (poor tower chip). Behaviour (curated into cards.yaml, absent from the
+  stats import): a ROLLING log -- a lane-wide LINE (not a circle), GROUND ONLY (no air), with KNOCKBACK /
+  charge-reset; CAST POINT is YOUR half only but it ROLLS to the enemy side. User's value order: best when
+  allied defenders are locked onto an enemy and a knockback/reset buys them time, or to hit a large ground
+  group; bridge cycle-chip ONLY if Skeletons isn't available to cycle AND there's nothing to Log AND you're
+  at full elixir (avoid leaking).
+- CHANGES: cards.yaml deck electro_spirit -> the_log (+ a curated the_log entry: kind spell, attacks
+  [ground], flags [knockback, splash], range long, cast your-half). env.py identities: the_log joins
+  cheap_ids (2-elixir cycler) and spell_ids (auto, kind==spell); REMOVED from blocker_ids (a spell can't
+  tank/block, unlike Electro Spirit). NOT in anywhere_ids -> deploy-clamped to your half (correct: cast
+  point is your side; it rolls forward). Existing spell rewards already handle it (troops-in-blast reward /
+  empty-ground whiff penalty). Deck avg elixir 3.38 -> 3.5. Verified: `run.py cards` shows The Log 2e.
+- USER records tonight to build the the_log template (hand-templates -> rename a crop to the_log.png ->
+  verify --hand) so hand recognition + the elixir-cost link work. Opponent meta decks that run electro_spirit
+  are left as-is (still a valid opponent card).
+- PHASE 2 (deferred): Log-specific shaping -- the knockback/reset-to-buy-defenders-time bonus and the
+  CONDITIONAL bridge cycle-chip (only under the 3 conditions above). Reward change -> next train-rl/BC.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

@@ -146,7 +146,7 @@ rewards:
   wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
   tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
   king_tank_reward: 1.0          # (INACTIVE -- no Tornado in the Miner X-Bow deck) tornado onto YOUR king to tank + activate it
-  blocker_protect: 1.0           # play a tank/blocker (skeletons / electro spirit / miner) to shield a ranged unit (ice wizard) vs a heavy melee
+  blocker_protect: 1.0           # play a tank/blocker (skeletons / miner) to shield a ranged unit (ice wizard) vs a heavy melee
   royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
   royal_delivery_kill: 5.0       # Royal Delivery, extra per unit of enemy mass it KILLS
   # -- reactive "foresight" counters (keyed off the enemy-threat read; learned from your replays) --
@@ -167,7 +167,7 @@ rewards:
   idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):
                                  # bigger than any single-step positive shaping so ACTING on a push always wins
   elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
-  cycle_reward: 0.15             # play a cheap card (electro spirit / skeletons) while the ROCKET is NOT in hand -> cycles toward it
+  cycle_reward: 0.15             # play a cheap card (the log / skeletons) while the ROCKET is NOT in hand -> cycles toward it
   # -- Miner X-Bow control deck (win condition = X-Bow placed forward; Miner = chip/tank) --
   xbow_wc_reward: 1.0            # X-Bow placed (your side) WITHIN firing range of the nearer enemy princess -> a real win condition
   xbow_defense_reward: 0.3       # X-Bow placed BACK-CENTRE as a defensive sniper (rocket-cycle fallback when the offensive X-Bow can't break through)
@@ -182,7 +182,7 @@ rewards:
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
   ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
   rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
-  back_corner_penalty: -0.25     # slight: a NON-cheap card dumped in the far back corner (deep + against an edge). Electro Spirit / Skeletons are EXEMPT -- the corner is where you cycle them
+  back_corner_penalty: -0.25     # slight: a NON-cheap card dumped in the far back corner (deep + against an edge). The Log / Skeletons are EXEMPT -- the corner is where you cycle them
   tornado_chip_penalty: -1.0     # (INACTIVE -- no Tornado in the Miner X-Bow deck) a lone tornado chip attempt on the enemy princess
   premature_defense_penalty: -0.5 # a defender (tesla/ice wizard) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to. WAIVED at/above env.defense_setup_elixir (a full bar -> setup avoids leaking)
   shaping_match_cap: 8.0         # per-match ceiling on the repeatable one-sided bonuses (defense-kill + cycle + foresight counters) so they can't out-sum a loss

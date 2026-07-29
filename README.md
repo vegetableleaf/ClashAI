@@ -54,7 +54,7 @@ learns *your* deck, including evolved cards (which count as their own card).
 
 ### The deck it's currently tuned for
 
-Royal Delivery, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, Electro Spirit,
+Royal Delivery, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, The Log,
 Skeletons — a **Miner X-Bow control** deck (Classic 1v1, all cards level 11). The
 reward shaping teaches: defend + cycle with the cheap cards, use the **X-Bow** as the
 win condition (placed forward, within firing range, to lock the enemy princess tower),

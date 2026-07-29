@@ -109,7 +109,7 @@ class LiveMatchEnv:
                 self.miner_ids.add(i)
             elif base == "x_bow":                   # siege WIN CONDITION -> forward (in tower range) or back-centre defence
                 self.xbow_ids.add(i)
-            if base in ("electro_spirit", "skeletons"):  # cheap cyclers -- OK to play anytime
+            if base in ("the_log", "skeletons"):     # cheap cyclers (The Log = 2-elixir spell) -- OK to play anytime
                 self.cheap_ids.add(i)
             if base == "tesla":                      # Tesla: kill-reward tracked + intercept-zone placement
                 self.tesla_ids.add(i)
@@ -119,8 +119,8 @@ class LiveMatchEnv:
                 self.defensive_kind[i] = "ice_wizard"
             if base == "ice_wizard":                 # MOBILE ranged troop (kited/shielded). Tesla is a BUILDING ->
                 self.ranged_ids.add(i)               # excluded (you WANT it in the push's path).
-            elif base in ("skeletons", "electro_spirit", "miner"):
-                self.blocker_ids.add(i)              # cheap tanks/blockers that shield a ranged unit
+            elif base in ("skeletons", "miner"):     # cheap tanks/blockers that shield a ranged unit
+                self.blocker_ids.add(i)              # (The Log is a SPELL -> can't tank/block, so it's excluded)
         # ROCKET and MINER may target ANYWHERE (miner chips the enemy tower / tanks behind an enemy
         # unit); every other card (troops, buildings incl. X-Bow, royal delivery) is your-half only.
         self.anywhere_ids = self.rocket_ids | self.miner_ids
@@ -498,7 +498,7 @@ class LiveMatchEnv:
             once the push has reached your towers (cy >= close_defense_y): then body-blocking it
             directly is the correct last-ditch defence, so the on-top penalty is waived.
           * BACK CORNER (slight): any NON-cheap card dumped in the far back corner (deep AND against an
-            edge). Cheap cyclers (Electro Spirit / Skeletons) are EXEMPT -- the back corner is exactly
+            edge). Cheap cyclers (The Log / Skeletons) are EXEMPT -- the back corner is exactly
             where you park them to cycle when they aren't needed for an immediate defence.
         """
         if not play:
