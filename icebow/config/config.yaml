@@ -466,6 +466,12 @@ sim:
   tower_range: 0.20             # normalized princess-tower attack reach
   king_range: 0.20              # normalized king-tower attack reach
   siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
+  sight_range: 0.12             # troop AGGRO radius: notice + lock an enemy UNIT within this, else march at the tower (target commitment, leash 1.8x)
+  slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed
+  slow_duration: 2.0            # seconds a SLOW lasts
+  stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)
+  freeze_duration: 1.0          # seconds a FREEZE lasts (Ice Spirit / Freeze) -- a longer stun
+  collision: true               # soft body-block: units can't stack, so a wall of troops holds up a tank
   epsilon_start: 1.0            # from-scratch -> start fully random
   epsilon_end: 0.05
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)

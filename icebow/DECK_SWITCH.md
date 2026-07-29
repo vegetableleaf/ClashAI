@@ -133,8 +133,10 @@ To then **warm-start live RL from the sim prior:** `copy data\policy_sim.pt data
 deck/config), then `run.py train-rl` — it fine-tunes the sim policy on real matches to close the sim-to-real
 gap. (Or keep BC and sim as two separate warm-starts and compare.)
 
-**Honest limits:** medium fidelity — exact CR pathfinding/aggro/pushback/champions/evolutions are not
-modelled, and the observation is a crude synthetic top-down, so a sim-trained policy transfers as a
+**Honest limits:** medium fidelity — aggro/target-commitment, ~1s deploy, hit-speed combat,
+slow/stun/freeze, soft-collision body-blocking, and king-on-chip ARE now modelled; still unmodelled:
+exact CR pathfinding, champions, evolutions (Evo Tesla uses base stats), and per-card quirks
+(charge / ramp-up). The observation is a crude synthetic top-down, so a sim-trained policy transfers as a
 strategic/elixir/timing PRIOR, not a finished real-game bot. Tune fidelity/opponents under the `sim:` config
 section; add self-play + more archetypes later. The engine is DECK-DRIVEN (reads `cards.yaml`), so deck
 changes auto-apply on `git pull` — e.g. the Electro-Spirit→The-Log swap needs no engine change. (The Log is

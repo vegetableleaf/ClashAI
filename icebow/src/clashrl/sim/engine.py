@@ -1,11 +1,13 @@
 """Headless Clash-Royale-ish match engine (no vision, no rendering by itself).
 
 Medium-fidelity, STAT-DRIVEN from the card knowledge base (clashrl.cards.CardDB): elixir economy,
-lane movement with bridge crossing, nearest-target acquisition (incl. building-only + siege rules),
-DPS combat with splash, princess/king towers, and area spells. It is deliberately NOT a faithful CR
-clone -- exact pathfinding / aggro radii / pushback / champions / evolutions are out of scope. The
-point is enough fidelity that a policy trained here transfers as a PRIOR to the real game (then
-fine-tuned live). See icebow/DECK_SWITCH.md (Stage: simulator) and log.txt.
+lane movement with bridge crossing, target acquisition with an AGGRO/SIGHT range + target commitment
+(building-only + siege rules), a ~1s DEPLOY delay, DISCRETE hit-speed combat with splash, slow/stun/
+freeze crowd-control, soft-collision body-blocking, princess/king towers (the king wakes on ANY
+damage), and area/rolling spells. It is deliberately NOT a faithful CR clone -- exact pathfinding,
+champions, evolutions, and card-specific quirks (charge / ramp-up) are still out of scope. The point
+is enough fidelity that a policy trained here transfers as a PRIOR to the real game (then fine-tuned
+live). See icebow/DECK_SWITCH.md (Stage: simulator) and log.txt.
 
 Coordinates are NORMALISED [0,1] to match the rest of the pipeline: enemy side is the TOP (y<0.5),
 your side the BOTTOM (y>0.5), the river at y=0.5, bridges at x in {0.25, 0.75}. team 0 = you
@@ -56,6 +58,13 @@ class CardSpec:
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     roll_len: float = 0.0     # forward length of the roll corridor (normalized)
+    hit_speed: float = 1.0    # seconds between attacks (discrete hits)
+    hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
+    deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
+    radius: float = 0.02      # collision radius (soft body-block)
+    slows: bool = False       # applies a SLOW on hit (Ice Wizard)
+    stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
+    freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
 
 
 def build_spec(db, key: str) -> CardSpec:
@@ -79,6 +88,9 @@ def build_spec(db, key: str) -> CardSpec:
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
+    deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
+    hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
+    radius = 0.03 if ("tank" in flags or hp >= 2000) else (0.014 if count >= 3 else 0.02)
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
@@ -87,7 +99,9 @@ def build_spec(db, key: str) -> CardSpec:
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=float(db.tower_damage(base) or dmg), spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
-        knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0))
+        knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
+        hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
+        slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags))
 
 
 @dataclass
@@ -99,6 +113,11 @@ class Unit:
     hp: float
     age: float = 0.0
     reach_extra: float = 0.0     # siege sees far (big engage range) even if it hits from reach
+    target: object = None        # locked target (Unit or Tower) -- commitment; re-acquired when it dies / leashes
+    cooldown: float = 0.0        # time until this unit's next discrete hit
+    deploy_left: float = 0.0     # deploy delay remaining (can't act while > 0)
+    slow_left: float = 0.0       # SLOW status timer (halved move + attack speed)
+    stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
 
 
 @dataclass
@@ -140,6 +159,12 @@ class SimEngine:
         self.regulation = float(cfg.get("sim", "regulation_s", default=180.0))
         self.overtime = float(cfg.get("sim", "overtime_s", default=60.0))
         self.siege_sight = float(cfg.get("sim", "siege_sight", default=0.42))  # X-Bow ~11.5 tiles
+        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))  # troop aggro radius (notice enemy UNITS)
+        self.slow_factor = float(cfg.get("sim", "slow_factor", default=0.5))   # SLOW -> this x move + attack speed
+        self.slow_dur = float(cfg.get("sim", "slow_duration", default=2.0))
+        self.stun_dur = float(cfg.get("sim", "stun_duration", default=0.5))
+        self.freeze_dur = float(cfg.get("sim", "freeze_duration", default=1.0))
+        self.collide = bool(cfg.get("sim", "collision", default=True))         # soft body-block separation
         my = cfg.get("env", "my_towers", default=[[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]])
         en = cfg.get("env", "enemy_towers", default=[[0.25, 0.21], [0.72, 0.21], [0.48, 0.12]])
         self._anchors = {0: my, 1: en}
@@ -186,6 +211,7 @@ class SimEngine:
             ox = x + (0.02 * ((i % 3) - 1)) if n > 1 else 0.0
             oy = y + (0.02 * ((i // 3) - 0.5)) if n > 1 else 0.0
             u = Unit(spec, team, min(max(x + ox, 0.03), 0.97), min(max(y + oy, 0.03), 0.97), spec.hp)
+            u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             if spec.siege:
                 u.reach_extra = self.siege_sight - spec.reach
             self.units.append(u)
@@ -195,31 +221,37 @@ class SimEngine:
     def _enemy_towers(self, team: int) -> List[Tower]:
         return [t for t in self.towers[1 - team] if t.alive]
 
-    def _acquire(self, u: Unit):
-        """Return the (kind, ref) this unit should head for: ('tower', Tower) or ('unit', Unit)."""
-        foes = [e for e in self.units if e.team != u.team and e.hp > 0
-                and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)]
-        towers = self._enemy_towers(u.team)
-        if u.spec.building_only:                              # Miner / Hog: go for the tower
-            if towers:
-                tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y))
-                return ("tower", tw)
-            return (None, None)
-        if u.spec.siege:                                     # X-Bow: nearest foe in sight, else tower
-            near = [e for e in foes if _dist(u.x, u.y, e.x, e.y) <= self.siege_sight]
-            if near:
-                return ("unit", min(near, key=lambda e: _dist(u.x, u.y, e.x, e.y)))
-            if towers:
-                return ("tower", min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y)))
-            return (None, None)
-        cands = [("unit", e, _dist(u.x, u.y, e.x, e.y)) for e in foes]
-        cands += [("tower", t, _dist(u.x, u.y, t.x, t.y)) for t in towers]
-        if not cands:
-            return (None, None)
-        k, ref, _ = min(cands, key=lambda c: c[2])
-        return (k, ref)
+    def _valid_foe(self, u: Unit, e: Unit) -> bool:
+        return e.hp > 0 and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
-    def _move_toward(self, u: Unit, tx: float, ty: float, dt: float) -> None:
+    def _acquire(self, u: Unit):
+        """(kind, ref) this unit heads for -- with target COMMITMENT + an aggro/sight range: real CR units
+        lock onto a target and only notice enemy UNITS within sight, otherwise they march at the tower.
+        Building-only troops (Miner / Hog) ignore troops and always go for the tower."""
+        towers = self._enemy_towers(u.team)
+        if u.spec.building_only:
+            tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y)) if towers else None
+            u.target = tw
+            return ("tower", tw) if tw else (None, None)
+        sight = self.siege_sight if u.spec.siege else self.sight_range
+        t = u.target                                          # stay COMMITTED to a live unit target (with a leash)
+        if isinstance(t, Unit) and t.hp > 0 and self._valid_foe(u, t) \
+                and _dist(u.x, u.y, t.x, t.y) <= sight * 1.8:
+            return ("unit", t)
+        foes = [e for e in self.units if e.team != u.team and self._valid_foe(u, e)
+                and _dist(u.x, u.y, e.x, e.y) <= sight]
+        if foes:                                              # an enemy unit is within aggro range -> engage nearest
+            e = min(foes, key=lambda e: _dist(u.x, u.y, e.x, e.y))
+            u.target = e
+            return ("unit", e)
+        if towers:                                            # nothing in sight -> march at the nearest tower
+            tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y))
+            u.target = tw
+            return ("tower", tw)
+        u.target = None
+        return (None, None)
+
+    def _move_toward(self, u: Unit, tx: float, ty: float, dt: float, spd_mult: float = 1.0) -> None:
         # ground units cross the river only at a bridge
         if not u.spec.flying and (u.y - _RIVER) * (ty - _RIVER) < 0:
             bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
@@ -230,9 +262,37 @@ class SimEngine:
         d = _dist(u.x, u.y, tx, ty)
         if d < 1e-6:
             return
-        step = min(u.spec.speed * dt, d)
+        step = min(u.spec.speed * spd_mult * dt, d)
         u.x += (tx - u.x) / d * step
         u.y += (ty - u.y) / d * step
+
+    def _separate(self) -> None:
+        """Soft collision so units can't stack -- approximate body-blocking: a wall of troops physically
+        holds up a tank because it can't pass straight through them. Gentle (push apart by the overlap);
+        buildings + still-spawning units don't move; air and ground don't collide."""
+        us = [u for u in self.units if u.hp > 0 and u.deploy_left <= 0]
+        for i in range(len(us)):
+            a = us[i]
+            for j in range(i + 1, len(us)):
+                b = us[j]
+                if a.spec.flying != b.spec.flying:
+                    continue
+                dx, dy = a.x - b.x, a.y - b.y
+                d = math.hypot(dx, dy)
+                mind = a.spec.radius + b.spec.radius
+                if d >= mind or d <= 1e-6:
+                    continue
+                overlap = mind - d
+                ux, uy = dx / d, dy / d
+                am = 0.0 if a.spec.kind == "building" else 1.0
+                bm = 0.0 if b.spec.kind == "building" else 1.0
+                s = am + bm
+                if s <= 0:
+                    continue
+                a.x = min(max(a.x + ux * overlap * (am / s), 0.03), 0.97)
+                a.y = min(max(a.y + uy * overlap * (am / s), 0.03), 0.97)
+                b.x = min(max(b.x - ux * overlap * (bm / s), 0.03), 0.97)
+                b.y = min(max(b.y - uy * overlap * (bm / s), 0.03), 0.97)
 
     def advance(self, dt: float) -> None:
         if self.done:
@@ -253,23 +313,36 @@ class SimEngine:
                 landed.append(s)
         for s in landed:
             self.spells.remove(s)
-        # units act
+        # units act (deploy delay -> stun/freeze -> slow-aware move + discrete cooldown attacks)
         for u in list(self.units):
             if u.hp <= 0:
                 continue
             u.age += dt
+            u.cooldown = max(0.0, u.cooldown - dt)
+            if u.deploy_left > 0:                            # still spawning -> can't act yet (~1s)
+                u.deploy_left -= dt
+                continue
+            if u.stun_left > 0:                              # stunned / frozen -> can't act
+                u.stun_left = max(0.0, u.stun_left - dt)
+                continue
+            spd = self.slow_factor if u.slow_left > 0 else 1.0
+            if u.slow_left > 0:
+                u.slow_left = max(0.0, u.slow_left - dt)
             kind, ref = self._acquire(u)
             if ref is None:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             if _dist(u.x, u.y, rx, ry) <= reach + 0.02:
-                self._attack(u, kind, ref, dt)
-                if u.spec.kamikaze:
-                    u.hp = 0.0
-            else:
-                if u.spec.kind != "building":                # buildings are stationary
-                    self._move_toward(u, rx, ry, dt)
+                if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
+                    self._attack(u, kind, ref)
+                    u.cooldown = u.spec.hit_speed / spd
+                    if u.spec.kamikaze:
+                        u.hp = 0.0
+            elif u.spec.kind != "building":                  # buildings are stationary
+                self._move_toward(u, rx, ry, dt, spd)
+        if self.collide:
+            self._separate()
         # towers fire
         for team in (0, 1):
             for tw in self.towers[team]:
@@ -287,16 +360,27 @@ class SimEngine:
         self.units = alive
         self._check_end()
 
-    def _attack(self, u: Unit, kind: str, ref, dt: float) -> None:
-        dmg = u.spec.dps * dt
+    def _attack(self, u: Unit, kind: str, ref) -> None:
+        dmg = u.spec.hit_dmg                                  # one discrete hit (DPS x hit_speed)
         if kind == "tower":
             self._damage_tower(ref, dmg, u.team)
-        else:
-            ref.hp -= dmg
-            if u.spec.splash:
-                for e in self.units:
-                    if e.team != u.team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
-                        e.hp -= dmg
+            return
+        ref.hp -= dmg
+        self._apply_status(u.spec, ref)
+        if u.spec.splash:
+            for e in self.units:
+                if e.team != u.team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
+                    e.hp -= dmg
+                    self._apply_status(u.spec, e)
+
+    def _apply_status(self, spec: CardSpec, e: Unit) -> None:
+        """Apply a hitter's/spell's crowd-control to a struck ground/air unit."""
+        if spec.freezes:
+            e.stun_left = max(e.stun_left, self.freeze_dur)
+        elif spec.stuns:
+            e.stun_left = max(e.stun_left, self.stun_dur)
+        if spec.slows:
+            e.slow_left = max(e.slow_left, self.slow_dur)
 
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
         rng = self.king_range if tw.king else self.tower_range
@@ -314,6 +398,7 @@ class SimEngine:
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
                 e.hp -= s.spec.spell_dmg
+                self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
@@ -340,6 +425,8 @@ class SimEngine:
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:
             return
+        if tw.king:
+            tw.active = True                                 # ANY hit on the king wakes it (Miner / spell chip) -- real CR
         dmg = min(dmg, tw.hp)
         tw.hp -= dmg
         self.chip[by_team] += dmg
