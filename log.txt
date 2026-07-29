@@ -890,11 +890,37 @@ Newest entries are at the bottom.
   are left as-is (still a valid opponent card).
 - SIM auto-catches-up: the simulator is DECK-DRIVEN (reads cards.yaml deck), so on `git pull` the sim agent
   uses The Log, not Electro Spirit -- verified (agent deck has the_log as a spell; no electro_spirit anywhere
-  in sim/). NO engine parameter change is needed for the swap itself. FIDELITY NOTE (Phase 2): build_spec
-  models The Log as a generic point-blast spell (radius 0.09, 266 dmg) -- it does NOT model the ROLL (a wide
-  forward LINE), the KNOCKBACK / charge-reset, or ground-only. Improve when tuning sim fidelity.
+  in sim/). NO engine parameter change was needed for the swap itself. (The Log's sim FIDELITY was then
+  upgraded from a point-blast to a rolling ground-only knockback corridor -- see the 2026-07-29 entry below.)
 - PHASE 2 (deferred): Log-specific shaping -- the knockback/reset-to-buy-defenders-time bonus and the
   CONDITIONAL bridge cycle-chip (only under the 3 conditions above). Reward change -> next train-rl/BC.
+
+
+------------------------------------------------------------------------------
+2026-07-29  —  The Log sim fidelity: rolling ground-only knockback corridor
+------------------------------------------------------------------------------
+- Upgraded the sim's The Log from a generic point-blast to a ROLLING CORRIDOR (sim/engine.py _resolve_roll):
+  a forward strip from the cast point (toward the enemy -- up for team 0, down for team 1), width
+  _LOG_ROLL_HALFW (0.07) x length _LOG_ROLL_LEN (0.30), that damages GROUND troops only (skips air) and
+  KNOCKS them back _LOG_KNOCKBACK (0.05) in the roll direction; if the corridor reaches an enemy tower it
+  chips it (40 crown dmg = the bridge cycle-chip). Data-driven: any spell with the `knockback` flag rolls;
+  ground-only from attacks:[ground]. Verified: a knight took 266 + was pushed up the arena; air minions untouched.
+
+
+------------------------------------------------------------------------------
+2026-07-29  —  DESIGN NOTE: per-arena background calibration (vision robustness)
+------------------------------------------------------------------------------
+- User: progressing ARENAS changes the background tile COLOUR, which throws off the colour-threshold vision
+  (enemy=red / ally=blue troop masks in threats.py + reward._red_mask, the "quiet board" baseline, tower
+  reads). Every arena change, the bot should re-examine the BACKGROUND so it separates arena from troops.
+- APPROACH (design; needs multi-arena footage to build + validate, so NOT built yet): at match start (the
+  arena is briefly empty), sample a BACKGROUND REFERENCE of the arena region (the ground tiles); detect
+  foreground (troops/spells) as pixels that DEVIATE from that reference (background subtraction) COMBINED
+  with the existing SATURATED team tints (troops are saturated red/blue; ground isn't). Re-sample on an
+  arena change (a background-signature shift) or per match; optionally identify WHICH arena by its signature
+  and load per-arena thresholds. Touches threats.py + reward.py + vision; calibrate with verify --threats /
+  --towers on recordings from EACH arena. GATED on recording across the arenas you play -- a background
+  model can't be built or verified without that footage. Queued as a vision-robustness task.
 
 
 ------------------------------------------------------------------------------

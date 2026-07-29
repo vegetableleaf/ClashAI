@@ -24,6 +24,10 @@ _REACH = {"melee": 0.03, "short": 0.09, "long": 0.16, None: 0.03}
 _RIVER = 0.5
 _BRIDGES = (0.25, 0.75)
 _SPLASH_R = 0.06
+# The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
+_LOG_ROLL_LEN = 0.30      # how far forward it rolls (normalized)
+_LOG_ROLL_HALFW = 0.07    # corridor half-width (~a lane)
+_LOG_KNOCKBACK = 0.05     # pushes ground troops this far in the roll direction
 
 
 @dataclass
@@ -48,6 +52,10 @@ class CardSpec:
     spell_dmg: float
     spell_tower_dmg: float
     spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
+    rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
+    ground_only: bool = False # hits GROUND troops only (The Log -- no air)
+    knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
+    roll_len: float = 0.0     # forward length of the roll corridor (normalized)
 
 
 def build_spec(db, key: str) -> CardSpec:
@@ -67,13 +75,19 @@ def build_spec(db, key: str) -> CardSpec:
     siege = "siege" in flags
     spell_radius = 0.11 if base == "royal_delivery" else 0.09
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
+    rolls = kind == "spell" and "knockback" in flags          # The Log: a rolling forward corridor
+    ground_only = kind == "spell" and c.get("attacks") == ["ground"]
+    if rolls:
+        spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
         kamikaze="kamikaze" in flags, lifetime=(40.0 if kind == "building" else None),
         spell_radius=spell_radius, spell_dmg=dmg,
-        spell_tower_dmg=float(db.tower_damage(base) or dmg), spell_delay=spell_delay)
+        spell_tower_dmg=float(db.tower_damage(base) or dmg), spell_delay=spell_delay,
+        rolls=rolls, ground_only=ground_only,
+        knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0))
 
 
 @dataclass
@@ -294,11 +308,33 @@ class SimEngine:
         tgt.hp -= self.tower_dps * dt
 
     def _resolve_spell(self, s: _Spell) -> None:
+        if s.spec.rolls:
+            self._resolve_roll(s)
+            return
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
                 e.hp -= s.spec.spell_dmg
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
+                self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+
+    def _resolve_roll(self, s: _Spell) -> None:
+        """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
+        ground troops in its path (no air). 'Forward' = toward the enemy (up for team 0, down for team 1),
+        so a defensive Log shoves the enemy push back UP the arena, away from your tower (buying time). A
+        Log whose corridor reaches an enemy tower chips it (poor crown damage) -- the bridge cycle-chip."""
+        fdir = -1.0 if s.team == 0 else 1.0
+        halfw = s.spec.spell_radius
+        for e in self.units:
+            if e.team == s.team or (s.spec.ground_only and e.spec.flying):
+                continue
+            dy = (e.y - s.y) * fdir                           # forward distance along the roll
+            if -0.03 <= dy <= s.spec.roll_len and abs(e.x - s.x) <= halfw:
+                e.hp -= s.spec.spell_dmg
+                e.y += fdir * s.spec.knockback                # knock back in the roll direction
+        for tw in self._enemy_towers(s.team):
+            dy = (tw.y - s.y) * fdir
+            if -0.03 <= dy <= s.spec.roll_len and abs(tw.x - s.x) <= halfw:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
