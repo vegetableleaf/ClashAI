@@ -86,7 +86,7 @@ def _cmd_train_bc(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu121")
         return
-    train_bc(Config.load(args.config))
+    train_bc(Config.load(args.config), init=args.init)
 
 
 def _cmd_train_rl(args) -> None:
@@ -214,6 +214,9 @@ def main() -> None:
     cri.set_defaults(func=_cmd_cards_import)
 
     tbc = sub.add_parser("train-bc", help="behaviour-cloning pretrain of the CNN policy (needs torch)")
+    tbc.add_argument("--init", metavar="CKPT", default=None,
+                     help="warm-start from a checkpoint (e.g. data/policy_sim.pt) and fine-tune it on your "
+                          "recordings instead of random init -- combines the sim prior with your play")
     tbc.set_defaults(func=_cmd_train_bc)
 
     trl = sub.add_parser("train-rl", help="RL fine-tune the policy on live matches (tower/win rewards)")

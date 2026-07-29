@@ -48,7 +48,7 @@ def _load_datasets(root):
             grid, deck, len(files))
 
 
-def train_bc(cfg) -> None:
+def train_bc(cfg, init: str | None = None) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root)
     if obs is None:
@@ -100,6 +100,24 @@ def train_bc(cfg) -> None:
 
     threat_dim = int(thr.shape[1])
     net = PolicyNet(in_ch=3, n_cards=n_cards, n_cells=n_cells, threat_dim=threat_dim).to(device)
+    if init:                                     # WARM-START: fine-tune an existing policy instead of random init
+        ip = cfg.path(init)                      # e.g. data/policy_sim.pt -> combine the SIM prior with your recordings
+        if not ip.exists():
+            print(f"[train-bc] --init checkpoint not found: {ip} -- training from scratch instead.")
+        else:
+            ck = torch.load(ip, map_location="cpu")
+            ck_deck = ck.get("deck")
+            decks_match = ck_deck is not None and [str(c) for c in ck_deck] == [str(c) for c in deck]
+            if (ck.get("n_cards") == n_cards and ck.get("n_cells") == n_cells
+                    and ck.get("threat_dim") == threat_dim and decks_match):
+                try:
+                    net.load_state_dict(ck["model"])
+                    print(f"[train-bc] warm-started from {ip.name} -- fine-tuning that policy on your {n_files} session(s)")
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[train-bc] couldn't load {ip.name} ({exc}) -- training from scratch instead.")
+            else:
+                print(f"[train-bc] --init {ip.name} doesn't match this dataset (different deck/dims) "
+                      "-- training from scratch instead.")
     opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)))
     ce = nn.CrossEntropyLoss()
     epochs = int(cfg.get("train", "bc_epochs", default=10))
