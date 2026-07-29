@@ -174,6 +174,7 @@ rewards:
   xbow_misplace_penalty: -0.75   # X-Bow dropped forward but OUT of tower range (too far to chip, too exposed) -- the classic misplace
   miner_chip_reward: 0.6         # Miner dropped on/near an enemy princess tower -> chip damage (its bread-and-butter)
   miner_king_penalty: -2.0       # Miner dropped on the enemy KING tower -> ACTIVATES it early (wakes their defence for the match) -- bad trade
+  miner_backfield_penalty: -0.75 # Miner DUMPED behind your own towers (env.own_backfield_y) with NO push to defend -- the 'safe' idle huddle; wasted elixir (defending a real push there is exempt)
   xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
@@ -331,6 +332,11 @@ env:
   defense_center_depth_frac: 0.6       # depth behind the front = this x the unit's range (centre covers the rest)
   defense_back_limit: 0.58             # DEEPEST a defender is placed (normalized y): keeps it on the central grass in FRONT
                                        # of your king tower. Deeper lands ON the king (undeployable) so the card never plays.
+  # CLOSE-PUSH exception: once a push's deepest troop is at/below close_defense_y (it has reached your
+  # towers), a MOBILE defender stops kiting and is placed BETWEEN the push and your king to body-block it.
+  close_defense_y: 0.58                # push deepest-troop y at/below this = 'in close' -> waive ranged-on-top + engage between push and king
+  defense_close_side_bias: 0.13        # x offset from centre (0.48) toward the threatened side for a close-push block (clears the king footprint)
+  defense_close_depth: 0.03            # a close-push block sits this far BEHIND the enemy front (deeper, toward your king)
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
   # bad-placement penalty geometry (rewards.wrong_lane_penalty / ranged_ontop_penalty / back_corner_penalty)
   wrong_lane_margin: 0.12              # deadband around the 0.48 lane split: a defender must be THIS far into the
@@ -343,9 +349,13 @@ env:
   building_front_y: 0.53               # a building ABOVE this y (toward the bridge) is TOO FORWARD (bypassed / focused)
   building_back_y: 0.65                # a building BELOW this y (behind your towers) is TOO DEEP (can't reach the push)
   building_center_span: 0.25           # x-distance from centre (0.48) over which the in-band central reward fades to 0
+  # a card placed in the ENEMY half (above this y) with no push to defend is your OWN BACKFIELD if
+  # at/below own_backfield_y: a Miner dumped there does nothing (penalised by miner_backfield_penalty)
+  own_backfield_y: 0.62                # at/below this depth (behind your princess line ~0.615) = your backfield
   # X-Bow (win condition) placement geometry (rewards.xbow_*): forward within tower range, or back-centre for defence
   xbow_range: 0.36                     # max normalized distance from the X-Bow to an enemy princess for it to REACH the tower (~11.5 tiles)
-  xbow_defense_y: 0.62                 # a defensive (rocket-cycle-mode) X-Bow sits at/below this depth, back-centre on your side
+  xbow_defense_y: 0.62                 # a defensive (rocket-cycle-mode) X-Bow sits at/below this depth, back-centre on your side...
+  xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king (too far back) -> misplace, not defence
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy

@@ -260,14 +260,24 @@ def defensive_cell(kind, side, front_y, gw, gh, params):
     of your king tower. The centre column deeper than that is the king tower's own footprint,
     where a troop can't be deployed -- an uncapped defender aimed there just fails to place (the
     card is selected but the arena tap is a no-op), so the bot 'shuffles' it instead of playing.
+
+    EXCEPTION -- a push that has broken PAST your kiting line (``front_y`` beyond ``close_defense_y``,
+    i.e. already at your towers): a MOBILE defender then stops kiting and is placed BETWEEN the push
+    and your king (just behind the front, ``close_side_bias`` to the threatened side to clear the
+    central king footprint), body-blocking it instead of being kept at a distance it never engages
+    from. Buildings (``building_kinds``) keep the capped central spot -- their own reward shapes depth.
     """
     if kind == "musketeer_evo":
         nx, ny = params["musketeer_evo"]
     else:
         rng = params["range_offsets"].get(kind, 0.13)
-        nx = 0.48 + side * params["center_bias"]
-        ny = min(front_y + rng * params["center_depth_frac"], params["a_bot"])
-        ny = min(ny, params.get("back_limit", 0.58))   # stay on the central grass, off the king tower
+        if kind not in params.get("building_kinds", ()) and front_y > params.get("close_defense_y", 0.58):
+            nx = 0.48 + side * params.get("close_side_bias", 0.13)   # off-centre to the threatened side (clears the king)
+            ny = min(front_y + params.get("close_depth", 0.03), params["a_bot"])  # just behind the push front -> between it and the king
+        else:
+            nx = 0.48 + side * params["center_bias"]
+            ny = min(front_y + rng * params["center_depth_frac"], params["a_bot"])
+            ny = min(ny, params.get("back_limit", 0.58))   # stay on the central grass, off the king tower
     gx = min(max(int(nx * gw), 0), gw - 1)
     gy = min(max(int(ny * gh), 0), gh - 1)
     return gy * gw + gx

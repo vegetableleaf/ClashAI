@@ -180,6 +180,12 @@ class LiveMatchEnv:
             "center_bias": float(cfg.get("env", "defense_center_bias", default=0.10)),
             "center_depth_frac": float(cfg.get("env", "defense_center_depth_frac", default=0.6)),
             "back_limit": float(cfg.get("env", "defense_back_limit", default=0.58)),
+            "close_defense_y": float(cfg.get("env", "close_defense_y", default=0.58)),
+            "close_side_bias": float(cfg.get("env", "defense_close_side_bias", default=0.13)),
+            "close_depth": float(cfg.get("env", "defense_close_depth", default=0.03)),
+            # buildings keep the capped central spot (their own reward shapes depth); only MOBILE
+            # defenders switch to the between-push-and-king body-block when a push breaks in close.
+            "building_kinds": {self.defensive_kind[i] for i in self.building_ids if i in self.defensive_kind},
         }
         # king HP boxes (only shown once a king is hit): enemy -> spell penalty; mine -> tank reward
         self._king_box = cfg.get("env", "enemy_king_hp_box", default=[0.41, 0.015, 0.55, 0.08])
@@ -213,6 +219,10 @@ class LiveMatchEnv:
         self.ontop_size = float(cfg.get("env", "ranged_ontop_size", default=0.06))
         self.back_corner_y = float(cfg.get("env", "back_corner_y", default=0.72))
         self.back_corner_x = float(cfg.get("env", "back_corner_x", default=0.20))
+        # a push whose deepest troop is at/below this y has reached your towers -> defenders stop
+        # kiting and body-block it (the on-top penalty is waived; the recommended cell moves between
+        # the push and your king). Above it (push still forward) the kiting rules apply as normal.
+        self.close_defense_y = float(cfg.get("env", "close_defense_y", default=0.58))
         # a lone tornado on the enemy princess (chip attempt, not a combo) is wasteful; a reactive
         # card (defender / Royal Delivery) on a QUIET board (nothing to react to) is premature.
         self.tornado_chip_penalty = float(cfg.get("rewards", "tornado_chip_penalty", default=-1.0))
@@ -235,9 +245,12 @@ class LiveMatchEnv:
         self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
         self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
         self.miner_king_penalty = float(cfg.get("rewards", "miner_king_penalty", default=-2.0))
+        self.miner_backfield_penalty = float(cfg.get("rewards", "miner_backfield_penalty", default=-0.75))  # Miner dumped behind your own towers with NO push = wasted
+        self.own_backfield_y = float(cfg.get("env", "own_backfield_y", default=0.62))  # at/below this depth (behind your princess line) is your backfield
         self.xbow_wrong_lane_frac = float(cfg.get("rewards", "xbow_wrong_lane_frac", default=0.6))  # X-Bow leaving a LIVE push pays this share of wrong_lane_penalty
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
-        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits at/below this depth
+        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits WITHIN a back-centre band...
+        self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))  # ...no DEEPER than this (past it = shoved onto your king)
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -420,9 +433,10 @@ class LiveMatchEnv:
         """Shape the X-Bow, the deck's WIN CONDITION. It reaches ~11.5 tiles, so from just behind the
         bridge (on YOUR side) it can lock the enemy PRINCESS tower -- the offensive play. Reward placing
         it WITHIN firing range (env.xbow_range) of the nearer enemy princess (a real forward win
-        condition); give a SMALLER reward for a BACK-CENTRE defensive X-Bow (the rocket-cycle fallback,
-        sniping troops when the offensive X-Bow can't break through); and PENALISE a forward X-Bow
-        dropped out of tower range -- too far back to chip, too exposed to defend (the classic misplace)."""
+        condition); give a SMALLER reward for a BACK-CENTRE defensive X-Bow within a depth BAND (the
+        rocket-cycle fallback, sniping troops when the offensive X-Bow can't break through -- but NOT
+        shoved onto your king, too far back to do anything); and PENALISE any other out-of-range drop
+        (forward but short of the tower, or king-hugging) -- wasted / exposed (the classic misplace)."""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
         _, enemy_a, _ = _anchors(self.cfg)
@@ -430,21 +444,28 @@ class LiveMatchEnv:
         d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
         if d <= self.xbow_range:
             return self.xbow_wc_reward                        # in range of a tower -> a real win condition
-        if cy >= self.xbow_defense_y and abs(cx - 0.48) <= 0.18:
-            return self.xbow_defense_reward                   # back-centre -> defensive snipe (rocket-cycle mode)
-        return self.xbow_misplace_penalty                     # forward but out of range = wasted / exposed
+        if self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18:
+            return self.xbow_defense_reward                   # back-centre BAND -> defensive snipe (rocket-cycle mode)
+        return self.xbow_misplace_penalty                     # out of range: too forward to chip OR shoved onto your king
 
     def _miner_reward(self, cell: int) -> float:
         """Miner deploys ANYWHERE; its bread-and-butter is chipping the enemy PRINCESS tower, so reward
         dropping it on/near a princess. The enemy KING is the EXCEPTION -- a Miner on the king tower
         wakes it early (activates their defence for the rest of the match), so that is penalised.
-        (Phase 2: tank-for-X-Bow + sniping a support card behind an enemy tank.) Any other spot is neutral."""
+        Dumping it deep behind YOUR OWN towers with no push to defend is wasted elixir (the model's
+        'safe' idle habit) -> penalised too; a Miner defending a real push there (troop present) is
+        exempt, and its defensive snipe/tank value is still credited by troop_defeat + defense-kill.
+        (Phase 2: sniping a support card behind an enemy tank.)"""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
         if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
             return self.miner_king_penalty          # Miner on the enemy KING wakes it early -> bad trade
         if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-            return self.miner_chip_reward
+            return self.miner_chip_reward           # chip the enemy princess -- its bread-and-butter
+        frame = self._last_frame
+        if (cy >= self.own_backfield_y and frame is not None
+                and troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) < self.ontop_size):
+            return self.miner_backfield_penalty      # dumped behind your own towers with NO push to defend = wasted
         return 0.0
 
     def _placement_penalty(self, play: bool, card_id: int, cell: int, raw_cell: int) -> float:
@@ -460,8 +481,10 @@ class LiveMatchEnv:
           * ROYAL DELIVERY ON THE ENEMY HALF: Royal Delivery can only be cast on YOUR half; the
             deploy clamp silently pulls an enemy-half attempt back, so penalise the ATTEMPT (the raw
             pre-clamp cell) to teach the model to stop aiming it over there.
-          * RANGED ON TOP (moderate): a ranged unit (Tesla / Ice Wizard) dropped right on top of an
-            enemy troop instead of a kiting distance behind it -- it gets run down before it shoots.
+          * RANGED ON TOP (moderate): a ranged unit (Ice Wizard) dropped right on top of an enemy
+            troop instead of a kiting distance behind it -- it gets run down before it shoots. EXCEPT
+            once the push has reached your towers (cy >= close_defense_y): then body-blocking it
+            directly is the correct last-ditch defence, so the on-top penalty is waived.
           * BACK CORNER (slight): any card dumped in the far back corner (deep AND against an edge).
         """
         if not play:
@@ -478,9 +501,9 @@ class LiveMatchEnv:
         frame = self._last_frame
         if frame is None:
             return r
-        if card_id in self.ranged_ids:                           # RANGED unit dropped ON a troop
-            if troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) >= self.ontop_size:
-                r += self.ranged_ontop_penalty
+        if card_id in self.ranged_ids and cy < self.close_defense_y:  # RANGED unit dropped ON a troop, but only
+            if troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) >= self.ontop_size:  # while the push is still
+                r += self.ranged_ontop_penalty                        # forward (room to kite); waived once it's in close
         side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE
         off = cx - self.lane_split_x
         opposite = side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0)
