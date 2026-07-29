@@ -174,6 +174,16 @@ class CardDB:
                 out.append(k + "_evo")
         return out
 
+    def deck_levels(self) -> List[int]:
+        """Per-identity card levels, PARALLEL to deck_identities() (an evolved slot repeats the level)."""
+        out: List[int] = []
+        for entry in self._deck.get("cards", []):
+            lvl = int(entry.get("level", 11))
+            out.append(lvl)
+            if entry.get("evolved"):
+                out.append(lvl)
+        return out
+
     def deck_name(self) -> str:
         return self._deck.get("name", "deck")
 
