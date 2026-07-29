@@ -12,7 +12,7 @@ Robustness it adds over a plain "tap the fixed button coordinate":
     button, which returns HOME, where the located Battle button re-queues reliably.
   * An UNRECOGNISED screen that lingers past play.stuck_timeout is tapped to dismiss it (a post-match
     chest / level-up / season / offer popup) so navigation never hangs.
-  * Every action is logged (to data/nav_<label>_<ts>.log unless a log callable is supplied).
+  * Every action is logged (to data/nav/<label>_<ts>.log unless a log callable is supplied).
 """
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ class MenuNavigator:
 
     @staticmethod
     def _make_file_log(cfg, label: str) -> Callable[[str], None]:
-        path = Path(cfg.path("data")) / f"nav_{label}_{datetime.now():%Y%m%d_%H%M%S}.log"
+        path = Path(cfg.path("data")) / "nav" / f"{label}_{datetime.now():%Y%m%d_%H%M%S}.log"
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
         except OSError:
