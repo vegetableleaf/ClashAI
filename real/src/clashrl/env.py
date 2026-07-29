@@ -227,6 +227,10 @@ class LiveMatchEnv:
         # card (defender / Royal Delivery) on a QUIET board (nothing to react to) is premature.
         self.tornado_chip_penalty = float(cfg.get("rewards", "tornado_chip_penalty", default=-1.0))
         self.premature_defense_penalty = float(cfg.get("rewards", "premature_defense_penalty", default=-0.5))
+        # ...but at/above this elixir a pre-placed defensive card is an elixir-efficient SETUP (a full
+        # bar leaks otherwise), not premature -> the premature penalty is waived (judged on the
+        # PRE-action bar, since playing the card has already spent elixir by the post-action frame).
+        self.defense_setup_elixir = float(cfg.get("env", "defense_setup_elixir", default=9.0))
         # per-match ceiling on the repeatable one-sided shaping bonuses (defense-kill / cycle /
         # foresight counters) so they can't accumulate past a loss -- see _bonus().
         self.shaping_match_cap = float(cfg.get("rewards", "shaping_match_cap", default=8.0))
@@ -485,15 +489,18 @@ class LiveMatchEnv:
             troop instead of a kiting distance behind it -- it gets run down before it shoots. EXCEPT
             once the push has reached your towers (cy >= close_defense_y): then body-blocking it
             directly is the correct last-ditch defence, so the on-top penalty is waived.
-          * BACK CORNER (slight): any card dumped in the far back corner (deep AND against an edge).
+          * BACK CORNER (slight): any NON-cheap card dumped in the far back corner (deep AND against an
+            edge). Cheap cyclers (Electro Spirit / Skeletons) are EXEMPT -- the back corner is exactly
+            where you park them to cycle when they aren't needed for an immediate defence.
         """
         if not play:
             return 0.0
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
         r = 0.0
-        if cy >= self.back_corner_y and (cx <= self.back_corner_x or cx >= 1.0 - self.back_corner_x):
-            r += self.back_corner_penalty                        # useless far-back corner dump
+        if (card_id not in self.cheap_ids and cy >= self.back_corner_y
+                and (cx <= self.back_corner_x or cx >= 1.0 - self.back_corner_x)):
+            r += self.back_corner_penalty            # far-back corner DUMP -- cheap cyclers exempt (the corner IS the cycle spot)
         if card_id in self.royal_delivery_ids:                   # RD can ONLY be cast on your half
             rcy = self.actions.cell_center(raw_cell % self.gw, raw_cell // self.gw)[1]
             if rcy < self.offensive_half:
@@ -753,7 +760,9 @@ class LiveMatchEnv:
                     reward += self.offensive_penalty  # non-rocket/miner/xbow card in the enemy half = offence
             reward += self._placement_penalty(bool(play), card_id, cell, raw_cell)  # wrong-lane / on-top / corner / RD-half
             if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
-                reward += self.premature_defense_penalty   # a defender / Royal Delivery played with NO enemy on the board
+                pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
+                if pre_elixir < self.defense_setup_elixir:      # at/near a FULL bar, a defensive SETUP avoids leaking -> allowed
+                    reward += self.premature_defense_penalty   # else a defender / Royal Delivery on a QUIET board = premature
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
                 reward += self._bonus(self.cycle_reward)   # cheap card played while rocket isn't in hand -> cycling to it
             reward += self._bonus(self._threat_counter_reward(bool(play), card_id, cell))   # foresight counters

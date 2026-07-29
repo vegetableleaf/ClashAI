@@ -181,9 +181,9 @@ rewards:
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
   ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
   rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
-  back_corner_penalty: -0.25     # slight: any card dumped in the far back corner (deep + against an edge) -- the ice-spirit/skeletons/royal-delivery spam
+  back_corner_penalty: -0.25     # slight: a NON-cheap card dumped in the far back corner (deep + against an edge). Electro Spirit / Skeletons are EXEMPT -- the corner is where you cycle them
   tornado_chip_penalty: -1.0     # (INACTIVE -- no Tornado in the Miner X-Bow deck) a lone tornado chip attempt on the enemy princess
-  premature_defense_penalty: -0.5 # a defender (tesla/ice wizard/ronin) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to
+  premature_defense_penalty: -0.5 # a defender (tesla/ice wizard) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to. WAIVED at/above env.defense_setup_elixir (a full bar -> setup avoids leaking)
   shaping_match_cap: 8.0         # per-match ceiling on the repeatable one-sided bonuses (defense-kill + cycle + foresight counters) so they can't out-sum a loss
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
@@ -320,6 +320,7 @@ env:
   threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised
                                  # (idle_penalty); lowered from 0.10 so dawdling on a smaller push is caught sooner
   elixir_full: 10                # elixir at/above this (bar full) + a push + no play = wasted-elixir penalty
+  defense_setup_elixir: 9        # at/above this elixir a defensive card pre-placed on a quiet board is an elixir-efficient SETUP (avoids leaking a full bar) -> the premature-defense penalty is WAIVED
   # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
   # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the
   # threatened side) a reduced depth (defense_center_depth_frac x the unit's range from
