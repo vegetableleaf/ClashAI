@@ -8,7 +8,7 @@ There are two very different agents in this repo:
 
 | Folder | Bot | Approach |
 | ------ | --- | -------- |
-| [`real/`](real/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. Follows a DDQN architecture.|
+| [`icebow/`](icebow/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. Follows a DDQN architecture.|
 | [`trol/`](trol/) | **Scripted bot** — the first experiment | Hand-written rules plus a DQN scaffold. Kept for reference. |
 
 > ⚠️ **Please use this responsibly.** Automating Clash Royale violates Supercell's
@@ -65,12 +65,12 @@ the **Miner** to chip the tower / tank / snipe support (it deploys anywhere), an
 
 ## Quick start
 
-Everything for the learning bot lives in [`real/`](real/). Full, step-by-step
+Everything for the learning bot lives in [`icebow/`](icebow/). Full, step-by-step
 instructions (setup, recording, training, and playing) are in
-**[real/README.md](real/README.md)**. The short version:
+**[icebow/README.md](icebow/README.md)**. The short version:
 
 ```powershell
-cd real
+cd icebow
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
@@ -94,7 +94,7 @@ Training needs a GPU build of PyTorch; recording and labeling do not.
 ## Repo layout
 
 ```
-real/     the learning bot (imitation learning -> RL) — start here
+icebow/   the learning bot (imitation learning -> RL) — start here
 trol/     the earlier scripted / DQN bot
 config/   shared top-level config
 log.txt   changelog of model & architecture updates

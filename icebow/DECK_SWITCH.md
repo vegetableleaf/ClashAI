@@ -1,0 +1,129 @@
+# Deck switch runbook — Rocket Cycle → Miner X-Bow Control
+
+**Status:** Phase 1 code is DONE and on `main`. Waiting on the user to RE-RECORD with the new
+deck before Phase 2. This file is the single ordered source of truth for the switch — read it
+first (human steps in §1, AI/code steps in §2, reward audit in §3, roadmap in §4).
+
+**Deck (Classic 1v1, ALL cards level 11):** Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons,
+Electro Spirit, Rocket, Royal Delivery. (Gone vs the old deck: Tornado, Ronin, Ice Spirit.)
+
+**Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
+its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
+fallback). Miner = chip the tower / tank / snipe support, deploys ANYWHERE. Rocket = clear big
+pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (Electro Spirit / Skeletons) cycle
+and stall; defenders (Tesla / Ice Wizard) clean up.
+
+---
+
+## 1. What the USER must do, in order (training device)
+
+1. `git pull origin main` (get Phase 1).
+2. **Re-record from scratch with the new deck.** The BC dataset is deck-specific — old recordings
+   teach dead cards (Tornado/Ronin/Ice-Spirit) and none show Miner/X-Bow play, so they are useless
+   for this deck. Play many matches: `python run.py record` → Ctrl+C after the results screen.
+3. **Rebuild card templates** (needed before labeling — hand recognition is template matching):
+   `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
+   `royal_delivery.png`, `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
+   `miner.png`, `electro_spirit.png`, `skeletons.png` (extra crops of one card: `<key>_2.png`).
+   Then the next-card previews under `templates/next/`. Verify: `python run.py verify --hand`.
+4. **Re-verify tower calibration:** `python run.py verify --towers` (should be unchanged; recalibrate
+   only if the window moved).
+5. Build data: `python run.py label --all` then `python run.py outcomes --all`.
+6. `python run.py train-bc` (imitation baseline).
+7. `python run.py train-rl` (live RL fine-tune; Discord monitor optional). Tip: consider deleting
+   `data/policy_rl.pt` first so the gate re-learns from the new BC start.
+
+## 2. What the AI does AFTER footage exists (needs real frames to calibrate)
+
+1. **Calibrate `env.xbow_range`** (currently 0.36 ≈ 11.5 tiles) against `verify --towers` frames so
+   the X-Bow win-condition reward fires exactly when it can reach the enemy princess. Also sanity-
+   check `env.xbow_defense_y`.
+2. **Phase 2 gameplay mechanics:**
+   - Time-based **2×/3× elixir reader** (read the match CLOCK, reuse the tower-HP digit OCR) → gate
+     rocket-cycle-on-tower behaviour.
+   - **Miner** tank-for-X-Bow (drop at the bridge to pull troops off a fresh X-Bow) + snipe a support
+     card behind an enemy tank.
+   - **X-Bow-protect** micro (defend it while it chips).
+   - **Electro Spirit** stun/reset shaping.
+3. Continue **Stage 2/3** (object detector → semantic obs) and **Stage 4** (replay strategy mining)
+   on their own tracks — deck-agnostic, unaffected by this switch.
+
+## 3. Reward-parameter audit (Miner X-Bow deck) — decisions
+
+DONE in Phase 1 / this change:
+- ADDED: `xbow_wc_reward` (X-Bow in tower range = win condition), `xbow_defense_reward` (back-centre),
+  `xbow_misplace_penalty` (forward but out of range), `miner_chip_reward` (Miner on enemy princess),
+  `xbow_wrong_lane_frac` (see below), and geometry `env.xbow_range` / `env.xbow_defense_y`.
+- CHANGED doctrine: Miner + X-Bow are EXEMPT from the enemy-half `offensive_penalty`. Miner is fully
+  exempt from the wrong-lane penalty (it deploys anywhere). X-Bow opposite-lane is now nuanced —
+  exempt when punishing a SPENT push, but pays `wrong_lane_penalty × xbow_wrong_lane_frac` (0.6) if a
+  REAL push is still LIVE (`enemy_mass ≥ env.threat_mass`), because leaving it undefendable is bad.
+- INACTIVE (no Tornado/Ronin in the deck — code paths are inert, knobs marked in config, do NOT tune):
+  `king_tank_reward`, `threat_tornado_pull`, `rocket_tornado_combo`, `tornado_chip_penalty`,
+  `env.combo_window_steps` / `combo_radius` / `combo_kill_min`.
+- KEPT (still valid): tower/win/loss terminals, `hp_scale`, spell rewards (Rocket/RD are spells),
+  `tesla_kill`/`defense_kill`(+cap), `blocker_protect` (now Skeletons/Electro-Spirit/Miner shield Ice
+  Wizard), `royal_delivery_hit/kill`, `threat_counter_delivery`, `siege_counter` (counter the ENEMY's
+  siege), `offensive_penalty`, `defense_center_bonus`, `building_center_reward`/`misplace` (Tesla),
+  `wrong_lane_penalty`, `ranged_ontop_penalty`, `rd_enemy_half_penalty`, `back_corner_penalty`,
+  `premature_defense_penalty`, `cycle_reward`, `shaping_match_cap` (the anti-farm ceiling).
+- TO RE-TUNE WITH DATA (do not guess now): relative weights of `xbow_wc_reward` vs `rocket_tower_reward`
+  vs `miner_chip_reward` once train-rl shows which offense the policy over/under-uses.
+
+## 4. Roadmap / stages
+
+- **Simulator / self-play gym (BUILT — usable now): `run.py train-sim`.** A headless, medium-fidelity,
+  stat-driven match engine (`clashrl/sim/`) driven by the card KB — elixir economy, lane movement with
+  bridge crossing, nearest-target combat with splash, princess/king towers, area spells, and scripted
+  opponent archetypes (hog-cycle / beatdown / control / siege). It trains the SAME `PolicyNet`/DQN with
+  NO vision and FROM SCRATCH, thousands of matches fast, writing `data/policy_sim.pt` — a PRIOR to
+  warm-start live RL. See §5.
+- **Stage 3:** object detector (YOLO11) → per-unit semantic obs into PolicyNet. Prereq for 4 & the world model.
+- **Stage 4:** external-replay strategy mining (`replay_mine.py`, gated by `rewards.strategy_prior_scale`).
+- **Stage 5 (post-Stage-3): learned dynamics / world model.** A model that predicts the NEXT board
+  state from the current state + action (e.g. a placed troop advances toward its nearest target). Trained
+  first (supervised on recorded transitions), then used to help RL — this is model-based RL (Dreamer /
+  MuZero family). It operates on the DETECTOR's structured entity state (units = {type, x, y, hp, team}),
+  NOT raw pixels, which is why it is firmly POST-Stage-3. NOTE: the `train-sim` engine is a HAND-CODED
+  world model — the twin of this LEARNED one; they can converge later. See log.txt for the full note.
+
+## 5. Simulator training (`train-sim`) — READY NOW, runs in parallel with recording
+
+**Readiness decision: YES — start it.** The policy is ready to train in the engine from scratch: the sim
+emits the exact observation the CNN expects (validated end-to-end — obs `(96,64,3)`, hand/next/elixir/threat
+vectors, the same 9 card identities incl. Tesla's evo/normal split), matches terminate correctly, and the
+reward gives a clean gradient (losses land clearly negative, wins ~+10). Unlike live RL — which needs a BC
+warm-start because live matches are too scarce to learn from scratch — the sim provides effectively
+unlimited volume, so from-scratch is the whole point, and **no recordings are needed to start**. It needs
+PyTorch + a GPU (same as `train-bc`/`train-rl`).
+
+PowerShell (training device, from `icebow/`):
+```powershell
+git pull origin main
+# (optional) refresh opponents to the CURRENT top-100 meta decks — needs a free CR API token:
+#   set the token in env CLASHRL_CR_API_TOKEN (from developer.clashroyale.com, IP-locked), then:
+.\.venv\Scripts\python.exe run.py decks-import --limit 100      # else the curated 100-deck pool is used
+.\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16   # START (from scratch); K vectorized envs
+# monitor: watch the [train-sim] summary lines (winrate / avg_rew / m/s); policy_sim.pt updates every 50 matches
+# END: press Ctrl+C any time — it saves data/policy_sim.pt on exit
+.\.venv\Scripts\python.exe run.py train-sim --resume           # continue a previous run
+```
+Opponents are sampled from a pool of real meta decks (`config/meta_decks.yaml`) and piloted by their
+inferred style (cycle / control / beatdown / siege). `--envs K` runs K matches in a vectorized learner
+(batched inference + shared replay; single-process, so it's GPU-amortisation not multi-core — the engine
+is cheap). Tune `sim.envs` and the pool/fidelity under the `sim:` config.
+
+To then **warm-start live RL from the sim prior:** `copy data\policy_sim.pt data\policy.pt` (dims match the
+deck/config), then `run.py train-rl` — it fine-tunes the sim policy on real matches to close the sim-to-real
+gap. (Or keep BC and sim as two separate warm-starts and compare.)
+
+**Honest limits:** medium fidelity — exact CR pathfinding/aggro/pushback/champions/evolutions are not
+modelled, and the observation is a crude synthetic top-down, so a sim-trained policy transfers as a
+strategic/elixir/timing PRIOR, not a finished real-game bot. Tune fidelity/opponents under the `sim:` config
+section; add self-play + more archetypes later.
+
+## Conventions
+- Reward-shaping changes only take effect on the next `train-rl`.
+- Every change is committed AND pushed to `origin/main` (autopush).
+- `data/` (recordings, weights, templates output, mined priors) is git-ignored → per-device; only code
+  and config sync via git.
