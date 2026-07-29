@@ -172,6 +172,7 @@ rewards:
   xbow_wc_reward: 1.0            # X-Bow placed (your side) WITHIN firing range of the nearer enemy princess -> a real win condition
   xbow_defense_reward: 0.3       # X-Bow placed BACK-CENTRE as a defensive sniper (rocket-cycle fallback when the offensive X-Bow can't break through)
   xbow_misplace_penalty: -0.75   # X-Bow dropped forward but OUT of tower range (too far to chip, too exposed) -- the classic misplace
+  xbow_exposed_penalty: -1.0     # X-Bow dropped right ON an oncoming push -> swarmed/demolished before it chips the tower (6 elixir wasted, undefendable)
   miner_chip_reward: 0.6         # Miner dropped on/near an enemy princess tower -> chip damage (its bread-and-butter)
   miner_king_penalty: -2.0       # Miner dropped on the enemy KING tower -> ACTIVATES it early (wakes their defence for the match) -- bad trade
   miner_backfield_penalty: -0.75 # Miner DUMPED behind your own towers (env.own_backfield_y) with NO push to defend -- the 'safe' idle huddle; wasted elixir (defending a real push there is exempt)
@@ -357,6 +358,7 @@ env:
   xbow_range: 0.36                     # max normalized distance from the X-Bow to an enemy princess for it to REACH the tower (~11.5 tiles)
   xbow_defense_y: 0.62                 # a defensive (rocket-cycle-mode) X-Bow sits at/below this depth, back-centre on your side...
   xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king (too far back) -> misplace, not defence
+  xbow_ontop_radius: 0.10              # enemy (red) troop blob within this of the X-Bow drop = dropped INTO a push -> xbow_exposed_penalty (blob threshold = ranged_ontop_size)
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy

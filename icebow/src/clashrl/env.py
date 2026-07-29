@@ -247,6 +247,7 @@ class LiveMatchEnv:
         self.xbow_wc_reward = float(cfg.get("rewards", "xbow_wc_reward", default=1.0))
         self.xbow_defense_reward = float(cfg.get("rewards", "xbow_defense_reward", default=0.3))
         self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
+        self.xbow_exposed_penalty = float(cfg.get("rewards", "xbow_exposed_penalty", default=-1.0))  # X-Bow dropped ON an oncoming push -> demolished before it chips
         self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
         self.miner_king_penalty = float(cfg.get("rewards", "miner_king_penalty", default=-2.0))
         self.miner_backfield_penalty = float(cfg.get("rewards", "miner_backfield_penalty", default=-0.75))  # Miner dumped behind your own towers with NO push = wasted
@@ -255,6 +256,7 @@ class LiveMatchEnv:
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
         self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits WITHIN a back-centre band...
         self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))  # ...no DEEPER than this (past it = shoved onto your king)
+        self.xbow_ontop_radius = float(cfg.get("env", "xbow_ontop_radius", default=0.10))  # enemy troops within this of the X-Bow drop = dropped INTO a push -> demolished
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -440,9 +442,15 @@ class LiveMatchEnv:
         condition); give a SMALLER reward for a BACK-CENTRE defensive X-Bow within a depth BAND (the
         rocket-cycle fallback, sniping troops when the offensive X-Bow can't break through -- but NOT
         shoved onto your king, too far back to do anything); and PENALISE any other out-of-range drop
-        (forward but short of the tower, or king-hugging) -- wasted / exposed (the classic misplace)."""
+        (forward but short of the tower, or king-hugging) -- wasted / exposed (the classic misplace).
+        HARD EXCEPTION (checked FIRST): an X-Bow dropped right ON an oncoming enemy push gets swarmed
+        and demolished before it lands a shot -- 6 elixir wasted and undefendable -- so that is
+        penalised regardless of how good the spot would otherwise be."""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
+        frame = self._last_frame                              # where the push was when the model decided
+        if frame is not None and troop_size_at(frame, cx, cy, self.xbow_ontop_radius, self.cfg) >= self.ontop_size:
+            return self.xbow_exposed_penalty                  # dropped INTO a live push -> demolished with no tower chip
         _, enemy_a, _ = _anchors(self.cfg)
         princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
         d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
