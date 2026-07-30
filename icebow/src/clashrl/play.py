@@ -16,7 +16,7 @@ from pathlib import Path
 from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
-from .reward import TowerTracker, weaker_princess_cell
+from .reward import TowerTracker, weaker_princess_cell, xbow_lock_cell
 from .states import GameState
 from .threats import ThreatTracker
 from .tower_hp import TowerHpTracker
@@ -92,6 +92,10 @@ def play(cfg) -> None:
                     if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "miner")}
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
+    xbow_ids = {i for i, key in enumerate(vision.deck_keys)
+                if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
+    xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
+    xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
     # Connect each hand-card identity to its ELIXIR COST from the card DB, so play never taps a card
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
@@ -174,6 +178,12 @@ def play(cfg) -> None:
         if slot < 0:
             return
         cell = actions.deploy_clamp(card_id in anywhere_ids, cell)   # only rocket/tornado go anywhere
+        if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
+            gx, gy = cell % gw, cell // gw
+            cx, cy = actions.cell_center(gx, gy)
+            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_y, gw, gh)
+            if snapped is not None:
+                cell = snapped
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
 

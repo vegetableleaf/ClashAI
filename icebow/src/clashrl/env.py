@@ -28,7 +28,7 @@ from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, defensive_cell, enemy_mass, enemy_mass_at,
                      near_enemy_king, near_enemy_princess, near_my_king, threat_front,
-                     threat_side, troop_size_at, weaker_princess_cell)
+                     threat_side, troop_size_at, weaker_princess_cell, xbow_lock_cell)
 from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
@@ -689,6 +689,13 @@ class LiveMatchEnv:
         if play:                                  # rocket -> aim the weaker enemy princess tower
             cell = self._aim_rocket(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
+            if card_id in self.xbow_ids:          # snap a forward X-Bow onto the nearer lane so it actually LOCKS the tower
+                gx, gy = cell % self.gw, cell // self.gw
+                cx, cy = self.actions.cell_center(gx, gy)
+                _, enemy_a, _ = _anchors(self.cfg)
+                snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_y, self.gw, self.gh)
+                if snapped is not None:
+                    cell = snapped
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
@@ -766,7 +773,7 @@ class LiveMatchEnv:
             if play and card_id in self.tesla_ids:
                 # keep the Tesla for the enemy's win condition (a tower-targeting troop)
                 if self.threat_tracker.wc_active:
-                    reward += self.wc_tesla_defend     # deployed to defend an ACTIVE win condition -- good
+                    reward += self._bonus(self.wc_tesla_defend)   # defend an ACTIVE win condition -- good (capped: can't farm)
                 elif self.threat_tracker.should_hold_tesla():
                     reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
             if play and card_id in self.building_ids:  # Tesla -> intercept-zone placement (central, moderate depth)
@@ -776,8 +783,8 @@ class LiveMatchEnv:
             if play and card_id in self.miner_ids:     # Miner -> chip the enemy princess (deployed anywhere)
                 reward += self._bonus(self._miner_reward(cell))
             if play and card_id in self.defensive_kind:
-                reward += self._defense_placement_reward(card_id, cell)  # soft nudge to the recommended centre
-            reward += self._blocker_reward(frame, bool(play), card_id, cell)
+                reward += self._bonus(self._defense_placement_reward(card_id, cell))  # soft nudge to the recommended centre (capped)
+            reward += self._bonus(self._blocker_reward(frame, bool(play), card_id, cell))  # shield a ranged unit (capped)
             if (play and card_id not in self.rocket_ids and card_id not in self.cheap_ids
                     and card_id not in self.miner_ids and card_id not in self.xbow_ids):
                 if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:

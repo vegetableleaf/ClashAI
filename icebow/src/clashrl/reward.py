@@ -211,6 +211,26 @@ def weaker_princess_cell(cx, cy, radius, enemy_anchors, enemy_hp, enemy_alive, g
     return gy * gw + gx
 
 
+def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, gw, gh):
+    """Snap a FORWARD (offensive) X-Bow that landed OUT of firing range onto the nearer enemy
+    princess's LANE so it actually locks the tower. The policy tends to drop the X-Bow at the far
+    bridge EDGE (or dead centre) where -- once the deploy clamp holds it on your side of the river --
+    it sits just outside ``xbow_range`` and never locks. Keeps the model's depth row, pulls x to the
+    nearer tower's lane. Returns a new grid cell, or None (leave it) for a deep/defensive X-Bow
+    (cy >= defense_y) or one that already reaches a tower.
+    """
+    princesses = enemy_anchors[:2] if enemy_anchors else []
+    if not princesses or cy >= defense_y:
+        return None
+    d = min(np.hypot(cx - nx, cy - ny) for nx, ny in princesses)
+    if d <= xbow_range:
+        return None                                   # already in range -> keep the model's choice
+    nx = min(princesses, key=lambda a: abs(a[0] - cx))[0]   # nearer tower's lane
+    gx = min(max(int(nx * gw), 0), gw - 1)
+    gy = min(max(int(cy * gh), 0), gh - 1)            # keep the model's depth row
+    return gy * gw + gx
+
+
 def threat_side(frame, cfg=None, min_frac=0.02):
     """Which of your two lanes has an advancing enemy threat: -1 left, +1 right, 0 none.
     Compares enemy (red) troop mass in the left vs right half of YOUR side of the arena
