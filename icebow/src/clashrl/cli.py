@@ -24,7 +24,7 @@ def _cmd_record(args) -> None:
 def _cmd_verify(args) -> None:
     from .verify import verify
     verify(Config.load(args.config), args.session, args.towers, args.hand, args.spells, args.threats,
-           args.all)
+           args.clock, args.all)
 
 
 def _cmd_hand_templates(args) -> None:
@@ -188,6 +188,8 @@ def main() -> None:
                      help="overlay enemy-troop-mass detection to calibrate spell + patience rewards")
     ver.add_argument("--threats", action="store_true",
                      help="overlay the enemy-threat read (color/size/count/lane + projectiles) to calibrate reactive play")
+    ver.add_argument("--clock", action="store_true",
+                     help="check the 2x/3x elixir badge (templates/elixir_2x.png,elixir_3x.png) match scores on in-match frames")
     ver.add_argument("--all", action="store_true",
                      help="run the chosen overlay over EVERY recorded session (not just one)")
     ver.set_defaults(func=_cmd_verify)

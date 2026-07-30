@@ -30,7 +30,7 @@ def _load_events(session: Path):
 
 
 def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threats=False,
-           all_sessions=False) -> None:
+           clock=False, all_sessions=False) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     if all_sessions:                          # run the requested overlay over EVERY recorded session
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
@@ -39,7 +39,7 @@ def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threat
             return
         for s in sessions:
             print(f"\n[verify] ===== session {s.name} =====")
-            verify(cfg, str(s), towers, hand, spells, threats, all_sessions=False)
+            verify(cfg, str(s), towers, hand, spells, threats, clock, all_sessions=False)
         return
     session = Path(session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
@@ -72,6 +72,9 @@ def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threat
         return
     if spells:
         _verify_spells(cfg, session, video)
+        return
+    if clock:
+        _verify_clock(cfg, session, meta, video)
         return
 
     cap = cv2.VideoCapture(str(video))
@@ -158,6 +161,68 @@ def _verify_spells(cfg, session: Path, video: Path) -> None:
     print("[verify] red = enemy-troop pixels (enemy_mass); yellow box = arena region. Tune "
           "env.arena_region / enemy_quiet_frac so troops read red (towers/background don't); "
           "the reward keys on the enemy-mass DROP at a spell's target.")
+
+
+def _verify_clock(cfg, session: Path, meta: dict, video: Path) -> None:
+    """Calibrate the 2x/3x elixir CLOCK badge. Samples in-match frames and reports the match score of
+    templates/elixir_2x.png + elixir_3x.png, so you can confirm they FIRE on real double/triple-elixir
+    frames (high score) and NOT on single-elixir frames (low). Writes annotated_clock/. If the badge
+    templates don't exist yet, the clock falls back to TIME-based reading (works live, no calibration).
+    """
+    from .vision import Vision
+    from .clock import ElixirClock
+
+    vision = Vision(cfg)
+    clock = ElixirClock(cfg, vision)
+    x2, x3, thr = clock.x2_tpl, clock.x3_tpl, clock.badge_threshold
+
+    def score(frame, name):
+        tmpl = vision._templates.get(name) if name else None
+        if tmpl is None:
+            return None
+        work = vision._work(frame)
+        if work.shape[0] < tmpl.shape[0] or work.shape[1] < tmpl.shape[1]:
+            return None
+        return float(cv2.matchTemplate(work, tmpl, cv2.TM_CCOEFF_NORMED).max())
+
+    if not ((x2 and x2 in vision._templates) or (x3 and x3 in vision._templates)):
+        print(f"[verify] clock: no badge templates found (templates/{x2} , templates/{x3}).")
+        print("[verify] clock: the reader will use TIME-based reading -- works live with NO calibration:")
+        print(f"[verify] clock:   elapsed < {clock.double_t:.0f}s = 1x, < {clock.triple_t:.0f}s = 2x, else 3x.")
+        print("[verify] clock: to make it screen-accurate, crop the on-screen x2 / x3 badge from a")
+        print(f"[verify] clock:   double / triple-elixir frame -> templates/{x2} , templates/{x3}, then re-run.")
+        return
+
+    cap = cv2.VideoCapture(str(video))
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    out_dir = session / "annotated_clock"
+    out_dir.mkdir(exist_ok=True)
+    saved = hits2 = hits3 = 0
+    for k in range(40):
+        fi = int((k + 0.5) / 40 * total)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, fi)
+        ok, frame = cap.read()
+        if not ok or vision.detect_state(frame).name != "IN_MATCH":
+            continue
+        s2, s3 = score(frame, x2), score(frame, x3)
+        mult = 3 if (s3 is not None and s3 >= thr) else 2 if (s2 is not None and s2 >= thr) else 1
+        hits2 += int(s2 is not None and s2 >= thr)
+        hits3 += int(s3 is not None and s3 >= thr)
+        txt = f"x{mult}"
+        if s2 is not None:
+            txt += f"  2x={s2:.2f}"
+        if s3 is not None:
+            txt += f"  3x={s3:.2f}"
+        txt += f"  (thr {thr})"
+        color = (0, 255, 0) if mult == 1 else (0, 165, 255) if mult == 2 else (0, 0, 255)
+        cv2.putText(frame, txt, (8, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+        cv2.imwrite(str(out_dir / f"clock_{fi:06d}.png"), frame)
+        saved += 1
+    cap.release()
+    print(f"[verify] clock: saved {saved} annotated in-match frames to {out_dir}")
+    print(f"[verify] clock: x2 badge crossed {thr} in {hits2} frame(s), x3 in {hits3}.")
+    print("[verify] clock: the score should be HIGH only on real double/triple-elixir frames + LOW "
+          "otherwise -- if it's always high or never fires, re-crop the badge or adjust elixir.badge_threshold.")
 
 
 def _verify_hand(cfg, session: Path, video: Path) -> None:

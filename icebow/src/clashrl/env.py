@@ -268,6 +268,8 @@ class LiveMatchEnv:
         self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits WITHIN a back-centre band...
         self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))  # ...no DEEPER than this (past it = shoved onto your king)
         self.xbow_ontop_radius = float(cfg.get("env", "xbow_ontop_radius", default=0.10))  # enemy troops within this of the X-Bow drop = dropped INTO a push -> demolished
+        self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))  # X-Bow 'broke through' if it chipped >= this fraction of a tower by 2x elixir
+        self.defensive_rocket_reward = float(cfg.get("rewards", "defensive_rocket_reward", default=0.3))  # once DEFENSIVE, rocket-at-tower is the sanctioned chip
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
         # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
@@ -348,6 +350,8 @@ class LiveMatchEnv:
         """Navigate menus until a match starts; return the first observation."""
         self.tower.reset()
         self.tower_hp.reset()
+        self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
+        self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
         self._defenders = []
         self._recent_ranged = None
         self._recent_rocket = None
@@ -467,9 +471,12 @@ class LiveMatchEnv:
         _, enemy_a, _ = _anchors(self.cfg)
         princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
         d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
+        back_centre = self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18
+        if self._defensive:                                   # DEFENSIVE phase: the offensive WC is abandoned --
+            return self.xbow_defense_reward if back_centre else self.xbow_misplace_penalty  # only the back-centre snipe is right
         if d <= self.xbow_range:
-            return self.xbow_wc_reward                        # in range of a tower -> a real win condition
-        if self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18:
+            return self.xbow_wc_reward                        # OFFENSIVE: in range of a tower -> a real win condition
+        if back_centre:
             return self.xbow_defense_reward                   # back-centre BAND -> defensive snipe (rocket-cycle mode)
         return self.xbow_misplace_penalty                     # out of range: too forward to chip OR shoved onto your king
 
@@ -694,7 +701,7 @@ class LiveMatchEnv:
         if play:                                  # rocket -> aim the weaker enemy princess tower
             cell = self._aim_rocket(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
-            if card_id in self.xbow_ids:          # snap a forward X-Bow onto the nearer lane so it actually LOCKS the tower
+            if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -733,6 +740,7 @@ class LiveMatchEnv:
         state = self.vision.detect_state(frame)
         if state == GameState.IN_MATCH:
             prev_princess = list(self.tower.mine_alive[:2])
+            prev_enemy = list(self.tower.enemy_alive[:2])
             reward = self.tower.step(frame) + self.tower_hp.step(frame)
             # a felled princess -> top its GRADUAL HP penalty up to the full lose_own_tower
             # (covers a tower bursted faster than its HP could be read, or hp_reward off)
@@ -748,6 +756,17 @@ class LiveMatchEnv:
             if new_mult != self.elixir_mult:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
             self.elixir_mult = new_mult
+            # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
+            # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
+            # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
+            # (The matchup-from-start branch -- defensive vs cycle/beatdown/split-lane decks -- and the
+            # beatdown-punish need the opponent's cards, so they wait on the detector / Stage 3.)
+            self._enemy_chip_total += max(0.0, self.tower_hp.last_enemy_chip)
+            took_tower = any(prev_enemy[i] and not self.tower.enemy_alive[i] for i in range(len(prev_enemy)))
+            if not self._defensive and (took_tower or (self.elixir_mult >= 2
+                    and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac)):
+                self._defensive = True
+                print("[env] phase -> DEFENSIVE (X-Bow back-centre + rocket-cycle)")
             # The Log chip-cycle is only justified as a LAST RESORT: Skeletons not in hand (no cheaper
             # cycle), the board quiet (nothing to Log defensively), AND a near-full bar (won't starve a
             # defence). self._prev_mass = enemy mass on the PRE-action frame; elixir read pre-action too.
@@ -789,6 +808,11 @@ class LiveMatchEnv:
                 reward += self._bonus(self._building_place_reward(card_id, cell, cur_mass >= self.quiet_frac))
             if play and card_id in self.xbow_ids:      # X-Bow -> forward win condition (in tower range) vs back-centre defence
                 reward += self._bonus(self._xbow_place_reward(cell))
+            if play and card_id in self.rocket_ids and self._defensive:  # DEFENSIVE: rocket-cycle IS the sanctioned tower damage
+                gx, gy = cell % self.gw, cell // self.gw
+                cx, cy = self.actions.cell_center(gx, gy)
+                if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
+                    reward += self._bonus(self.defensive_rocket_reward)
             if play and card_id in self.miner_ids:     # Miner -> chip the enemy princess (deployed anywhere)
                 reward += self._bonus(self._miner_reward(cell))
             if play and card_id in self.defensive_kind:
