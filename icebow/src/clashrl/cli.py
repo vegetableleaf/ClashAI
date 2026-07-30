@@ -157,6 +157,11 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_detect_obs(args) -> None:
+    from .detect_obs import detect_obs_preview
+    detect_obs_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
+
+
 def _cmd_card_roles(args) -> None:
     from .card_threat import roles_report
     roles_report(Config.load(args.config), args.all, args.card)
@@ -295,6 +300,14 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    dob = sub.add_parser("detect-obs",
+                         help="preview the Stage-3 semantic obs (detector -> enemy/ally/building/spell channels) on real frames")
+    dob.add_argument("--session", default=None, help="restrict to one session (default: sample across ALL)")
+    dob.add_argument("--count", type=int, default=12, help="how many frames to preview")
+    dob.add_argument("--weights", default=None, help="best.pt (default: latest runs/detect/*/weights/best.pt)")
+    dob.add_argument("--conf", type=float, default=0.3, help="detector confidence threshold")
+    dob.set_defaults(func=_cmd_detect_obs)
 
     crl = sub.add_parser("card-roles",
                          help="review the strategic role (win condition / siege / spell / ...) derived from the KB for every detector class")

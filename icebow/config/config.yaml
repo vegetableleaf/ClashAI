@@ -102,6 +102,14 @@ label:
 # --- Observation the agent sees (used by the imitation + RL pipeline) -----
 observation:
   arena_size: [64, 96]           # downscaled arena image (w, h) fed to the CNN
+  # --- Stage 3: semantic detector channels (PREVIEW / gated) -------------
+  # When on, observe() appends 6 detector-derived channels (enemy/my ground,
+  # air, building, spell) beside the RGB arena crop, and PolicyNet is built
+  # with in_ch = 3 + 6. This requires a trained detector (runs/detect) AND a
+  # re-labelled BC dataset + fresh RL/sim run, so it stays OFF until the
+  # detector's mAP is strong. Preview it any time with `run.py detect-obs`.
+  use_detector: false            # Stage-3 gate: feed detector channels into the policy obs
+  detector_conf: 0.30            # detector confidence threshold for those channels
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
