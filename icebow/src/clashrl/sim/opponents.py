@@ -48,8 +48,8 @@ class ScriptedBot:
             return
         lane = self.rng.choice([0.25, 0.75])
         if self.style == "beatdown":
-            tank = max(offense, key=lambda s: s.hp)               # heaviest unit at the back
-            eng.deploy(team, tank, lane, 0.18)
+            tank = max(offense, key=lambda s: s.hp)               # heaviest unit BEHIND the king (deep back)
+            eng.deploy(team, tank, lane, 0.10)
         elif self.style == "siege":
             sieges = [s for s in offense if s.siege] or offense
             eng.deploy(team, self.rng.choice(sieges), lane, 0.42)
