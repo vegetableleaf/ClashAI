@@ -27,7 +27,8 @@ with your own recordings (Stage 8 explains the one command that combines them).
  WHAT YOU NEED (checklist)
 ===============================================================================
 
-[ ] A Windows PC.
+[ ] A Windows PC. (On a Mac? It's possible via scrcpy + an Android phone --
+    see the "APPENDIX - MAC / scrcpy" section at the very bottom.)
 [ ] An NVIDIA GPU (for training). Recording/playing works without one, but
     training the neural network is very slow on CPU.
 [ ] Python 3.11 or newer installed  (get it from python.org; during install TICK
@@ -360,6 +361,82 @@ play hands-free:
 * SAVE YOUR WORK TO GITHUB: your code changes can be pushed with git. (Your
   recordings and trained brains in the "data" folder are intentionally NOT uploaded -
   they're private and large.)
+
+
+===============================================================================
+ APPENDIX - MAC / scrcpy (running from a Mac via an Android phone)
+===============================================================================
+
+Google Play Games FOR PC is Windows-only, so a Mac can't use the same setup. The
+Mac route is to run Clash Royale on a real ANDROID PHONE and MIRROR it to the Mac
+with scrcpy: scrcpy shows the phone's screen in a window and forwards your mouse
+clicks to the phone as taps. The bot then captures that window and taps into it just
+like it would the Windows game window - so calibrate / record / play all work. Two
+honest caveats up front: (a) you must RE-CALIBRATE everything (the phone renders the
+game differently than the PC version), and (b) TRAINING is slow on a Mac (no NVIDIA
+GPU) - so record on the Mac but TRAIN on a machine with an NVIDIA GPU.
+
+WHAT YOU NEED (Mac)
+  [ ] An Android phone with Clash Royale (throwaway account - ToS!).
+  [ ] A USB cable.
+  [ ] Homebrew (brew.sh), then:  brew install scrcpy
+  [ ] Python 3.11+ and Git  (brew install python git).
+
+STEP M1 - Mirror the phone
+  1. On the phone: enable Developer Options, then turn on "USB debugging".
+  2. Plug the phone into the Mac by USB; tap "Allow" on the debugging prompt.
+  3. In a terminal run:  scrcpy
+     The phone screen appears in a window. Open Clash Royale in it. DON'T move or
+     resize the scrcpy window afterwards, and keep it fully visible / on top.
+
+STEP M2 - Install the bot (Mac paths)
+  Same as Stages 1-2 but with Mac-style paths (forward slashes, "bin" not "Scripts"):
+
+      cd <cloned-repo>/icebow
+      python3 -m venv .venv
+      ./.venv/bin/python -m pip install --upgrade pip
+      ./.venv/bin/python -m pip install -r requirements.txt
+      ./.venv/bin/python -m pip install torch      # CPU / Apple-MPS build (there is no CUDA on Mac)
+
+  From now on every command is:   ./.venv/bin/python run.py <command>
+
+STEP M3 - Give the Mac permission (System Settings -> Privacy & Security)
+  * Screen Recording  -> allow your Terminal (so the bot can capture the screen).
+  * Accessibility  AND  Input Monitoring -> allow your Terminal (so the bot can read
+    your mouse while recording, and move/click the mouse while playing).
+  Quit + reopen the terminal after granting these.
+
+STEP M4 - Point the bot at the scrcpy window
+  The bot's automatic window-finder is Windows-only, so on a Mac you MUST set the
+  region by hand. In config/config.yaml set title_contains to null and region to the
+  scrcpy window's game area in pixels [left, top, width, height]:
+
+      window:
+        title_contains: null
+        region: [X, Y, W, H]     # measure with a screenshot (Cmd-Shift-4 shows pixel coords)
+
+STEP M5 - Re-calibrate (IMPORTANT - nothing transfers from the PC setup)
+  The phone renders Clash Royale at a different shape/size, so the saved positions and
+  pictures are all wrong for it. Treat it as a brand-new device and redo Stage 4 on:
+    * run.py diag                 (check the menu templates match; recapture them if not)
+    * run.py record  -> play a few matches -> Ctrl+C
+    * run.py hand-templates       (rename the card crops)
+    * run.py verify --hand / --towers / --clock   (nudge the config numbers until the
+      overlays line up with the phone's layout)
+  Then label --all -> outcomes --all as usual (Stages 5-7).
+
+STEP M6 - Train on a GPU machine, then bring the brain back
+  A Mac has no NVIDIA GPU, so training is very slow. Best workflow:
+    * Record + calibrate on the Mac.
+    * COPY the "data" folder to a Windows/Linux machine with an NVIDIA GPU (the data
+      folder is NOT in git - move it over a drive / network / cloud).
+    * Train there (train-sim / train-bc / train-rl), then copy data/policy*.pt back
+      into the Mac's data folder and  run.py play  through scrcpy.
+
+NOTES
+  * scrcpy over USB is low-latency (fine for the bot's ~1.5s pace); Wi-Fi is laggier.
+  * "Uploading data" just means copying the "data" folder between machines - it's
+    local and private (gitignored). Code changes still sync normally with git.
 
 
 ===============================================================================
