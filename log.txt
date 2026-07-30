@@ -924,6 +924,76 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-29  —  The Log: its own reward path (knockback/reset + conditional cycle-chip)
+------------------------------------------------------------------------------
+- Phase-2 Log shaping (env.py + config): The Log is scored as itself, NOT as a rocket/tornado. New
+  rewards.log_reset_reward (0.3) when the Log rolls THROUGH a real enemy push -- the knockback/reset buys
+  the defenders time, so it's valued EVEN WITHOUT a kill (plus size x spell_hit for troops it clears). New
+  rewards.log_whiff (-0.3, much softer than the -1.5 rocket whiff since it's only 2 elixir) for a Log that
+  hits nothing -- but WAIVED to 0 for the justified last-resort cycle (no Skeletons in hand, board quiet,
+  near-full bar). Reward change -> next train-rl/BC.
+
+
+------------------------------------------------------------------------------
+2026-07-29  —  Sim: higher-fidelity engine + real card levels + Evo Tesla stun
+------------------------------------------------------------------------------
+- Big sim/engine.py fidelity pass so the sim behaves closer to CR: AGGRO / TARGET-LOCK (a troop notices +
+  commits to an enemy unit within env.sim.sight_range 0.12, with a 1.8x leash, else it marches the tower);
+  DEPLOY DELAY; HIT-SPEED cadence (attacks land on the card's hit_speed, not a smeared DPS); CROWD CONTROL
+  statuses -- SLOW (Ice Wizard: slow_factor 0.5 x move+attack for slow_duration 2.0s), STUN (0.5s: Zap /
+  Tesla-evo pulse / Electro), FREEZE (1.0s); soft COLLISION / body-block (units can't stack, so a wall of
+  troops holds up a tank); and KING activates on CHIP damage.
+- REAL CARD LEVELS: the deck's cards.yaml levels went from all-11 to the user's ACTUAL account levels
+  (royal_delivery 13, evo tesla 14, ice_wizard 12, X-Bow 16, rocket 14, miner 13, the_log 14, skeletons 13)
+  so the sim scales stats realistically; the sim/cards now scale hp+damage by level. Evo Tesla got full
+  curated stats + its periodic STUN PULSE (pulse_damage/radius/stun 0.5s/interval 3.0s) and a 25s lifetime.
+- ENEMY LEVELS: opponent cards each roll a random level from sim.enemy_levels [13,14,15,16], weighted
+  [2,4,3,2] (skewed to L15/16; L14 still the mode at ~36%), so the policy learns to counter higher-level
+  decks. (sim/opponents.py assigns per-card levels; sim.env passes them through.)
+
+
+------------------------------------------------------------------------------
+2026-07-29 / 30  —  Training + tooling: BC --iterations, RL affordability mask, detect-timelapse, Instructions.txt
+------------------------------------------------------------------------------
+- train-bc gained `--iterations N`: run N successive warm-starting BC passes in ONE command (each seeds the
+  next), for a stronger imitation baseline without babysitting.
+- train-rl AFFORDABILITY MASK: the DQN `choose` and the Double-DQN target now mask out cards the agent can't
+  afford (mirrors play.py), so RL stops emitting wasted "Not enough Elixir!" plays (which polluted the
+  replay with no-op transitions and slowed learning).
+- detect-timelapse: a command that builds a timelapse of in-match frames to HAND-LABEL for the detector
+  dataset (Stage 2/3 tooling; detect.py).
+- DOCS: new icebow/Instructions.txt (434-line from-scratch onboarding -- fork -> training/playing, with
+  PATH A = the simulator (no game needed) and PATH B = record + live), surfaced on the front-page README.
+
+
+------------------------------------------------------------------------------
+2026-07-30  —  DESIGN NOTE: PPO vs Double-DQN -- verdict + trigger conditions
+------------------------------------------------------------------------------
+- Question: is the project at a point where PPO beats DDQN? VERDICT: NOT YET -- keep DDQN. Reasoning:
+  * LIVE RL (train-rl) is SCARCE data (one ~3-4 min match at a time). DDQN's OFF-POLICY REPLAY reuses every
+    transition many times = the sample-efficiency that regime needs; PPO is ON-POLICY (discards data) -> far
+    more sample-hungry -> a poor fit for scarce live data. This is why the project chose DQN.
+  * DQN isn't FAILING here: the past "reward-farming" issues were reward-SHAPE bugs (fixed by reward design),
+    and value-overestimation was already fixed by vanilla->Double DQN + grad clip. The real bottlenecks now
+    are reward shaping, sim fidelity / sim-to-real, and perception (detector, arena robustness) -- none of
+    which PPO addresses. Switching now = rework + instability risk for no bottleneck relief.
+- WHEN PPO BECOMES A GOOD POINT (the sim changes the calculus): PPO's on-policy inefficiency stops mattering
+  when data is CHEAP + PARALLEL -- exactly the SIMULATOR regime. Trigger conditions:
+  (1) the SIM becomes the primary trainer at SCALE (dozens-hundreds of parallel envs) -- PPO is the industry
+      standard for massively-parallel game RL and is more stable than DQN at scale;
+  (2) SELF-PLAY (leagues / past-selves, AlphaStar-style) -- policy-gradient + stochastic policies are the
+      standard there;
+  (3) you want a STOCHASTIC, less-exploitable policy (a deterministic DQN argmax is exploitable by a
+      repeating opponent; PPO + entropy resists that -- valuable in adversarial 1v1);
+  (4) longer-horizon / temporal action structure (timing, action sequences) -- policy gradients + GAE handle
+      credit assignment more gracefully.
+- RECOMMENDED PATH: keep DDQN for live RL; introduce PPO FOR THE SIM when you scale parallelism + add
+  self-play. The rework ports cleanly -- the CNN trunk + factored heads (card / cell / gate) become a
+  factored CATEGORICAL POLICY; add a VALUE (critic) head, GAE, and an on-policy rollout loop replacing the
+  replay buffer. Moderate effort. Analysis-only note; no code change.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
