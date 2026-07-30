@@ -3,13 +3,15 @@
 Clash Royale 1v1 runs SINGLE elixir for most of regulation, DOUBLE for the last 60s, and TRIPLE in
 overtime. The icebow offense->defense phase machine keys off this (the offensive X-Bow must break
 through by double elixir or it gives up and switches to a defensive X-Bow + rocket-cycle), so the
-LIVE bot needs the current multiplier. It's read TWO ways and LATCHED to the max -- the multiplier
-only ever RISES within a match, so latching is robust to badge occlusion + detection lag:
+LIVE bot needs the current multiplier. It's read TWO ways and CROSS-CHECKED; the CLOCK is
+AUTHORITATIVE -- on any disagreement the clock wins (elapsed time is monotonic and can't false-fire,
+whereas a template match can), so the multiplier only ever RISES within a match:
 
   * TIME  -- elapsed since the match started. Needs NOTHING; works out of the box. Lags the real
     clock by however long IN_MATCH took to detect (~1-2s), which is fine for a coarse 2x/3x gate.
-  * BADGE -- template-match the on-screen "x2" / "x3" indicator. Screen-accurate but OPTIONAL:
-    drop ``templates/elixir_2x.png`` + ``templates/elixir_3x.png`` and it refines the time reading.
+  * BADGE -- template-match the on-screen "x2" / "x3" indicator. OPTIONAL cross-check: drop
+    ``templates/elixir_2x.png`` + ``templates/elixir_3x.png`` and it's checked against the clock
+    (any crop scale -- matched multi-scale); a disagreement is logged but the CLOCK's value is used.
 
 Usage: build one per env/play, ``reset()`` when a match starts (IN_MATCH first detected), then
 ``update(frame)`` each step and read ``multiplier`` (1/2/3).
@@ -55,11 +57,17 @@ class ElixirClock:
         self.badge_threshold = float(cfg.get("elixir", "badge_threshold", default=0.7))
         self._start = time.time()
         self._mult = 1
+        self.badge_mult = 0            # last icon reading (0 = no badge / no template)
+        self.disagreed = False         # last update: did the icon and the clock disagree?
+        self._logged_mismatch = None   # de-dupe the disagreement log
 
     def reset(self, start: Optional[float] = None) -> None:
         """Call when a match STARTS (IN_MATCH first detected) to zero the clock."""
         self._start = time.time() if start is None else start
         self._mult = 1
+        self.badge_mult = 0
+        self.disagreed = False
+        self._logged_mismatch = None
 
     def _time_mult(self, now: Optional[float] = None) -> int:
         elapsed = (time.time() if now is None else now) - self._start
@@ -83,8 +91,19 @@ class ElixirClock:
         return 0
 
     def update(self, frame=None, now: Optional[float] = None) -> int:
-        """Refresh + return the current multiplier (1/2/3). LATCHES: never decreases within a match."""
-        self._mult = max(self._mult, self._time_mult(now), self._badge_mult(frame))
+        """Refresh + return the current multiplier (1/2/3). The CLOCK (elapsed time) and the on-screen
+        ICON are read independently and CROSS-CHECKED; on ANY disagreement the CLOCK wins -- elapsed
+        time is monotonic and can't false-fire, whereas a template match can mis-hit or miss. A NEW
+        mismatch is logged (a hint that the badge crop / time threshold needs a look). Since time is
+        monotonic the multiplier only ever rises within a match."""
+        t = self._time_mult(now)
+        b = self._badge_mult(frame)
+        self.badge_mult = b
+        self.disagreed = bool(b and b != t)              # icon gave a reading AND it differs from the clock
+        if self.disagreed and (t, b) != self._logged_mismatch:
+            self._logged_mismatch = (t, b)
+            print(f"[clock] icon reads x{b} but the clock reads x{t} -> using the clock (x{t})")
+        self._mult = t                                   # the clock is authoritative on any disagreement
         return self._mult
 
     @property

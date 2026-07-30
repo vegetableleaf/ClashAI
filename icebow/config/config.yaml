@@ -47,11 +47,12 @@ elixir:
   filled_hsv_lower: [140, 60, 120]
   filled_hsv_upper: [175, 255, 255]
   # --- 2x / 3x elixir CLOCK (src/clashrl/clock.py -> feeds the icebow offense->defense phase machine) ---
-  # The multiplier is read TWO ways, LATCHED to the max (it only ever RISES in a match):
+  # The multiplier is read TWO ways and CROSS-CHECKED; the CLOCK is AUTHORITATIVE (only ever RISES):
   #   TIME  -- elapsed since the match started. Works with NO calibration; lags the real clock by
   #            however long IN_MATCH took to detect (~1-2s) -- fine for the coarse 2x/3x gate.
-  #   BADGE -- template-match the on-screen "x2"/"x3" indicator. Screen-accurate but OPTIONAL: drop
-  #            templates/elixir_2x.png + elixir_3x.png (work-scale crops) and it refines the time read.
+  #   BADGE -- template-match the on-screen "x2"/"x3" indicator. OPTIONAL cross-check: drop
+  #            templates/elixir_2x.png + elixir_3x.png (any crop scale) -- checked vs the clock, and
+  #            the CLOCK WINS any disagreement (the mismatch is logged as a calibration hint).
   double_time_s: 120           # elapsed seconds when DOUBLE elixir starts (regulation 180 - last 60s)
   triple_time_s: 180           # elapsed seconds when TRIPLE elixir starts (overtime)
   x2_template: elixir_2x.png   # optional PNG in templates/ for the on-screen "x2" badge (null => time only)
