@@ -19,6 +19,30 @@ from __future__ import annotations
 import time
 from typing import Optional
 
+import cv2
+
+
+def badge_score(vision, frame, tmpl_name) -> float:
+    """Best TM_CCOEFF_NORMED score of a badge template over the WORK-scaled frame, searched across a
+    small range of template SCALES. matchTemplate is NOT scale-invariant, and the x2/x3 badge is
+    usually cropped from a full-resolution replay frame while matching runs on the work-scale (~480px)
+    frame -- so a single fixed-scale match misses it entirely. The work frame is always work_width
+    wide, so the badge has a resolution-independent size there; the scale sweep aligns the template."""
+    tmpl = vision._templates.get(tmpl_name) if tmpl_name else None
+    if tmpl is None or frame is None:
+        return 0.0
+    work = vision._work(frame)
+    fh, fw = work.shape[:2]
+    th, tw = tmpl.shape[:2]
+    best = 0.0
+    for s in (0.45, 0.55, 0.65, 0.75, 0.85, 1.0, 1.15, 1.3):
+        w2, h2 = int(round(tw * s)), int(round(th * s))
+        if w2 < 6 or h2 < 6 or w2 > fw or h2 > fh:
+            continue
+        t = cv2.resize(tmpl, (w2, h2), interpolation=(cv2.INTER_AREA if s < 1.0 else cv2.INTER_LINEAR))
+        best = max(best, float(cv2.matchTemplate(work, t, cv2.TM_CCOEFF_NORMED).max()))
+    return best
+
 
 class ElixirClock:
     def __init__(self, cfg, vision):
@@ -50,9 +74,9 @@ class ElixirClock:
         if frame is None:
             return 0
         try:
-            if self.x3_tpl and self.vision._find(frame, self.x3_tpl, self.badge_threshold):
+            if self.x3_tpl and badge_score(self.vision, frame, self.x3_tpl) >= self.badge_threshold:
                 return 3
-            if self.x2_tpl and self.vision._find(frame, self.x2_tpl, self.badge_threshold):
+            if self.x2_tpl and badge_score(self.vision, frame, self.x2_tpl) >= self.badge_threshold:
                 return 2
         except Exception:                       # a missing/oversized template must never break a match
             pass

@@ -176,14 +176,10 @@ def _verify_clock(cfg, session: Path, meta: dict, video: Path) -> None:
     clock = ElixirClock(cfg, vision)
     x2, x3, thr = clock.x2_tpl, clock.x3_tpl, clock.badge_threshold
 
+    from .clock import badge_score
+
     def score(frame, name):
-        tmpl = vision._templates.get(name) if name else None
-        if tmpl is None:
-            return None
-        work = vision._work(frame)
-        if work.shape[0] < tmpl.shape[0] or work.shape[1] < tmpl.shape[1]:
-            return None
-        return float(cv2.matchTemplate(work, tmpl, cv2.TM_CCOEFF_NORMED).max())
+        return badge_score(vision, frame, name) if (name and name in vision._templates) else None
 
     if not ((x2 and x2 in vision._templates) or (x3 and x3 in vision._templates)):
         print(f"[verify] clock: no badge templates found (templates/{x2} , templates/{x3}).")
