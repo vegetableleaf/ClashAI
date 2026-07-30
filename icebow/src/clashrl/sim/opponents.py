@@ -16,6 +16,7 @@ class ScriptedBot:
 
     def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None):
         self.style = style
+        self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
         levels = levels or [11] * len(cards)
         self.specs = [build_spec(db, k, lvl) for k, lvl in zip(cards, levels)]
