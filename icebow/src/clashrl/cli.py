@@ -147,6 +147,11 @@ def _cmd_detect_frames(args) -> None:
     add_frames(Config.load(args.config), args.session, args.count)
 
 
+def _cmd_detect_timelapse(args) -> None:
+    from .detect import add_timelapse_frames
+    add_timelapse_frames(Config.load(args.config), args.video, args.per_video)
+
+
 def _cmd_detect_preview(args) -> None:
     from .detect import detect_preview
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
@@ -274,6 +279,12 @@ def main() -> None:
     dfr.add_argument("--session", default=None, help="session folder name or path (default: latest)")
     dfr.add_argument("--count", type=int, default=120, help="how many new frames to add")
     dfr.set_defaults(func=_cmd_detect_frames)
+
+    dtl = sub.add_parser("detect-timelapse",
+                         help="add frames from training TIMELAPSE videos to data/detect for hand-labelling (non-destructive)")
+    dtl.add_argument("--video", default=None, help="a single timelapse .mp4 (default: ALL in train.timelapse_dir)")
+    dtl.add_argument("--per-video", type=int, default=12, help="max NEW frames to sample per timelapse (deduped)")
+    dtl.set_defaults(func=_cmd_detect_timelapse)
 
     dpv = sub.add_parser("detect-preview",
                          help="run the trained detector on RANDOM in-match frames and save annotated images (gauge accuracy, unbiased)")

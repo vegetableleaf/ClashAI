@@ -460,6 +460,66 @@ def add_frames(cfg, session_arg=None, count=120) -> None:
           f"(empty labels). Existing images + splits untouched -- re-sync Local Storage in Label Studio to pick them up.")
 
 
+def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0) -> None:
+    """Sample frames from training TIMELAPSE videos into the detect dataset as empty-label images to
+    hand-label. Timelapses (``train.timelapse_dir``) are raw game-screen captures -- the SAME rendering
+    as the live env -- so they are valid detector data. Unlike sessions they carry NO play log, so
+    frames are sampled UNIFORMLY across each clip and consecutive near-duplicates (the fixed-length
+    timelapse resampler REPEATS frames when a run was short) are skipped by a mean-abs-diff test.
+    ADDITIVE + NON-DESTRUCTIVE: only writes NEW `tl_*` stems into images/train, so existing images --
+    and any Label Studio project pointing at them -- are left untouched.
+    """
+    if video:
+        vids = [Path(video)]
+    else:
+        tl_dir = Path(cfg.path(cfg.get("train", "timelapse_dir", default="data/timelapses")))
+        vids = sorted(tl_dir.glob("*.mp4"))
+    if not vids:
+        print("[detect-timelapse] no timelapse videos found (train.timelapse_dir)")
+        return
+
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    (root / "images" / "train").mkdir(parents=True, exist_ok=True)
+    (root / "labels" / "train").mkdir(parents=True, exist_ok=True)
+    existing = set()                                     # tl_* stems already in the dataset (any split)
+    for split in ("train", "val"):
+        existing.update(p.stem for p in (root / "images" / split).glob("tl_*.jpg"))
+
+    q = int(cfg.get("detect", "jpeg_quality", default=92))
+    total = 0
+    for vid in vids:
+        cap = cv2.VideoCapture(str(vid))
+        n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        if n <= 0:
+            cap.release()
+            continue
+        cand = np.linspace(0, n - 1, min(n, per_video * 3)).astype(int)  # oversample; dedupe trims it
+        added, last = 0, None
+        for fi in cand:
+            if added >= per_video:
+                break
+            stem = f"tl_{vid.stem}_f{int(fi):06d}"
+            if stem in existing:
+                continue
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(fi))
+            ok, frame = cap.read()
+            if not ok or frame is None:
+                continue
+            cur = frame.astype(np.int16)
+            if last is not None and float(np.abs(cur - last).mean()) < diff_thresh:
+                continue                                 # a repeated (resampled) frame -> skip
+            last = cur
+            cv2.imwrite(str(root / "images" / "train" / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
+            (root / "labels" / "train" / f"{stem}.txt").write_text("", encoding="utf-8")
+            existing.add(stem)
+            added += 1
+            total += 1
+        cap.release()
+        print(f"[detect-timelapse] {vid.stem}: +{added}")
+    print(f"[detect-timelapse] added {total} frames -> {root / 'images' / 'train'} "
+          f"(empty labels). Re-sync Local Storage in Label Studio to pick them up.")
+
+
 def _resolve_weights(cfg, weights):
     """Return the detector weights path: the given --weights, else the most recently trained
     runs/detect/*/weights/best.pt."""

@@ -83,6 +83,22 @@ def train_rl(cfg) -> None:
     threat_dim = int(ckpt.get("threat_dim", 14))
     deck = ckpt.get("deck")
 
+    # Per-card elixir cost (by deck identity) so the policy can't select a card it can't PAY for --
+    # an unaffordable pick just wastes the turn on a "Not enough Elixir!" no-op. Mirrors play.py's
+    # live affordability mask; card_elixir all-zero (unknown deck) makes the mask a harmless no-op.
+    from .cards import CardDB
+    _db = CardDB(cfg)
+
+    def _base_key(k):
+        k = str(k)
+        return k[:-4] if k.endswith("_evo") else k
+
+    if deck and len(deck) == n_cards:
+        card_elixir = [float(_db.elixir(k) or _db.elixir(_base_key(k)) or 0.0) for k in deck]
+    else:
+        card_elixir = [0.0] * n_cards
+    afford_costs = torch.tensor(card_elixir, dtype=torch.float32, device=device)  # [n_cards]
+
     net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
     net.policy.load_state_dict(ckpt["model"])
     if "gate" in ckpt:
@@ -147,14 +163,17 @@ def train_rl(cfg) -> None:
         return torch.from_numpy(np.asarray(hand_vec, np.float32)).unsqueeze(0).to(device)
 
     def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir):
-        in_hand = [i for i, v in enumerate(hand_vec) if v > 0.5]
-        if not in_hand:                      # no card recognized -> can only wait
+        # playable = in hand AND affordable (mirrors play.py) -> the policy never selects a card it
+        # can't pay for, which otherwise wastes the turn on a "Not enough Elixir!" no-op.
+        playable = [i for i, v in enumerate(hand_vec)
+                    if v > 0.5 and card_elixir[i] <= elixir + 1e-6]
+        if not playable:                     # nothing in hand affordable -> can only wait
             return (0, 0, 0)
         if random.random() < eps:
             # don't fritter cards when starved; wait to cycle/save elixir
             if elixir < min_play_elixir or random.random() < wait_prob:
                 return (0, 0, 0)
-            return (1, random.choice(in_hand), random.randrange(n_cells))
+            return (1, random.choice(playable), random.randrange(n_cells))
         net.eval()
         hv = hand_to_tensor(hand_vec)
         nv = hand_to_tensor(next_vec)
@@ -162,7 +181,9 @@ def train_rl(cfg) -> None:
         tv = hand_to_tensor(threat_vec)
         with torch.no_grad():
             cq, ceq, gq = net(obs_to_tensor(obs), hv, nv, ev, tv)
-        cq = cq.masked_fill(hv < 0.5, float("-inf"))     # only cards in hand
+        playable_mask = torch.zeros_like(cq, dtype=torch.bool)
+        playable_mask[0, playable] = True
+        cq = cq.masked_fill(~playable_mask, float("-inf"))   # in hand AND affordable
         play_val = gq[0, 1] + cq.max() + ceq.max()
         wait_val = gq[0, 0]
         if wait_val >= play_val:
@@ -201,12 +222,17 @@ def train_rl(cfg) -> None:
             # this project keeps hitting. Off-policy replay (the sample-efficiency win that keeps this
             # a DQN and not PPO) is untouched; this only de-biases the bootstrap.
             cqn, ceqn, gqn = net(nobs, nhand, nnxt, nelx, nthr)
-            cqn = cqn.masked_fill(nhand < 0.5, float("-inf"))            # only cards in hand
+            # playable-next = in hand AND affordable at the NEXT-state elixir (nelx = elixir/10).
+            # Affordability is a hard constraint just like "in hand", so the bootstrap never values a
+            # card the policy couldn't actually cast (consistent with choose(); a row where nothing is
+            # playable falls through to the WAIT value, same as the empty-hand case).
+            unplayable = (nhand < 0.5) | (afford_costs.unsqueeze(0) > nelx * 10.0 + 1e-6)
+            cqn = cqn.masked_fill(unplayable, float("-inf"))            # in hand AND affordable
             sel_card = cqn.argmax(1, keepdim=True)                       # online greedy card
-            sel_cell = ceqn.argmax(1, keepdim=True)                      # online greedy cell
+            sel_cell = ceqn.argmax(1, keepdim=True)                     # online greedy cell
             play_next = (gqn[:, 1] + cqn.max(1).values + ceqn.max(1).values) > gqn[:, 0]
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
-            cq2 = cq2.masked_fill(nhand < 0.5, float("-inf"))
+            cq2 = cq2.masked_fill(unplayable, float("-inf"))
             q_play_next = (gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1)
                            + ceq2.gather(1, sel_cell).squeeze(1))
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action
