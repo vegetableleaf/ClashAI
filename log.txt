@@ -994,6 +994,55 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-30  —  icebow OFFENSE->DEFENSE phase machine (sim): rocket-cycle when the X-Bow can't break through
+------------------------------------------------------------------------------
+- User doctrine: if the X-Bow fails to lock / take a tower before 2x elixir, OR once you TAKE any tower, the
+  bot switches to a DEFENSIVE X-Bow (back-centre snipe, Tesla in front) with ROCKET-CYCLE as the ONLY tower-
+  damage source -- everything else clears pushes / stalls / cycles to more rockets.
+- IMPLEMENTED IN THE SIM (sim/env.py -- the primary trainer; it knows the match clock + tower state): a
+  per-match phase flag `_defensive` (starts False = offensive X-Bow win condition). It latches True once you
+  take a tower (crowns(0) >= 1) OR double elixir arrives (t >= regulation-60 = 120s) and the X-Bow never
+  broke through (cumulative enemy-tower chip < env.xbow_success_frac 0.30 of a princess). Once defensive the
+  X-Bow REWARD FLIPS: a forward (in-range) X-Bow no longer earns the win-condition reward -- it's now a
+  MISPLACE (xbow_misplace_penalty); a back-centre X-Bow earns xbow_defense_reward; and a rocket aimed at an
+  enemy princess earns rewards.defensive_rocket_reward (0.3) = the sanctioned cycle-chip. Verified end-to-end:
+  offensive forward +1.0 / back +0.3 / rocket 0; defensive forward -0.75 / back +0.3 / rocket +0.3.
+- config: rewards.defensive_rocket_reward (0.3), env.xbow_success_frac (0.30). info now carries `defensive`.
+- LIVE (env.py) NOT wired yet: the "took a tower" trigger is available live (crowns), but the "2x elixir"
+  trigger needs the TIME-BASED match-clock reader (a Phase-2 perception item, not built). TODO: once the
+  clock reader lands, mirror this phase machine in env.py so live play / train-rl follow the same doctrine.
+
+
+------------------------------------------------------------------------------
+2026-07-30  —  DESIGN NOTE: self-play in the sim (integration plan, for the other machine to build)
+------------------------------------------------------------------------------
+- Goal (user): train the policy against PAST VERSIONS of itself, not just the scripted meta-deck bots.
+  Analysis of the current engine + the concrete scheme:
+- CURRENT ENGINE: agent = team 0 (bottom); opponent = team 1 (top) driven by make_opponent() = a scripted
+  bot piloting a sampled meta deck. To make the opponent a POLICY, team 1 must be driven by a frozen net.
+- KEY DETAIL -- MIRRORING: the policy is trained as team 0 (bottom). To control team 1 it must see a
+  MIRRORED observation (flip the board vertically so team 1 reads itself as 'bottom') and its chosen CELL
+  must be un-mirrored back to team-1 coordinates. Add mirror(obs)/mirror(cell); feed the frozen net the
+  mirrored obs+hand+elixir+threat, take its action, un-mirror the placement, deploy for team 1.
+- LEAGUE + CADENCE (recommended -- tune later):
+  * SNAPSHOT every sim.selfplay_snapshot_matches (~1000) into a LEAGUE = a ring buffer of the last
+    sim.selfplay_league_size (~8) frozen weight-sets.
+  * PER-MATCH opponent = a league snapshot with probability sim.selfplay_prob, else a scripted meta bot. Do
+    NOT hard-alternate every match -- SAMPLE stochastically so each match is a fresh mix (scripted ~40% of
+    the time keeps deck-diversity robustness; the rest is self-play).
+  * RAMP selfplay_prob ~0 -> ~0.6 over sim.selfplay_ramp_matches (early self-play vs a near-random policy is
+    useless / can collapse -- ramp it in as the policy gets competent).
+  * League SAMPLING: mostly the most-recent snapshot, but include older ones (uniform tail) so the policy
+    doesn't overfit to beating only its latest self (avoids strategy cycling / collapse).
+  * The self-play opponent plays the SAME icebow deck (a mirror match); scripted opponents keep the varied
+    meta decks -- together = mirror skill + deck robustness.
+- WHERE: a new SelfPlayOpponent (wraps a frozen DQN, does mirrored inference), selectable in the train-sim
+  loop / make_opponent; config sim.selfplay_prob / selfplay_snapshot_matches / selfplay_league_size /
+  selfplay_ramp_matches. TIES TO THE PPO VERDICT: self-play is the trigger where PPO starts to beat DDQN --
+  consider building the PPO sim trainer at the same time. Analysis-only note; no code yet.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

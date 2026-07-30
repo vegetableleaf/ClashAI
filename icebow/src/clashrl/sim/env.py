@@ -58,6 +58,14 @@ class SimMatchEnv:
         self.shaping_cap = r("shaping_match_cap", 8.0)
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
         self.xbow_def_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
+        self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
+        # icebow OFFENSE->DEFENSE transition: if the X-Bow hasn't chipped >= xbow_success_frac of a tower by
+        # double elixir (or once you TAKE a tower), flip to a DEFENSIVE X-Bow (back-centre) + rocket-cycle
+        # doctrine -- rocket-at-tower becomes the only sanctioned tower damage; everything else defends/cycles.
+        self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
+        self.defensive_rocket_reward = r("defensive_rocket_reward", 0.3)
+        self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+        self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
@@ -140,6 +148,8 @@ class SimMatchEnv:
         self._prev_mass = 0.0
         self._prev_my_crowns = 0
         self._prev_op_crowns = 0
+        self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
+        self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
@@ -153,17 +163,18 @@ class SimMatchEnv:
 
     def _placement_reward(self, card_id: int, nx: float, ny: float) -> float:
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
+        d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
         if card_id in self.xbow_ids:
-            d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
-            if d <= self.xbow_range:
+            back_centre = ny >= self.xbow_def_y and abs(nx - 0.48) <= 0.18
+            if self._defensive:                              # DEFENSIVE: back-centre snipe only; forward is wrong now
+                return self.xbow_def if back_centre else self.xbow_mis
+            if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition
                 return self.xbow_wc
-            if ny >= self.xbow_def_y and abs(nx - 0.48) <= 0.18:
-                return self.xbow_def
-            return self.xbow_mis
-        if card_id in self.miner_ids:
-            d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
-            if d <= 0.09:
-                return self.miner_chip
+            return self.xbow_def if back_centre else self.xbow_mis
+        if card_id in self.rocket_ids and self._defensive and d <= self.spell_aim_radius:
+            return self.defensive_rocket_reward              # rocket-cycle is the win path once defensive
+        if card_id in self.miner_ids and d <= 0.09:
+            return self.miner_chip
         return 0.0
 
     def step(self, action: Action):
@@ -196,6 +207,15 @@ class SimMatchEnv:
         if op_c > self._prev_op_crowns:
             reward += self.w_lose * (op_c - self._prev_op_crowns)
         self._prev_my_crowns, self._prev_op_crowns = my_c, op_c
+        # OFFENSIVE -> DEFENSIVE phase (icebow): once you've TAKEN a tower (defend the lead), OR double elixir
+        # arrives and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a tower),
+        # flip to defence -- rocket-cycle becomes the tower damage; the X-Bow reward moves to back-centre.
+        self._enemy_chip_total += chip0
+        if not self._defensive and (
+                my_c >= 1
+                or (self.eng.t >= self._double_time
+                    and self._enemy_chip_total < self.eng.princess_hp * self.xbow_success_frac)):
+            self._defensive = True
         mass = self.eng.enemy_mass(0)
         delta = self._prev_mass - mass                                          # potential-based troop shaping
         if abs(delta) > 0.005:
@@ -207,5 +227,5 @@ class SimMatchEnv:
         if done:
             reward += self.w_win if outcome == "win" else self.w_loss if outcome == "loss" else -1.0
         self._update_vectors()
-        info = {"outcome": outcome, "crowns": (my_c, op_c)}
+        info = {"outcome": outcome, "crowns": (my_c, op_c), "defensive": self._defensive}
         return self._last_obs, float(reward), done, info
