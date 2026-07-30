@@ -370,6 +370,9 @@ env:
   beatdown_punish_elixir: 7            # a 7+ elixir enemy TROOP dropped behind their king during 1x elixir...
   beatdown_punish_window_s: 3.0        # ...opens a window this long to reward a bridge X-Bow in the OPPOSITE lane
   enemy_king_behind_y: 0.18            # 'behind their king' = enemy (team-1) y at/below this (their back line)
+  # SPLIT-LANE hard-counters: decks built on these wide two-lane win conditions punish an offensive X-Bow
+  # (one X-Bow can't cover both lanes), so play defensive X-Bow + rocket-cycle the WHOLE match vs them:
+  split_lane_counter_cards: [royal_recruits, royal_hogs]
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy

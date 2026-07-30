@@ -1060,13 +1060,21 @@ Newest entries are at the bottom.
     that rewards an X-Bow placed at the bridge in the OPPOSITE lane with rewards.punish_xbow_reward (1.0) --
     overriding the defensive misplace for that counter-push. The beatdown bot now places its tank truly
     behind the king (0.18 -> 0.10) so the trigger is realistic.
-  * Verified: cycle/beatdown -> defensive from start; control/siege -> offensive; a Golem (8e) behind their
-    left king opens the punish -> X-Bow opposite (right) bridge +1.0, same-lane bridge -0.75 (still misplace).
-- config: rewards.punish_xbow_reward, env.beatdown_punish_elixir / beatdown_punish_window_s / enemy_king_behind_y.
+  * SPLIT-LANE HARD-COUNTERS (2026-07-30): a deck built on Royal Recruits / Royal Hogs (wide two-lane win
+    conditions a single X-Bow can't cover -- they hard-counter siege) ALSO forces defensive mode for the
+    WHOLE match (defensive X-Bow + rocket-cycle, never the offensive win condition). Detected from the
+    opponent deck's card keys (new ScriptedBot.cards) intersected with env.split_lane_counter_cards
+    [royal_recruits, royal_hogs], independent of the inferred style (these decks usually classify 'control').
+  * Verified: cycle/beatdown -> defensive from start; a royal_hogs / royal_recruits / hogs+recruits deck ->
+    defensive from start (even though it classifies 'control'); plain control/siege -> offensive; a Golem
+    (8e) behind their left king opens the punish -> X-Bow opposite (right) bridge +1.0, same-lane -0.75.
+- config: rewards.punish_xbow_reward, env.beatdown_punish_elixir / beatdown_punish_window_s / enemy_king_behind_y /
+  split_lane_counter_cards [royal_recruits, royal_hogs].
 - LIVE = POST-STAGE-3: live can't know the opponent's archetype a priori -- it must INFER it from the enemy
   cards it sees, which needs the OBJECT DETECTOR (identify enemy cards -> classify cycle/beatdown by avg
-  elixir + win condition), and the "7+ behind king during 1x" trigger needs the detector (card + elixir +
-  position) + the match-CLOCK reader. So the LIVE version is gated on Stage 3 + the clock. TODO once both land.
+  elixir + win condition; spot Royal Recruits / Royal Hogs to flag the split-lane hard-counter), and the
+  "7+ behind king during 1x" trigger needs the detector (card + elixir + position) + the match-CLOCK reader.
+  So the LIVE version is gated on Stage 3 + the clock. TODO once both land.
 
 
 ------------------------------------------------------------------------------

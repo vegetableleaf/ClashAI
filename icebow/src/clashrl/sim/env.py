@@ -70,6 +70,8 @@ class SimMatchEnv:
         self.beatdown_punish_elixir = int(cfg.get("env", "beatdown_punish_elixir", default=7))
         self.beatdown_punish_window = float(cfg.get("env", "beatdown_punish_window_s", default=3.0))
         self.king_behind_y = float(cfg.get("env", "enemy_king_behind_y", default=0.18))
+        self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
+                                               default=["royal_recruits", "royal_hogs"]))
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
@@ -154,10 +156,14 @@ class SimMatchEnv:
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
-        # MATCHUP-aware doctrine: vs a fast CYCLE or heavy BEATDOWN deck, play EXCLUSIVELY defensive X-Bow
-        # from the start; vs control/siege, offensive-first (transition per the 2x/tower rule).
+        # MATCHUP-aware doctrine: vs a fast CYCLE or heavy BEATDOWN deck -- or a SPLIT-LANE deck built on
+        # Royal Recruits / Royal Hogs (they hard-counter X-Bow: a wide two-lane push a single X-Bow can't
+        # cover) -- play EXCLUSIVELY defensive X-Bow + rocket-cycle for the WHOLE match. vs control/siege
+        # it's offensive-first (transition per the 2x/tower rule).
         self._matchup = getattr(self.opponent, "style", "control")
-        if self._matchup in ("cycle", "beatdown"):
+        opp_cards = set(getattr(self.opponent, "cards", ()) or ())
+        self._split_lane_counter = bool(opp_cards & self.split_lane_counters)
+        if self._matchup in ("cycle", "beatdown") or self._split_lane_counter:
             self._defensive = True
         self._punish_lane_x = None       # beatdown-punish: bridge X-Bow the OPPOSITE lane to their expensive drop
         self._punish_until = -1.0
