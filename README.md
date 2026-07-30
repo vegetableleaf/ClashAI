@@ -8,7 +8,7 @@ There are two very different agents in this repo:
 
 | Folder | Bot | Approach |
 | ------ | --- | -------- |
-| [`icebow/`](icebow/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. Follows a DDQN architecture.|
+| [`icebow/`](icebow/) | **Learning bot** — the main project | Watches *you* play and copies you (imitation learning), then improves by trial-and-error (reinforcement learning), rewarded for taking towers, defending its own, and winning. Follows a DDQN architecture. _**NOTE**: this folder is called "icebow" because I am having it run an icebow deck. You can rename it to anything depending on what deck you want to choose for the AI._|
 | [`trol/`](trol/) | **Scripted bot** — the first experiment | Hand-written rules plus a DQN scaffold. Kept for reference. |
 
 > ⚠️ **Please use this responsibly.** Automating Clash Royale violates Supercell's
