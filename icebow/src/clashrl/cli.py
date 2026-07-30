@@ -86,7 +86,7 @@ def _cmd_train_bc(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu121")
         return
-    train_bc(Config.load(args.config), init=args.init)
+    train_bc(Config.load(args.config), init=args.init, iterations=args.iterations)
 
 
 def _cmd_train_rl(args) -> None:
@@ -217,6 +217,9 @@ def main() -> None:
     tbc.add_argument("--init", metavar="CKPT", default=None,
                      help="warm-start from a checkpoint (e.g. data/policy_sim.pt) and fine-tune it on your "
                           "recordings instead of random init -- combines the sim prior with your play")
+    tbc.add_argument("--iterations", type=int, default=1, metavar="N",
+                     help="run N successive BC passes in one command, each warm-starting from the previous "
+                          "(fresh optimizer each pass, not just more epochs); saves data/policy.pt after every pass")
     tbc.set_defaults(func=_cmd_train_bc)
 
     trl = sub.add_parser("train-rl", help="RL fine-tune the policy on live matches (tower/win rewards)")

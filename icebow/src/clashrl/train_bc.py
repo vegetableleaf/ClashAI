@@ -48,7 +48,7 @@ def _load_datasets(root):
             grid, deck, len(files))
 
 
-def train_bc(cfg, init: str | None = None) -> None:
+def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root)
     if obs is None:
@@ -118,39 +118,49 @@ def train_bc(cfg, init: str | None = None) -> None:
             else:
                 print(f"[train-bc] --init {ip.name} doesn't match this dataset (different deck/dims) "
                       "-- training from scratch instead.")
-    opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)))
     ce = nn.CrossEntropyLoss()
     epochs = int(cfg.get("train", "bc_epochs", default=10))
-
-    for ep in range(1, epochs + 1):
-        net.train()
-        tot, sc, cc, n = 0.0, 0, 0, 0
-        for xb, hb, nb, eb, tb, cardb, cellb in loader:
-            xb, hb, nb, eb, tb = xb.to(device), hb.to(device), nb.to(device), eb.to(device), tb.to(device)
-            cardb, cellb = cardb.to(device), cellb.to(device)
-            card_logits, cell_logits = net(xb, hb, nb, eb, tb)
-            card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
-            loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
-            opt.zero_grad()
-            loss.backward()
-            opt.step()
-            tot += loss.item() * len(xb)
-            n += len(xb)
-            sc += (card_logits.argmax(1) == cardb).sum().item()
-            cc += (cell_logits.argmax(1) == cellb).sum().item()
-        print(f"[train-bc] epoch {ep}/{epochs}  loss {tot / n:.3f}  "
-              f"card_acc {sc / n:.2f}  cell_acc {cc / n:.2f}")
-
+    iterations = max(1, int(iterations))
     ckpt = cfg.path(cfg.get("train", "checkpoint", default="data/policy.pt"))
     ckpt.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({
-        "model": net.state_dict(),
-        "grid": [gw, gh],
-        "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96])),
-        "n_cards": n_cards,
-        "n_cells": n_cells,
-        "threat_dim": threat_dim,
-        "deck": deck,
-    }, ckpt)
-    print(f"[train-bc] saved policy to {ckpt}")
+
+    # Run `iterations` successive BC passes. The net PERSISTS across passes, so each one
+    # warm-starts from the previous pass's weights; a FRESH optimizer per pass makes it a
+    # restart (equivalent to chaining `train-bc --init` runs) rather than just more epochs.
+    for it in range(1, iterations + 1):
+        if iterations > 1:
+            src = "the --init checkpoint / random init" if it == 1 else f"iteration {it - 1}"
+            print(f"[train-bc] === iteration {it}/{iterations} (warm-start from {src}) ===")
+        opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)))
+        for ep in range(1, epochs + 1):
+            net.train()
+            tot, sc, cc, n = 0.0, 0, 0, 0
+            for xb, hb, nb, eb, tb, cardb, cellb in loader:
+                xb, hb, nb, eb, tb = xb.to(device), hb.to(device), nb.to(device), eb.to(device), tb.to(device)
+                cardb, cellb = cardb.to(device), cellb.to(device)
+                card_logits, cell_logits = net(xb, hb, nb, eb, tb)
+                card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
+                loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
+                opt.zero_grad()
+                loss.backward()
+                opt.step()
+                tot += loss.item() * len(xb)
+                n += len(xb)
+                sc += (card_logits.argmax(1) == cardb).sum().item()
+                cc += (cell_logits.argmax(1) == cellb).sum().item()
+            tag = f"it {it}/{iterations} " if iterations > 1 else ""
+            print(f"[train-bc] {tag}epoch {ep}/{epochs}  loss {tot / n:.3f}  "
+                  f"card_acc {sc / n:.2f}  cell_acc {cc / n:.2f}")
+
+        torch.save({
+            "model": net.state_dict(),
+            "grid": [gw, gh],
+            "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96])),
+            "n_cards": n_cards,
+            "n_cells": n_cells,
+            "threat_dim": threat_dim,
+            "deck": deck,
+        }, ckpt)
+        suffix = f" (after iteration {it}/{iterations})" if iterations > 1 else ""
+        print(f"[train-bc] saved policy to {ckpt}{suffix}")
 
