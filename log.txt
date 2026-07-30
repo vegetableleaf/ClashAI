@@ -1043,6 +1043,33 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-07-30  —  Matchup-aware X-Bow doctrine (sim): defensive vs cycle/beatdown + the beatdown punish
+------------------------------------------------------------------------------
+- User doctrine: vs a fast CYCLE deck (2.6 Hog / 2.9 Hog-EQ) OR a heavy BEATDOWN deck (Pekka / Mega Knight /
+  Golem / Elixir Golem), play EXCLUSIVELY defensive X-Bow (never the offensive win condition). EXCEPTION for
+  beatdown: if they drop a 7+ elixir card BEHIND their king during 1x elixir, immediately X-Bow the bridge in
+  the OPPOSITE lane (punish the expensive, committed play while they're out of position).
+- IMPLEMENTED IN THE SIM (the sim KNOWS the opponent's style + its deploys):
+  * sim/env.py reads the opponent's inferred STYLE (cycle/control/beatdown/siege from meta_decks.classify).
+    On reset, vs cycle/beatdown it starts in DEFENSIVE mode (self._defensive True from t=0 -> back-centre
+    X-Bow + rocket-cycle, forward X-Bow = misplace); vs control/siege it's offensive-first (transitions per
+    the 2x-elixir / tower-taken rule).
+  * BEATDOWN PUNISH: the engine now records each team's last deploy (engine.last_deploy). When the beatdown
+    opponent drops a TROOP with elixir >= env.beatdown_punish_elixir (7) at/behind their king
+    (y <= env.enemy_king_behind_y 0.18) during 1x elixir, a window (env.beatdown_punish_window_s 3s) opens
+    that rewards an X-Bow placed at the bridge in the OPPOSITE lane with rewards.punish_xbow_reward (1.0) --
+    overriding the defensive misplace for that counter-push. The beatdown bot now places its tank truly
+    behind the king (0.18 -> 0.10) so the trigger is realistic.
+  * Verified: cycle/beatdown -> defensive from start; control/siege -> offensive; a Golem (8e) behind their
+    left king opens the punish -> X-Bow opposite (right) bridge +1.0, same-lane bridge -0.75 (still misplace).
+- config: rewards.punish_xbow_reward, env.beatdown_punish_elixir / beatdown_punish_window_s / enemy_king_behind_y.
+- LIVE = POST-STAGE-3: live can't know the opponent's archetype a priori -- it must INFER it from the enemy
+  cards it sees, which needs the OBJECT DETECTOR (identify enemy cards -> classify cycle/beatdown by avg
+  elixir + win condition), and the "7+ behind king during 1x" trigger needs the detector (card + elixir +
+  position) + the match-CLOCK reader. So the LIVE version is gated on Stage 3 + the clock. TODO once both land.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

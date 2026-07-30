@@ -214,6 +214,7 @@ class SimEngine:
             ]
         self.chip = {0: 0.0, 1: 0.0}             # enemy-tower HP you removed this step (both views)
         self.kills = {0: 0, 1: 0}
+        self.last_deploy = {0: None, 1: None}    # (spec, x, y, t) of each team's most recent deploy
 
     def elixir_rate(self) -> float:
         if self.t >= self.regulation:
@@ -229,6 +230,7 @@ class SimEngine:
         if self.done or not self.can_afford(team, spec):
             return False
         self.elixir[team] -= spec.elixir
+        self.last_deploy[team] = (spec, x, y, self.t)
         if spec.kind == "spell":
             self.spells.append(_Spell(team, x, y, spec, spec.spell_delay))
             return True

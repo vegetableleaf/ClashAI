@@ -66,6 +66,10 @@ class SimMatchEnv:
         self.defensive_rocket_reward = r("defensive_rocket_reward", 0.3)
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
+        self.punish_xbow_reward = r("punish_xbow_reward", 1.0)
+        self.beatdown_punish_elixir = int(cfg.get("env", "beatdown_punish_elixir", default=7))
+        self.beatdown_punish_window = float(cfg.get("env", "beatdown_punish_window_s", default=3.0))
+        self.king_behind_y = float(cfg.get("env", "enemy_king_behind_y", default=0.18))
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
@@ -150,6 +154,14 @@ class SimMatchEnv:
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
+        # MATCHUP-aware doctrine: vs a fast CYCLE or heavy BEATDOWN deck, play EXCLUSIVELY defensive X-Bow
+        # from the start; vs control/siege, offensive-first (transition per the 2x/tower rule).
+        self._matchup = getattr(self.opponent, "style", "control")
+        if self._matchup in ("cycle", "beatdown"):
+            self._defensive = True
+        self._punish_lane_x = None       # beatdown-punish: bridge X-Bow the OPPOSITE lane to their expensive drop
+        self._punish_until = -1.0
+        self._punish_seen_t = -1.0
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
@@ -165,6 +177,9 @@ class SimMatchEnv:
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
         d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
         if card_id in self.xbow_ids:
+            if (self._punish_lane_x is not None and self.eng.t <= self._punish_until
+                    and abs(nx - self._punish_lane_x) <= 0.12 and ny <= 0.55):
+                return self.punish_xbow_reward           # counter-push: bridge X-Bow punishing a beatdown's expensive drop
             back_centre = ny >= self.xbow_def_y and abs(nx - 0.48) <= 0.18
             if self._defensive:                              # DEFENSIVE: back-centre snipe only; forward is wrong now
                 return self.xbow_def if back_centre else self.xbow_mis
@@ -216,6 +231,17 @@ class SimMatchEnv:
                 or (self.eng.t >= self._double_time
                     and self._enemy_chip_total < self.eng.princess_hp * self.xbow_success_frac)):
             self._defensive = True
+        # BEATDOWN PUNISH: opponent dropped a 7+ elixir TROOP behind their king during 1x elixir -> open a
+        # short window to reward an offensive bridge X-Bow in the OPPOSITE lane (punish the committed play).
+        if self._matchup == "beatdown" and self.eng.t < self._double_time:
+            ld = self.eng.last_deploy[1]
+            if ld is not None:
+                spec_e, ex_x, ex_y, ex_t = ld
+                if (ex_t > self._punish_seen_t and spec_e.kind == "troop"
+                        and spec_e.elixir >= self.beatdown_punish_elixir and ex_y <= self.king_behind_y):
+                    self._punish_seen_t = ex_t
+                    self._punish_lane_x = 0.75 if ex_x < 0.5 else 0.25
+                    self._punish_until = self.eng.t + self.beatdown_punish_window
         mass = self.eng.enemy_mass(0)
         delta = self._prev_mass - mass                                          # potential-based troop shaping
         if abs(delta) > 0.005:

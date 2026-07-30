@@ -181,6 +181,7 @@ rewards:
   miner_backfield_penalty: -0.75 # Miner DUMPED behind your own towers (env.own_backfield_y) with NO push to defend -- the 'safe' idle huddle; wasted elixir (defending a real push there is exempt)
   xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
   defensive_rocket_reward: 0.3   # once the bot is in DEFENSIVE mode (X-Bow failed to break through by 2x elixir, or a tower was taken) a rocket aimed at an enemy princess = the sanctioned cycle-chip win path
+  punish_xbow_reward: 1.0        # BEATDOWN PUNISH: they dropped a 7+ elixir card behind their king during 1x elixir -> reward a bridge X-Bow in the OPPOSITE lane (punish the expensive, committed play)
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
@@ -364,6 +365,11 @@ env:
   xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king (too far back) -> misplace, not defence
   xbow_ontop_radius: 0.10              # enemy (red) troop blob within this of the X-Bow drop = dropped INTO a push -> xbow_exposed_penalty (blob threshold = ranged_ontop_size)
   xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: if by 2x elixir the X-Bow has chipped LESS than this fraction of an enemy tower (and no crown), give up the offensive X-Bow and switch to defensive X-Bow + rocket-cycle
+  # Matchup-aware doctrine (SIM knows the opponent's style; LIVE needs the detector -> post-Stage-3):
+  # vs a fast CYCLE or heavy BEATDOWN deck play EXCLUSIVELY defensive X-Bow from the start. EXCEPTION (beatdown):
+  beatdown_punish_elixir: 7            # a 7+ elixir enemy TROOP dropped behind their king during 1x elixir...
+  beatdown_punish_window_s: 3.0        # ...opens a window this long to reward a bridge X-Bow in the OPPOSITE lane
+  enemy_king_behind_y: 0.18            # 'behind their king' = enemy (team-1) y at/below this (their back line)
   musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
   # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
   # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy
