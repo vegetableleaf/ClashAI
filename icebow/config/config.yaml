@@ -46,6 +46,17 @@ elixir:
   pip_xs: [0.312, 0.369, 0.440, 0.506, 0.577, 0.635, 0.708, 0.775, 0.850, 0.917]
   filled_hsv_lower: [140, 60, 120]
   filled_hsv_upper: [175, 255, 255]
+  # --- 2x / 3x elixir CLOCK (src/clashrl/clock.py -> feeds the icebow offense->defense phase machine) ---
+  # The multiplier is read TWO ways, LATCHED to the max (it only ever RISES in a match):
+  #   TIME  -- elapsed since the match started. Works with NO calibration; lags the real clock by
+  #            however long IN_MATCH took to detect (~1-2s) -- fine for the coarse 2x/3x gate.
+  #   BADGE -- template-match the on-screen "x2"/"x3" indicator. Screen-accurate but OPTIONAL: drop
+  #            templates/elixir_2x.png + elixir_3x.png (work-scale crops) and it refines the time read.
+  double_time_s: 120           # elapsed seconds when DOUBLE elixir starts (regulation 180 - last 60s)
+  triple_time_s: 180           # elapsed seconds when TRIPLE elixir starts (overtime)
+  x2_template: elixir_2x.png   # optional PNG in templates/ for the on-screen "x2" badge (null => time only)
+  x3_template: elixir_3x.png   # optional PNG in templates/ for the on-screen "x3" badge
+  badge_threshold: 0.7         # min template-match score to accept a badge
 
 # --- Scripted menu navigation (reused from trol) --------------------------
 # The learned policy only plays cards in-match; queueing/exiting is scripted so

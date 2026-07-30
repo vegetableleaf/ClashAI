@@ -29,6 +29,7 @@ from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, defensive_cell, enemy_mass, enemy_mass_at,
                      near_enemy_king, near_enemy_princess, near_my_king, threat_front,
                      threat_side, troop_size_at, weaker_princess_cell, xbow_lock_cell)
+from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
@@ -48,6 +49,8 @@ class LiveMatchEnv:
         self.controller = Controller(self.capture, cfg)
         self.tower = TowerTracker(cfg)
         self.tower_hp = TowerHpTracker(cfg)
+        self.clock = ElixirClock(cfg, self.vision)   # 2x/3x elixir multiplier (feeds the phase machine)
+        self.elixir_mult = 1
         self.gw, self.gh = int(self.actions.gw), int(self.actions.gh)
         self.n_slots, self.n_cells = self.actions.n_slots, self.actions.n_cells
 
@@ -357,6 +360,8 @@ class LiveMatchEnv:
                 return None
             state = self.vision.detect_state(frame)
             if state == GameState.IN_MATCH:
+                self.clock.reset()               # zero the 2x/3x elixir clock at match start
+                self.elixir_mult = 1
                 self.elixir = self.vision.read_elixir(frame)
                 self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)
                 self._read_hand(frame)
@@ -739,6 +744,10 @@ class LiveMatchEnv:
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
+            new_mult = self.clock.update(frame)                  # 2x/3x elixir clock (time + optional badge)
+            if new_mult != self.elixir_mult:
+                print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
+            self.elixir_mult = new_mult
             # The Log chip-cycle is only justified as a LAST RESORT: Skeletons not in hand (no cheaper
             # cycle), the board quiet (nothing to Log defensively), AND a near-full bar (won't starve a
             # defence). self._prev_mass = enemy mass on the PRE-action frame; elixir read pre-action too.
@@ -828,7 +837,7 @@ class LiveMatchEnv:
             self._update_threat(frame)
             self._last_obs = self.vision.observe(frame)
             self._last_frame = frame
-            return self._last_obs, reward, False, {"elixir": self.elixir}
+            return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
 
         # match is over -> resolve win/loss terminal reward, then exit
         reward, outcome, detail = self._resolve_terminal()

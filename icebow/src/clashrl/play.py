@@ -87,6 +87,8 @@ def play(cfg) -> None:
     hp_tracker = TowerHpTracker(cfg)          # enemy princess HP, for the rocket redirect
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
+    from .clock import ElixirClock
+    clock = ElixirClock(cfg, vision)          # 2x/3x elixir multiplier (feeds the phase machine)
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
                     if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "miner")}
@@ -213,6 +215,7 @@ def play(cfg) -> None:
     nav = MenuNavigator(cfg, controller, vision, label="play", log=log)
     prev = None
     last_act = 0.0
+    prev_mult = 1
     while running["v"]:
         try:
             frame = capture.grab()
@@ -227,10 +230,16 @@ def play(cfg) -> None:
                     hp_tracker.reset()
                     tower_tracker.reset()
                     threat_tracker.reset()
+                    clock.reset()                 # zero the 2x/3x elixir clock at match start
+                    prev_mult = 1
                 prev = state
 
             if state == GameState.IN_MATCH:
                 nav.reset_state()             # not on a menu -> clear the nav stuck timers
+                m = clock.update(frame)       # 2x/3x elixir clock (time + optional badge)
+                if m != prev_mult:
+                    log(f"[play] elixir x{m}")
+                    prev_mult = m
                 now = time.time()
                 if now - last_act >= act_period:
                     act_in_match(frame)
