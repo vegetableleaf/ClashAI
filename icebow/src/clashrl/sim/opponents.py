@@ -1,13 +1,21 @@
-"""Scripted opponents for the sim. Each bot PILOTS a real meta deck (sampled from the meta-deck pool,
-see meta_decks.py) with simple, deck-agnostic heuristics whose aggression is set by the deck's inferred
-STYLE (cycle / control / beatdown / siege). Not meant to be strong -- just varied, plausible pressure
-across MANY matches so the policy learns robust responses. Add self-play later; see icebow/DECK_SWITCH.md.
+"""Opponents for the sim. Two kinds:
+
+* :class:`ScriptedBot` -- pilots a real meta deck (sampled from the meta-deck pool, see meta_decks.py)
+  with simple, deck-agnostic heuristics whose aggression is set by the deck's inferred STYLE
+  (cycle / control / beatdown / siege). Not strong -- just varied, plausible pressure so the policy
+  learns robust responses across MANY decks.
+* :class:`SelfPlayOpponent` -- pilots team 1 with a FROZEN past copy of the agent's own policy, viewing
+  a MIRRORED board (see sim/view.py) so the same policy plays both sides. Snapshotted into a small
+  league by train_sim and mixed in with the scripted bots (`sim.selfplay_prob`).
 """
 from __future__ import annotations
 
 from typing import List
 
+import numpy as np
+
 from .engine import build_spec
+from . import view
 
 
 class ScriptedBot:
@@ -72,3 +80,74 @@ def make_opponent(cfg, db, rng, pool: List[dict]) -> ScriptedBot:
     lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
     levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in deck["cards"]]
     return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels)
+
+
+class SelfPlayOpponent:
+    """Pilots team 1 with a FROZEN copy of the agent's policy. The policy only ever learned team 0's
+    point of view (you at the bottom, deploy low, attack up), so we show it a 180-degree MIRRORED board
+    (sim/view.py) where team 1 sits at the bottom, run the exact same greedy gate/card/cell choice the
+    trainer uses, then transform the chosen cell back to the engine frame before deploying. It plays the
+    AGENT's deck (the only deck the policy understands) at random ladder levels, and cycles its hand the
+    same way the env does, so it is a genuine self-mirror -- a strong, adaptive sparring partner."""
+
+    def __init__(self, cfg, env, net, rng):
+        self.rng = rng
+        self.net = net                                           # frozen DQN (policy + gate), eval mode
+        self.actions = env.actions
+        self.db = env.db
+        self.n_cards = env.n_cards
+        self.gw, self.gh = env.gw, env.gh
+        self.n_cells = env.n_cells
+        self.obs_shape = env.obs_shape
+        self.threat_dim = env.threat_dim
+        self.anywhere_ids = env.anywhere_ids
+        self.deck_keys = env.deck_keys
+        lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
+        lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
+        levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in self.deck_keys]
+        self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, levels)]
+        # exposed so the env's matchup doctrine (reads opponent .style / .cards) still works
+        from .meta_decks import classify_style
+        self.cards = list(self.deck_keys)
+        self.style = classify_style(self.db, self.deck_keys)
+        self.cycle = list(range(self.n_cards))
+        self.rng.shuffle(self.cycle)
+
+    def _hand_ids(self):
+        return self.cycle[:4]
+
+    def act(self, eng) -> None:
+        import torch
+
+        oh, ow, _ = self.obs_shape
+        obs = view.render_obs(eng, oh, ow, team=1)
+        hand = np.zeros(self.n_cards, np.float32)
+        for i in self._hand_ids():
+            hand[i] = 1.0
+        nxt = np.zeros(self.n_cards, np.float32)
+        if len(self.cycle) > 4:
+            nxt[self.cycle[4]] = 1.0
+        elx = np.array([eng.elixir[1] / 10.0], np.float32)
+        thr = view.threat_vector(eng, self.threat_dim, team=1)
+
+        dev = next(self.net.parameters()).device
+        obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0
+        hand_t = torch.from_numpy(hand).unsqueeze(0).to(dev)
+        nxt_t = torch.from_numpy(nxt).unsqueeze(0).to(dev)
+        elx_t = torch.from_numpy(elx).unsqueeze(0).to(dev)
+        thr_t = torch.from_numpy(thr).unsqueeze(0).to(dev)
+        with torch.no_grad():
+            cq, ceq, gq = self.net(obs_t, hand_t, nxt_t, elx_t, thr_t)
+        cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
+        if gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0].max():
+            return                                               # gate says WAIT
+        card = int(cq[0].argmax())
+        cell = int(ceq[0].argmax())
+
+        cell = self.actions.deploy_clamp(card in self.anywhere_ids, cell)
+        lnx, lny = self.actions.cell_center(cell % self.gw, cell // self.gw)
+        ex, ey = 1.0 - lnx, 1.0 - lny                            # mirror the local cell back to engine coords
+        if eng.deploy(1, self.specs[card], ex, ey):
+            idx = self.cycle.index(card)
+            self.cycle.append(self.cycle.pop(idx))
+

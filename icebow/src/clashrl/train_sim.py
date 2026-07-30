@@ -36,6 +36,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
 
     from .train_rl import _build_net, _pick_device
     from .sim.env import SimMatchEnv
+    from .sim.opponents import SelfPlayOpponent, make_opponent
 
     K = max(1, int(envs if envs is not None else cfg.get("sim", "envs", default=8)))
     pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
@@ -154,6 +155,42 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                     "threat_dim": threat_dim, "deck": e0.deck_keys,
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, sim_path)
 
+    # -- self-play league --------------------------------------------------
+    # Mix the scripted meta bots with a FROZEN past copy of the agent's own policy (a self-mirror,
+    # see sim/opponents.SelfPlayOpponent). Snapshots go into a small league; each match reset picks a
+    # league snapshot with prob `selfplay_prob` (ramped in over `selfplay_ramp_matches`), else a
+    # scripted bot. Disabled with selfplay_prob <= 0 (then this is exactly the old scripted-only run).
+    sp_prob = float(cfg.get("sim", "selfplay_prob", default=0.5))
+    sp_ramp = int(cfg.get("sim", "selfplay_ramp_matches", default=5000))
+    sp_snap_every = int(cfg.get("sim", "selfplay_snapshot_every", default=1000))
+    sp_league_size = int(cfg.get("sim", "selfplay_league_size", default=5))
+    league: deque = deque(maxlen=max(1, sp_league_size))
+    _prog = {"n": 0}
+
+    def snapshot():
+        snap = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+        snap.load_state_dict(net.state_dict())
+        snap.eval()
+        for p in snap.parameters():
+            p.requires_grad_(False)
+        league.append(snap)
+
+    def sp_prob_now():
+        return sp_prob if sp_ramp <= 0 else sp_prob * min(1.0, _prog["n"] / sp_ramp)
+
+    def opponent_provider(env):
+        if sp_prob > 0 and league and random.random() < sp_prob_now():
+            return SelfPlayOpponent(cfg, env, random.choice(league), env.rng)
+        return make_opponent(cfg, env.db, env.rng, env.meta_pool)
+
+    if sp_prob > 0:
+        for e in pool:
+            e.opponent_provider = opponent_provider
+        if resume and sim_path.exists():
+            snapshot()                                           # a resumed policy is a valid sparring seed
+        print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
+              f"snapshot every {sp_snap_every}, league size {sp_league_size}")
+
     # per-env current state
     cobs = [e.reset() for e in pool]
     chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
@@ -185,7 +222,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                     oc = info.get("outcome")
                     wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
                     win_hist.append(1 if oc == "win" else 0); rew_hist.append(ep_r[i])
-                    done_n += 1; ep_r[i] = 0.0
+                    done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0
                     cobs[i] = env.reset()
                     chand[i], cnxt[i] = env.hand_vec.copy(), env.next_vec.copy()
                     celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
@@ -199,6 +236,8 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                               f"total {wins}W-{losses}L-{draws}D{ls}", flush=True)
                     if done_n % save_every == 0:
                         save()
+                    if sp_prob > 0 and done_n % sp_snap_every == 0:
+                        snapshot()
                 else:
                     cobs[i] = nobs; chand[i], cnxt[i] = nhand, nnxt
                     celx[i], cthr[i] = nelx, nthr

@@ -248,7 +248,7 @@ def main() -> None:
 
     dki = sub.add_parser("decks-import",
                          help="import the current top meta decks from the official CR API into config/meta_decks.yaml")
-    dki.add_argument("--limit", type=int, default=100, help="how many top DISTINCT decks to keep (default 100)")
+    dki.add_argument("--limit", type=int, default=1000, help="how many top DISTINCT decks to keep (default 1000)")
     dki.add_argument("--players", type=int, default=120, help="how many top-ladder players' battle logs to scan")
     dki.set_defaults(func=_cmd_decks_import)
 

@@ -36,7 +36,7 @@ def _get(url: str, token: str, timeout: float = 20.0):
         return json.loads(resp.read().decode("utf-8"))
 
 
-def import_decks(cfg, limit: int = 100, players: int = 120) -> None:
+def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
     from .cards import CardDB
     db = CardDB(cfg)
     token_env = cfg.get("sim", "api_token_env", default="CLASHRL_CR_API_TOKEN")

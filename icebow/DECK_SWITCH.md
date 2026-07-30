@@ -96,11 +96,13 @@ DONE in Phase 1 / this change:
     Pipeline: `yt-dlp` the clips (personal research use; respect copyright/ToS) → per-frame detector read →
     recover `(obs*, card, cell)` plays filtered to icebow cards → EXTEND `replay_mine.py` to emit a
     `train-bc`-loadable `dataset.npz` (and/or priors). START only after the detector is trained + wired.
-- **Self-play (sim) — QUEUED (design in log.txt 2026-07-30).** Drive the opponent (team 1) with a FROZEN
-  past copy of the policy via a MIRRORED obs/action, mixed with the scripted meta bots. Snapshot into a
-  small league every ~1000 matches; per-match pick a league snapshot with prob `sim.selfplay_prob` (ramp
-  0→~0.6), else a scripted bot (~40%). Build the `SelfPlayOpponent` + config knobs on the training machine.
-  This is ALSO the point where PPO starts to beat DDQN (see the PPO note) — consider doing both together.
+- **Self-play (sim) — BUILT (2026-07-30).** The opponent (team 1) can be driven by a FROZEN past copy of
+  the agent's own policy on a MIRRORED board (`sim/view.py` 180° rotation), mixed with the scripted meta
+  bots. `train_sim` snapshots the policy into a small league every `sim.selfplay_snapshot_every` matches;
+  each reset picks a league snapshot with prob `sim.selfplay_prob` (ramped in over `sim.selfplay_ramp_matches`),
+  else a scripted bot. See `sim/opponents.SelfPlayOpponent`. Defaults: prob 0.5, ramp 5000, snapshot 1000,
+  league 5 (set `selfplay_prob: 0` to disable). This is ALSO the point where PPO starts to beat DDQN (see the
+  PPO note) — consider trying PPO here later.
 - **Stage 5 (post-Stage-3): learned dynamics / world model.** A model that predicts the NEXT board
   state from the current state + action (e.g. a placed troop advances toward its nearest target). Trained
   first (supervised on recorded transitions), then used to help RL — this is model-based RL (Dreamer /

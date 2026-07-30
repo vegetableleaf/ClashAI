@@ -20,6 +20,7 @@ from ..cards import CardDB
 from .engine import SimEngine, build_spec
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
+from . import view
 
 Action = Tuple[int, int, int]
 _THREAT_DIM = 16
@@ -76,6 +77,9 @@ class SimMatchEnv:
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
         self.eng = SimEngine(cfg, self.db, self.rng)
+        # Optional hook: train_sim sets this to inject SELF-PLAY opponents (a frozen past policy) mixed
+        # with the scripted meta bots. Called with `self` in reset(); default None = always scripted.
+        self.opponent_provider = None
         self._reset_vectors()
 
     def _reset_vectors(self):
@@ -108,46 +112,17 @@ class SimMatchEnv:
     def _threat_vector(self) -> np.ndarray:
         """Compact, best-effort approximation of clashrl.threats.Threat.vector() from ground truth:
         enemy (team-1) units on YOUR half. Not a 1:1 layout -- enough to condition on in sim."""
-        v = np.zeros(self.threat_dim, np.float32)
-        foes = [u for u in self.eng.units if u.team == 1 and u.y >= 0.5]
-        if not foes:
-            return v
-        mass = sum(min(1.0, u.hp / 800.0) for u in foes)
-        biggest = max(u.hp for u in foes) / 3000.0
-        cx = sum(u.x for u in foes) / len(foes)
-        depth = (max(u.y for u in foes) - 0.5) / 0.5           # how far past the river toward your king
-        v[0] = min(1.0, mass)
-        v[1] = min(1.0, len(foes) / 6.0)
-        v[2] = min(1.0, biggest)
-        v[3] = 1.0 if cx < 0.4 else 0.0                        # left lane
-        v[4] = 1.0 if cx > 0.6 else 0.0                        # right lane
-        v[5] = min(1.0, max(0.0, depth))
-        return v
+        return view.threat_vector(self.eng, self.threat_dim, team=0)
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape
-        img = np.zeros((oh, ow, 3), np.uint8)
-        img[:, :] = (25, 80, 25)                               # grass (BGR)
-        img[oh // 2, :] = (120, 90, 30)                        # river line
-        for team, col in ((0, (230, 90, 60)), (1, (60, 60, 230))):   # you = blue, enemy = red (BGR)
-            for tw in self.eng.towers[team]:
-                if not tw.alive:
-                    continue
-                cxp, cyp = int(tw.x * ow), int(tw.y * oh)
-                hw = 3 if tw.king else 2
-                img[max(0, cyp - hw):cyp + hw + 1, max(0, cxp - hw):cxp + hw + 1] = col
-        for u in self.eng.units:
-            if u.hp <= 0:
-                continue
-            cxp, cyp = int(u.x * ow), int(u.y * oh)
-            if 0 <= cyp < oh and 0 <= cxp < ow:
-                img[cyp, cxp] = (230, 90, 60) if u.team == 0 else (60, 60, 230)
-        return img
+        return view.render_obs(self.eng, oh, ow, team=0)
 
     # -- lifecycle ---------------------------------------------------------
     def reset(self) -> np.ndarray:
         self.eng.reset()
-        self.opponent = make_opponent(self.cfg, self.db, self.rng, self.meta_pool)
+        self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
+                         else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
         self.cycle = list(range(self.n_cards))
         self.rng.shuffle(self.cycle)
         self._match_bonus = 0.0

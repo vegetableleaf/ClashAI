@@ -510,6 +510,16 @@ sim:
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
   log_every_matches: 25         # print a rolling win-rate/avg-reward summary this often
   save_every_matches: 50        # checkpoint data/policy_sim.pt this often
+  # --- Self-play (frozen past policy mixed in with the scripted meta bots) --------------------------
+  # Every `selfplay_snapshot_every` matches the current policy is frozen into a small league; each match
+  # reset then picks a league snapshot to pilot the OPPONENT with prob `selfplay_prob` (ramped in over
+  # `selfplay_ramp_matches`), else a scripted meta-deck bot. The frozen self plays the agent's own deck
+  # on a mirrored board (sim/view.py) = a strong, adaptive sparring partner. Set selfplay_prob 0 to
+  # disable (scripted-only, the original behaviour).
+  selfplay_prob: 0.5            # fraction of matches played vs a frozen self (0 = off); the rest are scripted meta decks
+  selfplay_ramp_matches: 5000   # linearly ramp selfplay_prob 0 -> full over this many matches (0 = no ramp)
+  selfplay_snapshot_every: 1000 # freeze a policy snapshot into the league this often (matches)
+  selfplay_league_size: 5       # keep this many recent snapshots; a match samples one at random
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
