@@ -1,0 +1,434 @@
+===============================================================================
+ CLASHAI - THE LEARNING BOT: FULL SET-UP & TRAINING GUIDE (FROM SCRATCH)
+===============================================================================
+
+This guide takes a brand-new person, on a brand-new Windows PC, all the way from
+"I just forked the repo on GitHub" to "the bot is training and playing on its own".
+
+You do NOT need to be a programmer. Just follow the stages in order and copy-paste
+the commands exactly. Words in ALL CAPS are important. Anything shown in an indented
+block like this:
+
+    some command here
+
+is a command you type into a PowerShell terminal and press Enter.
+
+There are TWO ways to train the bot:
+  * PATH A (easiest, no game needed): train in a built-in SIMULATOR on your GPU.
+    Great for getting started TODAY. Do Stages 0-3.
+  * PATH B (the real thing): the bot learns by WATCHING YOU PLAY, then improves by
+    playing live. Needs the game open + a little calibration. Do Stages 0-2, then 4-9.
+
+The BEST result comes from doing BOTH: train the simulator first, then blend that
+with your own recordings (Stage 8 explains the one command that combines them).
+
+
+===============================================================================
+ WHAT YOU NEED (checklist)
+===============================================================================
+
+[ ] A Windows PC.
+[ ] An NVIDIA GPU (for training). Recording/playing works without one, but
+    training the neural network is very slow on CPU.
+[ ] Python 3.11 or newer installed  (get it from python.org; during install TICK
+    the box "Add Python to PATH").
+[ ] Git installed  (git-scm.com).
+[ ] Google Play Games (PC) with Clash Royale installed and logged in
+    (use a THROWAWAY account - automating the game breaks Supercell's rules and
+    can get an account banned).
+[ ] The deck the bot expects (see config/cards.yaml -> "Miner X-Bow Control"):
+    Royal Delivery, Evolved Tesla, Ice Wizard, X-Bow, Rocket, Miner, The Log,
+    Skeletons. (You CAN use a different deck, but then you must edit
+    config/cards.yaml and rebuild the card pictures - see Stage 6.)
+
+
+===============================================================================
+ THE ONE RULE FOR EVERY COMMAND
+===============================================================================
+
+Everything below is run from inside the "icebow" folder, using the project's own
+private Python. So the pattern is always:
+
+    cd <the folder where you cloned the repo>\icebow
+    .\.venv\Scripts\python.exe run.py <command>
+
+Tip: to see the full list of commands at any time, run:
+
+    .\.venv\Scripts\python.exe run.py --help
+
+
+===============================================================================
+ STAGE 0 - PREREQUISITES (one-time computer set-up)
+===============================================================================
+
+1. Install Python 3.11+ (tick "Add Python to PATH" during install).
+2. Install Git.
+3. Install Google Play Games for PC, then install + open Clash Royale and log in.
+4. Confirm Python works: open PowerShell (press Start, type "PowerShell", Enter)
+   and run:
+
+       python --version
+
+   You should see something like "Python 3.13.x". If it says "not recognized",
+   Python isn't on PATH - re-install it and tick that box.
+
+
+===============================================================================
+ STAGE 1 - GET THE CODE (fork + clone)
+===============================================================================
+
+1. On GitHub, click "Fork" on the project to make your own copy.
+2. On your fork's page, click the green "Code" button and copy the HTTPS URL.
+3. In PowerShell, go to where you want the project (e.g. your Documents), then:
+
+       cd $HOME\Documents
+       git clone <PASTE-YOUR-FORK-URL-HERE>
+
+4. Go into the learning-bot folder. The repo has two bots; the learning one is
+   "icebow":
+
+       cd .\<the-cloned-folder-name>\icebow
+
+   (From now on, "the icebow folder" means this folder. Stay here for all commands.)
+
+
+===============================================================================
+ STAGE 2 - INSTALL (one-time, inside the icebow folder)
+===============================================================================
+
+1. Create the project's private Python environment:
+
+       python -m venv .venv
+
+2. Upgrade its installer and install the basic requirements:
+
+       .\.venv\Scripts\python.exe -m pip install --upgrade pip
+       .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+3. Install PyTorch (the neural-network engine) with the build that matches YOUR
+   GPU. Go to https://pytorch.org/get-started/locally/ and pick your CUDA version,
+   then run the command it shows. Common ones:
+
+       # Newer NVIDIA cards (RTX 40 / 50 series -> CUDA 12.8):
+       .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu128
+
+       # Older cards (CUDA 12.1):
+       .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+   (No NVIDIA GPU? You can still record and play, but skip training. Install plain
+   "pip install torch" only if you must - training on CPU is extremely slow.)
+
+4. Check the card database loads (this proves the install worked):
+
+       .\.venv\Scripts\python.exe run.py cards
+
+   You should see your deck and a list of cards. If you get errors here, re-do
+   steps 1-2.
+
+
+===============================================================================
+ STAGE 3 - QUICK WIN: TRAIN IN THE SIMULATOR (no game, no recording)
+===============================================================================
+
+The project includes a fast, built-in pretend-match engine. It plays THOUSANDS of
+matches against a pool of real "meta" decks and teaches the bot the basics -
+all on your GPU, with NO game window and NO recording. This is the fastest way to
+get a first trained bot, and it makes a great starting point for Path B later.
+
+(Optional) Make the simulator match your account: open config/cards.yaml and set
+the "level:" of each of your deck cards to their real in-game levels. Also set the
+enemy level range under the "sim:" section of config/config.yaml if you like
+(defaults are fine).
+
+Start training from scratch:
+
+    .\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16
+
+  * Watch the printed summary lines (win-rate, average reward). They should improve
+    over time.
+  * It saves the trained brain to data/policy_sim.pt automatically every so often.
+  * Press Ctrl+C ANY TIME to stop - it saves on exit.
+  * To continue a stopped run later:
+
+       .\.venv\Scripts\python.exe run.py train-sim --resume
+
+If you only want to try the simulator, you can STOP HERE. To make the bot play the
+REAL game, continue with Stage 4.
+
+
+===============================================================================
+ STAGE 4 - POINT THE BOT AT YOUR GAME (calibration)
+===============================================================================
+
+WHY: the bot "sees" the game by screenshotting a rectangle of your screen, and it
+taps buttons at fixed spots. Those spots were measured on the ORIGINAL creator's
+screen, so on YOUR PC you must tell it where your game window is and double-check a
+few positions. This is the fiddliest stage - take it slowly.
+
+STEP 4.1 - Put the game in a steady window
+  * Open Clash Royale in Google Play Games and leave it on the HOME screen.
+  * Make the window a normal upright (portrait) shape and DON'T move/resize it
+    afterwards. Keep it fully visible (not minimized, not behind other windows).
+
+STEP 4.2 - Tell the bot which window to grab
+  Open config/config.yaml in a text editor (Notepad is fine). Near the top find:
+
+      window:
+        title_contains: "Clash Royale"
+        region: [739, 38, 669, 1182]
+
+  * EASIEST: change the region line to auto-detect the window by its title:
+
+        region: null
+
+    This makes the bot find the "Clash Royale" window automatically. (If the game
+    window's title is different, change title_contains to match part of it.)
+  * PRECISE (if auto isn't right): set region to the four numbers of the GAME
+    picture area, in screen pixels: [left_x, top_y, width, height]. You can read
+    these off a screenshot in an image editor.
+
+STEP 4.3 - Check the bot can see the screen
+  With the game sitting on HOME, run:
+
+      .\.venv\Scripts\python.exe run.py diag
+
+  This prints the capture rectangle and a "match score" for each menu screen
+  (home_menu, in_match, etc.). It also saves an annotated picture in the data
+  folder so you can see exactly what the bot captured.
+  * If it says "no frame" or the picture is wrong, your window/region is off - go
+    back to 4.1/4.2.
+  * The HOME score should be above its threshold (see the "states:" section of the
+    config). If scores are low, your screen looks a bit different from the saved
+    reference pictures - see TROUBLESHOOTING at the bottom.
+
+(You'll fine-tune the in-match positions in Stage 6 with "verify".)
+
+
+===============================================================================
+ STAGE 5 - RECORD YOURSELF PLAYING
+===============================================================================
+
+The bot learns by copying you first. So you play normally while it records the
+screen and your mouse. The more matches, the better (aim for many dozens; hundreds
+is ideal).
+
+1. Have Clash Royale open on HOME. Then start the recorder:
+
+       .\.venv\Scripts\python.exe run.py record
+
+2. Play your matches with your mouse as usual. You can play match after match
+   WITHOUT stopping - keep going through the menus too; the bot ignores menu clicks
+   later. Just play the deck the bot expects (Stage 0 checklist).
+3. When you're done, click back on the PowerShell window and press Ctrl+C to stop.
+
+Each recording is saved in data/sessions/<date-time>/ and contains the video, your
+mouse clicks, and timing info. You do NOT need to track wins/losses - the bot reads
+those off the end-of-match screen automatically (Stage 7).
+
+NOTE ON "UPLOADING": there is nothing to upload. All your recordings and the trained
+brain stay on YOUR PC in the "data" folder (that folder is deliberately NOT sent to
+GitHub). "Processing the data" and "feeding it to the model" are just the commands
+in Stages 7-8.
+
+
+===============================================================================
+ STAGE 6 - BUILD THE CARD PICTURES + CHECK RECOGNITION
+===============================================================================
+
+The bot must recognize WHICH card is in each hand slot. It does this by matching
+small pictures ("templates") of your deck's cards. You build these from a recording.
+
+1. Make candidate crops from your latest recording:
+
+       .\.venv\Scripts\python.exe run.py hand-templates
+
+   This drops picture files named like "_cand_0.png", "_cand_1.png", ... into the
+   templates\cards folder.
+
+2. Open the templates\cards folder. Look at each "_cand_*.png" crop and RENAME it to
+   the deck card it shows, using these exact names (this is the one manual step):
+
+       royal_delivery.png   tesla_evo.png   ice_wizard.png   x_bow.png
+       rocket.png           miner.png       the_log.png      skeletons.png
+
+   * If you have several good crops of the SAME card, keep extras as
+     <name>_2.png, <name>_3.png (they help accuracy).
+   * Delete any junk crops (blank or half-cards).
+   * Do the same for the small "next card" preview if prompted: those go in
+     templates\next.
+
+3. Check recognition is correct. Run:
+
+       .\.venv\Scripts\python.exe run.py verify --hand
+
+   This makes pictures (in the session's "annotated_hand" folder) showing which card
+   the bot THINKS is in each slot. Open them and confirm the labels are right. If a
+   card is wrong or missing, add/rename a clearer crop and run this again.
+
+4. (Recommended) Also check the bot reads the towers correctly, which it needs for
+   its rewards:
+
+       .\.venv\Scripts\python.exe run.py verify --towers
+
+   Open the annotated pictures: green = tower seen as alive, red = destroyed, yellow
+   = the tower-HP number it read. If these boxes are clearly off your towers, the
+   window/region is misaligned (revisit Stage 4).
+
+
+===============================================================================
+ STAGE 7 - TURN RECORDINGS INTO TRAINING DATA (process it)
+===============================================================================
+
+Now convert every recording into a tidy dataset the model can learn from, and read
+the win/loss of each match.
+
+1. Build the (what-the-screen-looked-like -> what-you-played) dataset for ALL
+   recordings:
+
+       .\.venv\Scripts\python.exe run.py label --all
+
+2. Auto-detect win/loss for every match (reads the results screen):
+
+       .\.venv\Scripts\python.exe run.py outcomes --all
+
+That's it - each session folder now has a "dataset.npz" and an "outcomes.json". You
+never had to track scores by hand.
+
+
+===============================================================================
+ STAGE 8 - TRAIN THE MODEL (feed it in)
+===============================================================================
+
+There are two training steps. Do them in order.
+
+STEP 8.1 - Imitation (copy your play). This is called "behaviour cloning":
+
+    .\.venv\Scripts\python.exe run.py train-bc
+
+  This creates data/policy.pt - a bot that plays roughly like you.
+
+  ** BEST OPTION - combine the simulator with your play. ** If you did Stage 3 and
+  have data/policy_sim.pt, start the imitation FROM that simulator brain instead of
+  from scratch, so it keeps the simulator's skills AND copies you:
+
+    .\.venv\Scripts\python.exe run.py train-bc --init data/policy_sim.pt
+
+STEP 8.2 - Improve by playing live ("reinforcement learning"). The bot now plays
+real matches by itself and learns from taking towers, defending, and winning:
+
+    .\.venv\Scripts\python.exe run.py train-rl
+
+  * Keep Clash Royale open and on HOME; the bot drives the menus and plays.
+  * It saves data/policy_rl.pt, which the "play" command then prefers.
+  * Press Ctrl+C to stop; it saves as it goes.
+  * TIP: the first time, delete data\policy_rl.pt before running so it starts fresh
+    from your imitation brain.
+
+
+===============================================================================
+ STAGE 9 - LET THE BOT PLAY ON ITS OWN
+===============================================================================
+
+Once you have a trained brain (from the simulator, imitation, or live RL), let it
+play hands-free:
+
+    .\.venv\Scripts\python.exe run.py play
+
+  * Have Clash Royale open on HOME. The bot queues matches, plays cards, and moves
+    match-to-match by itself.
+  * Press Ctrl+C to stop.
+
+
+===============================================================================
+ STAGE 10 - OPTIONAL EXTRAS
+===============================================================================
+
+* WATCH REMOTELY (Discord): the trainer can post a screenshot at start and a short
+  video clip every so often to a Discord channel. Put your channel's "webhook URL"
+  in the "monitor:" section of config/config.yaml to enable it.
+
+* REFRESH CARD STATS after a game balance update:
+
+      .\.venv\Scripts\python.exe run.py cards-import
+
+* REFRESH THE SIMULATOR'S OPPONENT DECKS to the current top meta (needs a free API
+  token from developer.clashroyale.com set in the CLASHRL_CR_API_TOKEN environment
+  variable; otherwise a good built-in list is used):
+
+      .\.venv\Scripts\python.exe run.py decks-import --limit 100
+
+* SAVE YOUR WORK TO GITHUB: your code changes can be pushed with git. (Your
+  recordings and trained brains in the "data" folder are intentionally NOT uploaded -
+  they're private and large.)
+
+
+===============================================================================
+ TROUBLESHOOTING
+===============================================================================
+
+"CUDA not available" / training is super slow:
+  Your PyTorch is the CPU version or your GPU driver is old. Re-install torch with
+  the CUDA build for your card (Stage 2, step 3) and update your NVIDIA driver.
+
+"diag" says no frame / the captured picture is wrong:
+  The window/region is off. Make sure the game is visible and not minimized, try
+  region: null (auto-detect), or set exact pixels (Stage 4.2).
+
+The bot doesn't press Battle / gets stuck on a menu:
+  Run "run.py diag" on that screen and look at the match scores. If they're below
+  the thresholds, your screen looks a little different from the saved reference
+  images in the "templates" folder. Fix: take your own screenshots of HOME / in-match
+  / the results screen, crop them like the existing templates\*.png files, and
+  replace them. Or lower the matching "threshold" for that state in config.yaml
+  (small steps).
+
+Cards are recognized wrong in "verify --hand":
+  Add clearer crops (Stage 6) named exactly after the deck cards, delete blurry ones,
+  and re-run "verify --hand".
+
+Tower boxes are off in "verify --towers":
+  The window/region is misaligned, OR your account's tower positions differ slightly.
+  Re-check Stage 4; the tower positions live under "env: my_towers / enemy_towers" in
+  config.yaml.
+
+"no identity-labeled datasets found" when training:
+  You skipped Stage 6 (card templates) or Stage 7 (label). Do them first.
+
+
+===============================================================================
+ QUICK COMMAND CHEAT-SHEET (run from the icebow folder)
+===============================================================================
+
+  Install (once):
+    python -m venv .venv
+    .\.venv\Scripts\python.exe -m pip install --upgrade pip
+    .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+    .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu128
+
+  Simulator training (no game needed):
+    .\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16
+    .\.venv\Scripts\python.exe run.py train-sim --resume
+
+  Calibrate:
+    .\.venv\Scripts\python.exe run.py diag
+    .\.venv\Scripts\python.exe run.py verify --hand
+    .\.venv\Scripts\python.exe run.py verify --towers
+
+  Record -> data -> train (the real thing):
+    .\.venv\Scripts\python.exe run.py record            (play, then Ctrl+C)
+    .\.venv\Scripts\python.exe run.py hand-templates     (then rename crops)
+    .\.venv\Scripts\python.exe run.py label --all
+    .\.venv\Scripts\python.exe run.py outcomes --all
+    .\.venv\Scripts\python.exe run.py train-bc --init data/policy_sim.pt
+    .\.venv\Scripts\python.exe run.py train-rl
+
+  Play hands-free:
+    .\.venv\Scripts\python.exe run.py play
+
+  Help:
+    .\.venv\Scripts\python.exe run.py --help
+
+===============================================================================
+ That's everything. Start with Stage 3 for an instant win, then work through
+ Stages 4-9 to train the bot on the real game. Good luck!
+===============================================================================
