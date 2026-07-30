@@ -1,11 +1,11 @@
 # Learning ClashBot (`icebow/`) — imitation learning → RL
 
-> � **New here / setting this up on another PC? Start with [Instructions.txt](Instructions.txt)** —
+> 🚀 **New here / setting this up on another PC? Start with [Instructions.txt](Instructions.txt)** —
 > a complete, plain-English, from-scratch guide: prerequisites → install → screen
 > calibration → recording → processing the data → training (simulator + imitation + live RL)
 > → letting the bot play. No coding experience needed.
 
-> �🔀 **Deck switch in progress (Miner X-Bow Control).** If you're picking this up on the
+> 🔀 **Deck switch in progress (Miner X-Bow Control).** If you're picking this up on the
 > training device: read **[DECK_SWITCH.md](DECK_SWITCH.md)** first — it's the ordered runbook
 > (record → templates → label → train) plus the remaining code work and reward audit.
 

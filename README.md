@@ -15,6 +15,10 @@ There are two very different agents in this repo:
 > Terms of Service. This project only exists as a learning exercise. If you run
 > it, use a throwaway account. I am not responsible for any lost accounts due to breaking of ToS.
 
+> 🚀 **New here? Read [icebow/Instructions.txt](icebow/Instructions.txt) first.** A complete,
+> plain-English, from-scratch walkthrough — prerequisites, install, screen calibration,
+> recording, training (simulator + imitation + live RL), and playing. No coding experience needed.
+
 ---
 
 ## How the learning bot works (the short version)
@@ -65,8 +69,9 @@ the **Miner** to chip the tower / tank / snipe support (it deploys anywhere), an
 
 ## Quick start
 
-Everything for the learning bot lives in [`icebow/`](icebow/). Full, step-by-step
-instructions (setup, recording, training, and playing) are in
+Everything for the learning bot lives in [`icebow/`](icebow/). For the full, step-by-step
+beginner guide (setup, screen calibration, recording, training, and playing) read
+**[icebow/Instructions.txt](icebow/Instructions.txt)**; a more technical reference is in
 **[icebow/README.md](icebow/README.md)**. The short version:
 
 ```powershell
