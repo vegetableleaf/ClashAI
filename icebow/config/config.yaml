@@ -510,6 +510,12 @@ sim:
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
   log_every_matches: 25         # print a rolling win-rate/avg-reward summary this often
   save_every_matches: 50        # checkpoint data/policy_sim.pt this often
+  # Benchmark eval: every N matches, run the GREEDY policy vs the FIXED scripted meta pool and print the
+  # win-rate. Unlike the self-play win-rate (which hovers ~50%), this is a STABLE plateau signal -- watch
+  # it flatten to judge when DDQN has topped out (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
+  eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
+  eval_matches: 24              # greedy matches per benchmark
+  eval_envs: 4                  # vectorized eval envs
   # --- Self-play (frozen past policy mixed in with the scripted meta bots) --------------------------
   # Every `selfplay_snapshot_every` matches the current policy is frozen into a small league; each match
   # reset then picks a league snapshot to pilot the OPPONENT with prob `selfplay_prob` (ramped in over

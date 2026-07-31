@@ -191,6 +191,58 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
               f"snapshot every {sp_snap_every}, league size {sp_league_size}")
 
+    # -- benchmark eval vs the FIXED scripted meta pool --------------------
+    # A STABLE plateau signal (unlike the self-play win-rate, which self-references to ~50%): every
+    # `eval_every_matches` run the GREEDY policy (no exploration, scripted opponents only) over a fixed
+    # set of meta decks and report win-rate. Watch this curve flatten to judge when DDQN has topped out
+    # (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
+    eval_every = int(cfg.get("sim", "eval_every_matches", default=500))
+    eval_matches = int(cfg.get("sim", "eval_matches", default=24))
+    eval_envs = min(K, max(1, int(cfg.get("sim", "eval_envs", default=4))))
+    eval_pool = [SimMatchEnv(cfg, seed=100000 + i) for i in range(eval_envs)] if eval_every > 0 else []
+
+    def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
+        """Greedy action per env (no epsilon, no `random` draw, no replay) for benchmarking."""
+        net.eval()
+        obs_t = torch.stack([to_obs_t(o) for o in obs_b]); hand_t = torch.stack([to_vec_t(h) for h in hand_b])
+        with torch.no_grad():
+            cq, ceq, gq = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
+                              torch.stack([to_vec_t(e) for e in elx_b]),
+                              torch.stack([to_vec_t(t) for t in thr_b]))
+        cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
+        acts = []
+        for i in range(len(obs_b)):
+            if not any(v > 0.5 for v in hand_b[i]):
+                acts.append((0, 0, 0))
+            elif gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq[i].max():
+                acts.append((0, 0, 0))
+            else:
+                acts.append((1, int(cq[i].argmax()), int(ceq[i].argmax())))
+        return acts
+
+    def evaluate():
+        if not eval_pool:
+            return None
+        for j, e in enumerate(eval_pool):
+            e.rng.seed(777 + j)          # fixed benchmark: same scripted decks + engine rolls each eval
+            e.opponent_provider = None   # vs the SCRIPTED meta pool (never self-play)
+        eo = [e.reset() for e in eval_pool]
+        eh = [e.hand_vec.copy() for e in eval_pool]; en = [e.next_vec.copy() for e in eval_pool]
+        ee = [e.elixir_vec.copy() for e in eval_pool]; et = [e.threat_vec.copy() for e in eval_pool]
+        wins = played = 0
+        while played < eval_matches:
+            acts = choose_greedy(eo, eh, en, ee, et)
+            for i, e in enumerate(eval_pool):
+                nobs, _r, done, info = e.step(acts[i])
+                if done:
+                    wins += info.get("outcome") == "win"; played += 1
+                    eo[i] = e.reset()
+                else:
+                    eo[i] = nobs
+                eh[i], en[i] = e.hand_vec.copy(), e.next_vec.copy()
+                ee[i], et[i] = e.elixir_vec.copy(), e.threat_vec.copy()
+        return 100.0 * wins / max(1, played)
+
     # per-env current state
     cobs = [e.reset() for e in pool]
     chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
@@ -238,6 +290,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                         save()
                     if sp_prob > 0 and done_n % sp_snap_every == 0:
                         snapshot()
+                    if eval_every > 0 and done_n % eval_every == 0:
+                        wr = evaluate()
+                        if wr is not None:
+                            print(f"[train-sim] EVAL vs scripted meta (fixed benchmark): "
+                                  f"winrate={wr:4.0f}% over {eval_matches} matches @ {done_n} done", flush=True)
                 else:
                     cobs[i] = nobs; chand[i], cnxt[i] = nhand, nnxt
                     celx[i], cthr[i] = nelx, nthr
