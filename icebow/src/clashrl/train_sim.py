@@ -57,12 +57,16 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
 
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
+    resumed_best_wr = -1.0                                    # prior peak benchmark (so --resume won't clobber a better best.pt)
     if resume and sim_path.exists():
         ck = torch.load(sim_path, map_location="cpu")
         net.policy.load_state_dict(ck["model"])
         if "gate" in ck:
             net.gate.load_state_dict(ck["gate"])
-        print(f"[train-sim] resumed {sim_path.name}")
+        resumed_best_wr = float(ck.get("best_wr", -1.0))
+        print(f"[train-sim] resumed {sim_path.name}"
+              + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0
+                 else " (no stored best -- back up policy_sim_best.pt once before relying on it)"))
     else:
         print(f"[train-sim] training FROM SCRATCH ({sim_path.name} will be written)")
     target = _build_net(cfg, device, n_cards, n_cells, threat_dim)
@@ -176,7 +180,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         p.parent.mkdir(parents=True, exist_ok=True)
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
-                    "threat_dim": threat_dim, "deck": e0.deck_keys,
+                    "threat_dim": threat_dim, "deck": e0.deck_keys, "best_wr": best_wr,
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
     # -- self-play league --------------------------------------------------
@@ -243,7 +247,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     _el = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
     ladder_lbl = f"L{min(_el)}-{max(_el)}"
     best_path = sim_path.with_name(sim_path.stem + "_best" + sim_path.suffix)   # keep the PEAK-benchmark policy
-    best_wr = -1.0
+    best_wr = resumed_best_wr                                                   # remember the prior peak across --resume (won't clobber a better best.pt)
 
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Greedy action per env (no epsilon, no `random` draw, no replay) for benchmarking."""
