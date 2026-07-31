@@ -46,6 +46,16 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     device = _pick_device(cfg)
     net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
 
+    # DEPLOYABLE cell mask (impossible-coordinate fix, mirrors train_rl + play): anywhere cards
+    # (rocket / miner) -> any cell; every other card only YOUR half. Applied before the cell argmax in
+    # choose_batch / choose_greedy AND in the DDQN target, so the policy never selects (or bootstraps
+    # from) an enemy-half cell that would just clamp / no-op.
+    anywhere_ids = set(e0.anywhere_ids)
+    yourhalf_mask = torch.tensor(e0.actions.deployable_mask(False), dtype=torch.bool, device=device)
+    allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
+    yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
+    anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
+
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
     if resume and sim_path.exists():
         ck = torch.load(sim_path, map_location="cpu")
@@ -105,12 +115,17 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 if pool[i].elixir < min_play_elixir or random.random() < wait_prob:
                     acts.append((0, 0, 0))
                 else:
-                    acts.append((1, random.choice(in_hand), random.randrange(n_cells)))
+                    c = random.choice(in_hand)
+                    cells = list(range(n_cells)) if c in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
+                    acts.append((1, c, random.choice(cells)))
                 continue
-            if gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq[i].max():
+            ci = int(cq[i].argmax())
+            cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
+            ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
+            if gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:
-                acts.append((1, int(cq[i].argmax()), int(ceq[i].argmax())))
+                acts.append((1, ci, int(ceq_i.argmax())))
         return acts
 
     def optimise():
@@ -136,10 +151,18 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         with torch.no_grad():                                  # Double DQN (online selects, target evals)
             cqn, ceqn, gqn = net(nobs, nhand, nnxt, nelx, nthr)
             cqn = cqn.masked_fill(nhand < 0.5, float("-inf"))
-            sel_card = cqn.argmax(1, keepdim=True); sel_cell = ceqn.argmax(1, keepdim=True)
+            sel_card = cqn.argmax(1, keepdim=True)
+            if anywhere_ids_t.numel():                          # DEPLOYABLE cells for the selected next-card
+                any_next = (sel_card == anywhere_ids_t.view(1, -1)).any(1, keepdim=True)
+            else:
+                any_next = torch.zeros_like(sel_card, dtype=torch.bool)
+            cellmask_next = torch.where(any_next, allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
+            ceqn = ceqn.masked_fill(~cellmask_next, float("-inf"))
+            sel_cell = ceqn.argmax(1, keepdim=True)
             play_next = (gqn[:, 1] + cqn.max(1).values + ceqn.max(1).values) > gqn[:, 0]
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
             cq2 = cq2.masked_fill(nhand < 0.5, float("-inf"))
+            ceq2 = ceq2.masked_fill(~cellmask_next, float("-inf"))
             q_play_next = gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1) + ceq2.gather(1, sel_cell).squeeze(1)
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])
             y = rew + gamma * v_next * (1.0 - done)
@@ -200,6 +223,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     eval_matches = int(cfg.get("sim", "eval_matches", default=24))
     eval_envs = min(K, max(1, int(cfg.get("sim", "eval_envs", default=4))))
     eval_pool = [SimMatchEnv(cfg, seed=100000 + i) for i in range(eval_envs)] if eval_every > 0 else []
+    eval_hist: deque = deque(maxlen=max(1, int(cfg.get("sim", "eval_smooth_window", default=5))))
 
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Greedy action per env (no epsilon, no `random` draw, no replay) for benchmarking."""
@@ -213,11 +237,14 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         acts = []
         for i in range(len(obs_b)):
             if not any(v > 0.5 for v in hand_b[i]):
-                acts.append((0, 0, 0))
-            elif gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq[i].max():
+                acts.append((0, 0, 0)); continue
+            ci = int(cq[i].argmax())
+            cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
+            ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
+            if gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:
-                acts.append((1, int(cq[i].argmax()), int(ceq[i].argmax())))
+                acts.append((1, ci, int(ceq_i.argmax())))
         return acts
 
     def evaluate():
@@ -293,8 +320,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                     if eval_every > 0 and done_n % eval_every == 0:
                         wr = evaluate()
                         if wr is not None:
+                            eval_hist.append(wr)
+                            smooth = sum(eval_hist) / len(eval_hist)
                             print(f"[train-sim] EVAL vs scripted meta (fixed benchmark): "
-                                  f"winrate={wr:4.0f}% over {eval_matches} matches @ {done_n} done", flush=True)
+                                  f"winrate={wr:4.0f}% (avg-{len(eval_hist)} {smooth:4.0f}%) "
+                                  f"over {eval_matches} matches @ {done_n} done", flush=True)
                 else:
                     cobs[i] = nobs; chand[i], cnxt[i] = nhand, nnxt
                     celx[i], cthr[i] = nelx, nthr

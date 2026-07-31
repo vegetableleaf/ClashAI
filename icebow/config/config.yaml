@@ -515,8 +515,9 @@ sim:
   # win-rate. Unlike the self-play win-rate (which hovers ~50%), this is a STABLE plateau signal -- watch
   # it flatten to judge when DDQN has topped out (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
   eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
-  eval_matches: 24              # greedy matches per benchmark
-  eval_envs: 4                  # vectorized eval envs
+  eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
+  eval_envs: 8                  # vectorized eval envs (capped at --envs)
+  eval_smooth_window: 5         # print a ROLLING AVERAGE of the last N benchmark points so a plateau vs noise is readable
   # --- Self-play (frozen past policy mixed in with the scripted meta bots) --------------------------
   # Every `selfplay_snapshot_every` matches the current policy is frozen into a small league; each match
   # reset then picks a league snapshot to pilot the OPPONENT with prob `selfplay_prob` (ramped in over
