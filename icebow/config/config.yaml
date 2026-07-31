@@ -189,7 +189,8 @@ rewards:
                                  # reward for doing nothing was itself the incentive for the hesitation loop
   idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):
                                  # bigger than any single-step positive shaping so ACTING on a push always wins
-  elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar with a push on the board (wasted elixir)
+  elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar (leaking) -- now also fires vs a small/medium push, not only a big one
+  offense_when_behind: 0.5       # full bar + BEHIND (a princess down, or weakest tower HP < enemy's) + enemy idle -> reward committing X-Bow/Miner/Rocket to catch up
   cycle_reward: 0.15             # play a cheap card (the log / skeletons) while the ROCKET is NOT in hand -> cycles toward it
   # -- Miner X-Bow control deck (win condition = X-Bow placed forward; Miner = chip/tank) --
   xbow_wc_reward: 1.0            # X-Bow placed (your side) WITHIN firing range of the nearer enemy princess -> a real win condition

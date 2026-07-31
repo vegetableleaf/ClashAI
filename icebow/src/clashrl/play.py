@@ -98,6 +98,12 @@ def play(cfg) -> None:
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
     xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
+    # Cell-head DEPLOYABLE mask: anywhere cards (rocket / miner) -> all cells; every other card only
+    # YOUR half. Applied before the cell argmax so play never taps an enemy-half cell that can't
+    # deploy (the 'impossible coordinate' that made the bot look inactive).
+    yourhalf_mask = torch.tensor(actions.deployable_mask(False), dtype=torch.bool, device=device)
+    allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
+    yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
     # Connect each hand-card identity to its ELIXIR COST from the card DB, so play never taps a card
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
@@ -155,17 +161,20 @@ def play(cfg) -> None:
         if random.random() < eps:
             choices = [i for i in range(n_cards) if not bool(torch.isinf(card_logits[0, i]))]
             card_id = random.choice(choices)
-            cell = random.randrange(n_cells)
+            cells = list(range(n_cells)) if card_id in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
+            cell = random.choice(cells)
         else:
-            # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best cell; value of
-            # WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
+            card_id = int(card_logits.argmax(1).item())
+            cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
+            cell_logits_m = cell_logits.masked_fill(~cmask.unsqueeze(0), float("-inf"))
+            # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best DEPLOYABLE cell;
+            # value of WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
             # cycle) instead of firing every act_period like the old trol bot.
             if gate_logits is not None:
-                play_val = gate_logits[0, 1] + card_logits.max() + cell_logits.max()
+                play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
                 if gate_logits[0, 0] >= play_val:
                     return
-            card_id = int(card_logits.argmax(1).item())
-            cell = int(cell_logits.argmax(1).item())
+            cell = int(cell_logits_m.argmax(1).item())
         if card_id in rocket_ids:             # a rocket at a princess -> aim the weaker one
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)

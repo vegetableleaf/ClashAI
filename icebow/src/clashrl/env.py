@@ -300,6 +300,10 @@ class LiveMatchEnv:
         self.threat_mass = float(cfg.get("env", "threat_mass", default=0.10))
         self.elixir_waste_penalty = float(cfg.get("rewards", "elixir_waste_penalty", default=-0.3))
         self.full_elixir = int(cfg.get("env", "elixir_full", default=10))
+        # OFFENSE-WHEN-BEHIND: at a FULL bar, if we're behind (a princess down, or our weakest standing
+        # tower has less HP than the enemy's) AND the enemy is idle, committing a win-condition / chip
+        # card to catch up is correct -> reward it (the idle branch penalises sitting instead).
+        self.offense_when_behind = float(cfg.get("rewards", "offense_when_behind", default=0.5))
         self.defeat_min = float(cfg.get("env", "defeat_min", default=0.005))
         self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))
         self.tesla_track_steps = int(cfg.get("env", "tesla_track_steps", default=10))
@@ -756,6 +760,18 @@ class LiveMatchEnv:
             if new_mult != self.elixir_mult:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
             self.elixir_mult = new_mult
+            # BEHIND + FULL-BAR read (for the idle penalty + the offense-when-behind reward below):
+            # behind = a princess is down that the enemy still has, OR our weakest STANDING tower has
+            # less HP than the enemy's weakest. pre_elixir = the bar at DECISION time (post-action the
+            # card's cost is already spent, so a played card would read a non-full bar).
+            pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
+            full_bar = cur_elixir >= self.full_elixir          # post-action bar (used by the not-play branch)
+            pre_full = pre_elixir >= self.full_elixir          # pre-action bar (used by the play offense reward)
+            my_alive_n = sum(1 for a in self.tower.mine_alive[:2] if a)
+            en_alive_n = sum(1 for a in self.tower.enemy_alive[:2] if a)
+            my_hps = [h for h, a in zip(self.tower_hp.my_hp, self.tower.mine_alive[:2]) if a]
+            en_hps = [h for h, a in zip(self.tower_hp.enemy_hp, self.tower.enemy_alive[:2]) if a]
+            behind = (my_alive_n < en_alive_n) or bool(my_hps and en_hps and min(my_hps) < min(en_hps))
             # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
             # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
             # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
@@ -772,7 +788,6 @@ class LiveMatchEnv:
             # defence). self._prev_mass = enemy mass on the PRE-action frame; elixir read pre-action too.
             log_cycle_ok = False
             if is_log and self._prev_mass < self.quiet_frac and not any(c in self.skeletons_ids for c in self.hand_ids):
-                pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
                 log_cycle_ok = pre_elixir >= self.defense_setup_elixir
             spell_r = 0.0
             if eval_spell and before is not None and spell_samples:
@@ -791,12 +806,23 @@ class LiveMatchEnv:
                 if abs(delta) > self.defeat_min:
                     reward += float(np.clip(delta, -self.defeat_cap, self.defeat_cap)) * self.troop_defeat
                 if not play:
-                    if cur_mass < self.quiet_frac:
-                        reward += self.patience          # 0 by default: a quiet board is NEUTRAL, not rewarded
-                    elif cur_mass >= self.threat_mass:
+                    if cur_mass >= self.threat_mass:
                         reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
-                        if cur_elixir >= self.full_elixir:
+                        if full_bar:
                             reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
+                    elif cur_mass >= self.quiet_frac:
+                        # the enemy has COMMITTED a card (units on the board). At a full bar, sitting there
+                        # both leaks elixir AND ignores the developing threat -> penalise. (Was the reported
+                        # gap: the penalty only fired at threat_mass, so a full bar vs a small/medium push
+                        # was free -- "does nothing at a full bar when the enemy played a card".)
+                        if full_bar:
+                            reward += self.idle_penalty + self.elixir_waste_penalty
+                    elif full_bar and behind:
+                        # QUIET board but we're BEHIND with a full bar -> we must ATTACK to catch up; sitting
+                        # on a full bar is wrong here (the play-side offense reward pays the alternative).
+                        reward += self.idle_penalty + self.elixir_waste_penalty
+                    else:
+                        reward += self.patience          # quiet board, nothing forcing a play -> saving elixir is fine
             reward += self._bonus(self._defense_kill_reward(frame, bool(play), card_id, cell))
             if play and card_id in self.tesla_ids:
                 # keep the Tesla for the enemy's win condition (a tower-targeting troop)
@@ -815,6 +841,12 @@ class LiveMatchEnv:
                     reward += self._bonus(self.defensive_rocket_reward)
             if play and card_id in self.miner_ids:     # Miner -> chip the enemy princess (deployed anywhere)
                 reward += self._bonus(self._miner_reward(cell))
+            # OFFENSE WHEN BEHIND: full bar (pre-action) + we're behind (towers/damage) + the enemy was
+            # idle at decision time -> committing a win-condition / chip card (X-Bow, Miner, Rocket) to
+            # rack up damage is the right call. Capped via _bonus so it can't farm.
+            if (play and pre_full and behind and self._prev_mass < self.quiet_frac
+                    and card_id in (self.xbow_ids | self.miner_ids | self.rocket_ids)):
+                reward += self._bonus(self.offense_when_behind)
             if play and card_id in self.defensive_kind:
                 reward += self._bonus(self._defense_placement_reward(card_id, cell))  # soft nudge to the recommended centre (capped)
             reward += self._bonus(self._blocker_reward(frame, bool(play), card_id, cell))  # shield a ranged unit (capped)
@@ -824,7 +856,6 @@ class LiveMatchEnv:
                     reward += self.offensive_penalty  # non-rocket/miner/xbow card in the enemy half = offence
             reward += self._placement_penalty(bool(play), card_id, cell, raw_cell)  # wrong-lane / on-top / corner / RD-half
             if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
-                pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
                 if pre_elixir < self.defense_setup_elixir:      # at/near a FULL bar, a defensive SETUP avoids leaking -> allowed
                     reward += self.premature_defense_penalty   # else a defender / Royal Delivery on a QUIET board = premature
             if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):

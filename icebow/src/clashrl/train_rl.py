@@ -98,6 +98,17 @@ def train_rl(cfg) -> None:
     else:
         card_elixir = [0.0] * n_cards
     afford_costs = torch.tensor(card_elixir, dtype=torch.float32, device=device)  # [n_cards]
+    # ANYWHERE cards (rocket / miner) may target any cell; every other card can only deploy on YOUR
+    # half. Mask the cell head to DEPLOYABLE cells before the argmax so the policy never selects an
+    # enemy-half cell that would just clamp / no-op -- the 'impossible coordinate' the model kept
+    # trying (which also made it look inactive). Applied at action selection AND in the DDQN target.
+    from .actions import ActionSpace
+    _acts = ActionSpace(cfg)
+    anywhere_ids = {i for i, k in enumerate(deck) if _base_key(k) in ("rocket", "miner")} if deck else set()
+    yourhalf_mask = torch.tensor(_acts.deployable_mask(False), dtype=torch.bool, device=device)  # [n_cells]
+    allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
+    yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
+    anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
 
     net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
     net.policy.load_state_dict(ckpt["model"])
@@ -173,7 +184,9 @@ def train_rl(cfg) -> None:
             # don't fritter cards when starved; wait to cycle/save elixir
             if elixir < min_play_elixir or random.random() < wait_prob:
                 return (0, 0, 0)
-            return (1, random.choice(playable), random.randrange(n_cells))
+            c = random.choice(playable)
+            cells = list(range(n_cells)) if c in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
+            return (1, c, random.choice(cells))
         net.eval()
         hv = hand_to_tensor(hand_vec)
         nv = hand_to_tensor(next_vec)
@@ -184,11 +197,14 @@ def train_rl(cfg) -> None:
         playable_mask = torch.zeros_like(cq, dtype=torch.bool)
         playable_mask[0, playable] = True
         cq = cq.masked_fill(~playable_mask, float("-inf"))   # in hand AND affordable
-        play_val = gq[0, 1] + cq.max() + ceq.max()
+        card_id = int(cq.argmax())
+        cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
+        ceq = ceq.masked_fill(~cmask.unsqueeze(0), float("-inf"))
+        play_val = gq[0, 1] + cq[0].max() + ceq[0].max()
         wait_val = gq[0, 0]
         if wait_val >= play_val:
             return (0, 0, 0)
-        return (1, int(cq.argmax()), int(ceq.argmax()))
+        return (1, card_id, int(ceq.argmax()))
 
     def optimise():
         if len(replay) < max(min_replay, batch_size):
@@ -229,10 +245,19 @@ def train_rl(cfg) -> None:
             unplayable = (nhand < 0.5) | (afford_costs.unsqueeze(0) > nelx * 10.0 + 1e-6)
             cqn = cqn.masked_fill(unplayable, float("-inf"))            # in hand AND affordable
             sel_card = cqn.argmax(1, keepdim=True)                       # online greedy card
-            sel_cell = ceqn.argmax(1, keepdim=True)                     # online greedy cell
+            # cell mask per selected next-card: a your-half-only card can't bootstrap value from an
+            # enemy-half cell it could never place on (matches the deployable mask used in choose()).
+            if anywhere_ids_t.numel():
+                any_next = (sel_card == anywhere_ids_t.view(1, -1)).any(1, keepdim=True)
+            else:
+                any_next = torch.zeros_like(sel_card, dtype=torch.bool)
+            cellmask_next = torch.where(any_next, allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
+            ceqn = ceqn.masked_fill(~cellmask_next, float("-inf"))
+            sel_cell = ceqn.argmax(1, keepdim=True)                     # online greedy DEPLOYABLE cell
             play_next = (gqn[:, 1] + cqn.max(1).values + ceqn.max(1).values) > gqn[:, 0]
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
             cq2 = cq2.masked_fill(unplayable, float("-inf"))
+            ceq2 = ceq2.masked_fill(~cellmask_next, float("-inf"))
             q_play_next = (gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1)
                            + ceq2.gather(1, sel_cell).squeeze(1))
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action

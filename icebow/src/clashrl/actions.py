@@ -62,3 +62,15 @@ class ActionSpace:
         if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
             gy = max(min_gy, int((ky - khy) * gh) - 1)
         return gy * gw + gx
+
+    def deployable_mask(self, anywhere: bool) -> "list[bool]":
+        """Per-cell deployability over the placement grid: True where a card of this kind can actually
+        be placed. ``anywhere`` (rocket / miner) -> every cell; otherwise only YOUR half (rows at/below
+        the deploy line, matching :meth:`deploy_clamp`). Masking the cell head to this BEFORE the argmax
+        stops the policy from SELECTING an enemy-half cell that would just clamp/no-op -- the 'impossible
+        coordinate' the model otherwise keeps trying (and that made it look inactive)."""
+        gw, gh = int(self.gw), int(self.gh)
+        if anywhere:
+            return [True] * (gw * gh)
+        min_gy = int(round(self.deploy_top * gh))
+        return [(c // gw) >= min_gy for c in range(gw * gh)]
