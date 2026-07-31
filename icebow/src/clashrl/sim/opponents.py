@@ -67,10 +67,15 @@ class ScriptedBot:
             eng.deploy(team, self.rng.choice(wc), lane, 0.46)
 
 
-def make_opponent(cfg, db, rng, pool: List[dict]) -> ScriptedBot:
+def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None) -> ScriptedBot:
     """Sample a meta deck (weighted by its popularity) and pilot it per its inferred style. Each of its
     cards rolls a RANDOM level (sim.enemy_levels weighted by sim.enemy_level_weights -- default 13-16
-    with 14 most likely, 16 least), so the opponent's card levels vary like a real ladder opponent."""
+    with 14 most likely, 16 least), so the opponent's card levels vary like a real ladder opponent.
+
+    ``level`` (FAIR eval): if given, ALL the opponent's cards use this fixed level instead of the rolled
+    ladder levels -- removing the level handicap. The roll still happens first so rng consumption (and
+    thus the sampled deck sequence) is IDENTICAL to the handicapped path, making fair-vs-ladder an
+    apples-to-apples comparison on the same matchups."""
     if not pool:
         from .meta_decks import load_meta_decks
         pool = load_meta_decks(cfg, db)
@@ -79,6 +84,8 @@ def make_opponent(cfg, db, rng, pool: List[dict]) -> ScriptedBot:
     lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
     lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
     levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in deck["cards"]]
+    if level is not None:
+        levels = [int(level)] * len(deck["cards"])
     return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels)
 
 
