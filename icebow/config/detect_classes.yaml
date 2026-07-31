@@ -9,146 +9,142 @@
 # other class here is one you hand-label on the exported frames. Trim the list to what you
 # actually intend to label -- fewer, well-labelled classes beat many sparse ones.
 classes:
-  # --- your deck (AUTO-labelled from your own plays) ---
+  # --- your deck (top 8; own troops auto-labelled, spells hand-labelled) ---
+  - royal_delivery
   - tesla
   - ice_wizard
-  - ronin
-  - ice_spirit
-  - skeletons
-  - royal_recruit          # the unit Royal Delivery drops
-  # --- common win conditions (hand-label) ---
-  - hog_rider
-  - giant
-  - golem
-  - royal_giant
-  - balloon
-  - lava_hound
   - x_bow
-  - mortar
-  - miner
-  - graveyard
-  - ram_rider
-  - battle_ram
-  - wall_breakers
-  - goblin_barrel
-  - skeleton_barrel
-  - goblin_drill
-  - sparky
-  - mega_knight
-  - pekka
-  - electro_giant
-  - goblin_giant
-  # --- common support troops (hand-label) ---
-  - musketeer
-  - wizard
-  - electro_wizard
-  - magic_archer
-  - witch
-  - night_witch
-  - valkyrie
-  - knight
-  - mini_pekka
-  - baby_dragon
-  - inferno_dragon
-  - dart_goblin
-  - princess
-  - archers
-  - goblins
-  - spear_goblins
-  - goblin_gang
-  - skeleton_army
-  - bats
-  - minions
-  - minion_horde
-  - mega_minion
-  - bandit
-  - prince
-  - dark_prince
-  - hunter
-  - executioner
-  - bowler
-  - firecracker
-  - phoenix
-  - fisherman
-  - elite_barbarians
-  - barbarians
-  # --- common buildings (hand-label) ---
-  - cannon
-  - inferno_tower
-  - bomb_tower
-  - tombstone
-  - goblin_cage
-  # --- common spells / effects (hand-label) ---
-  - fireball
-  - arrows
-  - zap
-  - the_log
-  - poison
-  - tornado
   - rocket
-  - lightning
+  - miner
+  - the_log
+  - skeletons
 
-  # --- all other Clash Royale cards (auto-added from the card KB; evolutions folded into base) ---
+  # --- base cards (alphabetical) ---
   - archer_queen
+  - archers
+  - arrows
+  - baby_dragon
+  - balloon
+  - bandit
   - barbarian_barrel
   - barbarian_hut
   - barbarian_launcher
+  - barbarians
+  - bats
   - battle_healer
+  - battle_ram
   - berserker
+  - bomb_tower
   - bomber
   - boss_bandit
+  - bowler
+  - cannon
   - cannon_cart
   - clone
+  - dark_prince
+  - dart_goblin
   - earthquake
   - electro_dragon
+  - electro_giant
   - electro_spirit
+  - electro_wizard
+  - elite_barbarians
   - elixir_collector
   - elixir_golem
+  - executioner
   - fire_spirit
+  - fireball
+  - firecracker
+  - fisherman
   - flying_machine
   - freeze
   - furnace
+  - giant
   - giant_skeleton
   - giant_snowball
+  - goblin_barrel
+  - goblin_cage
   - goblin_curse
   - goblin_demolisher
+  - goblin_drill
+  - goblin_gang
+  - goblin_giant
   - goblin_hut
   - goblin_machine
+  - goblins
   - goblinstein
   - golden_knight
+  - golem
+  - graveyard
   - guards
   - heal
   - heal_spirit
+  - hog_rider
+  - hunter
   - ice_golem
+  - ice_spirit
+  - inferno_dragon
+  - inferno_tower
+  - knight
+  - lava_hound
+  - lightning
   - little_prince
   - lumberjack
+  - magic_archer
+  - mega_knight
+  - mega_minion
   - mighty_miner
+  - mini_pekka
+  - minion_horde
+  - minions
   - mirror
   - monk
+  - mortar
   - mother_witch
+  - musketeer
+  - night_witch
+  - pekka
+  - phoenix
+  - poison
+  - prince
+  - princess
   - rage
   - raging_prince
+  - ram_rider
   - rascals
   - rocket_silo
-  - royal_delivery
+  - ronin
   - royal_ghost
+  - royal_giant
   - royal_hogs
+  - royal_recruit
   - royal_recruits
   - rune_giant
   - santa_hog_rider
+  - skeleton_army
+  - skeleton_barrel
   - skeleton_dragons
   - skeleton_king
+  - sparky
+  - spear_goblins
   - spirit_empress
   - suspicious_bush
   - terry
   - three_musketeers
+  - tombstone
+  - tornado
+  - valkyrie
   - vines
   - void
+  - wall_breakers
   - warmth
+  - witch
+  - wizard
   - wizard_trio
+  - zap
   - zappies
 
-  # --- evolution variants (auto-added from the card KB) ---
+  # --- evolution variants (alphabetical) ---
   - archers_evo
   - baby_dragon_evo
   - barbarians_evo
@@ -191,23 +187,23 @@ classes:
   - wizard_evo
   - zap_evo
 
-  # --- hero variants (recent CR addition; user-provided list, not yet in the card-stats KB) ---
-  - knight_hero
-  - musketeer_hero
-  - mini_pekka_hero
-  - goblins_hero
-  - giant_hero
+  # --- hero variants (alphabetical) ---
   - balloon_hero
-  - wizard_hero
-  - dark_prince_hero
-  - bowler_hero
-  - ice_golem_hero
-  - mega_minion_hero
-  - magic_archer_hero
-  - tombstone_hero
   - barbarian_barrel_hero
+  - bowler_hero
+  - dark_prince_hero
+  - giant_hero
+  - goblins_hero
+  - ice_golem_hero
+  - knight_hero
+  - magic_archer_hero
+  - mega_minion_hero
+  - mini_pekka_hero
+  - musketeer_hero
+  - tombstone_hero
+  - wizard_hero
 
-  # --- champion ability activations (each has its own visual effect) ---
+  # --- champion ability activations (alphabetical) ---
   - archer_queen_ability
   - boss_bandit_ability
   - goblinstein_ability
@@ -218,23 +214,23 @@ classes:
   - skeleton_king_ability
   - terry_ability
 
-  # --- hero troop ability activations (the _hero cards' ability visual; folds to the base card) ---
-  - knight_hero_ability
-  - musketeer_hero_ability
-  - mini_pekka_hero_ability
-  - goblins_hero_ability
-  - giant_hero_ability
+  # --- hero troop ability activations (alphabetical) ---
   - balloon_hero_ability
-  - wizard_hero_ability
-  - dark_prince_hero_ability
-  - bowler_hero_ability
-  - ice_golem_hero_ability
-  - mega_minion_hero_ability
-  - magic_archer_hero_ability
-  - tombstone_hero_ability
   - barbarian_barrel_hero_ability
+  - bowler_hero_ability
+  - dark_prince_hero_ability
+  - giant_hero_ability
+  - goblins_hero_ability
+  - ice_golem_hero_ability
+  - knight_hero_ability
+  - magic_archer_hero_ability
+  - mega_minion_hero_ability
+  - mini_pekka_hero_ability
+  - musketeer_hero_ability
+  - tombstone_hero_ability
+  - wizard_hero_ability
 
-  # --- spell target/impact indicators (the on-ground AoE circle; team-agnostic) ---
+  # --- spell AoE / impact indicators (alphabetical) ---
   - arrows_aoe
   - barbarian_barrel_aoe
   - clone_aoe
