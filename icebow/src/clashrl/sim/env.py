@@ -60,6 +60,9 @@ class SimMatchEnv:
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
         self.xbow_def_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
+        self.log_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "the_log"}
+        self.log_reset = r("log_reset_reward", 0.3)          # The Log knocked a push back on YOUR side (buys time)
+        self.log_swarm_unit = r("log_swarm_unit", 0.1)       # + per enemy unit it caught (a swarm / barrel wipe)
         # icebow OFFENSE->DEFENSE transition: if the X-Bow hasn't chipped >= xbow_success_frac of a tower by
         # double elixir (or once you TAKE a tower), flip to a DEFENSIVE X-Bow (back-centre) + rocket-cycle
         # doctrine -- rocket-at-tower becomes the only sanctioned tower damage; everything else defends/cycles.
@@ -171,6 +174,11 @@ class SimMatchEnv:
             return self.defensive_rocket_reward              # rocket-cycle is the win path once defensive
         if card_id in self.miner_ids and d <= 0.09:
             return self.miner_chip
+        if card_id in self.log_ids and ny >= 0.5:            # The Log on YOUR side (past the sim river) onto a
+            foes = [u for u in self.eng.units if u.team == 1  # push -> knock it back where your towers help
+                    and abs(u.x - nx) <= 0.12 and abs(u.y - ny) <= 0.14]
+            if foes:
+                return self.log_reset + min(len(foes), 4) * self.log_swarm_unit
         return 0.0
 
     def step(self, action: Action):

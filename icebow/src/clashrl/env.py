@@ -142,6 +142,12 @@ class LiveMatchEnv:
         self.spell_whiff = float(cfg.get("rewards", "spell_whiff", default=-0.5))
         self.log_reset_reward = float(cfg.get("rewards", "log_reset_reward", default=0.3))  # The Log rolled through a real push (knockback/reset buys time)
         self.log_whiff = float(cfg.get("rewards", "log_whiff", default=-0.3))               # The Log cast with nothing to hit (small waste; 2 elixir, not rocket-scale)
+        # The Log's job is DEFENSIVE: clear a ground SWARM / barrel-spawn (Skeleton/Goblin Barrel, Skeleton
+        # Army, Goblin Gang) and knock a push BACK once it has crossed to YOUR side, where the princess
+        # towers help finish it. Reward the reset/clear only on your side; a big mass wiped = a swarm bonus.
+        self.log_defense_y = float(cfg.get("env", "log_defense_y", default=0.46))   # the push has crossed to YOUR side of the river
+        self.log_swarm_drop = float(cfg.get("env", "log_swarm_drop", default=0.10)) # this much enemy mass wiped = a swarm / barrel
+        self.log_swarm_reward = float(cfg.get("rewards", "log_swarm_reward", default=0.5))
         self.spell_king_penalty = float(cfg.get("rewards", "spell_king_penalty", default=-1.5))
         self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=1.5))
         self.defense_kill = float(cfg.get("rewards", "defense_kill", default=0.5))
@@ -272,7 +278,10 @@ class LiveMatchEnv:
         self.defensive_rocket_reward = float(cfg.get("rewards", "defensive_rocket_reward", default=0.3))  # once DEFENSIVE, rocket-at-tower is the sanctioned chip
         self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
         self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
-        # rocket -> tornado combo: a tornado at the SAME spot right after a rocket that killed a
+        # only reward cycling a cheap card when you have SPARE elixir (near-full) -- below this, rewarding
+        # a cheap play just teaches compulsive card SPAM that starves your defence. Above it, cycling is
+        # genuinely free (you'd leak otherwise). Neutral (no bonus, no penalty) below the threshold.
+        self.cycle_min_elixir = float(cfg.get("env", "cycle_min_elixir", default=7.0))
         # clumped group. Waives the enemy-king penalty (when the rocket hit a princess tower and
         # killed >=2 medium troops) and rewards wiping a push, anywhere on the board.
         self.combo_reward = float(cfg.get("rewards", "rocket_tornado_combo", default=15.0))
@@ -858,8 +867,9 @@ class LiveMatchEnv:
             if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
                 if pre_elixir < self.defense_setup_elixir:      # at/near a FULL bar, a defensive SETUP avoids leaking -> allowed
                     reward += self.premature_defense_penalty   # else a defender / Royal Delivery on a QUIET board = premature
-            if play and card_id in self.cheap_ids and not any(c in self.rocket_ids for c in self.hand_ids):
-                reward += self._bonus(self.cycle_reward)   # cheap card played while rocket isn't in hand -> cycling to it
+            if (play and card_id in self.cheap_ids and pre_elixir >= self.cycle_min_elixir
+                    and not any(c in self.rocket_ids for c in self.hand_ids)):
+                reward += self._bonus(self.cycle_reward)   # cheap card + SPARE elixir + rocket not in hand -> cycling to it (not spam)
             reward += self._bonus(self._threat_counter_reward(bool(play), card_id, cell))   # foresight counters
             # rocket = a 6-elixir OFFENSIVE investment: resolve any prior rocket (pay its chip
             # only after a successful defence; withhold it + penalise if heavy own-tower damage
@@ -930,16 +940,22 @@ class LiveMatchEnv:
 
     def _log_reward(self, cx, cy, present, drop, size_frame, cycle_ok) -> float:
         """The Log -- a cheap 2-elixir ROLLING, ground-only knockback/reset spell with poor tower chip.
-        Reward rolling it THROUGH a real enemy push: the knockback/reset buys time (valued even without a
-        kill), plus a bonus for troops it actually clears. Cast with NOTHING to hit = a wasted Log -> a
-        small whiff (2 elixir, not rocket-scale) -- UNLESS it's a justified last-resort cycle (Skeletons
-        not in hand, board quiet, near-full bar), which is neutral (0)."""
-        if present:                                   # rolled through a real push -> reset/knockback (+ any kill)
+        Its job is DEFENSIVE: clear a ground SWARM / barrel-spawn (Skeleton or Goblin Barrel, Skeleton
+        Army, Goblin Gang) and KNOCK the push BACK once it has crossed to YOUR side of the river, where
+        the princess towers help finish it off. So the reset/clear is only rewarded when the Log lands on
+        YOUR side onto a real push; a big mass wiped earns a swarm/barrel counter bonus. A Log with
+        nothing to hit is a small whiff (2 elixir, not rocket-scale) unless it's a justified last-resort
+        cycle. An enemy-side / pre-crossing Log (offensive chip -- weak) is neutral, not the wanted use."""
+        if present and cy >= self.log_defense_y:      # a push on YOUR side -> knock it back toward the river
             size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg), self.spell_size_cap)
-            r = self.log_reset_reward
+            r = self.log_reset_reward                 # knockback/reset buys the towers + defenders time
             if drop >= self.spell_min_drop:
-                r += size * self.spell_hit
+                r += size * self.spell_hit            # troops actually cleared
+                if drop >= self.log_swarm_drop:
+                    r += self.log_swarm_reward        # a big swarm / barrel-spawn wiped = the Log's premium use
             return r
+        if present:                                   # a push, but enemy-side / not yet crossed -> not the defensive Log
+            return 0.0
         return 0.0 if cycle_ok else self.log_whiff    # nothing to hit: a waste, unless a justified cycle-chip
 
     def _spell_effect_reward(self, before, samples, cell, is_rocket: bool, is_rd: bool = False,

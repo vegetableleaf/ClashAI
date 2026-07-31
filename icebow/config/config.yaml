@@ -156,6 +156,8 @@ rewards:
   # -- The Log (2-elixir rolling ground knockback/reset spell; poor tower chip). NOT scored as a rocket/tornado. --
   log_reset_reward: 0.3          # The Log rolled THROUGH a real enemy push (knockback/reset buys time) -- valued even without a kill; + size*spell_hit for troops it clears
   log_whiff: -0.3                # The Log cast with nothing to hit (small waste -- 2 elixir, not the -1.5 rocket whiff). Waived (0) for a justified last-resort cycle (no Skeletons in hand, board quiet, near-full bar)
+  log_swarm_reward: 0.5          # The Log wiped a big ground SWARM / barrel-spawn (Skeleton/Goblin Barrel, Skeleton Army, Goblin Gang) ON YOUR SIDE -- its premium use
+  log_swarm_unit: 0.1            # sim only: + this per enemy unit The Log catches on your side (a coarse swarm-size scale)
   spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
                                  # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
   tesla_kill: 1.5                # per unit of enemy-troop mass a placed Tesla kills near it -- DIRECT (it zaps the troop) OR INDIRECT (it
@@ -342,6 +344,9 @@ env:
   rocket_clear_min: 0.10         # a rocket that removes at least this enemy (red) mass "erased a clump" -> a valid opposite-lane wipe (exempt from the wrong-lane penalty)
   rocket_bad_min_hp: 700         # a rocket that neither chipped a tower nor erased a clump is a BAD investment if your towers then lose >= this much HP in the window (you couldn't defend)
   offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
+  log_defense_y: 0.46            # The Log's knockback only counts as DEFENSIVE once the push has crossed to YOUR side (>= this y) -- there the princess towers help finish it
+  log_swarm_drop: 0.10           # this much enemy mass wiped by The Log = a swarm / barrel-spawn cleared (the swarm bonus)
+  cycle_min_elixir: 7.0          # only reward cycling a cheap card at/above this elixir (spare) -- below it, rewarding cheap plays just teaches card SPAM that starves defence
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
   threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised

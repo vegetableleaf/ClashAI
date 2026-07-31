@@ -144,12 +144,13 @@ def _cmd_detect_import(args) -> None:
 
 def _cmd_detect_frames(args) -> None:
     from .detect import add_frames
-    add_frames(Config.load(args.config), args.session, args.count)
+    add_frames(Config.load(args.config), args.session, args.count, args.val_frac)
 
 
 def _cmd_detect_timelapse(args) -> None:
     from .detect import add_timelapse_frames
-    add_timelapse_frames(Config.load(args.config), args.video, args.per_video)
+    add_timelapse_frames(Config.load(args.config), args.video, args.per_video,
+                         val_frac=args.val_frac, recent=args.recent)
 
 
 def _cmd_detect_preview(args) -> None:
@@ -285,12 +286,17 @@ def main() -> None:
                          help="add more in-match frames from a session to data/detect for hand-labelling (non-destructive)")
     dfr.add_argument("--session", default=None, help="session folder name or path (default: latest)")
     dfr.add_argument("--count", type=int, default=120, help="how many new frames to add")
+    dfr.add_argument("--val-frac", type=float, default=None, dest="val_frac",
+                     help="fraction of the added frames to place in val (default: detect.val_frac = 0.15)")
     dfr.set_defaults(func=_cmd_detect_frames)
 
     dtl = sub.add_parser("detect-timelapse",
                          help="add frames from training TIMELAPSE videos to data/detect for hand-labelling (non-destructive)")
     dtl.add_argument("--video", default=None, help="a single timelapse .mp4 (default: ALL in train.timelapse_dir)")
     dtl.add_argument("--per-video", type=int, default=12, help="max NEW frames to sample per timelapse (deduped)")
+    dtl.add_argument("--recent", type=int, default=0, help="only sample the N most-recent timelapses (0 = all)")
+    dtl.add_argument("--val-frac", type=float, default=None, dest="val_frac",
+                     help="fraction of the added frames to place in val (default: detect.val_frac = 0.15)")
     dtl.set_defaults(func=_cmd_detect_timelapse)
 
     dpv = sub.add_parser("detect-preview",

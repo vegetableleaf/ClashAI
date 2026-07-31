@@ -396,7 +396,7 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     print("[detect-import] ready to train:  python tools/detect/train.py")
 
 
-def add_frames(cfg, session_arg=None, count=120) -> None:
+def add_frames(cfg, session_arg=None, count=120, val_frac=None) -> None:
     """Extract COUNT extra in-match frames from a recording into the detect dataset, as empty-label
     images to hand-label. ADDITIVE + NON-DESTRUCTIVE: it only writes NEW frame indices (skipping any
     already in data/detect) into images/train, so existing images -- and any Label Studio project
@@ -430,8 +430,9 @@ def add_frames(cfg, session_arg=None, count=120) -> None:
         return
 
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-    (root / "images" / "train").mkdir(parents=True, exist_ok=True)
-    (root / "labels" / "train").mkdir(parents=True, exist_ok=True)
+    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
+    for sub in ("images/train", "images/val", "labels/train", "labels/val"):
+        (root / sub).mkdir(parents=True, exist_ok=True)
     existing = set()                                    # frame indices already in the dataset (any split)
     for split in ("train", "val"):
         for p in (root / "images" / split).glob(f"{session.name}_g*.jpg"):
@@ -444,7 +445,7 @@ def add_frames(cfg, session_arg=None, count=120) -> None:
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     q = int(cfg.get("detect", "jpeg_quality", default=92))
     rng = random.Random()                               # unseeded: fresh frames each call
-    added = tries = 0
+    added = tries = nval = 0
     while added < count and tries < count * 12:
         tries += 1
         frame, fi = _read_at(cap, frame_times, rng.choice(plays)["t"] + rng.uniform(-2.0, 6.0), total)
@@ -452,15 +453,17 @@ def add_frames(cfg, session_arg=None, count=120) -> None:
             continue
         existing.add(fi)
         stem = f"{session.name}_g{fi:06d}"
-        cv2.imwrite(str(root / "images" / "train" / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
-        (root / "labels" / "train" / f"{stem}.txt").write_text("", encoding="utf-8")
+        split = "val" if rng.random() < vf else "train"
+        cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
+        (root / "labels" / split / f"{stem}.txt").write_text("", encoding="utf-8")
+        nval += split == "val"
         added += 1
     cap.release()
-    print(f"[detect-frames] {session.name}: added {added} new frames -> {root / 'images' / 'train'} "
-          f"(empty labels). Existing images + splits untouched -- re-sync Local Storage in Label Studio to pick them up.")
+    print(f"[detect-frames] {session.name}: added {added} new frames ({added - nval} train / {nval} val, "
+          f"empty labels) -> {root / 'images'}. Existing images + splits untouched -- re-sync Local Storage in Label Studio.")
 
 
-def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0) -> None:
+def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_frac=None, recent=0) -> None:
     """Sample frames from training TIMELAPSE videos into the detect dataset as empty-label images to
     hand-label. Timelapses (``train.timelapse_dir``) are raw game-screen captures -- the SAME rendering
     as the live env -- so they are valid detector data. Unlike sessions they carry NO play log, so
@@ -473,14 +476,18 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0) -> None
         vids = [Path(video)]
     else:
         tl_dir = Path(cfg.path(cfg.get("train", "timelapse_dir", default="data/timelapses")))
-        vids = sorted(tl_dir.glob("*.mp4"))
+        vids = sorted(tl_dir.glob("*.mp4"), key=lambda p: p.stat().st_mtime)
+        if recent and recent > 0:
+            vids = vids[-recent:]                             # only the N most-recent timelapses
     if not vids:
         print("[detect-timelapse] no timelapse videos found (train.timelapse_dir)")
         return
 
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-    (root / "images" / "train").mkdir(parents=True, exist_ok=True)
-    (root / "labels" / "train").mkdir(parents=True, exist_ok=True)
+    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
+    _split_rng = random.Random()
+    for sub in ("images/train", "images/val", "labels/train", "labels/val"):
+        (root / sub).mkdir(parents=True, exist_ok=True)
     existing = set()                                     # tl_* stems already in the dataset (any split)
     for split in ("train", "val"):
         existing.update(p.stem for p in (root / "images" / split).glob("tl_*.jpg"))
@@ -509,15 +516,16 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0) -> None
             if last is not None and float(np.abs(cur - last).mean()) < diff_thresh:
                 continue                                 # a repeated (resampled) frame -> skip
             last = cur
-            cv2.imwrite(str(root / "images" / "train" / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
-            (root / "labels" / "train" / f"{stem}.txt").write_text("", encoding="utf-8")
+            split = "val" if _split_rng.random() < vf else "train"
+            cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
+            (root / "labels" / split / f"{stem}.txt").write_text("", encoding="utf-8")
             existing.add(stem)
             added += 1
             total += 1
         cap.release()
         print(f"[detect-timelapse] {vid.stem}: +{added}")
-    print(f"[detect-timelapse] added {total} frames -> {root / 'images' / 'train'} "
-          f"(empty labels). Re-sync Local Storage in Label Studio to pick them up.")
+    print(f"[detect-timelapse] added {total} frames (~{int((1 - vf) * 100)}% train / ~{int(vf * 100)}% val, "
+          f"empty labels) -> {root / 'images'}. Re-sync Local Storage in Label Studio to pick them up.")
 
 
 def _resolve_weights(cfg, weights):
