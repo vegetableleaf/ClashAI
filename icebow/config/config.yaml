@@ -518,6 +518,9 @@ sim:
   eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
   eval_envs: 8                  # vectorized eval envs (capped at --envs)
   eval_smooth_window: 5         # print a ROLLING AVERAGE of the last N benchmark points so a plateau vs noise is readable
+  fair_eval: true               # ALSO benchmark vs the meta pool at a FAIR (equal) level -- isolates raw policy strength from the L13-16 handicap
+  fair_eval_level: null         # fair-eval enemy card level (null = auto: rounded mean of YOUR deck's card levels)
+  # train-sim also keeps data/policy_sim_best.pt at the PEAK ladder rolling-avg (guards vs the late-training decay you saw: 69% @20k -> ~58% @40k)
   # --- Self-play (frozen past policy mixed in with the scripted meta bots) --------------------------
   # Every `selfplay_snapshot_every` matches the current policy is frozen into a small league; each match
   # reset then picks a league snapshot to pilot the OPPONENT with prob `selfplay_prob` (ramped in over

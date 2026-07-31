@@ -171,12 +171,13 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         torch.nn.utils.clip_grad_norm_(net.parameters(), grad_clip); opt.step()
         return float(loss.item())
 
-    def save():
-        sim_path.parent.mkdir(parents=True, exist_ok=True)
+    def save(path=None):
+        p = path if path is not None else sim_path
+        p.parent.mkdir(parents=True, exist_ok=True)
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
                     "threat_dim": threat_dim, "deck": e0.deck_keys,
-                    "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, sim_path)
+                    "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
     # -- self-play league --------------------------------------------------
     # Mix the scripted meta bots with a FROZEN past copy of the agent's own policy (a self-mirror,
@@ -224,6 +225,15 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     eval_envs = min(K, max(1, int(cfg.get("sim", "eval_envs", default=4))))
     eval_pool = [SimMatchEnv(cfg, seed=100000 + i) for i in range(eval_envs)] if eval_every > 0 else []
     eval_hist: deque = deque(maxlen=max(1, int(cfg.get("sim", "eval_smooth_window", default=5))))
+    eval_hist_fair: deque = deque(maxlen=eval_hist.maxlen)
+    run_fair = bool(cfg.get("sim", "fair_eval", default=True))
+    _fair_cfg = cfg.get("sim", "fair_eval_level", default=None)
+    _agent_lv = list(e0.deck_card_levels) or [11]
+    fair_level = int(_fair_cfg) if _fair_cfg else int(round(sum(_agent_lv) / len(_agent_lv)))
+    _el = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
+    ladder_lbl = f"L{min(_el)}-{max(_el)}"
+    best_path = sim_path.with_name(sim_path.stem + "_best" + sim_path.suffix)   # keep the PEAK-benchmark policy
+    best_wr = -1.0
 
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Greedy action per env (no epsilon, no `random` draw, no replay) for benchmarking."""
@@ -247,12 +257,15 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 acts.append((1, ci, int(ceq_i.argmax())))
         return acts
 
-    def evaluate():
+    def evaluate(fair=False):
         if not eval_pool:
             return None
         for j, e in enumerate(eval_pool):
-            e.rng.seed(777 + j)          # fixed benchmark: same scripted decks + engine rolls each eval
-            e.opponent_provider = None   # vs the SCRIPTED meta pool (never self-play)
+            e.rng.seed(777 + j)          # SAME benchmark decks + engine rolls each eval (and across fair/ladder)
+            if fair:                     # FAIR: same meta decks but enemy cards at YOUR level (handicap removed)
+                e.opponent_provider = lambda env: make_opponent(cfg, env.db, env.rng, env.meta_pool, level=fair_level)
+            else:
+                e.opponent_provider = None   # rolled ladder levels (the handicapped benchmark)
         eo = [e.reset() for e in eval_pool]
         eh = [e.hand_vec.copy() for e in eval_pool]; en = [e.next_vec.copy() for e in eval_pool]
         ee = [e.elixir_vec.copy() for e in eval_pool]; et = [e.threat_vec.copy() for e in eval_pool]
@@ -318,13 +331,22 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                     if sp_prob > 0 and done_n % sp_snap_every == 0:
                         snapshot()
                     if eval_every > 0 and done_n % eval_every == 0:
-                        wr = evaluate()
+                        wr = evaluate(fair=False)
                         if wr is not None:
-                            eval_hist.append(wr)
-                            smooth = sum(eval_hist) / len(eval_hist)
-                            print(f"[train-sim] EVAL vs scripted meta (fixed benchmark): "
-                                  f"winrate={wr:4.0f}% (avg-{len(eval_hist)} {smooth:4.0f}%) "
-                                  f"over {eval_matches} matches @ {done_n} done", flush=True)
+                            eval_hist.append(wr); smooth = sum(eval_hist) / len(eval_hist)
+                            line = (f"[train-sim] EVAL @ {done_n}: ladder({ladder_lbl}) {wr:4.0f}% "
+                                    f"(avg-{len(eval_hist)} {smooth:4.0f}%)")
+                            if run_fair:
+                                fwr = evaluate(fair=True)
+                                eval_hist_fair.append(fwr); fsmooth = sum(eval_hist_fair) / len(eval_hist_fair)
+                                line += (f" | fair(L{fair_level}) {fwr:4.0f}% "
+                                         f"(avg-{len(eval_hist_fair)} {fsmooth:4.0f}%)")
+                            print(line + f" | {eval_matches} matches each", flush=True)
+                            if smooth > best_wr:                 # keep the PEAK policy (guards vs late-training decay)
+                                best_wr = smooth
+                                save(best_path)
+                                print(f"[train-sim] new BEST ladder avg {smooth:4.0f}% -> saved {best_path.name}",
+                                      flush=True)
                 else:
                     cobs[i] = nobs; chand[i], cnxt[i] = nhand, nnxt
                     celx[i], cthr[i] = nelx, nthr
