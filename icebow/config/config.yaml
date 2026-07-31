@@ -235,16 +235,19 @@ outcome:
 train:
   device: "cuda"                 # "cuda" (GPU) or "cpu"
   gamma: 0.99
-  lr: 0.0001
+  # --- STABILITY LEVERS (if the sim benchmark OSCILLATES: peak-then-decline / a swinging fair avg) ---
+  # lower lr, raise target_sync, and/or grow replay_size to damp Double-DQN value oscillation. Try lr 5e-5
+  # + target_sync 1000 first; sim.selfplay_keep_best also tackles the self-play side of the instability.
+  lr: 0.0001                     # learning rate -- LOWER (e.g. 5e-5) = slower but steadier; a high lr drives oscillation
   batch_size: 64
-  replay_size: 100000
+  replay_size: 100000            # bigger replay = more decorrelated batches = steadier bootstrap targets
   epsilon_start: 1.0
   epsilon_end: 0.05
   epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
-  target_sync: 500               # steps between target-network syncs
+  target_sync: 500               # steps between target-network syncs -- RAISE (e.g. 1000-2000) to slow the bootstrap + steady training
   grad_clip: 10.0                # max global grad-norm per Double-DQN update (stabilises noisy TD targets)
   save_every_matches: 1          # checkpoint cadence during RL
   bc_epochs: 10                  # behaviour-cloning pretrain epochs
@@ -536,6 +539,8 @@ sim:
   selfplay_ramp_matches: 5000   # linearly ramp selfplay_prob 0 -> full over this many matches (0 = no ramp)
   selfplay_snapshot_every: 1000 # freeze a policy snapshot into the league this often (matches)
   selfplay_league_size: 5       # keep this many recent snapshots; a match samples one at random
+  selfplay_keep_best: true      # ALSO spar against the BEST-benchmark self (not just recent snapshots) -- damps the
+                                # self-play "chase a degrading recent self" oscillation; the biggest stability lever here
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

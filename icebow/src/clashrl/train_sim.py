@@ -188,32 +188,42 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     sp_ramp = int(cfg.get("sim", "selfplay_ramp_matches", default=5000))
     sp_snap_every = int(cfg.get("sim", "selfplay_snapshot_every", default=1000))
     sp_league_size = int(cfg.get("sim", "selfplay_league_size", default=5))
+    keep_best = bool(cfg.get("sim", "selfplay_keep_best", default=True))
     league: deque = deque(maxlen=max(1, sp_league_size))
+    _best_snap = {"net": None}       # a frozen copy of the BEST-benchmark policy (an always-available sparring partner)
     _prog = {"n": 0}
 
-    def snapshot():
+    def snapshot(store=True):
         snap = _build_net(cfg, device, n_cards, n_cells, threat_dim)
         snap.load_state_dict(net.state_dict())
         snap.eval()
         for p in snap.parameters():
             p.requires_grad_(False)
-        league.append(snap)
+        if store:
+            league.append(snap)
+        return snap
 
     def sp_prob_now():
         return sp_prob if sp_ramp <= 0 else sp_prob * min(1.0, _prog["n"] / sp_ramp)
 
     def opponent_provider(env):
-        if sp_prob > 0 and league and random.random() < sp_prob_now():
-            return SelfPlayOpponent(cfg, env, random.choice(league), env.rng)
+        snaps = list(league)
+        if keep_best and _best_snap["net"] is not None:
+            snaps.append(_best_snap["net"])          # spar against the BEST self, not only the degrading recent ones
+        if sp_prob > 0 and snaps and random.random() < sp_prob_now():
+            return SelfPlayOpponent(cfg, env, random.choice(snaps), env.rng)
         return make_opponent(cfg, env.db, env.rng, env.meta_pool)
 
     if sp_prob > 0:
         for e in pool:
             e.opponent_provider = opponent_provider
         if resume and sim_path.exists():
-            snapshot()                                           # a resumed policy is a valid sparring seed
+            seed = snapshot()                                    # a resumed policy seeds the league
+            if keep_best:
+                _best_snap["net"] = seed                         # ...and the best-self sparring slot
         print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
-              f"snapshot every {sp_snap_every}, league size {sp_league_size}")
+              f"snapshot every {sp_snap_every}, league size {sp_league_size}"
+              + (", +best-self" if keep_best else ""))
 
     # -- benchmark eval vs the FIXED scripted meta pool --------------------
     # A STABLE plateau signal (unlike the self-play win-rate, which self-references to ~50%): every
@@ -345,6 +355,8 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                             if smooth > best_wr:                 # keep the PEAK policy (guards vs late-training decay)
                                 best_wr = smooth
                                 save(best_path)
+                                if keep_best:                    # add the best self to the sparring league
+                                    _best_snap["net"] = snapshot(store=False)
                                 print(f"[train-sim] new BEST ladder avg {smooth:4.0f}% -> saved {best_path.name}",
                                       flush=True)
                 else:
