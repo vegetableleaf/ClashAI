@@ -218,6 +218,22 @@ classes:
   - skeleton_king_ability
   - terry_ability
 
+  # --- hero troop ability activations (the _hero cards' ability visual; folds to the base card) ---
+  - knight_hero_ability
+  - musketeer_hero_ability
+  - mini_pekka_hero_ability
+  - goblins_hero_ability
+  - giant_hero_ability
+  - balloon_hero_ability
+  - wizard_hero_ability
+  - dark_prince_hero_ability
+  - bowler_hero_ability
+  - ice_golem_hero_ability
+  - mega_minion_hero_ability
+  - magic_archer_hero_ability
+  - tombstone_hero_ability
+  - barbarian_barrel_hero_ability
+
   # --- spell target/impact indicators (the on-ground AoE circle; team-agnostic) ---
   - arrows_aoe
   - barbarian_barrel_aoe

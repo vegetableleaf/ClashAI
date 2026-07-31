@@ -30,12 +30,18 @@ _SUFFIXES = ("_evo", "_hero", "_ability", "_aoe")
 
 
 def base_key(name: str) -> str:
-    """Base card key for a detected class name, stripping one detection suffix
-    (``tesla_evo`` / ``knight_hero`` / ``skeleton_king_ability`` / ``fireball_aoe`` -> base)."""
+    """Base card key for a detected class name, stripping detection suffixes
+    (``tesla_evo`` / ``knight_hero`` / ``skeleton_king_ability`` / ``fireball_aoe`` -> base).
+    Stacked suffixes fold FULLY (``knight_hero_ability`` -> ``knight``)."""
     k = _key(name)
-    for suf in _SUFFIXES:
-        if k.endswith(suf):
-            return k[: -len(suf)]
+    changed = True
+    while changed:
+        changed = False
+        for suf in _SUFFIXES:
+            if k.endswith(suf):
+                k = k[: -len(suf)]
+                changed = True
+                break
     return k
 
 
