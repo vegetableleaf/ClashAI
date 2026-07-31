@@ -1,6 +1,6 @@
 # ClashAI
 
-Homemade bots that learn to play **2v2 Clash Royale** on PC (through Google Play
+Homemade bots that learn to play **Clash Royale** on PC (through Google Play
 Games). This is a hobby / research project about getting an agent to *actually
 play* a live real-time game.
 
