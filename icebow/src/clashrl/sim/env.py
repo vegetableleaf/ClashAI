@@ -77,6 +77,11 @@ class SimMatchEnv:
         self.log_reset = r("log_reset_reward", 0.3)          # The Log knocked a push back on YOUR side (buys time)
         self.log_swarm_unit = r("log_swarm_unit", 0.1)       # + per enemy unit it caught (a swarm / barrel wipe)
         self.log_air_penalty = r("log_air_penalty", -0.5)    # The Log (ground-only) dropped onto AIR units = wasted
+        self.rd_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "royal_delivery"}
+        self.rd_hit = r("rd_hit_reward", 0.5)                # Royal Delivery blast landed ON an enemy mass (air+ground)
+        self.rd_hit_unit = r("rd_hit_unit", 0.15)            # + per enemy unit caught in the blast
+        self.rd_whiff = r("rd_whiff_penalty", -0.5)          # RD on empty ground = the AoE + recruit wasted
+        self.rd_radius = float(cfg.get("env", "rd_radius", default=0.11))  # ~ the engine spell_radius for RD
         self.miner_king_penalty = r("miner_king_penalty", -2.0)  # Miner on the enemy KING wakes it early -> bad trade
         # icebow OFFENSE->DEFENSE transition: if the X-Bow hasn't chipped >= xbow_success_frac of a tower by
         # double elixir (or once you TAKE a tower), flip to a DEFENSIVE X-Bow (back-centre) + rocket-cycle
@@ -210,6 +215,12 @@ class SimMatchEnv:
                 return self.log_reset + min(len(ground), 4) * self.log_swarm_unit
             if near:                                         # only AIR units there -> the Log is wasted on them
                 return self.log_air_penalty
+        if card_id in self.rd_ids:                           # Royal Delivery: an AREA blast (air+ground) + a Recruit --
+            near = [u for u in self.eng.units if u.team == 1  # land it ON the enemy push, NOT to the side / back
+                    and abs(u.x - nx) <= self.rd_radius and abs(u.y - ny) <= self.rd_radius]
+            if near:
+                return self.rd_hit + min(len(near), 5) * self.rd_hit_unit   # reward the group it blasts
+            return self.rd_whiff                             # empty ground -> the blast + recruit wasted
         return 0.0
 
     def step(self, action: Action):
