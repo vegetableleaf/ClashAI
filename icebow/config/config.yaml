@@ -113,6 +113,10 @@ observation:
   use_detector: false            # Stage-3 gate: add the identity-threat block (needs a trained detector live)
   detector_conf: 0.75            # LIVE: only trust a detection at/above this confidence (extremely-high only)
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
+  flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
+                                 # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
+                                 # true tile, so spell targeting + depth/movement prediction use where it really is.
+                                 # 0 disables. Calibrate to the visible sprite->shadow gap (detect-obs / verify --threats).
   detector_cards:                # cards the detector RELIABLY names -- ONLY these fire; grow it as you annotate
     - tesla
     - ice_wizard

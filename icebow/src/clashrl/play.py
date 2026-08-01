@@ -140,8 +140,8 @@ def play(cfg) -> None:
             dets = _detector.detect(frame, conf=detector_conf)
         except Exception:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
-                 if d.team == "enemy" and d.cy >= 0.5 and d.base in detector_cards]
+        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets           # d.gy = shadow-corrected ground y
+                 if d.team == "enemy" and d.gy >= 0.5 and d.base in detector_cards]
         now = time.time()
         dt = (now - _ident_state["t"]) if _ident_state["t"] else 0.0
         vec = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],

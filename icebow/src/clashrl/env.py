@@ -400,8 +400,8 @@ class LiveMatchEnv:
             dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
-                 if d.team == "enemy" and d.cy >= 0.5 and d.base in self.detector_cards]
+        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets           # d.gy = shadow-corrected ground y
+                 if d.team == "enemy" and d.gy >= 0.5 and d.base in self.detector_cards]
         now = time.time()
         dt = (now - self._prev_ident_t) if self._prev_ident_t else 0.0
         vec = card_threat.identity_threat_vector(items, self.db, prev_depth=self._prev_ident_depth,

@@ -73,11 +73,25 @@ class Detection:
     h: float
     conf: float
     team: str = "unknown"          # "mine" | "enemy" | "unknown"
+    ground_cy: Optional[float] = None   # shadow (true ground) y for FLYERS; None = ground unit (use cy)
 
     @property
     def base(self) -> str:
         """Base card key (strips _evo/_hero/_ability/_aoe)."""
         return card_threat.base_key(self.cls)
+
+    @property
+    def gy(self) -> float:
+        """The unit's REAL grid y = its SHADOW / ground position. Flying sprites are drawn ABOVE the
+        ground, so the box centre sits high; the shadow marks the true tile. Ground units fall back to
+        the box centre. Use this (not ``cy``) for depth, movement prediction, and grid placement."""
+        return self.cy if self.ground_cy is None else self.ground_cy
+
+    @property
+    def ground(self) -> "tuple[float, float]":
+        """Normalized (x, y) of the unit ON THE GROUND -- shadow-corrected for flyers. Use for spell
+        targeting + grid placement so a spell/defender aims where the flyer really is, not at its sprite."""
+        return (self.cx, self.gy)
 
 
 def _team_of(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> str:
@@ -100,9 +114,11 @@ class BoardDetector:
     """Thin wrapper over an Ultralytics detector (YOLO/RT-DETR). ``available`` is False when no
     weights are found, so the miner can report readiness instead of crashing."""
 
-    def __init__(self, model=None, names: Optional[Dict[int, str]] = None):
+    def __init__(self, model=None, names: Optional[Dict[int, str]] = None, db=None, fly_offset: float = 0.0):
         self._model = model
         self._names = names or {}
+        self._db = db                      # CardDB, for the flying-unit shadow correction (None -> skip)
+        self._fly_offset = float(fly_offset)   # normalized DOWNWARD shift from a flyer's sprite to its shadow
 
     @property
     def available(self) -> bool:
@@ -119,8 +135,15 @@ class BoardDetector:
             cx, cy = (x1 + x2) / 2 / w, (y1 + y2) / 2 / h
             bw, bh = (x2 - x1) / w, (y2 - y1) / h
             cls = self._names.get(int(b.cls[0]), str(int(b.cls[0])))
-            out.append(Detection(cls, cx, cy, bw, bh, float(b.conf[0]),
-                                  _team_of(frame, cx, cy, bw, bh)))
+            team = _team_of(frame, cx, cy, bw, bh)
+            # FLYING-UNIT SHADOW CORRECTION: a flyer's sprite is drawn above the ground, so its box
+            # centre is too high -- the real tile is at its shadow, ~fly_offset below. Shift cy down so
+            # depth / movement prediction / spell targeting use the true ground position.
+            gcy = None
+            if self._fly_offset > 0 and self._db is not None and \
+                    card_threat.profile(self._db, card_threat.base_key(cls)).flying:
+                gcy = min(1.0, cy + self._fly_offset)
+            out.append(Detection(cls, cx, cy, bw, bh, float(b.conf[0]), team, gcy))
         return out
 
 
@@ -142,7 +165,15 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
             print(f"[mine-replays] could not load detector ({exc}); pip install ultralytics")
             return BoardDetector()
     names = getattr(model, "names", {}) or {}
-    return BoardDetector(model, {int(k): str(v) for k, v in names.items()})
+    fly_offset = float(cfg.get("observation", "flying_shadow_offset", default=0.045))
+    db = None
+    if fly_offset > 0:
+        try:
+            from .cards import CardDB
+            db = CardDB(cfg)                            # to look up which detected classes are flyers
+        except Exception:
+            db = None
+    return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset)
 
 
 # ---------------------------------------------------------------------------

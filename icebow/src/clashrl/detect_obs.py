@@ -51,7 +51,7 @@ def detection_channels(dets: List[Detection], db, oh: int, ow: int) -> np.ndarra
     ch = np.zeros((oh, ow, N_CHANNELS), np.float32)
     for d in dets:
         k = _channel_of(d, db)
-        cx, cy = int(d.cx * ow), int(d.cy * oh)
+        cx, cy = int(d.cx * ow), int(d.gy * oh)   # flyers rasterized at their SHADOW (true ground tile)
         rx, ry = max(1, int(d.w * ow / 2)), max(1, int(d.h * oh / 2))
         layer = np.zeros((oh, ow), np.float32)
         cv2.ellipse(layer, (cx, cy), (rx, ry), 0, 0, 360, float(min(1.0, d.conf)), -1)
