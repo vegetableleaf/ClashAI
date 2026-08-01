@@ -412,12 +412,13 @@ class SimEngine:
         self._check_end()
 
     def _hurt(self, u: "Unit", dmg: float) -> None:
-        """Apply damage to a UNIT, depleting its SHIELD pool (Royal Recruits / Guards ...) before hp.
-        A unit with no shield (shield_left 0) behaves exactly as `u.hp -= dmg`."""
+        """Apply damage to a UNIT. While a SHIELD (Royal Recruits / Guards ...) is up it absorbs the WHOLE
+        hit, and -- like real Clash Royale -- OVERFLOW that breaks the shield is DISCARDED, not carried to
+        hp: one big hit only STRIPS the shield and the body survives it (the body takes damage on LATER
+        hits). A unit with no shield behaves exactly as `u.hp -= dmg`."""
         if u.shield_left > 0.0:
-            absorbed = min(u.shield_left, dmg)
-            u.shield_left -= absorbed
-            dmg -= absorbed
+            u.shield_left = max(0.0, u.shield_left - dmg)
+            return
         u.hp -= dmg
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
