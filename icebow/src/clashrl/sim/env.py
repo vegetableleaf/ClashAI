@@ -48,6 +48,7 @@ class SimMatchEnv:
         # for whitelisted cards, so it mimics the live detector's (partial) recognition coverage.
         self.use_detector = bool(cfg.get("observation", "use_detector", default=False))
         self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+        self.predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
         self.threat_dim = _THREAT_DIM + (card_threat.IDENTITY_DIM if self.use_detector else 0)
 
         def _base(k):
@@ -59,6 +60,7 @@ class SimMatchEnv:
         # role-based COUNTER reward (played the right answer to a RECOGNISED threat). Off unless use_detector.
         self._deck_profiles = [card_threat.profile(self.db, _base(k)) for k in self.deck_keys]
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self._prev_ident_depth = 0.0     # deepest recognised-threat depth last step (for approach velocity)
         self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
 
         r = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
@@ -104,6 +106,7 @@ class SimMatchEnv:
         self.threat_vec = np.zeros(self.threat_dim, np.float32)
         self.elixir = 0
         self._last_frame = self._last_obs
+        self._prev_ident_depth = 0.0
 
     # -- hand cycle --------------------------------------------------------
     def _hand_ids(self):
@@ -131,7 +134,9 @@ class SimMatchEnv:
         if not self.use_detector:
             return base
         self._threat_id = card_threat.identity_threat_vector(
-            view.identity_items(self.eng, 0, self.detector_cards), self.db)
+            view.identity_items(self.eng, 0, self.detector_cards), self.db,
+            prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
+        self._prev_ident_depth = float(self._threat_id[7])
         return np.concatenate([base, self._threat_id]).astype(np.float32)
 
     def _render(self) -> np.ndarray:

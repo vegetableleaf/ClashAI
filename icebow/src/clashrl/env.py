@@ -330,6 +330,7 @@ class LiveMatchEnv:
         self.use_detector = bool(cfg.get("observation", "use_detector", default=False))
         self.detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
         self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+        self.predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
         self.db = db
         # your deck's KB profiles (played-card role) for the role-based COUNTER reward
         self._deck_profiles = [card_threat.profile(db, (k[:-4] if k.endswith("_evo") else k))
@@ -337,6 +338,8 @@ class LiveMatchEnv:
         self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
         self._detector = None
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
+        self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
+        self._prev_ident_t = None
         if self.use_detector:
             self.threat_vec = np.concatenate([self.threat_vec, self._threat_id]).astype(np.float32)
             try:
@@ -387,8 +390,9 @@ class LiveMatchEnv:
         self.threat_vec = np.concatenate([base, self._threat_id]).astype(np.float32)
 
     def _detect_identity(self, frame) -> np.ndarray:
-        """KB identity block for the RECOGNISED (whitelisted, >= detector_conf) enemy units the
-        detector names on YOUR half (cy >= 0.5). All-zero when the detector is unavailable."""
+        """KB identity + MOTION block for the RECOGNISED (whitelisted, >= detector_conf) enemy units
+        the detector names on YOUR half (cy >= 0.5). Tracks the deepest-threat depth across frames
+        for the approach velocity + predicted post-deploy depth. All-zero if the detector is off."""
         if self._detector is None:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
         try:
@@ -397,7 +401,13 @@ class LiveMatchEnv:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
         items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
                  if d.team == "enemy" and d.cy >= 0.5 and d.base in self.detector_cards]
-        return card_threat.identity_threat_vector(items, self.db)
+        now = time.time()
+        dt = (now - self._prev_ident_t) if self._prev_ident_t else 0.0
+        vec = card_threat.identity_threat_vector(items, self.db, prev_depth=self._prev_ident_depth,
+                                                 dt=dt, horizon=self.predict_horizon)
+        self._prev_ident_depth = float(vec[7])
+        self._prev_ident_t = now
+        return vec
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
@@ -424,6 +434,8 @@ class LiveMatchEnv:
                 self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)
                 self._read_hand(frame)
                 self.threat_tracker.reset()
+                self._prev_ident_depth = 0.0
+                self._prev_ident_t = None
                 self._update_threat(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame

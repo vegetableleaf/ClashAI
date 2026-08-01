@@ -120,6 +120,7 @@ def play(cfg) -> None:
     want_identity = threat_dim > THREAT_DIM
     detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
     detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+    predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
     _detector = None
     if want_identity:
         try:
@@ -128,9 +129,11 @@ def play(cfg) -> None:
             _detector = _det if _det.available else None
         except Exception:
             _detector = None
+    _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
 
     def _identity_block(frame):
-        """KB identity block for RECOGNISED (whitelisted, >= detector_conf) enemy units on your half."""
+        """KB identity + MOTION block for RECOGNISED (whitelisted, >= detector_conf) enemy units on
+        your half (approach velocity + predicted post-deploy depth via cross-frame depth tracking)."""
         if _detector is None:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
         try:
@@ -139,7 +142,12 @@ def play(cfg) -> None:
             return np.zeros(card_threat.IDENTITY_DIM, np.float32)
         items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
                  if d.team == "enemy" and d.cy >= 0.5 and d.base in detector_cards]
-        return card_threat.identity_threat_vector(items, _db)
+        now = time.time()
+        dt = (now - _ident_state["t"]) if _ident_state["t"] else 0.0
+        vec = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],
+                                                 dt=dt, horizon=predict_horizon)
+        _ident_state["depth"] = float(vec[7]); _ident_state["t"] = now
+        return vec
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))

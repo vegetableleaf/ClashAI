@@ -154,16 +154,24 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
 # win-condition/building-targeter) instead of the coarse red-blob heuristics. The SIM builds this
 # from ground truth (filtered to the recognised whitelist to mimic the detector's coverage); the
 # LIVE env builds it from high-confidence whitelisted detections. Same layout both sides.
-IDENTITY_DIM = 8
+IDENTITY_DIM = 10
+_VEL_NORM = 0.6    # depth/sec that reads as "fast" (~a troop covering the half-field in <2s)
 
 
-def identity_threat_vector(items, db: CardDB) -> np.ndarray:
-    """KB-grounded role flags for the RECOGNISED enemy threats on your half.
+def identity_threat_vector(items, db: CardDB, prev_depth: float = 0.0,
+                           dt: float = 0.0, horizon: float = 1.0) -> np.ndarray:
+    """KB-grounded role + MOTION features for the RECOGNISED enemy threats on your half.
 
     ``items`` = iterable of ``(base_card_name, depth_frac)`` where depth_frac in [0,1] is how far
-    the unit has advanced toward your king. Returns an ``IDENTITY_DIM`` float vector:
+    the unit has advanced toward your king. ``prev_depth`` = the deepest-depth ([7]) this returned on
+    the PREVIOUS observation and ``dt`` = the seconds since -> the approach velocity of the threat
+    front; ``horizon`` = seconds to look ahead (~a defender's deploy time). Returns an ``IDENTITY_DIM``
+    float vector:
       0 recognised-threat-present  1 tank  2 swarm  3 air(flying)  4 building/siege
       5 win_condition  6 building_targeting(ignores troops -> needs a building)  7 deepest depth
+      8 approach VELOCITY (depth/sec toward your king, normalised)
+      9 PREDICTED deepest depth after ``horizon`` s ( depth + velocity*horizon ) -- where the threat
+        front will be when a ~horizon-second-deploy defender finishes deploying.
     All-zero when nothing is recognised (so the policy falls back to the red-blob threat block)."""
     v = np.zeros(IDENTITY_DIM, dtype=np.float32)
     seen = False
@@ -189,6 +197,10 @@ def identity_threat_vector(items, db: CardDB) -> np.ndarray:
     if seen:
         v[0] = 1.0
         v[7] = min(1.0, max_depth)
+        vel = (max_depth - prev_depth) / dt if dt and dt > 1e-3 else 0.0
+        vel = max(0.0, vel)                                    # only INCOMING threats count
+        v[8] = min(1.0, vel / _VEL_NORM)
+        v[9] = min(1.0, max_depth + vel * float(horizon))     # extrapolate to the post-deploy state
     return v
 
 

@@ -103,14 +103,16 @@ label:
 observation:
   arena_size: [64, 96]           # downscaled arena image (w, h) fed to the CNN
   # --- Stage 3: identity-grounded threat features (detector -> obs) ------------------------------
-  # When ON, the policy's THREAT vector gains an 8-feature IDENTITY block (card_threat.IDENTITY_DIM):
+  # When ON, the policy's THREAT vector gains a 10-feature IDENTITY block (card_threat.IDENTITY_DIM):
   # for RECOGNISED enemy cards it exposes their KB role (tank / swarm / air / building / win-condition /
-  # building-targeter + depth) so the policy learns to COUNTER by identity, not just red blobs. The SIM
-  # builds this from ground truth (filtered to `detector_cards` to mimic the detector's coverage); LIVE
-  # builds it from HIGH-CONFIDENCE detections of those same cards. Flipping this changes threat_dim
-  # (16 <-> 24) -> it needs a FRESH train-sim + train-bc + train-rl (the policy input grows).
+  # building-targeter) + how deep they are + their APPROACH VELOCITY + a PREDICTED depth `predict_horizon_s`
+  # ahead (where the push will be when a defender finishes deploying) so the policy counters by identity
+  # AND anticipates motion, not just red blobs. The SIM builds this from ground truth (filtered to
+  # `detector_cards` to mimic the detector's coverage); LIVE builds it from HIGH-confidence detections.
+  # Flipping this changes threat_dim (16 <-> 26) -> it needs a FRESH train-sim + train-bc + train-rl.
   use_detector: false            # Stage-3 gate: add the identity-threat block (needs a trained detector live)
   detector_conf: 0.75            # LIVE: only trust a detection at/above this confidence (extremely-high only)
+  predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
   detector_cards:                # cards the detector RELIABLY names -- ONLY these fire; grow it as you annotate
     - tesla
     - ice_wizard
