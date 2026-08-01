@@ -495,6 +495,13 @@ detect:
   general_per_session: 40        # extra active in-match frames per session to hand-label (enemy)
   val_frac: 0.15                 # fraction of exported images held out for validation
   jpeg_quality: 92               # exported frames are JPEG at this quality (labelling-friendly, small)
+  # train-rl annotation harvest: while training LIVE, drop game frames into data/detect (empty labels)
+  # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
+  # Studio Local Storage to pick them up.
+  capture_during_train: true     # set false to disable the harvest during train-rl
+  capture_every_s: 5.0           # one frame every N seconds of match play
+  capture_per_match: 20          # cap frames per match
+  capture_session_max: 200       # cap frames for the whole train-rl session
 
 # --- External-replay strategy mining (Stage 4 groundwork) ----------------
 # `run.py mine-replays` distils strong-player rocket-cycle replay VIDEOS into deck-agnostic

@@ -159,6 +159,18 @@ def train_rl(cfg) -> None:
         print(f"[train-rl] recording a {tl.target // tl.fps}s @ {tl.fps}fps timelapse to "
               f"{tl.path} (whole run compressed to a fixed-length video)")
 
+    # Optionally harvest annotation frames into data/detect during the session (empty labels to hand-label).
+    collector = None
+    if bool(cfg.get("detect", "capture_during_train", default=True)):
+        from .detect import TrainFrameCollector
+        collector = TrainFrameCollector(
+            cfg,
+            every_s=float(cfg.get("detect", "capture_every_s", default=5.0)),
+            per_match=int(cfg.get("detect", "capture_per_match", default=20)),
+            session_max=int(cfg.get("detect", "capture_session_max", default=200)))
+        print(f"[train-rl] harvesting annotation frames to {collector.root} "
+              f"(every {collector.every_s:.0f}s, <= {collector.per_match}/match, <= {collector.session_max}/session)")
+
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
 
@@ -293,6 +305,8 @@ def train_rl(cfg) -> None:
                 time.sleep(1.0)
                 continue
             match += 1
+            if collector is not None:
+                collector.new_match()
             ep_reward = 0.0
             plays = 0
             hand = env.hand_vec.copy()
@@ -305,6 +319,8 @@ def train_rl(cfg) -> None:
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
                     tl.add(env._last_frame)         # collect a frame for the training timelapse
+                if collector is not None:
+                    collector.maybe_capture(env._last_frame)   # harvest an annotation frame (every ~5s, capped)
                 nhand = env.hand_vec.copy()
                 nnxt = env.next_vec.copy()
                 nelx = env.elixir_vec.copy()
@@ -344,4 +360,7 @@ def train_rl(cfg) -> None:
                 print(f"[train-rl] timelapse -> {p}  "
                       f"({tl.target} frames @ {tl.fps}fps = {tl.target / tl.fps:.0f}s, "
                       f"from {tl.seen} captured)")
+        if collector is not None and collector.session_count:
+            print(f"[train-rl] harvested {collector.session_count} annotation frame(s) -> {collector.root}/images "
+                  f"(empty labels; re-sync Label Studio Local Storage to pick them up)")
         print(f"[train-rl] stopped after {match} match(es); saved policy to {rl_path}")

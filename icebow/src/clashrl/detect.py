@@ -23,6 +23,7 @@ from __future__ import annotations
 import bisect
 import json
 import random
+import time
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -526,6 +527,48 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_fra
         print(f"[detect-timelapse] {vid.stem}: +{added}")
     print(f"[detect-timelapse] added {total} frames (~{int((1 - vf) * 100)}% train / ~{int(vf * 100)}% val, "
           f"empty labels) -> {root / 'images'}. Re-sync Local Storage in Label Studio to pick them up.")
+
+
+class TrainFrameCollector:
+    """Harvest annotation frames DURING a train-rl session: save the live game frame into the detect
+    dataset (data/detect, EMPTY labels) once every ``every_s`` seconds of match play, capped
+    ``per_match`` per match and ``session_max`` for the whole run, split train/val by ``val_frac``.
+    ADDITIVE + NON-DESTRUCTIVE (writes NEW ``trl_<runstamp>_<n>`` stems only), so a live training run
+    doubles as data collection without touching existing images or a Label Studio project."""
+
+    def __init__(self, cfg, every_s=5.0, per_match=20, session_max=200, val_frac=None):
+        self.root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+        vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
+        q = int(cfg.get("detect", "jpeg_quality", default=92))
+        self._writer = _Writer(self.root, vf, q, seed=random.randrange(1 << 30))
+        self.every_s = float(every_s)
+        self.per_match = int(per_match)
+        self.session_max = int(session_max)
+        self.stamp = time.strftime("%Y%m%d_%H%M%S")
+        self.session_count = 0
+        self._match_count = 0
+        self._last_t = None
+
+    def new_match(self) -> None:
+        """Call at the START of each match: reset the per-match cap + restart the interval clock."""
+        self._match_count = 0
+        self._last_t = None
+
+    def maybe_capture(self, frame, now=None) -> bool:
+        """Save ``frame`` if the interval has elapsed and neither cap is hit. Returns True if it saved."""
+        if frame is None or self.session_count >= self.session_max or self._match_count >= self.per_match:
+            return False
+        now = time.time() if now is None else now
+        if self._last_t is None:                         # first in-match frame -> start the clock (no shot yet)
+            self._last_t = now
+            return False
+        if now - self._last_t < self.every_s:
+            return False
+        self._last_t = now
+        self._writer.add(f"trl_{self.stamp}_{self.session_count:04d}", frame, [])   # empty label = to hand-label
+        self.session_count += 1
+        self._match_count += 1
+        return True
 
 
 def _resolve_weights(cfg, weights):
