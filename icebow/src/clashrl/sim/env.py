@@ -76,6 +76,8 @@ class SimMatchEnv:
         self.log_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "the_log"}
         self.log_reset = r("log_reset_reward", 0.3)          # The Log knocked a push back on YOUR side (buys time)
         self.log_swarm_unit = r("log_swarm_unit", 0.1)       # + per enemy unit it caught (a swarm / barrel wipe)
+        self.log_air_penalty = r("log_air_penalty", -0.5)    # The Log (ground-only) dropped onto AIR units = wasted
+        self.miner_king_penalty = r("miner_king_penalty", -2.0)  # Miner on the enemy KING wakes it early -> bad trade
         # icebow OFFENSE->DEFENSE transition: if the X-Bow hasn't chipped >= xbow_success_frac of a tower by
         # double elixir (or once you TAKE a tower), flip to a DEFENSIVE X-Bow (back-centre) + rocket-cycle
         # doctrine -- rocket-at-tower becomes the only sanctioned tower damage; everything else defends/cycles.
@@ -194,13 +196,20 @@ class SimMatchEnv:
             return self.xbow_def if back_centre else self.xbow_mis
         if card_id in self.rocket_ids and self._defensive and d <= self.spell_aim_radius:
             return self.defensive_rocket_reward              # rocket-cycle is the win path once defensive
-        if card_id in self.miner_ids and d <= 0.09:
-            return self.miner_chip
+        if card_id in self.miner_ids:
+            king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
+            if king.alive and np.hypot(nx - king.x, ny - king.y) <= 0.09:
+                return self.miner_king_penalty               # Miner on the enemy KING wakes it early -> bad trade
+            if d <= 0.09:
+                return self.miner_chip
         if card_id in self.log_ids and ny >= 0.5:            # The Log on YOUR side (past the sim river) onto a
-            foes = [u for u in self.eng.units if u.team == 1  # push -> knock it back where your towers help
+            near = [u for u in self.eng.units if u.team == 1  # push -> knock it back where your towers help
                     and abs(u.x - nx) <= 0.12 and abs(u.y - ny) <= 0.14]
-            if foes:
-                return self.log_reset + min(len(foes), 4) * self.log_swarm_unit
+            ground = [u for u in near if not u.spec.flying]  # the Log is GROUND-ONLY (can't touch air)
+            if ground:
+                return self.log_reset + min(len(ground), 4) * self.log_swarm_unit
+            if near:                                         # only AIR units there -> the Log is wasted on them
+                return self.log_air_penalty
         return 0.0
 
     def step(self, action: Action):

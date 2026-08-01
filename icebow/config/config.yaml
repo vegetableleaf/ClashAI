@@ -173,6 +173,7 @@ rewards:
   log_whiff: -0.3                # The Log cast with nothing to hit (small waste -- 2 elixir, not the -1.5 rocket whiff). Waived (0) for a justified last-resort cycle (no Skeletons in hand, board quiet, near-full bar)
   log_swarm_reward: 0.5          # The Log wiped a big ground SWARM / barrel-spawn (Skeleton/Goblin Barrel, Skeleton Army, Goblin Gang) ON YOUR SIDE -- its premium use
   log_swarm_unit: 0.1            # sim only: + this per enemy unit The Log catches on your side (a coarse swarm-size scale)
+  log_air_penalty: -0.5          # The Log is GROUND-ONLY -> dropped on AIR units (minions/bats/baby dragon/...) it does nothing = wasted. Sim uses ground truth; LIVE needs the detector (observation.use_detector) to SEE that the threat is air
   spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
                                  # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
   tesla_kill: 1.5                # per unit of enemy-troop mass a placed Tesla kills near it -- DIRECT (it zaps the troop) OR INDIRECT (it

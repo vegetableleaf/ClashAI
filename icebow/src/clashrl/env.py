@@ -149,6 +149,7 @@ class LiveMatchEnv:
         self.log_defense_y = float(cfg.get("env", "log_defense_y", default=0.46))   # the push has crossed to YOUR side of the river
         self.log_swarm_drop = float(cfg.get("env", "log_swarm_drop", default=0.10)) # this much enemy mass wiped = a swarm / barrel
         self.log_swarm_reward = float(cfg.get("rewards", "log_swarm_reward", default=0.5))
+        self.log_air_penalty = float(cfg.get("rewards", "log_air_penalty", default=-0.5))  # Log (ground-only) on AIR units = wasted (needs the detector to SEE air)
         self.spell_king_penalty = float(cfg.get("rewards", "spell_king_penalty", default=-1.5))
         self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=1.5))
         self.defense_kill = float(cfg.get("rewards", "defense_kill", default=0.5))
@@ -1003,13 +1004,17 @@ class LiveMatchEnv:
         nothing to hit is a small whiff (2 elixir, not rocket-scale) unless it's a justified last-resort
         cycle. An enemy-side / pre-crossing Log (offensive chip -- weak) is neutral, not the wanted use."""
         if present and cy >= self.log_defense_y:      # a push on YOUR side -> knock it back toward the river
-            size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg), self.spell_size_cap)
-            r = self.log_reset_reward                 # knockback/reset buys the towers + defenders time
-            if drop >= self.spell_min_drop:
-                r += size * self.spell_hit            # troops actually cleared
+            if drop >= self.spell_min_drop:           # troops actually cleared -> the real defensive Log
+                size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg), self.spell_size_cap)
+                r = self.log_reset_reward + size * self.spell_hit
                 if drop >= self.log_swarm_drop:
                     r += self.log_swarm_reward        # a big swarm / barrel-spawn wiped = the Log's premium use
-            return r
+                return r
+            # nothing ground-side was cleared. If the RECOGNISED threat is AIR (identity block, detector on),
+            # the ground-only Log can't touch it -> a wasted cast; else it's a ground knockback that buys time.
+            if self.use_detector and self._threat_id[0] >= 0.5 and self._threat_id[3] >= 0.5:
+                return self.log_air_penalty
+            return self.log_reset_reward              # ground knockback/reset buys the towers + defenders time
         if present:                                   # a push, but enemy-side / not yet crossed -> not the defensive Log
             return 0.0
         return 0.0 if cycle_ok else self.log_whiff    # nothing to hit: a waste, unless a justified cycle-chip
