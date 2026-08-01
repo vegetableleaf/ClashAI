@@ -257,7 +257,7 @@ train:
   # --- STABILITY LEVERS (if the sim benchmark OSCILLATES: peak-then-decline / a swinging fair avg) ---
   # lower lr, raise target_sync, and/or grow replay_size to damp Double-DQN value oscillation. Try lr 5e-5
   # + target_sync 1000 first; sim.selfplay_keep_best also tackles the self-play side of the instability.
-  lr: 0.0001                     # learning rate -- LOWER (e.g. 5e-5) = slower but steadier; a high lr drives oscillation
+  lr: 0.00005                    # learning rate -- LOWERED 1e-4 -> 5e-5 to damp Double-DQN value oscillation (decline-from-peak). Shared by train-sim + train-rl
   batch_size: 64
   replay_size: 100000            # bigger replay = more decorrelated batches = steadier bootstrap targets
   epsilon_start: 1.0
@@ -266,7 +266,7 @@ train:
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
-  target_sync: 500               # steps between target-network syncs -- RAISE (e.g. 1000-2000) to slow the bootstrap + steady training
+  target_sync: 1500              # steps between target-network syncs -- RAISED 500 -> 1500 to slow the bootstrap target + steady training (anti-oscillation)
   grad_clip: 10.0                # max global grad-norm per Double-DQN update (stabilises noisy TD targets)
   save_every_matches: 1          # checkpoint cadence during RL
   bc_epochs: 10                  # behaviour-cloning pretrain epochs
