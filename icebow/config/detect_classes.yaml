@@ -49,8 +49,10 @@ classes:
   - electro_spirit
   - electro_wizard
   - elite_barbarians
+  - elixir_blob
   - elixir_collector
   - elixir_golem
+  - elixir_golemite
   - executioner
   - fire_spirit
   - fireball
@@ -75,6 +77,7 @@ classes:
   - goblinstein
   - golden_knight
   - golem
+  - golemite
   - graveyard
   - guards
   - heal
