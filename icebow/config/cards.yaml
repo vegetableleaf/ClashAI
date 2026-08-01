@@ -758,6 +758,23 @@ cards:
     evolution: null
     verified: false
 
+  mother_witch_hog:                # the cursed HOGS Mother Witch spawns (distinct from Royal Hogs) -- fast,
+    display: "Mother Witch Hog"    # building-targeting; a spawned unit, NOT a deployable card (no elixir/stats in the KB)
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false           # a spawned harasser, not a deployed win condition -- but it DOES go for the tower
+    targets: buildings_only
+    flags: [building_targeting]
+    evolution: null
+    verified: false
+
   # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
   # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
   # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
