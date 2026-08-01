@@ -88,6 +88,12 @@ class SimMatchEnv:
         # doctrine -- rocket-at-tower becomes the only sanctioned tower damage; everything else defends/cycles.
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.defensive_rocket_reward = r("defensive_rocket_reward", 0.3)
+        # ROCKET COMBO: rocket a princess tower that ALSO catches a valuable, rocket-(almost)-one-shottable
+        # enemy support (the "rocket the Musketeer behind the tower" 2-for-1: tower chip + a card-advantage kill).
+        self.rocket_combo_reward = r("rocket_combo_reward", 3.0)
+        self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot: hp <= rocket_dmg x this
+        self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))    # support within this of the aimed tower
+        self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
         self.punish_xbow_reward = r("punish_xbow_reward", 1.0)
@@ -199,8 +205,11 @@ class SimMatchEnv:
             if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition
                 return self.xbow_wc
             return self.xbow_def if back_centre else self.xbow_mis
-        if card_id in self.rocket_ids and self._defensive and d <= self.spell_aim_radius:
-            return self.defensive_rocket_reward              # rocket-cycle is the win path once defensive
+        if card_id in self.rocket_ids:
+            if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support in one blast
+                return self.rocket_combo_reward              # 2-for-1: big tower chip AND a card-advantage kill
+            if self._defensive and d <= self.spell_aim_radius:
+                return self.defensive_rocket_reward          # rocket-cycle is the win path once defensive
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
             if king.alive and np.hypot(nx - king.x, ny - king.y) <= 0.09:
@@ -222,6 +231,25 @@ class SimMatchEnv:
                 return self.rd_hit + min(len(near), 5) * self.rd_hit_unit   # reward the group it blasts
             return self.rd_whiff                             # empty ground -> the blast + recruit wasted
         return 0.0
+
+    def _rocket_combo(self, nx: float, ny: float) -> bool:
+        """True when a rocket aimed at (nx, ny) hits an alive enemy PRINCESS tower AND catches a VALUABLE
+        (4-6 elixir), rocket-(almost)-one-shottable enemy support troop in the same blast -- the classic
+        'rocket the Musketeer behind the tower' 2-for-1 (tower chip + a card-advantage kill). The engine
+        already applies the damage to both; this just REWARDS lining the two up so the policy learns it."""
+        if self._rocket_dmg <= 0.0:
+            return False
+        tgt = next((t for t in self.eng.towers[1][:2]
+                    if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius), None)
+        if tgt is None:
+            return False
+        for u in self.eng.units:
+            if (u.team == 1 and u.spec.kind == "troop" and not u.spec.building_only
+                    and 4 <= u.spec.elixir <= 6
+                    and u.spec.hp <= self._rocket_dmg * self.rocket_combo_hp_frac
+                    and np.hypot(u.x - tgt.x, u.y - tgt.y) <= self.rocket_combo_radius):
+                return True
+        return False
 
     def step(self, action: Action):
         play, card_id, cell = action

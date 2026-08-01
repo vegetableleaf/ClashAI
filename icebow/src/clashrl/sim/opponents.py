@@ -29,6 +29,9 @@ class ScriptedBot:
         self.rng = rng
         levels = levels or [11] * len(cards)
         self.specs = [build_spec(db, k, lvl) for k, lvl in zip(cards, levels)]
+        self._backline_done = False                              # one backline-support opening per match
+        self._backline_prob = float(cfg.get("sim", "backline_support_prob", default=0.05))
+        self._backline_until = float(cfg.get("sim", "backline_support_until_s", default=45.0))
 
     def act(self, eng) -> None:
         team = 1
@@ -49,6 +52,17 @@ class ScriptedBot:
             if spells and len(threats) >= 3:
                 s = min(spells, key=lambda s: s.elixir)
                 eng.deploy(team, s, deepest.x, deepest.y)
+                return
+        # BACKLINE SUPPORT OPENING (control/beatdown): once, early, drop a mid-cost ranged support BEHIND the
+        # king (the "Musketeer behind the tower" open) -- realistic pressure AND the setup the agent learns to
+        # punish (rocket the support + tower for a 2-for-1).
+        if (not self._backline_done and not threats and eng.t < self._backline_until
+                and self.style in ("control", "beatdown") and self.rng.random() < self._backline_prob):
+            supports = [s for s in affordable if s.kind == "troop" and not s.building_only
+                        and 4 <= s.elixir <= 6 and not s.flying]
+            if supports:
+                self._backline_done = True
+                eng.deploy(team, self.rng.choice(supports), self.rng.choice([0.25, 0.75]), 0.10)
                 return
         # ATTACK
         if self.style == "beatdown" and elix < 9.5:

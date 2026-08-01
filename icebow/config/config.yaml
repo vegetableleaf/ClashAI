@@ -238,6 +238,7 @@ rewards:
   xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
   defensive_rocket_reward: 0.3   # once the bot is in DEFENSIVE mode (X-Bow failed to break through by 2x elixir, or a tower was taken) a rocket aimed at an enemy princess = the sanctioned cycle-chip win path
   punish_xbow_reward: 1.0        # BEATDOWN PUNISH: they dropped a 7+ elixir card behind their king during 1x elixir -> reward a bridge X-Bow in the OPPOSITE lane (punish the expensive, committed play)
+  rocket_combo_reward: 3.0       # ROCKET COMBO (sim): rocket a princess tower that ALSO catches a valuable (4-6 elixir), rocket-(almost)-one-shottable enemy support (Musketeer/Hunter/Executioner/Bowler/Witch/Sparky dropped behind the king) -> tower chip + a card-advantage kill in ONE blast. Routed through the per-match shaping cap.
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
@@ -384,6 +385,8 @@ env:
   log_swarm_drop: 0.10           # this much enemy mass wiped by The Log = a swarm / barrel-spawn cleared (the swarm bonus)
   cycle_min_elixir: 7.0          # only reward cycling a cheap card at/above this elixir (spare) -- below it, rewarding cheap plays just teaches card SPAM that starves defence
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
+  rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
+  rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower to be caught in the same blast
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
   threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised
                                  # (idle_penalty); lowered from 0.10 so dawdling on a smaller push is caught sooner
@@ -557,6 +560,8 @@ sim:
   collision: true               # soft body-block: units can't stack, so a wall of troops holds up a tank
   enemy_levels: [13, 14, 15, 16]      # opponent cards EACH roll a random level from here...
   enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
+  backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
+  backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
   epsilon_start: 1.0            # from-scratch -> start fully random
   epsilon_end: 0.05
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
