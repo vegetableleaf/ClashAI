@@ -424,6 +424,18 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     print("[detect-import] ready to train:  python tools/detect/train.py")
 
 
+def _queue_dir(cfg) -> Path:
+    """The flat LABELLING-QUEUE folder (data/detect/images/<detect.label_queue_subdir>, default to_label)
+    that the frame extractors drop NEW images into for hand-labelling. Kept FLAT (no train/val subfolders)
+    so Label Studio Local Storage can point straight at it -- flat paths dodge the Windows `train\\file`
+    backslash bug -- and OUTSIDE the train/val split that detect-import WIPES, so the queue survives an
+    import. detect-import still reads the LS EXPORT (not this folder) to build the training split."""
+    d = (Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect"))) / "images"
+         / str(cfg.get("detect", "label_queue_subdir", default="to_label")))
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
 def add_frames(cfg, session_arg=None, count=120, val_frac=None) -> None:
     """Extract COUNT extra in-match frames from a recording into the detect dataset, as empty-label
     images to hand-label. ADDITIVE + NON-DESTRUCTIVE: it only writes NEW frame indices (skipping any
@@ -457,23 +469,19 @@ def add_frames(cfg, session_arg=None, count=120, val_frac=None) -> None:
         print(f"[detect-frames] {session.name}: no plays found (can't locate in-match frames)")
         return
 
-    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
-    for sub in ("images/train", "images/val", "labels/train", "labels/val"):
-        (root / sub).mkdir(parents=True, exist_ok=True)
-    existing = set()                                    # frame indices already in the dataset (any split)
-    for split in ("train", "val"):
-        for p in (root / "images" / split).glob(f"{session.name}_g*.jpg"):
-            try:
-                existing.add(int(p.stem.rsplit("_g", 1)[1]))
-            except (ValueError, IndexError):
-                pass
+    qdir = _queue_dir(cfg)                              # flat labelling queue (survives detect-import; LS reads it flat)
+    existing = set()                                    # frame indices already queued
+    for p in qdir.glob(f"{session.name}_g*.jpg"):
+        try:
+            existing.add(int(p.stem.rsplit("_g", 1)[1]))
+        except (ValueError, IndexError):
+            pass
 
     cap = cv2.VideoCapture(str(video))
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     q = int(cfg.get("detect", "jpeg_quality", default=92))
     rng = random.Random()                               # unseeded: fresh frames each call
-    added = tries = nval = 0
+    added = tries = 0
     while added < count and tries < count * 12:
         tries += 1
         frame, fi = _read_at(cap, frame_times, rng.choice(plays)["t"] + rng.uniform(-2.0, 6.0), total)
@@ -481,14 +489,11 @@ def add_frames(cfg, session_arg=None, count=120, val_frac=None) -> None:
             continue
         existing.add(fi)
         stem = f"{session.name}_g{fi:06d}"
-        split = "val" if rng.random() < vf else "train"
-        cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
-        (root / "labels" / split / f"{stem}.txt").write_text("", encoding="utf-8")
-        nval += split == "val"
+        cv2.imwrite(str(qdir / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
         added += 1
     cap.release()
-    print(f"[detect-frames] {session.name}: added {added} new frames ({added - nval} train / {nval} val, "
-          f"empty labels) -> {root / 'images'}. Existing images + splits untouched -- re-sync Local Storage in Label Studio.")
+    print(f"[detect-frames] {session.name}: added {added} new frames -> {qdir}. "
+          f"Point Label Studio Local Storage at this folder + Sync.")
 
 
 def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_frac=None, recent=0) -> None:
@@ -511,14 +516,8 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_fra
         print("[detect-timelapse] no timelapse videos found (train.timelapse_dir)")
         return
 
-    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
-    _split_rng = random.Random()
-    for sub in ("images/train", "images/val", "labels/train", "labels/val"):
-        (root / sub).mkdir(parents=True, exist_ok=True)
-    existing = set()                                     # tl_* stems already in the dataset (any split)
-    for split in ("train", "val"):
-        existing.update(p.stem for p in (root / "images" / split).glob("tl_*.jpg"))
+    qdir = _queue_dir(cfg)                               # flat labelling queue (survives detect-import; LS reads it flat)
+    existing = set(p.stem for p in qdir.glob("tl_*.jpg"))
 
     q = int(cfg.get("detect", "jpeg_quality", default=92))
     total = 0
@@ -544,30 +543,27 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_fra
             if last is not None and float(np.abs(cur - last).mean()) < diff_thresh:
                 continue                                 # a repeated (resampled) frame -> skip
             last = cur
-            split = "val" if _split_rng.random() < vf else "train"
-            cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
-            (root / "labels" / split / f"{stem}.txt").write_text("", encoding="utf-8")
+            cv2.imwrite(str(qdir / f"{stem}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, q])
             existing.add(stem)
             added += 1
             total += 1
         cap.release()
         print(f"[detect-timelapse] {vid.stem}: +{added}")
-    print(f"[detect-timelapse] added {total} frames (~{int((1 - vf) * 100)}% train / ~{int(vf * 100)}% val, "
-          f"empty labels) -> {root / 'images'}. Re-sync Local Storage in Label Studio to pick them up.")
+    print(f"[detect-timelapse] added {total} frames -> {qdir}. "
+          f"Point Label Studio Local Storage at this folder + Sync.")
 
 
 class TrainFrameCollector:
-    """Harvest annotation frames DURING a train-rl session: save the live game frame into the detect
-    dataset (data/detect, EMPTY labels) once every ``every_s`` seconds of match play, capped
-    ``per_match`` per match and ``session_max`` for the whole run, split train/val by ``val_frac``.
-    ADDITIVE + NON-DESTRUCTIVE (writes NEW ``trl_<runstamp>_<n>`` stems only), so a live training run
-    doubles as data collection without touching existing images or a Label Studio project."""
+    """Harvest annotation frames DURING a train-rl session: save the live game frame into the flat
+    labelling QUEUE (data/detect/images/<detect.label_queue_subdir>) once every ``every_s`` seconds of
+    match play, capped ``per_match`` per match and ``session_max`` for the whole run. Writes NEW
+    ``trl_<runstamp>_<n>.jpg`` only -- a flat, import-safe folder Label Studio can point straight at, so a
+    live training run doubles as data collection and the queue survives detect-import."""
 
-    def __init__(self, cfg, every_s=5.0, per_match=20, session_max=200, val_frac=None):
-        self.root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-        vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
-        q = int(cfg.get("detect", "jpeg_quality", default=92))
-        self._writer = _Writer(self.root, vf, q, seed=random.randrange(1 << 30))
+    def __init__(self, cfg, every_s=5.0, per_match=20, session_max=200):
+        self.queue = _queue_dir(cfg)
+        self.root = self.queue                           # exposed for the train-rl harvest summary print
+        self.jpeg_q = int(cfg.get("detect", "jpeg_quality", default=92))
         self.every_s = float(every_s)
         self.per_match = int(per_match)
         self.session_max = int(session_max)
@@ -592,7 +588,8 @@ class TrainFrameCollector:
         if now - self._last_t < self.every_s:
             return False
         self._last_t = now
-        self._writer.add(f"trl_{self.stamp}_{self.session_count:04d}", frame, [])   # empty label = to hand-label
+        cv2.imwrite(str(self.queue / f"trl_{self.stamp}_{self.session_count:04d}.jpg"),
+                    frame, [cv2.IMWRITE_JPEG_QUALITY, self.jpeg_q])
         self.session_count += 1
         self._match_count += 1
         return True

@@ -495,7 +495,10 @@ detect:
   general_per_session: 40        # extra active in-match frames per session to hand-label (enemy)
   val_frac: 0.15                 # fraction of exported images held out for validation
   jpeg_quality: 92               # exported frames are JPEG at this quality (labelling-friendly, small)
-  # train-rl annotation harvest: while training LIVE, drop game frames into data/detect (empty labels)
+  label_queue_subdir: to_label   # flat folder UNDER images/ where detect-frames/-timelapse/harvest drop
+                                 # NEW frames to hand-label. Import-safe (detect-import never touches it)
+                                 # and FLAT so Label Studio Local Storage points straight at it (no train\ backslash bug).
+  # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
   capture_during_train: true     # set false to disable the harvest during train-rl

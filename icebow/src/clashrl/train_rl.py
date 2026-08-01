@@ -361,6 +361,6 @@ def train_rl(cfg) -> None:
                       f"({tl.target} frames @ {tl.fps}fps = {tl.target / tl.fps:.0f}s, "
                       f"from {tl.seen} captured)")
         if collector is not None and collector.session_count:
-            print(f"[train-rl] harvested {collector.session_count} annotation frame(s) -> {collector.root}/images "
-                  f"(empty labels; re-sync Label Studio Local Storage to pick them up)")
+            print(f"[train-rl] harvested {collector.session_count} annotation frame(s) -> {collector.root} "
+                  f"(re-sync Label Studio Local Storage to pick them up)")
         print(f"[train-rl] stopped after {match} match(es); saved policy to {rl_path}")
