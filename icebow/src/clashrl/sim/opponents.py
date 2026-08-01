@@ -15,6 +15,7 @@ from typing import List
 import numpy as np
 
 from .engine import build_spec
+from .. import card_threat
 from . import view
 
 
@@ -107,6 +108,8 @@ class SelfPlayOpponent:
         self.n_cells = env.n_cells
         self.obs_shape = env.obs_shape
         self.threat_dim = env.threat_dim
+        self.use_detector = env.use_detector          # Stage 3: mirror the identity block for team 1
+        self.detector_cards = env.detector_cards
         self.anywhere_ids = env.anywhere_ids
         self.deck_keys = env.deck_keys
         lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
@@ -135,7 +138,11 @@ class SelfPlayOpponent:
         if len(self.cycle) > 4:
             nxt[self.cycle[4]] = 1.0
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
-        thr = view.threat_vector(eng, self.threat_dim, team=1)
+        thr = view.threat_vector(eng, self.threat_dim - (card_threat.IDENTITY_DIM if self.use_detector else 0), team=1)
+        if self.use_detector:
+            ident = card_threat.identity_threat_vector(
+                view.identity_items(eng, 1, self.detector_cards), self.db)
+            thr = np.concatenate([thr, ident]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
         obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0

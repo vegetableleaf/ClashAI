@@ -69,3 +69,24 @@ def threat_vector(engine, threat_dim: int, team: int = 0) -> np.ndarray:
     v[4] = 1.0 if cx > 0.6 else 0.0
     v[5] = min(1.0, max(0.0, depth))
     return v
+
+
+def identity_items(engine, team: int, whitelist) -> "list[tuple[str, float]]":
+    """``(base_card, depth_frac)`` for the OTHER team's units that have crossed onto ``team``'s half
+    (local y >= 0.5), filtered to the RECOGNISED ``whitelist`` -- the ground-truth input to
+    :func:`clashrl.card_threat.identity_threat_vector` (the sim's stand-in for the live detector).
+    depth_frac in [0,1] is how far past the river the unit has advanced toward ``team``'s king."""
+    if not whitelist:
+        return []
+    foe = 1 - team
+    items: "list[tuple[str, float]]" = []
+    for u in engine.units:
+        if u.team != foe or u.hp <= 0:
+            continue
+        base = getattr(u.spec, "base", None)
+        if base is None or base not in whitelist:
+            continue
+        _lx, ly = to_local(u.x, u.y, team)
+        if ly >= 0.5:
+            items.append((base, (ly - 0.5) / 0.5))
+    return items

@@ -13,12 +13,15 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
+
 from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .reward import TowerTracker, weaker_princess_cell, xbow_lock_cell
 from .states import GameState
-from .threats import ThreatTracker
+from .threats import ThreatTracker, THREAT_DIM
+from . import card_threat
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -111,6 +114,33 @@ def play(cfg) -> None:
     card_elixir = [(_db.elixir(k) or _db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
                    for k in vision.deck_keys]
 
+    # Stage 3: when the checkpoint was trained WITH the identity block (threat_dim > THREAT_DIM),
+    # append card_threat's identity features for the RECOGNISED, HIGH-confidence enemy cards the
+    # detector names on your half. Gated on the checkpoint width so play always matches the net.
+    want_identity = threat_dim > THREAT_DIM
+    detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
+    detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+    _detector = None
+    if want_identity:
+        try:
+            from .replay_mine import load_detector
+            _det = load_detector(cfg)
+            _detector = _det if _det.available else None
+        except Exception:
+            _detector = None
+
+    def _identity_block(frame):
+        """KB identity block for RECOGNISED (whitelisted, >= detector_conf) enemy units on your half."""
+        if _detector is None:
+            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        try:
+            dets = _detector.detect(frame, conf=detector_conf)
+        except Exception:
+            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
+                 if d.team == "enemy" and d.cy >= 0.5 and d.base in detector_cards]
+        return card_threat.identity_threat_vector(items, _db)
+
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))
     poll_dt = 1.0 / float(cfg.get("nav", "poll_hz", default=6))
@@ -134,6 +164,8 @@ def play(cfg) -> None:
         next_vec = vision.next_onehot(vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
+        if want_identity:
+            threat_vec = np.concatenate([threat_vec, _identity_block(frame)]).astype(np.float32)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)

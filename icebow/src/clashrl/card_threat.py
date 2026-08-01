@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
+import numpy as np
 import yaml
 
 from .cards import CardDB, _key, load as load_cards
@@ -145,6 +146,67 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         attack_range=reach,
         melee=reach == "melee",
     )
+
+
+# --- Stage 3: identity-grounded threat features (the detector -> obs bridge) ------------------
+# When the detector RELIABLY names an enemy card, we look up its KB role and expose a compact,
+# team-agnostic feature block so the policy can learn to COUNTER by identity (air/swarm/tank/
+# win-condition/building-targeter) instead of the coarse red-blob heuristics. The SIM builds this
+# from ground truth (filtered to the recognised whitelist to mimic the detector's coverage); the
+# LIVE env builds it from high-confidence whitelisted detections. Same layout both sides.
+IDENTITY_DIM = 8
+
+
+def identity_threat_vector(items, db: CardDB) -> np.ndarray:
+    """KB-grounded role flags for the RECOGNISED enemy threats on your half.
+
+    ``items`` = iterable of ``(base_card_name, depth_frac)`` where depth_frac in [0,1] is how far
+    the unit has advanced toward your king. Returns an ``IDENTITY_DIM`` float vector:
+      0 recognised-threat-present  1 tank  2 swarm  3 air(flying)  4 building/siege
+      5 win_condition  6 building_targeting(ignores troops -> needs a building)  7 deepest depth
+    All-zero when nothing is recognised (so the policy falls back to the red-blob threat block)."""
+    v = np.zeros(IDENTITY_DIM, dtype=np.float32)
+    seen = False
+    max_depth = 0.0
+    for base, depth in items:
+        p = profile(db, base)
+        if not p.known:
+            continue
+        seen = True
+        if p.tank:
+            v[1] = 1.0
+        if p.swarm:
+            v[2] = 1.0
+        if p.flying:
+            v[3] = 1.0
+        if p.siege or p.building:
+            v[4] = 1.0
+        if p.win_condition:
+            v[5] = 1.0
+        if p.building_targeting:
+            v[6] = 1.0
+        max_depth = max(max_depth, float(depth))
+    if seen:
+        v[0] = 1.0
+        v[7] = min(1.0, max_depth)
+    return v
+
+
+def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
+    """Does a card with profile ``play`` counter the RECOGNISED threat block ``threat_id``
+    (the vector from :func:`identity_threat_vector`)? Role-based, KB-grounded: air-defence vs
+    flying, splash vs swarm, a building/high-DPS vs a tank, a building vs a building-targeter."""
+    if threat_id is None or len(threat_id) < IDENTITY_DIM or threat_id[0] < 0.5:
+        return False
+    if threat_id[3] >= 0.5 and (play.attacks_air or play.flying):      # flying threat -> air defence
+        return True
+    if threat_id[2] >= 0.5 and (play.splash or play.spell):            # swarm -> splash / spell
+        return True
+    if threat_id[1] >= 0.5 and (play.building or (play.dps or 0) >= 150):  # tank -> building / high DPS
+        return True
+    if threat_id[6] >= 0.5 and play.building:                          # building-targeter -> a building
+        return True
+    return False
 
 
 def _detect_classes(cfg) -> List[str]:

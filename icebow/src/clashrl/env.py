@@ -33,6 +33,7 @@ from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
+from . import card_threat
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -324,6 +325,26 @@ class LiveMatchEnv:
         self.threat_tracker = ThreatTracker(cfg)
         self.threat_vec = Threat.zeros()          # normalized threat features -> policy input
         self._last_threat = Threat()              # threat at action-selection time (for reward)
+        # Stage 3: identity-grounded threat block from the DETECTOR (only RECOGNISED, HIGH-confidence
+        # enemy cards fire). Loaded lazily so torch/ultralytics stay out of the loop when it's off.
+        self.use_detector = bool(cfg.get("observation", "use_detector", default=False))
+        self.detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
+        self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+        self.db = db
+        # your deck's KB profiles (played-card role) for the role-based COUNTER reward
+        self._deck_profiles = [card_threat.profile(db, (k[:-4] if k.endswith("_evo") else k))
+                               for k in self.vision.deck_keys]
+        self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
+        self._detector = None
+        self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
+        if self.use_detector:
+            self.threat_vec = np.concatenate([self.threat_vec, self._threat_id]).astype(np.float32)
+            try:
+                from .replay_mine import load_detector
+                det = load_detector(cfg)
+                self._detector = det if det.available else None
+            except Exception:
+                self._detector = None
         self.threat_counter_delivery = float(cfg.get("rewards", "threat_counter_delivery", default=4.0))
         self.threat_tornado_pull = float(cfg.get("rewards", "threat_tornado_pull", default=4.0))
         self.siege_counter = float(cfg.get("rewards", "siege_counter", default=4.0))
@@ -354,9 +375,29 @@ class LiveMatchEnv:
         self.next_vec = self.vision.next_onehot(self.next_id)
 
     def _update_threat(self, frame) -> None:
-        """Advance the live enemy-threat read from the current frame -> policy input vector."""
+        """Advance the live enemy-threat read from the current frame -> policy input vector. When
+        use_detector, append card_threat's identity block for the RECOGNISED, HIGH-confidence enemy
+        cards the detector names on your half (all-zero if the detector is unavailable)."""
         self._last_threat = self.threat_tracker.update(frame, time.time())
-        self.threat_vec = self._last_threat.vector()
+        base = self._last_threat.vector()
+        if not self.use_detector:
+            self.threat_vec = base
+            return
+        self._threat_id = self._detect_identity(frame)
+        self.threat_vec = np.concatenate([base, self._threat_id]).astype(np.float32)
+
+    def _detect_identity(self, frame) -> np.ndarray:
+        """KB identity block for the RECOGNISED (whitelisted, >= detector_conf) enemy units the
+        detector names on YOUR half (cy >= 0.5). All-zero when the detector is unavailable."""
+        if self._detector is None:
+            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        try:
+            dets = self._detector.detect(frame, conf=self.detector_conf)
+        except Exception:
+            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        items = [(d.base, (d.cy - 0.5) / 0.5) for d in dets
+                 if d.team == "enemy" and d.cy >= 0.5 and d.base in self.detector_cards]
+        return card_threat.identity_threat_vector(items, self.db)
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
@@ -871,6 +912,9 @@ class LiveMatchEnv:
                     and not any(c in self.rocket_ids for c in self.hand_ids)):
                 reward += self._bonus(self.cycle_reward)   # cheap card + SPARE elixir + rocket not in hand -> cycling to it (not spam)
             reward += self._bonus(self._threat_counter_reward(bool(play), card_id, cell))   # foresight counters
+            if (play and self.use_detector and 0 <= card_id < len(self._deck_profiles)
+                    and card_threat.counters(self._deck_profiles[card_id], self._threat_id)):
+                reward += self._bonus(self.counter_reward)   # KB role-counter to a RECOGNISED (detected) threat
             # rocket = a 6-elixir OFFENSIVE investment: resolve any prior rocket (pay its chip
             # only after a successful defence; withhold it + penalise if heavy own-tower damage
             # followed), then defer THIS rocket's chip if it was a tower chip.

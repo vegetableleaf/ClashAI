@@ -764,7 +764,7 @@ cards:
   # Left UNCURATED on purpose: terry, wizard_trio (special troops -- not in normal 1v1s).
   # -- melee --
   bandit: {range: melee, verified: false}
-  barbarians: {range: melee, verified: false}
+  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
   bats: {range: melee, verified: false}
   battle_healer: {range: melee, verified: false}
   berserker: {range: melee, verified: false}
@@ -792,19 +792,19 @@ cards:
   royal_ghost: {range: melee, verified: false}
   royal_recruits: {range: melee, verified: false}
   rune_giant: {range: melee, verified: false}
-  skeleton_king: {range: melee, verified: false}
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank], verified: false}
   suspicious_bush: {range: melee, verified: false}
   # -- short --
   electro_spirit: {range: short, verified: false}
-  hunter: {range: short, verified: false}
-  minion_horde: {range: short, verified: false}
+  hunter: {range: short, attacks: [air, ground], flags: [ranged], verified: false}
+  minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
   phoenix: {range: short, verified: false}
   skeleton_dragons: {range: short, verified: false}
   # -- long --
   archer_queen: {range: long, verified: false}
-  bowler: {range: long, verified: false}
+  bowler: {range: long, attacks: [ground], splash: true, flags: [splash], verified: false}
   cannon_cart: {range: long, verified: false}
-  dart_goblin: {range: long, verified: false}
+  dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
   electro_dragon: {range: long, verified: false}
   electro_wizard: {range: long, verified: false}
   executioner: {range: long, verified: false}

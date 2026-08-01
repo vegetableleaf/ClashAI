@@ -17,6 +17,7 @@ import numpy as np
 
 from ..actions import ActionSpace
 from ..cards import CardDB
+from .. import card_threat
 from .engine import SimEngine, build_spec
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
@@ -42,13 +43,23 @@ class SimMatchEnv:
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         self.obs_shape = (int(oh), int(ow), 3)
-        self.threat_dim = _THREAT_DIM
+        # Stage 3: identity-grounded threat block (KB roles of RECOGNISED enemy cards). When on, the
+        # threat vector grows by card_threat.IDENTITY_DIM; the sim reads it from GROUND TRUTH but only
+        # for whitelisted cards, so it mimics the live detector's (partial) recognition coverage.
+        self.use_detector = bool(cfg.get("observation", "use_detector", default=False))
+        self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
+        self.threat_dim = _THREAT_DIM + (card_threat.IDENTITY_DIM if self.use_detector else 0)
 
         def _base(k):
             return k[:-4] if k.endswith("_evo") else k
         self.anywhere_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) in ("rocket", "miner")}
         self.miner_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "miner"}
         self.xbow_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "x_bow"}
+        # Stage 3: your deck's KB profiles (played-card role) + the last identity block, for the
+        # role-based COUNTER reward (played the right answer to a RECOGNISED threat). Off unless use_detector.
+        self._deck_profiles = [card_threat.profile(self.db, _base(k)) for k in self.deck_keys]
+        self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
 
         r = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
         self.w_win = r("win", 10.0); self.w_loss = r("loss", -15.0)
@@ -114,8 +125,14 @@ class SimMatchEnv:
     # -- observation -------------------------------------------------------
     def _threat_vector(self) -> np.ndarray:
         """Compact, best-effort approximation of clashrl.threats.Threat.vector() from ground truth:
-        enemy (team-1) units on YOUR half. Not a 1:1 layout -- enough to condition on in sim."""
-        return view.threat_vector(self.eng, self.threat_dim, team=0)
+        enemy (team-1) units on YOUR half. Not a 1:1 layout -- enough to condition on in sim. When
+        use_detector, append card_threat's identity block for the RECOGNISED (whitelisted) enemies."""
+        base = view.threat_vector(self.eng, _THREAT_DIM, team=0)
+        if not self.use_detector:
+            return base
+        self._threat_id = card_threat.identity_threat_vector(
+            view.identity_items(self.eng, 0, self.detector_cards), self.db)
+        return np.concatenate([base, self._threat_id]).astype(np.float32)
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape
@@ -190,6 +207,8 @@ class SimMatchEnv:
             nx, ny = self.actions.cell_center(cell % self.gw, cell // self.gw)
             if self.eng.deploy(0, spec, nx, ny):               # affordable + placed
                 reward += self._bonus(self._placement_reward(card_id, nx, ny))
+                if self.use_detector and card_threat.counters(self._deck_profiles[card_id], self._threat_id):
+                    reward += self._bonus(self.counter_reward)  # right role-counter to a RECOGNISED threat
                 idx = self.cycle.index(card_id)                # cycle the played card to the back
                 self.cycle.append(self.cycle.pop(idx))
         # opponent acts, then advance the match by agent_dt in sub-ticks
