@@ -72,6 +72,11 @@ class CardSpec:
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
+    shield_hp: float = 0.0    # SHIELD pool (Royal Recruits / Guards / Dark Prince): absorbs damage before hp
+
+
+_SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
+                     # the exact per-card CR shield HP isn't in the KB, so it's derived from the `shield` flag.
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
@@ -133,7 +138,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
-        spawn_spec=spawn_spec, spawn_count=spawn_count)
+        spawn_spec=spawn_spec, spawn_count=spawn_count,
+        shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0))
 
 
 @dataclass
@@ -151,6 +157,10 @@ class Unit:
     slow_left: float = 0.0       # SLOW status timer (halved move + attack speed)
     stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
     pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
+    shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
+
+    def __post_init__(self):
+        self.shield_left = self.spec.shield_hp
 
 
 @dataclass
@@ -401,17 +411,26 @@ class SimEngine:
         self.units = alive
         self._check_end()
 
+    def _hurt(self, u: "Unit", dmg: float) -> None:
+        """Apply damage to a UNIT, depleting its SHIELD pool (Royal Recruits / Guards ...) before hp.
+        A unit with no shield (shield_left 0) behaves exactly as `u.hp -= dmg`."""
+        if u.shield_left > 0.0:
+            absorbed = min(u.shield_left, dmg)
+            u.shield_left -= absorbed
+            dmg -= absorbed
+        u.hp -= dmg
+
     def _attack(self, u: Unit, kind: str, ref) -> None:
         dmg = u.spec.hit_dmg                                  # one discrete hit (DPS x hit_speed)
         if kind == "tower":
             self._damage_tower(ref, dmg, u.team)
             return
-        ref.hp -= dmg
+        self._hurt(ref, dmg)
         self._apply_status(u.spec, ref)
         if u.spec.splash:
             for e in self.units:
                 if e.team != u.team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
-                    e.hp -= dmg
+                    self._hurt(e, dmg)
                     self._apply_status(u.spec, e)
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
@@ -429,7 +448,7 @@ class SimEngine:
             if e.team == u.team or e.hp <= 0 or e.deploy_left > 0:
                 continue
             if _dist(e.x, e.y, u.x, u.y) <= u.spec.pulse_r:
-                e.hp -= u.spec.pulse_dmg
+                self._hurt(e, u.spec.pulse_dmg)
                 if u.spec.pulse_stun > 0:
                     e.stun_left = max(e.stun_left, u.spec.pulse_stun)
 
@@ -440,7 +459,7 @@ class SimEngine:
         if not foes:
             return
         tgt = min(foes, key=lambda e: _dist(tw.x, tw.y, e.x, e.y))
-        tgt.hp -= self.tower_dps * dt
+        self._hurt(tgt, self.tower_dps * dt)
 
     def _resolve_spell(self, s: _Spell) -> None:
         if s.spec.rolls:
@@ -448,7 +467,7 @@ class SimEngine:
             return
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
-                e.hp -= s.spec.spell_dmg
+                self._hurt(e, s.spec.spell_dmg)
                 self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
@@ -473,7 +492,7 @@ class SimEngine:
                 continue
             dy = (e.y - s.y) * fdir                           # forward distance along the roll
             if -0.03 <= dy <= s.spec.roll_len and abs(e.x - s.x) <= halfw:
-                e.hp -= s.spec.spell_dmg
+                self._hurt(e, s.spec.spell_dmg)
                 e.y += fdir * s.spec.knockback                # knock back in the roll direction
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir

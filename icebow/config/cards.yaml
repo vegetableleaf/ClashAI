@@ -875,7 +875,7 @@ cards:
   raging_prince: {range: melee, verified: false}
   rascals: {range: melee, verified: false}
   royal_ghost: {range: melee, verified: false}
-  royal_recruits: {range: melee, verified: false}
+  royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank], verified: false}
   suspicious_bush: {range: melee, verified: false}
