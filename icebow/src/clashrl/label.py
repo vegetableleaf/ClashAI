@@ -17,6 +17,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from .actions import ActionSpace
 from .threats import read_threat_window
 from .vision import Vision
 
@@ -90,7 +91,8 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     a_top = float(cfg.get("label", "arena_top", default=0.10))
     a_bot = float(cfg.get("label", "arena_bottom", default=0.86))
     ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-    gw, gh = cfg.get("action", "grid", default=[8, 12])
+    gw, gh = cfg.get("action", "grid", default=[18, 32])
+    aspace = ActionSpace(cfg)                          # box-anchored tile grid (same mapping the policy uses)
 
     plays = _extract_plays(events, region, slots, click_r, pair_timeout, a_top, a_bot)
 
@@ -118,8 +120,7 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
             skipped += 1
             continue
         obs.append(cv2.resize(frame, (int(ow), int(oh)), interpolation=cv2.INTER_AREA))
-        gx = min(int(gw) - 1, max(0, int(p["nx"] * gw)))
-        gy = min(int(gh) - 1, max(0, int(p["ny"] * gh)))
+        gx, gy = aspace.coords_to_grid(p["nx"], p["ny"])
         acts.append([card, gx, gy, p["slot"]])
         hands.append(vision.hand_multihot(hand_ids))
         nexts.append(vision.next_onehot(vision.recognize_next(frame)))

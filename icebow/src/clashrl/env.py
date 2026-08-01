@@ -465,7 +465,7 @@ class LiveMatchEnv:
         cx, cy = self.actions.cell_center(gx, gy)
         tgt = weaker_princess_cell(cx, cy, self.spell_aim_radius, self.tower.enemy_a,
                                    self.tower_hp.enemy_hp, self.tower.enemy_alive,
-                                   self.gw, self.gh)
+                                   self.actions)
         return tgt if tgt is not None else cell
 
     def _recommended_defense_cell(self, card_id: int):
@@ -478,14 +478,14 @@ class LiveMatchEnv:
         if kind is None or self._last_frame is None:
             return None
         if kind == "musketeer_evo":
-            return defensive_cell(kind, 0, 0.0, self.gw, self.gh, self.defense_params)
+            return defensive_cell(kind, 0, 0.0, self.actions, self.defense_params)
         side = threat_side(self._last_frame, self.cfg, self.threat_min_frac)
         if side == 0:
             return None
         front = threat_front(self._last_frame, side, self.cfg, self.threat_min_frac)
         if front is None:
             return None
-        return defensive_cell(kind, side, front, self.gw, self.gh, self.defense_params)
+        return defensive_cell(kind, side, front, self.actions, self.defense_params)
 
     def _defense_placement_reward(self, card_id: int, cell: int) -> float:
         """Small bonus for placing a defender at (or next to) the RECOMMENDED central spot -- a
@@ -772,7 +772,7 @@ class LiveMatchEnv:
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
-                snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_y, self.gw, self.gh)
+                snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_y, self.actions)
                 if snapped is not None:
                     cell = snapped
             action = (play, card_id, cell)

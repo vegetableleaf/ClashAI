@@ -186,7 +186,7 @@ def near_my_king(cx: float, cy: float, cfg=None, radius: float = 0.12) -> bool:
     return abs(cx - nx) <= radius and abs(cy - ny) <= radius
 
 
-def weaker_princess_cell(cx, cy, radius, enemy_anchors, enemy_hp, enemy_alive, gw, gh):
+def weaker_princess_cell(cx, cy, radius, enemy_anchors, enemy_hp, enemy_alive, acts):
     """If a target (cx, cy) is aimed at an enemy princess and BOTH princesses are alive
     with DIFFERENT remaining HP, return the grid cell centered on the lower-HP one -- so
     a rocket finishes off the weaker tower instead of splitting damage. Returns None
@@ -206,12 +206,10 @@ def weaker_princess_cell(cx, cy, radius, enemy_anchors, enemy_hp, enemy_alive, g
         return None                                   # tied HP -> no efficiency gain, keep the aim
     i = a if enemy_hp[a] < enemy_hp[b] else b
     nx, ny = princesses[i]
-    gx = min(max(int(nx * gw), 0), gw - 1)
-    gy = min(max(int(ny * gh), 0), gh - 1)
-    return gy * gw + gx
+    return acts.cell_at(nx, ny)
 
 
-def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, gw, gh):
+def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, acts):
     """Snap a FORWARD (offensive) X-Bow that landed OUT of firing range onto the nearer enemy
     princess's LANE so it actually locks the tower. The policy tends to drop the X-Bow at the far
     bridge EDGE (or dead centre) where -- once the deploy clamp holds it on your side of the river --
@@ -226,9 +224,7 @@ def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, gw, gh):
     if d <= xbow_range:
         return None                                   # already in range -> keep the model's choice
     nx = min(princesses, key=lambda a: abs(a[0] - cx))[0]   # nearer tower's lane
-    gx = min(max(int(nx * gw), 0), gw - 1)
-    gy = min(max(int(cy * gh), 0), gh - 1)            # keep the model's depth row
-    return gy * gw + gx
+    return acts.cell_at(nx, cy)                       # nearer lane column, model's own depth row
 
 
 def threat_side(frame, cfg=None, min_frac=0.02):
@@ -267,7 +263,7 @@ def threat_front(frame, side, cfg=None, min_frac=0.02, a_bot=0.84):
     return 0.44 + (float(hits.max()) / lane.shape[0]) * (a_bot - 0.44)
 
 
-def defensive_cell(kind, side, front_y, gw, gh, params):
+def defensive_cell(kind, side, front_y, acts, params):
     """Grid cell for a DEFENSIVE placement. Evo Musketeer -> the very back (charged shot).
     Ranged units (Tesla / Ice Wizard / Musketeer) are placed toward the CENTRE (biased to
     the threatened side by ``center_bias``): the horizontal gap to an edge push adds to the
@@ -298,9 +294,7 @@ def defensive_cell(kind, side, front_y, gw, gh, params):
             nx = 0.48 + side * params["center_bias"]
             ny = min(front_y + rng * params["center_depth_frac"], params["a_bot"])
             ny = min(ny, params.get("back_limit", 0.58))   # stay on the central grass, off the king tower
-    gx = min(max(int(nx * gw), 0), gw - 1)
-    gy = min(max(int(ny * gh), 0), gh - 1)
-    return gy * gw + gx
+    return acts.cell_at(nx, ny)
 
 
 class TowerTracker:

@@ -128,7 +128,12 @@ observation:
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
-  grid: [8, 12]                  # placement grid: columns x rows over the arena
+  grid: [18, 32]                 # placement grid: columns x rows. Sized to Clash Royale's TILE lattice
+                                 # (18 wide x 32 tall = one cell per board tile) so plays land on discrete tiles.
+  arena_box: [0.03, 0.10, 0.97, 0.86]  # normalized [x0,y0,x1,y1] of the arena PLAYFIELD the grid is anchored to
+                                 # (defaults to env.arena_region if unset). Calibrate to the visible grass corners so
+                                 # a cell centre lines up with a tile centre; the board's mild perspective makes this
+                                 # a close approximation, not a pixel-exact map. Changing grid/arena_box needs a RETRAIN.
   deploy_top: 0.44               # troops can only deploy on YOUR half (below the river); a cell above this y is clamped
                                  # DOWN so the card actually deploys (spells target anywhere). 0.44 (was 0.47) opens the
                                  # central grass just below the river -- the deployable space in front of your towers.

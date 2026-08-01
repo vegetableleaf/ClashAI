@@ -219,7 +219,7 @@ def play(cfg) -> None:
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
             tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
-                                       hp_tracker.enemy_hp, tower_tracker.enemy_alive, gw, gh)
+                                       hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the
@@ -232,7 +232,7 @@ def play(cfg) -> None:
         if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
-            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_y, gw, gh)
+            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_y, actions)
             if snapped is not None:
                 cell = snapped
         gx, gy = cell % gw, cell // gw

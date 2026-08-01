@@ -26,7 +26,7 @@ import torch.nn as nn
 
 
 class PolicyNet(nn.Module):
-    def __init__(self, in_ch: int = 3, n_cards: int = 8, n_cells: int = 96, threat_dim: int = 14):
+    def __init__(self, in_ch: int = 3, n_cards: int = 8, n_cells: int = 576, threat_dim: int = 14):
         super().__init__()
         self.n_cards = n_cards
         self.threat_dim = threat_dim
