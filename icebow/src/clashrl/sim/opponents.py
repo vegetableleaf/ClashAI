@@ -110,6 +110,9 @@ class SelfPlayOpponent:
         self.threat_dim = env.threat_dim
         self.use_detector = env.use_detector          # Stage 3: mirror the identity block for team 1
         self.detector_cards = env.detector_cards
+        self.agent_dt = env.agent_dt
+        self.predict_horizon = env.predict_horizon
+        self._prev_ident_depth = 0.0
         self.anywhere_ids = env.anywhere_ids
         self.deck_keys = env.deck_keys
         lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
@@ -141,7 +144,9 @@ class SelfPlayOpponent:
         thr = view.threat_vector(eng, self.threat_dim - (card_threat.IDENTITY_DIM if self.use_detector else 0), team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
-                view.identity_items(eng, 1, self.detector_cards), self.db)
+                view.identity_items(eng, 1, self.detector_cards), self.db,
+                prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
+            self._prev_ident_depth = float(ident[7])
             thr = np.concatenate([thr, ident]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
