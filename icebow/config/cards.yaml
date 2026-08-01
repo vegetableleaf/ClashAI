@@ -826,6 +826,23 @@ cards:
     evolution: null
     verified: false
 
+  lava_pups:                       # the small FLYING units Lava Hound splits into on death (6 pups); UNLIKE
+    display: "Lava Pups"           # the Hound (buildings_only) they attack troops too -> targets any, air+ground
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: false
+    count: 1
+    win_condition: false           # a death-spawn swarm, not a deployed win condition
+    targets: any
+    flags: [flying]
+    evolution: null
+    verified: false
+
   # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
   # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
   # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
