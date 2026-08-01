@@ -277,8 +277,8 @@ def main() -> None:
     atl.set_defaults(func=_cmd_autolabel)
 
     din = sub.add_parser("detect-import",
-                         help="import a Label Studio YOLO export into the training dataset (remaps classes by name + train/val split)")
-    din.add_argument("--export", required=True, help="path to the unzipped Label Studio YOLO export folder")
+                         help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")
+    din.add_argument("--export", required=True, help="path to the LS export: a JSON file / folder (recommended on Windows), or a YOLO export folder (classes.txt + labels/)")
     din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
     din.set_defaults(func=_cmd_detect_import)
 

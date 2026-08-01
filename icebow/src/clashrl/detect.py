@@ -22,11 +22,13 @@ from __future__ import annotations
 
 import bisect
 import json
+import math
 import random
 import time
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import unquote
 
 import cv2
 import numpy as np
@@ -323,35 +325,115 @@ def _obb_to_bbox(coords):
     return None
 
 
-def detect_import(cfg, export_dir, val_frac=None) -> None:
-    """Ingest a Label Studio **YOLO export** into the training dataset. Fixes the two things that
-    otherwise bite you: (1) it REMAPS the export's class ids to the taxonomy by NAME (so it doesn't
-    matter if Label Studio reordered or compacted the class list), and (2) it lays the images +
-    labels into the Ultralytics train/val split the trainer expects and rebuilds data.yaml. The
-    export becomes the source of truth, so the previous (auto-labelled) split is replaced.
+def _ls_export_image_name(ref: str) -> str:
+    """The on-disk image filename from a Label Studio task image reference. Handles the Windows
+    local-files form ``/data/local-files/?d=to_label%5Ctrl_...jpg`` (or with a raw backslash) ->
+    ``trl_...jpg`` (drops the ``?d=`` prefix + any subfolder + URL-encoding)."""
+    s = unquote(str(ref))                                # %5C -> '\', %20 -> ' ', ...
+    if "?d=" in s:
+        s = s.split("?d=", 1)[1]
+    s = s.split("&", 1)[0].replace("\\", "/")
+    return s.rsplit("/", 1)[-1]
 
-    Point ``export_dir`` at the unzipped export (a folder with ``classes.txt`` + ``labels/`` and,
-    for a 'YOLO with images' export, ``images/``). If the export has no images/, the images are
-    taken from the current dataset by matching label filenames to image stems.
-    """
-    export = Path(export_dir)
-    names = _load_classes(cfg)
-    name_to_idx = {n: i for i, n in enumerate(names)}
-    cls_file = export / "classes.txt"
-    lbl_dir = export / "labels"
-    if not cls_file.exists() or not lbl_dir.exists():
-        print(f"[detect-import] expected {cls_file.name} + labels/ under {export} "
-              "(export from Label Studio as YOLO).")
-        return
-    export_names = [ln.strip() for ln in cls_file.read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+def _ls_rect_to_yolo(v: dict):
+    """A Label Studio rectangle region (``x, y, width, height`` as PERCENTAGES 0-100, optional
+    ``rotation`` in degrees about the top-left corner) -> normalized ``[cx, cy, w, h]`` strings.
+    A rotated rectangle is folded to its axis-aligned bounding box."""
+    try:
+        x, y, w, h = float(v["x"]), float(v["y"]), float(v["width"]), float(v["height"])
+    except (KeyError, ValueError, TypeError):
+        return None
+    rot = float(v.get("rotation", 0) or 0)
+    if abs(rot) < 1e-6:
+        x0, y0, x1, y1 = x, y, x + w, y + h
+    else:
+        a = math.radians(rot)
+        ca, sa = math.cos(a), math.sin(a)
+        corners = ((0, 0), (w, 0), (w, h), (0, h))
+        xs = [x + dx * ca - dy * sa for dx, dy in corners]
+        ys = [y + dx * sa + dy * ca for dx, dy in corners]
+        x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    cx = min(max((x0 + x1) / 200.0, 0.0), 1.0)
+    cy = min(max((y0 + y1) / 200.0, 0.0), 1.0)
+    bw = min(max((x1 - x0) / 100.0, 0.0), 1.0)
+    bh = min(max((y1 - y0) / 100.0, 0.0), 1.0)
+    return [f"{cx:.6f}", f"{cy:.6f}", f"{bw:.6f}", f"{bh:.6f}"]
+
+
+def _ls_task_regions(task: dict):
+    """Every rectangle-region ``value`` dict for a Label Studio task, across the FULL JSON
+    (``annotations[].result[]``) and the JSON-MIN (a top-level list field) export shapes."""
+    regions = []
+    for ann in task.get("annotations", []) or []:
+        for r in ann.get("result", []) or []:
+            v = r.get("value", {})
+            if v.get("rectanglelabels"):
+                regions.append(v)
+    if regions:
+        return regions
+    for val in task.values():                            # JSON-MIN: a from_name field holds the regions
+        if isinstance(val, list):
+            for r in val:
+                if isinstance(r, dict) and r.get("rectanglelabels") and "width" in r:
+                    regions.append(r)
+    return regions
+
+
+def _ls_json_pairs(json_path: Path, root: Path, name_to_idx: dict):
+    """Parse a Label Studio JSON / JSON-MIN export into ``(stem, image, [label lines])`` triples --
+    the SAME shape the YOLO path produces. Sidesteps the Windows YOLO-export crash (label filenames
+    derived from ``?d=...\\...`` URLs contain ``? = \\`` = illegal on Windows). Images are matched by
+    basename against the dataset (the labelling queue / any split), so a plain 'JSON' export (no
+    image files) is enough."""
+    data = json.loads(json_path.read_text(encoding="utf-8"))
+    if isinstance(data, dict):
+        data = data.get("annotations") or data.get("tasks") or [data]
+    by_name = {}                                         # basename + stem -> on-disk image path
+    imgs_root = root / "images"
+    if imgs_root.exists():
+        for p in imgs_root.rglob("*"):
+            if p.suffix.lower() in (".jpg", ".jpeg", ".png"):
+                by_name.setdefault(p.name, p)
+                by_name.setdefault(p.stem, p)
+    pairs, unmatched, unknown = [], 0, set()
+    for task in data:
+        d = task.get("data") if isinstance(task.get("data"), dict) else None
+        ref = (d or {}).get("image") or task.get("image")
+        if not ref:
+            continue
+        fname = _ls_export_image_name(ref)
+        src = by_name.get(fname) or by_name.get(Path(fname).stem)
+        if src is None:
+            unmatched += 1
+            continue
+        img = cv2.imread(str(src))
+        if img is None:
+            unmatched += 1
+            continue
+        lines = []
+        for v in _ls_task_regions(task):
+            nm = v["rectanglelabels"][0]
+            if nm not in name_to_idx:
+                unknown.add(nm)
+                continue
+            bb = _ls_rect_to_yolo(v)
+            if bb is not None:
+                lines.append(" ".join([str(name_to_idx[nm])] + bb))
+        pairs.append((Path(fname).stem, img, lines))
+    return pairs, unmatched, sorted(unknown)
+
+
+def _yolo_export_pairs(export: Path, root: Path, name_to_idx: dict):
+    """Parse a Label Studio YOLO export (``classes.txt`` + ``labels/`` + optional ``images/``) into
+    ``(stem, image, [label lines])`` triples, remapping class ids to the taxonomy BY NAME."""
+    export_names = [ln.strip() for ln in (export / "classes.txt").read_text(encoding="utf-8").splitlines() if ln.strip()]
     remap, unknown = {}, []
     for i, nm in enumerate(export_names):
         if nm in name_to_idx:
             remap[i] = name_to_idx[nm]
         else:
             unknown.append(nm)
-
-    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
     existing = {}                                        # image stem -> path (fallback source)
     for split in ("train", "val"):
         d = root / "images" / split
@@ -360,9 +442,8 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
                 if p.suffix.lower() in (".jpg", ".jpeg", ".png"):
                     existing[p.stem] = p
     exp_imgs = export / "images"
-
-    pairs, unmatched = [], 0                             # (stem, image_ndarray, [remapped label lines])
-    for lf in sorted(lbl_dir.glob("*.txt")):
+    pairs, unmatched = [], 0
+    for lf in sorted((export / "labels").glob("*.txt")):
         stem = lf.stem
         src = None
         if exp_imgs.exists():
@@ -390,11 +471,49 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
             if bb is not None:
                 lines.append(" ".join([str(remap[cid])] + bb))
         pairs.append((stem, img, lines))
+    return pairs, unmatched, unknown
+
+
+def detect_import(cfg, export_dir, val_frac=None) -> None:
+    """Ingest a Label Studio export into the training dataset. REMAPS classes to the taxonomy by NAME
+    (order/compaction-proof) and lays images + labels into the Ultralytics train/val split + rebuilds
+    data.yaml -- the export becomes the source of truth, so the previous split is replaced.
+
+    Accepts EITHER a **JSON export** (a .json file, or a folder containing one) OR a **YOLO export**
+    (a folder with ``classes.txt`` + ``labels/`` + optionally ``images/``). PREFER JSON on Windows:
+    the YOLO export CRASHES when Local Storage serves files via ``?d=...\\...`` URLs -- the per-image
+    label filename Label Studio derives then contains ``? = \\`` (illegal on Windows). Images are
+    matched by basename to the current dataset (the labelling queue / existing split), so a plain
+    'JSON' export (no image files) is enough.
+    """
+    export = Path(export_dir)
+    names = _load_classes(cfg)
+    name_to_idx = {n: i for i, n in enumerate(names)}
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+
+    json_path = None
+    if export.is_file() and export.suffix.lower() == ".json":
+        json_path = export
+    elif export.is_dir() and not ((export / "classes.txt").exists() and (export / "labels").exists()):
+        js = sorted(export.glob("*.json"))
+        json_path = js[0] if js else None
+
+    if json_path is not None:
+        pairs, unmatched, unknown = _ls_json_pairs(json_path, root, name_to_idx)
+        src_desc = f"JSON export ({json_path.name})"
+    elif export.is_dir() and (export / "classes.txt").exists() and (export / "labels").exists():
+        pairs, unmatched, unknown = _yolo_export_pairs(export, root, name_to_idx)
+        src_desc = "YOLO export"
+    else:
+        print(f"[detect-import] {export} is not a Label Studio export -- expected a .json file, OR a "
+              "folder with either a *.json (JSON export) or classes.txt + labels/ (YOLO export).")
+        return
 
     if not pairs:
-        print("[detect-import] matched 0 label files to images -- check the export layout / filenames.")
+        print(f"[detect-import] matched 0 annotations to images from the {src_desc} -- check the export "
+              "and that its images are in the dataset (the labelling queue).")
         return
-    # the export is now the source of truth -> clear the old auto-labelled split, then write fresh
+    # the export is the source of truth -> clear the old split, then write fresh
     for sub in ("images/train", "images/val", "labels/train", "labels/val"):
         d = root / sub
         d.mkdir(parents=True, exist_ok=True)
@@ -415,12 +534,12 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     _write_label_studio_helpers(root, names)
 
     print(f"[detect-import] imported {len(pairs)} images ({len(pairs) - n_val} train / {n_val} val), "
-          f"{n_box} boxes -> {root}")
+          f"{n_box} boxes from the {src_desc} -> {root}")
     if unknown:
         print(f"[detect-import] {len(unknown)} export class(es) not in the taxonomy (their boxes were "
               f"skipped): {', '.join(unknown[:12])}")
     if unmatched:
-        print(f"[detect-import] {unmatched} label file(s) had no matching image (skipped)")
+        print(f"[detect-import] {unmatched} task(s)/label(s) had no matching image (skipped)")
     print("[detect-import] ready to train:  python tools/detect/train.py")
 
 
