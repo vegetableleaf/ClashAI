@@ -302,6 +302,27 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
         print(f"[autolabel] auto-box previews (sanity check the own-troop boxes): {preview_dir}")
 
 
+def _obb_to_bbox(coords):
+    """Fold a Label Studio YOLO label's coords to an axis-aligned ``[cx, cy, w, h]`` (strings).
+    Accepts a standard YOLO bbox (``cx cy w h`` = 4 values) AND an OBB / polygon export
+    (``x1 y1 x2 y2 ...`` = an even count >= 6 of normalized corner points), which Label Studio
+    emits when the rectangle tool allows ROTATION -- those get folded to their bounding box
+    (without this, corner coords were misread as w/h, inflating every box). Returns None if the
+    coords don't form a bbox or polygon."""
+    try:
+        v = [float(c) for c in coords]
+    except ValueError:
+        return None
+    if len(v) == 4:                                        # cx cy w h (standard YOLO detection)
+        return [f"{x:.6f}" for x in v]
+    if len(v) >= 6 and len(v) % 2 == 0:                   # x1 y1 x2 y2 ... (OBB / polygon) -> bbox
+        xs, ys = v[0::2], v[1::2]
+        x0, x1 = min(xs), max(xs)
+        y0, y1 = min(ys), max(ys)
+        return [f"{(x0 + x1) / 2:.6f}", f"{(y0 + y1) / 2:.6f}", f"{x1 - x0:.6f}", f"{y1 - y0:.6f}"]
+    return None
+
+
 def detect_import(cfg, export_dir, val_frac=None) -> None:
     """Ingest a Label Studio **YOLO export** into the training dataset. Fixes the two things that
     otherwise bite you: (1) it REMAPS the export's class ids to the taxonomy by NAME (so it doesn't
@@ -360,8 +381,14 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
         lines = []
         for ln in lf.read_text(encoding="utf-8").splitlines():
             p = ln.split()
-            if len(p) >= 5 and int(float(p[0])) in remap:
-                lines.append(" ".join([str(remap[int(float(p[0]))])] + p[1:5]))
+            if len(p) < 5:
+                continue
+            cid = int(float(p[0]))
+            if cid not in remap:
+                continue
+            bb = _obb_to_bbox(p[1:])                     # YOLO bbox OR OBB/polygon export -> cx cy w h
+            if bb is not None:
+                lines.append(" ".join([str(remap[cid])] + bb))
         pairs.append((stem, img, lines))
 
     if not pairs:
