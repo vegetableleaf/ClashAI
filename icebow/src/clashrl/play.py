@@ -215,7 +215,7 @@ def play(cfg) -> None:
                 if gate_logits[0, 0] >= play_val:
                     return
             cell = int(cell_logits_m.argmax(1).item())
-        if card_id in rocket_ids:             # a rocket at a princess -> aim the weaker one
+        if card_id in anywhere_ids:           # a rocket / offensive miner at a princess -> aim the weaker one
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
             tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,

@@ -455,11 +455,13 @@ class LiveMatchEnv:
         gx, gy = cell % self.gw, cell // self.gw
         self.controller.play_card(*self.actions.decode(slot, gx, gy))
 
-    def _aim_rocket(self, card_id: int, cell: int) -> int:
-        """A rocket aimed at an enemy princess is redirected to the lower-HP princess so
-        it finishes off the weaker tower (more efficient). No-op for other cards, other
-        targets, or while either princess is down / both are at equal HP."""
-        if card_id not in self.rocket_ids:
+    def _aim_weaker_tower(self, card_id: int, cell: int) -> int:
+        """A ROCKET or an offensive MINER aimed at an enemy princess is redirected to the lower-HP
+        princess so it finishes off the WEAKER tower (more efficient) instead of splitting damage --
+        the same chip logic for both. The policy can't read tower HP (it isn't in the observation), so
+        the env picks the weaker tower mechanically. No-op for other cards, other targets, or while a
+        princess is down / both are at equal HP (then the model's own aim / lane stands)."""
+        if card_id not in self.rocket_ids and card_id not in self.miner_ids:
             return cell
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
@@ -765,8 +767,8 @@ class LiveMatchEnv:
     def step(self, action: Action):
         play, card_id, cell = action
         raw_cell = cell                           # the model's ATTEMPTED cell, before aim + deploy-clamp
-        if play:                                  # rocket -> aim the weaker enemy princess tower
-            cell = self._aim_rocket(card_id, cell)
+        if play:                                  # rocket / offensive miner -> aim the weaker enemy princess tower
+            cell = self._aim_weaker_tower(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
             if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
