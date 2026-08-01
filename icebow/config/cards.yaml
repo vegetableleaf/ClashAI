@@ -775,6 +775,57 @@ cards:
     evolution: null
     verified: false
 
+  golemite:                        # the 2 smaller golems Golem splits into on death (they also deal death damage)
+    display: "Golemite"
+    elixir: null
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: slow
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false           # a death-spawn, not a deployed win condition -- but it keeps going for the tower
+    targets: buildings_only
+    flags: [building_targeting, death_damage]
+    evolution: null
+    verified: false
+
+  elixir_golemite:                 # the 2 mid units Elixir Golem splits into on death (each then splits into blobs)
+    display: "Elixir Golemite"
+    elixir: null
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: buildings_only
+    flags: [building_targeting]
+    evolution: null
+    verified: false
+
+  elixir_blob:                     # the smallest Elixir Golem split (gives the OPPONENT elixir when it dies)
+    display: "Elixir Blob"
+    elixir: null
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: buildings_only
+    flags: [building_targeting]
+    evolution: null
+    verified: false
+
   # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
   # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
   # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
