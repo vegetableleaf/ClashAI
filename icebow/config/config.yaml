@@ -501,7 +501,7 @@ detect:
   capture_during_train: true     # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
-  capture_session_max: 200       # cap frames for the whole train-rl session
+  capture_session_max: 500       # cap frames for the whole train-rl session
 
 # --- External-replay strategy mining (Stage 4 groundwork) ----------------
 # `run.py mine-replays` distils strong-player rocket-cycle replay VIDEOS into deck-agnostic
