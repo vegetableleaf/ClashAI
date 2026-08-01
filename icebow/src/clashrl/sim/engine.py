@@ -70,6 +70,8 @@ class CardSpec:
     pulse_r: float = 0.0      # pulse radius (normalized)
     pulse_stun: float = 0.0   # STUN seconds applied by each pulse
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
+    spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
+    spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
@@ -115,6 +117,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
     radius = 0.03 if "tank" in flags else (0.014 if count >= 3 else 0.02)
+    spawn_spec, spawn_count = None, 0
+    if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
+        spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
+        spawn_count = 1
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
@@ -126,7 +132,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
-        level=int(level), pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int)
+        level=int(level), pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
+        spawn_spec=spawn_spec, spawn_count=spawn_count)
 
 
 @dataclass
@@ -446,6 +453,13 @@ class SimEngine:
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+        sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
+        for i in range(s.spec.spawn_count if sp is not None else 0):
+            ox = 0.02 * ((i % 3) - 1) if s.spec.spawn_count > 1 else 0.0
+            u = Unit(sp, s.team, min(max(s.x + ox, 0.03), 0.97), min(max(s.y, 0.03), 0.97), sp.hp)
+            u.deploy_left = sp.deploy_time
+            u.pulse_cd = sp.pulse_interval
+            self.units.append(u)
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
