@@ -32,9 +32,25 @@ def _cmd_hand_templates(args) -> None:
     build_hand_templates(Config.load(args.config), args.session, only_new=not args.include_known)
 
 
+# --- board-resolution presets: --size toggles action.grid without editing config.yaml -----------
+_GRID_SIZES = {"576": [18, 32], "432": [18, 24]}   # n_cells -> [cols, rows] (18-wide CR tile lattice)
+
+
+def _sized_config(args) -> "Config":
+    """Load the config, applying a --size override of action.grid when the flag is present
+    (576=[18,32] fine / 432=[18,24] coarse). Lets label / train-sim / play switch board resolution
+    without hand-editing config.yaml -- use the SAME size everywhere + a matching dataset/checkpoint."""
+    cfg = Config.load(args.config)
+    size = getattr(args, "size", None)
+    if size:
+        cfg.data.setdefault("action", {})["grid"] = list(_GRID_SIZES[size])
+        print(f"[cli] --size {size} -> action.grid {_GRID_SIZES[size]}")
+    return cfg
+
+
 def _cmd_label(args) -> None:
     from .label import label
-    label(Config.load(args.config), args.session, args.all, args.debug)
+    label(_sized_config(args), args.session, args.all, args.debug)
 
 
 def _cmd_outcomes(args) -> None:
@@ -102,7 +118,7 @@ def _cmd_train_rl(args) -> None:
 
 def _cmd_play(args) -> None:
     from .play import play
-    play(Config.load(args.config))
+    play(_sized_config(args))
 
 
 def _cmd_train_sim(args) -> None:
@@ -113,7 +129,7 @@ def _cmd_train_sim(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
-    train_sim(Config.load(args.config), matches=args.matches, resume=args.resume,
+    train_sim(_sized_config(args), matches=args.matches, resume=args.resume,
               seed=args.seed, envs=args.envs)
 
 
@@ -204,6 +220,9 @@ def main() -> None:
     lab.add_argument("--session", default=None, help="session folder (default: latest)")
     lab.add_argument("--all", action="store_true", help="label every recorded session")
     lab.add_argument("--debug", action="store_true", help="save annotated frames of each extracted play")
+    lab.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution 576=[18,32] (fine) / 432=[18,24] (coarse); overrides action.grid so the "
+                          "rebuilt dataset is quantized at that resolution (match your sim/policy)")
     lab.set_defaults(func=_cmd_label)
 
     hnd = sub.add_parser("hand-templates",
@@ -245,6 +264,9 @@ def main() -> None:
     tsi.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsi.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances feeding one learner (default: sim.envs)")
+    tsi.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run "
+                          "(a from-scratch reset -- do NOT combine with --resume of the OTHER size)")
     tsi.set_defaults(func=_cmd_train_sim)
 
     dki = sub.add_parser("decks-import",
@@ -254,6 +276,8 @@ def main() -> None:
     dki.set_defaults(func=_cmd_decks_import)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
+    ply.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
     ply.set_defaults(func=_cmd_play)
 
     dia = sub.add_parser("diag", help="diagnose menu navigation: state-template match scores on the current screen")
