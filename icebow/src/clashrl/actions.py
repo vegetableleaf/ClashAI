@@ -32,6 +32,8 @@ class ActionSpace:
         _my_towers = cfg.get("env", "my_towers", default=[[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]])
         self.king_xy = _my_towers[2] if len(_my_towers) >= 3 else [0.48, 0.72]
         self.king_half = cfg.get("action", "king_avoid_half", default=[0.09, 0.06])
+        self.princess_xy = [list(t) for t in _my_towers[:2]] if len(_my_towers) >= 2 else [[0.245, 0.615], [0.745, 0.615]]
+        self.princess_half = cfg.get("action", "princess_avoid_half", default=[0.06, 0.05])
         self.n_slots = len(self.slots)
         self.n_cells = int(self.gw) * int(self.gh)
 
@@ -81,7 +83,7 @@ class ActionSpace:
         cell is in the enemy half can't be placed -- the card tap just selects it and the arena
         tap does nothing, so the bot 'shuffles' cards without deploying. Clamp such cells down
         to the deploy line; ``anywhere`` cards pass through unchanged. A cell landing on YOUR OWN
-        king tower is likewise undeployable, so it's pulled to the row just in front of the king."""
+        king OR a princess tower is likewise undeployable, so it's pulled to the row just in front of it."""
         if anywhere:
             return cell
         gw = int(self.gw)
@@ -97,6 +99,14 @@ class ActionSpace:
         nx, ny = self.cell_center(gx, gy)
         if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
             gy = max(min_gy, self.row_at(ky - khy) - 1)
+        else:
+            # ...and each of the two PRINCESS towers (front-left / front-right): a cell on a princess
+            # footprint is undeployable too -> pull it to the row just in FRONT of that tower.
+            phx, phy = self.princess_half
+            for px, py in self.princess_xy:
+                if abs(nx - px) <= phx and abs(ny - py) <= phy:
+                    gy = max(min_gy, self.row_at(py - phy) - 1)
+                    break
         return gy * gw + gx
 
     def deployable_mask(self, anywhere: bool) -> "list[bool]":

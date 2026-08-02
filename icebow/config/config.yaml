@@ -145,6 +145,7 @@ action:
                                  # central grass just below the river -- the deployable space in front of your towers.
   king_avoid_half: [0.09, 0.06]  # half-size of YOUR king tower's footprint (around the my_towers king anchor). A troop
                                  # cell landing on it is pulled to the row just in front -- you can't deploy on your own tower.
+  princess_avoid_half: [0.06, 0.05]  # same, per each of YOUR two PRINCESS towers (my_towers[0..1]) -- smaller footprint than the king
 
 # --- Reward shaping (RL fine-tune) ---------------------------------------
 # Rocket-cycle wins on near-perfect DEFENCE, so defence is weighted well above
