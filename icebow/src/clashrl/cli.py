@@ -113,7 +113,7 @@ def _cmd_train_rl(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
-    train_rl(Config.load(args.config))
+    train_rl(_sized_config(args))
 
 
 def _cmd_play(args) -> None:
@@ -255,6 +255,9 @@ def main() -> None:
     tbc.set_defaults(func=_cmd_train_bc)
 
     trl = sub.add_parser("train-rl", help="RL fine-tune the policy on live matches (tower/win rewards)")
+    trl.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid so the action masks "
+                          "match your --init checkpoint's grid (train-bc auto-follows the dataset, no --size there)")
     trl.set_defaults(func=_cmd_train_rl)
 
     tsi = sub.add_parser("train-sim",
