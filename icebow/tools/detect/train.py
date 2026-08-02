@@ -36,6 +36,47 @@ import argparse
 from pathlib import Path
 
 
+def _install_status_aug() -> str:
+    """Monkeypatch Ultralytics' Albumentations pipeline to SIMULATE Clash Royale STATUS EFFECTS that
+    distort a troop's appearance: slow/rage COLOUR TINTS (blue/purple), spell/effect HAZE + partial-
+    occlusion shadow, and effect BLUR. All PIXEL-ONLY (bbox-safe -- boxes never move). Needs the
+    `albumentations` package; a graceful NO-OP if it's missing or the API differs (returns a note).
+    Every step is guarded so it can never crash training -- worst case it falls back to the default."""
+    try:
+        import albumentations as A
+        from ultralytics.data import augment as _aug
+    except Exception:
+        return ("albumentations MISSING -> tint/haze/blur skipped (occlusion via erasing still applies). "
+                "For the full effect:  .venv\\Scripts\\python.exe -m pip install albumentations")
+    tfs, names = [], []
+    for name, make in (
+        ("tint",   lambda: A.RGBShift(r_shift_limit=22, g_shift_limit=22, b_shift_limit=22, p=0.20)),
+        ("bright", lambda: A.RandomBrightnessContrast(p=0.15)),
+        ("haze",   lambda: A.RandomFog(p=0.08)),
+        ("shadow", lambda: A.RandomShadow(p=0.05)),
+        ("blur",   lambda: A.Blur(blur_limit=3, p=0.08)),
+        ("mblur",  lambda: A.MedianBlur(blur_limit=3, p=0.05)),
+    ):
+        try:
+            tfs.append(make()); names.append(name)
+        except Exception:
+            pass
+    if not tfs:
+        return "albumentations present but no transforms built (API mismatch) -> tint/haze/blur skipped"
+    _orig = _aug.Albumentations.__init__
+
+    def _patched(self, p=1.0):
+        try:
+            _orig(self, p)      # build Ultralytics' defaults (sets self.contains_spatial etc.)
+            self.transform = A.Compose(
+                tfs, bbox_params=A.BboxParams(format="yolo", label_fields=["class_labels"]))
+        except Exception:
+            pass                # any failure -> keep whatever _orig set
+
+    _aug.Albumentations.__init__ = _patched
+    return "status-aug (Albumentations): " + ", ".join(names)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
     ap.add_argument("--model", default="yolo11x.pt",
@@ -45,6 +86,10 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=-1,
                     help="images per batch; -1 auto-sizes to your GPU (drop to yolo11l/m/s.pt if VRAM is tight)")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
+    ap.add_argument("--status-aug", action="store_true",
+                    help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
+                         "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
+                         "Albumentations if installed. Default OFF (leaves training unchanged).")
     args = ap.parse_args()
 
     is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
@@ -62,11 +107,15 @@ def main() -> None:
 
     model = (RTDETR if is_rtdetr else YOLO)(args.model)
     print(f"[train] {'RT-DETR' if is_rtdetr else 'YOLO'} from {args.model}  ->  {data}")
+    erasing = 0.4                                        # random-erasing (occlusion) prob; raised by --status-aug
+    if args.status_aug:
+        erasing = 0.6                                    # spells/attacks/overlaps clouding a troop = partial occlusion
+        print("[train] " + _install_status_aug())
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
         patience=args.patience, project=str(root / "runs" / "detect"), name="board",
-        # colour jitter helps the own-troop (blue) labels transfer to the red enemy side
-        hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0,   # no horizontal flip: lanes are asymmetric
+        # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
+        hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
     )
     print("done -> runs/detect/board/weights/best.pt")
 
