@@ -95,6 +95,14 @@ class SimMatchEnv:
         self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))    # support within this of the aimed tower
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+        # CYCLE-BAIT: opponents drop a LONE Skeletons / spirit (<= cycle_bait_elixir_max elixir) at the bridge
+        # purely to cycle; spending a 3-4 elixir defender on a ~1-elixir troop that barely reaches the tower is a
+        # bad trade -> penalise it UNLESS a real threat (bigger card / tower-targeter) is alongside. See
+        # _wasted_cycle_defense. SIM-only (ground-truth card ID); the live-native version needs the detector.
+        self.cycle_waste_penalty = r("cycle_waste_penalty", -0.6)
+        self.cycle_bait_elixir_max = int(cfg.get("env", "cycle_bait_elixir_max", default=1))
+        self.cycle_waste_min_elixir = int(cfg.get("env", "cycle_waste_min_elixir", default=3))
+        self.cycle_threat_y = float(cfg.get("env", "cycle_threat_y", default=0.45))
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
         self.punish_xbow_reward = r("punish_xbow_reward", 1.0)
         self.beatdown_punish_elixir = int(cfg.get("env", "beatdown_punish_elixir", default=7))
@@ -230,6 +238,8 @@ class SimMatchEnv:
             if near:
                 return self.rd_hit + min(len(near), 5) * self.rd_hit_unit   # reward the group it blasts
             return self.rd_whiff                             # empty ground -> the blast + recruit wasted
+        if self._wasted_cycle_defense(card_id, ny):          # a 3-4 elixir defender on LONE cycle bait = bad trade
+            return self.cycle_waste_penalty
         return 0.0
 
     def _rocket_combo(self, nx: float, ny: float) -> bool:
@@ -250,6 +260,23 @@ class SimMatchEnv:
                     and np.hypot(u.x - tgt.x, u.y - tgt.y) <= self.rocket_combo_radius):
                 return True
         return False
+
+    def _wasted_cycle_defense(self, card_id: int, ny: float) -> bool:
+        """True when a SIGNIFICANT card (>= cycle_waste_min_elixir) is placed DEFENSIVELY (your half) while the
+        ONLY enemy on your side is cheap CYCLE bait (Skeletons / spirits, <= cycle_bait_elixir_max elixir).
+        Opponents drop those solo just to cycle, so a 3-4 elixir card spent on a ~1-elixir troop that barely
+        reaches the tower is a big elixir loss. Suppressed the moment a REAL threat (a bigger card, or a
+        tower-targeter like a Miner behind your tower) is alongside the bait -- then you SHOULD defend."""
+        if self.specs[card_id].elixir < self.cycle_waste_min_elixir:
+            return False                                 # cheap answers (The Log / your own spirits) trade fine
+        if ny < 0.5:                                     # only DEFENSIVE placements on your half; offense is exempt
+            return False
+        onside = [u for u in self.eng.units if u.team == 1 and u.spec.kind == "troop"
+                  and u.y >= self.cycle_threat_y]
+        if not onside:
+            return False                                 # nothing on your side -> premature-defense covers that
+        real = any(u.spec.elixir > self.cycle_bait_elixir_max or u.spec.building_only for u in onside)
+        return not real                                  # only cheap cycle bait present -> defending it is a waste
 
     def step(self, action: Action):
         play, card_id, cell = action

@@ -132,8 +132,10 @@ observation:
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
-  grid: [18, 32]                 # placement grid: columns x rows. Sized to Clash Royale's TILE lattice
-                                 # (18 wide x 32 tall = one cell per board tile) so plays land on discrete tiles.
+  grid: [18, 24]                 # placement grid: columns x rows. COARSENED 32->24 rows (576->432 cells) to shrink
+                                 # the action space so DQN explores it faster (the 18x32 one-cell-per-tile grid
+                                 # plateaued ~54% below the old coarse-grid peak -- testing if 576 was too fine).
+                                 # NOTE: no longer exactly one cell per board tile (18 wide x 32 tall); rows are grouped.
   arena_box: [0.03, 0.10, 0.97, 0.86]  # normalized [x0,y0,x1,y1] of the arena PLAYFIELD the grid is anchored to
                                  # (defaults to env.arena_region if unset). Calibrate to the visible grass corners so
                                  # a cell centre lines up with a tile centre; the board's mild perspective makes this
@@ -239,6 +241,7 @@ rewards:
   defensive_rocket_reward: 0.3   # once the bot is in DEFENSIVE mode (X-Bow failed to break through by 2x elixir, or a tower was taken) a rocket aimed at an enemy princess = the sanctioned cycle-chip win path
   punish_xbow_reward: 1.0        # BEATDOWN PUNISH: they dropped a 7+ elixir card behind their king during 1x elixir -> reward a bridge X-Bow in the OPPOSITE lane (punish the expensive, committed play)
   rocket_combo_reward: 3.0       # ROCKET COMBO (sim): rocket a princess tower that ALSO catches a valuable (4-6 elixir), rocket-(almost)-one-shottable enemy support (Musketeer/Hunter/Executioner/Bowler/Witch/Sparky dropped behind the king) -> tower chip + a card-advantage kill in ONE blast. Routed through the per-match shaping cap.
+  cycle_waste_penalty: -0.6      # CYCLE BAIT (sim): penalty for spending a >= env.cycle_waste_min_elixir card DEFENSIVELY on a LONE cheap cycle troop (Skeletons/spirit) with NO real threat alongside -- opponents drop those solo just to cycle, so killing a ~1-elixir troop that barely reaches the tower with a 3-4 elixir card is a bad trade. A penalty (not shaping-capped).
   # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
   wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
   wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
@@ -387,6 +390,9 @@ env:
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
   rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
   rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower to be caught in the same blast
+  cycle_bait_elixir_max: 1       # CYCLE BAIT: an enemy troop at/below this elixir = cheap cycle bait (Skeletons / Ice-Spirit / Electro-Spirit / Fire-Spirit). A LONE one isn't worth a real defender (raise to 2 to also ignore Bats etc.)
+  cycle_waste_min_elixir: 3      # ...only PENALISE wasting a card costing at least this on lone cycle bait (cheap answers like The Log / your own spirits are exempt)
+  cycle_threat_y: 0.45           # count on-side enemy troops with y >= this (past the ~0.5 river, at the bridge onward) when deciding whether the only threat is cycle bait
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
   threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised
                                  # (idle_penalty); lowered from 0.10 so dawdling on a smaller push is caught sooner
@@ -518,7 +524,7 @@ detect:
   # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
-  capture_during_train: true     # set false to disable the harvest during train-rl
+  capture_during_train: false    # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl session
