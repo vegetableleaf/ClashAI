@@ -170,6 +170,13 @@ rewards:
   # -- troop combat + spell effects (env) --
   troop_defeat: 3.0              # x the SIGNED per-step change in on-board enemy mass (POTENTIAL-BASED:
                                  # + when you clear troops, - when a push builds; telescopes -> idling can't farm it)
+  value_defeat: 0.6              # ELIXIR-EFFICIENCY (sim, ground truth): x the per-step drop in enemy EFFECTIVE
+                                 # VALUE = sum over enemy troops of (deck elixir cost x remaining-HP fraction),
+                                 # normalised by 10 elixir and clipped to +/-1. Complements troop_defeat (which
+                                 # weighs blob SIZE): this weighs elixir x HP, so killing a HEALTHY, valuable unit
+                                 # pays far more than finishing a near-dead / cheap one -> spend for max impact per
+                                 # elixir, don't over-commit expensive cards to low-value targets. Potential-based
+                                 # (telescopes, resume-safe). Modest by default -- a refinement, not dominant. TUNABLE.
   clean_kill_bonus: 1.0          # DEPRECATED / no longer applied: the troop term is now potential-based. The
                                  # old x2 "clean kill" bonus was asymmetric and re-opened the inaction farm.
   spell_troop_damage: 5.0        # rocket KILL reward per unit of hit-unit SIZE (biggest blob caught)
@@ -525,7 +532,7 @@ detect:
   # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
-  capture_during_train: false    # set false to disable the harvest during train-rl
+  capture_during_train: true     # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl session

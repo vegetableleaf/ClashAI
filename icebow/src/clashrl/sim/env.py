@@ -26,6 +26,8 @@ from . import view
 Action = Tuple[int, int, int]
 _THREAT_DIM = 16
 _DEFEAT_CAP = 0.15
+_VALUE_NORM = 10.0   # elixir-value normaliser: this many elixir of effective value eliminated per step = 1.0
+_VALUE_CAP = 1.0     # per-step clip on the (normalised) value-elimination reward
 
 
 class SimMatchEnv:
@@ -67,6 +69,10 @@ class SimMatchEnv:
         self.w_win = r("win", 10.0); self.w_loss = r("loss", -15.0)
         self.w_take = r("take_enemy_tower", 3.0); self.w_lose = r("lose_own_tower", -3.0)
         self.hp_scale = r("hp_scale", 2.0); self.troop_defeat = r("troop_defeat", 3.0)
+        # ELIXIR-EFFICIENCY: also reward eliminating an enemy's REMAINING effective value (its deck elixir
+        # cost x remaining-HP fraction, ground truth). A fresh Musketeer is worth far more than a near-dead
+        # one -> the policy learns to spend for max impact per elixir and NOT over-kill nearly-dead units.
+        self.value_defeat = r("value_defeat", 0.6)
         self.xbow_wc = r("xbow_wc_reward", 1.0); self.xbow_def = r("xbow_defense_reward", 0.3)
         self.xbow_mis = r("xbow_misplace_penalty", -0.75); self.miner_chip = r("miner_chip_reward", 0.6)
         self.shaping_cap = r("shaping_match_cap", 8.0)
@@ -173,6 +179,7 @@ class SimMatchEnv:
         self.rng.shuffle(self.cycle)
         self._match_bonus = 0.0
         self._prev_mass = 0.0
+        self._prev_evalue = 0.0
         self._prev_my_crowns = 0
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
@@ -278,6 +285,19 @@ class SimMatchEnv:
         real = any(u.spec.elixir > self.cycle_bait_elixir_max or u.spec.building_only for u in onside)
         return not real                                  # only cheap cycle bait present -> defending it is a waste
 
+    def _enemy_value(self) -> float:
+        """Total REMAINING effective elixir value of the enemy's (team-1) troops = sum of each unit's deck
+        elixir cost x its remaining-HP fraction (ground truth). Falls as you damage/kill units, so the
+        per-step DROP is the value you actually eliminated -- weighted by how healthy + valuable it was.
+        A card's elixir is split across its count (a Skeleton Army's 3 elixir spreads over ~15 skeletons)
+        so a whole card is worth its elixir at full HP -- swarms don't inflate the value."""
+        v = 0.0
+        for u in self.eng.units:
+            if u.team == 1 and u.spec.kind == "troop":
+                frac = max(0.0, min(1.0, u.hp / u.spec.hp)) if u.spec.hp > 0 else 1.0
+                v += (u.spec.elixir / max(1, u.spec.count)) * frac
+        return v
+
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0
@@ -335,6 +355,14 @@ class SimMatchEnv:
         if abs(delta) > 0.005:
             reward += float(np.clip(delta, -_DEFEAT_CAP, _DEFEAT_CAP)) * self.troop_defeat
         self._prev_mass = mass
+        # ELIXIR-EFFICIENCY: potential-based reward for eliminating enemy EFFECTIVE VALUE (elixir x HP-frac).
+        # Nets to the value actually removed over each unit's life -> favours killing HEALTHY, valuable units
+        # and makes over-killing near-dead ones barely worth anything (their remaining value is already low).
+        evalue = self._enemy_value()
+        edelta = self._prev_evalue - evalue
+        if abs(edelta) > 0.02:
+            reward += float(np.clip(edelta / _VALUE_NORM, -_VALUE_CAP, _VALUE_CAP)) * self.value_defeat
+        self._prev_evalue = evalue
 
         done = self.eng.done
         outcome = self.eng.outcome
