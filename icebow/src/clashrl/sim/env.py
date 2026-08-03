@@ -95,7 +95,9 @@ class SimMatchEnv:
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
-        self.xbow_def_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
+        self.xbow_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
+        self.xbow_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
+        self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
@@ -252,12 +254,18 @@ class SimMatchEnv:
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
         d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
         if card_id in self.xbow_ids:
-            back_centre = ny >= self.xbow_def_y and abs(nx - 0.48) <= 0.18
-            if self._defensive:                              # DEFENSIVE phase: back-centre only; forward is wrong now
-                return self.w_wincon if back_centre else self.w_wincon_mis
+            # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
+            # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
+            # (soft shaping: rarely useful, but not punished like a true misplace).
+            central = abs(nx - 0.48) <= 0.18
+            in_band = central and self.xbow_front <= ny <= self.xbow_back
+            behind = central and ny > self.xbow_back
+            frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
+            if self._defensive:                              # DEFENSIVE phase: centre-band only; forward is wrong now
+                return self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
             if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition set
                 return self.w_wincon
-            return self.w_wincon * 0.4 if back_centre else self.w_wincon_mis
+            return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:
             if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support = 2-for-1
                 return self.w_wincon * self.combo_mult

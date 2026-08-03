@@ -132,8 +132,9 @@ class LiveMatchEnv:
         self._match_bonus = 0.0
         # X-Bow win-condition geometry (offence forward-in-range / defence back-centre) + the phase gauge
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
-        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
-        self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))
+        self.xbow_defense_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
+        self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
+        self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         # thresholds the correctness terms use
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))       # 'quiet board' enemy-mass gate
@@ -373,12 +374,17 @@ class LiveMatchEnv:
             _, enemy_a, _ = _anchors(self.cfg)
             princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
             d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
-            back_centre = self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18
+            # "back-centre" = the CENTER INTERCEPT band behind the bridge (the Tesla area), NOT behind your
+            # princess towers; deeper than the towers earns only a small fraction (soft shaping).
+            central = abs(cx - 0.48) <= 0.18
+            in_band = central and self.xbow_defense_front <= cy <= self.xbow_defense_back
+            behind = central and cy > self.xbow_defense_back
+            frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
             if self._defensive:
-                return self.w_wincon if back_centre else self.w_wincon_mis
+                return self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
             if d <= self.xbow_range:
                 return self.w_wincon
-            return self.w_wincon * 0.4 if back_centre else self.w_wincon_mis
+            return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:
             if self._defensive and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
                 return self.w_wincon * 0.6
@@ -471,7 +477,7 @@ class LiveMatchEnv:
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
-                snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_y, self.actions)
+                snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_front, self.actions)
                 if snapped is not None:
                     cell = snapped
             action = (play, card_id, cell)

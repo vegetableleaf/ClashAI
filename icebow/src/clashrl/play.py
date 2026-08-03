@@ -99,7 +99,7 @@ def play(cfg) -> None:
     xbow_ids = {i for i, key in enumerate(vision.deck_keys)
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
-    xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
+    xbow_defense_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
     # Cell-head DEPLOYABLE mask: anywhere cards (rocket / miner) -> all cells; every other card only
     # YOUR half. Applied before the cell argmax so play never taps an enemy-half cell that can't
     # deploy (the 'impossible coordinate' that made the bot look inactive).
@@ -252,7 +252,7 @@ def play(cfg) -> None:
         if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
-            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_y, actions)
+            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_front, actions)
             if snapped is not None:
                 cell = snapped
         gx, gy = cell % gw, cell // gw

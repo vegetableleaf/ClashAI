@@ -37,7 +37,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
 
 1. **Calibrate `env.xbow_range`** (currently 0.36 ≈ 11.5 tiles) against `verify --towers` frames so
    the X-Bow win-condition reward fires exactly when it can reach the enemy princess. Also sanity-
-   check `env.xbow_defense_y`.
+   check `env.xbow_defense_front` / `env.xbow_defense_back` (the defensive centre band).
 2. **Phase 2 gameplay mechanics:**
    - Time-based **2×/3× elixir reader** (read the match CLOCK, reuse the tower-HP digit OCR) → gate
      rocket-cycle-on-tower behaviour.
@@ -53,7 +53,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
 DONE in Phase 1 / this change:
 - ADDED: `xbow_wc_reward` (X-Bow in tower range = win condition), `xbow_defense_reward` (back-centre),
   `xbow_misplace_penalty` (forward but out of range), `miner_chip_reward` (Miner on enemy princess),
-  `xbow_wrong_lane_frac` (see below), and geometry `env.xbow_range` / `env.xbow_defense_y`.
+  `xbow_wrong_lane_frac` (see below), and geometry `env.xbow_range` / `env.xbow_defense_front`+`_back`.
 - CHANGED doctrine: Miner + X-Bow are EXEMPT from the enemy-half `offensive_penalty`. Miner is fully
   exempt from the wrong-lane penalty (it deploys anywhere). X-Bow opposite-lane is now nuanced —
   exempt when punishing a SPENT push, but pays `wrong_lane_penalty × xbow_wrong_lane_frac` (0.6) if a

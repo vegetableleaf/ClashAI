@@ -228,6 +228,8 @@ rewards:
   # -- (3) WIN-CONDITION execution (the deck's doctrine done right for the current phase) --
   wincon_exec: 0.8         # X-Bow forward-in-range (offence) / back-centre (defence), Miner chips the princess, rocket-cycle chip
   wincon_misplace: -0.6    # the win condition thrown away (X-Bow out of range / king-hugged, Miner on the enemy KING)
+  xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
+                           #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
   cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
@@ -359,10 +361,11 @@ env:
   elixir_full: 10                # elixir at/above this (full bar) + nothing played this step = leak penalty
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened" (lane read)
   wrong_lane_margin: 0.12              # deadband around the 0.48 lane split before a placement counts as wrong-lane (threat_response)
-  # X-Bow (win condition) placement geometry: forward within tower range, or back-centre for defence
+  # X-Bow (win condition) placement geometry: forward within tower range, or the CENTER INTERCEPT band for defence.
   xbow_range: 0.36                     # max normalized distance from the X-Bow to an enemy princess for it to REACH the tower (~11.5 tiles)
-  xbow_defense_y: 0.62                 # a defensive (rocket-cycle-mode) X-Bow sits at/below this depth, back-centre on your side...
-  xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king -> misplace, not defence
+  xbow_defense_front: 0.52             # DEFENSIVE "back-centre" band: from just behind the bridge (the central Tesla area)...
+  xbow_defense_back: 0.62              # ...down to ~your princess-tower line. BEHIND the towers (deeper) is rarely useful ->
+                                       #    earns only rewards.xbow_deep_frac of the win-condition credit (soft nudge, not a punishment)
   xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: X-Bow chipped LESS than this fraction of a tower by 2x elixir -> switch to defensive X-Bow + rocket-cycle
   # SIM matchup doctrine (reads the opponent's style): vs a fast CYCLE / heavy BEATDOWN deck, or a
   # SPLIT-LANE deck built on these wide two-lane win conditions (one X-Bow can't cover both lanes),
