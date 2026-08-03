@@ -116,43 +116,33 @@ observation:
   # Flipping this changes threat_dim (16 <-> 34 = 16 base + 10 identity + 8 memory) -> a FRESH train-sim +
   # train-rl (init train-rl from the SIM checkpoint so the wide block carries; NB train-bc caps threats at 16).
   use_detector: true            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
-  detector_conf: 0.75            # LIVE: only trust a detection at/above this confidence (extremely-high only)
+  detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. LOWERED 0.75 -> 0.50 for
+                                 # board-10: its confidence is calibrated LOWER than board-9 (at 0.75 it fires far
+                                 # less despite being the better model); at 0.50 its whitelist recall beats board-9's
+                                 # @0.75 with ~no precision cost (folded P ~0.93). Re-tune per detector generation.
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
   # SIM-ONLY detector realism: simulate the live YOLO detector's imperfect recall/precision on the sim's
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
-  # VALUES BELOW = the CURRENT detector (board-9) MEASURED on the WHITELIST (detector_cards) at the LIVE
-  # gate (conf = detector_conf 0.75): mean recall 0.60 / precision 0.91 over 24 whitelist cards. Re-measure
-  # + update after each detector retrain (ultralytics val at conf=detector_conf, average the detector_cards
-  # classes). NB common cards (knight/skeletons) detect worse, so the measured 0.60 is a mild UPPER bound
-  # -> recall is set a touch BELOW it so the sim errs SPARSE (a worse-than-live signal = safer transfer).
-  sim_detector_recall: 0.52      # GLOBAL fallback: sim "sees" ~52% of whitelisted enemies/step (below the measured 0.60 to err sparse)
-  sim_detector_precision: 0.91   # ~9% of seen detections get relabelled to a wrong card (board-9 whitelist precision)
-  # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. The real
-  # detector is per-card (it names some cards most of the time, usually misses others), so a single global
-  # rate under-trusts the reliable cards and over-trusts the weak. These are BUCKETED (reliable ~0.80 / weak
-  # ~0.30) from the board-9 val @ conf 0.75 -- NOT raw per-card (thin classes are too noisy); MID cards
-  # (~0.45-0.6) are omitted so they use the global rate. Precision stays global (per-card precision needs the
-  # detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain; empty {} = global only.
+  # VALUES BELOW = the CURRENT detector (board-10) measured BASE-FOLDED (evo/hero/ability variants folded
+  # into their base card, cross-variant hits count) on the WHITELIST at the LIVE gate (detector_conf 0.50):
+  # mid-tier mean recall ~0.59 / precision ~0.93 (n>=8-val cards only). Set slightly BELOW measurement to
+  # err sparse. Re-measure after each detector retrain (fold variants; val at conf=detector_conf).
+  sim_detector_recall: 0.55      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured ~0.59 mid mean
+  sim_detector_precision: 0.91   # ~9% of seen detections relabelled (measured folded ~0.93 @0.50; rounded down = safe)
+  # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. ONLY
+  # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-10 @ conf 0.50) are listed;
+  # thin-val cards deliberately stay on the global rate. Precision stays global (per-card precision needs
+  # the detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain.
   sim_detector_recall_by_card:
-    # reliable -- detector names it most of the time (well-supported high val recall)
-    ice_wizard: 0.80
-    royal_recruit: 0.80
-    princess: 0.80
-    archers: 0.80
-    musketeer: 0.80
-    baby_dragon: 0.80
-    # weak -- rarely detected cleanly, so the sim mostly HIDES it (matching live)
-    knight: 0.30
-    pekka: 0.30
-    hog_rider: 0.30
-    miner: 0.30
-    ice_spirit: 0.30
-    mega_knight: 0.30
-    ice_golem: 0.30
-    royal_hogs: 0.30
-    magic_archer: 0.20
+    # reliable -- measured R >= ~0.70 folded @0.50 (well-supported)
+    ice_wizard: 0.75
+    royal_recruit: 0.75
+    miner: 0.75
+    # weak -- measured R <= ~0.45 folded @0.50 (well-supported)
+    hog_rider: 0.35
+    bowler: 0.35
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
