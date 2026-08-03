@@ -16,6 +16,7 @@ import numpy as np
 
 from .engine import build_spec
 from .. import card_threat
+from ..cycle import cycle_vector
 from . import view
 
 
@@ -152,9 +153,7 @@ class SelfPlayOpponent:
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0
-        nxt = np.zeros(self.n_cards, np.float32)
-        if len(self.cycle) > 4:
-            nxt[self.cycle[4]] = 1.0
+        nxt = cycle_vector(self.cycle, self.n_cards)   # graded upcoming-order (matches the trained policy input)
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
         thr = view.threat_vector(eng, self.threat_dim - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0), team=1)
         if self.use_detector:
