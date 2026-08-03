@@ -342,6 +342,11 @@ class LiveMatchEnv:
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
+        from .replay_mine import TeamTracker
+        self._team_tracker = TeamTracker(                # LIVE: tag your own plays 'mine' (vs the colour guess)
+            spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
+            spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
+            track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
         if self.use_detector:
             self.threat_vec = np.concatenate(
                 [self.threat_vec, self._threat_id,
@@ -409,10 +414,11 @@ class LiveMatchEnv:
         if self._detector is None:
             return []
         try:
-            return [d for d in self._detector.detect(frame, conf=self.detector_conf)
-                    if d.team == "enemy" and d.base in self.detector_cards]
+            dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
             return []
+        self._team_tracker.tag(dets, time.time())     # correct team from your own plays BEFORE filtering
+        return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
@@ -442,6 +448,7 @@ class LiveMatchEnv:
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
                 self._opp_mem.reset()
+                self._team_tracker.reset()
                 self._update_threat(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame
@@ -459,6 +466,9 @@ class LiveMatchEnv:
             return
         gx, gy = cell % self.gw, cell // self.gw
         self.controller.play_card(*self.actions.decode(slot, gx, gy))
+        if card_id not in self.spell_ids:             # a TROOP you played -> tag its spawn as YOURS (team fix)
+            cx, cy = self.actions.cell_center(gx, gy)
+            self._team_tracker.record_play(cx, cy, time.time())
 
     def _aim_weaker_tower(self, card_id: int, cell: int) -> int:
         """A ROCKET or an offensive MINER aimed at an enemy princess is redirected to the lower-HP

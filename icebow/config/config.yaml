@@ -115,9 +115,14 @@ observation:
   # coverage); LIVE builds them from the detector. Both GROW-safe: adding whitelist cards needs NO retrain.
   # Flipping this changes threat_dim (16 <-> 34 = 16 base + 10 identity + 8 memory) -> a FRESH train-sim +
   # train-rl (init train-rl from the SIM checkpoint so the wide block carries; NB train-bc caps threats at 16).
-  use_detector: false            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
+  use_detector: true            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
   detector_conf: 0.75            # LIVE: only trust a detection at/above this confidence (extremely-high only)
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
+  # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
+  # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
+  team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
+  team_spawn_window_s: 2.5       # ...for this long after the play (covers deploy + early movement)
+  team_track_radius: 0.12        # keep 'mine' as the unit moves: within this of last frame's allied unit
   flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
                                  # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
                                  # true tile, so spell targeting + depth/movement prediction use where it really is.
@@ -530,7 +535,7 @@ monitor:
   clip_seconds: 30                       # length of each periodic video clip (seconds)
   clip_fps: 10                           # clip frame rate (higher = smoother but a bigger upload)
   clip_scale: 0.5                        # downscale the clip (0.5 = half size) to stay under Discord's ~8 MB webhook limit
-  overlay_detections: false              # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
+  overlay_detections: true             # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
                                          # yours=blue, + card name/conf) so you can SEE what the detector perceives,
                                          # remotely. Loads its OWN detector on the first clip (needs trained weights in
                                          # runs/detect); a brief 2nd model during the 30s clip -- turn off if VRAM is tight.

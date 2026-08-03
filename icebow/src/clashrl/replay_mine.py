@@ -110,6 +110,49 @@ def _team_of(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float
     return "enemy" if red >= blue else "mine"
 
 
+class TeamTracker:
+    """LIVE team assignment from the GROUND TRUTH of your own plays, overriding the unreliable colour
+    guess (:func:`_team_of`, which status tints / spell haze / occlusion fool). Any unit that appears
+    where YOU just played a TROOP is 'mine'; it stays 'mine' as it advances (short-range frame-to-frame
+    tracking). Everything else keeps the detector's colour team. The SIM doesn't need this (ground-truth
+    teams); it's for live play + train-rl so the identity/memory blocks aren't polluted by your own units
+    being read as enemy threats."""
+
+    def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
+                 track_radius: float = 0.12, forget_s: float = 1.5):
+        self.spawn_radius = float(spawn_radius)
+        self.spawn_window_s = float(spawn_window_s)
+        self.track_radius = float(track_radius)
+        self.forget_s = float(forget_s)
+        self.reset()
+
+    def reset(self) -> None:
+        self._plays: list = []     # recent own TROOP plays: (x, y, t)
+        self._mine: list = []      # units tagged 'mine' last frame: (x, y, t) -- for tracking
+
+    def record_play(self, x: float, y: float, t: float) -> None:
+        """Register a TROOP you just played at normalized (x, y) -- the unit that appears there is yours."""
+        self._plays.append((float(x), float(y), float(t)))
+
+    def tag(self, dets, t: float):
+        """Override ``d.team = 'mine'`` for detections near a recent own play OR a unit tagged mine last
+        frame (so the label persists as it moves). Mutates + returns ``dets``; rebuilds the tracked set."""
+        self._plays = [p for p in self._plays if t - p[2] <= self.spawn_window_s]
+        prev = [m for m in self._mine if t - m[2] <= self.forget_s]
+        sr2, tr2 = self.spawn_radius ** 2, self.track_radius ** 2
+        new_mine = []
+        for d in dets:
+            dx, dy = d.cx, d.gy
+            mine = any((dx - px) ** 2 + (dy - py) ** 2 <= sr2 for px, py, _ in self._plays)
+            if not mine:
+                mine = any((dx - mx) ** 2 + (dy - my) ** 2 <= tr2 for mx, my, _ in prev)
+            if mine:
+                d.team = "mine"
+                new_mine.append((dx, dy, t))
+        self._mine = new_mine
+        return dets
+
+
 class BoardDetector:
     """Thin wrapper over an Ultralytics detector (YOLO/RT-DETR). ``available`` is False when no
     weights are found, so the miner can report readiness instead of crashing."""

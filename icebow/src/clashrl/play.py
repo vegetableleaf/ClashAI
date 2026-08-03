@@ -132,18 +132,28 @@ def play(cfg) -> None:
             _detector = None
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
+    # LIVE team assignment from your own plays (overrides the colour guess so your units aren't read as
+    # enemy threats). A TROOP you play is tagged 'mine' at its spawn + tracked as it advances.
+    from .replay_mine import TeamTracker
+    _spell_ids = {i for i, key in enumerate(vision.deck_keys)
+                  if card_threat.profile(_db, card_threat.base_key(key)).spell}
+    _team_tracker = TeamTracker(
+        spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
+        spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
+        track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
 
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
         sized to the net: the identity block (RECOGNISED enemies on YOUR half) + the opponent MEMORY block
         (whole-match read, BOTH halves). ONE detector pass shared by both. Zeros where unavailable."""
-        dets = []
+        dets_all = []
         if _detector is not None:
             try:
-                dets = [d for d in _detector.detect(frame, conf=detector_conf)
-                        if d.team == "enemy" and d.base in detector_cards]
+                dets_all = _detector.detect(frame, conf=detector_conf)
             except Exception:
-                dets = []
+                dets_all = []
+            _team_tracker.tag(dets_all, time.time())                         # correct team from your own plays
+        dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
         dt = (now - _ident_state["t"]) if _ident_state["t"] else 0.0
@@ -246,6 +256,9 @@ def play(cfg) -> None:
                 cell = snapped
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
+        if card_id not in _spell_ids:              # a TROOP you played -> tag its spawn as YOURS (team fix)
+            cx, cy = actions.cell_center(gx, gy)
+            _team_tracker.record_play(cx, cy, time.time())
 
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
@@ -290,6 +303,7 @@ def play(cfg) -> None:
                     threat_tracker.reset()
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
+                    _team_tracker.reset()         # forget last match's own-unit tracks
                     prev_mult = 1
                 prev = state
 
