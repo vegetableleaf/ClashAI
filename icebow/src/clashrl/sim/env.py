@@ -102,6 +102,11 @@ class SimMatchEnv:
         self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))   # support near the aimed tower
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+        # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
+        self.damage_spell_ids = {i for i in range(self.n_cards)
+                                 if self.specs[i].kind == "spell" and self.specs[i].spell_dmg > 0.0}
+        self.w_spell_waste = r("spell_waste", -0.3)
+        self.spell_waste_radius = float(cfg.get("env", "spell_waste_radius", default=0.14))
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
         self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
                                                default=["royal_recruits", "royal_hogs"]))
@@ -348,6 +353,18 @@ class SimMatchEnv:
                 return False                             # a cheaper counter was in hand / next -> not forced
         return True
 
+    def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
+        """True when a DAMAGE spell is cast with NOTHING to hit -- no enemy unit within its blast radius AND
+        not aimed at a live enemy princess tower (chipping a tower is a valid target). A SOFT nudge against
+        casting into emptiness; env.spell_waste_radius is GENEROUS so near-miss / predictive casts aren't
+        punished -- only truly empty ones."""
+        for t in self.eng.towers[1][:2]:
+            if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius:
+                return False                             # aimed at an enemy princess tower = a valid chip target
+        rad = self.spell_waste_radius
+        return not any(u.team == 1 and u.hp > 0 and np.hypot(nx - u.x, ny - u.y) <= rad
+                       for u in self.eng.units)
+
     def _chip_progress(self, towers) -> float:
         """Convex chip 'progress' over a side's princess towers: sum of (damage_fraction ** chip_power) so
         PARTIAL chip is worth sub-proportionally LESS than finishing the tower. Most of a tower's value is
@@ -377,6 +394,8 @@ class SimMatchEnv:
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
                 reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
                 reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
+                if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
+                    reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 idx = self.cycle.index(card_id)                                 # cycle the played card to the back
                 self.cycle.append(self.cycle.pop(idx))
         else:

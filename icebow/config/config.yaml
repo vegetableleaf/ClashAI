@@ -244,6 +244,7 @@ rewards:
   cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
+  spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
   correctness_cap: 20.0    # per-match ceiling on POSITIVE shaping (terms 1,3,4) -- anti-farm; penalties + trade + outcome are uncapped
   # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
   win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
@@ -361,6 +362,7 @@ env:
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  spell_waste_radius: 0.14       # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness. Generous so predictive/near-miss casts aren't punished.
   rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
   rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet"
