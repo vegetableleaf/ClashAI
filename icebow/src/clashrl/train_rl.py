@@ -59,7 +59,7 @@ def _build_net(cfg, device, n_cards, n_cells, threat_dim=14):
     return DQN().to(device)
 
 
-def train_rl(cfg) -> None:
+def train_rl(cfg, init: str | None = None) -> None:
     try:
         import torch
         import torch.nn.functional as F
@@ -71,7 +71,13 @@ def train_rl(cfg) -> None:
 
     bc_path = cfg.path(cfg.get("train", "checkpoint", default="data/policy.pt"))
     rl_path = cfg.path(cfg.get("train", "rl_checkpoint", default="data/policy_rl.pt"))
-    init_path = rl_path if rl_path.exists() else bc_path
+    if init:                                            # explicit warm-start (e.g. the 34-dim SIM policy)
+        init_path = cfg.path(init)
+        if not init_path.exists():
+            print(f"[train-rl] --init checkpoint not found: {init_path}")
+            return
+    else:
+        init_path = rl_path if rl_path.exists() else bc_path
     if not init_path.exists():
         print(f"[train-rl] no policy to start from ({bc_path}). Run `train-bc` first.")
         return
