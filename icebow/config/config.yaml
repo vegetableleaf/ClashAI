@@ -120,11 +120,14 @@ observation:
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
   # SIM-ONLY detector realism: simulate the live YOLO detector's imperfect recall/precision on the sim's
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
-  # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Set to your MEASURED
-  # detector numbers for a FROM-SCRATCH train-sim (e.g. board-9 was recall ~0.46, precision ~0.81). Applied
-  # to BOTH the agent's and the self-play opponent's identity block. LIVE play ignores these (real detector).
-  sim_detector_recall: 1.0       # per-decision chance the sim "sees" each whitelisted enemy (models detector recall)
-  sim_detector_precision: 1.0    # chance a seen detection keeps its true identity (else relabelled -> models precision)
+  # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
+  # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
+  # VALUES BELOW = the CURRENT detector (board-9) MEASURED on the WHITELIST (detector_cards) at the LIVE
+  # gate (conf = detector_conf 0.75): mean recall 0.60 / precision 0.91 over 24 whitelist cards. Re-measure
+  # + update after each detector retrain (ultralytics val at conf=detector_conf, average the detector_cards
+  # classes -- NB common cards like knight/skeletons detect worse, so 0.60 is a mild upper bound on recall).
+  sim_detector_recall: 0.60      # sim "sees" ~60% of whitelisted enemies each step (board-9 whitelist recall @ conf 0.75)
+  sim_detector_precision: 0.91   # ~9% of seen detections get relabelled to a wrong card (board-9 whitelist precision)
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
