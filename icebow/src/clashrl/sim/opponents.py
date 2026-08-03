@@ -127,6 +127,7 @@ class SelfPlayOpponent:
         self.detector_cards = env.detector_cards
         self.det_recall = env.det_recall              # mirror the sim detector-noise so a snapshot self sees
         self.det_precision = env.det_precision         # the same sparse/noisy identity signal it trained on
+        self.det_recall_by_card = env.det_recall_by_card   # ...including the per-card recall override
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
         self._prev_ident_depth = 0.0
@@ -161,12 +162,14 @@ class SelfPlayOpponent:
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
                 view.apply_detector_noise(view.identity_items(eng, 1, self.detector_cards),
-                                          self.det_recall, self.det_precision, self.rng, self.detector_cards),
+                                          self.det_recall, self.det_precision, self.rng, self.detector_cards,
+                                          self.det_recall_by_card),
                 self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
             self._prev_ident_depth = float(ident[7])
             mem = self._opp_mem.update(
                 view.apply_detector_noise(view.opponent_memory_items(eng, 1, self.detector_cards),
-                                          self.det_recall, self.det_precision, self.rng, self.detector_cards))
+                                          self.det_recall, self.det_precision, self.rng, self.detector_cards,
+                                          self.det_recall_by_card))
             thr = np.concatenate([thr, ident, mem]).astype(np.float32)
 
         dev = next(self.net.parameters()).device

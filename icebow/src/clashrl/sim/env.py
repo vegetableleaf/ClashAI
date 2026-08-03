@@ -53,6 +53,8 @@ class SimMatchEnv:
         # ground-truth identity block so the sim PRIOR trains on a sparse, live-like signal (1.0 = perfect).
         self.det_recall = float(cfg.get("observation", "sim_detector_recall", default=1.0))
         self.det_precision = float(cfg.get("observation", "sim_detector_precision", default=1.0))
+        # optional PER-CARD recall override (reliable vs weak cards); cards absent use the scalar det_recall
+        self.det_recall_by_card = dict(cfg.get("observation", "sim_detector_recall_by_card", default=None) or {})
         self.threat_dim = _THREAT_DIM + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                                          if self.use_detector else 0)
 
@@ -150,12 +152,14 @@ class SimMatchEnv:
             return base
         self._threat_id = card_threat.identity_threat_vector(
             view.apply_detector_noise(view.identity_items(self.eng, 0, self.detector_cards),
-                                      self.det_recall, self.det_precision, self.rng, self.detector_cards),
+                                      self.det_recall, self.det_precision, self.rng, self.detector_cards,
+                                      self.det_recall_by_card),
             self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
         mem = self._opp_mem.update(
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
-                                      self.det_recall, self.det_precision, self.rng, self.detector_cards))
+                                      self.det_recall, self.det_precision, self.rng, self.detector_cards,
+                                      self.det_recall_by_card))
         return np.concatenate([base, self._threat_id, mem]).astype(np.float32)
 
     def _render(self) -> np.ndarray:

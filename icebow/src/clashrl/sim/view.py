@@ -112,19 +112,23 @@ def opponent_memory_items(engine, team: int, whitelist) -> "list[tuple[str, floa
     return items
 
 
-def apply_detector_noise(items, recall: float, precision: float, rng, whitelist):
+def apply_detector_noise(items, recall: float, precision: float, rng, whitelist, recall_by_card=None):
     """Simulate the LIVE YOLO detector's imperfect RECALL (missed units) + PRECISION (misclassifications)
     on the sim's ground-truth ``items`` = ``[(base_card, depth/local_y), ...]``, so a sim-trained prior
     learns to act on a SPARSE, live-like identity signal instead of perfect info (narrows the sim-to-real
     gap). ``recall`` = per-detection chance the unit is seen; ``precision`` = chance a seen detection keeps
-    its true identity (else it's relabelled as another whitelisted card). 1.0/1.0 -> ``items`` unchanged."""
-    if recall >= 1.0 and precision >= 1.0:
+    its true identity (else it's relabelled as another whitelisted card). ``recall_by_card`` (optional) is a
+    base-card -> recall dict that OVERRIDES the scalar per card -- the detector names some cards far more
+    reliably than others -- and any card absent from it falls back to the scalar ``recall``. 1.0/1.0 with no
+    per-card table -> ``items`` unchanged."""
+    if recall >= 1.0 and precision >= 1.0 and not recall_by_card:
         return items
     cards = tuple(whitelist) if whitelist else ()
     out = []
     for name, d in items:
-        if recall < 1.0 and rng.random() > recall:
-            continue                                   # detector MISSED this unit (recall)
+        r = recall_by_card.get(name, recall) if recall_by_card else recall
+        if r < 1.0 and rng.random() > r:
+            continue                                   # detector MISSED this unit (per-card recall)
         if precision < 1.0 and cards and rng.random() > precision:
             name = rng.choice(cards)                   # MISCLASSIFIED as another whitelisted card (precision)
         out.append((name, d))

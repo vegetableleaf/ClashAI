@@ -127,8 +127,32 @@ observation:
   # + update after each detector retrain (ultralytics val at conf=detector_conf, average the detector_cards
   # classes). NB common cards (knight/skeletons) detect worse, so the measured 0.60 is a mild UPPER bound
   # -> recall is set a touch BELOW it so the sim errs SPARSE (a worse-than-live signal = safer transfer).
-  sim_detector_recall: 0.52      # sim "sees" ~52% of whitelisted enemies/step -- set below the measured 0.60 to err sparse (safe)
+  sim_detector_recall: 0.52      # GLOBAL fallback: sim "sees" ~52% of whitelisted enemies/step (below the measured 0.60 to err sparse)
   sim_detector_precision: 0.91   # ~9% of seen detections get relabelled to a wrong card (board-9 whitelist precision)
+  # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. The real
+  # detector is per-card (it names some cards most of the time, usually misses others), so a single global
+  # rate under-trusts the reliable cards and over-trusts the weak. These are BUCKETED (reliable ~0.80 / weak
+  # ~0.30) from the board-9 val @ conf 0.75 -- NOT raw per-card (thin classes are too noisy); MID cards
+  # (~0.45-0.6) are omitted so they use the global rate. Precision stays global (per-card precision needs the
+  # detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain; empty {} = global only.
+  sim_detector_recall_by_card:
+    # reliable -- detector names it most of the time (well-supported high val recall)
+    ice_wizard: 0.80
+    royal_recruit: 0.80
+    princess: 0.80
+    archers: 0.80
+    musketeer: 0.80
+    baby_dragon: 0.80
+    # weak -- rarely detected cleanly, so the sim mostly HIDES it (matching live)
+    knight: 0.30
+    pekka: 0.30
+    hog_rider: 0.30
+    miner: 0.30
+    ice_spirit: 0.30
+    mega_knight: 0.30
+    ice_golem: 0.30
+    royal_hogs: 0.30
+    magic_archer: 0.20
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
