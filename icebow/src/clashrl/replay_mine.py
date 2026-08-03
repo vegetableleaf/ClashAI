@@ -119,9 +119,14 @@ class TeamTracker:
     being read as enemy threats."""
 
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
-                 track_radius: float = 0.12, forget_s: float = 1.5):
+                 track_radius: float = 0.12, forget_s: float = 1.5,
+                 enemy_window_s: Optional[float] = None):
         self.spawn_radius = float(spawn_radius)
         self.spawn_window_s = float(spawn_window_s)
+        # ENEMY-side plays (a Miner / anything you drop on THEIR half) linger at their target, so they get
+        # a LONGER spawn window; YOUR-half plays keep the short one so an enemy ENGAGING your fresh defender
+        # (near its spawn) isn't hidden as 'mine' for long.
+        self.enemy_window_s = float(enemy_window_s) if enemy_window_s is not None else float(spawn_window_s)
         self.track_radius = float(track_radius)
         self.forget_s = float(forget_s)
         self.reset()
@@ -137,7 +142,8 @@ class TeamTracker:
     def tag(self, dets, t: float):
         """Override ``d.team = 'mine'`` for detections near a recent own play OR a unit tagged mine last
         frame (so the label persists as it moves). Mutates + returns ``dets``; rebuilds the tracked set."""
-        self._plays = [p for p in self._plays if t - p[2] <= self.spawn_window_s]
+        self._plays = [p for p in self._plays                     # enemy-side plays (y<0.5) linger longer
+                       if t - p[2] <= (self.enemy_window_s if p[1] < 0.5 else self.spawn_window_s)]
         prev = [m for m in self._mine if t - m[2] <= self.forget_s]
         sr2, tr2 = self.spawn_radius ** 2, self.track_radius ** 2
         new_mine = []

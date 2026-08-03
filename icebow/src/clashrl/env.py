@@ -346,6 +346,7 @@ class LiveMatchEnv:
         self._team_tracker = TeamTracker(                # LIVE: tag your own plays 'mine' (vs the colour guess)
             spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
             spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
+            enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
             track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
         if self.use_detector:
             self.threat_vec = np.concatenate(
