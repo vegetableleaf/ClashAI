@@ -96,8 +96,6 @@ def play(cfg) -> None:
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
                     if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "miner")}
-    tesla_ids = {i for i, key in enumerate(vision.deck_keys)
-                 if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
     xbow_ids = {i for i, key in enumerate(vision.deck_keys)
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
@@ -212,12 +210,12 @@ def play(cfg) -> None:
         for i in range(n_cards):
             if elixir + 1e-6 < card_elixir[i]:
                 card_logits[0, i] = float("-inf")
-        # SAVE THE TESLA for a win condition: enemy runs a tower-targeting troop and none is on the
-        # board now -> mask Tesla so it defends win conditions only.
-        hold_tesla = threat_tracker.should_hold_tesla()
-        if hold_tesla:
-            for i in tesla_ids:
-                card_logits[0, i] = float("-inf")
+        # Tesla is deliberately NOT masked: the policy DECIDES when to play vs HOLD it, exactly as in
+        # training (no forced choice). It observes 'a win condition is on the board now' (identity block)
+        # and 'the enemy has shown a win condition this match' (opponent-memory block), and the correctness
+        # reward teaches the tradeoff -- wasting Tesla on a non-wincon earns a threat_miss when the win
+        # condition later arrives with no answer in hand. So it can still play Tesla when that's the best
+        # current defence (or when the opponent has no win condition at all).
         if bool(torch.isinf(card_logits).all()):
             return                              # nothing in hand is affordable / allowed -> wait
         if random.random() < eps:
