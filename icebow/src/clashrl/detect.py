@@ -240,6 +240,23 @@ def _save_preview(path: Path, frame, named_boxes):
     cv2.imwrite(str(path), out)
 
 
+def draw_detections(frame, dets):
+    """Return a COPY of ``frame`` with the detector's boxes drawn -- enemy=red, yours=blue, unknown=grey,
+    each labelled with the base card + confidence. Boxes are normalized (cx,cy,w,h) so this works at any
+    frame size (e.g. a downscaled monitor clip). ``dets`` = a list of clashrl.replay_mine.Detection."""
+    out = frame.copy()
+    h, w = out.shape[:2]
+    colours = {"enemy": (60, 60, 230), "mine": (230, 150, 60), "unknown": (150, 150, 150)}   # BGR
+    for d in dets:
+        x0, y0 = int((d.cx - d.w / 2) * w), int((d.cy - d.h / 2) * h)
+        x1, y1 = int((d.cx + d.w / 2) * w), int((d.cy + d.h / 2) * h)
+        c = colours.get(d.team, colours["unknown"])
+        cv2.rectangle(out, (x0, y0), (x1, y1), c, 2)
+        cv2.putText(out, f"{d.base} {d.conf:.2f}", (x0, max(11, y0 - 3)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, c, 1, cv2.LINE_AA)
+    return out
+
+
 def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}

@@ -72,6 +72,9 @@ class DiscordMonitor:
         self.clip_seconds = max(1.0, float(cfg.get("monitor", "clip_seconds", default=30.0)))
         self.clip_fps = max(1, int(cfg.get("monitor", "clip_fps", default=10)))
         self.clip_scale = float(cfg.get("monitor", "clip_scale", default=0.5))
+        self.overlay = bool(cfg.get("monitor", "overlay_detections", default=False))
+        self.overlay_conf = float(cfg.get("monitor", "overlay_conf", default=0.4))
+        self._detector = None                          # lazily-loaded overlay detector (False = tried, unavailable)
         self.url = _load_webhook(cfg)
         self._thread: Optional[threading.Thread] = None
         self._stop = threading.Event()
@@ -122,6 +125,25 @@ class DiscordMonitor:
         except Exception as exc:  # noqa: BLE001 -- monitoring must never break the run
             print(f"[monitor] alert failed (ignored): {exc!r}")
 
+    def _overlay_detector(self):
+        """Lazily load the board detector for the clip overlay (once, on the first clip). Returns a
+        BoardDetector or None (overlay off / no weights). Its OWN instance -- torch models aren't safe to
+        share across threads, so it does not reuse train-rl's detector."""
+        if not self.overlay:
+            return None
+        if self._detector is None:
+            try:
+                from .replay_mine import load_detector
+                det = load_detector(self.cfg)
+                self._detector = det if det.available else False
+                print("[monitor] clip overlay ON: drawing detector boxes on the periodic clips."
+                      if det.available else
+                      "[monitor] clip overlay requested but no detector weights found -- plain clips.")
+            except Exception as exc:  # noqa: BLE001
+                self._detector = False
+                print(f"[monitor] clip overlay detector load failed (plain clips): {exc!r}")
+        return self._detector or None
+
     def _record_clip(self, cap: WindowCapture) -> Optional[bytes]:
         """Capture a ~clip_seconds real-time clip of the game window as mp4 bytes (or None).
 
@@ -129,11 +151,24 @@ class DiscordMonitor:
         in RAM), then reads + deletes it. Frames are grabbed at clip_fps and optionally
         downscaled (clip_scale) to keep the upload under Discord's webhook size limit.
         """
-        first = self._grab(cap)
-        if first is None:
+        det = self._overlay_detector()
+        from .detect import draw_detections
+
+        def _prep(full):
+            """Resize to the clip size and, when the overlay is on, draw the detector's boxes."""
+            small = (cv2.resize(full, None, fx=self.clip_scale, fy=self.clip_scale)
+                     if self.clip_scale and self.clip_scale != 1.0 else full)
+            if det is not None:
+                try:
+                    small = draw_detections(small, det.detect(full, conf=self.overlay_conf))
+                except Exception:
+                    pass
+            return small
+
+        first_full = self._grab(cap)
+        if first_full is None:
             return None
-        if self.clip_scale and self.clip_scale != 1.0:
-            first = cv2.resize(first, None, fx=self.clip_scale, fy=self.clip_scale)
+        first = _prep(first_full)
         h, w = first.shape[:2]
         tmp = Path(tempfile.gettempdir()) / f"clashrl_clip_{uuid.uuid4().hex}.mp4"
         writer = cv2.VideoWriter(str(tmp), cv2.VideoWriter_fourcc(*"mp4v"), self.clip_fps, (w, h))
@@ -149,7 +184,8 @@ class DiscordMonitor:
                 t0 = time.time()
                 f = self._grab(cap)
                 if f is not None:
-                    writer.write(cv2.resize(f, (w, h)))
+                    fr = _prep(f)
+                    writer.write(fr if fr.shape[:2] == (h, w) else cv2.resize(fr, (w, h)))
                 time.sleep(max(0.0, dt - (time.time() - t0)))
         finally:
             writer.release()

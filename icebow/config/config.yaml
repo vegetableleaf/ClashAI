@@ -530,6 +530,11 @@ monitor:
   clip_seconds: 30                       # length of each periodic video clip (seconds)
   clip_fps: 10                           # clip frame rate (higher = smoother but a bigger upload)
   clip_scale: 0.5                        # downscale the clip (0.5 = half size) to stay under Discord's ~8 MB webhook limit
+  overlay_detections: false              # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
+                                         # yours=blue, + card name/conf) so you can SEE what the detector perceives,
+                                         # remotely. Loads its OWN detector on the first clip (needs trained weights in
+                                         # runs/detect); a brief 2nd model during the 30s clip -- turn off if VRAM is tight.
+  overlay_conf: 0.4                      # min detector confidence to draw a box on the clip overlay
 
 # --- Board object detection (YOLO11) dataset bootstrap -------------------
 # `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your
