@@ -34,6 +34,7 @@ from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from . import card_threat
+from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -336,7 +337,28 @@ class LiveMatchEnv:
         # your deck's KB profiles (played-card role) for the role-based COUNTER reward
         self._deck_profiles = [card_threat.profile(db, (k[:-4] if k.endswith("_evo") else k))
                                for k in self.vision.deck_keys]
-        self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
+        # --- CORRECTNESS-FIRST reward weights (mirror the sim; see sim/env.py). ONE coherent score of a
+        # few bounded sub-terms replaces the old ~40 patchwork rewards; the assembly is in step(). ---
+        rw = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
+        self.w_threat_response = rw("threat_response", 1.0)   # (1) KB counter to the assessed threat, placed to intercept
+        self.w_threat_miss = rw("threat_miss", -1.0)          # wrong counter / wrong lane / ignored an ANSWERABLE threat
+        self.w_elixir_trade = rw("elixir_trade", 1.0)         # (2) (enemy value eliminated - elixir spent), normalised
+        self.w_wincon = rw("wincon_exec", 0.8)                # (3) win-condition executed right for the phase
+        self.w_wincon_mis = rw("wincon_misplace", -0.6)       # win-condition thrown away
+        self.w_cycle_plan = rw("cycle_plan", 0.4)             # (4) cheap play advancing toward a NEEDED upcoming counter
+        self.w_cycle_waste = rw("cycle_waste", -0.4)          # purposeless cheap spam
+        self.w_leak = rw("leak_penalty", -0.2)                # (5) sitting at elixir capacity, leaking
+        self.correctness_cap = rw("correctness_cap", 20.0)    # per-match cap on POSITIVE shaping (anti-farm)
+        self.w_take = rw("take_enemy_tower", 0.5); self.w_lose = rw("lose_own_tower", -0.5)
+        self.tower_chip_scale = rw("tower_chip_scale", 0.5)   # tiny tower-chip proxy (correctness carries the signal)
+        self.combo_mult = rw("rocket_combo_mult", 3.0)
+        self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))
+        self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))
+        self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
+        self.value_norm = float(cfg.get("env", "value_norm", default=10.0))
+        self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
+        self.card_elixir = [(db.elixir(k) or db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
+                            for k in self.vision.deck_keys]   # per-card elixir cost (the trade-term spend)
         self._detector = None
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
@@ -348,6 +370,7 @@ class LiveMatchEnv:
             spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
             enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
             track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
+        self._cycle_tracker = CycleTracker(self.n_cards)   # live estimate of the upcoming-card order (graded next_vec)
         if self.use_detector:
             self.threat_vec = np.concatenate(
                 [self.threat_vec, self._threat_id,
@@ -380,12 +403,13 @@ class LiveMatchEnv:
         return self.capture.region is not None
 
     def _read_hand(self, frame) -> None:
-        """Recognize the hand -> deck ids per slot + multi-hot (for identity actions),
-        and the next (preview) card -> one-hot (so the policy can plan cycles)."""
+        """Recognize the hand -> deck ids per slot + multi-hot (for identity actions), and the next
+        (preview) card, then fold both through the cycle tracker into a graded UPCOMING-order vector
+        (Next=1.0 grading down for the hidden cards) so the policy can plan which cards to cycle to."""
         self.hand_ids = self.vision.recognize_hand(frame)
         self.hand_vec = self.vision.hand_multihot(self.hand_ids)
         self.next_id = self.vision.recognize_next(frame)
-        self.next_vec = self.vision.next_onehot(self.next_id)
+        self.next_vec = self._cycle_tracker.observe(self.hand_ids, self.next_id)
 
     def _update_threat(self, frame) -> None:
         """Advance the live enemy-threat read from the current frame -> policy input vector. When
@@ -444,12 +468,13 @@ class LiveMatchEnv:
                 self.elixir_mult = 1
                 self.elixir = self.vision.read_elixir(frame)
                 self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)
-                self._read_hand(frame)
                 self.threat_tracker.reset()
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
                 self._opp_mem.reset()
                 self._team_tracker.reset()
+                self._cycle_tracker.reset()
+                self._read_hand(frame)
                 self._update_threat(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame
@@ -467,6 +492,7 @@ class LiveMatchEnv:
             return
         gx, gy = cell % self.gw, cell // self.gw
         self.controller.play_card(*self.actions.decode(slot, gx, gy))
+        self._cycle_tracker.record_play(card_id)      # a card left the hand -> it rotates to the queue back
         if card_id not in self.spell_ids:             # a TROOP you played -> tag its spawn as YOURS (team fix)
             cx, cy = self.actions.cell_center(gx, gy)
             self._team_tracker.record_play(cx, cy, time.time())
@@ -486,299 +512,110 @@ class LiveMatchEnv:
                                    self.actions)
         return tgt if tgt is not None else cell
 
-    def _recommended_defense_cell(self, card_id: int):
-        """The RECOMMENDED central defensive spot for a defensive card given the current threat
-        -- a suggestion the reward gently nudges toward, NOT a hard override. The model is free to
-        place elsewhere (block a lane, drop a Ronin up front to catch a ranged unit off guard) and
-        the troop-defeat / Tesla-kill rewards will favour that when it is the better play. Returns
-        a grid cell, or None when the card isn't a defender or there's no clear threat to react to."""
-        kind = self.defensive_kind.get(card_id)
-        if kind is None or self._last_frame is None:
-            return None
-        if kind == "musketeer_evo":
-            return defensive_cell(kind, 0, 0.0, self.actions, self.defense_params)
-        side = threat_side(self._last_frame, self.cfg, self.threat_min_frac)
-        if side == 0:
-            return None
-        front = threat_front(self._last_frame, side, self.cfg, self.threat_min_frac)
-        if front is None:
-            return None
-        return defensive_cell(kind, side, front, self.actions, self.defense_params)
-
-    def _defense_placement_reward(self, card_id: int, cell: int) -> float:
-        """Small bonus for placing a defender at (or next to) the RECOMMENDED central spot -- a
-        soft DEFAULT, not a mandate. Placing elsewhere isn't penalised here; a better lane block
-        or forward play earns more through the troop-defeat + Tesla-kill rewards instead, so the
-        model can deviate from the centre whenever that's the stronger move."""
-        rec = self._recommended_defense_cell(card_id)
-        if rec is None:
-            return 0.0
-        gx, gy = cell % self.gw, cell // self.gw
-        rx, ry = rec % self.gw, rec // self.gw
-        if abs(gx - rx) <= 1 and abs(gy - ry) <= 1:      # within a cell of the recommended centre
-            return self.defense_center_bonus
-        return 0.0
-
-    def _building_place_reward(self, card_id: int, cell: int, threatened: bool) -> float:
-        """Shape a BUILDING (Tesla) toward the strategic defensive zone: a MODERATE depth in FRONT of
-        your towers (not shoved to the bridge, not dumped behind them) and toward the CENTRE, where
-        both princess towers support it and it pulls ground troops to the middle. A Tesla at the
-        bridge gets bypassed / focused; one behind your towers can't reach the push in time -- both
-        are penalised. The central reward only counts when there's actually a push to defend (a
-        premature building on a quiet board is handled by the premature-defense penalty)."""
-        if card_id not in self.building_ids:
-            return 0.0
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        if cy < self.building_front_y or cy > self.building_back_y:
-            return self.building_misplace_penalty            # at the bridge (too forward) OR behind your towers (too deep)
-        if not threatened:
-            return 0.0                                       # in-band but nothing to defend yet
-        central = max(0.0, 1.0 - abs(cx - 0.48) / self.building_center_span)
-        return self.building_center_reward * central          # in-band + a real push -> reward central x
-
-    def _xbow_place_reward(self, cell: int) -> float:
-        """Shape the X-Bow, the deck's WIN CONDITION. It reaches ~11.5 tiles, so from just behind the
-        bridge (on YOUR side) it can lock the enemy PRINCESS tower -- the offensive play. Reward placing
-        it WITHIN firing range (env.xbow_range) of the nearer enemy princess (a real forward win
-        condition); give a SMALLER reward for a BACK-CENTRE defensive X-Bow within a depth BAND (the
-        rocket-cycle fallback, sniping troops when the offensive X-Bow can't break through -- but NOT
-        shoved onto your king, too far back to do anything); and PENALISE any other out-of-range drop
-        (forward but short of the tower, or king-hugging) -- wasted / exposed (the classic misplace).
-        HARD EXCEPTION (checked FIRST): an X-Bow dropped right ON an oncoming enemy push gets swarmed
-        and demolished before it lands a shot -- 6 elixir wasted and undefendable -- so that is
-        penalised regardless of how good the spot would otherwise be."""
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        frame = self._last_frame                              # where the push was when the model decided
-        if frame is not None and troop_size_at(frame, cx, cy, self.xbow_ontop_radius, self.cfg) >= self.ontop_size:
-            return self.xbow_exposed_penalty                  # dropped INTO a live push -> demolished with no tower chip
-        _, enemy_a, _ = _anchors(self.cfg)
-        princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
-        d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
-        back_centre = self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18
-        if self._defensive:                                   # DEFENSIVE phase: the offensive WC is abandoned --
-            return self.xbow_defense_reward if back_centre else self.xbow_misplace_penalty  # only the back-centre snipe is right
-        if d <= self.xbow_range:
-            return self.xbow_wc_reward                        # OFFENSIVE: in range of a tower -> a real win condition
-        if back_centre:
-            return self.xbow_defense_reward                   # back-centre BAND -> defensive snipe (rocket-cycle mode)
-        return self.xbow_misplace_penalty                     # out of range: too forward to chip OR shoved onto your king
-
-    def _miner_reward(self, cell: int) -> float:
-        """Miner deploys ANYWHERE; its bread-and-butter is chipping the enemy PRINCESS tower, so reward
-        dropping it on/near a princess. The enemy KING is the EXCEPTION -- a Miner on the king tower
-        wakes it early (activates their defence for the rest of the match), so that is penalised.
-        Dumping it deep behind YOUR OWN towers with no push to defend is wasted elixir (the model's
-        'safe' idle habit) -> penalised too; a Miner defending a real push there (troop present) is
-        exempt, and its defensive snipe/tank value is still credited by troop_defeat + defense-kill.
-        (Phase 2: sniping a support card behind an enemy tank.)"""
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
-            return self.miner_king_penalty          # Miner on the enemy KING wakes it early -> bad trade
-        if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-            return self.miner_chip_reward           # chip the enemy princess -- its bread-and-butter
-        frame = self._last_frame
-        if (cy >= self.own_backfield_y and frame is not None
-                and troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) < self.ontop_size):
-            return self.miner_backfield_penalty      # dumped behind your own towers with NO push to defend = wasted
-        return 0.0
-
-    def _placement_penalty(self, play: bool, card_id: int, cell: int, raw_cell: int) -> float:
-        """Punish clearly BAD placements, judged against the pre-action frame (where the enemy was
-        when the model decided):
-          * WRONG LANE (hard): ANY card committed to the lane OPPOSITE the enemy push -- wasted
-            elixir and an undefended push. Cheap cyclers (Ice Spirit / Skeletons) pay only a
-            wrong_lane_cheap_frac SHARE (dropping them anywhere to cycle is forgivable). A ROCKET is
-            EXEMPT when it chips/finishes the opposite enemy PRINCESS tower OR erases a big troop
-            clump there (a split-lane push wipe) -- both are real strategic plays. (A rocket that
-            does NEITHER, then leaves you unable to defend, is caught by the elixir-investment
-            bad-rocket penalty instead.)
-          * ROYAL DELIVERY ON THE ENEMY HALF: Royal Delivery can only be cast on YOUR half; the
-            deploy clamp silently pulls an enemy-half attempt back, so penalise the ATTEMPT (the raw
-            pre-clamp cell) to teach the model to stop aiming it over there.
-          * RANGED ON TOP (moderate): a ranged unit (Ice Wizard) dropped right on top of an enemy
-            troop instead of a kiting distance behind it -- it gets run down before it shoots. EXCEPT
-            once the push has reached your towers (cy >= close_defense_y): then body-blocking it
-            directly is the correct last-ditch defence, so the on-top penalty is waived.
-          * BACK CORNER (slight): any NON-cheap card dumped in the far back corner (deep AND against an
-            edge). Cheap cyclers (The Log / Skeletons) are EXEMPT -- the back corner is exactly
-            where you park them to cycle when they aren't needed for an immediate defence.
-        """
-        if not play:
-            return 0.0
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        r = 0.0
-        if (card_id not in self.cheap_ids and cy >= self.back_corner_y
-                and (cx <= self.back_corner_x or cx >= 1.0 - self.back_corner_x)):
-            r += self.back_corner_penalty            # far-back corner DUMP -- cheap cyclers exempt (the corner IS the cycle spot)
-        if card_id in self.royal_delivery_ids:                   # RD can ONLY be cast on your half
-            rcy = self.actions.cell_center(raw_cell % self.gw, raw_cell // self.gw)[1]
-            if rcy < self.offensive_half:
-                r += self.rd_enemy_half_penalty                  # penalise the ATTEMPT (pre-clamp)
+    # ============ CORRECTNESS-FIRST reward helpers (mirror the sim; from live perception) ============
+    def _same_lane(self, cx: float) -> bool:
+        """True when a placement at horizontal ``cx`` is in the threatened lane (or there is no clear
+        lane). Reuses the coarse push-lane read from the pre-action frame."""
         frame = self._last_frame
         if frame is None:
-            return r
-        if card_id in self.ranged_ids and cy < self.close_defense_y:  # RANGED unit dropped ON a troop, but only
-            if troop_size_at(frame, cx, cy, self.ontop_radius, self.cfg) >= self.ontop_size:  # while the push is still
-                r += self.ranged_ontop_penalty                        # forward (room to kite); waived once it's in close
-        side = threat_side(frame, self.cfg, self.threat_min_frac)   # WRONG LANE
+            return True
+        side = threat_side(frame, self.cfg, self.threat_min_frac)   # -1 left / 0 none / +1 right
+        if side == 0:
+            return True
         off = cx - self.lane_split_x
-        opposite = side != 0 and abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0)
-        if opposite and card_id not in self.miner_ids:               # Miner deploys ANYWHERE -> never wrong-lane
-            if card_id in self.xbow_ids:
-                # An opposite-lane X-Bow is the deck's PUNISH of an over-committed / FAILED push -- fine once
-                # the push is spent. But if a REAL push is still LIVE, siting the X-Bow away from it leaves it
-                # undefendable -> a REDUCED penalty (the X-Bow still applies counter-pressure of its own).
-                if enemy_mass(frame, self.cfg) >= self.threat_mass:
-                    r += self.wrong_lane_penalty * self.xbow_wrong_lane_frac
-            else:
-                rocket_ok = card_id in self.rocket_ids and (         # a rocket in the opposite lane is VALID when it
-                    near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius)   # chips/finishes that tower, OR
-                    or self._rocket_cleared)                         # erased a big clump there (split-lane push wipe)
-                if not rocket_ok:
-                    scale = self.wrong_lane_cheap_frac if card_id in self.cheap_ids else 1.0
-                    r += self.wrong_lane_penalty * scale             # committed to the lane OPPOSITE the push
-        return r
+        opposite = abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0)
+        return not opposite
+
+    def _threat_response_live(self, card_id: int, cx: float, cy: float, cur_mass: float) -> float:
+        """(1) THREAT-RESPONSE: the KB-correct counter to the RECOGNISED threat, placed to intercept
+        (its lane, your half). Wrong role dropped as a defence -> penalty; a defender on a QUIET board
+        (nothing recognised, no mass) -> premature. Offensive placements are judged by wincon_exec / trade."""
+        prof = self._deck_profiles[card_id] if 0 <= card_id < len(self._deck_profiles) else None
+        if prof is None:
+            return 0.0
+        tid = self._threat_id
+        has_threat = tid is not None and len(tid) >= card_threat.IDENTITY_DIM and tid[0] >= 0.5
+        if not has_threat:
+            if cur_mass < self.quiet_frac and cy >= 0.5 and card_id in self.reactive_ids:
+                return self.w_threat_miss * 0.4        # a defender on a quiet board = premature (small)
+            return 0.0
+        intercept = self._same_lane(cx) and cy >= 0.5
+        if card_threat.counters(prof, tid):
+            return self.w_threat_response if intercept else 0.0
+        return self.w_threat_miss if intercept else 0.0
+
+    def _threat_miss_idle_live(self, cur_mass: float) -> float:
+        """No play while an ANSWERABLE threat is recognised (a KB counter is in hand AND affordable) =
+        a missed defence (uncapped penalty)."""
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return 0.0
+        for cid in self.hand_ids:
+            if (0 <= cid < len(self._deck_profiles) and card_threat.counters(self._deck_profiles[cid], tid)
+                    and self.card_elixir[cid] <= self.elixir):
+                return self.w_threat_miss
+        return 0.0
+
+    def _wincon_exec_live(self, card_id: int, cx: float, cy: float) -> float:
+        """(3) WIN-CONDITION execution: X-Bow forward-in-range (offence) / back-centre (defence), Miner
+        chipping the princess (not the king), the defensive rocket-cycle chip. + right, - thrown away."""
+        if card_id in self.xbow_ids:
+            _, enemy_a, _ = _anchors(self.cfg)
+            princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
+            d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
+            back_centre = self.xbow_defense_y <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.18
+            if self._defensive:
+                return self.w_wincon if back_centre else self.w_wincon_mis
+            if d <= self.xbow_range:
+                return self.w_wincon
+            return self.w_wincon * 0.4 if back_centre else self.w_wincon_mis
+        if card_id in self.rocket_ids:
+            if self._defensive and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon * 0.6
+            return 0.0
+        if card_id in self.miner_ids:
+            if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon_mis
+            if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon
+        return 0.0
+
+    def _needed_counter_coming(self, hand) -> bool:
+        """True when the hand holds NO KB counter to the assessed threat but the deck DOES (upcoming)."""
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return False
+        if any(0 <= c < len(self._deck_profiles) and card_threat.counters(self._deck_profiles[c], tid)
+               for c in hand):
+            return False
+        return any(card_threat.counters(self._deck_profiles[c], tid)
+                   for c in range(self.n_cards) if c not in hand)
+
+    def _cycle_plan_live(self, card_id: int, pre_elixir: float) -> float:
+        """(4) CYCLE-PLAN: a CHEAP play at spare elixir that advances toward a NEEDED counter you don't
+        hold but the deck does -> +; purposeless cheap spam -> -."""
+        if not (0 <= card_id < self.n_cards) or self.card_elixir[card_id] > self.cycle_cheap_max:
+            return 0.0
+        hand = [c for c in self.hand_ids if 0 <= c < self.n_cards]
+        if self._needed_counter_coming(hand):
+            return self.w_cycle_plan if pre_elixir >= self.cycle_spare_elixir else 0.0
+        return self.w_cycle_waste if pre_elixir < self.cycle_spare_elixir else 0.0
+
+    def _trade_reward(self, mass_delta: float, spent: float) -> float:
+        """(2) ELIXIR-TRADE: potential-based enemy-mass change (clipped to a 'full push' fraction so it
+        telescopes -> idling can't farm it) MINUS the elixir committed this step. Trading up -> +,
+        overspending / whiffing -> -."""
+        killed = float(np.clip(mass_delta / self.defeat_cap, -1.0, 1.0))
+        return (killed - spent / self.value_norm) * self.w_elixir_trade
 
     def _bonus(self, credit: float) -> float:
-        """Cap the CUMULATIVE positive shaping bonus (defense-kill / cycle / foresight counters) per
-        match at shaping_match_cap so these repeatable one-sided rewards can't sum past a loss.
-        Penalties (<=0) pass through untouched."""
+        """Cap the CUMULATIVE positive correctness shaping per match (anti-farm); penalties (<=0) pass
+        through untouched."""
         if credit <= 0.0:
             return credit
-        allowed = min(credit, max(0.0, self.shaping_match_cap - self._match_bonus))
+        allowed = min(credit, max(0.0, self.correctness_cap - self._match_bonus))
         self._match_bonus += allowed
         return allowed
-
-    def _defense_kill_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
-        """Reward a placed DEFENSIVE card (Tesla / Ice Wizard / Skeletons / Miner played defensively) by
-        the enemy troops that die near it over its life -- a DIRECT kill (the card attacks the troop)
-        or an INDIRECT one (it blocks/distracts the troop long enough that your princess tower
-        finishes it off near the card). Both show up as the local enemy (red) mass dropping around
-        the card's spot, so one proxy credits either. Tracked per placement for tesla_track_steps
-        steps and capped at defense_kill_cap, so a single card -- e.g. a Tesla catching a whole
-        Skeletons group -- can't farm enough to flip a lost match net-positive. A dead card stops
-        killing, so its credit naturally ends; if the troop instead reaches and damages your tower,
-        the (separate) gradual own-tower penalty fires, so the NET only rewards a kill that actually
-        SAVED the tower. Placement stays the model's (no forced spot); the blue placement tint doesn't
-        pollute the red enemy-mass read. (Post-Stage-3: swap the mass proxy for real per-unit damage
-        from the detector.)"""
-        r = 0.0
-        alive = []
-        for d in self._defenders:
-            cur = enemy_mass_at(frame, d["cx"], d["cy"], self.tesla_radius, self.cfg)
-            drop = d["prev"] - cur
-            if drop > self.defeat_min and d["earned"] < self.defense_kill_cap:
-                credit = min(min(drop, self.defeat_cap) * d["weight"],
-                             self.defense_kill_cap - d["earned"])   # per-placement anti-farm cap
-                r += credit
-                d["earned"] += credit
-            d["prev"] = cur
-            d["steps"] -= 1
-            if d["steps"] > 0:
-                alive.append(d)
-        self._defenders = alive
-        if play and card_id in self.defense_kill_ids:   # start tracking a freshly placed defender
-            gx, gy = cell % self.gw, cell // self.gw
-            tx, ty = self.actions.cell_center(gx, gy)
-            self._defenders.append({
-                "cx": tx, "cy": ty, "steps": self.tesla_track_steps,
-                "weight": self.defense_kill_ids[card_id], "earned": 0.0,
-                "prev": enemy_mass_at(frame, tx, ty, self.tesla_radius, self.cfg)})
-        return r
-
-    def _my_king_hp_frac(self, frame) -> Optional[float]:
-        """Your king's HP as a fraction of full (0..1), or None if it isn't active (no HP
-        number shown). Used to reward a defensive tornado-to-your-king less as it wears down."""
-        r = self.tower_hp.reader
-        if frame is None or r is None or not getattr(r, "ok", False):
-            return None
-        from .tower_hp import _crop
-        v, c = r.read(_crop(frame, self._my_king_box))
-        if v is None or c < self.tower_hp.min_conf:
-            return None
-        return min(max(v / self.my_king_full, 0.0), 1.0)
-
-    def _blocker_reward(self, frame, play: bool, card_id: int, cell: int) -> float:
-        """Reward SHIELDING a ranged unit: a blocker (Ronin / Skeletons / Ice Spirit) played
-        soon after a ranged unit (Musketeer / Ice Wizard / Tesla) while a BIG enemy troop (a
-        Mega Knight / PEKKA-sized red blob) sits on that spot -- so the tank soaks the melee
-        and the ranged unit survives, instead of the ranged unit dying alone. Coarse (no
-        troop ID): a large single red blob stands in for a heavy melee threat."""
-        r = 0.0
-        self._steps += 1
-        if play and card_id in self.ranged_ids:
-            gx, gy = cell % self.gw, cell // self.gw
-            cx, cy = self.actions.cell_center(gx, gy)
-            self._recent_ranged = (self._steps, cx, cy)
-        elif play and card_id in self.blocker_ids and self._recent_ranged is not None:
-            st, rx, ry = self._recent_ranged
-            if self._steps - st <= self.blocker_window:
-                if troop_size_at(frame, rx, ry, self.spell_radius, self.cfg) >= self.blocker_threat_size:
-                    r += self.blocker_protect
-                    self._recent_ranged = None            # credit the combo once
-        return r
-
-    def _threat_counter_reward(self, play: bool, card_id: int, cell: int) -> float:
-        """Foresight counters keyed off the enemy-threat read at action-selection time:
-        * Royal Delivery dropped ON a landing goblin (green) swarm, or onto the tower a
-          projectile (e.g. a thrown Goblin Barrel) is arcing toward -> threat_counter_delivery.
-        * Tornado near YOUR king while a goblin swarm is present -> threat_tornado_pull
-          (pull the goblins onto the king to tank + kill them as they land).
-        These teach the small-foresight plays the CNN can't read off the tiny arena image."""
-        if not play:
-            return 0.0
-        thr = self._last_threat
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        goblins = thr.color_label() == "green" and thr.size_label() in ("swarm", "single_big")
-        r = 0.0
-        if card_id in self.royal_delivery_ids:
-            on_threat = (thr.centroid is not None
-                         and abs(cx - thr.centroid[0]) <= self.spell_radius
-                         and abs(cy - thr.centroid[1]) <= self.spell_radius)
-            proj = thr.proj
-            proj_at_my_tower = (proj is not None and proj.toward_tower
-                                and str(proj.target or "").startswith("M"))
-            if (goblins and on_threat) or proj_at_my_tower:
-                r += self.threat_counter_delivery
-        if card_id in self.tornado_ids and goblins and near_my_king(cx, cy, self.cfg):
-            r += self.threat_tornado_pull
-        # counter a SITTING behind-bridge siege (X-Bow / Mortar / Princess chipping your
-        # towers from the enemy side): land a spell on it -- the rocket is the only card that
-        # reaches across the river, so this teaches "rocket the siege".
-        if thr.siege and card_id in self.spell_ids and thr.behind_centroid is not None:
-            bx, by = thr.behind_centroid
-            if abs(cx - bx) <= self.spell_radius and abs(cy - by) <= self.spell_radius:
-                r += self.siege_counter
-        return r
-
-    def _resolve_pending_rocket(self, my_hp: float, princess_fell: bool) -> float:
-        """Resolve a DEFERRED rocket-chip investment. The chip is paid out only once the AI
-        survives the defence window WITHOUT your towers taking more damage than the rocket dealt
-        the enemy tower; if your towers lose MORE HP than the rocket removed (or a princess
-        falls) within the window, the chip is WITHHELD and an extra penalty applies (a bad
-        elixir trade -- you lost more than you gained)."""
-        p = self._pending_rocket
-        if p is None:
-            return 0.0
-        if princess_fell:
-            p["destroyed"] = True
-        own_hp = max(0.0, p["hp0"] - my_hp)                    # HP your towers lost since the rocket
-        rocket_hp = p["rocket_frac"] * self.tower_hp.full     # HP the rocket took off the enemy tower
-        # BAD investment: a tower fell, OR your towers lost MORE than the rocket dealt AND that loss is
-        # HEAVY (>= rocket_bad_min_hp) -- you spent 6 elixir on the rocket and then couldn't defend.
-        if p["destroyed"] or own_hp > max(rocket_hp, self.rocket_bad_min_hp):
-            self._pending_rocket = None
-            return self.bad_rocket_penalty                    # chip withheld + extra penalty
-        p["steps"] -= 1
-        if p["steps"] <= 0:
-            self._pending_rocket = None
-            return p["chip"]                                 # survived the window as a good trade -> chip earned
-        return 0.0
 
     def step(self, action: Action):
         play, card_id, cell = action
@@ -846,13 +683,6 @@ class LiveMatchEnv:
             # less HP than the enemy's weakest. pre_elixir = the bar at DECISION time (post-action the
             # card's cost is already spent, so a played card would read a non-full bar).
             pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
-            full_bar = cur_elixir >= self.full_elixir          # post-action bar (used by the not-play branch)
-            pre_full = pre_elixir >= self.full_elixir          # pre-action bar (used by the play offense reward)
-            my_alive_n = sum(1 for a in self.tower.mine_alive[:2] if a)
-            en_alive_n = sum(1 for a in self.tower.enemy_alive[:2] if a)
-            my_hps = [h for h, a in zip(self.tower_hp.my_hp, self.tower.mine_alive[:2]) if a]
-            en_hps = [h for h, a in zip(self.tower_hp.enemy_hp, self.tower.enemy_alive[:2]) if a]
-            behind = (my_alive_n < en_alive_n) or bool(my_hps and en_hps and min(my_hps) < min(en_hps))
             # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
             # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
             # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
@@ -864,111 +694,20 @@ class LiveMatchEnv:
                     and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac)):
                 self._defensive = True
                 print("[env] phase -> DEFENSIVE (X-Bow back-centre + rocket-cycle)")
-            # The Log chip-cycle is only justified as a LAST RESORT: Skeletons not in hand (no cheaper
-            # cycle), the board quiet (nothing to Log defensively), AND a near-full bar (won't starve a
-            # defence). self._prev_mass = enemy mass on the PRE-action frame; elixir read pre-action too.
-            log_cycle_ok = False
-            if is_log and self._prev_mass < self.quiet_frac and not any(c in self.skeletons_ids for c in self.hand_ids):
-                log_cycle_ok = pre_elixir >= self.defense_setup_elixir
-            spell_r = 0.0
-            if eval_spell and before is not None and spell_samples:
-                spell_r = self._spell_effect_reward(before, spell_samples, cell, is_rocket, is_rd, is_log, log_cycle_ok)
-                reward += spell_r
+            # --- CORRECTNESS score (mirrors the sim; from live perception) ---
+            gx, gy = cell % self.gw, cell // self.gw
+            cx, cy = self.actions.cell_center(gx, gy)
+            spent = float(self.card_elixir[card_id]) if (play and 0 <= card_id < self.n_cards) else 0.0
+            if play:
+                reward += self._bonus(self._threat_response_live(card_id, cx, cy, cur_mass))   # (1) counter the assessed threat
+                reward += self._bonus(self._wincon_exec_live(card_id, cx, cy))                  # (3) win-condition executed right
+                reward += self._bonus(self._cycle_plan_live(card_id, pre_elixir))              # (4) deliberate cycling
             else:
-                # POTENTIAL-BASED troop shaping: reward the SIGNED change in on-board enemy
-                # mass (mass falling = troops cleared -> +; mass rising = a push building -> -).
-                # Because it is symmetric it telescopes over a match, so idling CANNOT farm it:
-                # the old rectified `max(0, drop)` paid out every down-swing of the noisy
-                # enemy-mass signal but never charged the matching up-swings, so a hesitant agent
-                # banked a large positive sum from enemy troops naturally ebbing / dying at the
-                # towers -- even while being three-crowned (the bulk of the bogus "+reward for
-                # losing"). Clipped both ways for artifact robustness.
-                delta = self._prev_mass - cur_mass
-                if abs(delta) > self.defeat_min:
-                    reward += float(np.clip(delta, -self.defeat_cap, self.defeat_cap)) * self.troop_defeat
-                if not play:
-                    if cur_mass >= self.threat_mass:
-                        reward += self.idle_penalty      # a real push is on the board and you did nothing -> defend
-                        if full_bar:
-                            reward += self.elixir_waste_penalty  # full bar + a push, still nothing = wasted elixir
-                    elif cur_mass >= self.quiet_frac:
-                        # the enemy has COMMITTED a card (units on the board). At a full bar, sitting there
-                        # both leaks elixir AND ignores the developing threat -> penalise. (Was the reported
-                        # gap: the penalty only fired at threat_mass, so a full bar vs a small/medium push
-                        # was free -- "does nothing at a full bar when the enemy played a card".)
-                        if full_bar:
-                            reward += self.idle_penalty + self.elixir_waste_penalty
-                    elif full_bar and behind:
-                        # QUIET board but we're BEHIND with a full bar -> we must ATTACK to catch up; sitting
-                        # on a full bar is wrong here (the play-side offense reward pays the alternative).
-                        reward += self.idle_penalty + self.elixir_waste_penalty
-                    else:
-                        reward += self.patience          # quiet board, nothing forcing a play -> saving elixir is fine
-            reward += self._bonus(self._defense_kill_reward(frame, bool(play), card_id, cell))
-            if play and card_id in self.tesla_ids:
-                # keep the Tesla for the enemy's win condition (a tower-targeting troop)
-                if self.threat_tracker.wc_active:
-                    reward += self._bonus(self.wc_tesla_defend)   # defend an ACTIVE win condition -- good (capped: can't farm)
-                elif self.threat_tracker.should_hold_tesla():
-                    reward += self.tesla_hold_penalty  # spent early with none on the board -- save it
-            if play and card_id in self.building_ids:  # Tesla -> intercept-zone placement (central, moderate depth)
-                reward += self._bonus(self._building_place_reward(card_id, cell, cur_mass >= self.quiet_frac))
-            if play and card_id in self.xbow_ids:      # X-Bow -> forward win condition (in tower range) vs back-centre defence
-                reward += self._bonus(self._xbow_place_reward(cell))
-            if play and card_id in self.rocket_ids and self._defensive:  # DEFENSIVE: rocket-cycle IS the sanctioned tower damage
-                gx, gy = cell % self.gw, cell // self.gw
-                cx, cy = self.actions.cell_center(gx, gy)
-                if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-                    reward += self._bonus(self.defensive_rocket_reward)
-            if play and card_id in self.miner_ids:     # Miner -> chip the enemy princess (deployed anywhere)
-                reward += self._bonus(self._miner_reward(cell))
-            # OFFENSE WHEN BEHIND: full bar (pre-action) + we're behind (towers/damage) + the enemy was
-            # idle at decision time -> committing a win-condition / chip card (X-Bow, Miner, Rocket) to
-            # rack up damage is the right call. Capped via _bonus so it can't farm.
-            if (play and pre_full and behind and self._prev_mass < self.quiet_frac
-                    and card_id in (self.xbow_ids | self.miner_ids | self.rocket_ids)):
-                reward += self._bonus(self.offense_when_behind)
-            if play and card_id in self.defensive_kind:
-                reward += self._bonus(self._defense_placement_reward(card_id, cell))  # soft nudge to the recommended centre (capped)
-            reward += self._bonus(self._blocker_reward(frame, bool(play), card_id, cell))  # shield a ranged unit (capped)
-            if (play and card_id not in self.rocket_ids and card_id not in self.cheap_ids
-                    and card_id not in self.miner_ids and card_id not in self.xbow_ids):
-                if self.actions.cell_center(cell % self.gw, cell // self.gw)[1] < self.offensive_half:
-                    reward += self.offensive_penalty  # non-rocket/miner/xbow card in the enemy half = offence
-            reward += self._placement_penalty(bool(play), card_id, cell, raw_cell)  # wrong-lane / on-top / corner / RD-half
-            if play and card_id in self.reactive_ids and cur_mass < self.quiet_frac:
-                if pre_elixir < self.defense_setup_elixir:      # at/near a FULL bar, a defensive SETUP avoids leaking -> allowed
-                    reward += self.premature_defense_penalty   # else a defender / Royal Delivery on a QUIET board = premature
-            if (play and card_id in self.cheap_ids and pre_elixir >= self.cycle_min_elixir
-                    and not any(c in self.rocket_ids for c in self.hand_ids)):
-                reward += self._bonus(self.cycle_reward)   # cheap card + SPARE elixir + rocket not in hand -> cycling to it (not spam)
-            reward += self._bonus(self._threat_counter_reward(bool(play), card_id, cell))   # foresight counters
-            if (play and self.use_detector and 0 <= card_id < len(self._deck_profiles)
-                    and card_threat.counters(self._deck_profiles[card_id], self._threat_id)):
-                reward += self._bonus(self.counter_reward)   # KB role-counter to a RECOGNISED (detected) threat
-            # rocket = a 6-elixir OFFENSIVE investment: resolve any prior rocket (pay its chip
-            # only after a successful defence; withhold it + penalise if heavy own-tower damage
-            # followed), then defer THIS rocket's chip if it was a tower chip.
-            if self._pending_rocket is not None and self.tower_hp.last_enemy_chip > 0.0:
-                # the rocket's own HP chip confirms a frame or two after impact -> fold it into
-                # the deferred amount + its measured tower damage so both wait on a good defence.
-                reward -= self.tower_hp.last_enemy_chip
-                self._pending_rocket["chip"] += self.tower_hp.last_enemy_chip
-                self._pending_rocket["rocket_frac"] += self.tower_hp.last_enemy_frac
-            reward += self._resolve_pending_rocket(my_hp, princess_fell)
-            if is_rocket and play and eval_spell:
-                if self._pending_rocket is not None:     # a new rocket supersedes an unresolved one -> pay it (it survived)
-                    reward += self._pending_rocket["chip"]
-                    self._pending_rocket = None
-                if self._last_spell_chip:                 # rocket-at-tower CHIP -> withhold until a good defence
-                    chip = max(0.0, spell_r) + max(0.0, self.tower_hp.last_enemy_chip)
-                    if chip > 0.0:
-                        reward -= chip                    # withhold the chip until a successful defence follows
-                        self._pending_rocket = {"chip": chip, "steps": self.rocket_window, "hp0": my_hp,
-                                                "rocket_frac": self.tower_hp.last_enemy_frac, "destroyed": False}
-                elif not self._rocket_cleared:            # neither chipped a tower NOR erased a clump = a wasted
-                    self._pending_rocket = {"chip": 0.0, "steps": self.rocket_window, "hp0": my_hp,  # 6-elixir bet
-                                            "rocket_frac": 0.0, "destroyed": False}                  # -> bad if punished
+                reward += self._threat_miss_idle_live(cur_mass)                                 # (1) ignored an ANSWERABLE threat
+            # (2) ELIXIR-TRADE: potential-based enemy-mass change (telescopes, anti-farm) minus the elixir spent.
+            reward += self._trade_reward(self._prev_mass - cur_mass, spent)
+            if not play and cur_elixir >= self.full_elixir:
+                reward += self.w_leak                                                            # (5) leaking at capacity
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
@@ -995,151 +734,6 @@ class LiveMatchEnv:
         ox, oy = self.rocket_origin
         d = ((cx - ox) ** 2 + (cy - oy) ** 2) ** 0.5
         return min(max(self.rocket_base_time + self.rocket_travel_rate * d, 0.6), self.spell_eval_time)
-
-    def _spell_hit_king(self, before, after) -> bool:
-        """True if the enemy KING tower's HP number shows it took damage across the spell --
-        the king only prints its HP once it's been hit. Reads the tower-HP digit model on
-        enemy_king_hp_box; if that box isn't calibrated it just reads nothing (no false
-        penalty), and the positional king check still covers it."""
-        r = self.tower_hp.reader
-        if before is None or after is None or r is None or not getattr(r, "ok", False):
-            return False
-        from .tower_hp import _crop
-        ka, ca = r.read(_crop(after, self._king_box))
-        if ka is None or ca < self.tower_hp.min_conf:
-            return False                              # king shows no HP number -> undamaged
-        kb, cb = r.read(_crop(before, self._king_box))
-        if kb is None or cb < self.tower_hp.min_conf:
-            return True                               # HP number appeared this spell -> newly hit
-        return ka < kb - self.king_hp_margin          # HP dropped -> hit again
-
-    def _log_reward(self, cx, cy, present, drop, size_frame, cycle_ok) -> float:
-        """The Log -- a cheap 2-elixir ROLLING, ground-only knockback/reset spell with poor tower chip.
-        Its job is DEFENSIVE: clear a ground SWARM / barrel-spawn (Skeleton or Goblin Barrel, Skeleton
-        Army, Goblin Gang) and KNOCK the push BACK once it has crossed to YOUR side of the river, where
-        the princess towers help finish it off. So the reset/clear is only rewarded when the Log lands on
-        YOUR side onto a real push; a big mass wiped earns a swarm/barrel counter bonus. A Log with
-        nothing to hit is a small whiff (2 elixir, not rocket-scale) unless it's a justified last-resort
-        cycle. An enemy-side / pre-crossing Log (offensive chip -- weak) is neutral, not the wanted use."""
-        if present and cy >= self.log_defense_y:      # a push on YOUR side -> knock it back toward the river
-            if drop >= self.spell_min_drop:           # troops actually cleared -> the real defensive Log
-                size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg), self.spell_size_cap)
-                r = self.log_reset_reward + size * self.spell_hit
-                if drop >= self.log_swarm_drop:
-                    r += self.log_swarm_reward        # a big swarm / barrel-spawn wiped = the Log's premium use
-                return r
-            # nothing ground-side was cleared. If the RECOGNISED threat is AIR (identity block, detector on),
-            # the ground-only Log can't touch it -> a wasted cast; else it's a ground knockback that buys time.
-            if self.use_detector and self._threat_id[0] >= 0.5 and self._threat_id[3] >= 0.5:
-                return self.log_air_penalty
-            return self.log_reset_reward              # ground knockback/reset buys the towers + defenders time
-        if present:                                   # a push, but enemy-side / not yet crossed -> not the defensive Log
-            return 0.0
-        return 0.0 if cycle_ok else self.log_whiff    # nothing to hit: a waste, unless a justified cycle-chip
-
-    def _spell_effect_reward(self, before, samples, cell, is_rocket: bool, is_rd: bool = False,
-                             is_log: bool = False, log_cycle_ok: bool = False) -> float:
-        """Reward a spell by what it does at the target, sampled over the impact window.
-
-        Rocket -> Tornado COMBO: a tornado cast at the SAME spot right after a rocket that
-        killed a clumped group is treated as one play -- it WAIVES the enemy-king penalty
-        (when that rocket hit a princess tower and killed >=2 medium troops) and is rewarded
-        for wiping the push, anywhere on the board (not just at a tower). NOTE: the env
-        evaluates each spell in a blocking window through its flight, so it can't cast the
-        tornado mid-rocket-flight; this rewards the rocket->tornado PATTERN + the troops the
-        rocket killed (which teaches the sequence). Otherwise: enemy-king damage -> penalty;
-        Royal Delivery -> mass hit + killed; a defensive tornado onto YOUR king (both your
-        princesses up) -> tank reward; else the rocket size/kill/combo/whiff logic.
-        """
-        gx, gy = cell % self.gw, cell // self.gw
-        cx, cy = self.actions.cell_center(gx, gy)
-        self._last_spell_chip = False             # set True only if this resolves as a rocket-at-princess chip
-        self._rocket_cleared = False              # set True if this rocket erases a real troop clump
-        b = enemy_mass_at(before, cx, cy, self.spell_radius, self.cfg)
-        masses = [enemy_mass_at(f, cx, cy, self.spell_radius, self.cfg) for f in samples]
-        if not masses:
-            if is_rocket:
-                self._recent_rocket = None
-            return 0.0
-        peak_i = int(np.argmax(masses))
-        if is_rocket or is_rd:
-            # A rocket / Royal Delivery makes its OWN fiery impact, which the red mask reads as
-            # "enemy mass" -- so the peak DURING the window is the fireball, not troops, and its
-            # fade to the last sample looks like a kill. Measure instead the enemy mass present
-            # just BEFORE impact (the cast frame + the pre-impact sample) and how much of it was
-            # removed. This stops an EMPTY-ground rocket scoring its own explosion as a kill (the
-            # model was farming that by rocketing a safe spot on its own side).
-            pre = max(b, masses[0]) if len(masses) >= 3 else b
-            peak = pre
-            drop = max(0.0, pre - masses[-1])
-            size_frame = samples[0] if len(samples) >= 3 else before
-        else:
-            peak = masses[peak_i]
-            drop = peak - masses[-1]
-            size_frame = samples[peak_i]
-        present = peak >= self.spell_present
-        if is_rocket:
-            self._rocket_cleared = drop >= self.rocket_clear_min   # removed a real clump, not just a graze
-        if is_log:                                    # THE LOG: cheap ROLLING knockback/reset -- its own shaping
-            return self._log_reward(cx, cy, present, drop, size_frame, log_cycle_ok)
-
-        # is this tornado the second half of a rocket->tornado combo (same spot, right after a
-        # rocket that actually killed a clump)?
-        is_tornado = not is_rocket and not is_rd
-        combo = None
-        if is_tornado and self._recent_rocket is not None:
-            rk = self._recent_rocket
-            near = ((cx - rk["cx"]) ** 2 + (cy - rk["cy"]) ** 2) ** 0.5 <= self.combo_radius
-            if (self._steps - rk["step"]) <= self.combo_window and near and rk["kills"] >= self.combo_kill_min:
-                combo = rk
-
-        king_here = self._spell_hit_king(before, samples[-1]) or near_enemy_king(
-            cx, cy, self.cfg, self.spell_aim_radius)
-        if king_here and not (combo is not None and combo["hit_tower"]):
-            return self.spell_king_penalty            # aimed at / damaged the enemy king -> waste
-            #   (waived only for a valid rocket[hit tower + kills]->tornado combo)
-        if is_rocket:                                 # remember this rocket for a following tornado
-            self._recent_rocket = {
-                "step": self._steps, "cx": cx, "cy": cy, "kills": max(0.0, drop),
-                "hit_tower": near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius),
-            }
-        if combo is not None:                         # rocket->tornado wiped a clumped push
-            self._recent_rocket = None                # credit the combo once
-            killed = min(max(combo["kills"], drop), self.spell_size_cap * 2.0)
-            return self.combo_reward * killed
-
-        if is_rd:                                     # Royal Delivery: reward the GROUP it hits + kills
-            if not present:                           # landed on empty ground -> a whiff (random Royal Delivery)
-                return self.spell_whiff
-            cap = self.spell_size_cap * 2.0
-            return min(peak, cap) * self.rd_hit + min(max(0.0, drop), cap) * self.rd_kill
-        if (is_tornado and present and near_my_king(cx, cy, self.cfg, self.spell_aim_radius)
-                and all(self.tower.mine_alive[:2])):
-            frac = self._my_king_hp_frac(samples[-1])
-            if frac is not None:                      # tornado that PULLS a real push onto YOUR king: tank it,
-                return self.king_tank_reward * frac   # worth less as the king's own HP falls
-        if near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-            if is_rocket:
-                self._last_spell_chip = True              # a rocket-at-tower CHIP -> its reward is deferred
-                r = self.rocket_tower_reward              # launching a rocket at the enemy princess tower
-                if drop >= self.spell_min_drop or peak >= self.spell_combo_present:
-                    r += self.spell_combo                 # ...that also caught troops
-                return r
-            if is_tornado:                                # a LONE tornado on a tower (a valid combo returned earlier)
-                return self.tornado_chip_penalty          # tornado is NOT a chip tool -> penalise
-            return 0.0                                    # chip -> tower_hp handles it
-        # scale by the size of the biggest unit caught (swarm -> small, fat unit -> large)
-        size = min(troop_size_at(size_frame, cx, cy, self.spell_radius, self.cfg),
-                   self.spell_size_cap)
-        # Reward ONLY a real mass DROP (troops actually removed). "present" alone was farmable: a
-        # spell aimed at a static enemy structure or the reddish enemy-side floor reads red and used
-        # to pay size*spell_hit for nothing -- the top-left-corner rocket loophole. A rocket that
-        # removes nothing = a wasted 6 elixir -> whiff.
-        if drop >= self.spell_min_drop:
-            return size * (self.spell_troop_damage if is_rocket else self.spell_hit)
-        if is_rocket:
-            return self.spell_whiff
-        return self.spell_whiff if b < self.spell_present else 0.0
 
     def _resolve_terminal(self) -> Tuple[float, Optional[str], dict]:
         """Read the result: end-of-match scoreboard crowns cross-checked against the

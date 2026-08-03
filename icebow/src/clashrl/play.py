@@ -22,6 +22,7 @@ from .reward import TowerTracker, weaker_princess_cell, xbow_lock_cell
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
 from . import card_threat
+from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 
@@ -142,6 +143,7 @@ def play(cfg) -> None:
         spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
         enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
         track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
+    _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
 
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
@@ -189,7 +191,7 @@ def play(cfg) -> None:
         hand_vec = vision.hand_multihot(hand_ids)
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
             return
-        next_vec = vision.next_onehot(vision.recognize_next(frame))
+        next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity:
@@ -257,6 +259,7 @@ def play(cfg) -> None:
                 cell = snapped
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
+        _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
         if card_id not in _spell_ids:              # a TROOP you played -> tag its spawn as YOURS (team fix)
             cx, cy = actions.cell_center(gx, gy)
             _team_tracker.record_play(cx, cy, time.time())
@@ -305,6 +308,7 @@ def play(cfg) -> None:
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
                     _team_tracker.reset()         # forget last match's own-unit tracks
+                    _cycle_tracker.reset()        # forget last match's cycle order
                     prev_mult = 1
                 prev = state
 

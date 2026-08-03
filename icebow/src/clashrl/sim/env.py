@@ -18,6 +18,7 @@ import numpy as np
 from ..actions import ActionSpace
 from ..cards import CardDB
 from .. import card_threat
+from ..cycle import cycle_vector
 from .engine import SimEngine, build_spec
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
@@ -25,9 +26,6 @@ from . import view
 
 Action = Tuple[int, int, int]
 _THREAT_DIM = 16
-_DEFEAT_CAP = 0.15
-_VALUE_NORM = 10.0   # elixir-value normaliser: this many elixir of effective value eliminated per step = 1.0
-_VALUE_CAP = 1.0     # per-step clip on the (normalised) value-elimination reward
 
 
 class SimMatchEnv:
@@ -65,57 +63,39 @@ class SimMatchEnv:
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)
         self._prev_ident_depth = 0.0     # deepest recognised-threat depth last step (for approach velocity)
         self._opp_mem = card_threat.OpponentMemory(self.db)   # per-match opponent short-term memory (Stage 3)
-        self.counter_reward = float(cfg.get("rewards", "counter_reward", default=0.5))
 
         r = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
-        self.w_win = r("win", 10.0); self.w_loss = r("loss", -15.0)
-        self.w_take = r("take_enemy_tower", 3.0); self.w_lose = r("lose_own_tower", -3.0)
-        self.hp_scale = r("hp_scale", 2.0); self.troop_defeat = r("troop_defeat", 3.0)
-        # ELIXIR-EFFICIENCY: also reward eliminating an enemy's REMAINING effective value (its deck elixir
-        # cost x remaining-HP fraction, ground truth). A fresh Musketeer is worth far more than a near-dead
-        # one -> the policy learns to spend for max impact per elixir and NOT over-kill nearly-dead units.
-        self.value_defeat = r("value_defeat", 0.6)
-        self.xbow_wc = r("xbow_wc_reward", 1.0); self.xbow_def = r("xbow_defense_reward", 0.3)
-        self.xbow_mis = r("xbow_misplace_penalty", -0.75); self.miner_chip = r("miner_chip_reward", 0.6)
-        self.shaping_cap = r("shaping_match_cap", 8.0)
+        # --- CORRECTNESS-FIRST reward weights (playing correctly > winning). ONE coherent score of a
+        # few bounded sub-terms replaces the old ~40 patchwork rewards; see the reward assembly in step(). ---
+        self.w_threat_response = r("threat_response", 1.0)   # right KB counter, placed to intercept an assessed threat
+        self.w_threat_miss = r("threat_miss", -1.0)          # wrong counter / wrong lane / ignored an ANSWERABLE threat
+        self.w_elixir_trade = r("elixir_trade", 1.0)         # (enemy value eliminated - elixir spent), normalised
+        self.w_wincon = r("wincon_exec", 0.8)                # deck win-condition executed correctly for the phase
+        self.w_wincon_mis = r("wincon_misplace", -0.6)       # win-condition card thrown away
+        self.w_cycle_plan = r("cycle_plan", 0.4)             # cheap play advancing toward a NEEDED upcoming counter
+        self.w_cycle_waste = r("cycle_waste", -0.4)          # purposeless cheap spam
+        self.w_leak = r("leak_penalty", -0.2)                # sitting at elixir capacity, leaking
+        self.correctness_cap = r("correctness_cap", 8.0)     # per-match cap on POSITIVE shaping (anti-farm)
+        # OUTCOME compass -- DEMOTED so correctness dominates (winning is not the objective).
+        self.w_win = r("win", 2.0); self.w_loss = r("loss", -2.0)
+        self.w_take = r("take_enemy_tower", 0.5); self.w_lose = r("lose_own_tower", -0.5)
+        self.tower_chip_scale = r("tower_chip_scale", 0.5)   # tiny tower-chip proxy (correctness carries the signal)
+        # --- doctrine GEOMETRY (kept: the win-condition / counter checks the correctness terms use) ---
+        self.combo_mult = float(cfg.get("rewards", "rocket_combo_mult", default=3.0))   # rocket 2-for-1 = wincon_exec x this
+        self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))     # same-lane tolerance for an intercept
+        self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))        # <= this elixir counts as a 'cycle' card
+        self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
+        self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
+        self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
         self.xbow_def_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
-        self.log_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "the_log"}
-        self.log_reset = r("log_reset_reward", 0.3)          # The Log knocked a push back on YOUR side (buys time)
-        self.log_swarm_unit = r("log_swarm_unit", 0.1)       # + per enemy unit it caught (a swarm / barrel wipe)
-        self.log_air_penalty = r("log_air_penalty", -0.5)    # The Log (ground-only) dropped onto AIR units = wasted
-        self.rd_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "royal_delivery"}
-        self.rd_hit = r("rd_hit_reward", 0.5)                # Royal Delivery blast landed ON an enemy mass (air+ground)
-        self.rd_hit_unit = r("rd_hit_unit", 0.15)            # + per enemy unit caught in the blast
-        self.rd_whiff = r("rd_whiff_penalty", -0.5)          # RD on empty ground = the AoE + recruit wasted
-        self.rd_radius = float(cfg.get("env", "rd_radius", default=0.11))  # ~ the engine spell_radius for RD
-        self.miner_king_penalty = r("miner_king_penalty", -2.0)  # Miner on the enemy KING wakes it early -> bad trade
-        # icebow OFFENSE->DEFENSE transition: if the X-Bow hasn't chipped >= xbow_success_frac of a tower by
-        # double elixir (or once you TAKE a tower), flip to a DEFENSIVE X-Bow (back-centre) + rocket-cycle
-        # doctrine -- rocket-at-tower becomes the only sanctioned tower damage; everything else defends/cycles.
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
-        self.defensive_rocket_reward = r("defensive_rocket_reward", 0.3)
-        # ROCKET COMBO: rocket a princess tower that ALSO catches a valuable, rocket-(almost)-one-shottable
-        # enemy support (the "rocket the Musketeer behind the tower" 2-for-1: tower chip + a card-advantage kill).
-        self.rocket_combo_reward = r("rocket_combo_reward", 3.0)
-        self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot: hp <= rocket_dmg x this
-        self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))    # support within this of the aimed tower
+        self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
+        self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))   # support near the aimed tower
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
-        # CYCLE-BAIT: opponents drop a LONE Skeletons / spirit (<= cycle_bait_elixir_max elixir) at the bridge
-        # purely to cycle; spending a 3-4 elixir defender on a ~1-elixir troop that barely reaches the tower is a
-        # bad trade -> penalise it UNLESS a real threat (bigger card / tower-targeter) is alongside. See
-        # _wasted_cycle_defense. SIM-only (ground-truth card ID); the live-native version needs the detector.
-        self.cycle_waste_penalty = r("cycle_waste_penalty", -0.6)
-        self.cycle_bait_elixir_max = int(cfg.get("env", "cycle_bait_elixir_max", default=1))
-        self.cycle_waste_min_elixir = int(cfg.get("env", "cycle_waste_min_elixir", default=3))
-        self.cycle_threat_y = float(cfg.get("env", "cycle_threat_y", default=0.45))
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
-        self.punish_xbow_reward = r("punish_xbow_reward", 1.0)
-        self.beatdown_punish_elixir = int(cfg.get("env", "beatdown_punish_elixir", default=7))
-        self.beatdown_punish_window = float(cfg.get("env", "beatdown_punish_window_s", default=3.0))
-        self.king_behind_y = float(cfg.get("env", "enemy_king_behind_y", default=0.18))
         self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
                                                default=["royal_recruits", "royal_hogs"]))
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
@@ -146,9 +126,9 @@ class SimMatchEnv:
         self.hand_vec[:] = 0.0
         for i in self._hand_ids():
             self.hand_vec[i] = 1.0
-        self.next_vec[:] = 0.0
-        if len(self.cycle) > 4:
-            self.next_vec[self.cycle[4]] = 1.0
+        # graded UPCOMING-order vector (Next=1.0 grading down for the hidden cards) from the true
+        # ordered queue -- lets the policy plan which cards to cycle toward. Superset of a next one-hot.
+        self.next_vec[:] = cycle_vector(self.cycle, self.n_cards)
         self.elixir = int(self.eng.elixir[0])
         self.elixir_vec[0] = self.eng.elixir[0] / 10.0
         self.threat_vec[:] = self._threat_vector()
@@ -182,7 +162,6 @@ class SimMatchEnv:
         self.cycle = list(range(self.n_cards))
         self.rng.shuffle(self.cycle)
         self._match_bonus = 0.0
-        self._prev_mass = 0.0
         self._prev_evalue = 0.0
         self._prev_my_crowns = 0
         self._prev_op_crowns = 0
@@ -197,60 +176,81 @@ class SimMatchEnv:
         self._split_lane_counter = bool(opp_cards & self.split_lane_counters)
         if self._matchup in ("cycle", "beatdown") or self._split_lane_counter:
             self._defensive = True
-        self._punish_lane_x = None       # beatdown-punish: bridge X-Bow the OPPOSITE lane to their expensive drop
-        self._punish_until = -1.0
-        self._punish_seen_t = -1.0
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
 
     def _bonus(self, credit: float) -> float:
+        """Cap the POSITIVE correctness shaping per match (anti-farm); penalties pass through uncapped."""
         if credit <= 0.0:
             return credit
-        allowed = min(credit, max(0.0, self.shaping_cap - self._match_bonus))
+        allowed = min(credit, max(0.0, self.correctness_cap - self._match_bonus))
         self._match_bonus += allowed
         return allowed
 
-    def _placement_reward(self, card_id: int, nx: float, ny: float) -> float:
+    def _threat_pos(self):
+        """(x, y) of the deepest enemy troop on YOUR half (the threat to intercept); centre if none."""
+        onside = [u for u in self.eng.units if u.team == 1 and u.spec.kind != "spell" and u.y >= 0.5]
+        if not onside:
+            return 0.5, 0.5
+        u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
+        return float(u.x), float(u.y)
+
+    def _threat_response(self, card_id: int, nx: float, ny: float) -> float:
+        """(1) THREAT-RESPONSE correctness: did you play the KB-correct counter to the ASSESSED threat,
+        placed to intercept it? Right counter in the threat's lane -> +; the WRONG role dropped as a
+        defence, or a pure defender played with no threat (premature) -> -. Offensive placements are
+        judged by wincon_exec / the trade term, not here."""
+        tid = self._threat_id
+        prof = self._deck_profiles[card_id]
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
+                return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
+            return 0.0
+        tx, ty = self._threat_pos()
+        intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
+        if card_threat.counters(prof, tid):
+            return self.w_threat_response if intercept else 0.0          # right counter; full only if it intercepts
+        return self.w_threat_miss if intercept else 0.0                  # wrong role dropped as a defence = a misread
+
+    def _threat_miss_idle(self) -> float:
+        """No play while an ANSWERABLE threat is present (a counter is in hand AND affordable) = a missed
+        defence. Uncapped penalty (this is the 'ignored the push' case the old idle_penalty covered)."""
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return 0.0
+        for cid in self._hand_ids():
+            if (card_threat.counters(self._deck_profiles[cid], tid)
+                    and self.specs[cid].elixir <= self.eng.elixir[0]):
+                return self.w_threat_miss
+        return 0.0
+
+    def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
+        """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
+        forward-in-range (offensive) / back-centre (defensive), Miner chipping the princess (not the king),
+        rocket-cycle chip or the rocket 2-for-1. + when executed correctly, - when the win condition is
+        thrown away. Non-win-condition cards return 0 (they're scored by threat_response / the trade term)."""
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
         d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
         if card_id in self.xbow_ids:
-            if (self._punish_lane_x is not None and self.eng.t <= self._punish_until
-                    and abs(nx - self._punish_lane_x) <= 0.12 and ny <= 0.55):
-                return self.punish_xbow_reward           # counter-push: bridge X-Bow punishing a beatdown's expensive drop
             back_centre = ny >= self.xbow_def_y and abs(nx - 0.48) <= 0.18
-            if self._defensive:                              # DEFENSIVE: back-centre snipe only; forward is wrong now
-                return self.xbow_def if back_centre else self.xbow_mis
-            if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition
-                return self.xbow_wc
-            return self.xbow_def if back_centre else self.xbow_mis
+            if self._defensive:                              # DEFENSIVE phase: back-centre only; forward is wrong now
+                return self.w_wincon if back_centre else self.w_wincon_mis
+            if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition set
+                return self.w_wincon
+            return self.w_wincon * 0.4 if back_centre else self.w_wincon_mis
         if card_id in self.rocket_ids:
-            if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support in one blast
-                return self.rocket_combo_reward              # 2-for-1: big tower chip AND a card-advantage kill
+            if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support = 2-for-1
+                return self.w_wincon * self.combo_mult
             if self._defensive and d <= self.spell_aim_radius:
-                return self.defensive_rocket_reward          # rocket-cycle is the win path once defensive
+                return self.w_wincon * 0.6                   # rocket-cycle chip = sanctioned tower damage once defensive
+            return 0.0
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
             if king.alive and np.hypot(nx - king.x, ny - king.y) <= 0.09:
-                return self.miner_king_penalty               # Miner on the enemy KING wakes it early -> bad trade
+                return self.w_wincon_mis                      # Miner on the enemy KING wakes it early -> bad trade
             if d <= 0.09:
-                return self.miner_chip
-        if card_id in self.log_ids and ny >= 0.5:            # The Log on YOUR side (past the sim river) onto a
-            near = [u for u in self.eng.units if u.team == 1  # push -> knock it back where your towers help
-                    and abs(u.x - nx) <= 0.12 and abs(u.y - ny) <= 0.14]
-            ground = [u for u in near if not u.spec.flying]  # the Log is GROUND-ONLY (can't touch air)
-            if ground:
-                return self.log_reset + min(len(ground), 4) * self.log_swarm_unit
-            if near:                                         # only AIR units there -> the Log is wasted on them
-                return self.log_air_penalty
-        if card_id in self.rd_ids:                           # Royal Delivery: an AREA blast (air+ground) + a Recruit --
-            near = [u for u in self.eng.units if u.team == 1  # land it ON the enemy push, NOT to the side / back
-                    and abs(u.x - nx) <= self.rd_radius and abs(u.y - ny) <= self.rd_radius]
-            if near:
-                return self.rd_hit + min(len(near), 5) * self.rd_hit_unit   # reward the group it blasts
-            return self.rd_whiff                             # empty ground -> the blast + recruit wasted
-        if self._wasted_cycle_defense(card_id, ny):          # a 3-4 elixir defender on LONE cycle bait = bad trade
-            return self.cycle_waste_penalty
+                return self.w_wincon                          # Miner chipping the princess
         return 0.0
 
     def _rocket_combo(self, nx: float, ny: float) -> bool:
@@ -272,22 +272,34 @@ class SimMatchEnv:
                 return True
         return False
 
-    def _wasted_cycle_defense(self, card_id: int, ny: float) -> bool:
-        """True when a SIGNIFICANT card (>= cycle_waste_min_elixir) is placed DEFENSIVELY (your half) while the
-        ONLY enemy on your side is cheap CYCLE bait (Skeletons / spirits, <= cycle_bait_elixir_max elixir).
-        Opponents drop those solo just to cycle, so a 3-4 elixir card spent on a ~1-elixir troop that barely
-        reaches the tower is a big elixir loss. Suppressed the moment a REAL threat (a bigger card, or a
-        tower-targeter like a Miner behind your tower) is alongside the bait -- then you SHOULD defend."""
-        if self.specs[card_id].elixir < self.cycle_waste_min_elixir:
-            return False                                 # cheap answers (The Log / your own spirits) trade fine
-        if ny < 0.5:                                     # only DEFENSIVE placements on your half; offense is exempt
+    def _needed_counter_coming(self, hand) -> bool:
+        """True when the current hand has NO KB counter to the assessed threat but the deck DOES (an
+        upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile."""
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return False
-        onside = [u for u in self.eng.units if u.team == 1 and u.spec.kind == "troop"
-                  and u.y >= self.cycle_threat_y]
-        if not onside:
-            return False                                 # nothing on your side -> premature-defense covers that
-        real = any(u.spec.elixir > self.cycle_bait_elixir_max or u.spec.building_only for u in onside)
-        return not real                                  # only cheap cycle bait present -> defending it is a waste
+        if any(card_threat.counters(self._deck_profiles[c], tid) for c in hand):
+            return False                                     # already hold a counter -> no need to cycle
+        return any(card_threat.counters(self._deck_profiles[c], tid)
+                   for c in range(self.n_cards) if c not in hand)
+
+    def _cycle_plan(self, card_id: int) -> float:
+        """(4) CYCLE-PLAN correctness: reward a CHEAP play that advances toward a NEEDED counter you don't
+        hold (but the deck does) when you have SPARE elixir -- deliberate cycling. Penalise cheap spam with
+        no such plan and no spare elixir. Neutral otherwise. ``card_id`` = the card just played, or -1."""
+        if card_id < 0 or self.specs[card_id].elixir > self.cycle_cheap_max:
+            return 0.0                                       # only cheap 'cycle' cards qualify
+        elx = self.eng.elixir[0]
+        if self._needed_counter_coming(set(self._hand_ids())):
+            return self.w_cycle_plan if elx >= self.cycle_spare_elixir else 0.0
+        return self.w_cycle_waste if elx < self.cycle_spare_elixir else 0.0
+
+    def _trade_reward(self, value_eliminated: float, spent: float) -> float:
+        """(2) ELIXIR-TRADE correctness: potential-based (enemy effective value eliminated this step minus
+        the elixir you spent), normalised + clipped. Trading UP (kill more value than you spent) -> +;
+        overspending / whiffing -> -. Telescopes over the match so idling can't farm it."""
+        net = (value_eliminated - spent) / self.value_norm
+        return float(np.clip(net, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
     def _enemy_value(self) -> float:
         """Total REMAINING effective elixir value of the enemy's (team-1) troops = sum of each unit's deck
@@ -305,16 +317,22 @@ class SimMatchEnv:
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0
+        spent = 0.0
+        placed_id = -1
         if play and 0 <= card_id < self.n_cards and card_id in self._hand_ids():
             spec = self.specs[card_id]
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
             nx, ny = self.actions.cell_center(cell % self.gw, cell // self.gw)
             if self.eng.deploy(0, spec, nx, ny):               # affordable + placed
-                reward += self._bonus(self._placement_reward(card_id, nx, ny))
-                if self.use_detector and card_threat.counters(self._deck_profiles[card_id], self._threat_id):
-                    reward += self._bonus(self.counter_reward)  # right role-counter to a RECOGNISED threat
-                idx = self.cycle.index(card_id)                # cycle the played card to the back
+                spent = float(spec.elixir)
+                placed_id = card_id
+                reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
+                reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
+                reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
+                idx = self.cycle.index(card_id)                                 # cycle the played card to the back
                 self.cycle.append(self.cycle.pop(idx))
+        else:
+            reward += self._threat_miss_idle()                 # (1) ignored an ANSWERABLE threat (uncapped penalty)
         # opponent acts, then advance the match by agent_dt in sub-ticks
         self.opponent.act(self.eng)
         chip0 = chip1 = 0.0
@@ -325,53 +343,37 @@ class SimMatchEnv:
             chip1 += self.eng.chip[1]
             if self.eng.done:
                 break
-        # --- reward from ground truth ---
-        reward += self._bonus((chip0 / self.eng.princess_hp) * self.hp_scale)   # enemy-tower chip (offence)
-        reward -= (chip1 / self.eng.princess_hp) * abs(self.w_lose)             # your-tower chip (defence)
-        my_c, op_c = self.eng.crowns(0), self.eng.crowns(1)
-        if my_c > self._prev_my_crowns:
-            reward += self.w_take * (my_c - self._prev_my_crowns)
-        if op_c > self._prev_op_crowns:
-            reward += self.w_lose * (op_c - self._prev_op_crowns)
-        self._prev_my_crowns, self._prev_op_crowns = my_c, op_c
+        # (2) ELIXIR-TRADE correctness: signed potential-based enemy-value change (telescopes, anti-farm)
+        # minus the elixir committed this step -> nets to (value removed - elixir spent) over the match.
+        evalue = self._enemy_value()
+        edelta = self._prev_evalue - evalue
+        self._prev_evalue = evalue
+        reward += self._trade_reward(edelta, spent)
+        # (5) leak: sitting at capacity with nothing played this step wastes elixir.
+        if placed_id < 0 and self.eng.elixir[0] >= 9.99:
+            reward += self.w_leak
         # OFFENSIVE -> DEFENSIVE phase (icebow): once you've TAKEN a tower (defend the lead), OR double elixir
         # arrives and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a tower),
         # flip to defence -- rocket-cycle becomes the tower damage; the X-Bow reward moves to back-centre.
+        my_c, op_c = self.eng.crowns(0), self.eng.crowns(1)
         self._enemy_chip_total += chip0
         if not self._defensive and (
                 my_c >= 1
                 or (self.eng.t >= self._double_time
                     and self._enemy_chip_total < self.eng.princess_hp * self.xbow_success_frac)):
             self._defensive = True
-        # BEATDOWN PUNISH: opponent dropped a 7+ elixir TROOP behind their king during 1x elixir -> open a
-        # short window to reward an offensive bridge X-Bow in the OPPOSITE lane (punish the committed play).
-        if self._matchup == "beatdown" and self.eng.t < self._double_time:
-            ld = self.eng.last_deploy[1]
-            if ld is not None:
-                spec_e, ex_x, ex_y, ex_t = ld
-                if (ex_t > self._punish_seen_t and spec_e.kind == "troop"
-                        and spec_e.elixir >= self.beatdown_punish_elixir and ex_y <= self.king_behind_y):
-                    self._punish_seen_t = ex_t
-                    self._punish_lane_x = 0.75 if ex_x < 0.5 else 0.25
-                    self._punish_until = self.eng.t + self.beatdown_punish_window
-        mass = self.eng.enemy_mass(0)
-        delta = self._prev_mass - mass                                          # potential-based troop shaping
-        if abs(delta) > 0.005:
-            reward += float(np.clip(delta, -_DEFEAT_CAP, _DEFEAT_CAP)) * self.troop_defeat
-        self._prev_mass = mass
-        # ELIXIR-EFFICIENCY: potential-based reward for eliminating enemy EFFECTIVE VALUE (elixir x HP-frac).
-        # Nets to the value actually removed over each unit's life -> favours killing HEALTHY, valuable units
-        # and makes over-killing near-dead ones barely worth anything (their remaining value is already low).
-        evalue = self._enemy_value()
-        edelta = self._prev_evalue - evalue
-        if abs(edelta) > 0.02:
-            reward += float(np.clip(edelta / _VALUE_NORM, -_VALUE_CAP, _VALUE_CAP)) * self.value_defeat
-        self._prev_evalue = evalue
-
+        # --- OUTCOME compass (DEMOTED: winning is not the objective, just a faint direction) ---
+        reward += (chip0 / self.eng.princess_hp) * self.tower_chip_scale        # tiny enemy-tower chip proxy
+        reward -= (chip1 / self.eng.princess_hp) * self.tower_chip_scale        # tiny own-tower loss proxy
+        if my_c > self._prev_my_crowns:
+            reward += self.w_take * (my_c - self._prev_my_crowns)
+        if op_c > self._prev_op_crowns:
+            reward += self.w_lose * (op_c - self._prev_op_crowns)
+        self._prev_my_crowns, self._prev_op_crowns = my_c, op_c
         done = self.eng.done
         outcome = self.eng.outcome
         if done:
-            reward += self.w_win if outcome == "win" else self.w_loss if outcome == "loss" else -1.0
+            reward += self.w_win if outcome == "win" else self.w_loss if outcome == "loss" else 0.0
         self._update_vectors()
         info = {"outcome": outcome, "crowns": (my_c, op_c), "defensive": self._defensive}
         return self._last_obs, float(reward), done, info

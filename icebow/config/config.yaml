@@ -190,109 +190,36 @@ action:
 # (patience). Spell/troop effects are coarse red-pixel proxies -- calibrate the
 # env.* detection params with `verify --spells`.
 rewards:
-  # -- match + tower outcomes --
-  take_enemy_tower: 1.0          # destroy an enemy tower (offence)
-  lose_own_tower: -3.0           # MAX penalty for losing one of your princess towers -- charged
-                                 # GRADUALLY as it loses HP (see tower_hp) up to this, then topped
-                                 # up to it on destruction; for the KING it's a flat hit on its fall
-  win: 10.0                      # winning the match is the goal -- make it dominate the shaping rewards
-  loss: -15.0                    # losing is VERY costly -- must dominate all within-match shaping so a
-                                 # three-crown loss is ALWAYS net-negative (raised -12 -> -15; shaping is now capped per match too)
-  # -- tower HP chip (tower_hp) --
-  hp_scale: 2.0                  # enemy-princess chip (offence); a full tower's chip = this
-                                 # (your princess chip is penalised gradually up to |lose_own_tower|, not hp_scale)
-  # -- troop combat + spell effects (env) --
-  troop_defeat: 3.0              # x the SIGNED per-step change in on-board enemy mass (POTENTIAL-BASED:
-                                 # + when you clear troops, - when a push builds; telescopes -> idling can't farm it)
-  value_defeat: 0.6              # ELIXIR-EFFICIENCY (sim, ground truth): x the per-step drop in enemy EFFECTIVE
-                                 # VALUE = sum over enemy troops of (deck elixir cost x remaining-HP fraction),
-                                 # normalised by 10 elixir and clipped to +/-1. Complements troop_defeat (which
-                                 # weighs blob SIZE): this weighs elixir x HP, so killing a HEALTHY, valuable unit
-                                 # pays far more than finishing a near-dead / cheap one -> spend for max impact per
-                                 # elixir, don't over-commit expensive cards to low-value targets. Potential-based
-                                 # (telescopes, resume-safe). Modest by default -- a refinement, not dominant. TUNABLE.
-  clean_kill_bonus: 1.0          # DEPRECATED / no longer applied: the troop term is now potential-based. The
-                                 # old x2 "clean kill" bonus was asymmetric and re-opened the inaction farm.
-  spell_troop_damage: 5.0        # rocket KILL reward per unit of hit-unit SIZE (biggest blob caught)
-  spell_hit: 2.0                 # rocket HIT (unit caught but survived) reward per unit of its size
-  spell_combo: 0.6              # rocket hit the enemy princess AND troops at once (value play)
-  rocket_tower_reward: 1.0      # launching a rocket AT an enemy princess tower (offensive chip -- cycle to the rocket and fire it!)
-  bad_rocket_penalty: -3.0      # EXTRA penalty if a rocket is followed by heavy own-tower damage (a bad elixir investment); its chip reward is also withheld
-  spell_whiff: -1.5              # a spell cast on empty ground / with NO game-state impact (rocket / tornado /
-                                 # royal delivery thrown randomly). Was -0.5, which left random throwing net-positive
-                                 # after one lucky graze; -1.5 makes the expected value of a random cast clearly negative.
-  # -- The Log (2-elixir rolling ground knockback/reset spell; poor tower chip). NOT scored as a rocket/tornado. --
-  log_reset_reward: 0.3          # The Log rolled THROUGH a real enemy push (knockback/reset buys time) -- valued even without a kill; + size*spell_hit for troops it clears
-  log_whiff: -0.3                # The Log cast with nothing to hit (small waste -- 2 elixir, not the -1.5 rocket whiff). Waived (0) for a justified last-resort cycle (no Skeletons in hand, board quiet, near-full bar)
-  log_swarm_reward: 0.5          # The Log wiped a big ground SWARM / barrel-spawn (Skeleton/Goblin Barrel, Skeleton Army, Goblin Gang) ON YOUR SIDE -- its premium use
-  log_swarm_unit: 0.1            # sim only: + this per enemy unit The Log catches on your side (a coarse swarm-size scale)
-  log_air_penalty: -0.5          # The Log is GROUND-ONLY -> dropped on AIR units (minions/bats/baby dragon/...) it does nothing = wasted. Sim uses ground truth; LIVE needs the detector (observation.use_detector) to SEE that the threat is air
-  # -- Royal Delivery (3-elixir AREA blast, air+ground, + a shielded Recruit). SIM placement shaping so the model
-  #    drops it ON the enemy push (not to the side/back like a troop). LIVE also scores it via royal_delivery_hit/_kill.
-  rd_hit_reward: 0.5             # sim: RD blast landed ON an enemy mass (air+ground) -- its whole point
-  rd_hit_unit: 0.15              # sim: + per enemy unit caught in the blast (a swarm wipe scales up)
-  rd_whiff_penalty: -0.5         # sim: RD on empty ground = the AoE + recruit wasted (mirrors the log-air penalty)
-  spell_king_penalty: -6.0       # HEAVY: a rocket/tornado that damages or is aimed at the enemy KING tower (wasteful,
-                                 # wakes it). Raised from -4.0 -> dominates any incidental chip; worse than losing a princess.
-  tesla_kill: 1.5                # per unit of enemy-troop mass a placed Tesla kills near it -- DIRECT (it zaps the troop) OR INDIRECT (it
-                                 # blocks/distracts the troop so your tower finishes it near the Tesla). Lowered 3.0->1.5 and capped
-                                 # (defense_kill_cap) so catching a Skeletons swarm can't farm enough to flip a lost match net-positive.
-                                 # Post-Stage-3 idea: scale by REAL damage dealt (needs the detector / per-unit HP), not a mass proxy.
-  defense_kill: 0.5              # TINY kill credit for the other defenders (ice wizard / ice spirit / skeletons / ronin) -- same
-                                 # direct-or-indirect near-card enemy-mass drop, so a distracting block that lets your tower finish the
-                                 # troop counts as their kill too
-  defense_kill_cap: 1.5          # max TOTAL kill credit a single defensive placement can earn over its window (anti-farm ceiling)
-  wc_tesla_defend: 2.0           # Tesla deployed to defend an ACTIVE enemy win condition (a tower-targeting troop)
-  tesla_hold_penalty: -1.5       # spending Tesla early when the enemy HAS a win condition but none is on the board -- save it!
-  king_tank_reward: 1.0          # (INACTIVE -- no Tornado in the Miner X-Bow deck) tornado onto YOUR king to tank + activate it
-  blocker_protect: 1.0           # play a tank/blocker (skeletons / miner) to shield a ranged unit (ice wizard) vs a heavy melee
-  royal_delivery_hit: 3.0        # Royal Delivery, per unit of enemy mass it lands on (reward hitting a big group)
-  royal_delivery_kill: 5.0       # Royal Delivery, extra per unit of enemy mass it KILLS
-  # -- reactive "foresight" counters (keyed off the enemy-threat read; learned from your replays) --
-  threat_counter_delivery: 4.0   # Royal Delivery dropped ON a landing goblin (green) swarm, or onto the tower a projectile (Goblin Barrel) is arcing toward
-  threat_tornado_pull: 4.0       # (INACTIVE -- no Tornado in the Miner X-Bow deck) Tornado near YOUR king vs a goblin swarm -> pull them into the king
-  siege_counter: 4.0             # rocket a SITTING behind-bridge siege (X-Bow / Mortar / Princess) that chips your towers from the enemy side without crossing
-  counter_reward: 0.5            # Stage 3 (needs observation.use_detector): play the KB role-COUNTER (air-defence vs a
-                                 # flying threat, splash vs a swarm, building/high-DPS vs a tank, a building vs a building-
-                                 # targeter) to a RECOGNISED enemy card -- 0 unless the identity block names a threat
-  strategy_prior_scale: 0.0      # Stage-4 ACTIVATION SWITCH (default OFF): weight of the strong-player strategy priors mined
-                                 # from external replays (run.py mine-replays -> data/analysis/strategy_priors.json). While 0 the
-                                 # priors never affect training; raise it (e.g. 0.5) only after the detector lands + you have mined footage.
-  rocket_tornado_combo: 8.0      # (INACTIVE -- no Tornado in the Miner X-Bow deck) rocket->tornado combo at the same spot
-  offensive_penalty: -0.5        # penalty for playing a non-rocket, non-cycle card in the ENEMY half (play defensively!)
-  defense_center_bonus: 0.15     # gentle nudge for placing a defender at the RECOMMENDED centre -- a DEFAULT, not a mandate;
-                                 # a better lane-block or forward play earns more via troop_defeat / tesla_kill, so it can deviate
-  building_center_reward: 0.6    # Tesla placed in the strategic intercept band AND toward centre (x centrality) while a push is on
-  building_misplace_penalty: -1.0 # Tesla shoved to the bridge (too forward) or dumped behind your towers (too deep) -- the bimodal misplacement
-  patience: 0.0                  # waiting at a quiet board is NEUTRAL now (was 0.02): a standing per-step
-                                 # reward for doing nothing was itself the incentive for the hesitation loop
-  idle_penalty: -0.5             # penalty for WAITING (no play) while a real enemy push is on the board (was -0.3):
-                                 # bigger than any single-step positive shaping so ACTING on a push always wins
-  elixir_waste_penalty: -0.3     # extra penalty for sitting on a FULL elixir bar (leaking) -- now also fires vs a small/medium push, not only a big one
-  offense_when_behind: 0.5       # full bar + BEHIND (a princess down, or weakest tower HP < enemy's) + enemy idle -> reward committing X-Bow/Miner/Rocket to catch up
-  cycle_reward: 0.15             # play a cheap card (the log / skeletons) while the ROCKET is NOT in hand -> cycles toward it
-  # -- Miner X-Bow control deck (win condition = X-Bow placed forward; Miner = chip/tank) --
-  xbow_wc_reward: 1.0            # X-Bow placed (your side) WITHIN firing range of the nearer enemy princess -> a real win condition
-  xbow_defense_reward: 0.3       # X-Bow placed BACK-CENTRE as a defensive sniper (rocket-cycle fallback when the offensive X-Bow can't break through)
-  xbow_misplace_penalty: -0.75   # X-Bow dropped forward but OUT of tower range (too far to chip, too exposed) -- the classic misplace
-  xbow_exposed_penalty: -1.0     # X-Bow dropped right ON an oncoming push -> swarmed/demolished before it chips the tower (6 elixir wasted, undefendable)
-  miner_chip_reward: 0.6         # Miner dropped on/near an enemy princess tower -> chip damage (its bread-and-butter)
-  miner_king_penalty: -2.0       # Miner dropped on the enemy KING tower -> ACTIVATES it early (wakes their defence for the match) -- bad trade
-  miner_backfield_penalty: -0.75 # Miner DUMPED behind your own towers (env.own_backfield_y) with NO push to defend -- the 'safe' idle huddle; wasted elixir (defending a real push there is exempt)
-  xbow_wrong_lane_frac: 0.6      # an OPPOSITE-lane X-Bow is a valid punish of a SPENT push, but if a REAL push is still LIVE it pays THIS share of wrong_lane_penalty (leaving the push undefendable)
-  defensive_rocket_reward: 0.3   # once the bot is in DEFENSIVE mode (X-Bow failed to break through by 2x elixir, or a tower was taken) a rocket aimed at an enemy princess = the sanctioned cycle-chip win path
-  punish_xbow_reward: 1.0        # BEATDOWN PUNISH: they dropped a 7+ elixir card behind their king during 1x elixir -> reward a bridge X-Bow in the OPPOSITE lane (punish the expensive, committed play)
-  rocket_combo_reward: 3.0       # ROCKET COMBO (sim): rocket a princess tower that ALSO catches a valuable (4-6 elixir), rocket-(almost)-one-shottable enemy support (Musketeer/Hunter/Executioner/Bowler/Witch/Sparky dropped behind the king) -> tower chip + a card-advantage kill in ONE blast. Routed through the per-match shaping cap.
-  cycle_waste_penalty: -0.6      # CYCLE BAIT (sim): penalty for spending a >= env.cycle_waste_min_elixir card DEFENSIVELY on a LONE cheap cycle troop (Skeletons/spirit) with NO real threat alongside -- opponents drop those solo just to cycle, so killing a ~1-elixir troop that barely reaches the tower with a 3-4 elixir card is a bad trade. A penalty (not shaping-capped).
-  # BAD-PLACEMENT penalties (geometry lives under env: wrong_lane_margin / ranged_ontop_* / back_corner_*)
-  wrong_lane_penalty: -1.5       # HARD: ANY card committed to the lane OPPOSITE the enemy push (wasted elixir + undefended push). Rocket EXEMPT when it hits the opposite enemy tower (strategic chip)
-  wrong_lane_cheap_frac: 0.3     # ice spirit / skeletons pay only this FRACTION of wrong_lane_penalty (cheap cycle cards -> dropping them anywhere is forgivable)
-  ranged_ontop_penalty: -0.75    # a ranged unit (Tesla / Ice Wizard) dropped right ON an enemy troop instead of a kiting distance behind it
-  rd_enemy_half_penalty: -0.75   # Royal Delivery ATTEMPTED on the enemy half (it can only be cast on YOUR half) -> teaches it to stop aiming over there
-  back_corner_penalty: -0.25     # slight: a NON-cheap card dumped in the far back corner (deep + against an edge). The Log / Skeletons are EXEMPT -- the corner is where you cycle them
-  tornado_chip_penalty: -1.0     # (INACTIVE -- no Tornado in the Miner X-Bow deck) a lone tornado chip attempt on the enemy princess
-  premature_defense_penalty: -0.5 # a defender (tesla/ice wizard) or Royal Delivery played on a QUIET board (no enemy troops anywhere) -- nothing to react to. WAIVED at/above env.defense_setup_elixir (a full bar -> setup avoids leaking)
-  shaping_match_cap: 8.0         # per-match ceiling on the repeatable one-sided bonuses (defense-kill + cycle + foresight counters) so they can't out-sum a loss
+  # ============================================================================================
+  # CORRECTNESS-FIRST reward. Winning is NOT the objective -- PLAYING THE GAME CORRECTLY is. One
+  # coherent score of a few bounded sub-terms (below) replaces the old ~40 patchwork rewards. The
+  # policy is taught to read the YOLO->KB threat, play its hand's KB-correct COUNTER placed to
+  # intercept, trade elixir UP, execute the deck's win condition, and CYCLE toward the counters it
+  # needs next. Correctness DOMINATES; the match outcome is only a faint compass. Shared by the sim
+  # (ground truth) and the live env (perception) -- see sim/env.py + env.py reward assembly.
+  # ============================================================================================
+  # -- (1) THREAT-RESPONSE correctness (YOLO -> KB -> the right counter, placed to intercept) --
+  threat_response: 1.0     # played the KB-correct counter to the ASSESSED threat, in its lane on your half
+  threat_miss: -1.0        # wrong-role card dropped as a defence, OR ignored an ANSWERABLE threat (a counter was in hand + affordable). Uncapped.
+  # -- (2) ELIXIR-TRADE correctness (the honest economy: value removed - elixir spent) --
+  elixir_trade: 1.0        # x [ (signed potential-based enemy value/mass eliminated, clipped) - elixir spent ] / value_norm. Telescopes -> idling can't farm it.
+  # -- (3) WIN-CONDITION execution (the deck's doctrine done right for the current phase) --
+  wincon_exec: 0.8         # X-Bow forward-in-range (offence) / back-centre (defence), Miner chips the princess, rocket-cycle chip
+  wincon_misplace: -0.6    # the win condition thrown away (X-Bow out of range / king-hugged, Miner on the enemy KING)
+  rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
+  # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
+  cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
+  cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
+  # -- (5) tempo / economy --
+  leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
+  correctness_cap: 20.0    # per-match ceiling on POSITIVE shaping (terms 1,3,4) -- anti-farm; penalties + trade + outcome are uncapped
+  # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
+  win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
+  loss: -2.0
+  take_enemy_tower: 0.5    # crown deltas -- a light nudge, not the objective
+  lose_own_tower: -0.5
+  tower_chip_scale: 0.5    # tiny per-step tower-HP-chip proxy (both directions); correctness carries the real signal
+  hp_scale: 0.5            # live only: a full enemy-princess chip (read by tower_hp) = this. Kept small (the demoted compass)
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
@@ -350,6 +277,12 @@ train:
 # (x, y); order is [left princess, right princess, king]. Calibrate if a tower
 # event never/always fires.
 env:
+  # -- CORRECTNESS-reward geometry (used by the threat_response / elixir_trade / cycle_plan terms) --
+  intercept_lane: 0.15           # same-lane tolerance: a counter within this |x| of the threat counts as placed to intercept
+  cycle_cheap_max: 3             # a played card at/below this elixir counts as a CYCLE card (cycle_plan / cycle_waste)
+  cycle_spare_elixir: 7.0        # 'spare elixir' threshold: cycling toward a needed counter is rewarded only at/above this
+  value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
+  trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
   tower_shaping: true
   tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
   tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
