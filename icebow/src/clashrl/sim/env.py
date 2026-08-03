@@ -49,6 +49,10 @@ class SimMatchEnv:
         self.use_detector = bool(cfg.get("observation", "use_detector", default=False))
         self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
         self.predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+        # SIM-only detector realism: simulate the live YOLO detector's imperfect recall/precision on the
+        # ground-truth identity block so the sim PRIOR trains on a sparse, live-like signal (1.0 = perfect).
+        self.det_recall = float(cfg.get("observation", "sim_detector_recall", default=1.0))
+        self.det_precision = float(cfg.get("observation", "sim_detector_precision", default=1.0))
         self.threat_dim = _THREAT_DIM + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                                          if self.use_detector else 0)
 
@@ -145,10 +149,13 @@ class SimMatchEnv:
         if not self.use_detector:
             return base
         self._threat_id = card_threat.identity_threat_vector(
-            view.identity_items(self.eng, 0, self.detector_cards), self.db,
-            prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
+            view.apply_detector_noise(view.identity_items(self.eng, 0, self.detector_cards),
+                                      self.det_recall, self.det_precision, self.rng, self.detector_cards),
+            self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
-        mem = self._opp_mem.update(view.opponent_memory_items(self.eng, 0, self.detector_cards))
+        mem = self._opp_mem.update(
+            view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
+                                      self.det_recall, self.det_precision, self.rng, self.detector_cards))
         return np.concatenate([base, self._threat_id, mem]).astype(np.float32)
 
     def _render(self) -> np.ndarray:
