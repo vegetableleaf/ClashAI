@@ -125,8 +125,9 @@ observation:
   # VALUES BELOW = the CURRENT detector (board-9) MEASURED on the WHITELIST (detector_cards) at the LIVE
   # gate (conf = detector_conf 0.75): mean recall 0.60 / precision 0.91 over 24 whitelist cards. Re-measure
   # + update after each detector retrain (ultralytics val at conf=detector_conf, average the detector_cards
-  # classes -- NB common cards like knight/skeletons detect worse, so 0.60 is a mild upper bound on recall).
-  sim_detector_recall: 0.60      # sim "sees" ~60% of whitelisted enemies each step (board-9 whitelist recall @ conf 0.75)
+  # classes). NB common cards (knight/skeletons) detect worse, so the measured 0.60 is a mild UPPER bound
+  # -> recall is set a touch BELOW it so the sim errs SPARSE (a worse-than-live signal = safer transfer).
+  sim_detector_recall: 0.52      # sim "sees" ~52% of whitelisted enemies/step -- set below the measured 0.60 to err sparse (safe)
   sim_detector_precision: 0.91   # ~9% of seen detections get relabelled to a wrong card (board-9 whitelist precision)
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
