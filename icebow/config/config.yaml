@@ -419,7 +419,7 @@ detect:
   # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
-  capture_during_train: true     # set false to disable the harvest during train-rl
+  capture_during_train: false     # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl session
@@ -447,11 +447,27 @@ sim:
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir goes single -> double at (regulation-60s); triple in overtime
   overtime_s: 60                # sudden-death window after regulation
-  princess_hp: 2600             # ~level-11 princess tower HP (Classic 1v1)
-  king_hp: 4800                 # ~level-11 king tower HP
-  tower_dps: 90                 # princess/king tower damage per second
-  tower_range: 0.20             # normalized princess-tower attack reach
-  king_range: 0.20              # normalized king-tower attack reach
+  # --- Tower Troops ---------------------------------------------------------------------------------
+  # Per-troop HP + DISCRETE-HIT attack, sourced from the Clash Royale Fandom wiki at LEVEL 15 (VERIFY
+  # against your in-game cards). Your two princess towers use `my_tower_troop` at `my_tower_level`; the
+  # OPPONENT rolls a troop from `opponent_tower_weights` (princess most common on ladder) at a level drawn
+  # from `enemy_levels`. hit_dmg is derived as dps*hit_speed; HP + damage scale by 1.1^(level - my_tower_level).
+  my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
+  my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
+  tower_range: 0.20             # normalized princess-class reach (all tower troops share a 7.5-tile range)
+  king_range: 0.187             # king-tower reach (7 tiles = 0.5 shorter than a princess tower)
+  tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
+  opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
+    princess: 6
+    dagger_duchess: 2
+    cannoneer: 2
+    royal_chef: 1
+  tower_troops:                 # {hp, dps, hit_speed} @ L15; Dagger Duchess + Royal Chef carry their specials
+    princess:       {hp: 4424, dps: 197, hit_speed: 0.8}
+    dagger_duchess: {hp: 4013, dps: 312, hit_speed: 0.5, ammo: 8, empty_dps: 111, reload_s: 0.9}   # loaded burst -> empty cadence
+    cannoneer:      {hp: 3792, dps: 211, hit_speed: 2.2}                                            # slow, heavy single hits
+    royal_chef:     {hp: 3918, dps: 158, hit_speed: 1.0, cook_period_s: 30, cook_delay_s: 7, buff_mult: 1.1, buff_min_frac: 0.33}  # ~every 30s feeds the ally troop with most HP (+1 level)
+  king_tower:       {hp: 7032, dps: 158, hit_speed: 1.0}                                            # L15 King's Tower (wakes when first hit)
   siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
   sight_range: 0.12             # troop AGGRO radius: notice + lock an enemy UNIT within this, else march at the tower (target commitment, leash 1.8x)
   slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed

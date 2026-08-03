@@ -404,7 +404,7 @@ class SimMatchEnv:
         if not self._defensive and (
                 my_c >= 1
                 or (self.eng.t >= self._double_time
-                    and self._enemy_chip_total < self.eng.princess_hp * self.xbow_success_frac)):
+                    and self._enemy_chip_total < self.eng.towers[1][0].max_hp * self.xbow_success_frac)):
             self._defensive = True
         # --- OUTCOME compass (DEMOTED: winning is not the objective, just a faint direction) ---
         # CONVEX tower-chip proxy: partial chip is worth sub-proportionally little; the CROWN below is the

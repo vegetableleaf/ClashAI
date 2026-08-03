@@ -158,6 +158,7 @@ class Unit:
     stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
     pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
     shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
+    dmg_mult: float = 1.0        # per-unit damage multiplier (Royal Chef pancake buff; 1.0 = normal)
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -172,6 +173,21 @@ class Tower:
     king: bool = False
     active: bool = True
     alive: bool = True
+    # --- tower-troop combat model (discrete single-target hits; stats from the CR wiki) ---
+    troop: str = "princess"
+    hit_dmg: float = 158.0        # damage per shot (= dps * hit_speed, level-scaled)
+    hit_speed: float = 0.8        # seconds between shots
+    first_hit: float = 0.8        # delay before the first shot after (re)acquiring a target
+    reload_left: float = 0.0      # time until the next shot is ready
+    acquired: bool = False        # currently locked onto a target (first-hit bookkeeping)
+    ammo: float = 0.0             # Dagger Duchess: daggers left in the loaded clip
+    ammo_max: float = 0.0         # clip size (0 = not a Dagger Duchess)
+    empty_hit_speed: float = 0.0  # slower cadence once the clip is empty
+    ammo_regen_s: float = 0.0     # seconds to reload one dagger while idle
+    cook_period: float = 0.0      # Royal Chef: seconds between pancakes (0 = not a Royal Chef)
+    cook_left: float = 0.0        # time until the next pancake
+    buff_mult: float = 1.0        # pancake buff (~+1 level) applied to HP + damage
+    buff_min_frac: float = 0.33   # only feed a troop above this fraction of its max HP
 
 
 @dataclass
@@ -187,6 +203,19 @@ def _dist(ax, ay, bx, by) -> float:
     return math.hypot(ax - bx, ay - by)
 
 
+# Tower-troop stat fallback (Clash Royale Fandom wiki, LEVEL 15) if config omits `tower_troops`/`king_tower`.
+# hit_dmg is derived as dps*hit_speed; HP + damage scale by 1.1^(level - my_tower_level).
+_DEFAULT_TOWER_TROOPS = {
+    "princess":       {"hp": 4424, "dps": 197, "hit_speed": 0.8},
+    "dagger_duchess": {"hp": 4013, "dps": 312, "hit_speed": 0.5, "ammo": 8, "empty_dps": 111, "reload_s": 0.9},
+    "cannoneer":      {"hp": 3792, "dps": 211, "hit_speed": 2.2},
+    "royal_chef":     {"hp": 3918, "dps": 158, "hit_speed": 1.0, "cook_period_s": 30.0,
+                        "cook_delay_s": 7.0, "buff_mult": 1.1, "buff_min_frac": 0.33},
+}
+_DEFAULT_KING_TOWER = {"hp": 7032, "dps": 158, "hit_speed": 1.0}
+_DEFAULT_OPP_TOWER_WEIGHTS = {"princess": 6, "dagger_duchess": 2, "cannoneer": 2, "royal_chef": 1}
+
+
 class SimEngine:
     """One match. Advance with :meth:`advance(dt)`; deploy with :meth:`deploy`."""
 
@@ -194,11 +223,17 @@ class SimEngine:
         self.cfg = cfg
         self.db = db
         self.rng = rng
-        self.princess_hp = float(cfg.get("sim", "princess_hp", default=2600.0))
-        self.king_hp = float(cfg.get("sim", "king_hp", default=4800.0))
-        self.tower_dps = float(cfg.get("sim", "tower_dps", default=90.0))
+        # Tower Troops: per-troop HP + discrete-hit attack (CR wiki, L15). Your side plays my_tower_troop at
+        # my_tower_level; the opponent rolls a troop (weighted) + a ladder level per match (see reset()).
+        self.tower_ref_level = int(cfg.get("sim", "my_tower_level", default=15))
+        self.my_tower_troop = str(cfg.get("sim", "my_tower_troop", default="princess"))
+        self.tower_first_hit = float(cfg.get("sim", "tower_first_hit", default=0.8))
+        self.tower_troops = dict(cfg.get("sim", "tower_troops", default=None) or _DEFAULT_TOWER_TROOPS)
+        self.king_profile = dict(cfg.get("sim", "king_tower", default=None) or _DEFAULT_KING_TOWER)
+        self.opp_tower_weights = dict(cfg.get("sim", "opponent_tower_weights", default=None)
+                                      or _DEFAULT_OPP_TOWER_WEIGHTS)
         self.tower_range = float(cfg.get("sim", "tower_range", default=0.20))
-        self.king_range = float(cfg.get("sim", "king_range", default=0.20))
+        self.king_range = float(cfg.get("sim", "king_range", default=0.187))
         self.regulation = float(cfg.get("sim", "regulation_s", default=180.0))
         self.overtime = float(cfg.get("sim", "overtime_s", default=60.0))
         self.siege_sight = float(cfg.get("sim", "siege_sight", default=0.42))  # X-Bow ~11.5 tiles
@@ -222,16 +257,59 @@ class SimEngine:
         self.spells: List[_Spell] = []
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
+        # Your side always plays your equipped troop at your level; the opponent's tower troop + level are
+        # rolled per match (princess most common). Both of a side's princess towers share its troop + level.
+        self.tower_setup = {0: (self.my_tower_troop, self.tower_ref_level), 1: self._roll_opponent_tower()}
         for team in (0, 1):
             a = self._anchors[team]
+            troop, lvl = self.tower_setup[team]
             self.towers[team] = [
-                Tower(a[0][0], a[0][1], self.princess_hp, self.princess_hp),
-                Tower(a[1][0], a[1][1], self.princess_hp, self.princess_hp),
-                Tower(a[2][0], a[2][1], self.king_hp, self.king_hp, king=True, active=False),
+                self._make_tower(a[0][0], a[0][1], troop, lvl, king=False),
+                self._make_tower(a[1][0], a[1][1], troop, lvl, king=False),
+                self._make_tower(a[2][0], a[2][1], "king", lvl, king=True),
             ]
         self.chip = {0: 0.0, 1: 0.0}             # enemy-tower HP you removed this step (both views)
         self.kills = {0: 0, 1: 0}
         self.last_deploy = {0: None, 1: None}    # (spec, x, y, t) of each team's most recent deploy
+
+    def _make_tower(self, x: float, y: float, troop: str, level: int, king: bool) -> Tower:
+        """Build one Tower from a tower-troop profile (config/wiki stats at my_tower_level), scaling HP +
+        damage by CR's 1.1^(level-ref) so an opponent's rolled level tunes its tower like its cards do."""
+        prof = self.king_profile if king else self.tower_troops.get(troop, self.tower_troops.get("princess", {}))
+        sc = 1.1 ** (int(level) - self.tower_ref_level)
+        hp = float(prof.get("hp", 4424.0)) * sc
+        hit_speed = float(prof.get("hit_speed", 0.8))
+        dps = float(prof.get("dps", 197.0))
+        tw = Tower(x, y, hp, hp, king=king, active=(not king),
+                   troop=("king" if king else troop),
+                   hit_dmg=dps * hit_speed * sc, hit_speed=hit_speed,
+                   first_hit=min(hit_speed, self.tower_first_hit))
+        ammo = float(prof.get("ammo", 0.0))                        # Dagger Duchess: loaded-dagger opening burst
+        if ammo > 0.0:
+            empty_dps = float(prof.get("empty_dps", dps)) or dps
+            tw.ammo = tw.ammo_max = ammo
+            tw.empty_hit_speed = dps * hit_speed / empty_dps      # slower cadence once the clip is empty
+            tw.ammo_regen_s = float(prof.get("reload_s", hit_speed))
+        cook = float(prof.get("cook_period_s", 0.0))              # Royal Chef: periodic +1-level ally buff
+        if cook > 0.0 and not king:
+            tw.cook_period = cook
+            tw.cook_left = float(prof.get("cook_delay_s", 7.0))
+            tw.buff_mult = float(prof.get("buff_mult", 1.1))
+            tw.buff_min_frac = float(prof.get("buff_min_frac", 0.33))
+        return tw
+
+    def _roll_opponent_tower(self) -> "tuple[str, int]":
+        """Sample the opponent's tower troop (weighted, princess most common) + a ladder level (enemy_levels)."""
+        w = self.opp_tower_weights or {"princess": 1}
+        troops = list(w.keys())
+        weights = [max(0.0, float(w[t])) for t in troops]
+        if sum(weights) <= 0.0:
+            troops, weights = ["princess"], [1.0]
+        troop = self.rng.choices(troops, weights=weights, k=1)[0]
+        lv = list(self.cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16]))
+        lw = list(self.cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1]))
+        level = self.rng.choices(lv, weights=lw, k=1)[0]
+        return troop, int(level)
 
     def elixir_rate(self) -> float:
         if self.t >= self.regulation:
@@ -394,11 +472,15 @@ class SimEngine:
                 self._move_toward(u, rx, ry, dt, spd)
         if self.collide:
             self._separate()
-        # towers fire
+        # towers fire (+ Royal Chef cooks periodic ally buffs)
         for team in (0, 1):
             for tw in self.towers[team]:
-                if tw.alive and (tw.active or not tw.king):
+                if not tw.alive:
+                    continue
+                if tw.active or not tw.king:
                     self._tower_fire(team, tw, dt)
+                if tw.cook_period > 0.0:
+                    self._tower_cook(team, tw, dt)
         # cull dead + expired
         alive = []
         for u in self.units:
@@ -422,7 +504,7 @@ class SimEngine:
         u.hp -= dmg
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
-        dmg = u.spec.hit_dmg                                  # one discrete hit (DPS x hit_speed)
+        dmg = u.spec.hit_dmg * u.dmg_mult                    # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         if kind == "tower":
             self._damage_tower(ref, dmg, u.team)
             return
@@ -454,13 +536,49 @@ class SimEngine:
                     e.stun_left = max(e.stun_left, u.spec.pulse_stun)
 
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
+        """DISCRETE single-target tower shots. Cadence + damage come from the tower troop; Dagger Duchess
+        bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
         rng = self.king_range if tw.king else self.tower_range
-        foes = [e for e in self.units if e.team != team and e.hp > 0
+        foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
                 and _dist(tw.x, tw.y, e.x, e.y) <= rng]
         if not foes:
+            tw.acquired = False
+            if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
+                tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
+            return
+        if not tw.acquired:                                     # first shot after (re)acquiring is delayed
+            tw.acquired = True
+            tw.reload_left = tw.first_hit
+        tw.reload_left -= dt
+        if tw.reload_left > 0.0:
             return
         tgt = min(foes, key=lambda e: _dist(tw.x, tw.y, e.x, e.y))
-        self._hurt(tgt, self.tower_dps * dt)
+        self._hurt(tgt, tw.hit_dmg)                             # towers are single-target (no splash)
+        # accumulate (+=) rather than reset (=) the cooldown so the fractional remainder carries and the
+        # AVERAGE cadence stays exact on the 0.1s physics grid (a reset would round every shot up a tick).
+        if tw.ammo_max > 0.0 and tw.ammo >= 1.0:                # Dagger Duchess: fast while the clip has daggers
+            tw.ammo -= 1.0
+            tw.reload_left += tw.hit_speed
+        elif tw.ammo_max > 0.0:                                 # ...then the slower empty cadence
+            tw.reload_left += tw.empty_hit_speed
+        else:
+            tw.reload_left += tw.hit_speed
+
+    def _tower_cook(self, team: int, tw: Tower, dt: float) -> None:
+        """Royal Chef: every cook_period, throw a pancake to the FRIENDLY troop with the most HP (above
+        buff_min_frac of its max), raising it ~1 level (HP + damage x buff_mult). A coarse model of the
+        real cooking ability -- enough that a Royal Chef opponent's pushes hit harder."""
+        tw.cook_left -= dt
+        if tw.cook_left > 0.0:
+            return
+        tw.cook_left = tw.cook_period
+        cands = [u for u in self.units if u.team == team and u.deploy_left <= 0.0
+                 and u.hp > u.spec.hp * tw.buff_min_frac]
+        if not cands:
+            return
+        u = max(cands, key=lambda e: e.hp)
+        u.hp *= tw.buff_mult
+        u.dmg_mult *= tw.buff_mult
 
     def _resolve_spell(self, s: _Spell) -> None:
         if s.spec.rolls:
@@ -529,11 +647,13 @@ class SimEngine:
         op_crowns = self.crowns(1)
         if my_crowns != op_crowns:
             return "win" if my_crowns > op_crowns else "loss"
-        my_hp = sum(t.hp for t in self.towers[0])
-        op_hp = sum(t.hp for t in self.towers[1])
-        if abs(my_hp - op_hp) < 1.0:
+        # Crowns tied -> CR tiebreak on the LEAST-healthy Crown Tower (lowest HP fraction loses). Fractions,
+        # not absolute HP, so asymmetric tower-troop/level max-HP between the two sides stays fair.
+        my_min = min((t.hp / t.max_hp for t in self.towers[0] if t.max_hp > 0), default=1.0)
+        op_min = min((t.hp / t.max_hp for t in self.towers[1] if t.max_hp > 0), default=1.0)
+        if abs(my_min - op_min) < 1e-3:
             return "draw"
-        return "win" if op_hp < my_hp else "loss"
+        return "win" if op_min < my_min else "loss"
 
     # -- reward / observation accessors ------------------------------------
     def crowns(self, team: int) -> int:
