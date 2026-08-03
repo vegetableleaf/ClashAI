@@ -127,6 +127,7 @@ class SelfPlayOpponent:
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
         self._prev_ident_depth = 0.0
+        self._opp_mem = card_threat.OpponentMemory(env.db)   # per-match opponent memory (mirrors team 0)
         self.anywhere_ids = env.anywhere_ids
         self.deck_keys = env.deck_keys
         lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
@@ -155,13 +156,14 @@ class SelfPlayOpponent:
         if len(self.cycle) > 4:
             nxt[self.cycle[4]] = 1.0
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
-        thr = view.threat_vector(eng, self.threat_dim - (card_threat.IDENTITY_DIM if self.use_detector else 0), team=1)
+        thr = view.threat_vector(eng, self.threat_dim - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0), team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
                 view.identity_items(eng, 1, self.detector_cards), self.db,
                 prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
             self._prev_ident_depth = float(ident[7])
-            thr = np.concatenate([thr, ident]).astype(np.float32)
+            mem = self._opp_mem.update(view.opponent_memory_items(eng, 1, self.detector_cards))
+            thr = np.concatenate([thr, ident, mem]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
         obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0

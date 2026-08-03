@@ -107,28 +107,54 @@ observation:
   # for RECOGNISED enemy cards it exposes their KB role (tank / swarm / air / building / win-condition /
   # building-targeter) + how deep they are + their APPROACH VELOCITY + a PREDICTED depth `predict_horizon_s`
   # ahead (where the push will be when a defender finishes deploying) so the policy counters by identity
-  # AND anticipates motion, not just red blobs. The SIM builds this from ground truth (filtered to
-  # `detector_cards` to mimic the detector's coverage); LIVE builds it from HIGH-confidence detections.
-  # Flipping this changes threat_dim (16 <-> 26) -> it needs a FRESH train-sim + train-bc + train-rl.
-  use_detector: false            # Stage-3 gate: add the identity-threat block (needs a trained detector live)
+  # AND anticipates motion, not just red blobs. PLUS an 8-feature opponent SHORT-TERM MEMORY block
+  # (card_threat.OPP_MEMORY_DIM): the archetype/roles SEEN this match, opponent avg elixir, recent tempo,
+  # and back-line STAGING (troops massing on THEIR half) -- the strategic "who is this / what are they
+  # building" read the reactive identity block can't give (answers 'see opponent-side plays', not just
+  # your half). The SIM builds both from ground truth (filtered to `detector_cards` to mimic the detector's
+  # coverage); LIVE builds them from the detector. Both GROW-safe: adding whitelist cards needs NO retrain.
+  # Flipping this changes threat_dim (16 <-> 34 = 16 base + 10 identity + 8 memory) -> a FRESH train-sim +
+  # train-rl (init train-rl from the SIM checkpoint so the wide block carries; NB train-bc caps threats at 16).
+  use_detector: false            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
   detector_conf: 0.75            # LIVE: only trust a detection at/above this confidence (extremely-high only)
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
   flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
                                  # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
                                  # true tile, so spell targeting + depth/movement prediction use where it really is.
                                  # 0 disables. Calibrate to the visible sprite->shadow gap (detect-obs / verify --threats).
-  detector_cards:                # cards the detector RELIABLY names -- ONLY these fire; grow it as you annotate
-    - tesla
+  detector_cards:                # ENEMY TROOPS the detector RELIABLY names (BASE keys; evo/hero variants fold in via
+                                 # card_threat.base_key -- so `knight` also covers knight_hero). ONLY these fire the
+                                 # identity block. GROW freely as you label more: the identity vector is a FIXED role
+                                 # aggregate, so adding cards needs NO retrain (resume-safe). From board-9 per-base recall.
+    # -- reliable (val recall >= 0.6) --
     - ice_wizard
-    - skeleton_king
+    - royal_recruit
+    - skeletons
+    - ronin
+    - knight
+    - princess
+    - archers
+    - witch
+    - sparky
     - baby_dragon
+    - musketeer
+    - giant_skeleton
+    - inferno_dragon
+    # -- moderate (recall ~0.4-0.6, strong train; high precision so a firing is trustworthy) --
+    - miner
+    - ice_spirit
+    - hog_rider
     - bowler
-    - dart_goblin
-    - minion_horde
-    - skeleton_army
-    - goblin_barrel
-    - barbarians
+    - magic_archer
+    - ice_golem
     - hunter
+    - royal_hogs
+    - pekka
+    - lava_hound
+    - mega_knight
+    # -- HOLD until labelled (broken/unmeasured on board-9; ADD here once recall is proven -- NO retrain needed):
+    #    valkyrie (R0.33 despite 79 train -> check label consistency), lumberjack, goblins, dart_goblin,
+    #    spear_goblins, guards, wizard, golden_knight, skeleton_king, skeleton_army, barbarians
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:

@@ -341,8 +341,11 @@ class LiveMatchEnv:
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
         self._prev_ident_t = None
+        self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
         if self.use_detector:
-            self.threat_vec = np.concatenate([self.threat_vec, self._threat_id]).astype(np.float32)
+            self.threat_vec = np.concatenate(
+                [self.threat_vec, self._threat_id,
+                 np.zeros(card_threat.OPP_MEMORY_DIM, np.float32)]).astype(np.float32)
             try:
                 from .replay_mine import load_detector
                 det = load_detector(cfg)
@@ -380,35 +383,36 @@ class LiveMatchEnv:
 
     def _update_threat(self, frame) -> None:
         """Advance the live enemy-threat read from the current frame -> policy input vector. When
-        use_detector, append card_threat's identity block for the RECOGNISED, HIGH-confidence enemy
-        cards the detector names on your half (all-zero if the detector is unavailable)."""
+        use_detector, append card_threat's identity block (RECOGNISED, HIGH-confidence enemy cards on
+        YOUR half) + the opponent SHORT-TERM MEMORY block (whole-match read, both halves). All-zero if
+        the detector is unavailable."""
         self._last_threat = self.threat_tracker.update(frame, time.time())
         base = self._last_threat.vector()
         if not self.use_detector:
             self.threat_vec = base
             return
-        self._threat_id = self._detect_identity(frame)
-        self.threat_vec = np.concatenate([base, self._threat_id]).astype(np.float32)
-
-    def _detect_identity(self, frame) -> np.ndarray:
-        """KB identity + MOTION block for the RECOGNISED (whitelisted, >= detector_conf) enemy units
-        the detector names on YOUR half (cy >= 0.5). Tracks the deepest-threat depth across frames
-        for the approach velocity + predicted post-deploy depth. All-zero if the detector is off."""
-        if self._detector is None:
-            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        try:
-            dets = self._detector.detect(frame, conf=self.detector_conf)
-        except Exception:
-            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets           # d.gy = shadow-corrected ground y
-                 if d.team == "enemy" and d.gy >= 0.5 and d.base in self.detector_cards]
+        dets = self._detect_enemies(frame)                                   # ONE detector pass this frame
         now = time.time()
         dt = (now - self._prev_ident_t) if self._prev_ident_t else 0.0
-        vec = card_threat.identity_threat_vector(items, self.db, prev_depth=self._prev_ident_depth,
-                                                 dt=dt, horizon=self.predict_horizon)
-        self._prev_ident_depth = float(vec[7])
+        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
+        self._threat_id = card_threat.identity_threat_vector(
+            items, self.db, prev_depth=self._prev_ident_depth, dt=dt, horizon=self.predict_horizon)
+        self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
-        return vec
+        mem = self._opp_mem.update([(d.base, d.gy) for d in dets])           # memory: BOTH halves (incl. staging)
+        self.threat_vec = np.concatenate([base, self._threat_id, mem]).astype(np.float32)
+
+    def _detect_enemies(self, frame):
+        """ONE detector pass -> whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]).
+        [] if the detector is off/unavailable. Shared by the identity block (your half) and the opponent
+        memory (both halves) so live inference runs the detector only ONCE per frame."""
+        if self._detector is None:
+            return []
+        try:
+            return [d for d in self._detector.detect(frame, conf=self.detector_conf)
+                    if d.team == "enemy" and d.base in self.detector_cards]
+        except Exception:
+            return []
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
@@ -437,6 +441,7 @@ class LiveMatchEnv:
                 self.threat_tracker.reset()
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
+                self._opp_mem.reset()
                 self._update_threat(frame)
                 self._last_obs = self.vision.observe(frame)
                 self._last_frame = frame

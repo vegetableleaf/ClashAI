@@ -118,6 +118,7 @@ def play(cfg) -> None:
     # append card_threat's identity features for the RECOGNISED, HIGH-confidence enemy cards the
     # detector names on your half. Gated on the checkpoint width so play always matches the net.
     want_identity = threat_dim > THREAT_DIM
+    want_memory = threat_dim >= THREAT_DIM + card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
     detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
     detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
     predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
@@ -130,24 +131,32 @@ def play(cfg) -> None:
         except Exception:
             _detector = None
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
+    _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
 
-    def _identity_block(frame):
-        """KB identity + MOTION block for RECOGNISED (whitelisted, >= detector_conf) enemy units on
-        your half (approach velocity + predicted post-deploy depth via cross-frame depth tracking)."""
-        if _detector is None:
-            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        try:
-            dets = _detector.detect(frame, conf=detector_conf)
-        except Exception:
-            return np.zeros(card_threat.IDENTITY_DIM, np.float32)
-        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets           # d.gy = shadow-corrected ground y
-                 if d.team == "enemy" and d.gy >= 0.5 and d.base in detector_cards]
+    def _threat_extra(frame):
+        """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
+        sized to the net: the identity block (RECOGNISED enemies on YOUR half) + the opponent MEMORY block
+        (whole-match read, BOTH halves). ONE detector pass shared by both. Zeros where unavailable."""
+        dets = []
+        if _detector is not None:
+            try:
+                dets = [d for d in _detector.detect(frame, conf=detector_conf)
+                        if d.team == "enemy" and d.base in detector_cards]
+            except Exception:
+                dets = []
+        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
         dt = (now - _ident_state["t"]) if _ident_state["t"] else 0.0
-        vec = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],
-                                                 dt=dt, horizon=predict_horizon)
-        _ident_state["depth"] = float(vec[7]); _ident_state["t"] = now
-        return vec
+        ident = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],
+                                                    dt=dt, horizon=predict_horizon)
+        _ident_state["depth"] = float(ident[7]); _ident_state["t"] = now
+        mem = _opp_mem.update([(d.base, d.gy) for d in dets])                 # memory: BOTH halves (incl. staging)
+        blocks = []
+        if want_identity:
+            blocks.append(ident)
+        if want_memory:
+            blocks.append(mem)
+        return np.concatenate(blocks).astype(np.float32) if blocks else np.zeros(0, np.float32)
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))
@@ -173,7 +182,7 @@ def play(cfg) -> None:
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity:
-            threat_vec = np.concatenate([threat_vec, _identity_block(frame)]).astype(np.float32)
+            threat_vec = np.concatenate([threat_vec, _threat_extra(frame)]).astype(np.float32)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
@@ -280,6 +289,7 @@ def play(cfg) -> None:
                     tower_tracker.reset()
                     threat_tracker.reset()
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
+                    _opp_mem.reset()              # forget the previous opponent's deck/archetype
                     prev_mult = 1
                 prev = state
 

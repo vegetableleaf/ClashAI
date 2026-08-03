@@ -90,3 +90,23 @@ def identity_items(engine, team: int, whitelist) -> "list[tuple[str, float]]":
         if ly >= 0.5:
             items.append((base, (ly - 0.5) / 0.5))
     return items
+
+
+def opponent_memory_items(engine, team: int, whitelist) -> "list[tuple[str, float]]":
+    """``(base_card, local_y)`` for ALL of the OTHER team's recognised (whitelisted) units, on EITHER
+    half (local_y in [0,1]; >=0.5 = crossed onto ``team``'s half / attacking, <0.5 = on their own half
+    / staging a push at the back). The ground-truth input to :class:`clashrl.card_threat.OpponentMemory`
+    (the sim's stand-in for the live detector's whole-match read)."""
+    if not whitelist:
+        return []
+    foe = 1 - team
+    items: "list[tuple[str, float]]" = []
+    for u in engine.units:
+        if u.team != foe or u.hp <= 0:
+            continue
+        base = getattr(u.spec, "base", None)
+        if base is None or base not in whitelist:
+            continue
+        _lx, ly = to_local(u.x, u.y, team)
+        items.append((base, ly))
+    return items

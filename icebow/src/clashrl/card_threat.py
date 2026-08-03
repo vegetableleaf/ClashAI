@@ -157,6 +157,13 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
 IDENTITY_DIM = 10
 _VEL_NORM = 0.6    # depth/sec that reads as "fast" (~a troop covering the half-field in <2s)
 
+# --- opponent SHORT-TERM MEMORY (strategic complement to the reactive identity block) --------------
+OPP_MEMORY_DIM = 8         # width of OpponentMemory.update() -- appended to the obs AFTER the identity block
+_OPP_ELIXIR_NORM = 7.0     # avg-elixir normaliser (cheap-cycle ~2-3 <-> heavy beatdown ~5-7)
+_OPP_ACT_NORM = 4.0        # recognised-presence EWMA normaliser (recent-activity / tempo)
+_OPP_STAGE_NORM = 4.0      # back-line staging-count normaliser
+_OPP_DECAY = 0.9           # per-step EWMA decay for the recent-activity/tempo feature (~10-step memory)
+
 
 def identity_threat_vector(items, db: CardDB, prev_depth: float = 0.0,
                            dt: float = 0.0, horizon: float = 1.0) -> np.ndarray:
@@ -202,6 +209,62 @@ def identity_threat_vector(items, db: CardDB, prev_depth: float = 0.0,
         v[8] = min(1.0, vel / _VEL_NORM)
         v[9] = min(1.0, max_depth + vel * float(horizon))     # extrapolate to the post-deploy state
     return v
+
+
+class OpponentMemory:
+    """Per-match STATEFUL short-term memory of the opponent -- the STRATEGIC complement to the reactive,
+    per-frame identity block. It accumulates what the opponent has COMMITTED over the whole match from the
+    RECOGNISED (whitelisted) enemy cards (SIM = ground truth; LIVE = the detector), so the policy conditions
+    on 'who is this / what are they building', not just the red blob in front of it right now. Reset each
+    match. ``update(items)`` returns an ``OPP_MEMORY_DIM`` vector; ``items`` = iterable of ``(base_card,
+    local_y)`` for recognised enemy troops, local_y in [0,1] (>=0.5 = your half / attacking, <0.5 = THEIR
+    half / staging a push at the back). Layout:
+      0 seen win_condition (persistent)   1 seen tank/beatdown (persistent)   2 seen swarm (persistent)
+      3 seen air/flying (persistent)      4 seen building/siege (persistent)
+      5 opponent AVG ELIXIR seen (cheap-cycle <-> heavy beatdown, normalised)
+      6 recent ACTIVITY/tempo (EWMA of recognised presence -- how hard they're committing lately)
+      7 back-line STAGING mass (recognised enemy troops on THEIR half now -- a push building at the back)
+    All-zero until something is recognised (policy falls back to the identity + red-blob blocks)."""
+
+    def __init__(self, db: CardDB):
+        self.db = db
+        self.reset()
+
+    def reset(self) -> None:
+        self._roles = np.zeros(5, dtype=np.float32)   # persistent seen-role flags: win/tank/swarm/air/building
+        self._seen: dict = {}                          # distinct base card -> its elixir (for the cost profile)
+        self._activity = 0.0                           # EWMA of recognised on-board presence (tempo)
+
+    def update(self, items) -> np.ndarray:
+        n = 0
+        staging = 0.0
+        for base, ly in items:
+            p = profile(self.db, base)
+            if not p.known:
+                continue
+            n += 1
+            if base not in self._seen:
+                self._seen[base] = float(self.db.elixir(base) or 0.0)
+            if p.win_condition:
+                self._roles[0] = 1.0
+            if p.tank:
+                self._roles[1] = 1.0
+            if p.swarm:
+                self._roles[2] = 1.0
+            if p.flying:
+                self._roles[3] = 1.0
+            if p.siege or p.building:
+                self._roles[4] = 1.0
+            if ly < 0.5:                               # on THEIR half = staging / building a push at the back
+                staging += 1.0
+        self._activity = self._activity * _OPP_DECAY + n * (1.0 - _OPP_DECAY)
+        v = np.zeros(OPP_MEMORY_DIM, dtype=np.float32)
+        v[0:5] = self._roles
+        if self._seen:
+            v[5] = min(1.0, (sum(self._seen.values()) / len(self._seen)) / _OPP_ELIXIR_NORM)
+        v[6] = min(1.0, self._activity / _OPP_ACT_NORM)
+        v[7] = min(1.0, staging / _OPP_STAGE_NORM)
+        return v
 
 
 def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
