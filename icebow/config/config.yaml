@@ -182,13 +182,10 @@ action:
   princess_avoid_half: [0.06, 0.05]  # same, per each of YOUR two PRINCESS towers (my_towers[0..1]) -- smaller footprint than the king
 
 # --- Reward shaping (RL fine-tune) ---------------------------------------
-# Rocket-cycle wins on near-perfect DEFENCE, so defence is weighted well above
-# offence: losing your own tower / tower HP costs much more than chipping the
-# enemy earns. Spells are rewarded for damage dealt to TROOPS (kills = big
-# reward), lightly for chipping the enemy princess, and PENALISED for whiffing
-# (empty ground / the enemy king). Holding cards while the board is quiet is fine
-# (patience). Spell/troop effects are coarse red-pixel proxies -- calibrate the
-# env.* detection params with `verify --spells`.
+# CORRECTNESS-FIRST: the model is rewarded for PLAYING THE GAME CORRECTLY (read the
+# threat -> counter it in-lane, trade elixir UP, execute the win condition, cycle toward
+# the counter it needs next), NOT for winning. The block below is one coherent score of a
+# few bounded sub-terms; the sim (ground truth) and the live env (perception) share it.
 rewards:
   # ============================================================================================
   # CORRECTNESS-FIRST reward. Winning is NOT the objective -- PLAYING THE GAME CORRECTLY is. One
@@ -312,130 +309,38 @@ env:
   hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
   enemy_tower_hp_boxes: [[0.147, 0.110, 0.278, 0.157], [0.645, 0.110, 0.797, 0.157]]
   my_tower_hp_boxes:    [[0.185, 0.612, 0.298, 0.657], [0.685, 0.612, 0.798, 0.657]]
-  # KING HP numbers (only shown once a king is hit). Enemy king (top-centre) -> catch a
-  # rocket/tornado that damages it (rewards.spell_king_penalty). YOUR king (bottom-centre) ->
-  # reward a defensive tornado that tanks + activates it (rewards.king_tank_reward). Boxes are
-  # tall; the digit reader locks onto the number. Calibrate with verify --towers (E-king / M-king).
+  # KING HP-number boxes -- read by `verify --towers` for the E-king / M-king alignment check.
   enemy_king_hp_box: [0.41, 0.015, 0.55, 0.08]
-  king_hp_margin: 40             # min enemy-king HP drop (across a spell) to count as a fresh hit
   my_king_hp_box:    [0.41, 0.690, 0.55, 0.77]
-  my_king_full: 4824             # your king's full HP (level 11) -- scales the tornado-tank reward
-  # Troop-combat + spell rewards (calibrated on recorded casts; tune with
-  # `verify --spells`). enemy_mass = enemy-troop (red) pixel fraction over arena_region
-  # [x0,y0,x1,y1] (HUD/tray + enemy towers excluded). Each step the SIGNED change in enemy_mass
-  # (clipped to +/-defeat_cap, deadband defeat_min) is rewarded x rewards.troop_defeat --
-  # POTENTIAL-BASED, so it telescopes over the match and idling can't farm it. When a SPELL is cast its effect
-  # is sampled over a window around the predicted impact (a rocket's travel time grows
-  # ~linearly with distance from rocket_origin at rocket_travel_rate s/unit + rocket_base_time;
-  # a tornado lands in tornado_time): the peak enemy-troop mass in a box of half-size
-  # spell_radius at the target = troops in the blast; a peak->settled drop >= spell_min_drop
-  # = a rocket kill. The midfield hit/kill reward SCALES with the size of the biggest unit
-  # caught (largest connected red blob, capped at spell_size_cap) so a rocket on a swarm of
-  # skeletons/goblins earns little and one on a fat high-HP unit (Witch/Bowler/Balloon)
-  # earns more. On the enemy princess a kill or peak >= spell_combo_present = a tower+troop
-  # combo (flat -- the tower's own red makes size unreliable there), else a chip (tower_hp);
-  # empty ground (< spell_present) = a whiff. spell_effect_reward false disables it.
-  spell_effect_reward: true
+  # enemy_mass = enemy-troop (red) pixel fraction over arena_region (HUD/tray + enemy towers excluded);
+  # its SIGNED per-step change (clipped +/-defeat_cap) drives the elixir-trade term (potential-based ->
+  # idling can't farm it). A spell's effect frame is grabbed at its predicted impact (rocket travel grows
+  # ~linearly with distance from rocket_origin at rocket_travel_rate + rocket_base_time; tornado ~ tornado_time).
+  spell_effect_reward: true      # gate: sample frames around a spell's impact for the post-cast state read
   arena_region: [0.03, 0.10, 0.97, 0.86]
-  defeat_min: 0.005              # min arena enemy-mass drop/step to count as defeating troops
-  defeat_cap: 0.15               # cap the per-step drop (guards against artifacts)
-  spell_radius: 0.12             # box half-size around a spell's target for its effect
-  spell_min_drop: 0.03           # min peak->settled enemy-mass drop at the target = a rocket kill
-  spell_present: 0.04            # min enemy mass in the target box to count as troops in the blast
-  spell_combo_present: 0.18      # min target-box mass on the enemy princess for a combo (beats tower red)
-  spell_size_cap: 0.20           # cap on the biggest-unit blob fraction (bounds merged clumps/tower red)
+  defeat_cap: 0.15               # 'full push' enemy-mass scale / per-step clip for the trade term
   spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
   rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
-  royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage (long -> needs movement prediction)
-  # rocket -> tornado combo (a tornado at the same spot right after a rocket that killed a clump)
-  combo_window_steps: 2          # the tornado must follow the rocket within this many steps
-  combo_radius: 0.10             # ...and land within this normalized distance of the rocket's spot
-  combo_kill_min: 0.06           # the rocket must have removed at least this much enemy mass (~2 medium troops)
-  # rocket as an elixir INVESTMENT: its chip reward is DEFERRED and only paid out if a successful
-  # defence follows. If within rocket_defense_window steps your towers take MORE HP damage than
-  # the rocket dealt the enemy tower (or a princess falls), the chip is withheld AND the
-  # rewards.bad_rocket_penalty applies -- i.e. the rocket traded down (you lost more than you gained).
-  rocket_defense_window: 3       # steps after a rocket to watch own-tower damage before paying the chip
-  rocket_clear_min: 0.10         # a rocket that removes at least this enemy (red) mass "erased a clump" -> a valid opposite-lane wipe (exempt from the wrong-lane penalty)
-  rocket_bad_min_hp: 700         # a rocket that neither chipped a tower nor erased a clump is a BAD investment if your towers then lose >= this much HP in the window (you couldn't defend)
-  offensive_half_y: 0.45         # a non-rocket card placed above this y (enemy half) = an offensive play (penalised)
-  log_defense_y: 0.46            # The Log's knockback only counts as DEFENSIVE once the push has crossed to YOUR side (>= this y) -- there the princess towers help finish it
-  log_swarm_drop: 0.10           # this much enemy mass wiped by The Log = a swarm / barrel-spawn cleared (the swarm bonus)
-  cycle_min_elixir: 7.0          # only reward cycling a cheap card at/above this elixir (spare) -- below it, rewarding cheap plays just teaches card SPAM that starves defence
-  spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo, not a whiff
+  royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
+  spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
   rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
-  rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower to be caught in the same blast
-  cycle_bait_elixir_max: 1       # CYCLE BAIT: an enemy troop at/below this elixir = cheap cycle bait (Skeletons / Ice-Spirit / Electro-Spirit / Fire-Spirit). A LONE one isn't worth a real defender (raise to 2 to also ignore Bats etc.)
-  cycle_waste_min_elixir: 3      # ...only PENALISE wasting a card costing at least this on lone cycle bait (cheap answers like The Log / your own spirits are exempt)
-  cycle_threat_y: 0.45           # count on-side enemy troops with y >= this (past the ~0.5 river, at the bridge onward) when deciding whether the only threat is cycle bait
-  enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet" (patience)
-  threat_mass: 0.06              # at/above this arena troop mass a real enemy push is on -> waiting is penalised
-                                 # (idle_penalty); lowered from 0.10 so dawdling on a smaller push is caught sooner
-  elixir_full: 10                # elixir at/above this (bar full) + a push + no play = wasted-elixir penalty
-  defense_setup_elixir: 9        # at/above this elixir a defensive card pre-placed on a quiet board is an elixir-efficient SETUP (avoids leaking a full bar) -> the premature-defense penalty is WAIVED
-  # Defensive placement (range + centre aware): on a clear threat, Ice Wizard / Musketeer /
-  # Tesla are placed toward the CENTRE (defense_center_bias from centre 0.48 toward the
-  # threatened side) a reduced depth (defense_center_depth_frac x the unit's range from
-  # range_offsets) behind the enemy front -- the horizontal gap to an edge push adds to the
-  # vertical one (maximises the distance the push must close under fire) and pulls it to the
-  # middle where BOTH princess towers help. No clear threat -> the model places it (Tesla
-  # also earns rewards.tesla_kill). Evo Musketeer always goes to the very back.
-  range_offsets: {long: 0.15, short: 0.12, melee: 0.05}  # unit attack reach (normalized y), by KB range
-  defense_center_bias: 0.10            # x offset from centre (0.48) toward the threatened side
-  defense_center_depth_frac: 0.6       # depth behind the front = this x the unit's range (centre covers the rest)
-  defense_back_limit: 0.58             # DEEPEST a defender is placed (normalized y): keeps it on the central grass in FRONT
-                                       # of your king tower. Deeper lands ON the king (undeployable) so the card never plays.
-  # CLOSE-PUSH exception: once a push's deepest troop is at/below close_defense_y (it has reached your
-  # towers), a MOBILE defender stops kiting and is placed BETWEEN the push and your king to body-block it.
-  close_defense_y: 0.58                # push deepest-troop y at/below this = 'in close' -> waive ranged-on-top + engage between push and king
-  defense_close_side_bias: 0.13        # x offset from centre (0.48) toward the threatened side for a close-push block (clears the king footprint)
-  defense_close_depth: 0.03            # a close-push block sits this far BEHIND the enemy front (deeper, toward your king)
-  defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened"
-  # bad-placement penalty geometry (rewards.wrong_lane_penalty / ranged_ontop_penalty / back_corner_penalty)
-  wrong_lane_margin: 0.12              # deadband around the 0.48 lane split: a defender must be THIS far into the
-                                       # opposite lane (from a push) to count as wrong-lane -- central placements are exempt
-  ranged_ontop_radius: 0.08            # a ranged unit within this of a troop blob = dropped "on top" (no kiting gap)
-  ranged_ontop_size: 0.06              # min largest enemy-blob fraction at the drop to count as a real troop (not speckle)
-  back_corner_y: 0.72                  # at/below this depth (normalized y, toward your king) + an outer column = back corner
-  back_corner_x: 0.20                  # within this of either side edge = the corner (outer columns only)
-  # Building (Tesla) strategic-zone placement (rewards.building_center_reward / building_misplace_penalty)
-  building_front_y: 0.53               # a building ABOVE this y (toward the bridge) is TOO FORWARD (bypassed / focused)
-  building_back_y: 0.65                # a building BELOW this y (behind your towers) is TOO DEEP (can't reach the push)
-  building_center_span: 0.25           # x-distance from centre (0.48) over which the in-band central reward fades to 0
-  # a card placed in the ENEMY half (above this y) with no push to defend is your OWN BACKFIELD if
-  # at/below own_backfield_y: a Miner dumped there does nothing (penalised by miner_backfield_penalty)
-  own_backfield_y: 0.62                # at/below this depth (behind your princess line ~0.615) = your backfield
-  # X-Bow (win condition) placement geometry (rewards.xbow_*): forward within tower range, or back-centre for defence
+  rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower
+  enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet"
+  elixir_full: 10                # elixir at/above this (full bar) + nothing played this step = leak penalty
+  defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened" (lane read)
+  wrong_lane_margin: 0.12              # deadband around the 0.48 lane split before a placement counts as wrong-lane (threat_response)
+  # X-Bow (win condition) placement geometry: forward within tower range, or back-centre for defence
   xbow_range: 0.36                     # max normalized distance from the X-Bow to an enemy princess for it to REACH the tower (~11.5 tiles)
   xbow_defense_y: 0.62                 # a defensive (rocket-cycle-mode) X-Bow sits at/below this depth, back-centre on your side...
-  xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king (too far back) -> misplace, not defence
-  xbow_ontop_radius: 0.10              # enemy (red) troop blob within this of the X-Bow drop = dropped INTO a push -> xbow_exposed_penalty (blob threshold = ranged_ontop_size)
-  xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: if by 2x elixir the X-Bow has chipped LESS than this fraction of an enemy tower (and no crown), give up the offensive X-Bow and switch to defensive X-Bow + rocket-cycle
-  # Matchup-aware doctrine (SIM knows the opponent's style; LIVE needs the detector -> post-Stage-3):
-  # vs a fast CYCLE or heavy BEATDOWN deck play EXCLUSIVELY defensive X-Bow from the start. EXCEPTION (beatdown):
-  beatdown_punish_elixir: 7            # a 7+ elixir enemy TROOP dropped behind their king during 1x elixir...
-  beatdown_punish_window_s: 3.0        # ...opens a window this long to reward a bridge X-Bow in the OPPOSITE lane
-  enemy_king_behind_y: 0.18            # 'behind their king' = enemy (team-1) y at/below this (their back line)
-  # SPLIT-LANE hard-counters: decks built on these wide two-lane win conditions punish an offensive X-Bow
-  # (one X-Bow can't cover both lanes), so play defensive X-Bow + rocket-cycle the WHOLE match vs them:
+  xbow_defense_back: 0.70              # ...and NO deeper than this: past it the X-Bow is shoved onto your king -> misplace, not defence
+  xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: X-Bow chipped LESS than this fraction of a tower by 2x elixir -> switch to defensive X-Bow + rocket-cycle
+  # SIM matchup doctrine (reads the opponent's style): vs a fast CYCLE / heavy BEATDOWN deck, or a
+  # SPLIT-LANE deck built on these wide two-lane win conditions (one X-Bow can't cover both lanes),
+  # play defensive X-Bow + rocket-cycle from the start.
   split_lane_counter_cards: [royal_recruits, royal_hogs]
-  musketeer_evo_center: [0.48, 0.82]   # Evo Musketeer -> very back, behind the king tower
-  # Defensive kill-credit (rewards.tesla_kill / defense_kill, capped by defense_kill_cap): after a
-  # DEFENSIVE card is placed (Tesla / Ice Wizard / Ice Spirit / Skeletons / Ronin), count the enemy
-  # troops that die within tesla_radius of its spot for tesla_track_steps steps -- crediting a DIRECT
-  # kill (the card attacks) OR an INDIRECT one (it blocks/distracts the troop so your tower finishes it
-  # near the card). A live card keeps earning; a central one usually kills most. Reused for every
-  # defender via the same radius/window.
-  tesla_track_steps: 10                # steps to credit a placed defender with kills near it
-  tesla_radius: 0.16                   # box half-size around the Tesla for its kill credit
-  # Shield-a-ranged-unit combo (rewards.blocker_protect): a blocker (ronin/skeletons/ice_spirit)
-  # played within blocker_combo_steps of a ranged unit while a big red blob (>= blocker_threat_size)
-  # sits on that spot -- a coarse "heavy melee" proxy (no troop ID).
-  blocker_combo_steps: 3               # blocker must follow the ranged unit within this many steps
-  blocker_threat_size: 0.08            # min largest-red-blob fraction at the ranged unit = heavy melee present
   # Win-condition (tower-targeting troop) detection -> SAVE the Tesla for it. A "win condition"
   # is a troop that heads straight for your tower instead of fighting: it PENETRATES deep into
   # your half (wc_depth: 0 at the river .. 1 at your king) OR CROSSES fast toward it (wc_fast_speed,
