@@ -26,9 +26,8 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
-from .reward import (TowerTracker, _anchors, defensive_cell, enemy_mass, enemy_mass_at,
-                     near_enemy_king, near_enemy_princess, near_my_king, threat_front,
-                     threat_side, troop_size_at, weaker_princess_cell, xbow_lock_cell)
+from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
+                     threat_side, weaker_princess_cell, xbow_lock_cell)
 from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
@@ -87,20 +86,14 @@ class LiveMatchEnv:
         # spell-effect + patience rewards
         from .cards import CardDB
         db = CardDB(cfg)
+        # card-role id sets the reward + deploy logic still need (rocket/miner = anywhere; spell = eval;
+        # x_bow = win condition; royal_delivery = defensive area spell; defensive_kind feeds reactive_ids).
         self.spell_ids = set()
         self.rocket_ids = set()
-        self.tornado_ids = set()
         self.royal_delivery_ids = set()
-        self.cheap_ids = set()
-        self.tesla_ids = set()
-        self.ranged_ids = set()
-        self.blocker_ids = set()
-        self.building_ids = set()
         self.miner_ids = set()
         self.xbow_ids = set()
-        self.log_ids = set()
-        self.skeletons_ids = set()
-        self.defensive_kind = {}
+        self.defensive_kind = {}                        # id -> defender kind (Tesla / Ice Wizard) for reactive_ids
         for i, key in enumerate(self.vision.deck_keys):
             base = key[:-4] if key.endswith("_evo") else key
             c = db.get(base)
@@ -108,221 +101,46 @@ class LiveMatchEnv:
                 self.spell_ids.add(i)
             if base == "rocket":
                 self.rocket_ids.add(i)
-            elif base == "tornado":
-                self.tornado_ids.add(i)
             elif base == "royal_delivery":          # defensive area spell on your half
                 self.royal_delivery_ids.add(i)
             elif base == "miner":                   # tank/chip -> deployed ANYWHERE (enemy tower, behind a tank)
                 self.miner_ids.add(i)
-            elif base == "x_bow":                   # siege WIN CONDITION -> forward (in tower range) or back-centre defence
+            elif base == "x_bow":                   # siege WIN CONDITION -> forward (in range) or back-centre defence
                 self.xbow_ids.add(i)
-            if base in ("the_log", "skeletons"):     # cheap cyclers (The Log = 2-elixir spell) -- OK to play anytime
-                self.cheap_ids.add(i)
-            if base == "the_log":                    # 2-elixir rolling knockback/reset spell (poor tower chip) -- own shaping
-                self.log_ids.add(i)
-            elif base == "skeletons":
-                self.skeletons_ids.add(i)
-            if base == "tesla":                      # Tesla: kill-reward tracked + intercept-zone placement
-                self.tesla_ids.add(i)
+            if base == "tesla":
                 self.defensive_kind[i] = "tesla"
-                self.building_ids.add(i)             # the DEFENSIVE building; X-Bow is OFFENSIVE -> its own shaping
             elif base == "ice_wizard":
                 self.defensive_kind[i] = "ice_wizard"
-            if base == "ice_wizard":                 # MOBILE ranged troop (kited/shielded). Tesla is a BUILDING ->
-                self.ranged_ids.add(i)               # excluded (you WANT it in the push's path).
-            elif base in ("skeletons", "miner"):     # cheap tanks/blockers that shield a ranged unit
-                self.blocker_ids.add(i)              # (The Log is a SPELL -> can't tank/block, so it's excluded)
-        # ROCKET and MINER may target ANYWHERE (miner chips the enemy tower / tanks behind an enemy
-        # unit); every other card (troops, buildings incl. X-Bow, royal delivery) is your-half only.
+        # ROCKET and MINER may target ANYWHERE; every other card (troops, X-Bow, royal delivery) is your-half only.
         self.anywhere_ids = self.rocket_ids | self.miner_ids
-        # cards that should only be played to REACT to a threat (defensive troops + Royal Delivery);
-        # playing them on a QUIET board is premature -> penalised. Miner/X-Bow are PROACTIVE -> excluded.
+        # cards played only to REACT to a threat (defenders + Royal Delivery); on a QUIET board they're premature.
         self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids
-        self.spell_troop_damage = float(cfg.get("rewards", "spell_troop_damage", default=5.0))
-        self.spell_hit = float(cfg.get("rewards", "spell_hit", default=0.15))
-        self.spell_combo = float(cfg.get("rewards", "spell_combo", default=0.6))
-        self.spell_whiff = float(cfg.get("rewards", "spell_whiff", default=-0.5))
-        self.log_reset_reward = float(cfg.get("rewards", "log_reset_reward", default=0.3))  # The Log rolled through a real push (knockback/reset buys time)
-        self.log_whiff = float(cfg.get("rewards", "log_whiff", default=-0.3))               # The Log cast with nothing to hit (small waste; 2 elixir, not rocket-scale)
-        # The Log's job is DEFENSIVE: clear a ground SWARM / barrel-spawn (Skeleton/Goblin Barrel, Skeleton
-        # Army, Goblin Gang) and knock a push BACK once it has crossed to YOUR side, where the princess
-        # towers help finish it. Reward the reset/clear only on your side; a big mass wiped = a swarm bonus.
-        self.log_defense_y = float(cfg.get("env", "log_defense_y", default=0.46))   # the push has crossed to YOUR side of the river
-        self.log_swarm_drop = float(cfg.get("env", "log_swarm_drop", default=0.10)) # this much enemy mass wiped = a swarm / barrel
-        self.log_swarm_reward = float(cfg.get("rewards", "log_swarm_reward", default=0.5))
-        self.log_air_penalty = float(cfg.get("rewards", "log_air_penalty", default=-0.5))  # Log (ground-only) on AIR units = wasted (needs the detector to SEE air)
-        self.spell_king_penalty = float(cfg.get("rewards", "spell_king_penalty", default=-1.5))
-        self.tesla_kill = float(cfg.get("rewards", "tesla_kill", default=1.5))
-        self.defense_kill = float(cfg.get("rewards", "defense_kill", default=0.5))
-        self.defense_kill_cap = float(cfg.get("rewards", "defense_kill_cap", default=1.5))
-        # Per-defender kill-credit weight: the Tesla plus a TINY credit for the other defenders.
-        # Covers a DIRECT kill (the card attacks the troop) and an INDIRECT one (it blocks/distracts
-        # the troop so your tower finishes it off near the card) -- both read as the local red-mass drop.
-        # The MINER is included here too (defense_kill weight): played defensively it snipes an enemy
-        # support troop or tanks/distracts for your defenders, and either way the enemy it kills/holds
-        # dies as a local red-mass drop near its spot -- the same proxy. Its OFFENSIVE tower chip is
-        # scored separately by _miner_reward, and the per-placement + per-match anti-farm caps below
-        # keep this small (a coarse local-mass proxy; a true support-vs-tank read waits for Stage 3).
-        self.defense_kill_ids = {}
-        for _i, _key in enumerate(self.vision.deck_keys):
-            _base = _key[:-4] if _key.endswith("_evo") else _key
-            if _base == "tesla":
-                self.defense_kill_ids[_i] = self.tesla_kill
-            elif _base in ("ice_wizard", "ice_spirit", "skeletons", "ronin", "miner"):
-                self.defense_kill_ids[_i] = self.defense_kill
-        self.patience = float(cfg.get("rewards", "patience", default=0.02))
-        self.troop_defeat = float(cfg.get("rewards", "troop_defeat", default=3.0))
-        self.clean_kill_bonus = float(cfg.get("rewards", "clean_kill_bonus", default=2.0))
-        self.spell_effect = bool(cfg.get("env", "spell_effect_reward", default=True))
-        self.spell_radius = float(cfg.get("env", "spell_radius", default=0.12))
-        self.spell_min_drop = float(cfg.get("env", "spell_min_drop", default=0.03))
-        self.spell_present = float(cfg.get("env", "spell_present", default=0.04))
-        self.spell_combo_present = float(cfg.get("env", "spell_combo_present", default=0.18))
-        self.spell_size_cap = float(cfg.get("env", "spell_size_cap", default=0.20))
+        # --- perception geometry the reward + spell-impact timing still use ---
+        self.spell_effect = bool(cfg.get("env", "spell_effect_reward", default=True))   # gate: sample frames at spell impact
         self.spell_eval_time = float(cfg.get("env", "spell_eval_time", default=2.4))
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
-        # rocket travel time scales ~linearly with distance from its launch point;
-        # predict the impact moment per cast instead of a fixed wait.
+        # rocket / spell IMPACT timing -- predict when to grab the effect frame (see _impact_time)
         self.rocket_origin = cfg.get("env", "rocket_origin", default=[0.5, 1.05])
         self.rocket_base_time = float(cfg.get("env", "rocket_base_time", default=0.3))
         self.rocket_travel_rate = float(cfg.get("env", "rocket_travel_rate", default=2.2))
         self.tornado_time = float(cfg.get("env", "tornado_time", default=1.2))
-        # defensive placement: ranged units go toward CENTRE (horizontal gap counts) a
-        # reduced depth behind the enemy front; Evo Musketeer to the very back.
-        self.musketeer_evo_center = cfg.get("env", "musketeer_evo_center", default=[0.48, 0.82])
-        self.threat_min_frac = float(cfg.get("env", "defense_threat_frac", default=0.02))
-        _rmap = cfg.get("env", "range_offsets", default={"long": 0.15, "short": 0.12, "melee": 0.05})
-        _roff = {k: float(_rmap.get(db.attack_range(k) or "long", 0.13))
-                 for k in ("tesla", "ice_wizard", "musketeer", "ronin")}
-        self.defense_params = {
-            "musketeer_evo": self.musketeer_evo_center, "range_offsets": _roff,
-            "a_bot": self.actions.a_bot,
-            "center_bias": float(cfg.get("env", "defense_center_bias", default=0.10)),
-            "center_depth_frac": float(cfg.get("env", "defense_center_depth_frac", default=0.6)),
-            "back_limit": float(cfg.get("env", "defense_back_limit", default=0.58)),
-            "close_defense_y": float(cfg.get("env", "close_defense_y", default=0.58)),
-            "close_side_bias": float(cfg.get("env", "defense_close_side_bias", default=0.13)),
-            "close_depth": float(cfg.get("env", "defense_close_depth", default=0.03)),
-            # buildings keep the capped central spot (their own reward shapes depth); only MOBILE
-            # defenders switch to the between-push-and-king body-block when a push breaks in close.
-            "building_kinds": {self.defensive_kind[i] for i in self.building_ids if i in self.defensive_kind},
-        }
-        # king HP boxes (only shown once a king is hit): enemy -> spell penalty; mine -> tank reward
-        self._king_box = cfg.get("env", "enemy_king_hp_box", default=[0.41, 0.015, 0.55, 0.08])
-        self.king_hp_margin = float(cfg.get("env", "king_hp_margin", default=40.0))
-        self._my_king_box = cfg.get("env", "my_king_hp_box", default=[0.41, 0.69, 0.55, 0.77])
-        self.my_king_full = float(cfg.get("env", "my_king_full", default=4824.0))
-        self.king_tank_reward = float(cfg.get("rewards", "king_tank_reward", default=1.0))
-        self.blocker_protect = float(cfg.get("rewards", "blocker_protect", default=1.0))
-        self.blocker_window = int(cfg.get("env", "blocker_combo_steps", default=3))
-        self.blocker_threat_size = float(cfg.get("env", "blocker_threat_size", default=0.08))
-        # Royal Delivery: a delayed (~3s) area spell on YOUR half -> reward troops HIT + KILLED.
         self.royal_delivery_time = float(cfg.get("env", "royal_delivery_time", default=3.0))
-        self.rd_hit = float(cfg.get("rewards", "royal_delivery_hit", default=3.0))
-        self.rd_kill = float(cfg.get("rewards", "royal_delivery_kill", default=5.0))
-        # play defensively: penalise a non-rocket, non-cycle card placed in the ENEMY half.
-        self.offensive_penalty = float(cfg.get("rewards", "offensive_penalty", default=-0.5))
-        self.offensive_half = float(cfg.get("env", "offensive_half_y", default=0.45))
-        # centre is only the RECOMMENDED default defensive spot (a small reward), never forced
-        self.defense_center_bonus = float(cfg.get("rewards", "defense_center_bonus", default=0.15))
-        # BAD-PLACEMENT penalties (judged vs the pre-action frame -- where the enemy was when the
-        # model chose): defend the wrong (empty) lane, drop a ranged unit on top of a troop, or dump
-        # a card in the far back corner (see _placement_penalty).
-        self.wrong_lane_penalty = float(cfg.get("rewards", "wrong_lane_penalty", default=-1.5))
-        self.wrong_lane_cheap_frac = float(cfg.get("rewards", "wrong_lane_cheap_frac", default=0.3))
-        self.ranged_ontop_penalty = float(cfg.get("rewards", "ranged_ontop_penalty", default=-0.75))
-        self.rd_enemy_half_penalty = float(cfg.get("rewards", "rd_enemy_half_penalty", default=-0.75))
-        self.back_corner_penalty = float(cfg.get("rewards", "back_corner_penalty", default=-0.25))
+        # lane read for the threat-response intercept (_same_lane)
+        self.threat_min_frac = float(cfg.get("env", "defense_threat_frac", default=0.02))
         self.lane_split_x = 0.48                       # left/right split -- matches reward.threat_side
         self.wrong_lane_margin = float(cfg.get("env", "wrong_lane_margin", default=0.12))
-        self.ontop_radius = float(cfg.get("env", "ranged_ontop_radius", default=0.08))
-        self.ontop_size = float(cfg.get("env", "ranged_ontop_size", default=0.06))
-        self.back_corner_y = float(cfg.get("env", "back_corner_y", default=0.72))
-        self.back_corner_x = float(cfg.get("env", "back_corner_x", default=0.20))
-        # a push whose deepest troop is at/below this y has reached your towers -> defenders stop
-        # kiting and body-block it (the on-top penalty is waived; the recommended cell moves between
-        # the push and your king). Above it (push still forward) the kiting rules apply as normal.
-        self.close_defense_y = float(cfg.get("env", "close_defense_y", default=0.58))
-        # a lone tornado on the enemy princess (chip attempt, not a combo) is wasteful; a reactive
-        # card (defender / Royal Delivery) on a QUIET board (nothing to react to) is premature.
-        self.tornado_chip_penalty = float(cfg.get("rewards", "tornado_chip_penalty", default=-1.0))
-        self.premature_defense_penalty = float(cfg.get("rewards", "premature_defense_penalty", default=-0.5))
-        # ...but at/above this elixir a pre-placed defensive card is an elixir-efficient SETUP (a full
-        # bar leaks otherwise), not premature -> the premature penalty is waived (judged on the
-        # PRE-action bar, since playing the card has already spent elixir by the post-action frame).
-        self.defense_setup_elixir = float(cfg.get("env", "defense_setup_elixir", default=9.0))
-        # per-match ceiling on the repeatable one-sided shaping bonuses (defense-kill / cycle /
-        # foresight counters) so they can't accumulate past a loss -- see _bonus().
-        self.shaping_match_cap = float(cfg.get("rewards", "shaping_match_cap", default=8.0))
         self._match_bonus = 0.0
-        # BUILDING (Tesla) placement: shape it toward the strategic INTERCEPT zone -- a moderate depth in
-        # FRONT of your towers (not shoved to the bridge, not dumped behind them) and toward the CENTRE.
-        self.building_front_y = float(cfg.get("env", "building_front_y", default=0.53))
-        self.building_back_y = float(cfg.get("env", "building_back_y", default=0.65))
-        self.building_center_span = float(cfg.get("env", "building_center_span", default=0.25))
-        self.building_center_reward = float(cfg.get("rewards", "building_center_reward", default=0.6))
-        self.building_misplace_penalty = float(cfg.get("rewards", "building_misplace_penalty", default=-1.0))
-        # Miner X-Bow control deck: X-Bow is the WIN CONDITION (forward, in tower range) with a back-centre
-        # defensive mode; Miner chips the enemy tower / tanks anywhere. All positive parts go through _bonus.
-        self.xbow_wc_reward = float(cfg.get("rewards", "xbow_wc_reward", default=1.0))
-        self.xbow_defense_reward = float(cfg.get("rewards", "xbow_defense_reward", default=0.3))
-        self.xbow_misplace_penalty = float(cfg.get("rewards", "xbow_misplace_penalty", default=-0.75))
-        self.xbow_exposed_penalty = float(cfg.get("rewards", "xbow_exposed_penalty", default=-1.0))  # X-Bow dropped ON an oncoming push -> demolished before it chips
-        self.miner_chip_reward = float(cfg.get("rewards", "miner_chip_reward", default=0.6))
-        self.miner_king_penalty = float(cfg.get("rewards", "miner_king_penalty", default=-2.0))
-        self.miner_backfield_penalty = float(cfg.get("rewards", "miner_backfield_penalty", default=-0.75))  # Miner dumped behind your own towers with NO push = wasted
-        self.own_backfield_y = float(cfg.get("env", "own_backfield_y", default=0.62))  # at/below this depth (behind your princess line) is your backfield
-        self.xbow_wrong_lane_frac = float(cfg.get("rewards", "xbow_wrong_lane_frac", default=0.6))  # X-Bow leaving a LIVE push pays this share of wrong_lane_penalty
-        self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))          # ~11.5 tiles, normalized
-        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))  # a defensive X-Bow sits WITHIN a back-centre band...
-        self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))  # ...no DEEPER than this (past it = shoved onto your king)
-        self.xbow_ontop_radius = float(cfg.get("env", "xbow_ontop_radius", default=0.10))  # enemy troops within this of the X-Bow drop = dropped INTO a push -> demolished
-        self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))  # X-Bow 'broke through' if it chipped >= this fraction of a tower by 2x elixir
-        self.defensive_rocket_reward = float(cfg.get("rewards", "defensive_rocket_reward", default=0.3))  # once DEFENSIVE, rocket-at-tower is the sanctioned chip
-        self.rocket_tower_reward = float(cfg.get("rewards", "rocket_tower_reward", default=1.0))
-        self.cycle_reward = float(cfg.get("rewards", "cycle_reward", default=0.15))
-        # only reward cycling a cheap card when you have SPARE elixir (near-full) -- below this, rewarding
-        # a cheap play just teaches compulsive card SPAM that starves your defence. Above it, cycling is
-        # genuinely free (you'd leak otherwise). Neutral (no bonus, no penalty) below the threshold.
-        self.cycle_min_elixir = float(cfg.get("env", "cycle_min_elixir", default=7.0))
-        # clumped group. Waives the enemy-king penalty (when the rocket hit a princess tower and
-        # killed >=2 medium troops) and rewards wiping a push, anywhere on the board.
-        self.combo_reward = float(cfg.get("rewards", "rocket_tornado_combo", default=15.0))
-        self.combo_window = int(cfg.get("env", "combo_window_steps", default=2))
-        self.combo_radius = float(cfg.get("env", "combo_radius", default=0.10))
-        self.combo_kill_min = float(cfg.get("env", "combo_kill_min", default=0.06))
-        # A rocket is a 6-elixir OFFENSIVE investment: its chip reward is DEFERRED and only paid
-        # out if a successful defence follows. If heavy own-tower damage lands within the window
-        # after a rocket, the chip is withheld AND an extra penalty applies (a bad investment).
-        self.rocket_window = int(cfg.get("env", "rocket_defense_window", default=3))
-        self.bad_rocket_penalty = float(cfg.get("rewards", "bad_rocket_penalty", default=-3.0))
-        # a rocket "erased a clump" (a valid opposite-lane wipe) if it removed at least this much enemy
-        # (red) mass; a rocket is a BAD 6-elixir investment if it neither chipped a tower nor erased a
-        # clump AND your towers then lose >= rocket_bad_min_hp within the defence window (couldn't defend).
-        self.rocket_clear_min = float(cfg.get("env", "rocket_clear_min", default=0.10))
-        self.rocket_bad_min_hp = float(cfg.get("env", "rocket_bad_min_hp", default=700.0))
-        self._pending_rocket = None       # deferred rocket chip: {"chip", "steps", "hp0", "destroyed"}
-        self._last_spell_chip = False     # did the last spell resolve as a rocket-at-princess chip?
-        self._rocket_cleared = False      # did the last rocket erase a real troop clump?
-        self._recent_rocket = None
-        self._recent_ranged = None
-        self._steps = 0
-        self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))
-        self.idle_penalty = float(cfg.get("rewards", "idle_penalty", default=-0.3))
-        self.threat_mass = float(cfg.get("env", "threat_mass", default=0.10))
-        self.elixir_waste_penalty = float(cfg.get("rewards", "elixir_waste_penalty", default=-0.3))
-        self.full_elixir = int(cfg.get("env", "elixir_full", default=10))
-        # OFFENSE-WHEN-BEHIND: at a FULL bar, if we're behind (a princess down, or our weakest standing
-        # tower has less HP than the enemy's) AND the enemy is idle, committing a win-condition / chip
-        # card to catch up is correct -> reward it (the idle branch penalises sitting instead).
-        self.offense_when_behind = float(cfg.get("rewards", "offense_when_behind", default=0.5))
-        self.defeat_min = float(cfg.get("env", "defeat_min", default=0.005))
-        self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))
-        self.tesla_track_steps = int(cfg.get("env", "tesla_track_steps", default=10))
-        self.tesla_radius = float(cfg.get("env", "tesla_radius", default=0.16))
+        # X-Bow win-condition geometry (offence forward-in-range / defence back-centre) + the phase gauge
+        self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
+        self.xbow_defense_y = float(cfg.get("env", "xbow_defense_y", default=0.62))
+        self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.70))
+        self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
+        # thresholds the correctness terms use
+        self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))       # 'quiet board' enemy-mass gate
+        self.full_elixir = int(cfg.get("env", "elixir_full", default=10))               # leak / cycle threshold
+        self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))             # 'full push' mass scale for the trade term
         self._prev_mass = 0.0
         self._prev_my_hp = 0.0
-        self._defenders = []          # active defensive-card kill trackers (tesla + ice wizard/spirit/skeletons/ronin)
         # --- reactive play: live enemy-threat vector (policy input) + foresight rewards ---
         self.threat_tracker = ThreatTracker(cfg)
         self.threat_vec = Threat.zeros()          # normalized threat features -> policy input
@@ -349,8 +167,9 @@ class LiveMatchEnv:
         self.w_cycle_waste = rw("cycle_waste", -0.4)          # purposeless cheap spam
         self.w_leak = rw("leak_penalty", -0.2)                # (5) sitting at elixir capacity, leaking
         self.correctness_cap = rw("correctness_cap", 20.0)    # per-match cap on POSITIVE shaping (anti-farm)
-        self.w_take = rw("take_enemy_tower", 0.5); self.w_lose = rw("lose_own_tower", -0.5)
-        self.tower_chip_scale = rw("tower_chip_scale", 0.5)   # tiny tower-chip proxy (correctness carries the signal)
+        self.w_take = rw("take_enemy_tower", 1.0); self.w_lose = rw("lose_own_tower", -1.0)   # the CROWN jump on a take/loss
+        self.tower_chip_scale = rw("tower_chip_scale", 0.3)   # convex chip POOL per tower (small; the crown is the jump)
+        self.chip_power = float(cfg.get("env", "tower_chip_power", default=2.0))   # >1 -> partial chip sub-proportional
         self.combo_mult = rw("rocket_combo_mult", 3.0)
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))
         self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))
@@ -381,13 +200,6 @@ class LiveMatchEnv:
                 self._detector = det if det.available else None
             except Exception:
                 self._detector = None
-        self.threat_counter_delivery = float(cfg.get("rewards", "threat_counter_delivery", default=4.0))
-        self.threat_tornado_pull = float(cfg.get("rewards", "threat_tornado_pull", default=4.0))
-        self.siege_counter = float(cfg.get("rewards", "siege_counter", default=4.0))
-        # save the Tesla for the enemy's win condition (a tower-targeting troop): reward using it
-        # against an ACTIVE one, penalise spending it early when one is known but not on the board.
-        self.wc_tesla_defend = float(cfg.get("rewards", "wc_tesla_defend", default=2.0))
-        self.tesla_hold_penalty = float(cfg.get("rewards", "tesla_hold_penalty", default=-1.5))
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -452,10 +264,6 @@ class LiveMatchEnv:
         self.tower_hp.reset()
         self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
-        self._defenders = []
-        self._recent_ranged = None
-        self._recent_rocket = None
-        self._pending_rocket = None
         self._match_bonus = 0.0
         self._nav.reset_state()
         while True:
@@ -480,6 +288,8 @@ class LiveMatchEnv:
                 self._last_frame = frame
                 self._prev_mass = enemy_mass(frame, self.cfg)
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
+                self._prev_chip_prog = 0.0        # convex enemy-tower chip progress (offense)
+                self._prev_chip_prog_def = 0.0    # convex own-tower chip progress (defense)
                 return self._last_obs
             self._nav.handle(frame, state)   # robust menu nav: located buttons + MATCH_END escalation + popup watchdog + logging
 
@@ -608,6 +418,40 @@ class LiveMatchEnv:
         killed = float(np.clip(mass_delta / self.defeat_cap, -1.0, 1.0))
         return (killed - spent / self.value_norm) * self.w_elixir_trade
 
+    def _forced_expensive_spend(self, card_id: int, cy: float) -> bool:
+        """A defensive spend is FORCED (waive its elixir-trade penalty) when a threat is recognised, the
+        play is on your defensive half, and NO CHEAPER card in hand or the NEXT slot could counter it --
+        e.g. rocket the hogs/balloon, or centre X-Bow to pull a wincon, when Tesla is too deep in the cycle.
+        Overspending when a cheaper answer WAS immediately available is NOT waived."""
+        if cy < 0.5:
+            return False                                  # offensive placements pay their spend normally
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return False
+        if not (0 <= card_id < self.n_cards):
+            return False
+        my_elix = self.card_elixir[card_id]
+        avail = [c for c in self.hand_ids if 0 <= c < self.n_cards]
+        if 0 <= self.next_id < self.n_cards:
+            avail.append(self.next_id)                    # the NEXT (preview) card counts as immediately available
+        for c in avail:
+            if (c != card_id and self.card_elixir[c] < my_elix
+                    and card_threat.counters(self._deck_profiles[c], tid)):
+                return False                             # a cheaper counter was in hand / next -> not forced
+        return True
+
+    def _chip_progress(self, hp_list, full: float) -> float:
+        """Convex chip 'progress' over a side's princess towers: sum of (damage_fraction ** chip_power) so
+        PARTIAL chip is worth sub-proportionally LESS than finishing the tower. Most of a tower's value is
+        the CROWN (take/lose), so the reward JUMPS when it is actually destroyed -- a tower at 1-2 HP still
+        fully works, so it's worth far less than one at 0."""
+        prog = 0.0
+        for hp in list(hp_list)[:2]:
+            if full > 0:
+                d = max(0.0, min(1.0, 1.0 - hp / full))
+                prog += d ** self.chip_power
+        return prog
+
     def _bonus(self, credit: float) -> float:
         """Cap the CUMULATIVE positive correctness shaping per match (anti-farm); penalties (<=0) pass
         through untouched."""
@@ -634,8 +478,6 @@ class LiveMatchEnv:
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
         is_rd = card_id in self.royal_delivery_ids
-        is_log = card_id in self.log_ids
-        before = self._last_frame if eval_spell else None
         self._execute(action)
         spell_samples = []
         if eval_spell:
@@ -663,14 +505,21 @@ class LiveMatchEnv:
         if state == GameState.IN_MATCH:
             prev_princess = list(self.tower.mine_alive[:2])
             prev_enemy = list(self.tower.enemy_alive[:2])
-            reward = self.tower.step(frame) + self.tower_hp.step(frame)
-            # a felled princess -> top its GRADUAL HP penalty up to the full lose_own_tower
-            # (covers a tower bursted faster than its HP could be read, or hp_reward off)
-            princess_fell = False
-            for i in range(len(prev_princess)):
+            # OUTCOME compass: the CROWN is the big JUMP (enemy tower taken -> +take, my king lost -> +lose);
+            # tower_hp.step still READS/updates per-tower HP -- its own linear return is unused now.
+            crown_r = self.tower.step(frame)
+            self.tower_hp.step(frame)
+            # CONVEX chip proxy: partial chip is worth sub-proportionally little (a tower at 1-2 HP still
+            # works), so the reward JUMPS on the crown, not gradually with damage.
+            ep = self._chip_progress(self.tower_hp.enemy_hp, self.tower_hp.full)
+            reward = crown_r + (ep - self._prev_chip_prog) * self.tower_chip_scale
+            self._prev_chip_prog = ep
+            mp = self._chip_progress(self.tower_hp.my_hp, self.tower_hp.my_full)
+            reward -= (mp - self._prev_chip_prog_def) * self.tower_chip_scale
+            self._prev_chip_prog_def = mp
+            for i in range(len(prev_princess)):              # a felled princess -> the big defensive jump
                 if prev_princess[i] and not self.tower.mine_alive[i]:
-                    reward += self.tower_hp.on_my_tower_destroyed(i)
-                    princess_fell = True
+                    reward += self.w_lose
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
@@ -698,6 +547,8 @@ class LiveMatchEnv:
             gx, gy = cell % self.gw, cell // self.gw
             cx, cy = self.actions.cell_center(gx, gy)
             spent = float(self.card_elixir[card_id]) if (play and 0 <= card_id < self.n_cards) else 0.0
+            if play and self._forced_expensive_spend(card_id, cy):
+                spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
             if play:
                 reward += self._bonus(self._threat_response_live(card_id, cx, cy, cur_mass))   # (1) counter the assessed threat
                 reward += self._bonus(self._wincon_exec_live(card_id, cx, cy))                  # (3) win-condition executed right

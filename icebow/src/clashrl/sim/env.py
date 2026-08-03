@@ -78,8 +78,9 @@ class SimMatchEnv:
         self.correctness_cap = r("correctness_cap", 8.0)     # per-match cap on POSITIVE shaping (anti-farm)
         # OUTCOME compass -- DEMOTED so correctness dominates (winning is not the objective).
         self.w_win = r("win", 2.0); self.w_loss = r("loss", -2.0)
-        self.w_take = r("take_enemy_tower", 0.5); self.w_lose = r("lose_own_tower", -0.5)
-        self.tower_chip_scale = r("tower_chip_scale", 0.5)   # tiny tower-chip proxy (correctness carries the signal)
+        self.w_take = r("take_enemy_tower", 1.0); self.w_lose = r("lose_own_tower", -1.0)   # the CROWN jump on a take/loss
+        self.tower_chip_scale = r("tower_chip_scale", 0.3)   # convex chip POOL per tower (small; the crown is the jump)
+        self.chip_power = float(cfg.get("env", "tower_chip_power", default=2.0))   # >1 -> partial chip sub-proportional
         # --- doctrine GEOMETRY (kept: the win-condition / counter checks the correctness terms use) ---
         self.combo_mult = float(cfg.get("rewards", "rocket_combo_mult", default=3.0))   # rocket 2-for-1 = wincon_exec x this
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))     # same-lane tolerance for an intercept
@@ -163,6 +164,8 @@ class SimMatchEnv:
         self.rng.shuffle(self.cycle)
         self._match_bonus = 0.0
         self._prev_evalue = 0.0
+        self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
+        self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
         self._prev_my_crowns = 0
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
@@ -314,6 +317,38 @@ class SimMatchEnv:
                 v += (u.spec.elixir / max(1, u.spec.count)) * frac
         return v
 
+    def _forced_expensive_spend(self, card_id: int, ny: float) -> bool:
+        """A defensive spend is FORCED (waive its elixir-trade penalty) when a threat is recognised, the
+        play is on your defensive half, and NO CHEAPER card in hand or the NEXT slot could counter that
+        threat -- e.g. rocket the hogs/balloon, or centre X-Bow to pull a wincon, when Tesla is too deep in
+        the cycle. Overspending when a cheaper answer WAS immediately available is NOT waived."""
+        if ny < 0.5:
+            return False                                  # offensive placements pay their spend normally
+        tid = self._threat_id
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return False
+        my_elix = self.specs[card_id].elixir
+        avail = set(self._hand_ids())
+        if len(self.cycle) > 4:
+            avail.add(self.cycle[4])                     # the NEXT (preview) card counts as immediately available
+        for c in avail:
+            if (c != card_id and self.specs[c].elixir < my_elix
+                    and card_threat.counters(self._deck_profiles[c], tid)):
+                return False                             # a cheaper counter was in hand / next -> not forced
+        return True
+
+    def _chip_progress(self, towers) -> float:
+        """Convex chip 'progress' over a side's princess towers: sum of (damage_fraction ** chip_power) so
+        PARTIAL chip is worth sub-proportionally LESS than finishing the tower. Most of a tower's value is
+        the CROWN (take/lose), so the reward JUMPS when the tower is actually destroyed -- a tower at 1-2 HP
+        still fully works, so it's worth far less than one at 0."""
+        prog = 0.0
+        for t in towers[:2]:
+            if t.max_hp > 0:
+                d = max(0.0, min(1.0, 1.0 - t.hp / t.max_hp))
+                prog += d ** self.chip_power
+        return prog
+
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0
@@ -326,6 +361,8 @@ class SimMatchEnv:
             if self.eng.deploy(0, spec, nx, ny):               # affordable + placed
                 spent = float(spec.elixir)
                 placed_id = card_id
+                if self._forced_expensive_spend(card_id, ny):
+                    spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
                 reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
                 reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
@@ -363,8 +400,14 @@ class SimMatchEnv:
                     and self._enemy_chip_total < self.eng.princess_hp * self.xbow_success_frac)):
             self._defensive = True
         # --- OUTCOME compass (DEMOTED: winning is not the objective, just a faint direction) ---
-        reward += (chip0 / self.eng.princess_hp) * self.tower_chip_scale        # tiny enemy-tower chip proxy
-        reward -= (chip1 / self.eng.princess_hp) * self.tower_chip_scale        # tiny own-tower loss proxy
+        # CONVEX tower-chip proxy: partial chip is worth sub-proportionally little; the CROWN below is the
+        # big JUMP when a tower is actually destroyed (a tower at 1-2 HP still works -> worth far less).
+        ep = self._chip_progress(self.eng.towers[1])
+        reward += (ep - self._prev_chip_prog) * self.tower_chip_scale
+        self._prev_chip_prog = ep
+        mp = self._chip_progress(self.eng.towers[0])
+        reward -= (mp - self._prev_chip_prog_def) * self.tower_chip_scale
+        self._prev_chip_prog_def = mp
         if my_c > self._prev_my_crowns:
             reward += self.w_take * (my_c - self._prev_my_crowns)
         if op_c > self._prev_op_crowns:

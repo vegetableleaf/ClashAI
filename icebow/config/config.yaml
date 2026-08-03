@@ -216,10 +216,11 @@ rewards:
   # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
   win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
   loss: -2.0
-  take_enemy_tower: 0.5    # crown deltas -- a light nudge, not the objective
-  lose_own_tower: -0.5
-  tower_chip_scale: 0.5    # tiny per-step tower-HP-chip proxy (both directions); correctness carries the real signal
-  hp_scale: 0.5            # live only: a full enemy-princess chip (read by tower_hp) = this. Kept small (the demoted compass)
+  take_enemy_tower: 1.0    # CROWN JUMP: destroying a tower is a big discrete reward -- a tower at 1-2 HP still fully works
+  lose_own_tower: -1.0     # the matching defensive jump when YOUR princess/king falls
+  tower_chip_scale: 0.3    # CONVEX chip POOL per tower (with env.tower_chip_power): PARTIAL chip is worth sub-proportionally
+                           # little, so the reward JUMPS on the crown (take), not gradually with damage. Total chip << the crown.
+  hp_scale: 0.5            # (no longer scales the reward -- tower_hp still reads it; the convex chip proxy replaced its linear return)
 
 # --- Automatic win/loss detection (results scoreboard) -------------------
 # Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
@@ -283,6 +284,8 @@ env:
   cycle_spare_elixir: 7.0        # 'spare elixir' threshold: cycling toward a needed counter is rewarded only at/above this
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
+  tower_chip_power: 2.0          # convexity of the tower-chip reward: >1 -> PARTIAL chip worth sub-proportionally little
+                                 #   (reward = sum over towers of damage_frac**this * tower_chip_scale). The crown is the jump.
   tower_shaping: true
   tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
   tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
