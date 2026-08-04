@@ -96,18 +96,19 @@ class WindowCapture:
             sat = hsv[..., 1].astype(np.float32)
             val = hsv[..., 2].astype(np.float32)
             h, w = sat.shape
-            # 1. custom title bar: contiguous chrome rows from the top (gray OR near-black).
-            row_sat = sat.mean(axis=1)
-            row_val = val.mean(axis=1)
+            chrome = ((sat < 50.0) | (val < 25.0)).astype(np.float32)   # unsaturated OR dark = chrome-ish
+            # 1. custom title bar: rows that are ALMOST ENTIRELY chrome (fraction, not mean -- the
+            #    colorful app icon / window buttons can't stop the trim the way they skewed a mean).
+            row_frac = chrome.mean(axis=1)
             top = 0
             limit = int(h * 0.12)
-            while top < limit and (row_sat[top] < 40.0 or row_val[top] < 20.0):
+            while top < limit and row_frac[top] > 0.90:
                 top += 1
-            # 2. LEFT SIDEBAR (gray icon rail) or pillarbox: unsaturated OR near-black columns.
-            col_sat = sat[top:, :].mean(axis=0)
+            # 2. LEFT SIDEBAR (gray icon rail) or pillarbox: near-total chrome columns.
+            col_frac = chrome[top:, :].mean(axis=0)
             col_val = val[top:, :].mean(axis=0)
             x0, x1 = 0, w
-            while x0 < w * 0.25 and (col_sat[x0] < 40.0 or col_val[x0] < 18.0):
+            while x0 < w * 0.25 and col_frac[x0] > 0.90:
                 x0 += 1
             while x1 > w * 0.75 and col_val[x1 - 1] < 18.0:   # right side: black bars only
                 x1 -= 1

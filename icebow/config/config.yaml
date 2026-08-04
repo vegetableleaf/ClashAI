@@ -84,10 +84,14 @@ states:
   # (measured: real OT 0.65-0.95 across sessions, menus/results <= 0.57 -- scale drift means it
   # will MISS sometimes, which is fine: play's in_match grace hold covers the misses, and the
   # strictness is what keeps it from ever re-breaking menu navigation like the first attempt).
+  # in_match_v2.png = the RESTYLED 'Time left:' text band after the 2026-08 game update (new dark
+  # rounded plate; the old crop flatlined at ~0.49 on new footage). The OLD in_match.png stays
+  # listed so pre-update recordings (verify / label / outcome mining) still read correctly.
   in_match:
     threshold: 0.80
     templates:
       - "in_match.png"
+      - "in_match_v2.png"
       - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
   match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
 
@@ -480,7 +484,7 @@ detect:
   # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
-  capture_during_train: false     # set false to disable the harvest during train-rl
+  capture_during_train: true    # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl session
