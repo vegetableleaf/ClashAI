@@ -116,6 +116,14 @@ observation:
   # Flipping this changes threat_dim (16 <-> 34 = 16 base + 10 identity + 8 memory) -> a FRESH train-sim +
   # train-rl (init train-rl from the SIM checkpoint so the wide block carries; NB train-bc caps threats at 16).
   use_detector: true            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
+  # Stage-3b gate: the troop-INTERACTION block -- an engineered predictor of WHO IS MOVING AT WHOM using
+  # CR's deterministic targeting rules (building-targeters ignore troops; ground-only attackers can't take
+  # air; else nearest-in-sight, else march at the nearest alive tower). The policy sees a fixed 12-dim
+  # TOWER-PRESSURE summary: per tower (your L/R/king, then theirs) the incoming elixir-value predicted to
+  # be heading at it + an urgency (nearest attacker's ETA). SIM builds it from ground truth (whitelist +
+  # recall-noise scoped); LIVE from the detector's tagged tracks. Flipping this WIDENS threat_dim (+12 ->
+  # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
+  use_interactions: false
   detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. LOWERED 0.75 -> 0.50 for
                                  # board-10: its confidence is calibrated LOWER than board-9 (at 0.75 it fires far
                                  # less despite being the better model); at 0.50 its whitelist recall beats board-9's

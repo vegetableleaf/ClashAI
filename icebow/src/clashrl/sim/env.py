@@ -18,6 +18,7 @@ import numpy as np
 from ..actions import ActionSpace
 from ..cards import CardDB
 from .. import card_threat
+from .. import interactions
 from ..cycle import cycle_vector
 from .engine import SimEngine, build_spec
 from .meta_decks import load_meta_decks
@@ -55,8 +56,13 @@ class SimMatchEnv:
         self.det_precision = float(cfg.get("observation", "sim_detector_precision", default=1.0))
         # optional PER-CARD recall override (reliable vs weak cards); cards absent use the scalar det_recall
         self.det_recall_by_card = dict(cfg.get("observation", "sim_detector_recall_by_card", default=None) or {})
-        self.threat_dim = _THREAT_DIM + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
-                                         if self.use_detector else 0)
+        # Stage-3b gate: the troop-INTERACTION block (who is predicted to be moving at which tower)
+        self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
+        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
+        self.threat_dim = (_THREAT_DIM
+                           + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
+                              if self.use_detector else 0)
+                           + (interactions.INTERACTION_DIM if self.use_interactions else 0))
 
         def _base(k):
             return k[:-4] if k.endswith("_evo") else k
@@ -167,7 +173,12 @@ class SimMatchEnv:
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                       self.det_recall_by_card))
-        return np.concatenate([base, self._threat_id, mem]).astype(np.float32)
+        parts = [base, self._threat_id, mem]
+        if self.use_interactions:                     # who is predicted to be marching at which tower
+            units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
+                                                         self.det_recall, self.det_recall_by_card)
+            parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db, self.sight_range))
+        return np.concatenate(parts).astype(np.float32)
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape

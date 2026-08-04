@@ -33,6 +33,7 @@ from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from . import card_threat
+from . import interactions
 from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
@@ -191,6 +192,10 @@ class LiveMatchEnv:
             enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
             track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)),
             forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)))
+        # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's
+        self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
+        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
+        self._last_dets_all = []                         # every tagged detection this frame (both teams)
         self._cycle_tracker = CycleTracker(self.n_cards)   # live estimate of the upcoming-card order (graded next_vec)
         if self.use_detector:
             self.threat_vec = np.concatenate(
@@ -202,6 +207,9 @@ class LiveMatchEnv:
                 self._detector = det if det.available else None
             except Exception:
                 self._detector = None
+        if self.use_interactions:                        # widen by the interaction block (zeros until read)
+            self.threat_vec = np.concatenate(
+                [self.threat_vec, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -233,7 +241,8 @@ class LiveMatchEnv:
         self._last_threat = self.threat_tracker.update(frame, time.time())
         base = self._last_threat.vector()
         if not self.use_detector:
-            self.threat_vec = base
+            self.threat_vec = base if not self.use_interactions else np.concatenate(
+                [base, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
             return
         dets = self._detect_enemies(frame)                                   # ONE detector pass this frame
         now = time.time()
@@ -244,7 +253,16 @@ class LiveMatchEnv:
         self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets])           # memory: BOTH halves (incl. staging)
-        self.threat_vec = np.concatenate([base, self._threat_id, mem]).astype(np.float32)
+        parts = [base, self._threat_id, mem]
+        if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
+            mine_a, enemy_a, _ = _anchors(self.cfg)
+            my_t = [(ax, ay, bool(self.tower.mine_alive[i])) for i, (ax, ay) in enumerate(mine_a[:3])]
+            en_t = [(ax, ay, bool(self.tower.enemy_alive[i])) for i, (ax, ay) in enumerate(enemy_a[:3])]
+            units = [("mine" if d.team == "mine" else "enemy", d.base, d.cx, d.gy)
+                     for d in self._last_dets_all
+                     if d.team in ("mine", "enemy") and d.base in self.detector_cards]
+            parts.append(interactions.interaction_vector(units, my_t, en_t, self.db, self.sight_range))
+        self.threat_vec = np.concatenate(parts).astype(np.float32)
 
     def _detect_enemies(self, frame):
         """ONE detector pass -> whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]).
@@ -257,6 +275,7 @@ class LiveMatchEnv:
         except Exception:
             return []
         self._team_tracker.tag(dets, time.time())     # correct team from your own plays BEFORE filtering
+        self._last_dets_all = dets                    # kept for the interaction block (both teams)
         return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
 
     # -- episode lifecycle --------------------------------------------

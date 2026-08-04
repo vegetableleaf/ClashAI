@@ -112,6 +112,34 @@ def opponent_memory_items(engine, team: int, whitelist) -> "list[tuple[str, floa
     return items
 
 
+def interaction_state(engine, team: int, whitelist, rng=None, recall: float = 1.0,
+                      recall_by_card=None):
+    """Ground-truth inputs for :mod:`clashrl.interactions` from ``team``'s point of view, in its LOCAL
+    frame (mirrored for team 1): (units, my_towers, enemy_towers). Units = BOTH sides' recognisable
+    (whitelisted) troops/buildings tagged 'mine'/'enemy'; optional detector-noise RECALL drops mimic
+    live coverage (the live block is built from detections, which miss units)."""
+    units = []
+    for u in engine.units:
+        if u.hp <= 0:
+            continue
+        base = getattr(u.spec, "base", None)
+        if base is None or (whitelist and base not in whitelist):
+            continue
+        if rng is not None:
+            r = recall_by_card.get(base, recall) if recall_by_card else recall
+            if r < 1.0 and rng.random() > r:
+                continue                              # detector would have MISSED this unit
+        lx, ly = to_local(u.x, u.y, team)
+        units.append(("mine" if u.team == team else "enemy", base, lx, ly))
+    def _side(tws):
+        out = []
+        for t in tws[:3]:
+            lx, ly = to_local(t.x, t.y, team)
+            out.append((lx, ly, bool(t.alive)))
+        return out
+    return units, _side(engine.towers[team]), _side(engine.towers[1 - team])
+
+
 def apply_detector_noise(items, recall: float, precision: float, rng, whitelist, recall_by_card=None):
     """Simulate the LIVE YOLO detector's imperfect RECALL (missed units) + PRECISION (misclassifications)
     on the sim's ground-truth ``items`` = ``[(base_card, depth/local_y), ...]``, so a sim-trained prior

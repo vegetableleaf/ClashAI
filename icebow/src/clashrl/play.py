@@ -21,6 +21,7 @@ from .controller import Controller
 from .reward import TowerTracker, weaker_princess_cell, xbow_lock_cell
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
+from . import interactions
 from . import card_threat
 from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
@@ -116,13 +117,20 @@ def play(cfg) -> None:
     # Stage 3: when the checkpoint was trained WITH the identity block (threat_dim > THREAT_DIM),
     # append card_threat's identity features for the RECOGNISED, HIGH-confidence enemy cards the
     # detector names on your half. Gated on the checkpoint width so play always matches the net.
-    want_identity = threat_dim > THREAT_DIM
-    want_memory = threat_dim >= THREAT_DIM + card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
+    extra_dim = threat_dim - THREAT_DIM
+    want_identity = extra_dim in (card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM,
+                                  card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
+                                  + interactions.INTERACTION_DIM)
+    want_memory = want_identity
+    want_interactions = extra_dim in (interactions.INTERACTION_DIM,
+                                      card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
+                                      + interactions.INTERACTION_DIM)
     detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
     detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
     predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+    sight_range = float(cfg.get("sim", "sight_range", default=0.12))
     _detector = None
-    if want_identity:
+    if want_identity or want_interactions:
         try:
             from .replay_mine import load_detector
             _det = load_detector(cfg)
@@ -168,6 +176,14 @@ def play(cfg) -> None:
             blocks.append(ident)
         if want_memory:
             blocks.append(mem)
+        if want_interactions:                          # predicted tower pressure from ALL tagged detections
+            my_t = [(ax, ay, bool(tower_tracker.mine_alive[i]))
+                    for i, (ax, ay) in enumerate(tower_tracker.mine_a[:3])]
+            en_t = [(ax, ay, bool(tower_tracker.enemy_alive[i]))
+                    for i, (ax, ay) in enumerate(tower_tracker.enemy_a[:3])]
+            units = [("mine" if d.team == "mine" else "enemy", d.base, d.cx, d.gy)
+                     for d in dets_all if d.team in ("mine", "enemy") and d.base in detector_cards]
+            blocks.append(interactions.interaction_vector(units, my_t, en_t, _db, sight_range))
         return np.concatenate(blocks).astype(np.float32) if blocks else np.zeros(0, np.float32)
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
@@ -193,7 +209,7 @@ def play(cfg) -> None:
         next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
-        if want_identity:
+        if want_identity or want_interactions:
             threat_vec = np.concatenate([threat_vec, _threat_extra(frame)]).astype(np.float32)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)

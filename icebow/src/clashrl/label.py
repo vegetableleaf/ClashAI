@@ -19,6 +19,7 @@ import numpy as np
 
 from .actions import ActionSpace
 from . import card_threat
+from . import interactions
 from .cards import CardDB
 from .threats import read_threat_window
 from .vision import Vision
@@ -89,6 +90,27 @@ def _enemy_dets(det, cfg, frame):
         return []
     whitelist = set(cfg.get("observation", "detector_cards", default=[]))
     return [d for d in dets if d.team == "enemy" and d.base in whitelist]
+
+
+def _interaction_block(det, db, cfg, frame):
+    """OFFLINE troop-interaction block: predicted tower pressure from ALL whitelisted detections (both
+    teams, colour team read). Towers are assumed ALIVE (no offline tower tracking) -- coarse but the
+    same 12 dims the live env supplies. Zeros when the detector is unavailable."""
+    if det is None or frame is None:
+        return np.zeros(interactions.INTERACTION_DIM, np.float32)
+    try:
+        dets = det.detect(frame, conf=float(cfg.get("observation", "detector_conf", default=0.5)))
+    except Exception:
+        return np.zeros(interactions.INTERACTION_DIM, np.float32)
+    whitelist = set(cfg.get("observation", "detector_cards", default=[]))
+    units = [("mine" if d.team == "mine" else "enemy", d.base, d.cx, d.gy)
+             for d in dets if d.team in ("mine", "enemy") and d.base in whitelist]
+    mine_a = cfg.get("env", "my_towers", default=[[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]])
+    enemy_a = cfg.get("env", "enemy_towers", default=[[0.25, 0.205], [0.745, 0.205], [0.48, 0.11]])
+    my_t = [(ax, ay, True) for ax, ay in mine_a[:3]]
+    en_t = [(ax, ay, True) for ax, ay in enemy_a[:3]]
+    sight = float(cfg.get("sim", "sight_range", default=0.12))
+    return interactions.interaction_vector(units, my_t, en_t, db, sight)
 
 
 def _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, dt):
@@ -178,7 +200,10 @@ def label_session(cfg, session: Path, debug: bool = False, det=None, db=None, wi
         elixirs.append([vision.read_elixir(frame) / 10.0])
         if wide:
             ident, mem = _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, ident_dt)
-            threats.append(np.concatenate([thr.vector(), ident, mem]).astype(np.float32))
+            parts = [thr.vector(), ident, mem]
+            if bool(cfg.get("observation", "use_interactions", default=False)):
+                parts.append(_interaction_block(det, db, cfg, frame))
+            threats.append(np.concatenate(parts).astype(np.float32))
         else:
             threats.append(thr.vector())
         if debug:
