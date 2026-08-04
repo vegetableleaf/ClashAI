@@ -61,13 +61,13 @@ much better defence and elixir-trade decisions.
 
 ### The deck it's currently tuned for
 
-Tornado, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Knight, The Log,
+Tornado, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Knight (Evolved), The Log,
 Skeletons — the **standard icebow (X-Bow 2.9) control** deck (Classic 1v1; the card levels are set to a
 real account's, 12–16). The reward shaping teaches: defend + cycle with the cheap
 cards, use the **X-Bow** as the win condition (placed forward, within firing range, to
-lock the enemy princess tower), the **Knight** as a cheap mini-tank to defend and tank
-for the X-Bow, and the **Rocket** to clear big pushes or cycle-chip the tower
-during double/triple elixir. It also follows a simple **offense→defense doctrine**: if
+lock the enemy princess tower), the **Evolved Knight** as a cheap mini-tank (its evolution
+gains a shield) to defend and tank for the X-Bow, and the **Rocket** to clear big pushes or
+cycle-chip the tower during double/triple elixir. It also follows a simple **offense→defense doctrine**: if
 the X-Bow can't break through by double elixir (or once it's up a tower) it switches to a
 defensive X-Bow + rocket-cycle to close the game — and it plays purely defensively
 against fast-cycle, heavy-beatdown, and Royal-Recruits/Royal-Hogs split-lane decks that

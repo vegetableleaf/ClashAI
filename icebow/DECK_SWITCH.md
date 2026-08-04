@@ -4,16 +4,17 @@
 deck before Phase 2. This file is the single ordered source of truth for the switch — read it
 first (human steps in §1, AI/code steps in §2, reward audit in §3, roadmap in §4).
 
-**Deck (Classic 1v1, real account levels):** Evo Tesla, Knight, X-Bow, Ice Wizard, Skeletons,
-The Log, Rocket, Tornado — the standard icebow / X-Bow 2.9 control list. (2026-08-04: Miner → Knight
+**Deck (Classic 1v1, real account levels):** Evo Tesla, Evo Knight, X-Bow, Ice Wizard, Skeletons,
+The Log, Rocket, Tornado — the standard icebow / X-Bow 2.9 control list. (2026-08-04: Miner → Evo Knight
 and Royal Delivery → Tornado. Earlier icebow swap: Electro Spirit → The Log. Gone: Miner, Royal
 Delivery, Ronin, Ice Spirit.)
 
 **Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
 its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
-fallback). Knight = cheap mini-tank: defend, body-block, and tank for a fresh X-Bow (your half).
-Rocket = clear big pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log /
-Skeletons) cycle and stall; defenders (Knight / Tesla / Ice Wizard) clean up.
+fallback). Evo Knight = cheap mini-tank (its 2-cycle evolution gains a shield + damage-reduction
+dash): defend, body-block, and tank for a fresh X-Bow (your half). Rocket = clear big pushes, or
+cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log / Skeletons) cycle and stall; defenders
+(Evo Knight / Evo Tesla / Ice Wizard) clean up.
 
 ---
 
@@ -25,8 +26,9 @@ Skeletons) cycle and stall; defenders (Knight / Tesla / Ice Wizard) clean up.
    for this deck. Play many matches: `python run.py record` → Ctrl+C after the results screen.
 3. **Rebuild card templates** (needed before labeling — hand recognition is template matching):
    `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
-   `tornado.png`, `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
-   `miner.png`, `the_log.png`, `skeletons.png` (extra crops of one card: `<key>_2.png`).
+   `tornado.png`, `tesla.png` + `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
+   `knight.png` + `knight_evo.png`, `the_log.png`, `skeletons.png` (evolved cards cycle between
+   their normal and evolved face, so capture BOTH; extra crops of one card: `<key>_2.png`).
    Then the next-card previews under `templates/next/`. Verify: `python run.py verify --hand`.
 4. **Re-verify tower calibration:** `python run.py verify --towers` (should be unchanged; recalibrate
    only if the window moved).

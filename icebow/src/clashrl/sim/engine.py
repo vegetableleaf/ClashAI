@@ -121,6 +121,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         p_r = float(evo.get("pulse_radius", 0.0)) * (_REACH["long"] / 5.5)   # tiles -> normalized
         p_stun = float(evo.get("pulse_stun", 0.0))
         p_int = float(evo.get("pulse_interval", 0.0))
+        if "shield" in (evo.get("gains") or []):             # evo-granted shield (Evo Knight) -> shield_hp below
+            flags.add("shield")
     sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
     hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
     sight = float(db.sight_range_tiles(base)) * (_REACH["long"] / 5.5)   # per-troop aggro radius (tiles -> normalized)
