@@ -16,6 +16,7 @@ import numpy as np
 
 from .engine import build_spec
 from .. import card_threat
+from .. import interactions
 from ..cycle import cycle_vector
 from . import view
 
@@ -128,6 +129,8 @@ class SelfPlayOpponent:
         self.det_recall = env.det_recall              # mirror the sim detector-noise so a snapshot self sees
         self.det_precision = env.det_precision         # the same sparse/noisy identity signal it trained on
         self.det_recall_by_card = env.det_recall_by_card   # ...including the per-card recall override
+        self.use_interactions = env.use_interactions   # mirror the troop-interaction block for team 1
+        self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
         self._prev_ident_depth = 0.0
@@ -158,7 +161,10 @@ class SelfPlayOpponent:
             hand[i] = 1.0
         nxt = cycle_vector(self.cycle, self.n_cards)   # graded upcoming-order (matches the trained policy input)
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
-        thr = view.threat_vector(eng, self.threat_dim - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0), team=1)
+        base_dim = self.threat_dim \
+            - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0) \
+            - (interactions.INTERACTION_DIM if self.use_interactions else 0)
+        thr = view.threat_vector(eng, base_dim, team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
                 view.apply_detector_noise(view.identity_items(eng, 1, self.detector_cards),
@@ -171,6 +177,11 @@ class SelfPlayOpponent:
                                           self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                           self.det_recall_by_card))
             thr = np.concatenate([thr, ident, mem]).astype(np.float32)
+        if self.use_interactions:                      # mirrored: team 1 sees ITS towers as 'mine'
+            units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,
+                                                         self.det_recall, self.det_recall_by_card)
+            ivec = interactions.interaction_vector(units, mine_t, en_t, self.db, self.sight_range)
+            thr = np.concatenate([thr, ivec]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
         obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0
