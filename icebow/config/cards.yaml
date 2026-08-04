@@ -34,7 +34,7 @@ deck:
     - {card: ice_wizard, level: 12}
     - {card: x_bow, level: 16}
     - {card: rocket, level: 14}
-    - {card: knight, level: 16}       # swapped in for miner 2026-08-04 -> standard icebow (X-Bow 2.9) list
+    - {card: knight, evolved: true, level: 16}   # EVO Knight (2-cycle evolution: gains a shield + damage-reduction dash); swapped in for miner 2026-08-04
     - {card: the_log, level: 14}
     - {card: skeletons, level: 13}
 
