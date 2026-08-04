@@ -18,6 +18,8 @@ import cv2
 import numpy as np
 
 from .actions import ActionSpace
+from . import card_threat
+from .cards import CardDB
 from .threats import read_threat_window
 from .vision import Vision
 
@@ -76,7 +78,40 @@ def _extract_plays(events, region, slots, click_r, pair_timeout, a_top, a_bot):
     return plays
 
 
-def label_session(cfg, session: Path, debug: bool = False) -> int:
+def _enemy_dets(det, cfg, frame):
+    """One detector pass -> whitelisted ENEMY detections (colour team read; offline has no own-play
+    tag correction). [] when the detector is unavailable -- the blocks then stay zero, same as live."""
+    if det is None or frame is None:
+        return []
+    try:
+        dets = det.detect(frame, conf=float(cfg.get("observation", "detector_conf", default=0.5)))
+    except Exception:
+        return []
+    whitelist = set(cfg.get("observation", "detector_cards", default=[]))
+    return [d for d in dets if d.team == "enemy" and d.base in whitelist]
+
+
+def _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, dt):
+    """OFFLINE mirror of env._update_threat's detector path: run the detector on a frame ~dt earlier
+    (for the approach-velocity feature) and on the play frame, feed the opponent memory in time order,
+    and return (identity block, memory block) exactly as the live policy would have seen them."""
+    horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+    prev_depth = 0.0
+    d_prev = _enemy_dets(det, cfg, prev_frame)
+    if d_prev:
+        v_prev = card_threat.identity_threat_vector(
+            [(d.base, (d.gy - 0.5) / 0.5) for d in d_prev if d.gy >= 0.5], db)
+        prev_depth = float(v_prev[7])
+        opp_mem.update([(d.base, d.gy) for d in d_prev])
+    d_now = _enemy_dets(det, cfg, frame)
+    ident = card_threat.identity_threat_vector(
+        [(d.base, (d.gy - 0.5) / 0.5) for d in d_now if d.gy >= 0.5], db,
+        prev_depth=prev_depth, dt=max(1e-3, dt), horizon=horizon)
+    mem = opp_mem.update([(d.base, d.gy) for d in d_now])
+    return ident, mem
+
+
+def label_session(cfg, session: Path, debug: bool = False, det=None, db=None, wide: bool = False) -> int:
     meta, events, video = _load(session)
     if video is None:
         print(f"[label] no video in {session}")
@@ -101,6 +136,11 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     vision = Vision(cfg)
     obs, acts, hands, nexts, elixirs, threats = [], [], [], [], [], []
     skipped = 0
+    # Stage-3 WIDE threats: identity + opponent-memory blocks from the detector, run OFFLINE over the
+    # recording at ~the live act cadence (a frame ~ident_dt before each play gives the velocity read).
+    opp_mem = card_threat.OpponentMemory(db) if wide else None
+    ident_dt = float(cfg.get("play", "act_period", default=1.5))
+    prev_play_t = None
     dbg_dir = session / "labeled"
     if debug:
         dbg_dir.mkdir(exist_ok=True)
@@ -108,6 +148,17 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
     for k, p in enumerate(plays):
         fi = bisect.bisect_left(frame_times, p["t"])
         fi = max(0, min(fi, max(total - 1, 0)))
+        prev_frame = None
+        if wide:
+            if prev_play_t is None or (p["t"] - prev_play_t) > 30.0:
+                opp_mem.reset()                          # long gap = a new match / fresh opponent read
+            prev_play_t = p["t"]
+            fj = bisect.bisect_left(frame_times, p["t"] - ident_dt)
+            fj = max(0, min(fj, max(total - 1, 0)))
+            if fj < fi:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, fj)
+                ok, pf = cap.read()
+                prev_frame = pf if ok else None
         # read the enemy threat over the short window ending at the play (motion + projectile),
         # so the dataset carries the same threat vector the live env feeds the policy.
         thr, frame = read_threat_window(cap, fi, frame_times, cfg)
@@ -125,7 +176,11 @@ def label_session(cfg, session: Path, debug: bool = False) -> int:
         hands.append(vision.hand_multihot(hand_ids))
         nexts.append(vision.next_onehot(vision.recognize_next(frame)))
         elixirs.append([vision.read_elixir(frame) / 10.0])
-        threats.append(thr.vector())
+        if wide:
+            ident, mem = _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, ident_dt)
+            threats.append(np.concatenate([thr.vector(), ident, mem]).astype(np.float32))
+        else:
+            threats.append(thr.vector())
         if debug:
             f = frame.copy()
             sx, sy = slots[p["slot"]]
@@ -166,5 +221,20 @@ def label(cfg, session_arg=None, do_all=False, debug=False) -> None:
     if not sessions:
         print(f"[label] no sessions under {root}")
         return
-    total = sum(label_session(cfg, Path(s), debug=debug) for s in sessions)
+    # Stage 3: when the detector obs is ON, the dataset carries the WIDE threat vector (base 16 +
+    # identity 10 + memory 8 = 34) built by running the trained detector OFFLINE over the recordings --
+    # the same signal the live policy sees, so train-bc no longer narrows a 34-dim policy to 16.
+    wide = bool(cfg.get("observation", "use_detector", default=False))
+    det = db = None
+    if wide:
+        db = CardDB(cfg)
+        try:
+            from .replay_mine import load_detector
+            d = load_detector(cfg)
+            det = d if getattr(d, "available", False) else None
+        except Exception:
+            det = None
+        print(f"[label] wide threats (base+identity+memory): detector "
+              + ("loaded" if det is not None else "UNAVAILABLE -> identity/memory blocks stay zero"))
+    total = sum(label_session(cfg, Path(s), debug=debug, det=det, db=db, wide=wide) for s in sessions)
     print(f"[label] done: {total} samples across {len(sessions)} session(s)")

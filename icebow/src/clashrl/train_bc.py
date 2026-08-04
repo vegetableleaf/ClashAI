@@ -16,10 +16,11 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
 from .model import PolicyNet
+from . import card_threat
 from .threats import THREAT_DIM
 
 
-def _load_datasets(root):
+def _load_datasets(root, target_thr: int = THREAT_DIM):
     files = sorted(glob.glob(str(root / "*" / "dataset.npz")))
     obs, acts, hands, nexts, elixirs, threats, grid, deck = [], [], [], [], [], [], None, None
     for f in files:
@@ -32,10 +33,10 @@ def _load_datasets(root):
         nexts.append(d["nexts"] if "nexts" in d else np.zeros_like(d["hands"]))
         elixirs.append(d["elixirs"] if "elixirs" in d
                        else np.zeros((len(d["hands"]), 1), np.float32))
-        t = d["threats"] if "threats" in d else np.zeros((len(d["hands"]), THREAT_DIM), np.float32)
-        if t.shape[1] != THREAT_DIM:            # a relabel changed the width -> pad/truncate to fit
-            fixed = np.zeros((len(t), THREAT_DIM), np.float32)
-            fixed[:, :min(t.shape[1], THREAT_DIM)] = t[:, :min(t.shape[1], THREAT_DIM)]
+        t = d["threats"] if "threats" in d else np.zeros((len(d["hands"]), target_thr), np.float32)
+        if t.shape[1] != target_thr:            # width mismatch (old 16-dim set with a 34-dim policy,
+            fixed = np.zeros((len(t), target_thr), np.float32)   # or vice versa) -> pad zeros / truncate
+            fixed[:, :min(t.shape[1], target_thr)] = t[:, :min(t.shape[1], target_thr)]
             t = fixed
         threats.append(t)
         grid = d["grid"]
@@ -50,7 +51,12 @@ def _load_datasets(root):
 
 def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root)
+    # threat width FOLLOWS the config (Stage-3 gate): 16 base, or 34 = base + identity + memory when
+    # use_detector -- so a wide-labelled dataset trains the SAME shape as the sim policy / live env,
+    # and train-bc no longer silently narrows a 34-dim policy back to 16.
+    target_thr = THREAT_DIM + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
+                               if bool(cfg.get("observation", "use_detector", default=False)) else 0)
+    obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root, target_thr)
     if obs is None:
         print("[train-bc] no identity-labeled datasets found. Build hand templates "
               "(`hand-templates`), then `record` and `label --all`.")
