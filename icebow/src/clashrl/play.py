@@ -44,6 +44,48 @@ def _pick_device(cfg):
         return "cpu"
 
 
+class InMatchGrace:
+    """Sticky in-match hold: the OVERTIME failsafe.
+
+    At overtime the game replaces the 'Time left:' label, and if the strict OT banner
+    template misses too (scale drift), the state reads UNKNOWN mid-match -- the bot would
+    freeze and, after ``play.stuck_timeout``, the nav watchdog would start dismiss-tapping
+    near the hand tray. Bridge: an UNKNOWN read within ``grace_s`` of the last positive
+    IN_MATCH read is HELD as IN_MATCH. Any OTHER positively identified screen
+    (MATCH_END / HOME / PARTY) cancels the anchor, so results screens and menus are never
+    grace-held; the hold can only bridge UNKNOWN stretches that FOLLOW a real match read.
+    """
+
+    def __init__(self, grace_s: float, log):
+        self.grace_s = float(grace_s)
+        self._log = log
+        self._anchor = None          # time of the last positive IN_MATCH detection
+        self._holding = False
+
+    def update(self, state: GameState, now: float) -> GameState:
+        if state == GameState.IN_MATCH:
+            self._anchor = now
+            if self._holding:
+                self._holding = False
+                self._log("[play] in-match read re-acquired -> grace hold released")
+        elif state == GameState.UNKNOWN:
+            if self.grace_s > 0 and self._anchor is not None:
+                gap = now - self._anchor
+                if gap <= self.grace_s:
+                    if not self._holding:
+                        self._holding = True
+                        self._log(f"[play] UNKNOWN {gap:.1f}s after in-match -> grace hold "
+                                  f"(overtime failsafe, up to {self.grace_s:.0f}s)")
+                    return GameState.IN_MATCH
+            if self._holding:
+                self._holding = False
+                self._log("[play] grace hold expired -> UNKNOWN (nav takes over)")
+        else:                        # MATCH_END / HOME / PARTY positively identified
+            self._anchor = None
+            self._holding = False
+        return state
+
+
 def play(cfg) -> None:
     try:
         import torch
@@ -303,6 +345,7 @@ def play(cfg) -> None:
 
     from .nav import MenuNavigator
     nav = MenuNavigator(cfg, controller, vision, label="play", log=log)
+    grace = InMatchGrace(float(cfg.get("play", "in_match_grace_s", default=150)), log)
     prev = None
     last_act = 0.0
     prev_mult = 1
@@ -313,7 +356,7 @@ def play(cfg) -> None:
                 capture.refresh_region()
                 time.sleep(0.3)
                 continue
-            state = vision.detect_state(frame)
+            state = grace.update(vision.detect_state(frame), time.time())
             if state != prev:
                 log(f"[play] state: {state.name}")
                 if state == GameState.IN_MATCH:   # new match -> reset the tower trackers

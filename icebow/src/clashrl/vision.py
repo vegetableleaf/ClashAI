@@ -171,11 +171,16 @@ class Vision:
         return cv2.resize(frame, (self.work_width, max(1, int(round(h * scale)))),
                           interpolation=cv2.INTER_AREA)
 
-    def _find(self, frame: np.ndarray, template_name, threshold: float) -> bool:
+    def _find(self, frame: np.ndarray, template_name, threshold: float, region=None) -> bool:
         tmpl = self._templates.get(template_name) if template_name else None
         if tmpl is None:
             return False
         work = self._work(frame)
+        if region:                      # normalized [x0, y0, x1, y1] search window
+            h, w = work.shape[:2]
+            x0, y0, x1, y1 = region
+            work = work[max(0, int(y0 * h)):min(h, int(round(y1 * h))),
+                        max(0, int(x0 * w)):min(w, int(round(x1 * w)))]
         if work.shape[0] < tmpl.shape[0] or work.shape[1] < tmpl.shape[1]:
             return False
         res = cv2.matchTemplate(work, tmpl, cv2.TM_CCOEFF_NORMED)
@@ -183,6 +188,10 @@ class Vision:
         return maxv >= threshold
 
     def detect_state(self, frame: np.ndarray) -> GameState:
+        """Template state detection. A state's ``templates`` list may mix plain filenames
+        (state-level threshold, whole-frame search) and dict entries with their OWN
+        ``threshold``/``region`` -- used to keep a risky auxiliary template (the strict
+        OVERTIME banner) isolated from the proven primary one."""
         checks = [
             (GameState.MATCH_END, "match_end"),
             (GameState.IN_MATCH, "in_match"),
@@ -193,10 +202,16 @@ class Vision:
             spec = self.cfg.get("states", key, default=None)
             if not spec:
                 continue
-            threshold = spec.get("threshold", 0.8)
-            names = spec.get("templates") or [spec.get("template")]
-            if any(name and self._find(frame, name, threshold) for name in names):
-                return state
+            thr_default = spec.get("threshold", 0.8)
+            for entry in (spec.get("templates") or [spec.get("template")]):
+                if isinstance(entry, dict):
+                    name = entry.get("template")
+                    thr = float(entry.get("threshold", thr_default))
+                    region = entry.get("region")
+                else:
+                    name, thr, region = entry, thr_default, None
+                if name and self._find(frame, name, thr, region):
+                    return state
         return GameState.UNKNOWN
 
     def locate(self, frame: np.ndarray, template_name, threshold: float):

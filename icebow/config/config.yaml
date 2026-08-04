@@ -78,7 +78,17 @@ buttons:
 states:
   home_menu:  {template: "home_menu.png",  threshold: 0.55}   # lowered: the "Daily Bonus" sub-banner + capture drift drop the Battle-button match (~0.6); nav taps where it locates it
   party_menu: {template: "party_menu.png", threshold: 0.80}
-  in_match:   {template: "in_match.png",   threshold: 0.80}
+  # At OVERTIME the game replaces the 'Time left:' label with the red/orange OVERTIME plate, so
+  # in_match.png alone reads UNKNOWN mid-OT (bot froze). Second entry = STRICT banner template:
+  # own high threshold + top-right search window, fires only on a near-perfect plate match
+  # (measured: real OT 0.65-0.95 across sessions, menus/results <= 0.57 -- scale drift means it
+  # will MISS sometimes, which is fine: play's in_match grace hold covers the misses, and the
+  # strictness is what keeps it from ever re-breaking menu navigation like the first attempt).
+  in_match:
+    threshold: 0.80
+    templates:
+      - "in_match.png"
+      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
   match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
 
 nav:
@@ -407,6 +417,12 @@ play:
   act_period: 1.5                # seconds between actions (crude gate; RL adds a learned no-op)
   select_delay: 0.08             # delay between selecting a card and placing it
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
+  in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
+                                 # of the last positive IN_MATCH read, play HOLDS in-match (keeps acting)
+                                 # instead of freezing -- covers OT when the strict banner template misses
+                                 # (label is replaced at OT) + brief label dropouts. Any positively
+                                 # identified OTHER screen (MATCH_END/HOME/PARTY) cancels the hold, so
+                                 # menus are never grace-held. 150s = 2 min max OT + slack. 0 disables.
   stuck_timeout: 25              # seconds on an UNRECOGNISED screen before tapping to dismiss it. A
                                  # post-match chest/level-up/season/offer popup that detect_state does
                                  # not cover would otherwise hang navigation. Keep this LONGER than your
