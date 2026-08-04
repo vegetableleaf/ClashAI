@@ -37,8 +37,8 @@ with your own recordings (Stage 8 explains the one command that combines them).
 [ ] Google Play Games (PC) with Clash Royale installed and logged in
     (use a THROWAWAY account - automating the game breaks Supercell's rules and
     can get an account banned).
-[ ] The deck the bot expects (see config/cards.yaml -> "Miner X-Bow Control"):
-    Tornado, Evolved Tesla, Ice Wizard, X-Bow, Rocket, Miner, The Log,
+[ ] The deck the bot expects (see config/cards.yaml -> "Icebow X-Bow Control"):
+    Tornado, Evolved Tesla, Ice Wizard, X-Bow, Rocket, Knight, The Log,
     Skeletons. (You CAN use a different deck, but then you must edit
     config/cards.yaml and rebuild the card pictures - see Stage 6.)
 
@@ -256,7 +256,7 @@ small pictures ("templates") of your deck's cards. You build these from a record
    the deck card it shows, using these exact names (this is the one manual step):
 
        tornado.png          tesla_evo.png   ice_wizard.png   x_bow.png
-       rocket.png           miner.png       the_log.png      skeletons.png
+       rocket.png           knight.png      the_log.png      skeletons.png
 
    * If you have several good crops of the SAME card, keep extras as
      <name>_2.png, <name>_3.png (they help accuracy).

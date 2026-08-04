@@ -1,18 +1,19 @@
-# Deck switch runbook — Rocket Cycle → Miner X-Bow Control
+# Deck runbook — icebow / X-Bow Control (Classic 1v1)
 
 **Status:** Phase 1 code is DONE and on `main`. Waiting on the user to RE-RECORD with the new
 deck before Phase 2. This file is the single ordered source of truth for the switch — read it
 first (human steps in §1, AI/code steps in §2, reward audit in §3, roadmap in §4).
 
-**Deck (Classic 1v1, real account levels):** Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons,
-The Log, Rocket, Tornado. (2026-08-04: Tornado swapped back in for Royal Delivery. Earlier icebow
-swap: Electro Spirit → The Log. Gone vs the pre-icebow deck: Ronin, Ice Spirit.)
+**Deck (Classic 1v1, real account levels):** Evo Tesla, Knight, X-Bow, Ice Wizard, Skeletons,
+The Log, Rocket, Tornado — the standard icebow / X-Bow 2.9 control list. (2026-08-04: Miner → Knight
+and Royal Delivery → Tornado. Earlier icebow swap: Electro Spirit → The Log. Gone: Miner, Royal
+Delivery, Ronin, Ice Spirit.)
 
 **Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
 its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
-fallback). Miner = chip the tower / tank / snipe support, deploys ANYWHERE. Rocket = clear big
-pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log / Skeletons) cycle
-and stall; defenders (Tesla / Ice Wizard) clean up.
+fallback). Knight = cheap mini-tank: defend, body-block, and tank for a fresh X-Bow (your half).
+Rocket = clear big pushes, or cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log /
+Skeletons) cycle and stall; defenders (Knight / Tesla / Ice Wizard) clean up.
 
 ---
 

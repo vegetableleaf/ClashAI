@@ -5,8 +5,8 @@
 > calibration → recording → processing the data → training (simulator + imitation + live RL)
 > → letting the bot play. No coding experience needed.
 
-> 🔀 **Current deck: Miner X-Bow Control (Classic 1v1).** [DECK_SWITCH.md](DECK_SWITCH.md) is the
-> ordered runbook for switching the deck (record → templates → label → train) plus the reward audit.
+> 🔀 **Current deck: Icebow X-Bow Control (Classic 1v1)** — the standard X-Bow 2.9 control list.
+> [DECK_SWITCH.md](DECK_SWITCH.md) is the ordered runbook for switching the deck (record → templates → label → train).
 
 A second, **learning** bot (separate from the scripted `../trol` bot). Goal: an
 agent that actually *plays* 1v1 Clash Royale (Classic / ladder), rewarded for

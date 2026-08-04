@@ -1105,6 +1105,31 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-08-04  —  Deck tweak: Miner -> Knight (now the standard icebow / X-Bow 2.9 list)
+------------------------------------------------------------------------------
+- Swapped miner OUT, knight IN (level 16) in config/cards.yaml. With Royal-Delivery -> Tornado (above),
+  the deck is now the STANDARD icebow / X-Bow 2.9 control list: X-Bow, Evo Tesla, Ice Wizard, Knight,
+  Skeletons, The Log, Rocket, Tornado (the list Hunter CR runs). Renamed "Miner X-Bow Control" ->
+  "Icebow X-Bow Control (Classic 1v1)". avg elixir 3.5.
+- PURE DATA + DOCS -- no code-logic change. The card-role system is deck-key-driven: Knight is a plain
+  your-half DEFENSIVE TROOP (KB [mini_tank], melee) -- not rocket/xbow/spell and NOT in anywhere_ids
+  (your-half clamped), scored by the generic threat-response + trade + troop-defeat rewards. The SIM even
+  applies its "premature defender on a quiet board" penalty to Knight automatically (any non-wincon/
+  non-spell/non-miner troop). Miner's special paths (anywhere_ids, miner_ids, miner_chip reward in live +
+  sim) now produce EMPTY sets -> inert/harmless, like royal_delivery_ids after the Tornado swap. Miner
+  stays in the card KB + detector classes (opponents still play it).
+- Knight is NOT added to reactive_ids (live premature-penalty set = ranged defenders + spells) -- kept a
+  plain troop like Skeletons, since Knight is also used proactively (tank for the X-Bow). If live play wants
+  stricter "hold Knight to defend" shaping, add it to reactive_ids later (a tuning call, not needed now).
+- HAND TEMPLATES: knight has NO hand template yet -- user must run `hand-templates`, rename a crop to
+  knight.png (+ extras knight_2.png ...), then `verify --hand`. DETECTOR: knight is already a class
+  (detect_classes.yaml: knight / knight_evo / knight_hero / ...), so existing annotations cover it.
+- Identity COUNT unchanged (9) -> card-head width unchanged, but the swapped slot now MEANS knight ->
+  RETRAIN (train-sim from scratch; re-record + label + train-bc + train-rl for live). Docs updated
+  (README x2, Instructions checklist + template list, DECK_SWITCH title/deck/doctrine).
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
