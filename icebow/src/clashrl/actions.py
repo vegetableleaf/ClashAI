@@ -112,11 +112,26 @@ class ActionSpace:
     def deployable_mask(self, anywhere: bool) -> "list[bool]":
         """Per-cell deployability over the placement grid: True where a card of this kind can actually
         be placed. ``anywhere`` (rocket / miner) -> every cell; otherwise only YOUR half (rows at/below
-        the deploy line, matching :meth:`deploy_clamp`). Masking the cell head to this BEFORE the argmax
-        stops the policy from SELECTING an enemy-half cell that would just clamp/no-op -- the 'impossible
-        coordinate' the model otherwise keeps trying (and that made it look inactive)."""
+        the deploy line) MINUS your own tower footprints (king + both princesses -- placing there is a
+        no-op tap in-game, so those cells are now excluded from SELECTION, not just clamp-corrected).
+        Masking the cell head to this BEFORE the argmax stops the policy from selecting a cell that
+        would just clamp/no-op -- the 'impossible coordinate' the model otherwise keeps trying."""
         gw, gh = int(self.gw), int(self.gh)
         if anywhere:
             return [True] * (gw * gh)
         min_gy = self.row_at(self.deploy_top)
-        return [(c // gw) >= min_gy for c in range(gw * gh)]
+        kx, ky = self.king_xy
+        khx, khy = self.king_half
+        phx, phy = self.princess_half
+
+        def _ok(c: int) -> bool:
+            gy = c // gw
+            if gy < min_gy:
+                return False                          # enemy half
+            nx, ny = self.cell_center(c % gw, gy)
+            if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
+                return False                          # your KING tower footprint (undeployable)
+            return not any(abs(nx - px) <= phx and abs(ny - py) <= phy
+                           for px, py in self.princess_xy)   # your PRINCESS tower footprints
+
+        return [_ok(c) for c in range(gw * gh)]
