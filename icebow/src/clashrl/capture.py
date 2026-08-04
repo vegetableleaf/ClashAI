@@ -50,8 +50,34 @@ class WindowCapture:
         ]
         if wins:
             w = wins[0]
-            self._region = Region(int(w.left), int(w.top), int(w.width), int(w.height))
+            # The WINDOW rect includes the title bar + borders; every normalized coordinate
+            # (hand slots, elixir bar, tower HP boxes, templates, tap targets) is calibrated to
+            # the RENDER area, so auto-detect must use the CLIENT rect. Falling back to the
+            # window rect only if the Win32 query fails (non-Windows / odd window).
+            self._region = self._client_area(w) or Region(int(w.left), int(w.top),
+                                                          int(w.width), int(w.height))
         return self._region
+
+    @staticmethod
+    def _client_area(w) -> Optional[Region]:
+        """The window's CLIENT area (the game render surface) in physical screen pixels."""
+        try:
+            import ctypes
+            from ctypes import wintypes
+            hwnd = getattr(w, "_hWnd", None)
+            if not hwnd:
+                return None
+            rect = wintypes.RECT()
+            if not ctypes.windll.user32.GetClientRect(hwnd, ctypes.byref(rect)):
+                return None
+            pt = wintypes.POINT(0, 0)
+            if not ctypes.windll.user32.ClientToScreen(hwnd, ctypes.byref(pt)):
+                return None
+            if rect.right > 100 and rect.bottom > 100:
+                return Region(int(pt.x), int(pt.y), int(rect.right), int(rect.bottom))
+        except Exception:  # noqa: BLE001
+            return None
+        return None
 
     @property
     def region(self) -> Optional[Region]:
