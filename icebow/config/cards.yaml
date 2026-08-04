@@ -29,7 +29,7 @@ meta:
 deck:
   name: "Miner X-Bow Control (Classic 1v1)"
   cards:
-    - {card: royal_delivery, level: 13}
+    - {card: tornado, level: 13}      # swapped in for royal_delivery 2026-08-04 -- CONFIRM this is YOUR real Tornado level
     - {card: tesla,     evolved: true, level: 14}
     - {card: ice_wizard, level: 12}
     - {card: x_bow, level: 16}
