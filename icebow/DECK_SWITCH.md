@@ -4,8 +4,9 @@
 deck before Phase 2. This file is the single ordered source of truth for the switch — read it
 first (human steps in §1, AI/code steps in §2, reward audit in §3, roadmap in §4).
 
-**Deck (Classic 1v1, ALL cards level 11):** Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons,
-The Log, Rocket, Royal Delivery. (Gone vs the old deck: Tornado, Ronin, Ice Spirit, Electro Spirit.)
+**Deck (Classic 1v1, real account levels):** Evo Tesla, Miner, X-Bow, Ice Wizard, Skeletons,
+The Log, Rocket, Tornado. (2026-08-04: Tornado swapped back in for Royal Delivery. Earlier icebow
+swap: Electro Spirit → The Log. Gone vs the pre-icebow deck: Ronin, Ice Spirit.)
 
 **Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
 its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
@@ -23,7 +24,7 @@ and stall; defenders (Tesla / Ice Wizard) clean up.
    for this deck. Play many matches: `python run.py record` → Ctrl+C after the results screen.
 3. **Rebuild card templates** (needed before labeling — hand recognition is template matching):
    `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
-   `royal_delivery.png`, `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
+   `tornado.png`, `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
    `miner.png`, `the_log.png`, `skeletons.png` (extra crops of one card: `<key>_2.png`).
    Then the next-card previews under `templates/next/`. Verify: `python run.py verify --hand`.
 4. **Re-verify tower calibration:** `python run.py verify --towers` (should be unchanged; recalibrate
@@ -58,7 +59,8 @@ DONE in Phase 1 / this change:
   exempt from the wrong-lane penalty (it deploys anywhere). X-Bow opposite-lane is now nuanced —
   exempt when punishing a SPENT push, but pays `wrong_lane_penalty × xbow_wrong_lane_frac` (0.6) if a
   REAL push is still LIVE (`enemy_mass ≥ env.threat_mass`), because leaving it undefendable is bad.
-- INACTIVE (no Tornado/Ronin in the deck — code paths are inert, knobs marked in config, do NOT tune):
+- STALE (2026-08-04: these Tornado/Ronin knobs were removed in the later reward rebuild; Tornado is
+  back in the deck but is now handled by the generic spell + reactive-spell paths, so do NOT tune these):
   `king_tank_reward`, `threat_tornado_pull`, `rocket_tornado_combo`, `tornado_chip_penalty`,
   `env.combo_window_steps` / `combo_radius` / `combo_kill_min`.
 - KEPT (still valid): tower/win/loss terminals, `hp_scale`, spell rewards (Rocket/RD are spells),

@@ -308,7 +308,7 @@ def play(cfg) -> None:
         slot = next((s for s, c in enumerate(hand_ids) if c == card_id), -1)
         if slot < 0:
             return
-        cell = actions.deploy_clamp(card_id in anywhere_ids, cell)   # only rocket/tornado go anywhere
+        cell = actions.deploy_clamp(card_id in anywhere_ids, cell)   # only rocket/miner go anywhere
         if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)

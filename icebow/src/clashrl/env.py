@@ -92,6 +92,7 @@ class LiveMatchEnv:
         self.spell_ids = set()
         self.rocket_ids = set()
         self.royal_delivery_ids = set()
+        self.tornado_ids = set()
         self.miner_ids = set()
         self.xbow_ids = set()
         self.defensive_kind = {}                        # id -> defender kind (Tesla / Ice Wizard) for reactive_ids
@@ -102,8 +103,10 @@ class LiveMatchEnv:
                 self.spell_ids.add(i)
             if base == "rocket":
                 self.rocket_ids.add(i)
-            elif base == "royal_delivery":          # defensive area spell on your half
+            elif base == "royal_delivery":          # defensive area spell on your half (long fixed delay)
                 self.royal_delivery_ids.add(i)
+            elif base == "tornado":                 # defensive PULL spell -> reacts to a push (near-immediate)
+                self.tornado_ids.add(i)
             elif base == "miner":                   # tank/chip -> deployed ANYWHERE (enemy tower, behind a tank)
                 self.miner_ids.add(i)
             elif base == "x_bow":                   # siege WIN CONDITION -> forward (in range) or back-centre defence
@@ -114,8 +117,8 @@ class LiveMatchEnv:
                 self.defensive_kind[i] = "ice_wizard"
         # ROCKET and MINER may target ANYWHERE; every other card (troops, X-Bow, royal delivery) is your-half only.
         self.anywhere_ids = self.rocket_ids | self.miner_ids
-        # cards played only to REACT to a threat (defenders + Royal Delivery); on a QUIET board they're premature.
-        self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids
+        # cards played only to REACT to a threat (defenders + Royal Delivery / Tornado); on a QUIET board they're premature.
+        self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids | self.tornado_ids
         # --- perception geometry the reward + spell-impact timing still use ---
         self.spell_effect = bool(cfg.get("env", "spell_effect_reward", default=True))   # gate: sample frames at spell impact
         self.spell_eval_time = float(cfg.get("env", "spell_eval_time", default=2.4))

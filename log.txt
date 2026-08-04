@@ -1078,6 +1078,33 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-08-04  —  Deck tweak: Royal Delivery -> Tornado (back to Tornado)
+------------------------------------------------------------------------------
+- Swapped royal_delivery OUT, tornado IN (1-for-1) in config/cards.yaml deck. Deck stays "Miner X-Bow
+  Control (Classic 1v1)"; identity COUNT unchanged (9: tornado, tesla, tesla_evo, ice_wizard, x_bow,
+  rocket, miner, the_log, skeletons) so the policy's card-head width is unchanged -- but the swapped index
+  now MEANS tornado, so old checkpoints are semantically stale there: RETRAIN (sim from scratch, then BC
+  from NEW recordings that play Tornado). Tornado level set to 13 (placeholder -- user to confirm real level).
+- Tornado is a 3-elixir defensive PULL spell (KB flags [pull, splash, splash_air]); already fully defined
+  in cards.yaml, and 20 hand templates (tornado_*.png) already exist, so hand recognition needs no new work.
+  royal_delivery stays in the card KB (opponents still play it).
+- LIVE env (env.py): Tornado now classified as a REACTIVE defensive spell -- new self.tornado_ids, added to
+  reactive_ids alongside royal_delivery_ids (casting it on a QUIET board is 'premature', like the other
+  defenders). Its spell-impact timing already resolved right (any non-rocket spell -> env.tornado_time 1.2s;
+  the 3s royal_delivery_time branch keys on royal_delivery_ids, which Tornado is NOT in). Not in anywhere_ids
+  -> your-half only, matching its defensive use (as RD was). Fixed a stale play.py comment.
+- SIM: deck-driven, so tornado is auto-picked-up; the engine treats it as a generic small-damage spell
+  (radius 0.09) -- the PULL mechanic is NOT modeled (low-fidelity, as before). Fine for retraining; a proper
+  tornado-pull sim is a future item.
+- The OLD Tornado/Ronin reward knobs (king_tank_reward / threat_tornado_pull / rocket_tornado_combo /
+  tornado_chip_penalty / combo_*) were removed in the earlier reward rebuild and are NOT wired -- Tornado
+  rides the generic spell + reactive paths. Docs updated (README deck line, Instructions checklist +
+  template-rename list, DECK_SWITCH deck line + template list + reward-audit note).
+- USER TODO before it plays well: re-record matches playing Tornado -> label --all -> train-bc (warm-start
+  from a fresh train-sim) -> train-rl. (Sim can retrain immediately with no recording.)
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

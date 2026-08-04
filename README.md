@@ -61,7 +61,7 @@ much better defence and elixir-trade decisions.
 
 ### The deck it's currently tuned for
 
-Royal Delivery, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, The Log,
+Tornado, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, The Log,
 Skeletons — a **Miner X-Bow control** deck (Classic 1v1; the card levels are set to a
 real account's, 12–16). The reward shaping teaches: defend + cycle with the cheap
 cards, use the **X-Bow** as the win condition (placed forward, within firing range, to
