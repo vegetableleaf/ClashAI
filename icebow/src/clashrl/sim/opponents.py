@@ -180,7 +180,7 @@ class SelfPlayOpponent:
         if self.use_interactions:                      # mirrored: team 1 sees ITS towers as 'mine'
             units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,
                                                          self.det_recall, self.det_recall_by_card)
-            ivec = interactions.interaction_vector(units, mine_t, en_t, self.db, self.sight_range)
+            ivec = interactions.interaction_vector(units, mine_t, en_t, self.db)
             thr = np.concatenate([thr, ivec]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
