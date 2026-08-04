@@ -78,13 +78,7 @@ buttons:
 states:
   home_menu:  {template: "home_menu.png",  threshold: 0.55}   # lowered: the "Daily Bonus" sub-banner + capture drift drop the Battle-button match (~0.6); nav taps where it locates it
   party_menu: {template: "party_menu.png", threshold: 0.80}
-  # in_match needs BOTH looks of the timer plate: "Time left:" (regulation) AND the orange
-  # "Overtime" banner that REPLACES it -- with only the first, overtime read as UNKNOWN and the
-  # bot froze mid-OT (then the nav stuck-watchdog started dismiss-tapping near the hand tray).
-  # region = normalized [x0,y0,x1,y1] search window (top-right timer plate): the banner is only
-  # ever THERE, and arena art / menu gold counters are orange too, so the window kills the FPs.
-  in_match:   {templates: ["in_match.png", "in_match_ot.png"], threshold: 0.80,
-               region: [0.70, 0.00, 1.00, 0.10]}
+  in_match:   {template: "in_match.png",   threshold: 0.80}
   match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
 
 nav:
