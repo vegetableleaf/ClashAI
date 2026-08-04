@@ -22,19 +22,19 @@ meta:
     Elixir + categorical fields populated. Combat stats (hitpoints/damage/
     hit_speed) pending import from a stats source (see README refresh note).
 
-# Your deck (Miner X-Bow control: defend + cycle; X-Bow is the WIN CONDITION, placed
-# forward to lock the enemy princess tower; Miner chips / tanks / snipes support; Rocket
+# Your deck (icebow / X-Bow 2.9 control: defend + cycle; X-Bow is the WIN CONDITION, placed
+# forward to lock the enemy princess tower; Knight tanks / defends / body-blocks; Rocket
 # clears big pushes or cycle-chips in 2x/3x). `evolved: true` uses the Evolution variant.
-# Classic 1v1 -> ALL cards are level 11.
+# Classic 1v1 -> card levels are the player's real account levels.
 deck:
-  name: "Miner X-Bow Control (Classic 1v1)"
+  name: "Icebow X-Bow Control (Classic 1v1)"
   cards:
     - {card: tornado, level: 13}      # swapped in for royal_delivery 2026-08-04 -- CONFIRM this is YOUR real Tornado level
     - {card: tesla,     evolved: true, level: 14}
     - {card: ice_wizard, level: 12}
     - {card: x_bow, level: 16}
     - {card: rocket, level: 14}
-    - {card: miner, level: 13}
+    - {card: knight, level: 16}       # swapped in for miner 2026-08-04 -> standard icebow (X-Bow 2.9) list
     - {card: the_log, level: 14}
     - {card: skeletons, level: 13}
 
