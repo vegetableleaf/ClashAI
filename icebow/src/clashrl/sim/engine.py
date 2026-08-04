@@ -78,10 +78,23 @@ class CardSpec:
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     shield_hp: float = 0.0    # SHIELD pool (Royal Recruits / Guards / Dark Prince): absorbs damage before hp
     damage_reduction: float = 0.0  # fraction of incoming damage negated WHILE NOT ATTACKING (Evo Knight = 0.60)
+    pulls: bool = False       # TORNADO: an active VORTEX, not an instant blast -- pulls enemies to its centre
+    pull_radius: float = 0.0  # vortex effect radius (5.5 tiles -- much wider than a damage spell)
+    pull_duration: float = 0.0  # seconds the vortex stays active (damage is spread over this)
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
                      # the exact per-card CR shield HP isn't in the KB, so it's derived from the `shield` flag.
+
+# TORNADO (the deck's clump enabler): a 1.05s vortex, 5.5-tile radius, that drags enemies to its centre.
+# The pull is VIOLENT in real CR (edge-to-centre well inside the duration) -- that clumping is what turns
+# Ice Wizard's splash into an everything-hitter and makes centre-Rocket hit a whole push. Heavy tanks
+# (collision radius 0.03 = the 'tank' flag) resist at half speed.
+_TORNADO_RADIUS = 5.5 * (0.16 / 5.5)    # tiles -> normalized (= _REACH['long'] scale)
+_TORNADO_DURATION = 1.05
+_TORNADO_PULL = 0.35                    # normalized/s (~12 tiles/s: edge reaches centre in ~0.5s)
+_ROCKET_RADIUS = 2.0 * (0.16 / 5.5)     # rocket's REAL 2-tile blast (the flat 0.09 ~= 3 tiles over-rewarded
+                                        # it -- and would over-pay the tornado->rocket combo beyond the real game)
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
@@ -102,9 +115,15 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     siege = "siege" in flags
     spell_radius = 0.11 if base == "royal_delivery" else 0.09
+    if base == "rocket":
+        spell_radius = _ROCKET_RADIUS                         # honest 2-tile blast
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
-    rolls = kind == "spell" and "knockback" in flags          # The Log: a rolling forward corridor
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
+    # a ROLLING spell (The Log / Barbarian Barrel) = knockback AND ground-only corridor. Knockback alone
+    # is NOT enough: Rocket/Snowball also knock back but are POINT blasts hitting air -- classifying
+    # Rocket as a roll gave it a forward CORRIDOR (and the Log's 0.07 half-width) instead of its blast.
+    rolls = kind == "spell" and "knockback" in flags and ground_only
+    pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     lifetime = 40.0 if kind == "building" else None
@@ -150,7 +169,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
         shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0),
-        damage_reduction=dmg_reduc)
+        damage_reduction=dmg_reduc,
+        pulls=pulls,
+        pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
+        pull_duration=(_TORNADO_DURATION if pulls else 0.0))
 
 
 @dataclass
@@ -211,6 +233,19 @@ class _Spell:
     t: float                      # time remaining until it lands
 
 
+@dataclass
+class _Vortex:
+    """A LANDED tornado: an active area that pulls enemies to its centre and deals its damage
+    spread over the duration (the instant-blast model could never produce the clump synergies
+    this deck is built on: clumped troops -> Ice Wizard splash hits everything, centre-Rocket
+    hits the whole push)."""
+    team: int
+    x: float
+    y: float
+    spec: CardSpec
+    left: float                   # active seconds remaining
+
+
 def _dist(ax, ay, bx, by) -> float:
     return math.hypot(ax - bx, ay - by)
 
@@ -267,6 +302,7 @@ class SimEngine:
         self.outcome: Optional[str] = None       # from team 0's view: win | loss | draw
         self.units: List[Unit] = []
         self.spells: List[_Spell] = []
+        self.vortices: List[_Vortex] = []        # landed tornadoes (active pull areas)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
         # Your side always plays your equipped troop at your level; the opponent's tower troop + level are
@@ -449,6 +485,12 @@ class SimEngine:
                 landed.append(s)
         for s in landed:
             self.spells.remove(s)
+        # active tornado vortices: pull enemies to the centre + deal damage over the duration
+        for v in list(self.vortices):
+            self._tick_vortex(v, dt)
+            v.left -= dt
+            if v.left <= 0:
+                self.vortices.remove(v)
         # units act (deploy delay -> stun/freeze -> slow-aware move + discrete cooldown attacks)
         for u in list(self.units):
             if u.hp <= 0:
@@ -604,6 +646,14 @@ class SimEngine:
         if s.spec.rolls:
             self._resolve_roll(s)
             return
+        if s.spec.pulls:
+            # TORNADO: not a blast -- it becomes an ACTIVE VORTEX (pull + damage spread over the
+            # duration). Tiny crown chip only if the cast point itself overlaps a tower.
+            self.vortices.append(_Vortex(s.team, s.x, s.y, s.spec, s.spec.pull_duration))
+            for tw in self._enemy_towers(s.team):
+                if _dist(tw.x, tw.y, s.x, s.y) <= 0.05:
+                    self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+            return
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
                 self._hurt(e, s.spec.spell_dmg)
@@ -618,6 +668,28 @@ class SimEngine:
             u.deploy_left = sp.deploy_time
             u.pulse_cd = sp.pulse_interval
             self.units.append(u)
+
+    def _tick_vortex(self, v: _Vortex, dt: float) -> None:
+        """One step of an active tornado: drag every enemy unit toward the centre and deal the
+        spell's damage SPREAD over the duration. Ground AND air are pulled (tornado hits both);
+        heavy tanks ('tank' collision radius) resist at half pull speed. Pulled units are the
+        CLUMP the deck's synergies feed on -- Ice Wizard splash and a centre Rocket hit them all."""
+        frac = min(dt, max(v.left, 0.0)) / max(v.spec.pull_duration, 1e-6)   # last tick pro-rated -> total == spell_dmg
+        step = _TORNADO_PULL * dt
+        for e in self.units:
+            if e.team == v.team or e.hp <= 0:
+                continue
+            d = _dist(e.x, e.y, v.x, v.y)
+            if d > v.spec.pull_radius:
+                continue
+            self._hurt(e, v.spec.spell_dmg * frac)            # DoT slice of the total damage
+            if d > 1e-6:
+                pull = step * (0.5 if e.spec.radius >= 0.03 else 1.0)   # tanks resist
+                if pull >= d:
+                    e.x, e.y = v.x, v.y                       # reached the centre (clumped)
+                else:
+                    e.x += (v.x - e.x) / d * pull
+                    e.y += (v.y - e.y) / d * pull
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK

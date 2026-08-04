@@ -376,11 +376,14 @@ class SimMatchEnv:
         """True when a DAMAGE spell is cast with NOTHING to hit -- no enemy unit within its blast radius AND
         not aimed at a live enemy princess tower (chipping a tower is a valid target). A SOFT nudge against
         casting into emptiness; env.spell_waste_radius is GENEROUS so near-miss / predictive casts aren't
-        punished -- only truly empty ones."""
-        for t in self.eng.towers[1][:2]:
-            if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius:
-                return False                             # aimed at an enemy princess tower = a valid chip target
-        rad = self.spell_waste_radius
+        punished -- only truly empty ones. A PULL spell (Tornado) is different on both counts: a tower is
+        NOT a valid target for it (crown chip ~35 -- its whole value is pulling UNITS), and its effective
+        reach is the wide pull radius, so 'has a target' uses that."""
+        if not spec.pulls:
+            for t in self.eng.towers[1][:2]:
+                if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius:
+                    return False                         # aimed at an enemy princess tower = a valid chip target
+        rad = max(self.spell_waste_radius, spec.pull_radius) if spec.pulls else self.spell_waste_radius
         return not any(u.team == 1 and u.hp > 0 and np.hypot(nx - u.x, ny - u.y) <= rad
                        for u in self.eng.units)
 
