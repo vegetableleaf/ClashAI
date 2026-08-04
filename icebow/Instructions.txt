@@ -181,7 +181,10 @@ STEP 4.2 - Tell the bot which window to grab
         title_contains: "Clash Royale"
         region: [739, 38, 669, 1182]
 
-  * EASIEST: change the region line to auto-detect the window by its title:
+  * EASIEST: change the region line to auto-detect the window by its title. Write the
+    word null on its own with NO square brackets -- it means "empty / nothing", not a
+    list (region: [null] is a 1-item list and will crash with a "missing 3 arguments"
+    error, because a region needs FOUR numbers):
 
         region: null
 

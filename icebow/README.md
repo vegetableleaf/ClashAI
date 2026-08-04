@@ -5,14 +5,13 @@
 > calibration → recording → processing the data → training (simulator + imitation + live RL)
 > → letting the bot play. No coding experience needed.
 
-> 🔀 **Deck switch in progress (Miner X-Bow Control).** If you're picking this up on the
-> training device: read **[DECK_SWITCH.md](DECK_SWITCH.md)** first — it's the ordered runbook
-> (record → templates → label → train) plus the remaining code work and reward audit.
+> 🔀 **Current deck: Miner X-Bow Control (Classic 1v1).** [DECK_SWITCH.md](DECK_SWITCH.md) is the
+> ordered runbook for switching the deck (record → templates → label → train) plus the reward audit.
 
 A second, **learning** bot (separate from the scripted `../trol` bot). Goal: an
-agent that actually *plays* 2v2 Clash Royale, rewarded for **taking enemy
-towers**, **defending its own towers**, and **winning**, and punished for the
-opposite. It runs on PC via Google Play Games — the same rendering it trains on.
+agent that actually *plays* 1v1 Clash Royale (Classic / ladder), rewarded for
+**taking enemy towers**, **defending its own towers**, and **winning**, and punished
+for the opposite. It runs on PC via Google Play Games — the same rendering it trains on.
 
 > ⚠️ **Honest expectations.** Learning to play from scratch on a *live* game is a
 > research-grade problem: matches are real-time (~3–4 min), you can't parallelize
@@ -27,12 +26,15 @@ opposite. It runs on PC via Google Play Games — the same rendering it trains o
 ## Pipeline
 
 ```
-1. record    you play on PC; capture screen + your mouse         [BUILT]
-2. label     sessions -> (observation, action) dataset            [BUILT]
-3. outcomes  auto win/loss per match from the results scoreboard  [BUILT]
-4. train-bc  behaviour-cloning: CNN policy learns to copy you     [BUILT]
-5. train-rl  RL fine-tune with tower/win rewards (live matches)   [BUILT]
-6. play      the policy plays live                                [BUILT]
+0. train-sim headless simulator: pretrain vs ~1000 meta decks + self-play  [BUILT]
+1. record    you play on PC; capture screen + your mouse                    [BUILT]
+2. label     sessions -> (observation, action) dataset                      [BUILT]
+3. outcomes  auto win/loss per match from the results scoreboard            [BUILT]
+4. train-bc  behaviour-cloning: CNN policy learns to copy you               [BUILT]
+5. train-rl  Double-DQN fine-tune, tower/win rewards (live matches)         [BUILT]
+6. play      the policy plays live                                          [BUILT]
+
+optional (Stage 3): a YOLO object detector adds opponent awareness    [in progress]
 ```
 
 The agent sees a **downscaled arena image + the hand** (which cards are in hand)
@@ -45,7 +47,7 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 ## Setup
 
 ```powershell
-cd c:\Users\benpe\ClashBot\icebow
+cd <your-cloned-repo>\icebow
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -97,9 +99,9 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
 - ✅ `hand-templates` — extracts your deck cards' tray portraits from a recording
   so the hand can be recognized by identity; you rename the crops to deck keys and
   check with `run.py verify --hand` (`run.py hand-templates [--session <path>]`).
-- ✅ `outcomes` — auto-detects **win/loss per match** from the 2v2 results
-  scoreboard (your team = blue/bottom, enemy = red/top; counts gold crowns per
-  team). No manual tracking. Writes `outcomes.json` per session and prints the
+- ✅ `outcomes` — auto-detects **win/loss per match** from the 1v1 results
+  scoreboard (you = blue/bottom, enemy = red/top; counts gold crowns per
+  side). No manual tracking. Writes `outcomes.json` per session and prints the
   W-L record (`run.py outcomes [--session <path>] [--all]`).
 - ✅ `train-bc` — CNN behaviour-cloning: trains the policy to predict
   `(card identity, placement cell)` from the observation + hand (the card head is
@@ -164,7 +166,7 @@ plays, exits, and re-queues on its own.
    tray slot (green = recognized, red = not). To calibrate the spell/defense
    rewards, `run.py verify --spells` tints the pixels counted as enemy troops and
    shows the arena `enemy_mass`.
-3. Leave the account on the **HOME** screen (the 2v2 party mode selected, as in
+3. Leave the account on the **HOME** screen (the 1v1 battle mode selected, as in
    your recordings). Use a throwaway account and private/friendly matches only.
 4. Keep the mouse hand free: **pyautogui failsafe** is on — slam the cursor into a
    screen corner to abort instantly. `Ctrl+C` stops and saves.
@@ -317,7 +319,9 @@ run.py cards-import   # scrape current level-11 stats from the Clash Royale wiki
   Champion category, and each card's `<Card>/Evolution` variant keyed `<base>_evo`
   (e.g. `musketeer_evo`). A deck slot marked `evolved: true` overlays the Evolution
   stats, so Evo Musketeer / Evo Tesla show their evolved numbers in `run.py cards`.
-- All 2v2 cards are **level 11**.
+- The deck's cards use their **real account levels** (12–16), set per card in the
+  deck definition; the imported stats are a level-11 baseline the engine scales by
+  card level.
 
 **Elixir** is read from your bar (`Vision.read_elixir`, calibrated in the `elixir`
 config) and used to avoid wasting cards while exploring (`train.min_play_elixir`).

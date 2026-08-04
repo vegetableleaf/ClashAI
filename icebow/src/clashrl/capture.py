@@ -31,6 +31,10 @@ class WindowCapture:
     def __init__(self, title_contains: Optional[str], region: Optional[List[int]] = None):
         self.title_contains = title_contains
         self._sct = mss.mss()
+        if region is not None and (not isinstance(region, (list, tuple)) or len(region) != 4):
+            print(f"[capture] window.region must be 4 numbers [left, top, width, height] or null "
+                  f"(got {region!r}) -- ignoring it and auto-detecting the window by title instead.")
+            region = None
         self._explicit = region is not None
         self._region: Optional[Region] = Region(*region) if region else None
         if self._region is None:

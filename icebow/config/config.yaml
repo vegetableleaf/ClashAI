@@ -7,7 +7,7 @@
 
 window:
   title_contains: "Clash Royale"
-  region: [739, 38, 669, 1182]   # physical px of the game render (from trol calibration)
+  region: null   # 4 physical px [left, top, width, height] of the game render, or null to auto-detect the window by title (do NOT write [null] -- that is a 1-item list and errors)
 
 capture:
   work_width: 480                # frames scaled to this width for vision
