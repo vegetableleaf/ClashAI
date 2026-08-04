@@ -279,7 +279,7 @@ cards:
     win_condition: false
     targets: any
     flags: [mini_tank]
-    evolution: {available: true, cycles: 2, effect: "shield + damage reduction dash on cycle", gains: [shield]}
+    evolution: {available: true, cycles: 2, damage_reduction: 0.60, effect: "60% less damage from ALL sources WHILE NOT ATTACKING (drops the instant it deals a hit, back on when it moves again); NO numerical HP shield", gains: [damage_reduction]}
     verified: true
     hitpoints: null
     damage: null
