@@ -77,6 +77,7 @@ class CardSpec:
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     shield_hp: float = 0.0    # SHIELD pool (Royal Recruits / Guards / Dark Prince): absorbs damage before hp
+    damage_reduction: float = 0.0  # fraction of incoming damage negated WHILE NOT ATTACKING (Evo Knight = 0.60)
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -108,6 +109,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     lifetime = 40.0 if kind == "building" else None
     p_dmg = p_r = p_stun = p_int = 0.0
+    dmg_reduc = 0.0
     evo = c.get("evolution")
     if is_evo and isinstance(evo, dict):                      # Evolution stat OVERRIDES (level-11 base)
         hp = float(evo.get("hitpoints", hp))
@@ -121,8 +123,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         p_r = float(evo.get("pulse_radius", 0.0)) * (_REACH["long"] / 5.5)   # tiles -> normalized
         p_stun = float(evo.get("pulse_stun", 0.0))
         p_int = float(evo.get("pulse_interval", 0.0))
-        if "shield" in (evo.get("gains") or []):             # evo-granted shield (Evo Knight) -> shield_hp below
-            flags.add("shield")
+        dmg_reduc = float(evo.get("damage_reduction", 0.0))  # Evo Knight: takes this fraction LESS damage while not attacking
     sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
     hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
     sight = float(db.sight_range_tiles(base)) * (_REACH["long"] / 5.5)   # per-troop aggro radius (tiles -> normalized)
@@ -148,7 +149,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
-        shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0))
+        shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0),
+        damage_reduction=dmg_reduc)
 
 
 @dataclass
@@ -168,6 +170,7 @@ class Unit:
     pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
     shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
     dmg_mult: float = 1.0        # per-unit damage multiplier (Royal Chef pancake buff; 1.0 = normal)
+    attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -452,6 +455,7 @@ class SimEngine:
                 continue
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
+            u.attacking = False                             # default; set True only when engaged (target in reach)
             if u.deploy_left > 0:                            # still spawning -> can't act yet (~1s)
                 u.deploy_left -= dt
                 continue
@@ -472,6 +476,7 @@ class SimEngine:
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             if _dist(u.x, u.y, rx, ry) <= reach + 0.02:
+                u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.cooldown = u.spec.hit_speed / spd
@@ -503,10 +508,14 @@ class SimEngine:
         self._check_end()
 
     def _hurt(self, u: "Unit", dmg: float) -> None:
-        """Apply damage to a UNIT. While a SHIELD (Royal Recruits / Guards ...) is up it absorbs the WHOLE
-        hit, and -- like real Clash Royale -- OVERFLOW that breaks the shield is DISCARDED, not carried to
-        hp: one big hit only STRIPS the shield and the body survives it (the body takes damage on LATER
-        hits). A unit with no shield behaves exactly as `u.hp -= dmg`."""
+        """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
+        - DAMAGE REDUCTION while NOT attacking (Evo Knight -- 60% less from ALL sources whenever it isn't
+          engaged; it drops the moment it deals a hit, tracked by `u.attacking`). NOT a numerical HP pool.
+        - a SHIELD pool (Royal Recruits / Guards ...) that absorbs the WHOLE hit; like real Clash Royale the
+          OVERFLOW that breaks the shield is DISCARDED, not carried to hp (a big hit only STRIPS the shield).
+        A unit with neither behaves exactly as `u.hp -= dmg`."""
+        if u.spec.damage_reduction > 0.0 and not u.attacking:
+            dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
         if u.shield_left > 0.0:
             u.shield_left = max(0.0, u.shield_left - dmg)
             return

@@ -11,8 +11,9 @@ Delivery, Ronin, Ice Spirit.)
 
 **Doctrine:** X-Bow = win condition, placed FORWARD on your side just behind the bridge, within
 its ~11.5-tile range so it locks the enemy princess tower (back-centre = a defensive sniper
-fallback). Evo Knight = cheap mini-tank (its 2-cycle evolution gains a shield + damage-reduction
-dash): defend, body-block, and tank for a fresh X-Bow (your half). Rocket = clear big pushes, or
+fallback). Evo Knight = cheap mini-tank whose 2-cycle evolution takes 60% less damage from all
+sources WHILE NOT ATTACKING (it drops the instant he hits): defend, body-block, and tank for a fresh
+X-Bow (your half). Rocket = clear big pushes, or
 cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log / Skeletons) cycle and stall; defenders
 (Evo Knight / Evo Tesla / Ice Wizard) clean up.
 

@@ -1132,18 +1132,18 @@ Newest entries are at the bottom.
 ------------------------------------------------------------------------------
 2026-08-04  —  Knight is the EVOLUTION (Evo Knight), not normal
 ------------------------------------------------------------------------------
-- Deck marks knight `evolved: true` (like Evo Tesla). Evolution data from the KB: 2-CYCLE evolution
-  (cards.yaml knight.evolution.cycles = 2 -- you cycle Knight twice to charge it), gains a SHIELD +
-  damage-reduction dash (gains: [shield]); cards_stats.json knight_evo carries the BASE stats
-  (HP 1766 / dmg 202 / hit 1.2s / dps 168 at the L11 basis -- the evo boosts survivability via the
-  shield/dash, NOT raw stats).
+- Deck marks knight `evolved: true` (like Evo Tesla). Evolution data from the KB / Fandom wiki: 2-CYCLE
+  evolution (cards.yaml knight.evolution.cycles = 2 -- you cycle Knight twice to charge it). Its evo power
+  is DAMAGE REDUCTION, not a shield pool: it takes 60% LESS damage from ALL sources WHILE NOT ATTACKING,
+  and that drops the instant it deals a hit (back on when it moves again). cards_stats.json knight_evo
+  carries the BASE stats (HP 1766 / dmg 202 / hit 1.2s / dps 168 @ L11) -- the evo is pure survivability.
 - deck_identities() 9 -> 10: an evolved card yields BOTH forms (knight + knight_evo), since evolutions
   CYCLE between normal and evolved -> the policy's CARD-HEAD WIDTH grows by 1 (a real model-shape change;
   retrain from scratch, don't reuse the 9-wide checkpoint).
-- SIM shield WIRED: build_spec now folds an evolution's `gains: [shield]` into the unit flags, so
-  knight_evo gets a shield pool (_SHIELD_FRAC 0.5 x body HP; ~1422 at L16) via the existing shield mechanic.
-  Scoped to `shield` ONLY (Evo Tesla's gains stun/area_shock are unaffected -- its stun stays on the pulse,
-  not the body). Normal knight = no shield. Verified (knight 0 / knight_evo 1422 / tesla_evo 0).
+- SIM: build_spec reads knight.evolution.damage_reduction (0.60) into CardSpec.damage_reduction; Unit gains
+  an `attacking` flag (True when a target is in reach, cleared while moving); _hurt multiplies ALL incoming
+  damage by (1 - dr) while not attacking. Verified: Evo Knight loses 40 of a 100 hit while moving, 100 while
+  attacking; normal Knight 100. (Earlier this day I wrongly modeled it as a 0.5x-HP shield POOL -- reverted.)
 - HAND TEMPLATES: evolved cards show a DIFFERENT (glowing) portrait when charged and cycle back to the
   normal face, so BOTH are needed -- capture knight.png AND knight_evo.png (as Tesla already has tesla.png
   + tesla_evo.png). Docs updated (README, Instructions checklist + template list + evo note, DECK_SWITCH).
