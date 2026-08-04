@@ -75,7 +75,8 @@ class InMatchGrace:
                     if not self._holding:
                         self._holding = True
                         self._log(f"[play] UNKNOWN {gap:.1f}s after in-match -> grace hold "
-                                  f"(overtime failsafe, up to {self.grace_s:.0f}s)")
+                                  f"(label lost: overtime / end animation / dropout; up to "
+                                  f"{self.grace_s:.0f}s)")
                     return GameState.IN_MATCH
             if self._holding:
                 self._holding = False

@@ -303,6 +303,11 @@ train:
   epsilon_start: 1.0
   epsilon_end: 0.05
   epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
+  # LIVE fine-tune exploration (train-rl only; falls back to epsilon_* when absent). A converged sim
+  # policy must NOT re-explore from eps 1.0 on the ladder -- that is ~60-75 matches of random play.
+  rl_epsilon_start: 0.10
+  rl_epsilon_end: 0.05
+  rl_epsilon_decay_steps: 1000
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts

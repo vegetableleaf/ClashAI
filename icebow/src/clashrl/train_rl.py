@@ -81,6 +81,15 @@ def train_rl(cfg, init: str | None = None) -> None:
     if not init_path.exists():
         print(f"[train-rl] no policy to start from ({bc_path}). Run `train-bc` first.")
         return
+    if rl_path.exists():
+        # Live RL OVERWRITES policy_rl.pt every save_every matches with NO keep-best gate (there is no
+        # cheap live benchmark to gate on) -- and play.py auto-prefers policy_rl.pt. Bank the current
+        # one so a degraded fine-tune can always be rolled back.
+        prev = rl_path.with_name(rl_path.stem + "_prev" + rl_path.suffix)
+        import shutil
+        shutil.copy2(rl_path, prev)
+        print(f"[train-rl] backed up {rl_path.name} -> {prev.name} (rollback point; play.py prefers "
+              f"policy_rl.pt, so restore the backup if this session makes things worse)")
 
     device = _pick_device(cfg)
     ckpt = torch.load(init_path, map_location="cpu")
@@ -133,15 +142,53 @@ def train_rl(cfg, init: str | None = None) -> None:
     min_replay = int(cfg.get("train", "min_replay", default=200))
     target_sync = int(cfg.get("train", "target_sync", default=500))
     grad_clip = float(cfg.get("train", "grad_clip", default=10.0))
-    eps_start = float(cfg.get("train", "epsilon_start", default=1.0))
-    eps_end = float(cfg.get("train", "epsilon_end", default=0.05))
-    eps_steps = int(cfg.get("train", "epsilon_decay_steps", default=3000))
+    eps_start = float(cfg.get("train", "rl_epsilon_start",
+                              default=cfg.get("train", "epsilon_start", default=1.0)))
+    eps_end = float(cfg.get("train", "rl_epsilon_end",
+                            default=cfg.get("train", "epsilon_end", default=0.05)))
+    eps_steps = int(cfg.get("train", "rl_epsilon_decay_steps",
+                            default=cfg.get("train", "epsilon_decay_steps", default=3000)))
+    n_step = max(1, int(cfg.get("train", "n_step", default=1)))
     wait_prob = float(cfg.get("train", "explore_wait_prob", default=0.4))
     min_play_elixir = int(cfg.get("train", "min_play_elixir", default=3))
     save_every = int(cfg.get("train", "save_every_matches", default=1))
 
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     replay: deque = deque(maxlen=replay_size)
+
+    class _NStep:
+        """n-step return accumulator (port of train_sim's): emits (s_t, a_t, sum_j gamma^j r_{t+j},
+        s_{t+n}, gamma^n) once the window fills; on terminal, flushes every remaining head with
+        done=1. n=1 reproduces plain 1-step exactly. Live rewards are SPARSE (tower chips seconds
+        after the causal play) -- n-step bridges the gap the same way it does in the sim."""
+
+        def __init__(self, n: int, gamma: float):
+            self.n, self.g = n, gamma
+            self.buf: list = []
+
+        def _emit(self, k: int, done: float):
+            head, tail = self.buf[0], self.buf[k - 1]
+            R = sum((self.g ** j) * self.buf[j][3] for j in range(k))
+            # head keeps its state/action/current-side vectors; tail supplies the NEXT-side vectors
+            return (head[0], head[1], head[2], R, done, tail[5], tail[6], head[7], tail[8],
+                    head[9], tail[10], head[11], tail[12], self.g ** k)
+
+        def push(self, tr):
+            self.buf.append(tr)
+            if len(self.buf) >= self.n:
+                out = self._emit(self.n, 0.0)
+                self.buf.pop(0)
+                return [out]
+            return []
+
+        def flush(self):
+            out = []
+            while self.buf:
+                out.append(self._emit(len(self.buf), 1.0))
+                self.buf.pop(0)
+            return out
+
+    nstep = _NStep(n_step, gamma)
 
     env = LiveMatchEnv(cfg)
     if not env.region_ready():
@@ -243,6 +290,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         cell = torch.tensor([b[2][2] for b in batch], device=device).unsqueeze(1)
         rew = torch.tensor([b[3] for b in batch], dtype=torch.float32, device=device)
         done = torch.tensor([b[4] for b in batch], dtype=torch.float32, device=device)
+        gpow = torch.tensor([b[13] for b in batch], dtype=torch.float32, device=device)  # gamma^k (n-step)
 
         net.train()
         cq, ceq, gq = net(obs, hand, nxt, elx, thr)
@@ -279,7 +327,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             q_play_next = (gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1)
                            + ceq2.gather(1, sel_cell).squeeze(1))
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action
-            y = rew + gamma * v_next * (1.0 - done)
+            y = rew + gpow * v_next * (1.0 - done)                       # n-step: gamma^k bootstrap
         loss = F.smooth_l1_loss(q_sa, y)
         opt.zero_grad()
         loss.backward()
@@ -313,6 +361,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             match += 1
             if collector is not None:
                 collector.new_match()
+            nstep.buf.clear()                    # never bridge transitions across matches
             ep_reward = 0.0
             plays = 0
             hand = env.hand_vec.copy()
@@ -331,7 +380,12 @@ def train_rl(cfg, init: str | None = None) -> None:
                 nnxt = env.next_vec.copy()
                 nelx = env.elixir_vec.copy()
                 nthr = env.threat_vec.copy()
-                replay.append((obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx, thr, nthr))
+                raw = (obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx, thr, nthr)
+                for tr in nstep.push(raw):
+                    replay.append(tr)
+                if done:
+                    for tr in nstep.flush():
+                        replay.append(tr)
                 obs, hand, nxt, elx, thr = nobs, nhand, nnxt, nelx, nthr
                 ep_reward += reward
                 plays += action[0]

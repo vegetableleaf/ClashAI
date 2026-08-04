@@ -60,6 +60,9 @@ class CardSpec:
     roll_len: float = 0.0     # forward length of the roll corridor (normalized)
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
+    tower_hit_dmg: float = 0.0  # damage per hit vs CROWN TOWERS -- reduced when the KB carries a
+                              # crown_tower_damage (Miner's signature nerf); else = hit_dmg. Without
+                              # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.02      # collision radius (soft body-block)
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
@@ -123,6 +126,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     sight = float(db.sight_range_tiles(base)) * (_REACH["long"] / 5.5)   # per-troop aggro radius (tiles -> normalized)
     deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
+    ct = db.crown_tower_damage(base)                           # troops with a reduced crown value (Miner) hit towers softer
+    tower_hit_dmg = float(ct) * sc if ct is not None else hit_dmg
     radius = 0.03 if "tank" in flags else (0.014 if count >= 3 else 0.02)
     spawn_spec, spawn_count = None, 0
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
@@ -137,7 +142,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
-        hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
+        hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
@@ -508,7 +513,9 @@ class SimEngine:
     def _attack(self, u: Unit, kind: str, ref) -> None:
         dmg = u.spec.hit_dmg * u.dmg_mult                    # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         if kind == "tower":
-            self._damage_tower(ref, dmg, u.team)
+            # crown towers take the REDUCED per-hit value when the card has one (Miner) -- real CR's
+            # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
+            self._damage_tower(ref, u.spec.tower_hit_dmg * u.dmg_mult, u.team)
             return
         self._hurt(ref, dmg)
         self._apply_status(u.spec, ref)

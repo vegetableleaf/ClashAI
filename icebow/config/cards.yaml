@@ -176,6 +176,11 @@ cards:
     damage: null
     hit_speed: null
 
+  royal_delivery:              # overlay only: imported stats carry the rest (curated wins on set keys)
+    crown_tower_damage: 40     # L11 basis: the spell's 133 impact damage is REDUCED vs crown towers like
+                               # every damage spell (~30%; USER VERIFY exact). Without it the sim gave RD
+                               # full tower damage. The spawned Recruit still hits towers at full melee.
+
   rocket:
     display: "Rocket"
     elixir: 6
@@ -712,6 +717,9 @@ cards:
     targets: any
     flags: []
     range: melee
+    crown_tower_damage: 78     # L11 basis: Miner's signature nerf -- ~40% of his 194 hit vs crown towers
+                               # (wiki-style reduced value; USER VERIFY exact number). Without it the sim
+                               # let him chip towers at full damage -> the king-snipe exploit.
     verified: false
 
   x_bow:
