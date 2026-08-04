@@ -151,6 +151,11 @@ observation:
   team_enemy_window_s: 4.0       # ENEMY-HALF plays (Miner etc.) linger at their target -> a longer window keeps
                                  # them tagged 'mine' for their whole life without over-tagging your-side engagements
   team_track_radius: 0.12        # keep 'mine' as the unit moves: within this of last frame's allied unit
+  team_forget_s: 4.5             # a tracked own unit missed by the detector is CARRIED this long (frozen in place)
+                                 # before the tag lapses -- bridges ~2-3 missed reads at the act cadence, so a Miner
+                                 # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
+                                 # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
+                                 # 'mine' onto the enemy defenders answering it.
   flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
                                  # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
                                  # true tile, so spell targeting + depth/movement prediction use where it really is.

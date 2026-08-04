@@ -95,10 +95,13 @@ class Detection:
 
 
 def _team_of(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> str:
-    """Infer team from the dominant team-tint (blue = mine/bottom, red = enemy/top) inside the box."""
+    """Infer team from the dominant team-tint (blue = mine/bottom, red = enemy/top) inside the CENTRAL
+    ~60% of the box -- the unit body. Sampling the whole box lets the BACKGROUND vote (a Miner digging at
+    the red enemy tower has tower pixels in its box -> flips to 'enemy'), so the border is excluded."""
     h, w = frame.shape[:2]
-    x0 = max(0, int((d_cx - d_w / 2) * w)); x1 = min(w, int((d_cx + d_w / 2) * w))
-    y0 = max(0, int((d_cy - d_h / 2) * h)); y1 = min(h, int((d_cy + d_h / 2) * h))
+    cw, ch = d_w * 0.6, d_h * 0.6                      # central crop: unit body, not the surroundings
+    x0 = max(0, int((d_cx - cw / 2) * w)); x1 = min(w, int((d_cx + cw / 2) * w))
+    y0 = max(0, int((d_cy - ch / 2) * h)); y1 = min(h, int((d_cy + ch / 2) * h))
     if x1 - x0 < 2 or y1 - y0 < 2:
         return "unknown"
     hsv = cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2HSV)
@@ -119,7 +122,7 @@ class TeamTracker:
     being read as enemy threats."""
 
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
-                 track_radius: float = 0.12, forget_s: float = 1.5,
+                 track_radius: float = 0.12, forget_s: float = 4.5,
                  enemy_window_s: Optional[float] = None):
         self.spawn_radius = float(spawn_radius)
         self.spawn_window_s = float(spawn_window_s)
@@ -133,29 +136,40 @@ class TeamTracker:
 
     def reset(self) -> None:
         self._plays: list = []     # recent own TROOP plays: (x, y, t)
-        self._mine: list = []      # units tagged 'mine' last frame: (x, y, t) -- for tracking
+        self._mine: list = []      # tracked own units: (x, y, base_card, t_last_seen)
 
     def record_play(self, x: float, y: float, t: float) -> None:
         """Register a TROOP you just played at normalized (x, y) -- the unit that appears there is yours."""
         self._plays.append((float(x), float(y), float(t)))
 
     def tag(self, dets, t: float):
-        """Override ``d.team = 'mine'`` for detections near a recent own play OR a unit tagged mine last
-        frame (so the label persists as it moves). Mutates + returns ``dets``; rebuilds the tracked set."""
+        """Override ``d.team = 'mine'`` for detections near a recent own play OR matching a tracked own
+        unit (SAME base card, nearby) -- so the label persists for the unit's WHOLE life, not just the
+        spawn window. Tracks BRIDGE detector misses: a unit not seen this read is carried for ``forget_s``
+        (its position frozen) instead of being dropped -- one missed read used to kill the tag, and a
+        Miner at the red enemy tower then flipped to 'enemy' on the colour vote. Identity-aware linking
+        (base must match) keeps the longer memory from leaking 'mine' onto enemy defenders answering it.
+        Mutates + returns ``dets``."""
         self._plays = [p for p in self._plays                     # enemy-side plays (y<0.5) linger longer
                        if t - p[2] <= (self.enemy_window_s if p[1] < 0.5 else self.spawn_window_s)]
-        prev = [m for m in self._mine if t - m[2] <= self.forget_s]
+        prev = [m for m in self._mine if t - m[3] <= self.forget_s]
         sr2, tr2 = self.spawn_radius ** 2, self.track_radius ** 2
         new_mine = []
         for d in dets:
             dx, dy = d.cx, d.gy
             mine = any((dx - px) ** 2 + (dy - py) ** 2 <= sr2 for px, py, _ in self._plays)
-            if not mine:
-                mine = any((dx - mx) ** 2 + (dy - my) ** 2 <= tr2 for mx, my, _ in prev)
+            if not mine:                                          # link to a tracked own unit: SAME card, nearby
+                mine = any(mb == d.base and (dx - mx) ** 2 + (dy - my) ** 2 <= tr2
+                           for mx, my, mb, _ in prev)
             if mine:
                 d.team = "mine"
-                new_mine.append((dx, dy, t))
-        self._mine = new_mine
+                new_mine.append((dx, dy, d.base, t))
+        # GAP BRIDGING: carry forward recent tracks NOT matched by any current detection (the detector
+        # missed the unit this read) so a single miss doesn't end the tag; they age out after forget_s.
+        carried = [m for m in prev
+                   if not any(nb == m[2] and (nx - m[0]) ** 2 + (ny - m[1]) ** 2 <= tr2
+                              for nx, ny, nb, _ in new_mine)]
+        self._mine = new_mine + carried
         return dets
 
 

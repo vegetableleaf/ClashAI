@@ -140,7 +140,8 @@ def play(cfg) -> None:
         spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
         spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
         enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
-        track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)))
+        track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)),
+        forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)))
     _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
 
     def _threat_extra(frame):
