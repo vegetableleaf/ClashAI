@@ -66,6 +66,7 @@ class CardSpec:
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
     level: int = 11           # card level (HP + damage scaled by 1.1^(level-11))
+    sight: float = 0.16       # AGGRO/SIGHT radius (normalized; from the KB per-card table, 5.5 tiles default)
     pulse_dmg: float = 0.0    # Evo Tesla area-shock: damage per pulse
     pulse_r: float = 0.0      # pulse radius (normalized)
     pulse_stun: float = 0.0   # STUN seconds applied by each pulse
@@ -119,6 +120,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         p_int = float(evo.get("pulse_interval", 0.0))
     sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
     hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
+    sight = float(db.sight_range_tiles(base)) * (_REACH["long"] / 5.5)   # per-troop aggro radius (tiles -> normalized)
     deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
     radius = 0.03 if "tank" in flags else (0.014 if count >= 3 else 0.02)
@@ -137,7 +139,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, deploy_time=deploy_time, radius=radius,
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
-        level=int(level), pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
+        level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
         shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0))
 
@@ -357,7 +359,7 @@ class SimEngine:
             tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y)) if towers else None
             u.target = tw
             return ("tower", tw) if tw else (None, None)
-        sight = self.siege_sight if u.spec.siege else self.sight_range
+        sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
         t = u.target                                          # stay COMMITTED to a live unit target (with a leash)
         if isinstance(t, Unit) and t.hp > 0 and self._valid_foe(u, t) \
                 and _dist(u.x, u.y, t.x, t.y) <= sight * 1.8:

@@ -509,7 +509,10 @@ sim:
     royal_chef:     {hp: 3918, dps: 158, hit_speed: 1.0, cook_period_s: 30, cook_delay_s: 7, buff_mult: 1.1, buff_min_frac: 0.33}  # ~every 30s feeds the ally troop with most HP (+1 level)
   king_tower:       {hp: 7032, dps: 158, hit_speed: 1.0}                                            # L15 King's Tower (wakes when first hit)
   siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
-  sight_range: 0.12             # troop AGGRO radius: notice + lock an enemy UNIT within this, else march at the tower (target commitment, leash 1.8x)
+  sight_range: 0.12             # FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
+                                # (cards.py _SIGHT_TILES, cr-api-data characters.sight_range): most 5.5 tiles, PEKKA/
+                                # Giant Skeleton 5.0 (kite-able), building-seekers 7.0-7.7, Hog/Royal Hogs/Princess 9.5.
+                                # Opposite lanes are ~9-10 tiles apart -> troops march past each other (real CR behaviour).
   slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed
   slow_duration: 2.0            # seconds a SLOW lasts
   stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)

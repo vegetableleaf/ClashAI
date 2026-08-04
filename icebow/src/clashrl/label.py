@@ -110,7 +110,7 @@ def _interaction_block(det, db, cfg, frame):
     my_t = [(ax, ay, True) for ax, ay in mine_a[:3]]
     en_t = [(ax, ay, True) for ax, ay in enemy_a[:3]]
     sight = float(cfg.get("sim", "sight_range", default=0.12))
-    return interactions.interaction_vector(units, my_t, en_t, db, sight)
+    return interactions.interaction_vector(units, my_t, en_t, db)
 
 
 def _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, dt):

@@ -177,7 +177,7 @@ class SimMatchEnv:
         if self.use_interactions:                     # who is predicted to be marching at which tower
             units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
                                                          self.det_recall, self.det_recall_by_card)
-            parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db, self.sight_range))
+            parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db))
         return np.concatenate(parts).astype(np.float32)
 
     def _render(self) -> np.ndarray:

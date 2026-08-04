@@ -261,7 +261,7 @@ class LiveMatchEnv:
             units = [("mine" if d.team == "mine" else "enemy", d.base, d.cx, d.gy)
                      for d in self._last_dets_all
                      if d.team in ("mine", "enemy") and d.base in self.detector_cards]
-            parts.append(interactions.interaction_vector(units, my_t, en_t, self.db, self.sight_range))
+            parts.append(interactions.interaction_vector(units, my_t, en_t, self.db))
         self.threat_vec = np.concatenate(parts).astype(np.float32)
 
     def _detect_enemies(self, frame):

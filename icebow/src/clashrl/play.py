@@ -183,7 +183,7 @@ def play(cfg) -> None:
                     for i, (ax, ay) in enumerate(tower_tracker.enemy_a[:3])]
             units = [("mine" if d.team == "mine" else "enemy", d.base, d.cx, d.gy)
                      for d in dets_all if d.team in ("mine", "enemy") and d.base in detector_cards]
-            blocks.append(interactions.interaction_vector(units, my_t, en_t, _db, sight_range))
+            blocks.append(interactions.interaction_vector(units, my_t, en_t, _db))
         return np.concatenate(blocks).astype(np.float32) if blocks else np.zeros(0, np.float32)
 
     eps = float(cfg.get("play", "epsilon", default=0.0))

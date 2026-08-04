@@ -28,6 +28,7 @@ INTERACTION_DIM = 12          # (value, urgency) x my 3 towers + (value, urgency
 
 # speed word -> normalized units/second (matches sim/engine._SPEED)
 _SPEED = {"slow": 0.023, "medium": 0.031, "fast": 0.047, "very_fast": 0.063}
+_TILE = 0.16 / 5.5            # one tile in normalized units (the engine's reach convention)
 
 Unit = Tuple[str, str, float, float]          # (team 'mine'|'enemy', base_card, x, y) normalized
 Tower = Tuple[float, float, bool]             # (x, y, alive)
@@ -35,10 +36,12 @@ Target = Tuple[Optional[str], int, float]     # (kind 'unit'|'tower'|None, index
 
 
 def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
-                    enemy_towers: Sequence[Tower], db, sight_range: float = 0.12) -> List[Target]:
-    """Predicted target per unit, by CR's targeting rules. ``my_towers``/``enemy_towers`` are each the
-    3 (x, y, alive) towers of that side in the SAME frame as the units ('mine' units attack toward
-    ``enemy_towers`` and vice versa). Spells get (None, -1, 0)."""
+                    enemy_towers: Sequence[Tower], db) -> List[Target]:
+    """Predicted target per unit, by CR's targeting rules with the unit's OWN sight/aggro radius
+    (db.sight_range_tiles: most troops 5.5 tiles, PEKKA-class 5.0, building-seekers 7-7.7, Hog/Royal
+    Hogs/Princess 9.5 -- opposite lanes are ~9-10 tiles apart, hence lane-ignoring marches).
+    ``my_towers``/``enemy_towers`` are each the 3 (x, y, alive) towers of that side in the SAME frame
+    as the units ('mine' units attack toward ``enemy_towers`` and vice versa). Spells get (None, -1, 0)."""
     out: List[Target] = []
     for i, (team, base, x, y) in enumerate(units):
         p = card_threat.profile(db, base)
@@ -55,7 +58,8 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
                 d = math.hypot(x - fx, y - fy)
                 if best is None or d < best[2]:
                     best = ("unit", j, d)
-        else:                                         # nearest ATTACKABLE foe inside sight range
+        else:                                         # nearest ATTACKABLE foe inside ITS OWN sight range
+            sight = float(db.sight_range_tiles(base)) * _TILE
             for j, (ft, fb, fx, fy) in enumerate(units):
                 if ft != foe_team:
                     continue
@@ -63,7 +67,7 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
                 if fp.spell or (fp.flying and not p.attacks_air):
                     continue
                 d = math.hypot(x - fx, y - fy)
-                if d <= sight_range and (best is None or d < best[2]):
+                if d <= sight and (best is None or d < best[2]):
                     best = ("unit", j, d)
         # nearest alive enemy tower = the march target
         tbest: Optional[Target] = None
@@ -83,7 +87,7 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
 
 
 def interaction_vector(units: Sequence[Unit], my_towers: Sequence[Tower],
-                       enemy_towers: Sequence[Tower], db, sight_range: float = 0.12,
+                       enemy_towers: Sequence[Tower], db,
                        value_norm: float = 8.0, eta_norm: float = 10.0) -> np.ndarray:
     """The policy-facing 12-dim TOWER-PRESSURE summary. dims [0..5] = per MY tower (L, R, king):
     [incoming enemy elixir-value / value_norm (clipped 1), URGENCY = 1 - nearest_eta/eta_norm (0 =
@@ -91,7 +95,7 @@ def interaction_vector(units: Sequence[Unit], my_towers: Sequence[Tower],
     Units predicted to fight another UNIT light nothing (engaged); stationary buildings are skipped."""
     v = np.zeros(INTERACTION_DIM, np.float32)
     for (team, base, x, y), (kind, k, dist) in zip(units, predict_targets(units, my_towers,
-                                                                          enemy_towers, db, sight_range)):
+                                                                          enemy_towers, db)):
         if kind != "tower" or not (0 <= k < 3):
             continue
         c = db.get(base) or {}
