@@ -74,6 +74,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     target.eval()
 
     gamma = float(cfg.get("train", "gamma", default=0.99))
+    n_step = max(1, int(cfg.get("train", "n_step", default=3)))
     lr = float(cfg.get("train", "lr", default=1e-4))
     batch_size = int(cfg.get("train", "batch_size", default=64))
     replay_size = int(cfg.get("train", "replay_size", default=100000))
@@ -90,6 +91,38 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
 
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     replay: deque = deque(maxlen=replay_size)
+
+    class _NStep:
+        """Per-env N-STEP return aggregator = stronger CAUSE-AND-EFFECT credit assignment. A 1-step TD
+        target credits an action only with its IMMEDIATE reward + a bootstrap, so a consequence that
+        lands a few seconds later (overspend -> undefendable counter-push -> tower damage) crawls back
+        one update at a time. With n-step, each stored transition's target contains the next n REAL
+        rewards (R = sum gamma^j r_j) + the bootstrap n states ahead -- the punishment arrives INSIDE
+        the causing action's learning target. Emits the same replay tuple + gpow (= gamma^k, k = the
+        actual horizon: n normally, shorter on a terminal flush). n=1 reproduces the old behaviour."""
+
+        def __init__(self, n: int, g: float):
+            self.n, self.g, self.buf = n, g, []
+
+        def _emit(self, k: int, nstate, done_f: float):
+            (obs, hand, nxtv, elx, thr), act, _ = self.buf[0]
+            r_acc = sum((self.g ** j) * self.buf[j][2] for j in range(k))
+            nobs, nhand, nnxtv, nelx, nthr = nstate
+            return (obs, hand, act, r_acc, done_f, nobs, nhand, nxtv, nnxtv, elx, nelx, thr, nthr,
+                    self.g ** k)
+
+        def push(self, state, act, r: float, nstate, done: bool):
+            """Add one raw transition; return the list of AGGREGATED transitions ready for the replay."""
+            self.buf.append((state, act, float(r)))
+            out = []
+            if not done and len(self.buf) >= self.n:
+                out.append(self._emit(self.n, nstate, 0.0))
+                self.buf.pop(0)
+            if done:                                   # terminal: flush the whole window against the end state
+                while self.buf:
+                    out.append(self._emit(len(self.buf), nstate, 1.0))
+                    self.buf.pop(0)
+            return out
 
     def epsilon(s):
         return eps_end if s >= eps_steps else eps_start + (eps_end - eps_start) * (s / eps_steps)
@@ -146,6 +179,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         cell = torch.tensor([x[2][2] for x in b], device=device).unsqueeze(1)
         rew = torch.tensor([x[3] for x in b], dtype=torch.float32, device=device)
         done = torch.tensor([x[4] for x in b], dtype=torch.float32, device=device)
+        gpow = torch.tensor([x[13] for x in b], dtype=torch.float32, device=device)  # gamma^k of each n-step return
 
         net.train()
         cq, ceq, gq = net(obs, hand, nxt, elx, thr)
@@ -169,7 +203,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
             ceq2 = ceq2.masked_fill(~cellmask_next, float("-inf"))
             q_play_next = gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1) + ceq2.gather(1, sel_cell).squeeze(1)
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])
-            y = rew + gamma * v_next * (1.0 - done)
+            y = rew + gpow * v_next * (1.0 - done)     # n-step: rew = sum gamma^j r_j, bootstrap gamma^k ahead
         loss = F.smooth_l1_loss(q_sa, y)
         opt.zero_grad(); loss.backward()
         torch.nn.utils.clip_grad_norm_(net.parameters(), grad_clip); opt.step()
@@ -302,6 +336,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
     celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
     ep_r = [0.0] * K
+    nstep = [_NStep(n_step, gamma) for _ in range(K)]   # per-env n-step return aggregators
 
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
@@ -321,8 +356,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 nobs, reward, done, info = env.step(acts[i])
                 nhand, nnxt = env.hand_vec.copy(), env.next_vec.copy()
                 nelx, nthr = env.elixir_vec.copy(), env.threat_vec.copy()
-                replay.append((cobs[i], chand[i], acts[i], reward, float(done),
-                               nobs, nhand, cnxt[i], nnxt, celx[i], nelx, cthr[i], nthr))
+                for tr in nstep[i].push((cobs[i], chand[i], cnxt[i], celx[i], cthr[i]), acts[i],
+                                        reward, (nobs, nhand, nnxt, nelx, nthr), bool(done)):
+                    replay.append(tr)
                 ep_r[i] += reward
                 if done:
                     oc = info.get("outcome")
