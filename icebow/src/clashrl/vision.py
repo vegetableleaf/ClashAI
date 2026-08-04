@@ -171,11 +171,16 @@ class Vision:
         return cv2.resize(frame, (self.work_width, max(1, int(round(h * scale)))),
                           interpolation=cv2.INTER_AREA)
 
-    def _find(self, frame: np.ndarray, template_name, threshold: float) -> bool:
+    def _find(self, frame: np.ndarray, template_name, threshold: float, region=None) -> bool:
         tmpl = self._templates.get(template_name) if template_name else None
         if tmpl is None:
             return False
         work = self._work(frame)
+        if region:                      # normalized [x0, y0, x1, y1] search window
+            h, w = work.shape[:2]
+            x0, y0, x1, y1 = region
+            work = work[max(0, int(y0 * h)):min(h, int(round(y1 * h))),
+                        max(0, int(x0 * w)):min(w, int(round(x1 * w)))]
         if work.shape[0] < tmpl.shape[0] or work.shape[1] < tmpl.shape[1]:
             return False
         res = cv2.matchTemplate(work, tmpl, cv2.TM_CCOEFF_NORMED)
@@ -194,8 +199,9 @@ class Vision:
             if not spec:
                 continue
             threshold = spec.get("threshold", 0.8)
+            region = spec.get("region")          # optional: restrict the template search window
             names = spec.get("templates") or [spec.get("template")]
-            if any(name and self._find(frame, name, threshold) for name in names):
+            if any(name and self._find(frame, name, threshold, region) for name in names):
                 return state
         return GameState.UNKNOWN
 
