@@ -132,9 +132,12 @@ Tip: to see the full list of commands at any time, run:
 ===============================================================================
 
 The project includes a fast, built-in pretend-match engine. It plays THOUSANDS of
-matches against a pool of real "meta" decks and teaches the bot the basics -
-all on your GPU, with NO game window and NO recording. This is the fastest way to
-get a first trained bot, and it makes a great starting point for Path B later.
+matches against a pool of ~1000 real "meta" decks - and against FROZEN copies of
+itself (self-play) - all on your GPU, with NO game window and NO recording. The
+engine models the rules that matter (shields, tower troops, per-card sight and
+targeting, spells, and the 2x/3x elixir phases), so the skills it learns transfer.
+This is the fastest way to get a first trained bot, and it makes a great starting
+point for Path B later.
 
 (Optional) Make the simulator match your account: open config/cards.yaml and set
 the "level:" of each of your deck cards to their real in-game levels. Also set the
@@ -275,6 +278,13 @@ small pictures ("templates") of your deck's cards. You build these from a record
    = the tower-HP number it read. If these boxes are clearly off your towers, the
    window/region is misaligned (revisit Stage 4).
 
+5. (Optional) The bot switches to a defensive game plan at double elixir, which it
+   times off the match clock automatically. If you also want the on-screen "x2"/"x3"
+   badge used as a cross-check, drop templates\elixir_2x.png and templates\elixir_3x.png
+   (cropped from a recording) and check they match:
+
+       .\.venv\Scripts\python.exe run.py verify --clock
+
 
 ===============================================================================
  STAGE 7 - TURN RECORDINGS INTO TRAINING DATA (process it)
@@ -320,10 +330,15 @@ real matches by itself and learns from taking towers, defending, and winning:
     .\.venv\Scripts\python.exe run.py train-rl
 
   * Keep Clash Royale open and on HOME; the bot drives the menus and plays.
-  * It saves data/policy_rl.pt, which the "play" command then prefers.
+  * It saves data/policy_rl.pt, which the "play" command then prefers (and backs the
+    previous one up to data/policy_rl_prev.pt at the start of each session).
+  * By default it continues data/policy_rl.pt if it exists, otherwise your imitation
+    brain (data/policy.pt). To fine-tune the SIMULATOR brain live instead, point it at
+    that checkpoint:
+
+        .\.venv\Scripts\python.exe run.py train-rl --init data/policy_sim_best.pt
+
   * Press Ctrl+C to stop; it saves as it goes.
-  * TIP: the first time, delete data\policy_rl.pt before running so it starts fresh
-    from your imitation brain.
 
 
 ===============================================================================
@@ -361,6 +376,56 @@ play hands-free:
 * SAVE YOUR WORK TO GITHUB: your code changes can be pushed with git. (Your
   recordings and trained brains in the "data" folder are intentionally NOT uploaded -
   they're private and large.)
+
+
+===============================================================================
+ STAGE 11 (ADVANCED, OPTIONAL) - TEACH IT TO SEE THE OPPONENT (object detector)
+===============================================================================
+
+By default the bot recognises YOUR cards (by template) and reads towers + elixir, but
+it only INFERS the opponent's units from raw pixels. You can train an OBJECT DETECTOR
+(YOLO) on your own recordings so it actually "sees" enemy units - what they are and
+where - which makes its defence and elixir-trade decisions much better. This is a
+bigger, hand-labelling project; skip it until the basics work.
+
+The workflow (all commands from the icebow folder):
+
+  1. Collect in-match frames to label from your recordings (and/or training
+     timelapses), and optionally rough-box your own troops automatically:
+
+         .\.venv\Scripts\python.exe run.py detect-frames --count 200
+         .\.venv\Scripts\python.exe run.py autolabel --all --preview
+
+  2. Hand-label those frames in Label Studio (free, labelstud.io): draw a box around
+     each unit and pick its class. Export as Label Studio JSON, then import + split
+     into train/val:
+
+         .\.venv\Scripts\python.exe run.py detect-import --export <your-export.json>
+
+  3. Train the detector (uses the "ultralytics" package from requirements):
+
+         python tools/detect/train.py
+
+  4. Check how good it is on random frames, and preview the "what's on the board" map
+     the policy would receive:
+
+         .\.venv\Scripts\python.exe run.py detect-preview
+         .\.venv\Scripts\python.exe run.py detect-obs
+
+  5. When the detector is solid, turn it on in config/config.yaml by setting
+     observation.use_detector: true (and, for the extra "who is attacking what"
+     features, observation.use_interactions: true). Then rebuild and retrain so the
+     policy learns with the wider input:
+
+         .\.venv\Scripts\python.exe run.py label --all
+         .\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16
+         .\.venv\Scripts\python.exe run.py train-bc --init data/policy_sim.pt
+         .\.venv\Scripts\python.exe run.py train-rl --init data/policy_sim_best.pt
+
+  Keep the SAME use_detector / use_interactions setting across the simulator, imitation,
+  and live-RL steps - they change the size of the model's input, so everything must
+  agree. This is "Stage 3" of the project: optional, but the single biggest upgrade to
+  how well the bot reads the game.
 
 
 ===============================================================================
@@ -497,10 +562,16 @@ Tower boxes are off in "verify --towers":
     .\.venv\Scripts\python.exe run.py label --all
     .\.venv\Scripts\python.exe run.py outcomes --all
     .\.venv\Scripts\python.exe run.py train-bc --init data/policy_sim.pt
-    .\.venv\Scripts\python.exe run.py train-rl
+    .\.venv\Scripts\python.exe run.py train-rl --init data/policy_sim_best.pt
 
   Play hands-free:
     .\.venv\Scripts\python.exe run.py play
+
+  Object detector (advanced, optional - see Stage 11):
+    .\.venv\Scripts\python.exe run.py detect-frames --count 200
+    .\.venv\Scripts\python.exe run.py detect-import --export <label-studio.json>
+    python tools/detect/train.py
+    .\.venv\Scripts\python.exe run.py detect-preview
 
   Help:
     .\.venv\Scripts\python.exe run.py --help

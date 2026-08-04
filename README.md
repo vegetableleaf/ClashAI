@@ -51,19 +51,42 @@ The bot never sees the game's internal state — it only gets what a person woul
 5. **Play** — the trained policy plays on its own.
 
 **What it reads from the screen:** the arena image, the four cards in hand and
-the *next* card coming up (so it can plan its cycle), tower and king HP (for
-rewards), and the win/loss screen at the end. Card recognition is done by
-matching against small template images built from your own recordings — so it
-learns *your* deck, including evolved cards (which count as their own card).
+the *next* card coming up (so it can plan its cycle), your elixir bar and the
+2×/3× elixir clock, tower and king HP (for rewards), and the win/loss screen at
+the end. Card recognition is done by matching against small template images built
+from your own recordings — so it learns *your* deck, including evolved cards (which
+count as their own card). **Optionally** (advanced) a trained object detector can be
+added so the bot also *sees* the **opponent's** units — what they are and where — for
+much better defence and elixir-trade decisions.
 
 ### The deck it's currently tuned for
 
 Royal Delivery, Tesla (Evolved), Ice Wizard, X-Bow, Rocket, Miner, The Log,
-Skeletons — a **Miner X-Bow control** deck (Classic 1v1, all cards level 11). The
-reward shaping teaches: defend + cycle with the cheap cards, use the **X-Bow** as the
-win condition (placed forward, within firing range, to lock the enemy princess tower),
-the **Miner** to chip the tower / tank / snipe support (it deploys anywhere), and the
-**Rocket** to clear big pushes or cycle-chip the tower during double/triple elixir.
+Skeletons — a **Miner X-Bow control** deck (Classic 1v1; the card levels are set to a
+real account's, 12–16). The reward shaping teaches: defend + cycle with the cheap
+cards, use the **X-Bow** as the win condition (placed forward, within firing range, to
+lock the enemy princess tower), the **Miner** to chip the tower / tank / snipe support
+(it deploys anywhere), and the **Rocket** to clear big pushes or cycle-chip the tower
+during double/triple elixir. It also follows a simple **offense→defense doctrine**: if
+the X-Bow can't break through by double elixir (or once it's up a tower) it switches to a
+defensive X-Bow + rocket-cycle to close the game — and it plays purely defensively
+against fast-cycle, heavy-beatdown, and Royal-Recruits/Royal-Hogs split-lane decks that
+hard-counter X-Bow.
+
+### Under the hood
+
+- **Imitation → RL.** A CNN policy is behaviour-cloned from your recordings, then
+  fine-tuned with a **Double-DQN** (n-step returns) on live matches.
+- **Headless simulator.** A fast, stat-driven match engine (built from the card
+  knowledge base) trains the same policy over thousands of matches against a pool of
+  ~1000 real meta decks — including a **self-play league** — so you get a strong prior
+  before ever opening the game. It models shields, tower troops, per-card sight and
+  targeting, spells, and the 2×/3× elixir phases.
+- **Optional object detector (Stage 3).** A YOLO detector trained on your own frames
+  lets the bot perceive enemy units (identity + position + short-term memory) instead
+  of guessing from raw pixels. Off by default; see the Instructions.
+- **Robust live play.** Screen-scraped tower/king HP, a 2×/3× elixir clock, team
+  tracking (your own units aren't mistaken for threats), and overtime handling.
 
 ---
 
@@ -79,16 +102,22 @@ cd icebow
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
+# FASTEST START — no game, no recording: train in the built-in simulator
+python run.py train-sim --matches 20000 --envs 16
+
+# THE REAL THING — learn from your own play, then improve live:
 # 1. record yourself playing a bunch of matches
 python run.py record
 # 2. build card templates + check recognition
 python run.py hand-templates
 python run.py verify --hand
-# 3. turn recordings into data, then train
+# 3. turn recordings into data
 python run.py label --all
-python run.py train-bc
-python run.py train-rl
-# 4. let it play
+python run.py outcomes --all
+# 4. imitate your play (warm-started from the simulator brain), then RL fine-tune live
+python run.py train-bc --init data/policy_sim.pt
+python run.py train-rl --init data/policy_sim_best.pt
+# 5. let it play
 python run.py play
 ```
 
