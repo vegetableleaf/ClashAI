@@ -179,9 +179,8 @@ observation:
     # weak -- measured R <= ~0.45 folded @0.50 (well-supported)
     hog_rider: 0.35
     bowler: 0.35
-  # LIVE team verdicts by EVIDENCE FUSION (replay_mine.TeamTracker): own-play anchor > motion direction
-  # > HP-bar colour majority > first-seen side (pocket-gated) > overwhelming body art. Colour alone was
-  # the old failure mode -- HP bars only exist on DAMAGED units, and the Log has no team UI at all.
+  # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
+  # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
   team_spawn_window_s: 2.5       # ...for this long after a YOUR-HALF play (kept short so an enemy engaging your
                                  # fresh defender near its spawn isn't hidden as 'mine' for long)
@@ -191,12 +190,6 @@ observation:
   team_forget_s: 4.5             # a tracked own unit missed by the detector is CARRIED this long (frozen in place)
                                  # before the tag lapses -- bridges ~2-3 missed reads at the act cadence, so a Miner
                                  # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
-  team_motion_min: 0.05          # net y drift since first seen that counts as MARCHING (units advance toward the
-                                 # enemy: up = mine, down = enemy -- decisive for the team-colourless rolling Log);
-                                 # below it (idle units, buildings, knockback jitter) motion abstains
-  team_deep_mine_y: 0.62         # first seen BELOW this = born deep in MY half -> 'mine' prior... unless that lane's
-  team_deep_enemy_y: 0.38        # (resp. ABOVE = enemy prior) -- princess is DOWN: a taken tower opens the deploy
-                                 # POCKET on the loser's side of the lane, so the prior is voided there (set_towers)
                                  # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
                                  # 'mine' onto the enemy defenders answering it.
   flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
@@ -468,6 +461,17 @@ play:
                                  # typical matchmaking wait so a real search is not cancelled early.
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
 
+# --- Live detector preview (train-rl side window) ---
+# Pops a small window beside the game during train-rl showing each captured frame with the
+# detector's team-coloured boxes -- exactly what the policy's perception sees, fed from the SAME
+# detector pass the env already runs (no extra inference). The capture is a SCREEN grab, so the
+# window must never cover the game: by default it sits just RIGHT of the capture region. Closing
+# the window turns it off for the session.
+preview:
+  enabled: true
+  scale: 0.5          # window size as a fraction of the captured frame
+  pos: null           # [x, y] screen position; null = auto (right of the game window)
+
 # --- Remote monitoring (optional Discord screenshots during long runs) ---
 # Posts a screenshot of the game window to Discord when train-rl starts, then a short video CLIP
 # every `interval_min` minutes, so you can tell remotely whether it's progressing or stuck. The
@@ -481,7 +485,7 @@ monitor:
   clip_seconds: 30                       # length of each periodic video clip (seconds)
   clip_fps: 10                           # clip frame rate (higher = smoother but a bigger upload)
   clip_scale: 0.5                        # downscale the clip (0.5 = half size) to stay under Discord's ~8 MB webhook limit
-  overlay_detections: true             # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
+  overlay_detections: true            # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
                                          # yours=blue, + card name/conf) so you can SEE what the detector perceives,
                                          # remotely. Loads its OWN detector on the first clip (needs trained weights in
                                          # runs/detect); a brief 2nd model during the 30s clip -- turn off if VRAM is tight.

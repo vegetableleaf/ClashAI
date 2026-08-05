@@ -216,6 +216,9 @@ class LiveMatchEnv:
         if self.use_interactions:                        # widen by the interaction block (zeros until read)
             self.threat_vec = np.concatenate(
                 [self.threat_vec, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
+        # live side-window: each frame + the detector's team-coloured boxes (train-rl babysitting).
+        from .detect import LivePreview
+        self._preview = LivePreview(cfg)
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -249,6 +252,7 @@ class LiveMatchEnv:
         if not self.use_detector:
             self.threat_vec = base if not self.use_interactions else np.concatenate(
                 [base, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
+            self._preview.update(frame, [], self.capture.region)      # plain frame (no detector loaded)
             return
         dets = self._detect_enemies(frame)                                   # ONE detector pass this frame
         now = time.time()
@@ -269,6 +273,8 @@ class LiveMatchEnv:
                      if d.team in ("mine", "enemy") and d.base in self.detector_cards]
             parts.append(interactions.interaction_vector(units, my_t, en_t, self.db))
         self.threat_vec = np.concatenate(parts).astype(np.float32)
+        # side window shows what the policy's perception just saw (same pass, fused teams)
+        self._preview.update(frame, self._last_dets_all, self.capture.region)
 
     def _detect_enemies(self, frame):
         """ONE detector pass -> whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]).

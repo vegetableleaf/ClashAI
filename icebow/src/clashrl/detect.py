@@ -257,6 +257,50 @@ def draw_detections(frame, dets):
     return out
 
 
+class LivePreview:
+    """Small side window shown during train-rl: each captured match frame with the detector's
+    team-coloured boxes (:func:`draw_detections`) -- a live view of exactly what the policy's
+    perception sees, fed from the SAME detector pass the env already runs (no extra inference).
+
+    The capture is a SCREEN grab, so this window must NEVER cover the game (it would be captured
+    into the next frame): it auto-positions just RIGHT of the capture region (``preview.pos``
+    overrides). Closing the window disables it for the session; any GUI failure (headless, no
+    HighGUI) degrades to a permanent silent no-op."""
+
+    _TITLE = "clashrl detector"
+
+    def __init__(self, cfg):
+        self.enabled = bool(cfg.get("preview", "enabled", default=True))
+        self.scale = float(cfg.get("preview", "scale", default=0.5))
+        self.pos = cfg.get("preview", "pos", default=None)
+        self._placed = False
+
+    def update(self, frame, dets, region=None) -> None:
+        """Show ``frame`` with ``dets`` overlaid. ``region`` = the capture Region (for auto-placement)."""
+        if not self.enabled or frame is None:
+            return
+        try:
+            if self._placed and cv2.getWindowProperty(self._TITLE, cv2.WND_PROP_VISIBLE) < 1:
+                self.enabled = False                       # user closed the window -> respect it
+                return
+            small = draw_detections(frame, dets or [])
+            if self.scale and self.scale != 1.0:
+                small = cv2.resize(small, None, fx=self.scale, fy=self.scale)
+            cv2.imshow(self._TITLE, small)
+            if not self._placed:                           # position ONCE (don't fight the user dragging it)
+                if self.pos:
+                    x, y = int(self.pos[0]), int(self.pos[1])
+                elif region is not None:                   # beside the game, clear of the screen capture
+                    x, y = region.left + region.width + 12, max(0, region.top)
+                else:
+                    x, y = 60, 60
+                cv2.moveWindow(self._TITLE, x, y)
+                self._placed = True
+            cv2.waitKey(1)                                 # pump the HighGUI event loop
+        except Exception:
+            self.enabled = False                           # headless / GUI unavailable -> silent no-op
+
+
 def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}
