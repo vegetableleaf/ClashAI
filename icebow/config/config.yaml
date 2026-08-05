@@ -469,7 +469,12 @@ env:
 
 # --- Running the trained policy live -------------------------------------
 play:
-  act_period: 1.5                # seconds between actions (crude gate; RL adds a learned no-op)
+  act_period: 1.0                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
+                                 # trained its reaction timing + per-step reward economics at 1.0s): between
+                                 # decisions the model is BLIND, so this bounds its reaction time to a new threat
+                                 # (worst case = one period + ~0.2s pipeline). The gate head still no-ops freely,
+                                 # so a faster cadence adds decision OPPORTUNITIES, not spam. (The preview window's
+                                 # box lag = time since the last decision -- it shrinks with this too.)
   select_delay: 0.08             # delay between selecting a card and placing it
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
   in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
@@ -493,7 +498,7 @@ play:
 preview:
   enabled: true
   scale: 0.5          # window size as a fraction of the captured frame
-  fps: 15             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
+  fps: 30             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
                       # (boxes still update at the act cadence ~1.5s = what the policy actually sees)
   pos: null           # [x, y] screen position; null = auto (right of the game window)
 
