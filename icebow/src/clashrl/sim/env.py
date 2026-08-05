@@ -115,6 +115,15 @@ class SimMatchEnv:
                                  if self.specs[i].kind == "spell" and self.specs[i].spell_dmg > 0.0}
         self.w_spell_waste = r("spell_waste", -0.3)
         self.spell_waste_radius = float(cfg.get("env", "spell_waste_radius", default=0.14))
+        # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
+        # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
+        # tower), which plain outcome terms barely see -- so a WELL-EXECUTED pull is credited by its
+        # MECHANICAL effect, measured from engine ground truth a couple of steps after the cast.
+        # n_step >= 3 carries the delayed credit back to the cast action.
+        self.w_nado_clump = r("nado_clump", 0.25)          # per extra enemy clumped at the vortex centre
+        self.w_nado_combo = r("nado_combo", 0.6)           # >=2 pulled enemies dead shortly after (splash/rocket payoff)
+        self.w_nado_king = r("nado_king_activate", 0.5)    # pull activated your sleeping king (once/match)
+        self.w_nado_retarget = r("nado_retarget", 0.4)     # dragged a tower-locked wincon off your tower
         self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
         self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
                                                default=["royal_recruits", "royal_hogs"]))
@@ -208,6 +217,8 @@ class SimMatchEnv:
         self._split_lane_counter = bool(opp_cards & self.split_lane_counters)
         if self._matchup in ("cycle", "beatdown") or self._split_lane_counter:
             self._defensive = True
+        self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
+        self._nado_king_credited = False
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
@@ -399,6 +410,64 @@ class SimMatchEnv:
                 prog += d ** self.chip_power
         return prog
 
+    def _register_nado(self, nx: float, ny: float, spec) -> None:
+        """Record a just-cast agent tornado so its EXECUTION can be credited once the pull has
+        played out: which enemies it can catch, whether the king was still asleep, and which
+        enemy building-targeters were tower-locked at cast time (retarget candidates)."""
+        pulled = [u for u in self.eng.units
+                  if u.team == 1 and u.hp > 0
+                  and np.hypot(u.x - nx, u.y - ny) <= spec.pull_radius]
+        targeters = []
+        for u in pulled:
+            if not u.spec.building_only:
+                continue
+            for tw in self.eng.towers[0]:
+                if tw.alive and np.hypot(u.x - tw.x, u.y - tw.y) <= u.spec.reach + 0.03:
+                    targeters.append((u, tw, float(np.hypot(u.x - tw.x, u.y - tw.y))))
+                    break
+        self._nado_watch.append({
+            "t0": self.eng.t, "cx": nx, "cy": ny,
+            "pulled": pulled, "targeters": targeters,
+            "king_was_asleep": not self.eng.towers[0][2].active,
+            "early_done": False,
+        })
+
+    def _nado_shaping(self) -> float:
+        """Delayed tornado-execution credit, from engine ground truth. At ~2s after the cast:
+        CLUMP (enemies actually gathered at the centre) + RETARGET (a tower-locked wincon dragged
+        off the tower). At ~3.5s: COMBO (>=2 pulled enemies died -- the splash/rocket payoff) +
+        KING ACTIVATION (a pull woke your sleeping king; once per match). Positive-only and inside
+        the correctness cap, so it shapes exploration without becoming farmable."""
+        credit = 0.0
+        keep = []
+        for w in self._nado_watch:
+            age = self.eng.t - w["t0"]
+            if age >= 2.0 and not w["early_done"]:
+                w["early_done"] = True
+                alive_close = [u for u in w["pulled"]
+                               if u.hp > 0 and np.hypot(u.x - w["cx"], u.y - w["cy"]) <= 0.07]
+                if len(alive_close) >= 2:
+                    credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
+                for u, tw, d0 in w["targeters"]:
+                    if u.hp > 0 and np.hypot(u.x - tw.x, u.y - tw.y) >= d0 + 0.05:
+                        credit += self.w_nado_retarget
+                        break                                    # one retarget credit per cast
+            if age >= 3.5:
+                dead = sum(1 for u in w["pulled"] if u.hp <= 0)
+                if dead >= 2:
+                    credit += self.w_nado_combo
+                if (w["king_was_asleep"] and not self._nado_king_credited
+                        and self.eng.towers[0][2].active
+                        and any(np.hypot(u.x - self.eng.towers[0][2].x,
+                                         u.y - self.eng.towers[0][2].y) <= self.eng.king_range + 0.03
+                                for u in w["pulled"])):
+                    credit += self.w_nado_king
+                    self._nado_king_credited = True
+                continue                                         # fully evaluated -> drop
+            keep.append(w)
+        self._nado_watch = keep
+        return credit
+
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0
@@ -418,6 +487,8 @@ class SimMatchEnv:
                 reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
+                if spec.kind == "spell" and getattr(spec, "pulls", False):
+                    self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
                 idx = self.cycle.index(card_id)                                 # cycle the played card to the back
                 self.cycle.append(self.cycle.pop(idx))
         else:
@@ -438,6 +509,7 @@ class SimMatchEnv:
         edelta = self._prev_evalue - evalue
         self._prev_evalue = evalue
         reward += self._trade_reward(edelta, spent)
+        reward += self._bonus(self._nado_shaping())    # delayed tornado-execution credit (clump/combo/king/retarget)
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.w_leak

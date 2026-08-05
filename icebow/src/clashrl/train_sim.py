@@ -18,6 +18,7 @@ Usage (PowerShell), from icebow/:
 """
 from __future__ import annotations
 
+import math
 import random
 import signal
 import time
@@ -55,6 +56,14 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
     yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
+    # per-card elixir costs: greedy + random picks are masked to AFFORDABLE cards (an unaffordable
+    # pick just no-ops in the env = a wasted turn -- the eval audit showed rejected tornado attempts)
+    card_costs = [float(s.elixir) for s in e0.specs]
+    card_costs_t = torch.tensor(card_costs, dtype=torch.float32, device=device)
+    # count-based exploration: play counts per card id (starts at 1; inverse-sqrt weights the random
+    # branch toward under-played cards so situational tools -- tornado -- actually get trialled)
+    count_explore = bool(cfg.get("sim", "explore_count_based", default=True))
+    play_counts = [1.0] * n_cards
 
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
     resumed_best_wr = -1.0                                    # prior peak benchmark (so --resume won't clobber a better best.pt)
@@ -152,16 +161,34 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 if pool[i].elixir < min_play_elixir or random.random() < wait_prob:
                     acts.append((0, 0, 0))
                 else:
-                    c = random.choice(in_hand)
+                    playable = [j for j in in_hand if card_costs[j] <= pool[i].elixir + 1e-6]
+                    if not playable:
+                        acts.append((0, 0, 0)); continue
+                    if count_explore:
+                        # COUNT-BASED exploration: weight random picks toward UNDER-PLAYED cards
+                        # (inverse-sqrt of play count). Rarely-chosen situational cards (tornado!)
+                        # get their trials; without this, uniform-random exploration almost never
+                        # strings the rare pull + follow-up sequences their value lives in.
+                        wts = [1.0 / math.sqrt(play_counts[j]) for j in playable]
+                        c = random.choices(playable, weights=wts, k=1)[0]
+                    else:
+                        c = random.choice(playable)
+                    play_counts[c] += 1.0
                     cells = list(range(n_cells)) if c in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
                     acts.append((1, c, random.choice(cells)))
                 continue
-            ci = int(cq[i].argmax())
+            # greedy: only cards that are in hand AND affordable (an unaffordable pick just no-ops in
+            # the env = a wasted turn the policy can't learn from)
+            cq_i = cq[i].masked_fill(card_costs_t > pool[i].elixir + 1e-6, float("-inf"))
+            if not torch.isfinite(cq_i).any():
+                acts.append((0, 0, 0)); continue
+            ci = int(cq_i.argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
             ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
-            if gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq_i.max():
+            if gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:
+                play_counts[ci] += 1.0
                 acts.append((1, ci, int(ceq_i.argmax())))
         return acts
 
@@ -250,7 +277,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
             snaps.append(_best_snap["net"])          # spar against the BEST self, not only the degrading recent ones
         if sp_prob > 0 and snaps and random.random() < sp_prob_now():
             return SelfPlayOpponent(cfg, env, random.choice(snaps), env.rng)
-        return make_opponent(cfg, env.db, env.rng, env.meta_pool)
+        # TRAINING scripted bots may be ADAPTIVE (anti-siege / counter-hold / punish / split-push);
+        # the eval benchmark never sets this flag, so eval curves stay comparable across runs.
+        return make_opponent(cfg, env.db, env.rng, env.meta_pool, adaptive=True)
 
     if sp_prob > 0:
         for e in pool:
@@ -296,10 +325,13 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         for i in range(len(obs_b)):
             if not any(v > 0.5 for v in hand_b[i]):
                 acts.append((0, 0, 0)); continue
-            ci = int(cq[i].argmax())
+            cq_i = cq[i].masked_fill(card_costs_t > eval_pool[i].elixir + 1e-6, float("-inf"))
+            if not torch.isfinite(cq_i).any():                   # nothing affordable -> wait
+                acts.append((0, 0, 0)); continue
+            ci = int(cq_i.argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
             ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
-            if gq[i, 0] >= gq[i, 1] + cq[i].max() + ceq_i.max():
+            if gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:
                 acts.append((1, ci, int(ceq_i.argmax())))

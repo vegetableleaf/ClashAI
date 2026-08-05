@@ -23,9 +23,25 @@ from . import view
 
 class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
-    pressure per the deck's style (beatdown saves to ~full then commits; the rest chip more freely)."""
+    pressure per the deck's style (beatdown saves to ~full then commits; the rest chip more freely).
 
-    def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None):
+    ADAPTIVE mode (Tier-1 'smart opponents', training-only -- the eval benchmark stays frozen on
+    non-adaptive bots): observation-driven counter-play vs the agent, each behaviour gated by a
+    per-bot knowledge roll + a human reaction delay:
+      * ANTI-SIEGE -- the meta response to icebow: an agent X-Bow on the field gets answered after
+        ``reaction_s`` with a big spell (when the bow is supported) or their heaviest troop dropped
+        on top of it.
+      * COUNTER-HOLDING -- once the X-Bow has been SEEN, their heaviest troop is reserved as the
+        siege answer (not spent on casual defence/cycle) unless elixir overflows.
+      * DUMP PUNISH -- the agent committing 8+ elixir within ~6s gets punished immediately in the
+        OPPOSITE lane (real players' core habit vs siege decks over-committing).
+      * SPLIT-PUSH -- after SEEING one agent tornado, pushes alternate/split lanes so a single
+        clump-pull can no longer catch the whole attack (the human counter to tornado value -- and
+        exactly the pressure pattern that forces the agent to learn real tornado timing).
+    """
+
+    def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None,
+                 adaptive: bool = False):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
@@ -34,33 +50,134 @@ class ScriptedBot:
         self._backline_done = False                              # one backline-support opening per match
         self._backline_prob = float(cfg.get("sim", "backline_support_prob", default=0.05))
         self._backline_until = float(cfg.get("sim", "backline_support_until_s", default=45.0))
+        # --- adaptive knobs (rolled per bot -> a POPULATION of skill levels, not one clone) ---
+        self.adaptive = bool(adaptive)
+        ad = cfg.get("sim", "adaptive", default={}) or {}
+        rs = ad.get("reaction_s", [1.0, 3.0])
+        self.reaction_s = rng.uniform(float(rs[0]), float(rs[1]))
+        self.anti_siege_know = adaptive and rng.random() < float(ad.get("anti_siege_prob", 0.8))
+        self.hold_counter = adaptive and rng.random() < float(ad.get("hold_counter_prob", 0.6))
+        self.punish_know = adaptive and rng.random() < float(ad.get("punish_prob", 0.6))
+        self.split_know = adaptive and rng.random() < float(ad.get("split_prob", 0.7))
+        troops = [s for s in self.specs if s.kind == "troop" and not s.building_only and not s.flying]
+        self._reserved = max(troops, key=lambda s: s.hp) if troops else None   # the held siege answer
+        self._xbow_ever = False          # agent siege seen at least once this match
+        self._siege_seen_t = None        # when the CURRENT bow was first seen (reaction delay)
+        self._nado_seen = False          # agent tornado seen -> start splitting pushes
+        self._spend: list = []           # (t, elixir, x) of observed agent deploys
+        self._seen_deploy_t = -1.0
+        self._punish_cd = 0.0
+        self._flip = rng.random() < 0.5  # split-push lane alternator
+
+    # ---- observation (what a human sees: the agent's deploys) -----------------
+    def _observe(self, eng) -> None:
+        d = eng.last_deploy.get(0)
+        if not d:
+            return
+        spec, x, _y, t = d
+        if t == self._seen_deploy_t:
+            return
+        self._seen_deploy_t = t
+        self._spend.append((t, float(spec.elixir), float(x)))
+        if len(self._spend) > 24:
+            self._spend.pop(0)
+        if spec.base == "tornado":
+            self._nado_seen = True
+        if spec.siege:
+            self._xbow_ever = True
+
+    def _usable(self, affordable, elix):
+        """Affordable specs minus the RESERVED siege answer while counter-holding (released when
+        elixir overflows -- a human doesn't sit at 10 forever holding one card)."""
+        if not (self.hold_counter and self._xbow_ever) or self._reserved is None or elix >= 9.5:
+            return affordable
+        return [s for s in affordable if s is not self._reserved]
+
+    def _try_anti_siege(self, eng, affordable, elix) -> bool:
+        if not self.anti_siege_know:
+            return False
+        team = 1
+        bows = [u for u in eng.units
+                if u.team == 0 and u.spec.siege and u.hp > 0 and u.deploy_left <= 0]
+        if not bows:
+            self._siege_seen_t = None
+            return False
+        self._xbow_ever = True
+        xb = min(bows, key=lambda u: u.y)                        # the most forward bow
+        if self._siege_seen_t is None:
+            self._siege_seen_t = eng.t
+        if eng.t - self._siege_seen_t < self.reaction_s:
+            return False
+        # supported bow + a big spell in hand -> spell it (fireball/lightning value); else heaviest
+        # troop dropped ON TOP so it tanks/kills the bow (the classic anti-siege answer).
+        support = sum(1 for u in eng.units
+                      if u.team == 0 and u is not xb and u.hp > 0
+                      and abs(u.x - xb.x) + abs(u.y - xb.y) < 0.16)
+        spells = [s for s in affordable if s.kind == "spell" and s.spell_dmg >= 300]
+        if support >= 2 and spells:
+            s = max(spells, key=lambda sp: sp.spell_dmg)
+            eng.deploy(team, s, xb.x, xb.y)
+            self._siege_seen_t = None                            # re-arm (reacts again if the bow survives)
+            return True
+        troops = [s for s in affordable if s.kind == "troop" and not s.building_only and not s.flying]
+        if troops:
+            tank = max(troops, key=lambda s: s.hp)
+            eng.deploy(team, tank, xb.x, max(0.08, xb.y - 0.05))
+            self._siege_seen_t = None
+            return True
+        return False
+
+    def _try_punish(self, eng, affordable) -> bool:
+        if not self.punish_know or eng.t < self._punish_cd:
+            return False
+        recent = [(t, e, x) for (t, e, x) in self._spend if eng.t - t <= 6.0]
+        tot = sum(e for _, e, _ in recent)
+        if tot < 8.0:
+            return False
+        mean_x = sum(x for _, _, x in recent) / len(recent)
+        lane = 0.75 if mean_x < 0.5 else 0.25                    # punish the OPPOSITE lane
+        offense = [s for s in affordable if s.kind != "spell"]
+        if not offense:
+            return False
+        wc = [s for s in offense if s.building_only] or offense
+        s = max(wc, key=lambda sp: sp.elixir)                    # commit the punish, don't poke
+        eng.deploy(1, s, lane, 0.46)
+        self._punish_cd = eng.t + 15.0
+        return True
 
     def act(self, eng) -> None:
         team = 1
+        if self.adaptive:
+            self._observe(eng)
         elix = eng.elixir[team]
         affordable = [s for s in self.specs if s.elixir <= elix]
         if not affordable:
             return
+        if self.adaptive and self._try_anti_siege(eng, affordable, elix):
+            return
+        usable = self._usable(affordable, elix)
         # DEFEND: an enemy (team 0) unit has entered our half (y < 0.5)
         threats = [u for u in eng.units if u.team == 0 and u.y < 0.5]
         if threats:
             deepest = min(threats, key=lambda u: u.y)             # closest to our king
-            troops = [s for s in affordable if s.kind == "troop" and not s.building_only]
+            troops = [s for s in usable if s.kind == "troop" and not s.building_only]
             if troops:
                 s = min(troops, key=lambda s: s.elixir)
                 eng.deploy(team, s, deepest.x, max(0.12, deepest.y - 0.06))
                 return
-            spells = [s for s in affordable if s.kind == "spell"]
+            spells = [s for s in usable if s.kind == "spell"]
             if spells and len(threats) >= 3:
                 s = min(spells, key=lambda s: s.elixir)
                 eng.deploy(team, s, deepest.x, deepest.y)
                 return
+        if self.adaptive and self._try_punish(eng, affordable):
+            return
         # BACKLINE SUPPORT OPENING (control/beatdown): once, early, drop a mid-cost ranged support BEHIND the
         # king (the "Musketeer behind the tower" open) -- realistic pressure AND the setup the agent learns to
         # punish (rocket the support + tower for a 2-for-1).
         if (not self._backline_done and not threats and eng.t < self._backline_until
                 and self.style in ("control", "beatdown") and self.rng.random() < self._backline_prob):
-            supports = [s for s in affordable if s.kind == "troop" and not s.building_only
+            supports = [s for s in usable if s.kind == "troop" and not s.building_only
                         and 4 <= s.elixir <= 6 and not s.flying]
             if supports:
                 self._backline_done = True
@@ -69,22 +186,37 @@ class ScriptedBot:
         # ATTACK
         if self.style == "beatdown" and elix < 9.5:
             return                                                # save up for a big push
-        offense = [s for s in affordable if s.kind != "spell"]
+        offense = [s for s in usable if s.kind != "spell"]
         if not offense:
             return
-        lane = self.rng.choice([0.25, 0.75])
+        splitting = self.adaptive and self.split_know and self._nado_seen
+        if splitting:
+            self._flip = not self._flip                          # tornado seen -> stop stacking one lane
+            lane = 0.25 if self._flip else 0.75
+        else:
+            lane = self.rng.choice([0.25, 0.75])
         if self.style == "beatdown":
             tank = max(offense, key=lambda s: s.hp)               # heaviest unit BEHIND the king (deep back)
             eng.deploy(team, tank, lane, 0.10)
+            if splitting:                                         # split the support into the OTHER lane
+                cheap = [s for s in offense if s is not tank and s.elixir <= 4]
+                if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
+                    eng.deploy(team, self.rng.choice(cheap), 1.0 - lane, 0.14)
         elif self.style == "siege":
             sieges = [s for s in offense if s.siege] or offense
             eng.deploy(team, self.rng.choice(sieges), lane, 0.42)
         else:                                                     # cycle / control: chip at the bridge
             wc = [s for s in offense if s.building_only] or offense
-            eng.deploy(team, self.rng.choice(wc), lane, 0.46)
+            pick = self.rng.choice(wc)
+            eng.deploy(team, pick, lane, 0.46)
+            if splitting:                                         # two-lane chip so one tornado can't catch all
+                cheap = [s for s in offense if s is not pick and s.elixir <= 3]
+                if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
+                    eng.deploy(team, self.rng.choice(cheap), 1.0 - lane, 0.46)
 
 
-def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None) -> ScriptedBot:
+def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
+                  adaptive: bool = False) -> ScriptedBot:
     """Sample a meta deck (weighted by its popularity) and pilot it per its inferred style. Each of its
     cards rolls a RANDOM level (sim.enemy_levels weighted by sim.enemy_level_weights -- default 13-16
     with 14 most likely, 16 least), so the opponent's card levels vary like a real ladder opponent.
@@ -92,7 +224,12 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None) ->
     ``level`` (FAIR eval): if given, ALL the opponent's cards use this fixed level instead of the rolled
     ladder levels -- removing the level handicap. The roll still happens first so rng consumption (and
     thus the sampled deck sequence) is IDENTICAL to the handicapped path, making fair-vs-ladder an
-    apples-to-apples comparison on the same matchups."""
+    apples-to-apples comparison on the same matchups.
+
+    ``adaptive`` (TRAINING only -- the eval benchmark never passes it, so eval curves stay comparable):
+    each bot rolls sim.adaptive_prob to become an ADAPTIVE bot (counter-holding / anti-siege / dump
+    punish / split-push, see ScriptedBot). The roll uses a DERIVED rng so the deck/level sequence
+    stays identical whether or not adaptation is enabled."""
     if not pool:
         from .meta_decks import load_meta_decks
         pool = load_meta_decks(cfg, db)
@@ -103,7 +240,8 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None) ->
     levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in deck["cards"]]
     if level is not None:
         levels = [int(level)] * len(deck["cards"])
-    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels)
+    is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
+    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive)
 
 
 class SelfPlayOpponent:

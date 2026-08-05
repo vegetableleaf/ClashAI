@@ -264,6 +264,15 @@ rewards:
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
+  # -- TORNADO execution credit (positive-only, soft, inside correctness_cap): the pull's value is
+  # COMPOSITE + DELAYED (clump -> splash/rocket payoff, king activation, dragging a wincon off a
+  # tower), which outcome terms barely see. Measured from engine ground truth ~2-3.5s after the
+  # cast; train.n_step carries the credit back to the cast action. spell_waste still penalizes an
+  # EMPTY tornado, so these only pay for pulls that actually do something.
+  nado_clump: 0.25         # per EXTRA enemy gathered at the vortex centre (2 -> +0.25, 4+ -> +0.75)
+  nado_combo: 0.6          # >=2 pulled enemies dead within ~3.5s (ice-wizard splash / rocket on the clump)
+  nado_king_activate: 0.5  # a pull woke your sleeping king tower (once per match)
+  nado_retarget: 0.4       # dragged a tower-locked wincon (hog etc.) off your tower (lost hits)
   correctness_cap: 20.0    # per-match ceiling on POSITIVE shaping (terms 1,3,4) -- anti-farm; penalties + trade + outcome are uncapped
   # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
   win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
@@ -547,6 +556,23 @@ sim:
   enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
   backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
   backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
+  # --- ADAPTIVE scripted bots (Tier-1 'smart opponents', TRAINING ONLY: only train_sim's opponent
+  # provider passes adaptive=True; the eval benchmark + fair eval never do, so eval curves stay
+  # comparable across runs). Each training bot rolls adaptive_prob; an adaptive bot then rolls each
+  # behaviour + a human reaction delay -> a POPULATION of skill levels, not one clone:
+  #   anti-siege   = answer a fielded X-Bow (big spell when supported, else heaviest troop ON it)
+  #   counter-hold = after SEEING the X-Bow, reserve their heaviest troop as the siege answer
+  #   dump punish  = 8+ agent elixir in ~6s -> immediate opposite-lane commit
+  #   split-push   = after SEEING a tornado, split/alternate lanes -- one pull can no longer catch
+  #                  the whole attack (exactly the pressure that makes real tornado timing worth learning)
+  adaptive_prob: 0.65
+  adaptive:
+    reaction_s: [1.0, 3.0]            # per-bot human reaction delay, uniform in this range
+    anti_siege_prob: 0.8
+    hold_counter_prob: 0.6
+    punish_prob: 0.6
+    split_prob: 0.7
+  explore_count_based: true           # epsilon random picks weighted 1/sqrt(play count): situational cards (tornado) actually get trialled
   epsilon_start: 1.0            # from-scratch -> start fully random
   epsilon_end: 0.05
   epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
