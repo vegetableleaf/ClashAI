@@ -632,12 +632,16 @@ def add_frames(cfg, session_arg=None, count=120, val_frac=None) -> None:
           f"Point Label Studio Local Storage at this folder + Sync.")
 
 
-def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_frac=None, recent=0) -> None:
+def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_frac=None, recent=0,
+                         min_sharpness=420.0) -> None:
     """Sample frames from training TIMELAPSE videos into the detect dataset as empty-label images to
     hand-label. Timelapses (``train.timelapse_dir``) are raw game-screen captures -- the SAME rendering
     as the live env -- so they are valid detector data. Unlike sessions they carry NO play log, so
     frames are sampled UNIFORMLY across each clip and consecutive near-duplicates (the fixed-length
     timelapse resampler REPEATS frames when a run was short) are skipped by a mean-abs-diff test.
+    ``min_sharpness`` (variance-of-Laplacian at width 480; 0 disables) skips MOTION-BLURRED and
+    transition frames -- external replay footage (HunterCR) is full of them and they are useless
+    to label (measured: transition garbage < ~420, clean own-capture frames ~750+).
     ADDITIVE + NON-DESTRUCTIVE: only writes NEW `tl_*` stems into images/train, so existing images --
     and any Label Studio project pointing at them -- are left untouched.
     """
@@ -655,6 +659,14 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_fra
     qdir = _queue_dir(cfg)                               # flat labelling queue (survives detect-import; LS reads it flat)
     existing = set(p.stem for p in qdir.glob("tl_*.jpg"))
 
+    def _sharp(img) -> float:
+        """Variance of Laplacian at width 480 (comparable across source resolutions)."""
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        h, w = g.shape
+        if w != 480:
+            g = cv2.resize(g, (480, max(1, round(h * 480 / w))), interpolation=cv2.INTER_AREA)
+        return float(cv2.Laplacian(g, cv2.CV_64F).var())
+
     q = int(cfg.get("detect", "jpeg_quality", default=92))
     total = 0
     for vid in vids:
@@ -668,13 +680,28 @@ def add_timelapse_frames(cfg, video=None, per_video=12, diff_thresh=5.0, val_fra
         for fi in cand:
             if added >= per_video:
                 break
-            stem = f"tl_{vid.stem}_f{int(fi):06d}"
-            if stem in existing:
-                continue
-            cap.set(cv2.CAP_PROP_POS_FRAMES, int(fi))
-            ok, frame = cap.read()
-            if not ok or frame is None:
-                continue
+            # blur gate with a LOCAL SEARCH: replay footage blurs in bursts (action / transitions),
+            # so if the sampled frame is soft, walk +-12 frames and keep the SHARPEST one in the
+            # window that clears the gate (uniform coverage is preserved; garbage is not).
+            best = None                                  # (sharpness, fi, frame)
+            for off in (0, 4, -4, 8, -8, 12, -12):
+                fj = int(min(max(fi + off, 0), n - 1))
+                stem_j = f"tl_{vid.stem}_f{fj:06d}"
+                if stem_j in existing:
+                    continue
+                cap.set(cv2.CAP_PROP_POS_FRAMES, fj)
+                ok, frame = cap.read()
+                if not ok or frame is None:
+                    continue
+                s = _sharp(frame) if min_sharpness > 0 else float("inf")
+                if best is None or s > best[0]:
+                    best = (s, fj, frame)
+                if s >= min_sharpness * 1.3:             # comfortably sharp -> stop searching
+                    break
+            if best is None or (min_sharpness > 0 and best[0] < min_sharpness):
+                continue                                 # the whole window is blurred -> skip this slot
+            s, fj, frame = best
+            stem = f"tl_{vid.stem}_f{fj:06d}"
             cur = frame.astype(np.int16)
             if last is not None and float(np.abs(cur - last).mean()) < diff_thresh:
                 continue                                 # a repeated (resampled) frame -> skip
