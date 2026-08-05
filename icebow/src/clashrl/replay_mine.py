@@ -282,7 +282,7 @@ class TeamTracker:
                 prev.remove(trk)
                 trk["x"], trk["y"], trk["t"] = dx, dy, t
             else:
-                trk = {"x": dx, "y": dy, "x0": dx, "y0": dy, "base": d.base,
+                trk = {"x": dx, "y": dy, "x0": dx, "y0": dy, "base": d.base, "t0": t,
                        "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0}
             if d.bar_vote == "mine":
                 trk["bm"] += 1
@@ -302,6 +302,23 @@ class TeamTracker:
         # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.
         self._tracks = live + prev
         return dets
+
+    def enemy_tracks(self, now: float):
+        """[(x, y, vx, vy)] for RECENT enemy tracks: current position + LIFETIME-average velocity
+        (normalized/s, from the first-seen point -- smooth, jitter-proof, right for marching troops).
+        Young tracks (<0.5s of history) report zero velocity; speeds are clamped to sane troop pace
+        so a bad link jump can't produce a wild lead. Feeds the spell-intercept aim assist."""
+        out = []
+        for tr in self._tracks:
+            if tr["team"] != "enemy" or now - tr["t"] > self.forget_s:
+                continue
+            dt = tr["t"] - tr.get("t0", tr["t"])
+            vx = vy = 0.0
+            if dt >= 0.5:
+                vx = max(-0.12, min(0.12, (tr["x"] - tr["x0"]) / dt))
+                vy = max(-0.12, min(0.12, (tr["y"] - tr["y0"]) / dt))
+            out.append((tr["x"], tr["y"], vx, vy))
+        return out
 
 
 class BoardDetector:

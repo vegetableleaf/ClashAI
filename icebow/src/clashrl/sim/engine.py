@@ -381,7 +381,11 @@ class SimEngine:
         self.elixir[team] -= spec.elixir
         self.last_deploy[team] = (spec, x, y, self.t)
         if spec.kind == "spell":
-            self.spells.append(_Spell(team, x, y, spec, spec.spell_delay))
+            delay = spec.spell_delay
+            if spec.base == "rocket":                      # rocket FLIGHT TIME grows with distance from its
+                oy = 1.0 if team == 0 else 0.0             # launcher -> the policy must LEAD a marching target
+                delay = 0.4 + 1.0 * (((x - 0.5) ** 2 + (y - oy) ** 2) ** 0.5)   # (live-parity physics)
+            self.spells.append(_Spell(team, x, y, spec, delay))
             return True
         n = max(1, spec.count)
         for i in range(n):

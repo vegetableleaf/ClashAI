@@ -435,6 +435,10 @@ env:
   pump_aim_radius: 0.10          # a rocket aimed within this of the SEEN pump counts as the pump punish (live)
   pump_pair_gap: 0.11            # pump within this of a princess tower -> aim assist snaps to the MIDPOINT (hit both)
   pump_king_guard: 0.15          # never aim within this of the enemy KING for a pump (activation costs more than any pump)
+  spell_lead_radius: 0.12        # ROCKET LEAD ASSIST: tracked enemies within this of the policy's rocket aim are
+                                 # advanced to their PREDICTED position at impact (act latency + distance-scaled
+                                 # flight time) and the aim snaps to their centroid -- the policy decides WHEN/WHAT
+                                 # to rocket, the assist makes the blast actually land on the marching push.
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet"
   elixir_full: 10                # elixir at/above this (full bar) + nothing played this step = leak penalty
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened" (lane read)
@@ -489,6 +493,8 @@ play:
 preview:
   enabled: true
   scale: 0.5          # window size as a fraction of the captured frame
+  fps: 15             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
+                      # (boxes still update at the act cadence ~1.5s = what the policy actually sees)
   pos: null           # [x, y] screen position; null = auto (right of the game window)
 
 # --- Remote monitoring (optional Discord screenshots during long runs) ---

@@ -27,7 +27,8 @@ from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
-                     pump_rocket_cell, threat_side, weaker_princess_cell, xbow_lock_cell)
+                     pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell,
+                     xbow_lock_cell)
 from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
@@ -208,6 +209,7 @@ class LiveMatchEnv:
         self.pump_pair_gap = float(cfg.get("env", "pump_pair_gap", default=0.11))
         self.pump_king_guard = float(cfg.get("env", "pump_king_guard", default=0.15))
         self.combo_mult = float(cfg.get("rewards", "rocket_combo_mult", default=3.0))
+        self.spell_lead_radius = float(cfg.get("env", "spell_lead_radius", default=0.12))
         self._pump_seen_t = None                         # when a pump was FIRST sighted (window anchor)
         self._pump_last_t = 0.0                          # last read that still saw it
         self._pump_xy = None                             # its latest (cx, gy)
@@ -401,6 +403,20 @@ class LiveMatchEnv:
                                    self.actions)
         return tgt if tgt is not None else cell
 
+    def _aim_rocket_intercept(self, cell: int) -> int:
+        """ROCKET LEAD ASSIST: the policy aims its 2-tile blast at troops it perceived ~an act period
+        ago, and the flight adds 1-2s more -- a marching push walks clean out of the blast by impact.
+        Snap the aim to the PREDICTED-at-impact centroid of the tracked enemies near it (TeamTracker
+        positions + lifetime velocity). No tracked enemy near the aim (tower chip, pre-aimed spots) ->
+        the aim stands. Tornado is deliberately NOT led: its placement is a DESTINATION (where you want
+        the clump dragged), not a hit-them point."""
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        tracks = self._team_tracker.enemy_tracks(time.time())
+        tgt = spell_intercept_cell(cx, cy, tracks, self._impact_time(cx, cy, is_rocket=True),
+                                   self.spell_lead_radius, self.actions)
+        return tgt if tgt is not None else cell
+
     # ============ CORRECTNESS-FIRST reward helpers (mirror the sim; from live perception) ============
     def _same_lane(self, cx: float) -> bool:
         """True when a placement at horizontal ``cx`` is in the threatened lane (or there is no clear
@@ -562,7 +578,10 @@ class LiveMatchEnv:
         play, card_id, cell = action
         raw_cell = cell                           # the model's ATTEMPTED cell, before aim + deploy-clamp
         if play:                                  # rocket / offensive miner -> aim the weaker enemy princess tower
+            pre_aim = cell
             cell = self._aim_weaker_tower(card_id, cell)
+            if cell == pre_aim and card_id in self.rocket_ids:    # no tower/pump snap -> LEAD tracked troops
+                cell = self._aim_rocket_intercept(cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
             if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw

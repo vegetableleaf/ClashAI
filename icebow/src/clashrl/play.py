@@ -18,7 +18,8 @@ import numpy as np
 from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
-from .reward import TowerTracker, pump_rocket_cell, weaker_princess_cell, xbow_lock_cell
+from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
+                     xbow_lock_cell)
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
 from . import interactions
@@ -214,6 +215,12 @@ def play(cfg) -> None:
     _pump_aim_radius = float(cfg.get("env", "pump_aim_radius", default=0.10))
     _pump_pair_gap = float(cfg.get("env", "pump_pair_gap", default=0.11))
     _pump_king_guard = float(cfg.get("env", "pump_king_guard", default=0.15))
+    # ROCKET LEAD ASSIST (mirrors env._aim_rocket_intercept): predict where the tracked enemies near
+    # the aim will be at impact (flight time grows with distance from the launch point) and snap there.
+    _lead_radius = float(cfg.get("env", "spell_lead_radius", default=0.12))
+    _rocket_org = list(cfg.get("env", "rocket_origin", default=[0.5, 1.05]))
+    _rocket_base = float(cfg.get("env", "rocket_base_time", default=0.3))
+    _rocket_rate = float(cfg.get("env", "rocket_travel_rate", default=2.2))
 
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
@@ -341,6 +348,10 @@ def play(cfg) -> None:
             if tgt is None:
                 tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
                                            hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
+            if tgt is None and card_id in _rocket_ids:     # no tower/pump snap -> LEAD the tracked troops
+                impact = _rocket_base + _rocket_rate * float(np.hypot(cx - _rocket_org[0], cy - _rocket_org[1]))
+                tgt = spell_intercept_cell(cx, cy, _team_tracker.enemy_tracks(time.time()),
+                                           impact, _lead_radius, actions)
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the

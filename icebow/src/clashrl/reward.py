@@ -231,6 +231,22 @@ def pump_rocket_cell(px, py, enemy_anchors, enemy_alive, pair_gap, king_guard, a
     return None
 
 
+def spell_intercept_cell(cx, cy, tracks, impact_s, snap_radius, acts):
+    """LEAD THE TARGET: aim a point-blast spell at where the tracked enemies around the policy's aim
+    will BE when it lands, not where they are now -- act latency + rocket flight add up to seconds,
+    and a marching push walks clean out of a 2-tile blast in that time. ``tracks`` = [(x, y, vx, vy)]
+    from TeamTracker.enemy_tracks(); tracks whose CURRENT position is within ``snap_radius`` of the
+    aim (the group the policy meant) are advanced ``impact_s`` along their velocity, and the aim
+    snaps to their predicted CENTROID. None = no tracked enemy near the aim (the aim stands)."""
+    near = [(x + vx * impact_s, y + vy * impact_s) for x, y, vx, vy in tracks
+            if np.hypot(x - cx, y - cy) <= snap_radius]
+    if not near:
+        return None
+    tx = min(0.98, max(0.02, float(np.mean([p[0] for p in near]))))
+    ty = min(0.98, max(0.02, float(np.mean([p[1] for p in near]))))
+    return acts.cell_at(tx, ty)
+
+
 def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, acts):
     """Snap a FORWARD (offensive) X-Bow that landed OUT of firing range onto the nearer enemy
     princess's LANE so it actually locks the tower. The policy tends to drop the X-Bow at the far

@@ -24,6 +24,7 @@ import bisect
 import json
 import math
 import random
+import threading
 import time
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -258,9 +259,12 @@ def draw_detections(frame, dets):
 
 
 class LivePreview:
-    """Small side window shown during train-rl: each captured match frame with the detector's
-    team-coloured boxes (:func:`draw_detections`) -- a live view of exactly what the policy's
-    perception sees, fed from the SAME detector pass the env already runs (no extra inference).
+    """Side window shown during train-rl: LIVE game frames with the detector's team-coloured boxes
+    (:func:`draw_detections`). The env pushes its newest tagged detections at the act cadence
+    (~1.5s -- that IS how often the policy perceives); a background REFRESHER THREAD redraws them
+    onto fresh frames at ``preview.fps`` so the video is smooth while the boxes update at the
+    policy's own rate. The thread owns a private WindowCapture (mss handles are per-thread; the
+    env's capture is untouched -- same pattern as the Discord monitor).
 
     The capture is a SCREEN grab, so this window must NEVER cover the game (it would be captured
     into the next frame): it auto-positions just RIGHT of the capture region (``preview.pos``
@@ -273,32 +277,67 @@ class LivePreview:
         self.enabled = bool(cfg.get("preview", "enabled", default=True))
         self.scale = float(cfg.get("preview", "scale", default=0.5))
         self.pos = cfg.get("preview", "pos", default=None)
+        self.fps = min(30.0, max(1.0, float(cfg.get("preview", "fps", default=15.0))))
+        self._title_contains = cfg.get("window", "title_contains", default=None)
+        self._region_cfg = cfg.get("window", "region", default=None)
+        self._dets: list = []
+        self._region = None
         self._placed = False
+        self._lock = threading.Lock()
+        self._thread = None
 
     def update(self, frame, dets, region=None) -> None:
-        """Show ``frame`` with ``dets`` overlaid. ``region`` = the capture Region (for auto-placement)."""
-        if not self.enabled or frame is None:
+        """Env-side: cache the newest detections for the refresher (starts it on first use).
+        ``frame`` is unused (the thread grabs its own live frames); kept for call-site clarity."""
+        if not self.enabled:
             return
+        with self._lock:
+            self._dets = list(dets or [])
+        self._region = region
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._run, name="clashrl-preview", daemon=True)
+            self._thread.start()
+
+    def _run(self) -> None:
         try:
-            if self._placed and cv2.getWindowProperty(self._TITLE, cv2.WND_PROP_VISIBLE) < 1:
-                self.enabled = False                       # user closed the window -> respect it
-                return
-            small = draw_detections(frame, dets or [])
-            if self.scale and self.scale != 1.0:
-                small = cv2.resize(small, None, fx=self.scale, fy=self.scale)
-            cv2.imshow(self._TITLE, small)
-            if not self._placed:                           # position ONCE (don't fight the user dragging it)
-                if self.pos:
-                    x, y = int(self.pos[0]), int(self.pos[1])
-                elif region is not None:                   # beside the game, clear of the screen capture
-                    x, y = region.left + region.width + 12, max(0, region.top)
-                else:
-                    x, y = 60, 60
-                cv2.moveWindow(self._TITLE, x, y)
-                self._placed = True
-            cv2.waitKey(1)                                 # pump the HighGUI event loop
+            from .capture import WindowCapture
+            cap = WindowCapture(self._title_contains, self._region_cfg)
         except Exception:
-            self.enabled = False                           # headless / GUI unavailable -> silent no-op
+            self.enabled = False
+            return
+        period = 1.0 / self.fps
+        while self.enabled:
+            t0 = time.time()
+            try:
+                frame = cap.grab()
+                if frame is None:
+                    cap.refresh_region()
+                    time.sleep(0.5)
+                    continue
+                if self._placed and cv2.getWindowProperty(self._TITLE, cv2.WND_PROP_VISIBLE) < 1:
+                    self.enabled = False                   # user closed the window -> respect it
+                    break
+                with self._lock:
+                    dets = self._dets
+                small = draw_detections(frame, dets)
+                if self.scale and self.scale != 1.0:
+                    small = cv2.resize(small, None, fx=self.scale, fy=self.scale)
+                cv2.imshow(self._TITLE, small)
+                if not self._placed:                       # position ONCE (don't fight the user dragging)
+                    region = self._region
+                    if self.pos:
+                        x, y = int(self.pos[0]), int(self.pos[1])
+                    elif region is not None:               # beside the game, clear of the screen capture
+                        x, y = region.left + region.width + 12, max(0, region.top)
+                    else:
+                        x, y = 60, 60
+                    cv2.moveWindow(self._TITLE, x, y)
+                    self._placed = True
+                cv2.waitKey(1)                             # pump HighGUI (this thread owns ALL GUI calls)
+            except Exception:
+                self.enabled = False                       # headless / GUI unavailable -> silent no-op
+                break
+            time.sleep(max(0.0, period - (time.time() - t0)))
 
 
 def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
