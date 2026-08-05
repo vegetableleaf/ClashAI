@@ -111,32 +111,45 @@ def _colour_counts(bgr: np.ndarray) -> "tuple[int, int]":
     return int(red.sum()), int(blue.sum())
 
 
-def _bar_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> Optional[str]:
+def _bar_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float,
+              multi: bool = False) -> Optional[str]:
     """Team from the HP-BAR / level-badge UI that Clash Royale draws over a unit's head. This is
     the only RELIABLE colour cue -- and it only exists once the unit has TAKEN DAMAGE (undamaged
     units show no team UI at all), so returning None ('no bar visible') is common and correct.
 
-    The bar is NOT always above the box: for tall sprites / certain orientations (and detector
-    boxes grown to include it -- the annotation rule allows a bar sliver in-box) it OVERLAPS the
-    box top, so the scan window spans from well above the box top down into the box's TOP QUARTER.
-    Because the inside part contains unit ART, votes are restricted to BAR-SHAPED rows: a row only
-    counts when one team's saturated pixels span a wide fraction of the unit's width (an HP bar is
-    a flat horizontal run; art is blobby and rarely forms a wide pure-team-colour row). Still
-    requires a clear pixel count + a 2:1 colour majority."""
+    Geometry is messy: the bar can float ABOVE the box or OVERLAP its top (tall sprites; boxes
+    grown to include it), and a MULTI-UNIT card's box (Royal Recruits / 3M / minions -- ``multi``,
+    from the KB unit count) contains SEVERAL bars at each unit's head, anywhere inside -- including
+    SPLIT deploys where one box holds only part of the formation. So: singles scan from above the
+    box into its top quarter; multi-unit boxes scan from above down through the WHOLE box.
+
+    Because those windows contain unit ART, votes only count pixels inside BAR-SHAPED connected
+    components: wide relative to a SINGLE unit's on-screen bar (near-constant scale, deliberately
+    NOT a fraction of the box width -- one split-off recruit's bar still qualifies in a wide box),
+    THIN, and flat (width >= 2.5x height). Art blobs (shoulders, helmets) are thick and fail the
+    aspect test. Still requires a clear pixel count + a 2:1 colour majority over qualifying bars."""
     H, W = frame.shape[:2]
-    x0 = max(0, int((d_cx - d_w * 0.4) * W)); x1 = min(W, int((d_cx + d_w * 0.4) * W))
+    xw = d_w * (0.4 if not multi else 0.48)
+    x0 = max(0, int((d_cx - xw) * W)); x1 = min(W, int((d_cx + xw) * W))
     yb = d_cy - d_h / 2                                  # box top
     y0 = max(0, int((yb - d_h * 0.45) * H))
-    y1 = min(H, max(y0 + 1, int((yb + d_h * 0.25) * H)))
+    y_end = (yb + d_h * 0.25) if not multi else (yb + d_h)   # multi: bars sit at every unit's head
+    y1 = min(H, max(y0 + 1, int(y_end * H)))
     if x1 - x0 < 3 or y1 - y0 < 2:
         return None
     red_m, blue_m = _team_masks(frame[y0:y1, x0:x1])
-    row_red, row_blue = red_m.sum(axis=1), blue_m.sum(axis=1)
-    need = max(6, int(0.35 * (x1 - x0)))                 # a bar row spans a wide fraction of the width
-    bar_rows = (row_red >= need) | (row_blue >= need)
-    if not bool(bar_rows.any()):
-        return None
-    red = int(row_red[bar_rows].sum()); blue = int(row_blue[bar_rows].sum())
+    min_w = max(6, round(0.012 * W))                     # a single unit's bar width (absolute scale)
+    max_h = max(5, round(0.007 * H))                     # bars are THIN at this render scale
+    counts = []
+    for mask in (red_m, blue_m):
+        total = 0
+        n, _, stats, _ = cv2.connectedComponentsWithStats(mask.astype(np.uint8), connectivity=8)
+        for i in range(1, n):
+            cw, ch = int(stats[i, cv2.CC_STAT_WIDTH]), int(stats[i, cv2.CC_STAT_HEIGHT])
+            if cw >= min_w and ch <= max_h and cw >= 2.5 * ch:   # wide + thin + flat = bar-shaped
+                total += int(stats[i, cv2.CC_STAT_AREA])
+        counts.append(total)
+    red, blue = counts
     hi, lo = max(red, blue), min(red, blue)
     if hi < 15 or hi < 2 * max(1, lo):
         return None
@@ -316,10 +329,13 @@ class BoardDetector:
             cx, cy = (x1 + x2) / 2 / w, (y1 + y2) / 2 / h
             bw, bh = (x2 - x1) / w, (y2 - y1) / h
             cls = self._names.get(int(b.cls[0]), str(int(b.cls[0])))
-            # STATELESS colour evidence: the HP-bar strip above the unit (reliable, often absent) and
-            # the overwhelming-body-art fallback. The preliminary team from these alone is what OFFLINE
+            # STATELESS colour evidence: the HP-bar scan (reliable, often absent) and the
+            # overwhelming-body-art fallback. The preliminary team from these alone is what OFFLINE
             # single-frame consumers get; live paths run TeamTracker.tag() on top (motion/plays/pockets).
-            bar = _bar_vote(frame, cx, cy, bw, bh)
+            base = card_threat.base_key(cls)
+            c = self._db.get(base) if self._db is not None else None
+            multi = bool(c and int(c.get("count") or 1) > 1)     # multi-unit card -> bars all through the box
+            bar = _bar_vote(frame, cx, cy, bw, bh, multi=multi)
             body = _body_vote(frame, cx, cy, bw, bh)
             team = bar or body or "unknown"
             # FLYING-UNIT SHADOW CORRECTION: a flyer's sprite is drawn above the ground, so its box
@@ -353,12 +369,11 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
     names = getattr(model, "names", {}) or {}
     fly_offset = float(cfg.get("observation", "flying_shadow_offset", default=0.045))
     db = None
-    if fly_offset > 0:
-        try:
-            from .cards import CardDB
-            db = CardDB(cfg)                            # to look up which detected classes are flyers
-        except Exception:
-            db = None
+    try:                                # flyer shadow correction + multi-unit (bar-scan) counts
+        from .cards import CardDB
+        db = CardDB(cfg)
+    except Exception:
+        db = None
     return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset)
 
 
