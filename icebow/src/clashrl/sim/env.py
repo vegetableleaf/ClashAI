@@ -131,6 +131,9 @@ class SimMatchEnv:
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
         self.eng = SimEngine(cfg, self.db, self.rng)
+        # Per-match visual restyle (sim2real for the CNN). PRIVATE rng seeded once at construction:
+        # resample() must NOT consume self.rng, or the eval benchmark's seeded deck sequences shift.
+        self.domain_rand = view.DomainRand(cfg, random.Random(self.rng.randrange(2 ** 31)))
         # Optional hook: train_sim sets this to inject SELF-PLAY opponents (a frozen past policy) mixed
         # with the scripted meta bots. Called with `self` in reset(); default None = always scripted.
         self.opponent_provider = None
@@ -191,11 +194,12 @@ class SimMatchEnv:
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape
-        return view.render_obs(self.eng, oh, ow, team=0)
+        return view.render_obs(self.eng, oh, ow, team=0, dr=self.domain_rand)
 
     # -- lifecycle ---------------------------------------------------------
     def reset(self) -> np.ndarray:
         self.eng.reset()
+        self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
         self.cycle = list(range(self.n_cards))

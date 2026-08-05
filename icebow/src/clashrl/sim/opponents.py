@@ -271,6 +271,7 @@ class SelfPlayOpponent:
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
+        self._dr = env.domain_rand                    # share the match's visual restyle (resampled by env.reset)
         self._prev_ident_depth = 0.0
         self._opp_mem = card_threat.OpponentMemory(env.db)   # per-match opponent memory (mirrors team 0)
         self.anywhere_ids = env.anywhere_ids
@@ -293,7 +294,7 @@ class SelfPlayOpponent:
         import torch
 
         oh, ow, _ = self.obs_shape
-        obs = view.render_obs(eng, oh, ow, team=1)
+        obs = view.render_obs(eng, oh, ow, team=1, dr=self._dr)   # same match 'arena look' as team 0
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0

@@ -301,6 +301,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     eval_matches = int(cfg.get("sim", "eval_matches", default=24))
     eval_envs = min(K, max(1, int(cfg.get("sim", "eval_envs", default=4))))
     eval_pool = [SimMatchEnv(cfg, seed=100000 + i) for i in range(eval_envs)] if eval_every > 0 else []
+    for _e in eval_pool:
+        _e.domain_rand.enabled = False     # the BENCHMARK renders canonical: comparable + noise-free
+        _e.domain_rand.resample()
     eval_hist: deque = deque(maxlen=max(1, int(cfg.get("sim", "eval_smooth_window", default=5))))
     eval_hist_fair: deque = deque(maxlen=eval_hist.maxlen)
     run_fair = bool(cfg.get("sim", "fair_eval", default=True))

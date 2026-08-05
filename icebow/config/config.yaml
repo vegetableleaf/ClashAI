@@ -138,6 +138,20 @@ observation:
   # recall-noise scoped); LIVE from the detector's tagged tracks. Flipping this WIDENS threat_dim (+12 ->
   # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
   use_interactions: true
+  # --- DOMAIN RANDOMIZATION of the sim's synthetic render (sim2real for the CNN branch) ---
+  # The conv trunk only ever sees the synthetic canvas; live it meets real pixels (and each new
+  # ARENA repaints them) fully out-of-distribution -- measured: the live cell argmax collapsed to
+  # one corner regardless of the board while the same net placed 11 distinct cells on sim obs.
+  # Per-MATCH restyle (stable within a match, different across matches, like arena rotation):
+  # background/river palette jitter, mild team-colour jitter (blue-vs-red identity is SIGNAL),
+  # global gain/bias, additive noise. Training envs only -- the eval benchmark renders canonical.
+  domain_rand:
+    enabled: true
+    bg_jitter: 55          # +- per BGR channel on grass/river colours
+    team_jitter: 25        # +- on unit/tower colours (mild; keeps blue-vs-red separable)
+    gain: [0.7, 1.25]      # global contrast multiplier range
+    bias: [-25, 25]        # global brightness offset range
+    noise: 6.0             # max additive uniform pixel noise
   detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. LOWERED 0.75 -> 0.50 for
                                  # board-10: its confidence is calibrated LOWER than board-9 (at 0.75 it fires far
                                  # less despite being the better model); at 0.50 its whitelist recall beats board-9's

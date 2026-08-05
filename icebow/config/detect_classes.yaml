@@ -10,12 +10,15 @@
 # actually intend to label -- fewer, well-labelled classes beat many sparse ones.
 classes:
   # --- your deck (top 8; own troops auto-labelled, spells hand-labelled) ---
-  - royal_delivery
+  # 2026-08-04 deck switch: tornado + knight in (icebow X-Bow 2.9), royal_delivery + miner
+  # DEMOTED to the base list below (opponents still play them + existing annotations keep
+  # their class -- detect-import remaps by NAME, so reordering is safe).
+  - tornado
   - tesla
   - ice_wizard
   - x_bow
   - rocket
-  - miner
+  - knight
   - the_log
   - skeletons
 
@@ -88,7 +91,6 @@ classes:
   - ice_spirit
   - inferno_dragon
   - inferno_tower
-  - knight
   - lava_hound
   - lava_pups
   - lightning
@@ -98,6 +100,7 @@ classes:
   - mega_knight
   - mega_minion
   - mighty_miner
+  - miner
   - mini_pekka
   - minion_horde
   - minions
@@ -119,6 +122,7 @@ classes:
   - rascals
   - rocket_silo
   - ronin
+  - royal_delivery
   - royal_ghost
   - royal_giant
   - royal_hogs
@@ -137,7 +141,6 @@ classes:
   - terry
   - three_musketeers
   - tombstone
-  - tornado
   - valkyrie
   - vines
   - void
