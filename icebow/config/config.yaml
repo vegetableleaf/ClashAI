@@ -156,6 +156,14 @@ observation:
                                  # folded whitelist R 0.617 / P 0.953 at 0.50 (vs R 0.513 @0.75 / R 0.595 @0.60) --
                                  # best recall AND better precision than board-10 managed at the same gate.
                                  # Re-tune per detector generation.
+  perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
+                                 # at this rate; the act loop reads a fresh snapshot at decision time (staleness
+                                 # <= 1 period instead of 'blind since the last act'), tracker velocities are
+                                 # finely sampled (rocket lead / motion team evidence), and the preview window's
+                                 # boxes become near-realtime. This is a CEILING: measured single-frame detect is
+                                 # ~121ms on the RTX 5050 (~8 Hz free, ~5-7 Hz while train-rl shares the GPU); the
+                                 # loop self-regulates to whatever the hardware sustains.
+                                 # 0 = classic synchronous mode (one detector pass per decision).
   predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
   # SIM-ONLY detector realism: simulate the live YOLO detector's imperfect recall/precision on the sim's
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it

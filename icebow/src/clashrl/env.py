@@ -230,6 +230,16 @@ class LiveMatchEnv:
         # live side-window: each frame + the detector's team-coloured boxes (train-rl babysitting).
         from .detect import LivePreview
         self._preview = LivePreview(cfg)
+        # CONTINUOUS PERCEPTION (~10Hz): a background thread runs the detector + team tracker so the
+        # act loop reads a <=1-period-old snapshot instead of being blind between decisions, tracker
+        # velocities are finely sampled (rocket lead / motion team evidence), and the preview is live.
+        self._ploop = None
+        hz = float(cfg.get("observation", "perception_hz", default=10.0))
+        if self._detector is not None and hz > 0:
+            from .perception import PerceptionLoop
+            self._ploop = PerceptionLoop(cfg, self._detector, self._team_tracker,
+                                         self.detector_conf, hz, preview=self._preview)
+            self._ploop.start()
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -285,15 +295,21 @@ class LiveMatchEnv:
                      if d.team in ("mine", "enemy") and d.base in self.detector_cards]
             parts.append(interactions.interaction_vector(units, my_t, en_t, self.db))
         self.threat_vec = np.concatenate(parts).astype(np.float32)
-        # side window shows what the policy's perception just saw (same pass, fused teams)
-        self._preview.update(frame, self._last_dets_all, self.capture.region)
+        if self._ploop is None:      # side window (perception loop feeds it at 10Hz itself when active)
+            self._preview.update(frame, self._last_dets_all, self.capture.region)
 
     def _detect_enemies(self, frame):
-        """ONE detector pass -> whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]).
-        [] if the detector is off/unavailable. Shared by the identity block (your half) and the opponent
-        memory (both halves) so live inference runs the detector only ONCE per frame."""
+        """Whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]). With the
+        perception loop running this is the latest ~10Hz SNAPSHOT (already team-tagged in the
+        thread); otherwise one synchronous detector pass. [] if the detector is off/unavailable."""
         if self._detector is None:
             return []
+        if self._ploop is not None and self._ploop.running:
+            self._ploop.set_towers(self.tower.mine_alive, self.tower.enemy_alive)  # pocket gating stays fresh
+            dets, age = self._ploop.snapshot()
+            if age <= 2.0:                                # healthy loop -> use the snapshot
+                self._last_dets_all = dets
+                return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
         try:
             dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
@@ -327,7 +343,10 @@ class LiveMatchEnv:
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
                 self._opp_mem.reset()
-                self._team_tracker.reset()
+                if self._ploop is not None and self._ploop.running:
+                    self._ploop.reset_tracker()       # forget last match's tracks (thread-safe)
+                else:
+                    self._team_tracker.reset()
                 self._pump_seen_t = None                  # forget last match's pump sighting
                 self._pump_xy = None
                 self._cycle_tracker.reset()
@@ -356,7 +375,10 @@ class LiveMatchEnv:
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = self.actions.cell_center(gx, gy)
         base = card_threat.base_key(self.vision.deck_keys[card_id])
-        self._team_tracker.record_play(cx, cy, time.time(), base=base)
+        if self._ploop is not None and self._ploop.running:
+            self._ploop.record_play(cx, cy, time.time(), base=base)
+        else:
+            self._team_tracker.record_play(cx, cy, time.time(), base=base)
 
     def _track_pump(self, now: float) -> None:
         """Watch the tagged detections for an enemy ELIXIR COLLECTOR on their half: the FIRST sighting
@@ -412,7 +434,8 @@ class LiveMatchEnv:
         the clump dragged), not a hit-them point."""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
-        tracks = self._team_tracker.enemy_tracks(time.time())
+        tracks = (self._ploop.enemy_tracks(time.time()) if self._ploop is not None and self._ploop.running
+                  else self._team_tracker.enemy_tracks(time.time()))
         tgt = spell_intercept_cell(cx, cy, tracks, self._impact_time(cx, cy, is_rocket=True),
                                    self.spell_lead_radius, self.actions)
         return tgt if tgt is not None else cell

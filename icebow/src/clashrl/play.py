@@ -221,6 +221,14 @@ def play(cfg) -> None:
     _rocket_org = list(cfg.get("env", "rocket_origin", default=[0.5, 1.05]))
     _rocket_base = float(cfg.get("env", "rocket_base_time", default=0.3))
     _rocket_rate = float(cfg.get("env", "rocket_travel_rate", default=2.2))
+    # CONTINUOUS PERCEPTION (~10Hz): detector + team tracker run in a background thread; the act
+    # loop reads a fresh snapshot at decision time instead of being blind between decisions.
+    _ploop = None
+    _phz = float(cfg.get("observation", "perception_hz", default=10.0))
+    if _detector is not None and _phz > 0:
+        from .perception import PerceptionLoop
+        _ploop = PerceptionLoop(cfg, _detector, _team_tracker, detector_conf, _phz)
+        _ploop.start()
 
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
@@ -228,13 +236,19 @@ def play(cfg) -> None:
         (whole-match read, BOTH halves). ONE detector pass shared by both. Zeros where unavailable."""
         dets_all = []
         if _detector is not None:
-            try:
-                dets_all = _detector.detect(frame, conf=detector_conf)
-            except Exception:
-                dets_all = []
-            # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
-            _team_tracker.set_towers(tower_tracker.mine_alive, tower_tracker.enemy_alive)
-            _team_tracker.tag(dets_all, time.time())     # evidence-fused team (plays/motion/bars/pockets)
+            fresh = False
+            if _ploop is not None and _ploop.running:
+                _ploop.set_towers(tower_tracker.mine_alive, tower_tracker.enemy_alive)
+                dets_all, age = _ploop.snapshot()          # tagged in the perception thread
+                fresh = age <= 2.0
+            if not fresh:
+                try:
+                    dets_all = _detector.detect(frame, conf=detector_conf)
+                except Exception:
+                    dets_all = []
+                # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
+                _team_tracker.set_towers(tower_tracker.mine_alive, tower_tracker.enemy_alive)
+                _team_tracker.tag(dets_all, time.time())     # evidence-fused team (plays/motion/bars/pockets)
             now_p = time.time()                          # pump sighting -> the punish window (see env.py)
             pumps = [d for d in dets_all if d.base == "elixir_collector" and d.team != "mine" and d.gy < 0.5]
             if pumps:
@@ -350,8 +364,9 @@ def play(cfg) -> None:
                                            hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
             if tgt is None and card_id in _rocket_ids:     # no tower/pump snap -> LEAD the tracked troops
                 impact = _rocket_base + _rocket_rate * float(np.hypot(cx - _rocket_org[0], cy - _rocket_org[1]))
-                tgt = spell_intercept_cell(cx, cy, _team_tracker.enemy_tracks(time.time()),
-                                           impact, _lead_radius, actions)
+                tracks = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
+                          else _team_tracker.enemy_tracks(time.time()))
+                tgt = spell_intercept_cell(cx, cy, tracks, impact, _lead_radius, actions)
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the
@@ -373,8 +388,11 @@ def play(cfg) -> None:
         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = actions.cell_center(gx, gy)
-        _team_tracker.record_play(cx, cy, time.time(),
-                                  base=card_threat.base_key(vision.deck_keys[card_id]))
+        if _ploop is not None and _ploop.running:
+            _ploop.record_play(cx, cy, time.time(), base=card_threat.base_key(vision.deck_keys[card_id]))
+        else:
+            _team_tracker.record_play(cx, cy, time.time(),
+                                      base=card_threat.base_key(vision.deck_keys[card_id]))
 
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
@@ -420,7 +438,10 @@ def play(cfg) -> None:
                     threat_tracker.reset()
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
-                    _team_tracker.reset()         # forget last match's own-unit tracks
+                    if _ploop is not None and _ploop.running:
+                        _ploop.reset_tracker()        # forget last match's own-unit tracks
+                    else:
+                        _team_tracker.reset()
                     _cycle_tracker.reset()        # forget last match's cycle order
                     prev_mult = 1
                 prev = state
