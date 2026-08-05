@@ -44,12 +44,15 @@ def _pick_device(cfg):
 
 def _build_net(cfg, device, n_cards, n_cells, threat_dim=14):
     import torch.nn as nn
+    from . import semantic
     from .model import PolicyNet
+
+    in_ch = semantic.obs_channels(cfg)   # 3 rgb / 6 semantic raster / 9 hybrid -- see clashrl.semantic
 
     class DQN(nn.Module):
         def __init__(self):
             super().__init__()
-            self.policy = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim)
+            self.policy = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim)
             self.gate = nn.Linear(self.policy.embed_dim, 2)  # [wait, play]
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
@@ -122,6 +125,23 @@ def train_rl(cfg, init: str | None = None) -> None:
         print("[train-rl]   run.py train-sim --size 432 --matches 200000 --envs 32")
         print("[train-rl]   run.py train-rl --init data/policy_sim_best.pt")
         print("[train-rl] or restore the old deck in config/cards.yaml to keep using this checkpoint.")
+        return
+
+    # HARD GUARD 2: the OBSERVATION LAYOUT must match too. The warm-start checkpoint's conv trunk was
+    # shaped for a specific channel stack (RGB pixels / the semantic raster / both) -- loading it under a
+    # different obs_mode is either a torch shape error or, in hybrid, a net reading the wrong planes.
+    from . import semantic
+    obs_mode_cfg, obs_ch_cfg = semantic.obs_mode(cfg), semantic.obs_channels(cfg)
+    ck_obs_mode = ckpt.get("obs_mode", "rgb")     # pre-raster checkpoints are RGB by definition
+    ck_obs_ch = int(ckpt.get("in_ch", 3))
+    if ck_obs_mode != obs_mode_cfg or ck_obs_ch != obs_ch_cfg:
+        print(f"[train-rl] checkpoint/observation MISMATCH -- {init_path.name} was trained on "
+              f"obs_mode={ck_obs_mode} ({ck_obs_ch} channels), config says {obs_mode_cfg} ({obs_ch_cfg}).")
+        print("[train-rl] the conv trunk cannot read a different channel stack. Either set")
+        print(f"[train-rl]   observation.obs_mode: {ck_obs_mode}      (keep using this checkpoint)")
+        print("[train-rl] or train a fresh sim prior in the mode you want:")
+        print("[train-rl]   run.py train-sim --size 432 --matches 200000 --envs 32")
+        print("[train-rl]   run.py train-rl --init data/policy_sim_best.pt")
         return
 
     if deck and len(deck) == n_cards:
@@ -359,6 +379,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
             "threat_dim": threat_dim,
             "deck": deck,
+            "obs_mode": obs_mode_cfg, "in_ch": obs_ch_cfg,   # observation layout (clashrl.semantic)
             "arena_size": ckpt.get("arena_size", list(cfg.get("observation", "arena_size", default=[64, 96]))),
         }, rl_path)
 

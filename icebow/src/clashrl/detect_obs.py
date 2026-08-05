@@ -1,4 +1,11 @@
-"""Stage 3: board object-detector -> semantic OBSERVATION channels.
+"""Stage 3: board object-detector -> semantic channels, as a HUMAN PREVIEW of the detector's read.
+
+NB this module's 6-channel taxonomy (enemy/ally x ground/air/building + spell) is NOT the one the
+policy is fed. The observation the policy actually sees is built by :mod:`clashrl.semantic`
+(my/enemy x troop/building + my/enemy crown towers, valued by KB mass / tower HP fraction) -- that is
+the one that had to be renderable IDENTICALLY in sim and live. This module stays as a detector
+eyeball tool: `detect-obs` shows what the detector picked up on real frames. To inspect the policy's
+real observation, use `obs-diversity` (and `semantic.channels_to_bgr` for a visual composite).
 
 The policy today sees only the raw arena image (+ hand/elixir/threat vectors), so it must INFER
 "what unit is where" from pixels. This module turns the trained detector's per-unit read into a

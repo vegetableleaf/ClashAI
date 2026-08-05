@@ -179,6 +179,11 @@ def _cmd_detect_obs(args) -> None:
     detect_obs_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_obs_diversity(args) -> None:
+    from .obs_diversity import obs_diversity
+    obs_diversity(_sized_config(args), args.ckpt, args.frames, args.session, args.mode, args.conf)
+
+
 def _cmd_card_roles(args) -> None:
     from .card_threat import roles_report
     roles_report(Config.load(args.config), args.all, args.card)
@@ -344,6 +349,17 @@ def main() -> None:
     dob.add_argument("--weights", default=None, help="best.pt (default: latest runs/detect/*/weights/best.pt)")
     dob.add_argument("--conf", type=float, default=0.3, help="detector confidence threshold")
     dob.set_defaults(func=_cmd_detect_obs)
+
+    odv = sub.add_parser("obs-diversity",
+                         help="measure ARGMAX-CELL DIVERSITY on sim vs REAL frames (the 5cdf867 sim2real blindness metric)")
+    odv.add_argument("--ckpt", default=None, help="checkpoint to score (default: train.sim_checkpoint)")
+    odv.add_argument("--frames", type=int, default=200, help="frames to score per world")
+    odv.add_argument("--session", default=None, help="restrict REAL frames to one session (default: all)")
+    odv.add_argument("--mode", default=None, choices=["rgb", "semantic", "hybrid"],
+                     help="score in this observation mode instead of config's (must match the checkpoint)")
+    odv.add_argument("--conf", type=float, default=None, help="detector confidence (default: observation.detector_conf)")
+    odv.add_argument("--size", choices=sorted(_GRID_SIZES), default=None, help="board resolution preset")
+    odv.set_defaults(func=_cmd_obs_diversity)
 
     crl = sub.add_parser("card-roles",
                          help="review the strategic role (win condition / siege / spell / ...) derived from the KB for every detector class")

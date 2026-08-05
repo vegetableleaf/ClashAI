@@ -116,6 +116,52 @@ label:
 # --- Observation the agent sees (used by the imitation + RL pipeline) -----
 observation:
   arena_size: [64, 96]           # downscaled arena image (w, h) fed to the CNN
+  # --- OBSERVATION LAYOUT: what the conv trunk actually sees (clashrl/semantic.py) -----------------
+  # The RGB observation was the sim-to-real bottleneck: the trunk only ever saw the synthetic canvas,
+  # so live it met real pixels fully out-of-distribution and the cell argmax collapsed (5cdf867 measured
+  # 2 distinct cells on real frames vs 11 on sim obs, same net). DOMAIN RANDOMIZATION below attacks that
+  # by jittering the sim's STYLE -- but the gap is STRUCTURAL, not stylistic: one world draws 1-pixel
+  # blobs on flat grass, the other has sprites, HUD, particles and arena art. Palette jitter cannot
+  # bridge that. The SEMANTIC raster removes appearance from the observation entirely -- 6 channels
+  # (my/enemy x troop/building, plus my/enemy crown towers) valued by unit MASS (KB hitpoints x count)
+  # and, for towers, remaining HP FRACTION. Sim renders it from engine ground truth; live renders it
+  # from the detector's tagged read; ONE rasterizer, one coordinate space, one card KB -> identical by
+  # construction, with no appearance gap left to randomize.
+  #   rgb      3 channels -- the pre-semantic behaviour (keep to reuse an old checkpoint)
+  #   semantic 6 channels -- the structural raster alone
+  #   hybrid   9 channels -- RGB first, then semantic (the A/B: everything else held fixed)
+  # Changing this changes the conv trunk's in_ch -> a FRESH train-sim (+ train-rl --init from it).
+  # Checkpoints carry obs_mode/in_ch and train-rl / play REFUSE a mismatch rather than fail cryptically.
+  # LIVE, semantic/hybrid REQUIRE a working board detector -- the channels are built from detections.
+  obs_mode: semantic
+  semantic:
+    # Footprint radii in BOARD TILES (the real 18x32 lattice, independent of action.grid), resolved per
+    # card from its KB role so a Skeleton, a Golem and an X-Bow stamp different-sized blobs -- in BOTH
+    # worlds, from the same lookup. Never from the sim's collision radius or the detector's box size:
+    # those are world-specific and would re-open the gap.
+    troop_radius_tiles: 1.0
+    swarm_radius_tiles: 0.6
+    tank_radius_tiles: 1.6
+    building_radius_tiles: 1.5
+    princess_tower_radius_tiles: 3.0
+    king_tower_radius_tiles: 4.0
+    mass_norm: 3000.0            # (hitpoints x count) / this -> the channel value, clipped to [floor, 1]
+    mass_floor: 0.05             # any present unit stays visible (a 1-elixir Skeleton is not nothing)
+    default_hitpoints: 300.0     # KB gap fallback -- the same one sim/engine.build_spec uses
+    # The LIVE raster can only contain what the detector NAMED: whitelisted cards, at its real recall
+    # and precision. Rendering the sim raster from perfect ground truth would train the policy on a
+    # DENSE map and play it on a SPARSE one -- a fresh structural gap replacing the one just closed.
+    # So the sim raster is filtered through the same observation.sim_detector_* model every other
+    # Stage-3 block already uses (private rng: seeded eval deck streams are unaffected).
+    # false = unfiltered ground truth (an ablation; do NOT use for a transfer run).
+    detector_realism: true
+    # The raster's card filter is detector_cards UNION YOUR OWN DECK. detector_cards lists the ENEMY
+    # cards the detector reliably names and is tuned on enemy recall -- your X-Bow and Tesla are not on
+    # it, so filtering by it alone left the my_building channel PERMANENTLY ZERO: the policy could never
+    # see the win condition it exists to place. Your own cards are the easy case (the detector is
+    # trained hardest on them, and live you know what you played -- TeamTracker tags those spawns).
+    # They still pay the global sim_detector_recall, so they are not modelled as perfectly visible.
+    include_own_deck: true
   # --- Stage 3: identity-grounded threat features (detector -> obs) ------------------------------
   # When ON, the policy's THREAT vector gains a 10-feature IDENTITY block (card_threat.IDENTITY_DIM):
   # for RECOGNISED enemy cards it exposes their KB role (tank / swarm / air / building / win-condition /
@@ -139,14 +185,15 @@ observation:
   # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
   use_interactions: true
   # --- DOMAIN RANDOMIZATION of the sim's synthetic render (sim2real for the CNN branch) ---
-  # The conv trunk only ever sees the synthetic canvas; live it meets real pixels (and each new
-  # ARENA repaints them) fully out-of-distribution -- measured: the live cell argmax collapsed to
-  # one corner regardless of the board while the same net placed 11 distinct cells on sim obs.
   # Per-MATCH restyle (stable within a match, different across matches, like arena rotation):
   # background/river palette jitter, mild team-colour jitter (blue-vs-red identity is SIGNAL),
   # global gain/bias, additive noise. Training envs only -- the eval benchmark renders canonical.
+  # DEFAULT OFF as of the semantic raster: DR only randomizes the STYLE of the RGB canvas, and under
+  # obs_mode: semantic there is no RGB canvas in the observation at all, so it does nothing. It stays
+  # fully wired for obs_mode: rgb / hybrid (where it still applies to the RGB planes) -- flip enabled
+  # back to true if you want the old stylistic sim2real on top of a hybrid A/B run.
   domain_rand:
-    enabled: true
+    enabled: false
     bg_jitter: 55          # +- per BGR channel on grass/river colours
     team_jitter: 25        # +- on unit/tower colours (mild; keeps blue-vs-red separable)
     gain: [0.7, 1.25]      # global contrast multiplier range

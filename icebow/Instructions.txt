@@ -432,6 +432,37 @@ The workflow (all commands from the icebow folder):
   agree. This is "Stage 3" of the project: optional, but the single biggest upgrade to
   how well the bot reads the game.
 
+  6. THE SEMANTIC OBSERVATION (observation.obs_mode). The detector also feeds what the
+     policy SEES, not just its threat features. The old observation was a downscaled
+     PICTURE of the arena - and the picture the simulator draws (coloured blobs on flat
+     grass) looks nothing like a real screenshot, so the network learned to read one and
+     was effectively blind on the other. obs_mode replaces that picture with a board MAP
+     that is built the same way in both worlds: six layers - your troops, enemy troops,
+     your buildings, enemy buildings, your towers, enemy towers - where a unit's value is
+     how much of it there is (from the card stats), and a tower's value is how much HP it
+     has left. The simulator fills the map from what it knows; live it is filled from the
+     detector. Same map, same meaning, no picture involved.
+
+         rgb       the old picture (use this to keep an older checkpoint working)
+         semantic  the map only                                       <- the default
+         hybrid    both, stacked - for comparing the two fairly
+
+     LIVE, semantic and hybrid REQUIRE a working detector: the map is built from
+     detections, so without one the policy would see an empty board. This changes the
+     model's input size, so it needs a fresh train-sim (then train-rl --init from it) -
+     checkpoints record which mode they were trained in, and train-rl / play refuse to
+     run a mismatch rather than misbehave quietly.
+
+     To check whether it helped, measure how many different placements the network makes
+     on real frames versus simulator frames - if it is responding to the board at all,
+     the two should be in the same ballpark:
+
+         .\.venv\Scripts\python.exe run.py obs-diversity --ckpt data/policy_sim_best.pt
+
+     (observation.domain_rand, which randomised the SIMULATOR PICTURE's colours to make it
+     less unfamiliar, is off by default now - under obs_mode: semantic there is no picture
+     left for it to randomise. It still works for rgb / hybrid.)
+
 
 ===============================================================================
  APPENDIX - MAC / scrcpy (running from a Mac via an Android phone)

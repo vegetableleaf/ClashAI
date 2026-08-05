@@ -37,12 +37,41 @@ for the opposite. It runs on PC via Google Play Games — the same rendering it 
 optional (Stage 3): a YOLO object detector adds opponent awareness    [in progress]
 ```
 
-The agent sees a **downscaled arena image + the hand** (which cards are in hand)
+The agent sees a **semantic board raster + the hand** (which cards are in hand)
 and picks a **discrete action**: which **card identity** to play — not the tray
 slot (cards cycle), and an **evolved card counts as its own identity** since it
 plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tower`,
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
+
+### What the policy sees (`observation.obs_mode`)
+
+The observation used to be a **downscaled picture** of the arena — and that was the
+sim-to-real bottleneck. The simulator draws coloured blobs on flat grass; a real
+screenshot has sprites, HUD, particles and arena art. The trunk learned to read one
+and was effectively blind on the other (measured: **2** distinct placement cells on
+real frames vs **11** on sim frames, same net). Randomizing the sim's *colours*
+(`domain_rand`) can't fix that — the gap is structural, not stylistic.
+
+So the observation is now a **board map that both worlds build the same way** — six
+channels, `my/enemy × troop/building` plus `my/enemy` crown towers. A unit's value is
+its **mass** (card hitpoints × count, from the card KB); a tower's value is its
+**remaining HP fraction**. The sim fills the map from engine ground truth, live it is
+filled from the detector — one rasterizer, one coordinate space, one card KB, so the
+two are identical by construction (checked by `tools/semantic_parity.py`).
+
+| `obs_mode` | channels | |
+|---|---|---|
+| `rgb` | 3 | the old picture — keep an older checkpoint working |
+| `semantic` | 6 | the map only — **default** |
+| `hybrid` | 9 | RGB then semantic, for a controlled A/B |
+
+**Live, `semantic`/`hybrid` need a working detector** — the map is built from
+detections. Changing the mode changes the model's input size, so it needs a fresh
+`train-sim` (then `train-rl --init` from it); checkpoints record their mode and
+`train-rl`/`play` refuse a mismatch. `domain_rand` is off by default now (it only
+restyles the RGB planes, which `semantic` doesn't have) but still works for
+`rgb`/`hybrid`.
 
 ## Setup
 
@@ -118,6 +147,13 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
   card/cell Q-function (card values masked to the hand) plus a learned **no-op**
   gate; it saves to
   `train.rl_checkpoint`, which `play` then prefers (`run.py train-rl`).
+
+- ✅ `obs-diversity` — measures whether the conv trunk is actually **responding to the
+  board**, on sim frames and on real recorded frames, with the same net. Reports the
+  number of distinct placement cells (the metric that diagnosed the RGB observation),
+  the share landing on the single most popular cell, and normalized entropy. Read it as
+  the **sim-vs-real gap**, not as an absolute — a good policy *should* concentrate its
+  placements (`run.py obs-diversity --ckpt data/policy_sim_best.pt`).
 
 ## Recording note
 

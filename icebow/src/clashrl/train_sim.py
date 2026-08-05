@@ -242,6 +242,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
                     "threat_dim": threat_dim, "deck": e0.deck_keys, "best_wr": best_wr,
+                    # OBSERVATION LAYOUT this policy can read (clashrl.semantic). train-rl / play
+                    # refuse a checkpoint whose mode doesn't match the config.
+                    "obs_mode": e0.obs_mode, "in_ch": e0.obs_ch,
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
     # -- self-play league --------------------------------------------------

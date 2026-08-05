@@ -1150,6 +1150,56 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-08-04  —  SEMANTIC OBSERVATION RASTER: replace the RGB obs with a sim/real-identical board read
+------------------------------------------------------------------------------
+- WHY. 5cdf867 added domain randomization because the conv trunk was blind on real frames (measured:
+  2 distinct argmax cells on real input vs 11 on sim obs, same net). DR only randomizes STYLE -- palette,
+  gain, noise -- so it can teach the trunk to ignore a palette, but sim and real differ STRUCTURALLY:
+  one world draws 1-pixel blobs on flat grass, the other has sprites, HUD, particles, arena art. No
+  amount of colour jitter closes that. So: stop asking the CNN to infer "what is where" from pixels that
+  only exist in one world, and feed both worlds the same SEMANTIC FACTS.
+- NEW clashrl/semantic.py. 6 channels: my_troop / enemy_troop / my_building / enemy_building / my_tower /
+  enemy_tower. Values = unit MASS (KB hitpoints x count, normalized) for troops+buildings, remaining HP
+  FRACTION for towers. Towers are the only thing whose CURRENT hp both worlds genuinely observe (engine
+  hp/max_hp; live TowerHpTracker OCR) -- a detection yields a class name and a box, never a health bar,
+  so per-unit live HP does not exist and the sim deliberately does not use its own.
+- IDENTICAL BY CONSTRUCTION, concretely: ONE rasterizer (Rasterizer.render is the only entities->pixels
+  path, both worlds call it); ONE coordinate space (env.my_towers/enemy_towers already seed BOTH the sim
+  engine anchors and the live reward anchors, so x,y means the same board position with no transform);
+  ONE card KB for footprint + mass, keyed on base card -- never the sim's CardSpec.radius, never the
+  detector's box size. Level-independent (KB base hitpoints), because live we recover identity only.
+  VERIFIED: tools/semantic_parity.py builds an engine state, derives the detections a perfect detector
+  would report from it, renders both paths -> bit-identical on all 6 channels incl. damaged towers.
+- DETECTOR REALISM (observation.semantic.detector_realism, default on). The live raster can only contain
+  what the detector NAMED. Rendering the sim raster from perfect ground truth would train on a DENSE map
+  and play on a SPARSE one -- a fresh structural gap replacing the one just closed -- so the sim raster is
+  filtered through the same observation.sim_detector_* model every other Stage-3 block already uses.
+- RASTER WHITELIST = detector_cards UNION YOUR OWN DECK. detector_cards is tuned on ENEMY recall and does
+  not list x_bow/tesla; filtering by it alone left my_building PERMANENTLY ZERO -- the policy could never
+  see the win condition it exists to place. Own cards still pay the global recall (not perfect vision).
+- PRIVATE rng, like view.DomainRand. The realism filter never consumes env.rng, and the seed is drawn
+  UNCONDITIONALLY (even in rgb mode, where no raster is built) -- drawing it only sometimes would itself
+  desync env.rng between modes. VERIFIED: the 777-seeded eval deck/opponent/tower-roll stream is
+  bit-identical across rgb / semantic / hybrid and with realism on/off.
+- CONFIG. observation.obs_mode: rgb (3ch, the old behaviour) | semantic (6ch) | hybrid (9ch, RGB first
+  then semantic -- the A/B knob, everything else held fixed). Changes the trunk's in_ch -> a FRESH
+  train-sim then train-rl --init from it. Checkpoints now carry obs_mode + in_ch and train-rl / play
+  REFUSE a mismatch with an actionable message (same pattern as the 377b5b7 deck guard). train-bc stays
+  RGB-only and says so: its dataset is recorded PIXELS, there is no raster to clone from.
+- observation.domain_rand.enabled -> FALSE by default (code default flipped too), still fully wired: it
+  applies to the RGB planes under obs_mode rgb/hybrid, and does nothing under semantic (no RGB planes).
+- SPELLS are not rastered: sub-second events sampled at a ~1s agent cadence would be near-always empty
+  and fire on an arbitrary subset of casts. Spell awareness stays in the rewards + interaction block.
+- NEW `run.py obs-diversity` -- 5cdf867's blindness metric, now reproducible instead of hand-measured.
+  Reports per world: distinct argmax cells (5cdf867's number), TOP_SHARE (fraction landing on the single
+  most popular cell -- the sharper "collapsed to one corner" signal) and normalized entropy, with the
+  cell head masked to DEPLOYABLE cells exactly as play/train_sim mask it. Read it as sim-vs-real GAP, not
+  as an absolute: a good policy SHOULD concentrate placements.
+- NOT YET MEASURED: the before/after numbers need a trained checkpoint, recorded sessions and the
+  detector -- none of which live in the repo. Run obs-diversity on the training machine.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

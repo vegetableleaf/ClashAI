@@ -34,6 +34,7 @@ from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from . import card_threat
 from . import interactions
+from . import semantic
 from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
@@ -72,7 +73,11 @@ class LiveMatchEnv:
         self._nav = MenuNavigator(cfg, self.controller, self.vision, label="train-rl")
 
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-        self.obs_shape = (int(oh), int(ow), 3)
+        # OBSERVATION LAYOUT (must match the sim exactly -- see clashrl.semantic): 'rgb' = the downscaled
+        # frame, 'semantic' = the structural raster built from the detector, 'hybrid' = both stacked.
+        self.obs_mode = semantic.obs_mode(cfg)
+        self.obs_ch = semantic.obs_channels(cfg)
+        self.obs_shape = (int(oh), int(ow), self.obs_ch)
         self._last_obs = np.zeros(self.obs_shape, dtype=np.uint8)
         self.last_outcome: Optional[str] = None
         self.elixir = 0                 # your current elixir (0-10), updated each step
@@ -213,6 +218,21 @@ class LiveMatchEnv:
         if self.use_interactions:                        # widen by the interaction block (zeros until read)
             self.threat_vec = np.concatenate(
                 [self.threat_vec, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
+        # --- STRUCTURAL raster: the board channels the policy actually sees in semantic/hybrid mode ---
+        self._sem = semantic.LiveRaster(cfg, db) if self.obs_mode != "rgb" else None
+        if self._sem is not None:
+            if self._detector is None:                   # semantic obs is BUILT from detections; load one
+                try:                                     # even when the identity blocks are off
+                    from .replay_mine import load_detector
+                    det = load_detector(cfg)
+                    self._detector = det if det.available else None
+                except Exception:
+                    self._detector = None
+            if self._detector is None:
+                print(f"[env] observation.obs_mode={self.obs_mode} needs the board DETECTOR, but none is "
+                      "available -- the semantic channels would be all-zero (the policy would be blind). "
+                      "Train/point at a detector, or set observation.obs_mode: rgb.")
+        self._dets_frame_id = None                       # memoizes ONE detector pass per frame
 
     # -- capture helper ------------------------------------------------
     def _grab(self, retries: int = 20):
@@ -267,19 +287,43 @@ class LiveMatchEnv:
             parts.append(interactions.interaction_vector(units, my_t, en_t, self.db))
         self.threat_vec = np.concatenate(parts).astype(np.float32)
 
-    def _detect_enemies(self, frame):
-        """ONE detector pass -> whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]).
-        [] if the detector is off/unavailable. Shared by the identity block (your half) and the opponent
-        memory (both halves) so live inference runs the detector only ONCE per frame."""
+    def _tagged_dets(self, frame):
+        """ONE team-tagged detector pass per FRAME, memoized. The identity block, the opponent memory,
+        the interaction block AND the semantic observation raster all read the same pass -- running the
+        detector more than once per frame would cost real latency in the live act loop and (worse) give
+        the observation a different board read than the reward terms."""
         if self._detector is None:
             return []
+        if self._dets_frame_id == id(frame):
+            return self._last_dets_all
         try:
             dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
-            return []
+            dets = []
         self._team_tracker.tag(dets, time.time())     # correct team from your own plays BEFORE filtering
-        self._last_dets_all = dets                    # kept for the interaction block (both teams)
-        return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
+        self._last_dets_all = dets                    # kept for the interaction block + the raster (both teams)
+        self._dets_frame_id = id(frame)
+        return dets
+
+    def _detect_enemies(self, frame):
+        """Whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]) from this frame's
+        tagged pass. [] if the detector is off/unavailable."""
+        return [d for d in self._tagged_dets(frame)
+                if d.team == "enemy" and d.base in self.detector_cards]
+
+    def _observe(self, frame) -> np.ndarray:
+        """Frame -> the policy's observation tensor in the configured mode. In semantic/hybrid mode the
+        board channels are rasterized from this frame's detections + the live tower trackers through
+        clashrl.semantic -- the SAME rasterizer the sim uses, so training and play see one representation."""
+        oh, ow, _ = self.obs_shape
+        rgb = self.vision.observe(frame) if self.obs_mode != "semantic" else None
+        sem = None
+        if self._sem is not None:
+            sem = self._sem.render(self._tagged_dets(frame),
+                                   self.tower_hp.my_hp, self.tower_hp.my_full, self.tower.mine_alive,
+                                   self.tower_hp.enemy_hp, self.tower_hp.full, self.tower.enemy_alive,
+                                   oh, ow)
+        return semantic.compose(self.obs_mode, rgb, sem)
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
@@ -308,7 +352,7 @@ class LiveMatchEnv:
                 self._cycle_tracker.reset()
                 self._read_hand(frame)
                 self._update_threat(frame)
-                self._last_obs = self.vision.observe(frame)
+                self._last_obs = self._observe(frame)
                 self._last_frame = frame
                 self._prev_mass = enemy_mass(frame, self.cfg)
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
@@ -594,7 +638,7 @@ class LiveMatchEnv:
             self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
             self._read_hand(frame)
             self._update_threat(frame)
-            self._last_obs = self.vision.observe(frame)
+            self._last_obs = self._observe(frame)
             self._last_frame = frame
             return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
 

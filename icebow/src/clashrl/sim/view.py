@@ -33,7 +33,9 @@ class DomainRand:
 
     def __init__(self, cfg, rng):
         dr = cfg.get("observation", "domain_rand", default={}) or {}
-        self.enabled = bool(dr.get("enabled", True))
+        # DEFAULT OFF: the semantic raster (clashrl.semantic) replaced the appearance channel it was
+        # compensating for. Still fully wired for obs_mode rgb/hybrid, where the RGB planes remain.
+        self.enabled = bool(dr.get("enabled", False))
         self.bg_jitter = float(dr.get("bg_jitter", 55))        # +- per BGR channel on grass/river
         self.team_jitter = float(dr.get("team_jitter", 25))    # +- on unit/tower colours (mild)
         self.gain_range = dr.get("gain", [0.7, 1.25])          # global contrast multiplier

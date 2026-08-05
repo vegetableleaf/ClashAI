@@ -109,6 +109,14 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
                         shuffle=True)
 
     threat_dim = int(thr.shape[1])
+    # BC is RGB-ONLY: its dataset is built by `label` from recorded FRAMES, which carry pixels, not a
+    # detector read -- there is no semantic raster to learn from. The checkpoint is stamped obs_mode=rgb
+    # so train-rl / play refuse it under a semantic/hybrid config instead of failing cryptically.
+    from . import semantic
+    if semantic.obs_mode(cfg) != "rgb":
+        print(f"[train-bc] NOTE: observation.obs_mode is '{semantic.obs_mode(cfg)}', but behaviour cloning "
+              "trains on recorded pixels -> this checkpoint is RGB. Warm-start the semantic policy from "
+              "train-sim instead (run.py train-sim, then train-rl --init data/policy_sim_best.pt).")
     net = PolicyNet(in_ch=3, n_cards=n_cards, n_cells=n_cells, threat_dim=threat_dim).to(device)
     if init:                                     # WARM-START: fine-tune an existing policy instead of random init
         ip = cfg.path(init)                      # e.g. data/policy_sim.pt -> combine the SIM prior with your recordings
@@ -170,6 +178,7 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
             "n_cells": n_cells,
             "threat_dim": threat_dim,
             "deck": deck,
+            "obs_mode": "rgb", "in_ch": 3,     # BC learns from recorded pixels (see the note above)
         }, ckpt)
         suffix = f" (after iteration {it}/{iterations})" if iterations > 1 else ""
         print(f"[train-bc] saved policy to {ckpt}{suffix}")

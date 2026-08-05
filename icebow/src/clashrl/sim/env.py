@@ -19,6 +19,7 @@ from ..actions import ActionSpace
 from ..cards import CardDB
 from .. import card_threat
 from .. import interactions
+from .. import semantic
 from ..cycle import cycle_vector
 from .engine import SimEngine, build_spec
 from .meta_decks import load_meta_decks
@@ -43,7 +44,12 @@ class SimMatchEnv:
         self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, self.deck_card_levels)]
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-        self.obs_shape = (int(oh), int(ow), 3)
+        # OBSERVATION LAYOUT: 'rgb' = the synthetic canvas only (pre-semantic behaviour), 'semantic' =
+        # the structural raster only, 'hybrid' = both stacked (RGB first) for an A/B. The channel count
+        # is the policy's conv in_ch and is written into every checkpoint.
+        self.obs_mode = semantic.obs_mode(cfg)
+        self.obs_ch = semantic.obs_channels(cfg)
+        self.obs_shape = (int(oh), int(ow), self.obs_ch)
         # Stage 3: identity-grounded threat block (KB roles of RECOGNISED enemy cards). When on, the
         # threat vector grows by card_threat.IDENTITY_DIM; the sim reads it from GROUND TRUTH but only
         # for whitelisted cards, so it mimics the live detector's (partial) recognition coverage.
@@ -134,6 +140,14 @@ class SimMatchEnv:
         # Per-match visual restyle (sim2real for the CNN). PRIVATE rng seeded once at construction:
         # resample() must NOT consume self.rng, or the eval benchmark's seeded deck sequences shift.
         self.domain_rand = view.DomainRand(cfg, random.Random(self.rng.randrange(2 ** 31)))
+        # STRUCTURAL raster (sim/real-identical board read). Like DomainRand it draws from a PRIVATE rng
+        # so its detector-realism filter never consumes self.rng -- otherwise the 777-seeded eval deck
+        # streams shift and the benchmark stops being comparable. The SEED is drawn unconditionally,
+        # even in rgb mode where the raster is never built: drawing it only sometimes would itself
+        # desynchronise self.rng between obs modes, which is the exact bug the private rng prevents.
+        _sem_seed = self.rng.randrange(2 ** 31)
+        self.sem_raster = (semantic.SimRaster(cfg, self.db, random.Random(_sem_seed))
+                           if self.obs_mode != "rgb" else None)
         # Optional hook: train_sim sets this to inject SELF-PLAY opponents (a frozen past policy) mixed
         # with the scripted meta bots. Called with `self` in reset(); default None = always scripted.
         self.opponent_provider = None
@@ -193,8 +207,16 @@ class SimMatchEnv:
         return np.concatenate(parts).astype(np.float32)
 
     def _render(self) -> np.ndarray:
+        return self.render_for(self.eng, team=0)
+
+    def render_for(self, engine, team: int = 0) -> np.ndarray:
+        """The observation tensor for ``team`` in the CONFIGURED obs mode. Shared with the self-play
+        opponent (team 1) so both sides of a match are observed exactly the same way."""
         oh, ow, _ = self.obs_shape
-        return view.render_obs(self.eng, oh, ow, team=0, dr=self.domain_rand)
+        rgb = (view.render_obs(engine, oh, ow, team=team, dr=self.domain_rand)
+               if self.obs_mode != "semantic" else None)
+        sem = self.sem_raster.render(engine, oh, ow, team=team) if self.sem_raster is not None else None
+        return semantic.compose(self.obs_mode, rgb, sem)
 
     # -- lifecycle ---------------------------------------------------------
     def reset(self) -> np.ndarray:

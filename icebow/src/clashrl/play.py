@@ -108,8 +108,21 @@ def play(cfg) -> None:
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))
+    # HARD GUARD: the OBSERVATION LAYOUT must match the checkpoint. A net trained on the semantic raster
+    # cannot read RGB pixels (or vice versa) -- the conv trunk's first layer is literally a different
+    # shape, and a hybrid net silently fed 3 channels would be reading grass where it expects troop mass.
+    from . import semantic
+    cfg_mode, cfg_ch = semantic.obs_mode(cfg), semantic.obs_channels(cfg)
+    ck_mode = ckpt.get("obs_mode", "rgb")          # checkpoints predating the raster are RGB by definition
+    ck_ch = int(ckpt.get("in_ch", 3))
+    if ck_mode != cfg_mode or ck_ch != cfg_ch:
+        print(f"[play] checkpoint/observation MISMATCH -- {ckpt_path.name} was trained on "
+              f"obs_mode={ck_mode} ({ck_ch} channels), config says {cfg_mode} ({cfg_ch} channels).")
+        print("[play] set observation.obs_mode to the checkpoint's mode, or train a policy for this mode")
+        print("[play] (run.py train-sim --matches ... ; run.py train-rl --init data/policy_sim_best.pt).")
+        return
     device = _pick_device(cfg)
-    net = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim).to(device)
+    net = PolicyNet(cfg_ch, n_cards, n_cells, threat_dim=threat_dim).to(device)
     net.load_state_dict(ckpt["model"])
     net.eval()
     # The RL checkpoint also carries the learned WAIT/PLAY gate head (train-rl's no-op). Load it so
@@ -185,13 +198,20 @@ def play(cfg) -> None:
     predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
     sight_range = float(cfg.get("sim", "sight_range", default=0.12))
     _detector = None
-    if want_identity or want_interactions:
+    # The SEMANTIC observation is built from detections too, so it needs the detector even when the
+    # checkpoint carries none of the Stage-3 threat blocks.
+    _want_raster = cfg_mode != "rgb"
+    if want_identity or want_interactions or _want_raster:
         try:
             from .replay_mine import load_detector
             _det = load_detector(cfg)
             _detector = _det if _det.available else None
         except Exception:
             _detector = None
+    if _want_raster and _detector is None:
+        print(f"[play] obs_mode={cfg_mode} needs the board DETECTOR, but none is available -- the "
+              "semantic channels would be all-zero and the policy blind. Train/point at a detector.")
+        return
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
     # LIVE team assignment from your own plays (overrides the colour guess so your units aren't read as
@@ -207,17 +227,43 @@ def play(cfg) -> None:
         forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)))
     _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
 
+    _sem = semantic.LiveRaster(cfg, _db) if _want_raster else None
+    _dets_cache = {"id": None, "dets": []}
+
+    def _tagged_dets(frame):
+        """ONE team-tagged detector pass per FRAME, memoized -- shared by the threat blocks and the
+        semantic observation raster, so the observation and the threat vector describe the same board
+        read and live inference never pays for two detector passes per tick."""
+        if _detector is None:
+            return []
+        if _dets_cache["id"] == id(frame):
+            return _dets_cache["dets"]
+        try:
+            dets_all = _detector.detect(frame, conf=detector_conf)
+        except Exception:
+            dets_all = []
+        _team_tracker.tag(dets_all, time.time())                         # correct team from your own plays
+        _dets_cache["id"], _dets_cache["dets"] = id(frame), dets_all
+        return dets_all
+
+    def _observe(frame):
+        """Frame -> the observation tensor in the checkpoint's mode, through the SAME rasterizer the sim
+        trained on (clashrl.semantic)."""
+        ow_, oh_ = cfg.get("observation", "arena_size", default=[64, 96])
+        rgb = vision.observe(frame) if cfg_mode != "semantic" else None
+        sem = None
+        if _sem is not None:
+            sem = _sem.render(_tagged_dets(frame),
+                              hp_tracker.my_hp, hp_tracker.my_full, tower_tracker.mine_alive,
+                              hp_tracker.enemy_hp, hp_tracker.full, tower_tracker.enemy_alive,
+                              int(oh_), int(ow_))
+        return semantic.compose(cfg_mode, rgb, sem)
+
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
         sized to the net: the identity block (RECOGNISED enemies on YOUR half) + the opponent MEMORY block
         (whole-match read, BOTH halves). ONE detector pass shared by both. Zeros where unavailable."""
-        dets_all = []
-        if _detector is not None:
-            try:
-                dets_all = _detector.detect(frame, conf=detector_conf)
-            except Exception:
-                dets_all = []
-            _team_tracker.tag(dets_all, time.time())                         # correct team from your own plays
+        dets_all = _tagged_dets(frame)
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
@@ -256,7 +302,7 @@ def play(cfg) -> None:
     def act_in_match(frame) -> None:
         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
         tower_tracker.step(frame)
-        obs = vision.observe(frame)
+        obs = _observe(frame)                 # rgb / semantic raster / hybrid, per the checkpoint
         hand_ids = vision.recognize_hand(frame)
         hand_vec = vision.hand_multihot(hand_ids)
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
