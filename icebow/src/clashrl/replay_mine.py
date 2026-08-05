@@ -96,27 +96,47 @@ class Detection:
         return (self.cx, self.gy)
 
 
-def _colour_counts(bgr: np.ndarray) -> "tuple[int, int]":
-    """(red_pixels, blue_pixels) of saturated team colours in a BGR crop."""
+def _team_masks(bgr: np.ndarray) -> "tuple[np.ndarray, np.ndarray]":
+    """Boolean (red, blue) masks of saturated team colours in a BGR crop."""
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
-    red = int((cv2.inRange(hsv, (0, 120, 90), (10, 255, 255)) > 0).sum()
-              + (cv2.inRange(hsv, (169, 120, 90), (179, 255, 255)) > 0).sum())
-    blue = int((cv2.inRange(hsv, (100, 120, 90), (128, 255, 255)) > 0).sum())
+    red = (cv2.inRange(hsv, (0, 120, 90), (10, 255, 255)) > 0) \
+        | (cv2.inRange(hsv, (169, 120, 90), (179, 255, 255)) > 0)
+    blue = cv2.inRange(hsv, (100, 120, 90), (128, 255, 255)) > 0
     return red, blue
 
 
+def _colour_counts(bgr: np.ndarray) -> "tuple[int, int]":
+    """(red_pixels, blue_pixels) of saturated team colours in a BGR crop."""
+    red, blue = _team_masks(bgr)
+    return int(red.sum()), int(blue.sum())
+
+
 def _bar_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> Optional[str]:
-    """Team from the HP-BAR / level-badge STRIP that Clash Royale draws just ABOVE a unit.
-    This is the only RELIABLE colour cue -- and it only exists once the unit has TAKEN DAMAGE
-    (undamaged units show no team UI at all), so returning None ('no bar visible') is common
-    and correct. Requires a clear pixel count + a 2:1 colour majority to vote."""
+    """Team from the HP-BAR / level-badge UI that Clash Royale draws over a unit's head. This is
+    the only RELIABLE colour cue -- and it only exists once the unit has TAKEN DAMAGE (undamaged
+    units show no team UI at all), so returning None ('no bar visible') is common and correct.
+
+    The bar is NOT always above the box: for tall sprites / certain orientations (and detector
+    boxes grown to include it -- the annotation rule allows a bar sliver in-box) it OVERLAPS the
+    box top, so the scan window spans from well above the box top down into the box's TOP QUARTER.
+    Because the inside part contains unit ART, votes are restricted to BAR-SHAPED rows: a row only
+    counts when one team's saturated pixels span a wide fraction of the unit's width (an HP bar is
+    a flat horizontal run; art is blobby and rarely forms a wide pure-team-colour row). Still
+    requires a clear pixel count + a 2:1 colour majority."""
     H, W = frame.shape[:2]
     x0 = max(0, int((d_cx - d_w * 0.4) * W)); x1 = min(W, int((d_cx + d_w * 0.4) * W))
     yb = d_cy - d_h / 2                                  # box top
-    y0 = max(0, int((yb - d_h * 0.45) * H)); y1 = min(H, max(y0 + 1, int(yb * H)))
+    y0 = max(0, int((yb - d_h * 0.45) * H))
+    y1 = min(H, max(y0 + 1, int((yb + d_h * 0.25) * H)))
     if x1 - x0 < 3 or y1 - y0 < 2:
         return None
-    red, blue = _colour_counts(frame[y0:y1, x0:x1])
+    red_m, blue_m = _team_masks(frame[y0:y1, x0:x1])
+    row_red, row_blue = red_m.sum(axis=1), blue_m.sum(axis=1)
+    need = max(6, int(0.35 * (x1 - x0)))                 # a bar row spans a wide fraction of the width
+    bar_rows = (row_red >= need) | (row_blue >= need)
+    if not bool(bar_rows.any()):
+        return None
+    red = int(row_red[bar_rows].sum()); blue = int(row_blue[bar_rows].sum())
     hi, lo = max(red, blue), min(red, blue)
     if hi < 15 or hi < 2 * max(1, lo):
         return None
