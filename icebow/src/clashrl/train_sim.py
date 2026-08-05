@@ -454,7 +454,12 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                                 line += (f" | fair(L{fair_level}) {fwr:4.0f}% "
                                          f"(avg-{len(eval_hist_fair)} {fsmooth:4.0f}%)")
                             print(line + f" | {eval_matches} matches each", flush=True)
-                            if smooth > best_wr:                 # keep the PEAK policy (guards vs late-training decay)
+                            # Keep the PEAK policy (guards vs late-training decay) -- but only once the
+                            # smoothing window has >=3 points: eval_hist restarts EMPTY on every --resume,
+                            # so an avg-1/avg-2 print is a single noisy eval (+-4pp) wearing an "avg" label,
+                            # and banking it freezes best.pt at an inflated bar no honest avg-5 can beat
+                            # (measured: a resume banked avg-1 88% while the true plateau was ~80%).
+                            if smooth > best_wr and len(eval_hist) >= min(3, eval_hist.maxlen):
                                 best_wr = smooth
                                 save(best_path)
                                 if keep_best:                    # add the best self to the sparring league
