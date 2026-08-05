@@ -154,6 +154,18 @@ def play(cfg) -> None:
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
     _db = CardDB(cfg)
+    # HARD GUARD: the checkpoint must match the CONFIGURED deck (same check as train-rl). After a
+    # deck change an old net's heads are the wrong width and its card ids mean different cards --
+    # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
+    # worse, silent nonsense plays.
+    _ckpt_deck = ckpt.get("deck")
+    if n_cards != len(vision.deck_keys) or (_ckpt_deck and list(_ckpt_deck) != list(vision.deck_keys)):
+        print(f"[play] checkpoint/deck MISMATCH -- {ckpt_path.name} was trained for:")
+        print(f"[play]   ckpt deck ({n_cards}): {', '.join(map(str, _ckpt_deck or ['?'] * n_cards))}")
+        print(f"[play]   config deck ({len(vision.deck_keys)}): {', '.join(vision.deck_keys)}")
+        print("[play] train a fresh sim policy for this deck (run.py train-sim), or restore the old")
+        print("[play] deck in config/cards.yaml to keep using this checkpoint.")
+        return
     card_elixir = [(_db.elixir(k) or _db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
                    for k in vision.deck_keys]
 

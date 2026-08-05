@@ -108,6 +108,22 @@ def train_rl(cfg, init: str | None = None) -> None:
         k = str(k)
         return k[:-4] if k.endswith("_evo") else k
 
+    # HARD GUARD: the checkpoint must match the CONFIGURED deck. After a deck change (e.g. the
+    # icebow switch: 9 -> 10 identities, miner -> knight/knight_evo) an old net's hand/card heads
+    # are the wrong WIDTH and its card ids mean different cards -- without this check that
+    # surfaces as a cryptic IndexError (card_elixir[i]) mid-match.
+    current_deck = _db.deck_identities()
+    if n_cards != len(current_deck) or (deck and list(deck) != list(current_deck)):
+        print(f"[train-rl] checkpoint/deck MISMATCH -- {init_path.name} was trained for:")
+        print(f"[train-rl]   ckpt deck ({n_cards}): {', '.join(map(str, deck or ['?'] * n_cards))}")
+        print(f"[train-rl]   config deck ({len(current_deck)}): {', '.join(current_deck)}")
+        print("[train-rl] a policy cannot act on a deck it wasn't trained for. Either train a fresh")
+        print("[train-rl] sim policy for this deck first:")
+        print("[train-rl]   run.py train-sim --size 432 --matches 200000 --envs 32")
+        print("[train-rl]   run.py train-rl --init data/policy_sim_best.pt")
+        print("[train-rl] or restore the old deck in config/cards.yaml to keep using this checkpoint.")
+        return
+
     if deck and len(deck) == n_cards:
         card_elixir = [float(_db.elixir(k) or _db.elixir(_base_key(k)) or 0.0) for k in deck]
     else:
