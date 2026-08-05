@@ -192,6 +192,14 @@ observation:
                                  # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
                                  # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
                                  # 'mine' onto the enemy defenders answering it.
+  team_motion_min: 0.05          # EVIDENCE FUSION (TeamTracker): net y drift since first seen that counts as
+                                 # MARCHING (units advance toward the enemy: up = mine, down = enemy -- decisive
+                                 # for the team-colourless rolling Log); below it (idle units, buildings,
+                                 # knockback jitter) motion abstains. Raise if slow tanks flip verdicts early.
+  team_deep_mine_y: 0.62         # first seen BELOW this = born deep in MY half -> 'mine' prior... unless that lane's
+  team_deep_enemy_y: 0.38        # (resp. ABOVE = enemy prior) -- princess is DOWN: a taken tower opens the deploy
+                                 # POCKET on the loser's side of the lane, so the prior is voided there (set_towers).
+                                 # Widen the middle band (raise mine / lower enemy) if bridge drops get mis-sided.
   flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
                                  # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
                                  # true tile, so spell targeting + depth/movement prediction use where it really is.
