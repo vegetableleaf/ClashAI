@@ -27,6 +27,20 @@ from collections import deque
 import numpy as np
 
 
+def pfsp_weights(snaps, power: float, floor: float = 0.05, min_games: int = 5):
+    """Tier-2 PFSP 'hard-opponent' weights: each league snapshot weighs (1 - winrate_vs_it)^power
+    (+ a floor so nothing starves) -- sparring time concentrates on the past selves that BEAT the
+    current policy instead of uniformly re-farming beaten ones, which is where the learning signal
+    is. Snapshots with fewer than `min_games` recorded matches count as winrate 0.5 (unknown =
+    medium priority). Reads each snapshot's `._pfsp` rolling record (1 win / 0.5 draw / 0 loss)."""
+    w = []
+    for s in snaps:
+        rec = getattr(s, "_pfsp", None)
+        wr = (sum(rec) / len(rec)) if rec and len(rec) >= min_games else 0.5
+        w.append(max(floor, (1.0 - wr) ** power))
+    return w
+
+
 def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None) -> None:
     try:
         import torch
@@ -254,6 +268,8 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     sp_snap_every = int(cfg.get("sim", "selfplay_snapshot_every", default=1000))
     sp_league_size = int(cfg.get("sim", "selfplay_league_size", default=5))
     keep_best = bool(cfg.get("sim", "selfplay_keep_best", default=True))
+    pfsp_on = bool(cfg.get("sim", "selfplay_pfsp", default=True))
+    pfsp_power = float(cfg.get("sim", "selfplay_pfsp_power", default=2.0))
     league: deque = deque(maxlen=max(1, sp_league_size))
     _best_snap = {"net": None}       # a frozen copy of the BEST-benchmark policy (an always-available sparring partner)
     _prog = {"n": 0}
@@ -264,6 +280,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         snap.eval()
         for p in snap.parameters():
             p.requires_grad_(False)
+        snap._pfsp = deque(maxlen=40)    # recent results vs this snapshot (1 win / 0.5 draw / 0 loss)
         if store:
             league.append(snap)
         return snap
@@ -276,7 +293,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         if keep_best and _best_snap["net"] is not None:
             snaps.append(_best_snap["net"])          # spar against the BEST self, not only the degrading recent ones
         if sp_prob > 0 and snaps and random.random() < sp_prob_now():
-            return SelfPlayOpponent(cfg, env, random.choice(snaps), env.rng)
+            if pfsp_on and len(snaps) > 1:            # Tier-2 PFSP: prefer the snapshots that BEAT us
+                pick = random.choices(snaps, weights=pfsp_weights(snaps, pfsp_power), k=1)[0]
+            else:
+                pick = random.choice(snaps)
+            return SelfPlayOpponent(cfg, env, pick, env.rng)
         # TRAINING scripted bots may be ADAPTIVE (anti-siege / counter-hold / punish / split-push);
         # the eval benchmark never sets this flag, so eval curves stay comparable across runs.
         return make_opponent(cfg, env.db, env.rng, env.meta_pool, adaptive=True)
@@ -290,7 +311,8 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 _best_snap["net"] = seed                         # ...and the best-self sparring slot
         print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
               f"snapshot every {sp_snap_every}, league size {sp_league_size}"
-              + (", +best-self" if keep_best else ""))
+              + (", +best-self" if keep_best else "")
+              + (f", PFSP p={pfsp_power:g}" if pfsp_on else ""))
 
     # -- benchmark eval vs the FIXED scripted meta pool --------------------
     # A STABLE plateau signal (unlike the self-play win-rate, which self-references to ~50%): every
@@ -397,6 +419,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 ep_r[i] += reward
                 if done:
                     oc = info.get("outcome")
+                    # Tier-2 PFSP: attribute the result to the league snapshot that piloted the opponent
+                    # (BEFORE reset() replaces env.opponent) -- its rolling record drives the sampling.
+                    opp = getattr(env, "opponent", None)
+                    if isinstance(opp, SelfPlayOpponent) and hasattr(opp.net, "_pfsp"):
+                        opp.net._pfsp.append(1.0 if oc == "win" else (0.5 if oc == "draw" else 0.0))
                     wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
                     win_hist.append(1 if oc == "win" else 0); rew_hist.append(ep_r[i])
                     done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0

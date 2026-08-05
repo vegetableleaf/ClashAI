@@ -668,9 +668,16 @@ sim:
   selfplay_prob: 0.5            # fraction of matches played vs a frozen self (0 = off); the rest are scripted meta decks
   selfplay_ramp_matches: 5000   # linearly ramp selfplay_prob 0 -> full over this many matches (0 = no ramp)
   selfplay_snapshot_every: 1000 # freeze a policy snapshot into the league this often (matches)
-  selfplay_league_size: 5       # keep this many recent snapshots; a match samples one at random
+  selfplay_league_size: 8       # keep this many recent snapshots; DEEPENED 5 -> 8 with PFSP (more history
+                                # is useful once sampling is prioritized instead of uniform)
   selfplay_keep_best: true      # ALSO spar against the BEST-benchmark self (not just recent snapshots) -- damps the
                                 # self-play "chase a degrading recent self" oscillation; the biggest stability lever here
+  # Tier-2 PFSP (prioritized fictitious self-play): league opponents are sampled by (1 - winrate)^power
+  # over a rolling 40-match record per snapshot, so sparring concentrates on the past selves that BEAT
+  # the current policy (that's where the learning signal is) instead of uniformly re-farming beaten ones.
+  # Snapshots with little history sample at medium priority; a small floor keeps every snapshot in play.
+  selfplay_pfsp: true
+  selfplay_pfsp_power: 2.0      # >1 = sharper focus on the hardest snapshots; 1.0 = proportional; try 2-3
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
