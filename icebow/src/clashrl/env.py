@@ -189,12 +189,15 @@ class LiveMatchEnv:
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
         from .replay_mine import TeamTracker
-        self._team_tracker = TeamTracker(                # LIVE: tag your own plays 'mine' (vs the colour guess)
+        self._team_tracker = TeamTracker(                # LIVE: evidence-fused teams (plays/motion/bars/pockets)
             spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
             spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
             enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
             track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)),
-            forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)))
+            forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
+            motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
+            deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
+            deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
         # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
         self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
@@ -277,7 +280,9 @@ class LiveMatchEnv:
             dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
             return []
-        self._team_tracker.tag(dets, time.time())     # correct team from your own plays BEFORE filtering
+        # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
+        self._team_tracker.set_towers(self.tower.mine_alive, self.tower.enemy_alive)
+        self._team_tracker.tag(dets, time.time())     # evidence-fused team (plays/motion/bars/pockets)
         self._last_dets_all = dets                    # kept for the interaction block (both teams)
         return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
 
@@ -327,9 +332,11 @@ class LiveMatchEnv:
         gx, gy = cell % self.gw, cell // self.gw
         self.controller.play_card(*self.actions.decode(slot, gx, gy))
         self._cycle_tracker.record_play(card_id)      # a card left the hand -> it rotates to the queue back
-        if card_id not in self.spell_ids:             # a TROOP you played -> tag its spawn as YOURS (team fix)
-            cx, cy = self.actions.cell_center(gx, gy)
-            self._team_tracker.record_play(cx, cy, time.time())
+        # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
+        # is claimed at the cast point while an enemy answer dropped on the same spot is not.
+        cx, cy = self.actions.cell_center(gx, gy)
+        base = card_threat.base_key(self.vision.deck_keys[card_id])
+        self._team_tracker.record_play(cx, cy, time.time(), base=base)
 
     def _aim_weaker_tower(self, card_id: int, cell: int) -> int:
         """A ROCKET or an offensive MINER aimed at an enemy princess is redirected to the lower-HP

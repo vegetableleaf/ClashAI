@@ -194,17 +194,18 @@ def play(cfg) -> None:
             _detector = None
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
-    # LIVE team assignment from your own plays (overrides the colour guess so your units aren't read as
-    # enemy threats). A TROOP you play is tagged 'mine' at its spawn + tracked as it advances.
+    # LIVE team verdicts by evidence fusion (own plays / motion / HP bars / side prior with pocket gating)
+    # so your units aren't read as enemy threats -- see replay_mine.TeamTracker.
     from .replay_mine import TeamTracker
-    _spell_ids = {i for i, key in enumerate(vision.deck_keys)
-                  if card_threat.profile(_db, card_threat.base_key(key)).spell}
     _team_tracker = TeamTracker(
         spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
         spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
         enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
         track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)),
-        forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)))
+        forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
+        motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
+        deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
+        deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
     _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
 
     def _threat_extra(frame):
@@ -217,7 +218,9 @@ def play(cfg) -> None:
                 dets_all = _detector.detect(frame, conf=detector_conf)
             except Exception:
                 dets_all = []
-            _team_tracker.tag(dets_all, time.time())                         # correct team from your own plays
+            # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
+            _team_tracker.set_towers(tower_tracker.mine_alive, tower_tracker.enemy_alive)
+            _team_tracker.tag(dets_all, time.time())     # evidence-fused team (plays/motion/bars/pockets)
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
@@ -330,9 +333,11 @@ def play(cfg) -> None:
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
         _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
-        if card_id not in _spell_ids:              # a TROOP you played -> tag its spawn as YOURS (team fix)
-            cx, cy = actions.cell_center(gx, gy)
-            _team_tracker.record_play(cx, cy, time.time())
+        # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
+        # is claimed at the cast point while an enemy answer dropped on the same spot is not.
+        cx, cy = actions.cell_center(gx, gy)
+        _team_tracker.record_play(cx, cy, time.time(),
+                                  base=card_threat.base_key(vision.deck_keys[card_id]))
 
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))

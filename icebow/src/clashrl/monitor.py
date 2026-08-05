@@ -153,6 +153,10 @@ class DiscordMonitor:
         """
         det = self._overlay_detector()
         from .detect import draw_detections
+        tracker = None
+        if det is not None:                     # per-clip evidence fusion: motion / HP bars / side prior.
+            from .replay_mine import TeamTracker    # (no play knowledge here, but the Log's roll direction
+            tracker = TeamTracker()                 # and marching still beat the old colour-only guess)
 
         def _prep(full):
             """Resize to the clip size and, when the overlay is on, draw the detector's boxes."""
@@ -160,7 +164,8 @@ class DiscordMonitor:
                      if self.clip_scale and self.clip_scale != 1.0 else full)
             if det is not None:
                 try:
-                    small = draw_detections(small, det.detect(full, conf=self.overlay_conf))
+                    dets = det.detect(full, conf=self.overlay_conf)
+                    small = draw_detections(small, tracker.tag(dets, time.time()))
                 except Exception:
                     pass
             return small

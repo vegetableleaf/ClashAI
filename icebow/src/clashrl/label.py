@@ -80,8 +80,11 @@ def _extract_plays(events, region, slots, click_r, pair_timeout, a_top, a_bot):
 
 
 def _enemy_dets(det, cfg, frame):
-    """One detector pass -> whitelisted ENEMY detections (colour team read; offline has no own-play
-    tag correction). [] when the detector is unavailable -- the blocks then stay zero, same as live."""
+    """One detector pass -> whitelisted ENEMY detections. OFFLINE = single frames, so only the
+    stateless colour evidence applies (HP-bar strip, else overwhelming body art); undamaged
+    ambiguous units stay 'unknown' and are EXCLUDED -- sparser than live (which adds motion +
+    own-play evidence via TeamTracker) but never poisoned by art-colour guesses.
+    [] when the detector is unavailable -- the blocks then stay zero, same as live."""
     if det is None or frame is None:
         return []
     try:

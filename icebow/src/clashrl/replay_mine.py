@@ -74,6 +74,8 @@ class Detection:
     conf: float
     team: str = "unknown"          # "mine" | "enemy" | "unknown"
     ground_cy: Optional[float] = None   # shadow (true ground) y for FLYERS; None = ground unit (use cy)
+    bar_vote: Optional[str] = None      # team from the HP-bar strip ABOVE the unit (None = no bar visible)
+    body_vote: Optional[str] = None     # LAST-RESORT team hint from overwhelming body-art colour
 
     @property
     def base(self) -> str:
@@ -94,36 +96,82 @@ class Detection:
         return (self.cx, self.gy)
 
 
-def _team_of(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> str:
-    """Infer team from the dominant team-tint (blue = mine/bottom, red = enemy/top) inside the CENTRAL
-    ~60% of the box -- the unit body. Sampling the whole box lets the BACKGROUND vote (a Miner digging at
-    the red enemy tower has tower pixels in its box -> flips to 'enemy'), so the border is excluded."""
+def _colour_counts(bgr: np.ndarray) -> "tuple[int, int]":
+    """(red_pixels, blue_pixels) of saturated team colours in a BGR crop."""
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+    red = int((cv2.inRange(hsv, (0, 120, 90), (10, 255, 255)) > 0).sum()
+              + (cv2.inRange(hsv, (169, 120, 90), (179, 255, 255)) > 0).sum())
+    blue = int((cv2.inRange(hsv, (100, 120, 90), (128, 255, 255)) > 0).sum())
+    return red, blue
+
+
+def _bar_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> Optional[str]:
+    """Team from the HP-BAR / level-badge STRIP that Clash Royale draws just ABOVE a unit.
+    This is the only RELIABLE colour cue -- and it only exists once the unit has TAKEN DAMAGE
+    (undamaged units show no team UI at all), so returning None ('no bar visible') is common
+    and correct. Requires a clear pixel count + a 2:1 colour majority to vote."""
+    H, W = frame.shape[:2]
+    x0 = max(0, int((d_cx - d_w * 0.4) * W)); x1 = min(W, int((d_cx + d_w * 0.4) * W))
+    yb = d_cy - d_h / 2                                  # box top
+    y0 = max(0, int((yb - d_h * 0.45) * H)); y1 = min(H, max(y0 + 1, int(yb * H)))
+    if x1 - x0 < 3 or y1 - y0 < 2:
+        return None
+    red, blue = _colour_counts(frame[y0:y1, x0:x1])
+    hi, lo = max(red, blue), min(red, blue)
+    if hi < 15 or hi < 2 * max(1, lo):
+        return None
+    return "enemy" if red > blue else "mine"
+
+
+def _body_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: float) -> Optional[str]:
+    """LAST-RESORT team hint from the unit BODY (central ~60% of the box). Body art colours are
+    exactly what used to misfire (a blue-ish enemy Knight read 'mine'; the team-colourless Log was
+    a coin flip; rage/freeze tints flipped verdicts), so this only votes on an OVERWHELMING 3:1
+    majority with a real pixel count -- anything weaker abstains and the tracker's motion/side
+    evidence decides instead."""
     h, w = frame.shape[:2]
-    cw, ch = d_w * 0.6, d_h * 0.6                      # central crop: unit body, not the surroundings
+    cw, ch = d_w * 0.6, d_h * 0.6
     x0 = max(0, int((d_cx - cw / 2) * w)); x1 = min(w, int((d_cx + cw / 2) * w))
     y0 = max(0, int((d_cy - ch / 2) * h)); y1 = min(h, int((d_cy + ch / 2) * h))
     if x1 - x0 < 2 or y1 - y0 < 2:
-        return "unknown"
-    hsv = cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2HSV)
-    red = (cv2.inRange(hsv, (0, 120, 90), (10, 255, 255)).sum()
-           + cv2.inRange(hsv, (169, 120, 90), (179, 255, 255)).sum())
-    blue = cv2.inRange(hsv, (100, 120, 90), (128, 255, 255)).sum()
-    if max(red, blue) == 0:
-        return "unknown"
-    return "enemy" if red >= blue else "mine"
+        return None
+    red, blue = _colour_counts(frame[y0:y1, x0:x1])
+    hi, lo = max(red, blue), min(red, blue)
+    if hi < 25 or hi < 3 * max(1, lo):
+        return None
+    return "enemy" if red > blue else "mine"
 
 
 class TeamTracker:
-    """LIVE team assignment from the GROUND TRUTH of your own plays, overriding the unreliable colour
-    guess (:func:`_team_of`, which status tints / spell haze / occlusion fool). Any unit that appears
-    where YOU just played a TROOP is 'mine'; it stays 'mine' as it advances (short-range frame-to-frame
-    tracking). Everything else keeps the detector's colour team. The SIM doesn't need this (ground-truth
-    teams); it's for live play + train-rl so the identity/memory blocks aren't polluted by your own units
-    being read as enemy threats."""
+    """LIVE team verdicts by EVIDENCE FUSION over short unit tracks, replacing the old colour-only
+    guess. Colour was the weakest possible signal: the HP bar (the one reliable team colour) only
+    exists AFTER a unit takes damage, so undamaged units were judged by their ART colours (a blue-ish
+    enemy Knight read 'mine'), and the Log has no team UI at all (wood-brown pixels = a coin flip).
+
+    Evidence per track, strongest first (a stronger verdict STICKS -- weaker later evidence can't flip it):
+
+    1. OWN-PLAY ANCHOR -- a detection of the SAME base card near a card you just played is 'mine'
+       (ground truth; spells included, so your own rolling Log is claimed at the cast point).
+    2. MOTION -- net y displacement since first seen: units march TOWARD the enemy (up = 'mine',
+       down = 'enemy'). Near-deterministic for one-way movers like the Log, and tornado pulls agree
+       (an enemy dragged toward you still moves down). Buildings/idle units simply abstain.
+    3. HP-BAR MAJORITY -- accumulated bar-strip votes (:func:`_bar_vote`) once the unit has a bar.
+    4. FIRST-SEEN SIDE -- born deep in a half = that side's unit... UNLESS that half's princess
+       tower is down: taking a tower opens a deploy POCKET on the loser's side of that lane, so
+       the prior is gated per-lane via :meth:`set_towers` (anywhere-cards like the Miner and
+       graveyard-style spawns are excluded from this prior entirely).
+    5. BODY ART -- only an overwhelming 3:1 colour majority (:func:`_body_vote`), the last resort.
+
+    The SIM doesn't need this (ground-truth teams); it's for live play / train-rl / the monitor overlay
+    so the identity/memory blocks aren't polluted by your own units being read as enemy threats."""
+
+    #: bases that may legally APPEAR deep inside either half (burrowers / grave spawns) -> no side prior
+    NO_SIDE_PRIOR = frozenset({"miner", "goblin_drill", "skeletons"})
 
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
                  track_radius: float = 0.12, forget_s: float = 4.5,
-                 enemy_window_s: Optional[float] = None):
+                 enemy_window_s: Optional[float] = None, motion_min: float = 0.05,
+                 deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38):
         self.spawn_radius = float(spawn_radius)
         self.spawn_window_s = float(spawn_window_s)
         # ENEMY-side plays (a Miner / anything you drop on THEIR half) linger at their target, so they get
@@ -132,44 +180,94 @@ class TeamTracker:
         self.enemy_window_s = float(enemy_window_s) if enemy_window_s is not None else float(spawn_window_s)
         self.track_radius = float(track_radius)
         self.forget_s = float(forget_s)
+        self.motion_min = float(motion_min)        # net |dy| that counts as marching (not jitter/knockback)
+        self.deep_mine_y = float(deep_mine_y)      # first seen BELOW this -> deep in MY half
+        self.deep_enemy_y = float(deep_enemy_y)    # first seen ABOVE this -> deep in ENEMY half
         self.reset()
 
     def reset(self) -> None:
-        self._plays: list = []     # recent own TROOP plays: (x, y, t)
-        self._mine: list = []      # tracked own units: (x, y, base_card, t_last_seen)
+        self._plays: list = []     # recent own plays: (x, y, t, base)
+        self._tracks: list = []    # dicts: x, y, x0, y0, base, t, team, rank, bm, be
+        self._pocket_my = [False, False]      # [L, R]: MY princess down -> ENEMY pocket in that lane of MY half
+        self._pocket_enemy = [False, False]   # [L, R]: ENEMY princess down -> MY pocket in that lane of THEIRS
 
-    def record_play(self, x: float, y: float, t: float) -> None:
-        """Register a TROOP you just played at normalized (x, y) -- the unit that appears there is yours."""
-        self._plays.append((float(x), float(y), float(t)))
+    def set_towers(self, mine_alive, enemy_alive) -> None:
+        """Feed the tower-destruction latches (``TowerTracker``): a fallen PRINCESS opens the deploy
+        pocket in front of it, voiding the first-seen-side prior for that lane -- an enemy dropped in
+        the pocket on YOUR half must not be presumed 'mine' (and vice versa on their half)."""
+        self._pocket_my = [not bool(a) for a in list(mine_alive)[:2]] or [False, False]
+        self._pocket_enemy = [not bool(a) for a in list(enemy_alive)[:2]] or [False, False]
+
+    def record_play(self, x: float, y: float, t: float, base: Optional[str] = None) -> None:
+        """Register a card YOU just played at normalized (x, y): the matching unit that appears there is
+        yours. ``base`` (the card's base key) restricts the anchor to detections of the SAME card, so an
+        enemy answer dropped onto your spawn -- or into a pocket right on top of it -- isn't claimed."""
+        self._plays.append((float(x), float(y), float(t), base))
+
+    @staticmethod
+    def _in_lane(x: float, pockets) -> bool:
+        """Is normalized x inside an OPEN pocket lane? (lanes overlap through the centre to be safe)"""
+        return (x < 0.55 and pockets[0]) or (x > 0.45 and pockets[1])
+
+    def _verdict(self, d, trk) -> "tuple[str, int]":
+        """Best (team, rank) for a linked det+track from the evidence available NOW (1 = strongest)."""
+        net = trk["y"] - trk["y0"]
+        if net <= -self.motion_min:
+            return "mine", 2                        # marching UP, toward the enemy
+        if net >= self.motion_min:
+            return "enemy", 2                       # marching DOWN, toward me
+        if trk["bm"] != trk["be"]:
+            return ("mine" if trk["bm"] > trk["be"] else "enemy"), 3
+        if d.base not in self.NO_SIDE_PRIOR:
+            if trk["y0"] >= self.deep_mine_y and not self._in_lane(trk["x0"], self._pocket_my):
+                return "mine", 4
+            if trk["y0"] <= self.deep_enemy_y and not self._in_lane(trk["x0"], self._pocket_enemy):
+                return "enemy", 4
+        if d.body_vote:
+            return d.body_vote, 5
+        return "unknown", 9
 
     def tag(self, dets, t: float):
-        """Override ``d.team = 'mine'`` for detections near a recent own play OR matching a tracked own
-        unit (SAME base card, nearby) -- so the label persists for the unit's WHOLE life, not just the
-        spawn window. Tracks BRIDGE detector misses: a unit not seen this read is carried for ``forget_s``
-        (its position frozen) instead of being dropped -- one missed read used to kill the tag, and a
-        Miner at the red enemy tower then flipped to 'enemy' on the colour vote. Identity-aware linking
-        (base must match) keeps the longer memory from leaking 'mine' onto enemy defenders answering it.
-        Mutates + returns ``dets``."""
+        """Fuse the evidence into ``d.team`` for every detection. Tracks BRIDGE detector misses: a unit
+        not seen this read is carried for ``forget_s`` (position frozen) instead of being dropped, so one
+        missed read doesn't reset a verdict (a Miner at the red enemy tower used to flip to 'enemy' that
+        way). Linking is identity-aware (same base, nearest within ``track_radius``), which keeps a long
+        memory from leaking a verdict onto a different unit answering it. Mutates + returns ``dets``."""
         self._plays = [p for p in self._plays                     # enemy-side plays (y<0.5) linger longer
                        if t - p[2] <= (self.enemy_window_s if p[1] < 0.5 else self.spawn_window_s)]
-        prev = [m for m in self._mine if t - m[3] <= self.forget_s]
+        prev = [tr for tr in self._tracks if t - tr["t"] <= self.forget_s]
         sr2, tr2 = self.spawn_radius ** 2, self.track_radius ** 2
-        new_mine = []
+        live = []
         for d in dets:
             dx, dy = d.cx, d.gy
-            mine = any((dx - px) ** 2 + (dy - py) ** 2 <= sr2 for px, py, _ in self._plays)
-            if not mine:                                          # link to a tracked own unit: SAME card, nearby
-                mine = any(mb == d.base and (dx - mx) ** 2 + (dy - my) ** 2 <= tr2
-                           for mx, my, mb, _ in prev)
-            if mine:
-                d.team = "mine"
-                new_mine.append((dx, dy, d.base, t))
-        # GAP BRIDGING: carry forward recent tracks NOT matched by any current detection (the detector
-        # missed the unit this read) so a single miss doesn't end the tag; they age out after forget_s.
-        carried = [m for m in prev
-                   if not any(nb == m[2] and (nx - m[0]) ** 2 + (ny - m[1]) ** 2 <= tr2
-                              for nx, ny, nb, _ in new_mine)]
-        self._mine = new_mine + carried
+            trk, best = None, tr2                                 # link: nearest UNUSED same-base track
+            for cand in prev:
+                d2 = (dx - cand["x"]) ** 2 + (dy - cand["y"]) ** 2
+                if cand["base"] == d.base and d2 <= best:
+                    trk, best = cand, d2
+            if trk is not None:
+                prev.remove(trk)
+                trk["x"], trk["y"], trk["t"] = dx, dy, t
+            else:
+                trk = {"x": dx, "y": dy, "x0": dx, "y0": dy, "base": d.base,
+                       "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0}
+            if d.bar_vote == "mine":
+                trk["bm"] += 1
+            elif d.bar_vote == "enemy":
+                trk["be"] += 1
+            # OWN-PLAY ANCHOR (rank 1): same base near a recent own play -> ground-truth 'mine'
+            if trk["rank"] > 1 and any(
+                    (pb is None or pb == d.base) and (dx - px) ** 2 + (dy - py) ** 2 <= sr2
+                    for px, py, _, pb in self._plays):
+                trk["team"], trk["rank"] = "mine", 1
+            else:
+                team, rank = self._verdict(d, trk)
+                if rank <= trk["rank"]:                           # stronger/equal evidence -> (re)decide
+                    trk["team"], trk["rank"] = team, rank
+            d.team = trk["team"]
+            live.append(trk)
+        # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.
+        self._tracks = live + prev
         return dets
 
 
@@ -198,7 +296,12 @@ class BoardDetector:
             cx, cy = (x1 + x2) / 2 / w, (y1 + y2) / 2 / h
             bw, bh = (x2 - x1) / w, (y2 - y1) / h
             cls = self._names.get(int(b.cls[0]), str(int(b.cls[0])))
-            team = _team_of(frame, cx, cy, bw, bh)
+            # STATELESS colour evidence: the HP-bar strip above the unit (reliable, often absent) and
+            # the overwhelming-body-art fallback. The preliminary team from these alone is what OFFLINE
+            # single-frame consumers get; live paths run TeamTracker.tag() on top (motion/plays/pockets).
+            bar = _bar_vote(frame, cx, cy, bw, bh)
+            body = _body_vote(frame, cx, cy, bw, bh)
+            team = bar or body or "unknown"
             # FLYING-UNIT SHADOW CORRECTION: a flyer's sprite is drawn above the ground, so its box
             # centre is too high -- the real tile is at its shadow, ~fly_offset below. Shift cy down so
             # depth / movement prediction / spell targeting use the true ground position.
@@ -206,7 +309,7 @@ class BoardDetector:
             if self._fly_offset > 0 and self._db is not None and \
                     card_threat.profile(self._db, card_threat.base_key(cls)).flying:
                 gcy = min(1.0, cy + self._fly_offset)
-            out.append(Detection(cls, cx, cy, bw, bh, float(b.conf[0]), team, gcy))
+            out.append(Detection(cls, cx, cy, bw, bh, float(b.conf[0]), team, gcy, bar, body))
         return out
 
 
