@@ -27,7 +27,7 @@ from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
-                     threat_side, weaker_princess_cell, xbow_lock_cell)
+                     pump_rocket_cell, threat_side, weaker_princess_cell, xbow_lock_cell)
 from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
@@ -202,6 +202,15 @@ class LiveMatchEnv:
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
         self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
         self._last_dets_all = []                         # every tagged detection this frame (both teams)
+        # PUMP PUNISH (elixir collector -> rocket): sighting state for the reward + the aim assist
+        self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))
+        self.pump_aim_radius = float(cfg.get("env", "pump_aim_radius", default=0.10))
+        self.pump_pair_gap = float(cfg.get("env", "pump_pair_gap", default=0.11))
+        self.pump_king_guard = float(cfg.get("env", "pump_king_guard", default=0.15))
+        self.combo_mult = float(cfg.get("rewards", "rocket_combo_mult", default=3.0))
+        self._pump_seen_t = None                         # when a pump was FIRST sighted (window anchor)
+        self._pump_last_t = 0.0                          # last read that still saw it
+        self._pump_xy = None                             # its latest (cx, gy)
         self._cycle_tracker = CycleTracker(self.n_cards)   # live estimate of the upcoming-card order (graded next_vec)
         if self.use_detector:
             self.threat_vec = np.concatenate(
@@ -256,6 +265,7 @@ class LiveMatchEnv:
             return
         dets = self._detect_enemies(frame)                                   # ONE detector pass this frame
         now = time.time()
+        self._track_pump(now)                                                # pump sighting -> punish window
         dt = (now - self._prev_ident_t) if self._prev_ident_t else 0.0
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         self._threat_id = card_threat.identity_threat_vector(
@@ -316,6 +326,8 @@ class LiveMatchEnv:
                 self._prev_ident_t = None
                 self._opp_mem.reset()
                 self._team_tracker.reset()
+                self._pump_seen_t = None                  # forget last match's pump sighting
+                self._pump_xy = None
                 self._cycle_tracker.reset()
                 self._read_hand(frame)
                 self._update_threat(frame)
@@ -344,6 +356,26 @@ class LiveMatchEnv:
         base = card_threat.base_key(self.vision.deck_keys[card_id])
         self._team_tracker.record_play(cx, cy, time.time(), base=base)
 
+    def _track_pump(self, now: float) -> None:
+        """Watch the tagged detections for an enemy ELIXIR COLLECTOR on their half: the FIRST sighting
+        anchors the punish window (env.pump_rocket_window_s -- a pump left alive past it has already
+        paid out, especially against a control deck); the sighting expires after ~6s without one."""
+        pumps = [d for d in self._last_dets_all
+                 if d.base == "elixir_collector" and d.team != "mine" and d.gy < 0.5]
+        if pumps:
+            if self._pump_seen_t is None:
+                self._pump_seen_t = now
+            self._pump_last_t = now
+            self._pump_xy = (pumps[0].cx, pumps[0].gy)
+        elif self._pump_seen_t is not None and now - self._pump_last_t > 6.0:
+            self._pump_seen_t = None
+            self._pump_xy = None
+
+    def _pump_fresh(self) -> bool:
+        """A sighted enemy pump still inside the punish window (rocketing it is still worth it)."""
+        return (self._pump_seen_t is not None and self._pump_xy is not None
+                and time.time() - self._pump_seen_t <= self.pump_window)
+
     def _aim_weaker_tower(self, card_id: int, cell: int) -> int:
         """A ROCKET or an offensive MINER aimed at an enemy princess is redirected to the lower-HP
         princess so it finishes off the WEAKER tower (more efficient) instead of splitting damage --
@@ -354,6 +386,16 @@ class LiveMatchEnv:
             return cell
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
+        # PUMP PUNISH aim assist: a rocket the policy ALREADY aims near a fresh enemy pump is snapped to
+        # the king-safe optimum -- midpoint with an adjacent princess tower when one blast covers both,
+        # else the pump itself; never within pump_king_guard of the king (then the policy's aim stands).
+        if card_id in self.rocket_ids and self._pump_fresh():
+            pxy = self._pump_xy
+            if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius * 1.5:
+                tgt = pump_rocket_cell(pxy[0], pxy[1], self.tower.enemy_a, self.tower.enemy_alive,
+                                       self.pump_pair_gap, self.pump_king_guard, self.actions)
+                if tgt is not None:
+                    return tgt
         tgt = weaker_princess_cell(cx, cy, self.spell_aim_radius, self.tower.enemy_a,
                                    self.tower_hp.enemy_hp, self.tower.enemy_alive,
                                    self.actions)
@@ -422,6 +464,16 @@ class LiveMatchEnv:
                 return self.w_wincon
             return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:
+            pxy = self._pump_xy if self._pump_fresh() else None   # PUMP PUNISH mirror (perception-gated)
+            if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius:
+                _, enemy_a, _ = _anchors(self.cfg)
+                kx, ky = enemy_a[2] if len(enemy_a) >= 3 else (0.48, 0.11)
+                if math.hypot(cx - kx, cy - ky) <= self.pump_king_guard:
+                    return self.w_wincon_mis              # blast would wake the king -- never for a pump
+                both = any(bool(self.tower.enemy_alive[i])
+                           and math.hypot(cx - ax, cy - ay) <= self.spell_aim_radius
+                           for i, (ax, ay) in enumerate(enemy_a[:2]))
+                return self.w_wincon * (self.combo_mult if both else 1.0)
             if self._defensive and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
                 return self.w_wincon * 0.6
             return 0.0
@@ -434,6 +486,9 @@ class LiveMatchEnv:
 
     def _needed_counter_coming(self, hand) -> bool:
         """True when the hand holds NO KB counter to the assessed threat but the deck DOES (upcoming)."""
+        if (self._pump_fresh() and not (set(hand) & self.rocket_ids)
+                and any(r not in hand for r in self.rocket_ids)):
+            return True                                       # a fresh enemy PUMP is a rocket job: cycle to it
         tid = self._threat_id
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return False

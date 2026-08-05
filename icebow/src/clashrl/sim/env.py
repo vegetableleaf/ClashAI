@@ -20,7 +20,7 @@ from ..cards import CardDB
 from .. import card_threat
 from .. import interactions
 from ..cycle import cycle_vector
-from .engine import SimEngine, build_spec
+from .engine import SimEngine, build_spec, _ROCKET_RADIUS
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
 from . import view
@@ -108,6 +108,7 @@ class SimMatchEnv:
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
         self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))   # support near the aimed tower
+        self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))  # rocket the pump within this of its deploy
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
         # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
@@ -293,6 +294,9 @@ class SimMatchEnv:
                 return self.w_wincon
             return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:
+            pr = self._pump_rocket(nx, ny)                   # PUMP PUNISH: rocket the fresh elixir collector
+            if pr != 0.0:
+                return pr
             if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support = 2-for-1
                 return self.w_wincon * self.combo_mult
             if self._defensive and d <= self.spell_aim_radius:
@@ -304,6 +308,36 @@ class SimMatchEnv:
                 return self.w_wincon_mis                      # Miner on the enemy KING wakes it early -> bad trade
             if d <= 0.09:
                 return self.w_wincon                          # Miner chipping the princess
+        return 0.0
+
+    def _fresh_pump(self):
+        """The enemy ELIXIR COLLECTOR while it is still WORTH rocketing: within env.pump_rocket_window_s
+        of its deploy. Past that it has paid most of its value back and the rocket is better spent
+        elsewhere. None when no fresh pump is on the field."""
+        return next((u for u in self.eng.units
+                     if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
+                     and u.age <= self.pump_window), None)
+
+    def _pump_rocket(self, nx: float, ny: float) -> float:
+        """PUMP PUNISH: a rocket whose blast covers an enemy Elixir Collector. A FRESH pump (inside the
+        window) = full win-condition credit -- an unanswered pump out-economies a control deck; the
+        2-for-1 multiplier when the blast ALSO clips an alive princess tower (the ideal aim); the
+        MISPLACE penalty when the blast would clip the enemy KING (activating it costs more than any
+        pump). A STALE pump earns nothing (the elixir already flowed). 0.0 = no pump in the blast ->
+        the ordinary rocket logic applies."""
+        R = _ROCKET_RADIUS
+        pump = next((u for u in self.eng.units
+                     if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
+                     and np.hypot(nx - u.x, ny - u.y) <= R + 0.01), None)
+        if pump is None:
+            return 0.0
+        king = self.eng.towers[1][2]
+        if king.alive and np.hypot(nx - king.x, ny - king.y) <= R + 0.02:
+            return self.w_wincon_mis                         # never wake the king for a pump
+        if pump.age <= self.pump_window:
+            both = any(t.alive and np.hypot(nx - t.x, ny - t.y) <= R + 0.01
+                       for t in self.eng.towers[1][:2])
+            return self.w_wincon * (self.combo_mult if both else 1.0)
         return 0.0
 
     def _rocket_combo(self, nx: float, ny: float) -> bool:
@@ -328,6 +362,9 @@ class SimMatchEnv:
     def _needed_counter_coming(self, hand) -> bool:
         """True when the current hand has NO KB counter to the assessed threat but the deck DOES (an
         upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile."""
+        if (self._fresh_pump() is not None and not (set(hand) & self.rocket_ids)
+                and any(r not in hand for r in self.rocket_ids)):
+            return True                                      # a fresh enemy PUMP is a rocket job: cycle to it
         tid = self._threat_id
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return False

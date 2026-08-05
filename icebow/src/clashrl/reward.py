@@ -209,6 +209,28 @@ def weaker_princess_cell(cx, cy, radius, enemy_anchors, enemy_hp, enemy_alive, a
     return acts.cell_at(nx, ny)
 
 
+def pump_rocket_cell(px, py, enemy_anchors, enemy_alive, pair_gap, king_guard, acts):
+    """Best KING-SAFE rocket aim for a detected enemy ELIXIR COLLECTOR at (px, py): the midpoint that
+    clips an adjacent ALIVE princess tower too when the two fit one blast (within ``pair_gap``), else
+    the pump itself, else the pump nudged AWAY from the king. Returns a grid cell, or None when every
+    candidate would land within ``king_guard`` of the enemy KING -- activating the king costs more
+    than any pump, so in that case the caller keeps the policy's own aim."""
+    king = tuple(enemy_anchors[2]) if len(enemy_anchors) >= 3 else (0.48, 0.11)
+    cands = []
+    for i, (ax, ay) in enumerate(enemy_anchors[:2]):
+        alive = enemy_alive is None or (i < len(enemy_alive) and enemy_alive[i])
+        if alive and np.hypot(px - ax, py - ay) <= pair_gap:
+            cands.append(((px + ax) / 2.0, (py + ay) / 2.0))      # double hit: pump + tower
+    cands.append((px, py))                                        # solo pump
+    dx, dy = px - king[0], py - king[1]
+    n = float(np.hypot(dx, dy)) or 1.0
+    cands.append((px + dx / n * 0.05, py + dy / n * 0.05))        # nudged away from the king
+    for tx, ty in cands:
+        if np.hypot(tx - king[0], ty - king[1]) >= king_guard:
+            return acts.cell_at(tx, ty)
+    return None
+
+
 def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, acts):
     """Snap a FORWARD (offensive) X-Bow that landed OUT of firing range onto the nearer enemy
     princess's LANE so it actually locks the tower. The policy tends to drop the X-Bow at the far

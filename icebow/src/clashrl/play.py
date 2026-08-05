@@ -18,7 +18,7 @@ import numpy as np
 from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
-from .reward import TowerTracker, weaker_princess_cell, xbow_lock_cell
+from .reward import TowerTracker, pump_rocket_cell, weaker_princess_cell, xbow_lock_cell
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
 from . import interactions
@@ -207,6 +207,13 @@ def play(cfg) -> None:
         deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
         deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
     _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
+    # PUMP PUNISH (elixir collector -> rocket): sighting state + king-safe aim assist (mirrors env.py)
+    _rocket_ids = {i for i, k in enumerate(vision.deck_keys) if card_threat.base_key(k) == "rocket"}
+    _pump = {"t0": None, "last": 0.0, "xy": None}
+    _pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))
+    _pump_aim_radius = float(cfg.get("env", "pump_aim_radius", default=0.10))
+    _pump_pair_gap = float(cfg.get("env", "pump_pair_gap", default=0.11))
+    _pump_king_guard = float(cfg.get("env", "pump_king_guard", default=0.15))
 
     def _threat_extra(frame):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
@@ -221,6 +228,16 @@ def play(cfg) -> None:
             # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
             _team_tracker.set_towers(tower_tracker.mine_alive, tower_tracker.enemy_alive)
             _team_tracker.tag(dets_all, time.time())     # evidence-fused team (plays/motion/bars/pockets)
+            now_p = time.time()                          # pump sighting -> the punish window (see env.py)
+            pumps = [d for d in dets_all if d.base == "elixir_collector" and d.team != "mine" and d.gy < 0.5]
+            if pumps:
+                if _pump["t0"] is None:
+                    _pump["t0"] = now_p
+                _pump["last"] = now_p
+                _pump["xy"] = (pumps[0].cx, pumps[0].gy)
+            elif _pump["t0"] is not None and now_p - _pump["last"] > 6.0:
+                _pump["t0"] = None
+                _pump["xy"] = None
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
@@ -313,8 +330,17 @@ def play(cfg) -> None:
         if card_id in anywhere_ids:           # a rocket / offensive miner at a princess -> aim the weaker one
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
-            tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
-                                       hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
+            tgt = None
+            # PUMP PUNISH aim assist: a rocket already aimed near a FRESH enemy pump is snapped to the
+            # king-safe optimum (midpoint with an adjacent princess when one blast covers both).
+            if (card_id in _rocket_ids and _pump["t0"] is not None and _pump["xy"] is not None
+                    and time.time() - _pump["t0"] <= _pump_window
+                    and np.hypot(cx - _pump["xy"][0], cy - _pump["xy"][1]) <= _pump_aim_radius * 1.5):
+                tgt = pump_rocket_cell(_pump["xy"][0], _pump["xy"][1], tower_tracker.enemy_a,
+                                       tower_tracker.enemy_alive, _pump_pair_gap, _pump_king_guard, actions)
+            if tgt is None:
+                tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
+                                           hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the

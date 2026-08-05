@@ -81,6 +81,7 @@ class CardSpec:
     pulls: bool = False       # TORNADO: an active VORTEX, not an instant blast -- pulls enemies to its centre
     pull_radius: float = 0.0  # vortex effect radius (5.5 tiles -- much wider than a damage spell)
     pull_duration: float = 0.0  # seconds the vortex stays active (damage is spread over this)
+    gen_every: float = 0.0    # ELIXIR COLLECTOR: +1 elixir to its OWNER every this many seconds (0 = none)
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -127,6 +128,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     lifetime = 40.0 if kind == "building" else None
+    if c.get("lifetime"):                                     # curated per-card lifetime (Elixir Collector 70s)
+        lifetime = float(c["lifetime"])
+    gen_every = float(c.get("gen_every_s") or 0.0)            # pump economy: +1 owner elixir every this many s
     p_dmg = p_r = p_stun = p_int = 0.0
     dmg_reduc = 0.0
     evo = c.get("evolution")
@@ -172,7 +176,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
-        pull_duration=(_TORNADO_DURATION if pulls else 0.0))
+        pull_duration=(_TORNADO_DURATION if pulls else 0.0),
+        gen_every=gen_every)
 
 
 @dataclass
@@ -193,6 +198,7 @@ class Unit:
     shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
     dmg_mult: float = 1.0        # per-unit damage multiplier (Royal Chef pancake buff; 1.0 = normal)
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
+    gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -476,6 +482,15 @@ class SimEngine:
         rate = self.elixir_rate()
         for team in (0, 1):
             self.elixir[team] = min(10.0, self.elixir[team] + rate * dt)
+        # ELIXIR COLLECTOR: an alive pump GENERATES +1 elixir for its OWNER every spec.gen_every seconds
+        # (after its deploy delay). Killing it early denies the remaining production -- that real economy
+        # is what makes rocketing a fresh pump genuinely valuable, not just reward-shaped.
+        for u in self.units:
+            if u.spec.gen_every > 0 and u.deploy_left <= 0:
+                n = int(max(0.0, u.age - u.spec.deploy_time) // u.spec.gen_every)
+                if n > u.gen_count:
+                    self.elixir[u.team] = min(10.0, self.elixir[u.team] + (n - u.gen_count))
+                    u.gen_count = n
         # spells land
         landed = []
         for s in self.spells:

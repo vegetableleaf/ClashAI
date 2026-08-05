@@ -183,10 +183,23 @@ class ScriptedBot:
                 self._backline_done = True
                 eng.deploy(team, self.rng.choice(supports), self.rng.choice([0.25, 0.75]), 0.10)
                 return
+        # PUMP OPENING: an Elixir Collector in the deck is placed like a real player -- at spare elixir,
+        # under no pressure, at most one on the field. Placement VARIETY is deliberate: behind the KING
+        # (king-adjacent = the agent must NOT rocket it), the PRINCESS pocket (rocketable together with
+        # the tower = the double hit), or mid-back (the solo-rocket case) -- all three answers train.
+        pump = next((s for s in usable if s.gen_every > 0), None)
+        if (pump is not None and not threats and elix >= pump.elixir + 2
+                and not any(u.team == team and u.spec.gen_every > 0 for u in eng.units)
+                and self.rng.random() < 0.35):
+            spot = self.rng.choice(((0.48 + self.rng.choice([-0.06, 0.06]), 0.06),   # hugging the king
+                                    (self.rng.choice([0.25, 0.75]), 0.13),           # princess pocket
+                                    (self.rng.choice([0.35, 0.62]), 0.10)))          # mid-back
+            eng.deploy(team, pump, spot[0], spot[1])
+            return
         # ATTACK
         if self.style == "beatdown" and elix < 9.5:
             return                                                # save up for a big push
-        offense = [s for s in usable if s.kind != "spell"]
+        offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0]
         if not offense:
             return
         splitting = self.adaptive and self.split_know and self._nado_seen

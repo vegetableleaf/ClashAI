@@ -61,6 +61,20 @@ deck:
 # ---------------------------------------------------------------------
 cards:
 
+  # ---- opponent-only curated entries ------------------------------
+  elixir_collector:            # OPPONENT pump (never in your deck) -- curated for the sim's PUMP ECONOMY:
+    display: "Elixir Collector"   # the engine pays its owner +1 elixir every gen_every_s while it stands,
+    elixir: 6                     # so rocketing a FRESH pump denies real production (see sim/engine.py).
+    kind: building
+    movement: none
+    speed: null
+    count: 1
+    win_condition: false
+    targets: none
+    flags: []
+    lifetime: 70               # seconds on the field -- VERIFY vs current balance (stats import has no lifetime)
+    gen_every_s: 8.5           # +1 owner elixir every ~8.5s (~8 over its life, +2 net) -- VERIFY
+
   # ---- your deck --------------------------------------------------
   musketeer:
     display: "Musketeer"

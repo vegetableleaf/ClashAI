@@ -424,6 +424,15 @@ env:
   spell_waste_radius: 0.14       # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness. Generous so predictive/near-miss casts aren't punished.
   rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
   rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower
+  # PUMP PUNISH (enemy elixir collector -> rocket): a pump left alive out-economies a control deck, so a
+  # FRESH pump is a rocket job -- full win-condition credit, the 2-for-1 multiplier when one blast also
+  # clips a princess tower, the misplace penalty if the blast would wake the KING, and the cycle-plan
+  # reward treats "rocket not in hand" as a reason to cycle cheap. The sim models the pump's real
+  # economy (cards.yaml gen_every_s) so denying production is genuinely valuable, not just shaped.
+  pump_rocket_window_s: 12.0     # rocket the pump within this of its appearance; later it has already paid out
+  pump_aim_radius: 0.10          # a rocket aimed within this of the SEEN pump counts as the pump punish (live)
+  pump_pair_gap: 0.11            # pump within this of a princess tower -> aim assist snaps to the MIDPOINT (hit both)
+  pump_king_guard: 0.15          # never aim within this of the enemy KING for a pump (activation costs more than any pump)
   enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet"
   elixir_full: 10                # elixir at/above this (full bar) + nothing played this step = leak penalty
   defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened" (lane read)
@@ -526,7 +535,7 @@ detect:
   # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
   # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
   # Studio Local Storage to pick them up.
-  capture_during_train: true    # set false to disable the harvest during train-rl
+  capture_during_train: false    # set false to disable the harvest during train-rl
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl session
