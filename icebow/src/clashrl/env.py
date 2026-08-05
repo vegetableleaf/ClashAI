@@ -58,6 +58,7 @@ class LiveMatchEnv:
         self.n_slots, self.n_cells = self.actions.n_slots, self.actions.n_cells
 
         self.act_period = float(cfg.get("play", "act_period", default=1.5))
+        self.react_min_gap = float(cfg.get("play", "react_min_gap_s", default=0.3))
         self.poll_dt = 1.0 / float(cfg.get("nav", "poll_hz", default=6))
         self.menu_delay = float(cfg.get("nav", "menu_delay", default=1.0))
         self.results_timeout = float(cfg.get("env", "results_timeout", default=30.0))
@@ -635,7 +636,13 @@ class LiveMatchEnv:
                     spell_samples.append(f)
             frame = spell_samples[-1] if spell_samples else self._grab()
         else:
-            time.sleep(self.act_period)
+            if self._ploop is not None and self._ploop.running:
+                # EVENT-DRIVEN: wake the moment perception spots a new enemy commitment (reaction
+                # ~0.3-0.45s = perception period + inference + tap) instead of sleeping the full period;
+                # min_gap rate-limits so quiet-board cadence stays at the trained act_period.
+                self._ploop.wait_event(self.act_period, self.react_min_gap)
+            else:
+                time.sleep(self.act_period)
             frame = self._grab()
         if frame is None:
             return self._last_obs, 0.0, True, {"outcome": None, "error": "capture_lost"}

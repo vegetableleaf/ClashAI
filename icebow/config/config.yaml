@@ -483,6 +483,14 @@ play:
                                  # (worst case = one period + ~0.2s pipeline). The gate head still no-ops freely,
                                  # so a faster cadence adds decision OPPORTUNITIES, not spam. (The preview window's
                                  # box lag = time since the last decision -- it shrinks with this too.)
+  react_min_gap_s: 0.3           # EVENT-DRIVEN REACTIONS: the perception loop WAKES the act loop the moment it
+                                 # spots a NEW enemy commitment (rising enemy-detection count vs the last ~1.5s,
+                                 # so detector flicker can't fire it) -> trigger-to-action ~0.3-0.45s, pro-human
+                                 # reaction, while the quiet-board cadence stays at the trained act_period. This
+                                 # is the minimum gap between decisions (rate limit; events inside it coalesce).
+                                 # A flat 10-15Hz act loop is deliberately NOT used: the policy's value landscape
+                                 # (per-step rewards, gamma horizon, n-step) is trained at agent_dt 1.0s, and the
+                                 # detector (121ms) + tap (~0.2s) cap the real pipeline anyway.
   select_delay: 0.08             # delay between selecting a card and placing it
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
   in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds

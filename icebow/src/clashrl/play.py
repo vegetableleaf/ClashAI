@@ -225,6 +225,7 @@ def play(cfg) -> None:
     # loop reads a fresh snapshot at decision time instead of being blind between decisions.
     _ploop = None
     _phz = float(cfg.get("observation", "perception_hz", default=10.0))
+    _react_min_gap = float(cfg.get("play", "react_min_gap_s", default=0.3))
     if _detector is not None and _phz > 0:
         from .perception import PerceptionLoop
         _ploop = PerceptionLoop(cfg, _detector, _team_tracker, detector_conf, _phz)
@@ -453,7 +454,11 @@ def play(cfg) -> None:
                     log(f"[play] elixir x{m}")
                     prev_mult = m
                 now = time.time()
-                if now - last_act >= act_period:
+                trigger = now - last_act >= act_period
+                if (not trigger and _ploop is not None and _ploop.running
+                        and now - last_act >= _react_min_gap):
+                    trigger = _ploop.consume_event()      # new enemy commitment -> react NOW
+                if trigger:
                     act_in_match(frame)
                     last_act = now
                 time.sleep(poll_dt)

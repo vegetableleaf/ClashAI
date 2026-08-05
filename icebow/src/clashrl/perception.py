@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import threading
 import time
+from collections import deque
 from typing import Optional
 
 
@@ -36,6 +37,12 @@ class PerceptionLoop:
         self._region = None
         self._stop = threading.Event()
         self._thread: Optional[threading.Thread] = None
+        # NEW-ENEMY EVENT: set when a pass sees MORE enemy detections than any pass in the last ~1.5s
+        # (a rising count = a genuinely new commitment; a unit blinking out and back in returns to a
+        # RECENT level, so detector flicker at ~0.6 recall never fires it). The act loop waits on this
+        # to react the moment something happens instead of sleeping out its full act period.
+        self._event = threading.Event()
+        self._cnt_hist: deque = deque()              # (t, enemy_det_count) history, ~3s
 
     # -- lifecycle ----------------------------------------------------
     def start(self) -> None:
@@ -72,6 +79,30 @@ class PerceptionLoop:
         with self._lock:
             self._tracker.reset()
             self._dets = []
+        self._cnt_hist.clear()
+        self._event.clear()
+
+    # -- event-driven acting ---------------------------------------------
+    def wait_event(self, period: float, min_gap: float = 0.3) -> bool:
+        """Sleep like ``time.sleep(period)`` but WAKE EARLY when perception spots a new enemy
+        commitment -- reaction latency collapses from one act period to ~one perception period +
+        inference. ``min_gap`` is always slept first (rate limit: no decision thrash; events during
+        it coalesce into one wake). Returns True when woken by an event."""
+        time.sleep(max(0.0, min(min_gap, period)))
+        left = period - min_gap
+        if left > 0:
+            fired = self._event.wait(timeout=left)
+        else:
+            fired = self._event.is_set()
+        self._event.clear()
+        return fired
+
+    def consume_event(self) -> bool:
+        """Non-blocking event check (play's poll loop): True at most once per event."""
+        if self._event.is_set():
+            self._event.clear()
+            return True
+        return False
 
     # -- the loop -------------------------------------------------------
     def _run(self) -> None:
@@ -100,6 +131,14 @@ class PerceptionLoop:
                     self._tracker.tag(dets, now)         # evidence fusion at perception rate
                     self._dets = dets
                     self._t = now
+                # rising enemy-count edge (vs the recent window) = a NEW commitment -> wake the act loop
+                n_enemy = sum(1 for d in dets if d.team == "enemy")
+                recent = [c for (tt, c) in self._cnt_hist if now - tt <= 1.5]
+                if n_enemy > (max(recent) if recent else 0):
+                    self._event.set()
+                self._cnt_hist.append((now, n_enemy))
+                while self._cnt_hist and now - self._cnt_hist[0][0] > 3.0:
+                    self._cnt_hist.popleft()
                 if self._preview is not None:             # boxes now refresh at perception rate
                     self._preview.update(None, dets, self._region)
             except Exception:
