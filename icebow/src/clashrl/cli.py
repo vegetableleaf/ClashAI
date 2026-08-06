@@ -195,7 +195,8 @@ def _cmd_sprites(args) -> None:
         synth_images(cfg, count=args.synth, paste_max=args.paste, classes_filter=args.classes,
                      seed=args.seed)
     else:
-        extract_sprites(cfg, split=args.split, margin=args.margin, limit=args.limit)
+        extract_sprites(cfg, split=args.split, margin=args.margin, limit=args.limit,
+                        append=args.append)
 
 
 def _cmd_detect_obs(args) -> None:
@@ -389,6 +390,8 @@ def main() -> None:
     spr.add_argument("--margin", type=float, default=0.25,
                      help="background context ring around each box GrabCut models as definite background (default 0.25)")
     spr.add_argument("--limit", type=int, default=None, help="stop after this many kept sprites (quick trial)")
+    spr.add_argument("--append", action="store_true",
+                     help="keep existing sprites instead of clearing them (a full rebuild resets the bank by default)")
     spr.add_argument("--synth", type=int, default=None, metavar="N",
                      help="COPY-PASTE compositor: synthesize N labeled training images by pasting bank sprites "
                           "onto labeled train frames -> data/detect/synth/ (auto-added to data.yaml train; "

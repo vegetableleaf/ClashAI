@@ -24,6 +24,7 @@ Notes:
 from __future__ import annotations
 
 import random
+import shutil
 import time
 from pathlib import Path
 
@@ -138,11 +139,26 @@ def _iter_annotations(cfg, split: str):
                 yield ip, boxes
 
 
-def extract_sprites(cfg, split: str = "all", margin: float = 0.25, limit: int | None = None) -> None:
-    """Build the sprite bank: every annotated box -> an RGBA cutout under sprites/<class>/."""
+def extract_sprites(cfg, split: str = "all", margin: float = 0.25, limit: int | None = None,
+                    append: bool = False) -> None:
+    """Build the sprite bank: every annotated box -> an RGBA cutout under sprites/<class>/.
+
+    A FULL rebuild (default: split=all, no --limit) first CLEARS the existing per-class sprite dirs
+    so the bank always reflects the CURRENT annotations -- otherwise a detect-import re-hashes +
+    re-splits the images (new stems) and re-annotations move boxes, leaving stale orphan cutouts
+    that --synth would paste back into training. `append` (or a --limit trial / a single --split)
+    skips the clear so you can accumulate on purpose. The `_verify` montages are never touched."""
     classes = _load_classes(cfg)
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
     out_root = root / "sprites"
+    full_rebuild = split == "all" and not limit and not append
+    if full_rebuild and out_root.is_dir():
+        wiped = 0
+        for d in out_root.iterdir():                  # clear class dirs; keep _verify (starts with _)
+            if d.is_dir() and not d.name.startswith("_"):
+                shutil.rmtree(d, ignore_errors=True); wiped += 1
+        if wiped:
+            print(f"[sprites] reset: cleared {wiped} class dir(s) for a fresh rebuild (--append to keep)")
     kept = rejected = aoe = 0
     per_class: dict[str, int] = {}
     reasons: dict[str, int] = {}
