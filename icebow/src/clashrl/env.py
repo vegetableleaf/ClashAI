@@ -285,7 +285,7 @@ class LiveMatchEnv:
             items, self.db, prev_depth=self._prev_ident_depth, dt=dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
-        mem = self._opp_mem.update([(d.base, d.gy) for d in dets])           # memory: BOTH halves (incl. staging)
+        mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
             mine_a, enemy_a, _ = _anchors(self.cfg)

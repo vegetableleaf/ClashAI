@@ -17,6 +17,7 @@ lets you review the derived tagging and spot cards that still need curating.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
@@ -162,7 +163,8 @@ OPP_MEMORY_DIM = 8         # width of OpponentMemory.update() -- appended to the
 _OPP_ELIXIR_NORM = 7.0     # avg-elixir normaliser (cheap-cycle ~2-3 <-> heavy beatdown ~5-7)
 _OPP_ACT_NORM = 4.0        # recognised-presence EWMA normaliser (recent-activity / tempo)
 _OPP_STAGE_NORM = 4.0      # back-line staging-count normaliser
-_OPP_DECAY = 0.9           # per-step EWMA decay for the recent-activity/tempo feature (~10-step memory)
+_OPP_TAU_S = 10.0          # activity EWMA time constant in SECONDS -- see OpponentMemory.update
+_OPP_DECAY = 0.9           # legacy PER-STEP decay, used only when update() is called without a dt
 
 
 def identity_threat_vector(items, db: CardDB, prev_depth: float = 0.0,
@@ -235,7 +237,19 @@ class OpponentMemory:
         self._seen: dict = {}                          # distinct base card -> its elixir (for the cost profile)
         self._activity = 0.0                           # EWMA of recognised on-board presence (tempo)
 
-    def update(self, items) -> np.ndarray:
+    def update(self, items, dt: float | None = None) -> np.ndarray:
+        """Fold one observation into the memory; ``dt`` = seconds since the previous update.
+
+        The tempo EWMA ([6]) decays in WALL-CLOCK time, not per call. A fixed per-step factor was
+        correct while every decision was one fixed slice apart, but the live act loop is now
+        EVENT-DRIVEN (``play.react_min_gap_s``): it wakes early the moment perception spots an enemy
+        commitment, so live steps run 0.3-1.0s while the sim is pinned to ``sim.agent_dt``. A
+        per-step factor would therefore shrink the memory window to a THIRD of its trained length
+        exactly when the opponent commits -- the one moment the tempo feature is supposed to carry
+        signal. ``exp(-dt/_OPP_TAU_S)`` keeps the horizon at _OPP_TAU_S seconds on both sides at any
+        cadence (and stays correct if act_period / perception_hz are retuned later). Omitting ``dt``
+        keeps the legacy per-step behaviour; at the sim's 1.0s step the two agree to 0.9048 vs
+        0.9000, so this is a live-parity fix, not a retrain trigger."""
         n = 0
         staging = 0.0
         for base, ly in items:
@@ -257,7 +271,8 @@ class OpponentMemory:
                 self._roles[4] = 1.0
             if ly < 0.5:                               # on THEIR half = staging / building a push at the back
                 staging += 1.0
-        self._activity = self._activity * _OPP_DECAY + n * (1.0 - _OPP_DECAY)
+        decay = _OPP_DECAY if dt is None else math.exp(-max(0.0, float(dt)) / _OPP_TAU_S)
+        self._activity = self._activity * decay + n * (1.0 - decay)
         v = np.zeros(OPP_MEMORY_DIM, dtype=np.float32)
         v[0:5] = self._roles
         if self._seen:

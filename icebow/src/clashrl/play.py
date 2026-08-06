@@ -269,7 +269,7 @@ def play(cfg) -> None:
         ident = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],
                                                     dt=dt, horizon=predict_horizon)
         _ident_state["depth"] = float(ident[7]); _ident_state["t"] = now
-        mem = _opp_mem.update([(d.base, d.gy) for d in dets])                 # memory: BOTH halves (incl. staging)
+        mem = _opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)          # memory: BOTH halves (incl. staging)
         blocks = []
         if want_identity:
             blocks.append(ident)

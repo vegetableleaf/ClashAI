@@ -327,7 +327,7 @@ class SelfPlayOpponent:
             mem = self._opp_mem.update(
                 view.apply_detector_noise(view.opponent_memory_items(eng, 1, self.detector_cards),
                                           self.det_recall, self.det_precision, self.rng, self.detector_cards,
-                                          self.det_recall_by_card))
+                                          self.det_recall_by_card), dt=self.agent_dt)
             thr = np.concatenate([thr, ident, mem]).astype(np.float32)
         if self.use_interactions:                      # mirrored: team 1 sees ITS towers as 'mine'
             units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,
