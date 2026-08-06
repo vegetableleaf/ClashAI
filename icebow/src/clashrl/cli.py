@@ -186,6 +186,15 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_sprites(args) -> None:
+    from .sprites import extract_sprites, verify_sprites
+    cfg = Config.load(args.config)
+    if args.verify:
+        verify_sprites(cfg, count=args.count, margin=args.margin)
+    else:
+        extract_sprites(cfg, split=args.split, margin=args.margin, limit=args.limit)
+
+
 def _cmd_detect_obs(args) -> None:
     from .detect_obs import detect_obs_preview
     detect_obs_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
@@ -364,6 +373,20 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    spr = sub.add_parser("sprites",
+                         help="cut annotated units out of their arena background (GrabCut) into a per-class RGBA "
+                              "sprite bank under data/detect/sprites/ -- raw material for cross-arena copy-paste aug")
+    spr.add_argument("--verify", action="store_true",
+                     help="sample random boxes, cut them live, and save side-by-side quality panels "
+                          "(source+box | checkerboard | dark | light) to sprites/_verify/ instead of extracting")
+    spr.add_argument("--count", type=int, default=24, help="samples for --verify (default 24)")
+    spr.add_argument("--split", choices=["train", "val", "all"], default="all",
+                     help="which dataset split(s) to extract from (default all)")
+    spr.add_argument("--margin", type=float, default=0.25,
+                     help="background context ring around each box GrabCut models as definite background (default 0.25)")
+    spr.add_argument("--limit", type=int, default=None, help="stop after this many kept sprites (quick trial)")
+    spr.set_defaults(func=_cmd_sprites)
 
     dob = sub.add_parser("detect-obs",
                          help="preview the Stage-3 semantic obs (detector -> enemy/ally/building/spell channels) on real frames")
