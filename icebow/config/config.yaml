@@ -152,9 +152,9 @@ observation:
     gain: [0.7, 1.25]      # global contrast multiplier range
     bias: [-25, 25]        # global brightness offset range
     noise: 6.0             # max additive uniform pixel noise
-  detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. board-12 CONFIRMS 0.50:
-                                 # folded whitelist R 0.660 / P 0.931 at 0.50 (vs R 0.519 @0.75 / R 0.615 @0.60);
-                                 # class-agnostic PRESENCE R 0.694 / P 0.947 at 0.50 (the obs-channel gate metric).
+  detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. board-13 CONFIRMS 0.50:
+                                 # folded whitelist R 0.714 / P 0.943 at 0.50 (vs R 0.593 @0.75 / R 0.670 @0.60);
+                                 # class-agnostic PRESENCE R 0.720 / P 0.933 at 0.50 (the obs-channel gate metric).
                                  # Re-tune per detector generation.
   perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
                                  # at this rate; the act loop reads a fresh snapshot at decision time (staleness
@@ -169,28 +169,29 @@ observation:
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
-  # VALUES BELOW = the CURRENT detector (board-12, 1379 img / 4884 boxes) measured BASE-FOLDED on the
-  # WHITELIST at the LIVE gate (detector_conf 0.50): mean recall 0.660 / precision 0.931. Set slightly
-  # BELOW measurement to err sparse. Re-measure after each detector retrain (fold variants; val at
-  # conf=detector_conf).
-  sim_detector_recall: 0.62      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.660 mean
-  sim_detector_precision: 0.93   # ~7% of seen detections relabelled (measured folded 0.931 @0.50)
+  # VALUES BELOW = the CURRENT detector (board-13: board-12's annotations + the 1000-image copy-paste
+  # SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.50): mean recall
+  # 0.714 / precision 0.943. Set slightly BELOW measurement to err sparse. Re-measure after each
+  # detector retrain (fold variants; val at conf=detector_conf).
+  sim_detector_recall: 0.68      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.714 mean
+  sim_detector_precision: 0.94   # ~6% of seen detections relabelled (measured folded 0.943 @0.50)
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. ONLY
   # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-10 @ conf 0.50) are listed;
   # thin-val cards deliberately stay on the global rate. Precision stays global (per-card precision needs
   # the detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain.
   sim_detector_recall_by_card:
-    # reliable -- measured R >= ~0.75 folded @0.50 on board-12 (n >= 8 val)
-    ice_wizard: 0.80             # R 0.85, n=81
+    # reliable -- measured R >= ~0.75 folded @0.50 on board-13 (n >= 8 val)
+    ice_wizard: 0.80             # R 0.84, n=81
     royal_recruit: 0.75          # R 0.80, n=40
-    musketeer: 0.70              # R 0.75, n=12
-    sparky: 0.70                 # R 0.75, n=8
-    # weak -- measured R <= ~0.45 folded @0.50 (well-supported)
-    mega_knight: 0.40            # R 0.44, n=18 (was 0.73 on board-11 -- check the new MK frames for label drift)
-    ice_spirit: 0.40             # R 0.44, n=18
+    ronin: 0.75                  # R 0.77, n=13
+    bowler: 0.70                 # R 0.75, n=8 (recovered from 0.25 on board-12 -- the synth boost landed)
+    # weak -- measured R <= ~0.55 folded @0.50 (well-supported)
+    mega_knight: 0.50            # R 0.56, n=18 (partial recovery from board-12's 0.44)
+    sparky: 0.45                 # R 0.50, n=8 (down from 0.75 -- watch)
     hog_rider: 0.40              # R 0.42, n=12
-    bowler: 0.25                 # R 0.25, n=8
-    # (miner 0.67 / ronin 0.69 / skeletons 0.66 / knight 0.59 / archers 0.56 ~= global -> deliberately unlisted)
+    archers: 0.40                # R 0.44, n=9
+    # (skeletons 0.72 / miner 0.71 / ice_spirit 0.67 / knight 0.68 / musketeer 0.67 ~= global -> unlisted;
+    #  ice_spirit CLIMBED 0.44 -> 0.67 off the synth set)
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
@@ -219,7 +220,7 @@ observation:
   detector_cards:                # ENEMY TROOPS the detector RELIABLY names (BASE keys; evo/hero variants fold in via
                                  # card_threat.base_key -- so `knight` also covers knight_hero). ONLY these fire the
                                  # identity block. GROW freely as you label more: the identity vector is a FIXED role
-                                 # aggregate, so adding cards needs NO retrain (resume-safe). From board-12 per-base recall.
+                                 # aggregate, so adding cards needs NO retrain (resume-safe). From board-13 per-base recall.
     # -- reliable (val recall >= 0.6) --
     - ice_wizard
     - royal_recruit
@@ -248,10 +249,12 @@ observation:
     - pekka
     - lava_hound
     - mega_knight
-    # -- HOLD until labelled (broken/unmeasured on board-12; ADD here once recall is proven -- NO retrain needed):
-    #    valkyrie (R 0.33, n=12 -- STILL broken after 3 generations => audit the annotations, not more volume),
-    #    guards (0.25), wizard (0.33), dart_goblin (0.20), golden_knight (~0), bats (0.14), lumberjack,
-    #    goblins, spear_goblins (0.75 but n=4), skeleton_king (0.86 but n=4), skeleton_army, barbarians (0.50, n=6)
+    # -- HOLD until labelled (broken/unmeasured on board-13; ADD here once recall is proven -- NO retrain needed):
+    #    valkyrie (R 0.33, n=12 -- UNCHANGED across 4 generations + a 1000-img synth boost => the annotations
+    #    disagree with each other; AUDIT them, more data won't fix it), guards (0.17), dart_goblin (0.00),
+    #    wizard (0.44), electro_wizard (0.20), golden_knight (~0), bats (0.43, +29pp off synth -- close),
+    #    barbarians (0.67 but n=6), goblins, lumberjack, spear_goblins (0.75, n=4), skeleton_king (0.94, n=4),
+    #    skeleton_army
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
