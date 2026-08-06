@@ -21,6 +21,7 @@ Then: ``pip install ultralytics`` and ``python tools/detect/train.py``.
 from __future__ import annotations
 
 import bisect
+import hashlib
 import json
 import math
 import random
@@ -579,6 +580,21 @@ def _yolo_export_pairs(export: Path, root: Path, name_to_idx: dict):
     return pairs, unmatched, unknown
 
 
+def _stable_split(stem: str, val_frac: float) -> str:
+    """Assign an image to train/val by a STABLE hash of its filename.
+
+    A positional RNG (``random.Random(0)`` walked down the import list) is deterministic only for an
+    UNCHANGED list: adding images shifts every later image's draw, so pictures MIGRATE between train
+    and val on each re-import. That silently makes consecutive detector generations incomparable --
+    the val set they are scored on is not the same set -- and it means a previous generation's val
+    images can become the next one's TRAINING data, so scoring an OLD checkpoint on the NEW val set
+    is contaminated. Hashing the stem instead pins each image to one side for its whole lifetime,
+    regardless of dataset size or import order. ``hashlib`` (not ``hash()``) because Python
+    randomises string hashing per process."""
+    h = int(hashlib.md5(stem.encode("utf-8")).hexdigest()[:8], 16)
+    return "val" if (h % 10_000) < val_frac * 10_000 else "train"
+
+
 def detect_import(cfg, export_dir, val_frac=None) -> None:
     """Ingest a Label Studio export into the training dataset. REMAPS classes to the taxonomy by NAME
     (order/compaction-proof) and lays images + labels into the Ultralytics train/val split + rebuilds
@@ -626,10 +642,9 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
             p.unlink()
     vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
     q = int(cfg.get("detect", "jpeg_quality", default=92))
-    rng = random.Random(0)
     n_val = n_box = 0
     for stem, img, lines in pairs:
-        split = "val" if rng.random() < vf else "train"
+        split = _stable_split(stem, vf)
         n_val += split == "val"
         n_box += len(lines)
         cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, q])
