@@ -139,19 +139,26 @@ def _iter_annotations(cfg, split: str):
                 yield ip, boxes
 
 
-def extract_sprites(cfg, split: str = "all", margin: float = 0.25, limit: int | None = None,
+def extract_sprites(cfg, split: str = "train", margin: float = 0.25, limit: int | None = None,
                     append: bool = False) -> None:
     """Build the sprite bank: every annotated box -> an RGBA cutout under sprites/<class>/.
 
-    A FULL rebuild (default: split=all, no --limit) first CLEARS the existing per-class sprite dirs
-    so the bank always reflects the CURRENT annotations -- otherwise a detect-import re-hashes +
-    re-splits the images (new stems) and re-annotations move boxes, leaving stale orphan cutouts
-    that --synth would paste back into training. `append` (or a --limit trial / a single --split)
-    skips the clear so you can accumulate on purpose. The `_verify` montages are never touched."""
+    TRAIN-ONLY by default, and that is a CORRECTNESS requirement, not a preference: `--synth` pastes
+    these cutouts into synthetic TRAINING images, so a bank built over ``split=all`` puts the literal
+    pixels of VAL objects into the training set. The detector then scores itself on objects it was
+    trained on, silently inflating exactly the val recall the obs-channel flip is gated on -- and
+    worst for the rare classes, whose few val crops would be pasted over and over. Pass ``--split
+    all`` ONLY to inspect the bank, never before a training run.
+
+    A FULL rebuild (default split, no --limit) first CLEARS the existing per-class sprite dirs so the
+    bank always reflects the CURRENT annotations -- otherwise a detect-import re-splits the images
+    and re-annotations move boxes, leaving stale orphan cutouts that --synth would paste back into
+    training. `append` (or a --limit trial / an explicit other --split) skips the clear so you can
+    accumulate on purpose. The `_verify` montages are never touched."""
     classes = _load_classes(cfg)
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
     out_root = root / "sprites"
-    full_rebuild = split == "all" and not limit and not append
+    full_rebuild = split == "train" and not limit and not append
     if full_rebuild and out_root.is_dir():
         wiped = 0
         for d in out_root.iterdir():                  # clear class dirs; keep _verify (starts with _)

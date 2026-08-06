@@ -391,8 +391,9 @@ def main() -> None:
                      help="sample random boxes, cut them live, and save side-by-side quality panels "
                           "(source+box | checkerboard | dark | light) to sprites/_verify/ instead of extracting")
     spr.add_argument("--count", type=int, default=24, help="samples for --verify (default 24)")
-    spr.add_argument("--split", choices=["train", "val", "all"], default="all",
-                     help="which dataset split(s) to extract from (default all)")
+    spr.add_argument("--split", choices=["train", "val", "all"], default="train",
+                     help="which dataset split(s) to extract from (default train -- NEVER build a bank you will "
+                          "--synth from over val: it pastes val pixels into the training set and inflates val recall)")
     spr.add_argument("--margin", type=float, default=0.25,
                      help="background context ring around each box GrabCut models as definite background (default 0.25)")
     spr.add_argument("--limit", type=int, default=None, help="stop after this many kept sprites (quick trial)")
