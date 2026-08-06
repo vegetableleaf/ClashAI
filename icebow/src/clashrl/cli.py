@@ -199,6 +199,12 @@ def _cmd_sprites(args) -> None:
                         append=args.append)
 
 
+def _cmd_detect_eval(args) -> None:
+    from .detect_eval import detect_eval
+    detect_eval(Config.load(args.config), weights=args.weights, conf=args.conf,
+                sweep=args.sweep, device=args.device)
+
+
 def _cmd_detect_obs(args) -> None:
     from .detect_obs import detect_obs_preview
     detect_obs_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
@@ -401,6 +407,20 @@ def main() -> None:
                      help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
     spr.add_argument("--seed", type=int, default=None, help="RNG seed for a reproducible --synth set")
     spr.set_defaults(func=_cmd_sprites)
+
+    dev = sub.add_parser("detect-eval",
+                         help="gating eval for the detector: class-agnostic PRESENCE recall (obs-canvas gate), "
+                              "base-folded whitelist identity recall, and per-ROLE deck gates (units gated, "
+                              "spell projectiles reported only)")
+    dev.add_argument("--weights", default=None, help="best.pt (default: newest runs/detect/*/weights/best.pt)")
+    dev.add_argument("--conf", type=float, default=None,
+                     help="confidence gate to report in detail (default: observation.detector_conf)")
+    dev.add_argument("--sweep", action="store_true",
+                     help="also print the 0.75..0.30 confidence curve -- RE-SWEEP per detector generation "
+                          "instead of inheriting the previous operating point")
+    dev.add_argument("--device", default=None,
+                     help="torch device for inference, e.g. cpu -- use cpu to evaluate WITHOUT touching a busy GPU")
+    dev.set_defaults(func=_cmd_detect_eval)
 
     dob = sub.add_parser("detect-obs",
                          help="preview the Stage-3 semantic obs (detector -> enemy/ally/building/spell channels) on real frames")
