@@ -152,10 +152,12 @@ observation:
     gain: [0.7, 1.25]      # global contrast multiplier range
     bias: [-25, 25]        # global brightness offset range
     noise: 6.0             # max additive uniform pixel noise
-  detector_conf: 0.50            # LIVE: only trust a detection at/above this confidence. board-13 CONFIRMS 0.50:
-                                 # folded whitelist R 0.714 / P 0.943 at 0.50 (vs R 0.593 @0.75 / R 0.670 @0.60);
-                                 # class-agnostic PRESENCE R 0.720 / P 0.933 at 0.50 (the obs-channel gate metric).
-                                 # Re-tune per detector generation.
+  detector_conf: 0.45            # LIVE: only trust a detection at/above this confidence. board-13 SWEEP retuned
+                                 # 0.50 -> 0.45: whitelist R 0.714 -> 0.741 at IDENTICAL precision 0.943 (a free
+                                 # recall gain), presence R 0.720 -> 0.735 / P 0.933 -> 0.923. Going lower keeps
+                                 # buying recall but pays precision (0.20: presence 0.792/0.857) -- revisit once the
+                                 # canvas obs channel is live and phantom boxes have a measurable cost.
+                                 # Re-tune per detector generation (sweep, don't inherit).
   perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
                                  # at this rate; the act loop reads a fresh snapshot at decision time (staleness
                                  # <= 1 period instead of 'blind since the last act'), tracker velocities are
@@ -170,10 +172,10 @@ observation:
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
   # VALUES BELOW = the CURRENT detector (board-13: board-12's annotations + the 1000-image copy-paste
-  # SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.50): mean recall
-  # 0.714 / precision 0.943. Set slightly BELOW measurement to err sparse. Re-measure after each
+  # SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.45): mean recall
+  # 0.741 / precision 0.943. Set slightly BELOW measurement to err sparse. Re-measure after each
   # detector retrain (fold variants; val at conf=detector_conf).
-  sim_detector_recall: 0.68      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.714 mean
+  sim_detector_recall: 0.70      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.741 mean
   sim_detector_precision: 0.94   # ~6% of seen detections relabelled (measured folded 0.943 @0.50)
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. ONLY
   # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-10 @ conf 0.50) are listed;
@@ -250,11 +252,15 @@ observation:
     - lava_hound
     - mega_knight
     # -- HOLD until labelled (broken/unmeasured on board-13; ADD here once recall is proven -- NO retrain needed):
-    #    valkyrie (R 0.33, n=12 -- UNCHANGED across 4 generations + a 1000-img synth boost => the annotations
-    #    disagree with each other; AUDIT them, more data won't fix it), guards (0.17), dart_goblin (0.00),
-    #    wizard (0.44), electro_wizard (0.20), golden_knight (~0), bats (0.43, +29pp off synth -- close),
-    #    barbarians (0.67 but n=6), goblins, lumberjack, spear_goblins (0.75, n=4), skeleton_king (0.94, n=4),
-    #    skeleton_army
+    #    valkyrie (R 0.33 -- DIAGNOSED 2026-08-06, NOT an annotation problem: box-geometry CoV 0.37 is as tight as
+    #    knight/mega_knight. The detector FINDS 6/12 correctly but 2 of them at conf 0.14, and mislabels 4 more as
+    #    lookalike humanoid melee (wizard_hero/ronin/hunter) at conf 0.08-0.42 => it is UNDER-TRAINED + low-confidence,
+    #    not mislabelled. Only 62 real train instances vs knight 206 / ice_wizard 468, and the val boxes come from ~4
+    #    scenes. FIX = more REAL valkyrie frames with POSE variety (esp. mid-spin: the one blank miss had h=0.064 vs
+    #    the 0.042 median); copy-paste can't help here since it replays the same 72 sprites = no new poses),
+    #    guards (0.17), dart_goblin (0.00), wizard (0.44), electro_wizard (0.20), golden_knight (~0),
+    #    bats (0.43, +29pp off synth -- close), barbarians (0.67 but n=6), goblins, lumberjack,
+    #    spear_goblins (0.75, n=4), skeleton_king (0.94, n=4), skeleton_army
 
 # --- Discrete action space (card slot x placement grid) ------------------
 action:
