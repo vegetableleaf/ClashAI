@@ -187,10 +187,13 @@ def _cmd_detect_preview(args) -> None:
 
 
 def _cmd_sprites(args) -> None:
-    from .sprites import extract_sprites, verify_sprites
+    from .sprites import extract_sprites, synth_images, verify_sprites
     cfg = Config.load(args.config)
     if args.verify:
         verify_sprites(cfg, count=args.count, margin=args.margin)
+    elif args.synth:
+        synth_images(cfg, count=args.synth, paste_max=args.paste, classes_filter=args.classes,
+                     seed=args.seed)
     else:
         extract_sprites(cfg, split=args.split, margin=args.margin, limit=args.limit)
 
@@ -386,6 +389,14 @@ def main() -> None:
     spr.add_argument("--margin", type=float, default=0.25,
                      help="background context ring around each box GrabCut models as definite background (default 0.25)")
     spr.add_argument("--limit", type=int, default=None, help="stop after this many kept sprites (quick trial)")
+    spr.add_argument("--synth", type=int, default=None, metavar="N",
+                     help="COPY-PASTE compositor: synthesize N labeled training images by pasting bank sprites "
+                          "onto labeled train frames -> data/detect/synth/ (auto-added to data.yaml train; "
+                          "regenerates the whole set each run; val stays real-only)")
+    spr.add_argument("--paste", type=int, default=4, help="max sprites pasted per synthetic image (default 4)")
+    spr.add_argument("--classes", default=None,
+                     help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
+    spr.add_argument("--seed", type=int, default=None, help="RNG seed for a reproducible --synth set")
     spr.set_defaults(func=_cmd_sprites)
 
     dob = sub.add_parser("detect-obs",

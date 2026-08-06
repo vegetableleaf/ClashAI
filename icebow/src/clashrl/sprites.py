@@ -274,3 +274,155 @@ def verify_sprites(cfg, count: int = 24, margin: float = 0.25) -> None:
     print("[sprites] panels: source+box | checkerboard | dark | light  (halos/bleed show on the canvases)")
     for p in written:
         print(f"[sprites]   -> {p}")
+
+
+# ---------------------------------------------------------------------------------------------
+# Copy-paste COMPOSITOR: synthesize labeled training frames from the sprite bank.
+# ---------------------------------------------------------------------------------------------
+
+def _rect_iou(a, b):
+    ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    inter = ix * iy
+    ua = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - inter
+    return inter / ua if ua > 0 else 0.0
+
+
+def _paste(img, sprite, x0, y0):
+    """Alpha-composite the BGRA sprite onto img at (x0, y0), clipped to the frame."""
+    H, W = img.shape[:2]
+    sh, sw = sprite.shape[:2]
+    sx0, sy0 = max(0, -x0), max(0, -y0)
+    dx0, dy0 = max(0, x0), max(0, y0)
+    dx1, dy1 = min(W, x0 + sw), min(H, y0 + sh)
+    if dx1 <= dx0 or dy1 <= dy0:
+        return
+    part = sprite[sy0:sy0 + (dy1 - dy0), sx0:sx0 + (dx1 - dx0)]
+    a = part[:, :, 3:4].astype(np.float32) / 255.0
+    roi = img[dy0:dy1, dx0:dx1].astype(np.float32)
+    img[dy0:dy1, dx0:dx1] = (a * part[:, :, :3] + (1 - a) * roi).astype(np.uint8)
+
+
+def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str | None = None,
+                 seed: int | None = None) -> None:
+    """COPY-PASTE augmentation: paste bank sprites onto ALREADY-LABELED train images and emit the
+    merged labels -> data/detect/synth/{images,labels}. Using labeled bases is what makes this safe:
+    every real unit in the frame keeps its box (no unlabeled-unit poison), and the pasted sprites
+    add fully-known instances on top. Class sampling is weighted 1/sqrt(bank size), so THIN classes
+    (the presence-recall gap: skeletons / ice_spirit / guards ...) get boosted hardest; --classes
+    restricts pasting to an explicit list. Val is NEVER synthesized -- metrics stay real.
+
+    The synth set lives OUTSIDE images/train so detect-import's wipe never eats it; data.yaml lists
+    both dirs (and detect.py's writer re-adds synth/ after every import). Each run REGENERATES the
+    whole set (old synth images are cleared) so `--count` is the set size, not a growth increment."""
+    import math
+
+    rng = random.Random(seed)
+    classes = _load_classes(cfg)
+    name_to_id = {n: i for i, n in enumerate(classes)}
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    quality = int(cfg.get("detect", "jpeg_quality", default=92))
+    ax0, ay0, ax1, ay1 = cfg.get("env", "arena_region", default=[0.03, 0.10, 0.97, 0.86])
+
+    want = {c.strip() for c in classes_filter.split(",")} if classes_filter else None
+    bank: dict[str, list[Path]] = {}
+    sp_root = root / "sprites"
+    if sp_root.is_dir():
+        for d in sorted(sp_root.iterdir()):
+            if d.is_dir() and not d.name.startswith("_") and d.name in name_to_id \
+                    and (want is None or d.name in want):
+                files = list(d.glob("*.png"))
+                if files:
+                    bank[d.name] = files
+    if not bank:
+        print("[sprites] no sprite bank found -- run `run.py sprites` (extraction) first.")
+        return
+    names = sorted(bank)
+    # thin classes get boosted hardest, but CLAMP the skew: a singleton-sprite class at a raw
+    # 1/sqrt(1) would out-sample a 400-sprite class ~20:1 and the SAME lone cutout pasted dozens
+    # of times just teaches that exact pixel pattern. Flooring the count at 4 caps the ratio ~10:1.
+    weights = [1.0 / math.sqrt(max(len(bank[n]), 4)) for n in names]
+
+    # bases = TRAIN images that HAVE a label file (empty = a labeled negative, a fine canvas);
+    # their existing boxes ride along into the synthetic labels.
+    bases = []
+    for ip in sorted((root / "images" / "train").glob("*.jpg")):
+        lp = root / "labels" / "train" / (ip.stem + ".txt")
+        if lp.exists():
+            bases.append((ip, _boxes_of(lp)))
+    if not bases:
+        print("[sprites] no labeled train images under data/detect -- run detect-import first.")
+        return
+
+    out_i, out_l = root / "synth" / "images", root / "synth" / "labels"
+    dbg = root / "synth" / "_debug"
+    for d in (out_i, out_l, dbg):
+        d.mkdir(parents=True, exist_ok=True)
+        for f in d.glob("*.*"):
+            f.unlink()
+
+    made = pasted = 0
+    per_class: dict[str, int] = {}
+    t0 = time.time()
+    for k in range(count):
+        ip, gt = bases[rng.randrange(len(bases))]
+        img = cv2.imread(str(ip))
+        if img is None:
+            continue
+        H, W = img.shape[:2]
+        lines = [f"{cid} {cx:.6f} {cy:.6f} {w:.6f} {h:.6f}" for cid, cx, cy, w, h in gt]
+        placed = [((cx - w / 2) * W, (cy - h / 2) * H, (cx + w / 2) * W, (cy + h / 2) * H)
+                  for _cid, cx, cy, w, h in gt]
+        for _ in range(rng.randint(1, max(1, paste_max))):
+            name = rng.choices(names, weights=weights, k=1)[0]
+            sp = cv2.imread(str(bank[name][rng.randrange(len(bank[name]))]), cv2.IMREAD_UNCHANGED)
+            if sp is None or sp.ndim != 3 or sp.shape[2] != 4:
+                continue
+            s = rng.uniform(0.85, 1.15)                        # mild size jitter (native scale is real)
+            sp = cv2.resize(sp, (max(2, int(sp.shape[1] * s)), max(2, int(sp.shape[0] * s))))
+            if rng.random() < 0.5:                             # CR units face both ways -> hflip is realistic
+                sp = sp[:, ::-1].copy()
+            b = rng.uniform(0.88, 1.12)                        # independent lighting jitter per sprite
+            sp[:, :, :3] = np.clip(sp[:, :, :3].astype(np.float32) * b, 0, 255).astype(np.uint8)
+            sh, sw = sp.shape[:2]
+            if sw >= (ax1 - ax0) * W or sh >= (ay1 - ay0) * H:
+                continue
+            for _try in range(12):                             # find a spot that doesn't bury anyone
+                x0 = int(rng.uniform(ax0 * W, ax1 * W - sw))
+                y0 = int(rng.uniform(ay0 * H, ay1 * H - sh))
+                rect = (x0, y0, x0 + sw, y0 + sh)
+                if all(_rect_iou(rect, r) < 0.30 for r in placed):   # <=30% overlap = healthy occlusion
+                    _paste(img, sp, x0, y0)
+                    placed.append(rect)
+                    lines.append(f"{name_to_id[name]} {(x0 + sw / 2) / W:.6f} {(y0 + sh / 2) / H:.6f} "
+                                 f"{sw / W:.6f} {sh / H:.6f}")
+                    pasted += 1
+                    per_class[name] = per_class.get(name, 0) + 1
+                    break
+        stem = f"syn_{k:05d}"
+        cv2.imwrite(str(out_i / f"{stem}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+        (out_l / f"{stem}.txt").write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+        made += 1
+        if made <= 6:                                          # label-alignment eyeball copies
+            dbg_img = img.copy()
+            for ln in lines:
+                p = ln.split()
+                cid, cx, cy, w, h = int(p[0]), *(float(v) for v in p[1:5])
+                x0b, y0b = int((cx - w / 2) * W), int((cy - h / 2) * H)
+                x1b, y1b = int((cx + w / 2) * W), int((cy + h / 2) * H)
+                cv2.rectangle(dbg_img, (x0b, y0b), (x1b, y1b), (0, 255, 0), 1)
+                cv2.putText(dbg_img, classes[cid][:14], (x0b, max(10, y0b - 3)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 255, 0), 1, cv2.LINE_AA)
+            cv2.imwrite(str(dbg / f"{stem}.jpg"), dbg_img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+
+    # keep data.yaml pointing at BOTH train dirs (detect-import's writer re-adds synth/ too)
+    from .detect import _write_data_yaml
+    _write_data_yaml(root, classes)
+    top = sorted(per_class.items(), key=lambda kv: -kv[1])[:12]
+    print(f"[sprites] synthesized {made} image(s), {pasted} sprite paste(s) "
+          f"({time.time() - t0:.0f}s) -> {out_i.parent}")
+    if top:
+        print("[sprites] pasted classes: " + ", ".join(f"{k} {v}" for k, v in top))
+    print(f"[sprites] data.yaml train now includes synth/images; label-check copies in {dbg}")
+    print("[sprites] regenerate after every detect-import (the import wipes only images/train, "
+          "but its base frames change).")
