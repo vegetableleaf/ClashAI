@@ -344,7 +344,13 @@ class SelfPlayOpponent:
         with torch.no_grad():
             cq, ceq, gq = self.net(obs_t, hand_t, nxt_t, elx_t, thr_t)
         cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
-        if gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0].max():
+        # PPO snapshots (net._ppo) carry LOGITS: greedy gate = direct logit compare. DQN snapshots
+        # keep the additive Q rule (wait_q vs play_q + best card + best cell).
+        if getattr(self.net, "_ppo", False):
+            wait = bool(gq[0, 0] >= gq[0, 1])
+        else:
+            wait = bool(gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0].max())
+        if wait:
             return                                               # gate says WAIT
         card = int(cq[0].argmax())
         cell = int(ceq[0].argmax())

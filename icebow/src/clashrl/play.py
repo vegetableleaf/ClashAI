@@ -121,7 +121,9 @@ def play(cfg) -> None:
         gate = torch.nn.Linear(net.embed_dim, 2).to(device)
         gate.load_state_dict(ckpt["gate"])
         gate.eval()
-    print(f"[play] policy {ckpt_path.name} loaded ({'RL gate ON' if gate is not None else 'BC, no gate'}).")
+    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the greedy gate compares them directly
+    print(f"[play] policy {ckpt_path.name} loaded "
+          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'}).")
 
     capture = WindowCapture(cfg.get("window", "title_contains", default=None),
                             cfg.get("window", "region", default=None))
@@ -343,10 +345,15 @@ def play(cfg) -> None:
             cell_logits_m = cell_logits.masked_fill(~cmask.unsqueeze(0), float("-inf"))
             # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best DEPLOYABLE cell;
             # value of WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
-            # cycle) instead of firing every act_period like the old trol bot.
+            # cycle) instead of firing every act_period like the old trol bot. A PPO checkpoint's heads are
+            # LOGITS, so its greedy gate compares the two gate logits directly (no Q sums).
             if gate_logits is not None:
-                play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
-                if gate_logits[0, 0] >= play_val:
+                if is_ppo:
+                    wait = bool(gate_logits[0, 0] >= gate_logits[0, 1])
+                else:
+                    play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
+                    wait = bool(gate_logits[0, 0] >= play_val)
+                if wait:
                     return
             cell = int(cell_logits_m.argmax(1).item())
         if card_id in anywhere_ids:           # a rocket / offensive miner at a princess -> aim the weaker one

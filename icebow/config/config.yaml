@@ -368,6 +368,7 @@ train:
   checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)
   rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
   sim_checkpoint: "data/policy_sim.pt" # SIMULATOR-trained prior (train-sim); warm-start live train-rl from it
+  sim_ppo_checkpoint: "data/policy_sim_ppo.pt" # PPO sibling (train-sim-ppo) -- separate file so the DDQN baseline is never clobbered
   # timelapse: capture the whole train-rl run and compress it to a fixed-length video
   # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
   timelapse: true                # record a training timelapse during train-rl
@@ -683,6 +684,19 @@ sim:
   # Snapshots with little history sample at medium priority; a small floor keeps every snapshot in play.
   selfplay_pfsp: true
   selfplay_pfsp_power: 2.0      # >1 = sharper focus on the hardest snapshots; 1.0 = proportional; try 2-3
+  # --- PPO trainer (train-sim-ppo; the on-policy sibling built at the DDQN 83/84 plateau) ---------
+  # Same trunk/heads read as LOGITS + a value head; clipped surrogate + GAE. Everything around the
+  # algorithm (eval benchmark, keep-best, PFSP league, adaptive bots, DR, masks) matches train-sim
+  # so the curves are directly comparable against the DDQN baseline. Standard PPO defaults below.
+  ppo_horizon: 128              # env steps collected per env before each update (batch = horizon x envs)
+  ppo_epochs: 4                 # optimisation passes over each rollout
+  ppo_minibatch: 512            # minibatch size within a rollout
+  ppo_clip: 0.2                 # PPO clip epsilon (the trust region)
+  ppo_lr: 0.00025               # PPO learning rate (on-policy tolerates more than the DQN's 5e-5)
+  ppo_entropy: 0.01             # entropy bonus (exploration pressure on the factored categorical)
+  ppo_vf_coef: 0.5              # value-loss weight
+  ppo_gae_lambda: 0.95          # GAE lambda (bias/variance of the advantage estimates)
+  ppo_max_grad_norm: 0.5        # gradient clip
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

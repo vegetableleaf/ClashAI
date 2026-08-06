@@ -133,6 +133,18 @@ def _cmd_train_sim(args) -> None:
               seed=args.seed, envs=args.envs)
 
 
+def _cmd_train_sim_ppo(args) -> None:
+    try:
+        from .train_sim_ppo import train_sim_ppo
+    except ImportError as exc:
+        print(f"[train-sim-ppo] PyTorch is required ({exc}).\n"
+              "Install the CUDA build:\n"
+              "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
+        return
+    train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
+                  seed=args.seed, envs=args.envs, init=args.init)
+
+
 def _cmd_decks_import(args) -> None:
     from .deck_import import import_decks
     import_decks(Config.load(args.config), limit=args.limit, players=args.players)
@@ -274,6 +286,22 @@ def main() -> None:
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run "
                           "(a from-scratch reset -- do NOT combine with --resume of the OTHER size)")
     tsi.set_defaults(func=_cmd_train_sim)
+
+    tsp = sub.add_parser("train-sim-ppo",
+                         help="PPO sibling of train-sim (on-policy clip+GAE; own checkpoint policy_sim_ppo.pt -- "
+                              "the DDQN policy_sim.pt baseline is untouched)")
+    tsp.add_argument("--matches", type=int, default=2000, help="max matches to play before stopping")
+    tsp.add_argument("--resume", action="store_true",
+                     help="continue data/policy_sim_ppo.pt instead of training from scratch")
+    tsp.add_argument("--init", metavar="CKPT", default=None,
+                     help="warm-start policy+gate from a checkpoint (e.g. data/policy_sim_best.pt -- Q-heads "
+                          "read as logits = a Boltzmann start; the value head trains fresh)")
+    tsp.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
+    tsp.add_argument("--envs", type=int, default=None,
+                     help="parallel (vectorized) match instances (default: sim.envs)")
+    tsp.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
+    tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     dki = sub.add_parser("decks-import",
                          help="import the current top meta decks from the official CR API into config/meta_decks.yaml")
