@@ -581,18 +581,32 @@ def _yolo_export_pairs(export: Path, root: Path, name_to_idx: dict):
 
 
 def _stable_split(stem: str, val_frac: float) -> str:
-    """Assign an image to train/val by a STABLE hash of its filename.
+    """Assign a NEW image to train/val by a stable hash of its filename.
 
     A positional RNG (``random.Random(0)`` walked down the import list) is deterministic only for an
     UNCHANGED list: adding images shifts every later image's draw, so pictures MIGRATE between train
     and val on each re-import. That silently makes consecutive detector generations incomparable --
     the val set they are scored on is not the same set -- and it means a previous generation's val
     images can become the next one's TRAINING data, so scoring an OLD checkpoint on the NEW val set
-    is contaminated. Hashing the stem instead pins each image to one side for its whole lifetime,
-    regardless of dataset size or import order. ``hashlib`` (not ``hash()``) because Python
-    randomises string hashing per process."""
+    is contaminated. ``hashlib`` (not ``hash()``) because Python randomises string hashing per
+    process. Only ever consulted for stems absent from ``split.json`` -- see :func:`_load_split`."""
     h = int(hashlib.md5(stem.encode("utf-8")).hexdigest()[:8], 16)
     return "val" if (h % 10_000) < val_frac * 10_000 else "train"
+
+
+def _load_split(root: Path) -> dict:
+    """The PERSISTENT stem -> split map (``split.json``), so an image keeps its side for life.
+
+    Hashing alone still re-partitions everything the FIRST time it replaces another scheme, which
+    would burn the one comparison the next training run exists to make. So the manifest is
+    BOOTSTRAPPED from whatever split is currently on disk -- called BEFORE the import wipes it --
+    freezing the partition the current detector generation was trained on. Only genuinely new stems
+    are hashed in, which keeps generation N+1's val set a SUPERSET of generation N's: score both on
+    the shared subset and the comparison is clean and uncontaminated."""
+    p = root / "split.json"
+    if p.exists():
+        return json.loads(p.read_text(encoding="utf-8"))
+    return {q.stem: sp for sp in ("train", "val") for q in (root / "images" / sp).glob("*.jpg")}
 
 
 def detect_import(cfg, export_dir, val_frac=None) -> None:
@@ -634,17 +648,21 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
         print(f"[detect-import] matched 0 annotations to images from the {src_desc} -- check the export "
               "and that its images are in the dataset (the labelling queue).")
         return
+    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
+    manifest = _load_split(root)                 # BEFORE the wipe -- it may have to bootstrap from disk
     # the export is the source of truth -> clear the old split, then write fresh
     for sub in ("images/train", "images/val", "labels/train", "labels/val"):
         d = root / sub
         d.mkdir(parents=True, exist_ok=True)
         for p in d.glob("*"):
             p.unlink()
-    vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
     q = int(cfg.get("detect", "jpeg_quality", default=92))
-    n_val = n_box = 0
+    n_val = n_box = n_new = 0
     for stem, img, lines in pairs:
-        split = _stable_split(stem, vf)
+        split = manifest.get(stem)
+        if split is None:                        # unseen image -> hash it in, then remember it
+            split = manifest[stem] = _stable_split(stem, vf)
+            n_new += 1
         n_val += split == "val"
         n_box += len(lines)
         cv2.imwrite(str(root / "images" / split / f"{stem}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, q])
@@ -652,9 +670,12 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
             "\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
     _write_data_yaml(root, names)
     _write_label_studio_helpers(root, names)
+    (root / "split.json").write_text(json.dumps(manifest, indent=0, sort_keys=True), encoding="utf-8")
 
     print(f"[detect-import] imported {len(pairs)} images ({len(pairs) - n_val} train / {n_val} val), "
           f"{n_box} boxes from the {src_desc} -> {root}")
+    print(f"[detect-import] split.json: {n_new} new image(s) assigned, {len(pairs) - n_new} kept their "
+          f"existing side (so this generation stays comparable to the last)")
     if unknown:
         print(f"[detect-import] {len(unknown)} export class(es) not in the taxonomy (their boxes were "
               f"skipped): {', '.join(unknown[:12])}")

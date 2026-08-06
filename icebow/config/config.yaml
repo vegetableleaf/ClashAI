@@ -152,10 +152,10 @@ observation:
     gain: [0.7, 1.25]      # global contrast multiplier range
     bias: [-25, 25]        # global brightness offset range
     noise: 6.0             # max additive uniform pixel noise
-  detector_conf: 0.45            # LIVE: only trust a detection at/above this confidence. board-13 SWEEP retuned
-                                 # 0.50 -> 0.45: whitelist R 0.714 -> 0.741 at IDENTICAL precision 0.943 (a free
-                                 # recall gain), presence R 0.720 -> 0.735 / P 0.933 -> 0.923. Going lower keeps
-                                 # buying recall but pays precision (0.20: presence 0.792/0.857) -- revisit once the
+  detector_conf: 0.40            # LIVE: only trust a detection at/above this confidence. board-14 SWEEP retuned
+                                 # 0.45 -> 0.40: whitelist R 0.704 -> 0.724 for 0.2pp of precision (0.912 -> 0.910)
+                                 # -- effectively free recall. presence(units) R 0.732 -> 0.749 / P 0.920 -> 0.915.
+                                 # 0.35 buys another +1.1pp recall but costs 0.7pp precision; held back until the
                                  # canvas obs channel is live and phantom boxes have a measurable cost.
                                  # Re-tune per detector generation (sweep, don't inherit).
   perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
@@ -171,29 +171,32 @@ observation:
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
-  # VALUES BELOW = the CURRENT detector (board-13: board-12's annotations + the 1000-image copy-paste
-  # SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.45): mean recall
-  # 0.741 / precision 0.943. Set slightly BELOW measurement to err sparse. Re-measure after each
-  # detector retrain (fold variants; val at conf=detector_conf).
-  sim_detector_recall: 0.70      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.741 mean
-  sim_detector_precision: 0.94   # ~6% of seen detections relabelled (measured folded 0.943 @0.50)
+  # VALUES BELOW = the CURRENT detector (board-14: board-13's annotations + ~117 more real frames + the
+  # 1000-image copy-paste SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate
+  # (detector_conf 0.40): mean recall 0.724 / precision 0.910. Set slightly BELOW measurement to err
+  # sparse. Re-measure after each detector retrain with `run.py detect-eval --sweep`.
+  sim_detector_recall: 0.70      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.724 mean
+  sim_detector_precision: 0.90   # ~10% of seen detections relabelled (measured folded 0.910 @0.40 -- the previous
+                                 # 0.93 was inherited from board-13 and was OPTIMISTIC vs what the detector does)
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. ONLY
-  # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-10 @ conf 0.50) are listed;
+  # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-14 @ conf 0.40) are listed;
   # thin-val cards deliberately stay on the global rate. Precision stays global (per-card precision needs
   # the detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain.
   sim_detector_recall_by_card:
-    # reliable -- measured R >= ~0.75 folded @0.50 on board-13 (n >= 8 val)
-    ice_wizard: 0.80             # R 0.84, n=81
-    royal_recruit: 0.75          # R 0.80, n=40
+    # reliable -- measured R >= ~0.75 folded @0.40 on board-14 (n >= 8 val)
+    balloon: 0.90                # R 1.00, n=11 (capped -- a perfect thin-val score is not a real 1.0)
+    ice_wizard: 0.88             # R 0.92, n=84 (up from 0.84 on board-13)
+    royal_recruit: 0.78          # R 0.80, n=40
     ronin: 0.75                  # R 0.77, n=13
-    bowler: 0.70                 # R 0.75, n=8 (recovered from 0.25 on board-12 -- the synth boost landed)
-    # weak -- measured R <= ~0.55 folded @0.50 (well-supported)
-    mega_knight: 0.50            # R 0.56, n=18 (partial recovery from board-12's 0.44)
-    sparky: 0.45                 # R 0.50, n=8 (down from 0.75 -- watch)
-    hog_rider: 0.40              # R 0.42, n=12
-    archers: 0.40                # R 0.44, n=9
-    # (skeletons 0.72 / miner 0.71 / ice_spirit 0.67 / knight 0.68 / musketeer 0.67 ~= global -> unlisted;
-    #  ice_spirit CLIMBED 0.44 -> 0.67 off the synth set)
+    bowler: 0.72                 # R 0.75, n=8 (held after the board-13 synth recovery from 0.25)
+    sparky: 0.72                 # R 0.75, n=8 (recovered from 0.50 -- the board-13 dip did not persist)
+    # weak -- measured R <= ~0.56 folded @0.40 (well-supported)
+    knight: 0.55                 # R 0.56, n=48 -- DOWN from 0.68; dragged by knight_hero (R 0.56, n=16)
+    mega_knight: 0.55            # R 0.56, n=18
+    ice_spirit: 0.42             # R 0.42, n=19 (gave back the board-13 synth gain of 0.67)
+    hog_rider: 0.42              # R 0.42, n=12
+    # (skeletons 0.70 / miner 0.76 / ice_golem 0.71 ~= global -> unlisted. archers 0.83 and musketeer 0.91
+    #  both jumped but sit on n=11/n=6 val, too thin to promote -- left on the global rate.)
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
