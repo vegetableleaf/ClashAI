@@ -22,12 +22,13 @@ from typing import Optional
 
 class PerceptionLoop:
     def __init__(self, cfg, detector, tracker, conf: float, hz: float = 10.0,
-                 preview=None, cap_factory=None):
+                 preview=None, cap_factory=None, recorder=None):
         self._detector = detector
         self._tracker = tracker
         self._conf = float(conf)
         self.hz = min(20.0, max(1.0, float(hz)))
         self._preview = preview                     # LivePreview: fed per pass -> near-realtime boxes
+        self._recorder = recorder                   # OverlayReplayRecorder: same, for the saved clips
         self._cap_factory = cap_factory             # test hook; default = own WindowCapture from cfg
         self._title = cfg.get("window", "title_contains", default=None)
         self._region_cfg = cfg.get("window", "region", default=None)
@@ -141,6 +142,8 @@ class PerceptionLoop:
                     self._cnt_hist.popleft()
                 if self._preview is not None:             # boxes now refresh at perception rate
                     self._preview.update(None, dets, self._region)
+                if self._recorder is not None:
+                    self._recorder.update(dets)
             except Exception:
                 time.sleep(0.5)                           # transient (window minimized etc.) -> keep trying
             time.sleep(max(0.0, period - (time.time() - t0)))

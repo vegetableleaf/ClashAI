@@ -250,7 +250,8 @@ class LiveMatchEnv:
         if self._detector is not None and hz > 0:
             from .perception import PerceptionLoop
             self._ploop = PerceptionLoop(cfg, self._detector, self._team_tracker,
-                                         self.detector_conf, hz, preview=self._preview)
+                                         self.detector_conf, hz, preview=self._preview,
+                                         recorder=self._replay_rec)
             self._ploop.start()
 
     # -- capture helper ------------------------------------------------

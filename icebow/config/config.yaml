@@ -543,14 +543,21 @@ play:
 # When enabled, a background thread (its own screen capture, like the preview window) records the
 # first `seconds` of EVERY match to out_dir/match_<stamp>.mp4 with draw_detections() overlaid --
 # the opening is where placement, the first read of the opponent, and the detector's coverage of a
-# clean board are all visible at once. The VIDEO is smooth at `fps`, but the boxes only refresh as
-# fast as the policy actually perceives, so a clip shows real perception latency rather than hiding
-# it. Costs one extra screen grab + encode per frame; off by default.
+# clean board are all visible at once. The BOXES refresh at observation.perception_hz (~0.1s, the
+# same feed as the preview window), so the clip shows real perception latency rather than hiding it.
+# Clips are WALL-CLOCK PACED: if capture can't hit `fps` the newest frame is duplicated to fill the
+# missed slots, so playback is always real-time instead of fast-forward. The achieved capture rate
+# is printed when each clip closes -- check it if the video looks stuttery.
 overlay_replay:
-  enabled: false             # master gate
+  enabled: true              # master gate
   seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
-  fps: 10                    # clip frame rate (the recorder's own grab rate)
-  scale: 0.5                 # downscale before encoding (0.5 = half size)
+  fps: 30                    # clip frame rate (max 60). MEASURED on this machine: grab 14.9ms + draw 0.9
+                             # + resize 0.3 + encode 1.0 = 17.1ms/frame => a ~58 fps CEILING with nothing
+                             # else running, and the GRAB is 87% of that. 60 is therefore right at the
+                             # limit (~1 full core) and will drop slots once train-rl's perception loop
+                             # and the preview window are grabbing too -- the pacing keeps the timing
+                             # honest, but you get duplicated frames. 30 is the safe smooth setting.
+  scale: 0.5                 # downscale before encoding (0.5 = half size; ~25 MB per 60s clip at 60fps)
   out_dir: data/overlayed_replays   # one mp4 per match (falls back to .avi/MJPG if mp4v is missing)
 
 # --- Live detector preview (train-rl side window) ---
@@ -560,7 +567,7 @@ overlay_replay:
 # window must never cover the game: by default it sits just RIGHT of the capture region. Closing
 # the window turns it off for the session.
 preview:
-  enabled: true
+  enabled: false
   scale: 0.5          # window size as a fraction of the captured frame
   fps: 30             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
                       # (boxes still update at the act cadence ~1.5s = what the policy actually sees)

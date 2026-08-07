@@ -240,7 +240,8 @@ def play(cfg) -> None:
     _react_min_gap = float(cfg.get("play", "react_min_gap_s", default=0.3))
     if _detector is not None and _phz > 0:
         from .perception import PerceptionLoop
-        _ploop = PerceptionLoop(cfg, _detector, _team_tracker, detector_conf, _phz)
+        _ploop = PerceptionLoop(cfg, _detector, _team_tracker, detector_conf, _phz,
+                                recorder=_replay_rec)
         _ploop.start()
 
     def _threat_extra(frame):

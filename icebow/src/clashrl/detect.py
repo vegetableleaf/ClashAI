@@ -365,7 +365,7 @@ class OverlayReplayRecorder:
     def __init__(self, cfg):
         self.enabled = bool(cfg.get("overlay_replay", "enabled", default=False))
         self.seconds = float(cfg.get("overlay_replay", "seconds", default=60.0))
-        self.fps = min(30.0, max(1.0, float(cfg.get("overlay_replay", "fps", default=10.0))))
+        self.fps = min(60.0, max(1.0, float(cfg.get("overlay_replay", "fps", default=30.0))))
         self.scale = float(cfg.get("overlay_replay", "scale", default=0.5))
         self.out_dir = Path(cfg.path(cfg.get("overlay_replay", "out_dir",
                                              default="data/overlayed_replays")))
@@ -418,25 +418,26 @@ class OverlayReplayRecorder:
         period = 1.0 / self.fps
         writer = path = None
         size = None
-        t_end = 0.0
+        t_end = t_start = 0.0
+        n_frames = n_grabs = 0
         while self.enabled:
             t0 = time.time()
             try:
                 with self._lock:
                     start_req, dets = self._start_req, self._dets
                     self._start_req = False
-                if start_req and writer is not None:           # a new match cuts the previous clip
-                    writer.release()
-                    writer = None
+                if (start_req or (t_end and t0 >= t_end)) and writer is not None:
+                    writer.release()                           # new match cuts the clip; else it ran its length
+                    self.n_clips += 1
+                    print(f"[overlay-replay] saved {path} ({n_frames} frames, "
+                          f"captured {n_grabs / max(1e-6, time.time() - t_start):.1f} fps)", flush=True)
+                    writer, t_end = None, 0.0
                 if start_req:
                     t_end = t0 + self.seconds
+                    t_start, n_frames, n_grabs = t0, 0, 0
                     size = None                                # (re)derive from the next frame
-                if t_end and t0 >= t_end and writer is not None:
-                    writer.release()
-                    writer, t_end = None, 0.0
-                    self.n_clips += 1
-                    print(f"[overlay-replay] saved {path}", flush=True)
                 if not t_end or t0 >= t_end:
+                    t_end = 0.0
                     time.sleep(period)
                     continue
                 frame = cap.grab()
@@ -444,6 +445,7 @@ class OverlayReplayRecorder:
                     cap.refresh_region()
                     time.sleep(0.5)
                     continue
+                n_grabs += 1
                 out = draw_detections(frame, dets)
                 if self.scale and self.scale != 1.0:
                     out = cv2.resize(out, None, fx=self.scale, fy=self.scale)
@@ -455,7 +457,16 @@ class OverlayReplayRecorder:
                         break
                 elif (out.shape[1], out.shape[0]) != size:      # window resized mid-clip
                     out = cv2.resize(out, size)
-                writer.write(out)
+                # WALL-CLOCK PACING: a clip must play back in REAL TIME or it is useless as a timing
+                # diagnostic. If capture falls behind the requested fps (the grab is ~15ms, so 60fps is
+                # at the ceiling and a busy machine WILL miss slots) the newest frame is duplicated to
+                # fill the missed slots -- the clip stays honest instead of playing fast-forward.
+                # Duplicates cost almost nothing to encode. The catch-up is capped at 1s so a long
+                # stall can't trigger a huge write burst.
+                due = int((time.time() - t_start) * self.fps) + 1
+                for _ in range(min(due - n_frames, int(self.fps))):
+                    writer.write(out)
+                    n_frames += 1
             except Exception:
                 self.enabled = False
                 break
@@ -463,7 +474,7 @@ class OverlayReplayRecorder:
         if writer is not None:
             writer.release()
             self.n_clips += 1
-            print(f"[overlay-replay] saved {path}", flush=True)
+            print(f"[overlay-replay] saved {path} ({n_frames} frames)", flush=True)
 
 
 def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
