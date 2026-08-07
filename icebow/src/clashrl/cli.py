@@ -150,6 +150,24 @@ def _cmd_decks_import(args) -> None:
     import_decks(Config.load(args.config), limit=args.limit, players=args.players)
 
 
+def _cmd_cards_art(args) -> None:
+    from .card_art import import_card_art
+    import_card_art(Config.load(args.config), only_missing=not args.refresh, limit=args.limit)
+
+
+def _cmd_deck_detect(args) -> None:
+    from .deck_detect import detect_deck
+    detect_deck(Config.load(args.config), session_arg=args.session, samples=args.samples,
+                per_face=args.per_face, player_tag=args.player_tag, out=args.out,
+                write_templates=args.write_templates,
+                overwrite_templates=args.overwrite_templates)
+
+
+def _cmd_calibrate(args) -> None:
+    from .calibrate import calibrate
+    calibrate(Config.load(args.config), session_arg=args.session, dry_run=args.dry_run)
+
+
 def _cmd_diag(args) -> None:
     from .diagnose import diagnose
     diagnose(Config.load(args.config))
@@ -344,6 +362,40 @@ def main() -> None:
     dki.add_argument("--limit", type=int, default=1000, help="how many top DISTINCT decks to keep (default 1000)")
     dki.add_argument("--players", type=int, default=120, help="how many top-ladder players' battle logs to scan")
     dki.set_defaults(func=_cmd_decks_import)
+
+    car = sub.add_parser("cards-art",
+                         help="downloads one reference picture per card from the Fandom wiki into "
+                              "templates/cardart/ (basis for automatic deck recognition)")
+    car.add_argument("--refresh", action="store_true",
+                     help="re-download pictures that are already there")
+    car.add_argument("--limit", type=int, default=None, help="only the first N cards (for a quick test)")
+    car.set_defaults(func=_cmd_cards_art)
+
+    ddt = sub.add_parser("deck-detect",
+                         help="recognises the eight deck cards from a recording and "
+                              "proposes them for confirmation (replaces renaming the crops by hand)")
+    ddt.add_argument("--session", default=None, help="recording (default: the newest)")
+    ddt.add_argument("--samples", type=int, default=400, help="how many video frames to sample")
+    ddt.add_argument("--per-face", type=int, default=6, dest="per_face",
+                     help="how many views of one card face are averaged (more is safer)")
+    ddt.add_argument("--player-tag", default=None, dest="player_tag",
+                     help="player tag (e.g. #ABC123): reads the card levels from your account "
+                          "through the official API; needs a token in CLASHRL_CR_API_TOKEN")
+    ddt.add_argument("--out", default=None, help="output JSON (default: data/deck_detect.json)")
+    ddt.add_argument("--write-templates", action="store_true", dest="write_templates",
+                     help="save every confidently recognised card as a hand template under "
+                          "templates/cards/<card>.png, which removes the renaming step")
+    ddt.add_argument("--overwrite-templates", action="store_true", dest="overwrite_templates",
+                     help="also replace templates that already exist")
+    ddt.set_defaults(func=_cmd_deck_detect)
+
+    cal = sub.add_parser("calibrate",
+                         help="re-cut the match detection from YOUR recording (needed for a different "
+                              "window size or a different game language)")
+    cal.add_argument("--session", default=None, help="recording (default: the newest)")
+    cal.add_argument("--dry-run", action="store_true", dest="dry_run",
+                     help="report only, write nothing")
+    cal.set_defaults(func=_cmd_calibrate)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
     ply.add_argument("--size", choices=["576", "432"], default=None,
