@@ -178,7 +178,13 @@ class ProcManager:
         finally:
             job.rc = job.proc.wait()
             job.finished = time.time()
-            job._emit(f"[ui] beendet (Exit-Code {job.rc}) nach {job.finished - job.started:.0f}s")
+            secs = job.finished - job.started
+            # 130 = our own clean Ctrl+C exit, 0xC000013A = Windows' control-C exit code.
+            # After a stop those mean "did what it was told", not "crashed".
+            if job.stopping and job.rc in (0, 130, 3221225786, -1073741510):
+                job._emit(f"[ui] gestoppt und beendet nach {secs:.0f}s")
+            else:
+                job._emit(f"[ui] beendet (Exit-Code {job.rc}) nach {secs:.0f}s")
             if job.track_metrics:
                 self.metrics.append({"kind": "run_end", "run": job.id, "cmd": job.cmd, "rc": job.rc})
 
@@ -189,7 +195,8 @@ class ProcManager:
         if not job.running:
             return job.info()
         job.stopping = True
-        job._emit("[ui] Stop-Signal gesendet -- der Prozess speichert seinen Checkpoint und beendet sich.")
+        job._emit("[ui] Stop-Signal gesendet. Ein laufendes Training speichert dabei seinen Stand; "
+                  "wird noch gestartet, bricht es einfach ab.")
         try:
             if _IS_WIN:
                 os.kill(job.proc.pid, signal.CTRL_BREAK_EVENT)   # type: ignore[union-attr]

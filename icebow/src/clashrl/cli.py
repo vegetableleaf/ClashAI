@@ -585,7 +585,15 @@ def main() -> None:
     ddt.set_defaults(func=_cmd_deck_detect)
 
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except KeyboardInterrupt:
+        # Ctrl+C (or the launcher's stop button) during a phase the command does not guard
+        # itself -- most visibly while the env pool is still being built. Nothing has been
+        # trained yet, so there is nothing to save; exit quietly instead of dumping a
+        # traceback and a Windows control-C exit code that looks like a crash.
+        print("\n[clashrl] abgebrochen.", flush=True)
+        raise SystemExit(130)
 
 
 if __name__ == "__main__":

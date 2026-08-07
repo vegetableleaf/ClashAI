@@ -126,6 +126,11 @@ Envs, alter Code). Die Kurve flacht ab, weil `train-sim` EIN Prozess ist: die En
 wegen des GIL nacheinander auf einem Kern. Echte Mehrkern-Nutzung braucht Worker-Prozesse
 (geplant).
 
+Der **Start** eines Laufs kostete vorher ~0,4 s pro Env, weil jede Env-Instanz sich ihre
+eigene Kartendatenbank baute und die ~1000 Meta-Decks neu parste: bei 64 Envs rund 27 s,
+bevor der erste Zug fiel. Beides wird jetzt einmal geladen und geteilt (schreibgeschützt,
+Cache verfällt bei geänderter Datei). 64 Envs brauchen dafür noch 0,12 s.
+
 > ⚠️ Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS
 > (Warnhinweis steht im Launcher).
 

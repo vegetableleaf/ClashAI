@@ -454,7 +454,8 @@ function attachLog(jid) {
     if (d.line !== undefined) logLine(d.line);
     if (d.eof) {
       es.close(); S.stream = null;
-      $("#logstatus").textContent = `beendet (Exit-Code ${d.rc})`;
+      const stopped = [0, 130, 3221225786, -1073741510].includes(d.rc);
+      $("#logstatus").textContent = stopped ? "beendet" : `beendet (Exit-Code ${d.rc})`;
       refresh();
       const cur = $(".tab.active").dataset.tab;
       if (LOADERS[cur]) LOADERS[cur]().catch(() => {});
