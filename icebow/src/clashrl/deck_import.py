@@ -1,13 +1,14 @@
 """Import the current top meta decks from the OFFICIAL Clash Royale API into config/meta_decks.yaml,
 so the sim's opponents reflect what's actually played right now.
 
-Data source (sanctioned, no scraping): the official API (https://developer.clashroyale.com) -- top
-global players -> their recent BATTLE LOGS -> the 8-card decks both sides used -> tallied by frequency
--> the top N. Needs a FREE API token (IP-locked to where you run this): create one at
-developer.clashroyale.com, then either write it into the git-ignored file `sim.api_token_file`
-(default data/cr_api_token.txt) or set the env var named by `sim.api_token_env`
-(default CLASHRL_CR_API_TOKEN). Without a token this prints instructions and leaves the curated
-config/meta_decks.yaml in place.
+Data source (sanctioned, no scraping): the official API (https://developer.clashroyale.com) -- the
+top PATH OF LEGENDS players -> their recent BATTLE LOGS -> the 8-card decks both sides used ->
+tallied by frequency -> the top N. (The legacy global TROPHY leaderboard now returns an empty list,
+so Path of Legends is the live top-ladder source; see :func:`_top_player_tags`.) Needs a FREE API
+token (IP-locked to where you run this): create one at developer.clashroyale.com, then either write
+it into the git-ignored file `sim.api_token_file` (default data/cr_api_token.txt) or set the env var
+named by `sim.api_token_env` (default CLASHRL_CR_API_TOKEN). Without a token this prints
+instructions and leaves the curated config/meta_decks.yaml in place.
 
 A battle log covers EVERY mode, including limited-time events, so it offers decks holding cards that
 do not exist in trophy ladder. Those cards were purged from the KB, so they no longer resolve and the
@@ -95,6 +96,37 @@ def _diagnose_403(token: str) -> str:
     return "; ".join(bits)
 
 
+def _top_player_tags(base: str, token: str, players: int) -> "tuple[list[str], str]":
+    """Player tags of the current top ladder, via PATH OF LEGENDS.
+
+    The legacy `/locations/global/rankings/players` trophy leaderboard still answers HTTP 200 but
+    returns an EMPTY item list (measured 2026-08-07) -- Path of Legends replaced trophy ladder at
+    the top end, so that endpoint is dead weight and its emptiness looked like "no players" rather
+    than "wrong endpoint". Path of Legends rankings are SEASON-SCOPED and the CURRENT season 404s
+    until it has been ranked, so this walks the season list newest-first and takes the first season
+    that actually has players. The legacy board is still tried last in case Supercell revives it.
+    """
+    seasons: list = []
+    try:
+        got = _get(f"{base}/locations/global/seasons", token).get("items", [])
+        seasons = sorted({s["id"] for s in got if s.get("id")}, reverse=True)
+    except Exception:  # noqa: BLE001 -- fall through to the legacy board
+        seasons = []
+    for sid in seasons[:6]:
+        try:
+            d = _get(f"{base}/locations/global/pathoflegend/{sid}/rankings/players"
+                     f"?limit={players}", token)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:                      # season listed but never ranked
+                continue
+            raise
+        items = d.get("items", [])
+        if items:
+            return [p["tag"] for p in items][:players], f"path-of-legends {sid}"
+    d = _get(f"{base}/locations/global/rankings/players?limit={players}", token)
+    return [p["tag"] for p in d.get("items", [])][:players], "global trophy rankings"
+
+
 def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
     from .cards import CardDB
     db = CardDB(cfg)
@@ -114,8 +146,7 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
 
     # 1) top global players
     try:
-        top = _get(f"{base}/locations/global/rankings/players?limit={players}", token)
-        tags = [p["tag"] for p in top.get("items", [])][:players]
+        tags, source = _top_player_tags(base, token, players)
     except urllib.error.HTTPError as e:
         why = _diagnose_403(token) if e.code == 403 else ""
         print(f"[decks-import] rankings fetch failed (HTTP {e.code}). A 403 = bad token / wrong IP; "
@@ -126,8 +157,9 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
         print(f"[decks-import] rankings fetch failed: {e!r}. Curated decks kept.")
         return
     if not tags:
-        print("[decks-import] no players returned; curated decks kept.")
+        print("[decks-import] no players returned by ANY ranking endpoint; curated decks kept.")
         return
+    print(f"[decks-import] {len(tags)} top players from {source}")
 
     # 2) their battle logs -> tally 8-card decks (both sides)
     tally: Counter = Counter()
@@ -172,8 +204,10 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
 
     top_decks = tally.most_common(limit)
     lines = ["# Imported from the official Clash Royale API (top-player battle logs).",
-             f"# {time.strftime('%Y-%m-%d %H:%M')} -- {len(top_decks)} decks from {len(tags)} players, "
-             f"{seen} deck-sightings. Regenerate with `run.py decks-import`.",
+             f"# {time.strftime('%Y-%m-%d %H:%M')} -- {len(top_decks)} decks from {len(tags)} "
+             f"players ({source}), {seen} deck-sightings. Regenerate with `run.py decks-import`.",
+             "# LADDER-LEGAL ONLY: a battle log covers every mode, so decks holding event-only cards"
+             f" are dropped ({n_event} sightings this run). `weight` = raw sighting count.",
              "decks:"]
     for n, (cards, count) in enumerate(top_decks, 1):
         lines.append(f"  - {{name: meta_{n:03d}, weight: {count}, cards: [{', '.join(cards)}]}}")
