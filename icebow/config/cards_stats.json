@@ -112,12 +112,6 @@
    "dps": 148,
    "lifetime_s": 30.0
   },
-  "barbarian_launcher": {
-   "display": "Barbarian Launcher",
-   "elixir": 5,
-   "rarity": "common",
-   "kind": "building"
-  },
   "barbarians": {
    "display": "Barbarians",
    "elixir": 5,
@@ -770,12 +764,6 @@
    "hit_speed": 1.0,
    "dps": 117
   },
-  "heal": {
-   "display": "Heal",
-   "elixir": 1,
-   "rarity": "rare",
-   "kind": "spell"
-  },
   "heal_spirit": {
    "display": "Heal Spirit",
    "elixir": 1,
@@ -1155,18 +1143,6 @@
    "evolution": true,
    "base": "pekka"
   },
-  "party_hut": {
-   "display": "Party Hut",
-   "elixir": 5,
-   "rarity": "legendary",
-   "kind": "building"
-  },
-  "party_rocket": {
-   "display": "Party Rocket",
-   "elixir": 5,
-   "rarity": "legendary",
-   "kind": "spell"
-  },
   "phoenix": {
    "display": "Phoenix",
    "elixir": 4,
@@ -1221,12 +1197,6 @@
    "damage": 179,
    "crown_tower_damage": 54
   },
-  "raging_prince": {
-   "display": "Raging Prince",
-   "elixir": 5,
-   "rarity": "epic",
-   "kind": "troop"
-  },
   "ram_rider": {
    "display": "Ram Rider",
    "elixir": 5,
@@ -1254,12 +1224,6 @@
    "kind": "spell",
    "damage": 1484,
    "crown_tower_damage": 371
-  },
-  "rocket_silo": {
-   "display": "Rocket Silo",
-   "elixir": 7,
-   "rarity": "legendary",
-   "kind": "building"
   },
   "ronin": {
    "display": "Ronin",
@@ -1375,12 +1339,6 @@
    "hit_speed": 1.5,
    "dps": 80
   },
-  "santa_hog_rider": {
-   "display": "Santa Hog Rider",
-   "elixir": 5,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
   "skeleton_army": {
    "display": "Skeleton Army",
    "elixir": 3,
@@ -1495,48 +1453,6 @@
    "hitpoints": 1121,
    "damage": 309
   },
-  "super_archers": {
-   "display": "Super Archers",
-   "elixir": 3,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_ice_golem": {
-   "display": "Super Ice Golem",
-   "elixir": 4,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_knight": {
-   "display": "Super Knight",
-   "elixir": 4,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_lava_hound": {
-   "display": "Super Lava Hound",
-   "elixir": 8,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_magic_archer": {
-   "display": "Super Magic Archer",
-   "elixir": 5,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_mini_pekka": {
-   "display": "Super Mini P.E.K.K.A.",
-   "elixir": 5,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
-  "super_witch": {
-   "display": "Super Witch",
-   "elixir": 6,
-   "rarity": "legendary",
-   "kind": "troop"
-  },
   "suspicious_bush": {
    "display": "Suspicious Bush",
    "elixir": 2,
@@ -1546,13 +1462,6 @@
    "damage": 256,
    "hit_speed": 1.4,
    "dps": 183
-  },
-  "terry": {
-   "display": "Terry",
-   "elixir": 4,
-   "rarity": "champion",
-   "kind": "troop",
-   "champion": true
   },
   "tesla": {
    "display": "Tesla",
@@ -1667,12 +1576,6 @@
    "evolution": true,
    "base": "wall_breakers"
   },
-  "warmth": {
-   "display": "Warmth",
-   "elixir": 1,
-   "rarity": "common",
-   "kind": "spell"
-  },
   "witch": {
    "display": "Witch",
    "elixir": 5,
@@ -1704,12 +1607,6 @@
    "damage": 281,
    "hit_speed": 1.4,
    "dps": 201
-  },
-  "wizard_trio": {
-   "display": "Wizard Trio",
-   "elixir": 7,
-   "rarity": "legendary",
-   "kind": "troop"
   },
   "wizard_evo": {
    "display": "Evo Wizard",
