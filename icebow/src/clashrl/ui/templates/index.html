@@ -18,6 +18,7 @@
 <nav class="tabs">
   <button class="tab active" data-tab="home">Übersicht</button>
   <button class="tab" data-tab="run">Steuerung</button>
+  <button class="tab" data-tab="live">Live</button>
   <button class="tab" data-tab="dash">Fortschritt</button>
   <button class="tab" data-tab="strategy">Strategie</button>
   <button class="tab" data-tab="deck">Deck</button>
@@ -39,6 +40,25 @@
       sonst tippen würdest. <b>Stop</b> schickt das Abbruch-Signal, auf das die Trainings mit einem
       gespeicherten Checkpoint reagieren; nichts geht verloren.</p>
     <div id="cmdgrid"></div>
+  </section>
+
+  <!-- ---------------- Live ---------------- -->
+  <section id="tab-live" class="panel">
+    <p class="lead">Was der Bot gerade sieht, und was er daraus liest. Nur mitlesen, es wird nichts
+      geklickt. Nützlich vor allem, um zu prüfen, ob das Fenster überhaupt erfasst wird und ob ein
+      Match als Match erkannt wird.</p>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="livego"> Live mitlesen</label>
+      <label>Takt <select id="liverate">
+        <option value="700">schnell</option>
+        <option value="1500" selected>normal</option>
+        <option value="4000">sparsam</option>
+      </select></label>
+      <button id="liveonce" class="btn small">Einmal aktualisieren</button>
+      <button id="livereset" class="btn small" title="Fenstersuche neu starten, z.B. nach dem Verschieben">Fenster neu suchen</button>
+      <span id="livemsg" class="msg"></span>
+    </div>
+    <div id="livebody"></div>
   </section>
 
   <!-- ---------------- Fortschritt ---------------- -->

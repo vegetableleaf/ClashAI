@@ -41,7 +41,7 @@ function toast(msg, seconds) {
 }
 
 /* ---------------- tabs ---------------- */
-const LOADERS = { home: () => loadOverview(), dash: () => loadRuns(), strategy: () => loadStrategy(),
+const LOADERS = { home: () => loadOverview(), live: () => loadLive(), dash: () => loadRuns(), strategy: () => loadStrategy(),
                   deck: () => loadDeck(), towers: () => loadTowers(), speed: () => loadSpeed(),
                   config: () => loadConfig(), ckpt: () => loadCheckpoints() };
 function showTab(name) {
@@ -61,72 +61,38 @@ const TOS = window.__TOS__ || "";
    `sel` zeigt auf ein echtes Element. Fehlt es (weil es noch keine Daten gibt),
    überspringt die Tour den Schritt, statt ins Leere zu zeigen. */
 const TOUR = [
-  { tab: "home", sel: ".tabs", title: "Die Bereiche",
-    text: "Oben wechselst du zwischen den Bereichen. Von links nach rechts entspricht das grob "
-        + "der Reihenfolge, in der du sie brauchst: erst Übersicht und Steuerung, dann Fortschritt "
-        + "und Strategie, ganz rechts die Einstellungen." },
-  { tab: "home", sel: "#homebody .steps", title: "Was als Nächstes zu tun ist",
-    text: "Hier steht der nächste sinnvolle Schritt, jeweils mit Begründung. Der Knopf rechts "
-        + "bringt dich direkt dorthin oder führt ihn gleich aus. Wenn du nicht weiterweisst, "
-        + "fängst du hier an." },
-  { tab: "home", sel: "#homebody .statgrid", title: "Der aktuelle Stand",
-    text: "Vier Kacheln: wie weit die Policy ist, welches Deck eingestellt ist, gegen welche Türme "
-        + "sie spielt und wie schnell dein PC übt." },
-  { tab: "speed", sel: "#speedbody .statgrid", title: "Was in deinem PC steckt",
-    text: "Ausgelesen, nicht geraten: Kerne, Arbeitsspeicher, Grafikkarte. Die vierte Kachel "
-        + "schätzt, wieviel Arbeitsspeicher der Erfahrungsspeicher des Trainings belegen wird." },
-  { tab: "speed", sel: "#benchauto", title: "Hier findest du die beste Einstellung",
-    text: "Der Knopf probiert selbstständig immer mehr gleichzeitige Simulationen aus und misst "
-        + "jedesmal, wieviele Matches pro Sekunde herauskommen. Er hört auf, wenn es nicht mehr "
-        + "schneller wird oder der Arbeitsspeicher knapp würde, und übernimmt das Ergebnis." },
-  { tab: "speed", sel: "#benchtable", title: "Die Messwerte",
-    text: "Jede Zeile ist eine gemessene Einstellung. Die Balken zeigen den Unterschied. Mehr "
-        + "gleichzeitige Simulationen sind nicht automatisch schneller: ab einem Punkt bringt "
-        + "es nichts mehr, und genau den sucht die Automatik." },
-  { tab: "run", sel: "#cmd-train-sim", title: "Hier trainierst du",
-    text: "Diese Kachel startet das Training im Simulator. Das ist der Weg, mit dem du anfängst: "
-        + "er braucht weder das Spiel noch Aufnahmen." },
-  { tab: "run", sel: "#arg-train-sim-matches", title: "Wie lange er üben soll",
-    text: "Obergrenze an Matches, danach hört der Lauf von selbst auf. Ein paar tausend sind ein "
-        + "guter erster Lauf. Du kannst jederzeit vorher aufhören." },
-  { tab: "run", sel: "#arg-train-sim-resume", title: "Weiterlernen statt neu anfangen",
-    text: "Angehakt macht er an seinem gespeicherten Stand weiter. Nicht angehakt fängt er bei "
-        + "Null an und überschreibt den Stand." },
-  { tab: "run", sel: "#cmd-train-sim .foot", title: "Starten und sauber beenden",
-    text: "<b>Stop</b> bricht nicht ab, sondern beendet den Lauf geordnet und speichert dabei. "
-        + "Du verlierst nichts, wenn du zwischendurch aufhörst. Solange ein solcher Lauf aktiv "
-        + "ist, sind die anderen Start-Knöpfe gesperrt: Grafikkarte und Spielfenster gibt es nur einmal." },
-  { tab: "run", sel: ".loghead", title: "Die laufende Ausgabe",
-    text: "Unten läuft mit, was das gestartete Kommando ausgibt. Über die Auswahl kommst du auch "
-        + "an ältere Läufe, und die vollständige Datei liegt unter data/ui_logs/." },
-  { tab: "dash", sel: "#kpis", title: "Die Kennzahlen des Laufs",
-    text: "Gespielte Matches, Tempo, Bilanz und die Hochrechnung, wie lange es bis zur eingestellten "
-        + "Matchzahl noch dauert." },
-  { tab: "dash", sel: "#charts", title: "Die eine Kurve, die zählt",
-    text: "Die <b>Benchmark</b>-Kurve misst ohne Zufallszüge gegen feste Gegnerdecks: nur sie zeigt "
-        + "echten Fortschritt. Die <b>Winrate im Training</b> enthält Zufall und Spiele gegen sich "
+  { tab: "live", sel: "#tab-live .row", title: "Sieht der Bot dein Spiel?",
+    text: "Hier steht, ob das Fenster erfasst wird, ob der Bildschirm als Match erkannt wird und "
+        + "welche Handkarten er liest. Wenn weiter unten etwas nicht funktioniert, sieht man hier "
+        + "zuerst warum." },
+  { tab: "run", sel: "#cmd-calibrate", title: "Wenn kein Match erkannt wird",
+    text: "Die mitgelieferten Vorlagen stammen aus einem englischen Client mit anderer "
+        + "Fenstergröße. Passt das nicht zu deinem Spiel, erkennt nichts ein Match und alles "
+        + "Weitere findet nichts. Dieses Kommando schneidet die Erkennung aus deiner eigenen "
+        + "Aufnahme neu zu." },
+  { tab: "run", sel: "#cmd-deck-detect", title: "Deck ohne Handarbeit",
+    text: "Liest die Karten aus einer Aufnahme und kann sie mit <b>Vorlagen gleich schreiben</b> "
+        + "direkt unter ihrem richtigen Namen ablegen. Damit entfällt das Umbenennen der "
+        + "Bildausschnitte, das sonst der lästigste Teil eines Deckwechsels ist." },
+  { tab: "run", sel: "#cmd-train-sim .foot", title: "Stop verliert nichts",
+    text: "<b>Stop</b> beendet geordnet und speichert dabei. Solange ein solcher Lauf aktiv ist, "
+        + "sind die anderen Start-Knöpfe gesperrt: Grafikkarte und Spielfenster gibt es nur einmal." },
+  { tab: "speed", sel: "#benchauto", title: "Mehr ist nicht schneller",
+    text: "Mehr gleichzeitige Matches steigern den Durchsatz nur bis zu einem Punkt, danach wird "
+        + "es wieder langsamer, und die Lernschritte je Match sinken durchgehend. Dieser Knopf "
+        + "misst beides und übernimmt die beste Einstellung." },
+  { tab: "dash", sel: "#charts", title: "Nur eine Kurve zählt",
+    text: "Die <b>Benchmark</b>-Kurve spielt ohne Zufall gegen feste Gegnerdecks und zeigt echten "
+        + "Fortschritt. Die <b>Winrate im Training</b> enthält Zufallszüge und Spiele gegen sich "
         + "selbst und pendelt sich immer um 50 Prozent ein." },
-  { tab: "strategy", sel: "#stratrun", title: "Nachsehen, was er wirklich spielt",
-    text: "Dieser Knopf lässt ihn 60 Matches ohne Zufall spielen und zählt jede Entscheidung mit. "
-        + "Danach siehst du hier, welche Karte wie oft und wohin gelegt wird, und vor allem: welche "
-        + "Karte er nie benutzt." },
-  { tab: "deck", sel: "#decktbl", title: "Das Deck",
-    text: "Jede Zeile ist eine Karte und damit eine mögliche Aktion. Karte über die Auswahlliste "
-        + "tauschen, Level daneben eintragen. Gespeichert wird erst auf Knopfdruck, und vorher wird "
-        + "die Datei gesichert." },
-  { tab: "towers", sel: "#towertbl", title: "Die Türme",
-    text: "Oben stellst du deinen eigenen Turm ein, hier die Turmtypen samt Werten. Die Spalte "
-        + "<b>Gegner-Gewicht</b> entscheidet, wie oft der Gegner welchen Turm bekommt. Mehr Typen "
-        + "mit Gewicht heisst: er muss gegen mehr Varianten zurechtkommen." },
-  { tab: "config", sel: "#cfgsave", title: "Einstellungen",
-    text: "Alle wichtigen Werte mit Erklärung. Geändertes wird farblich markiert und erst mit diesem "
-        + "Knopf geschrieben, mit Sicherung der alten Datei und einer Gegenprüfung danach." },
-  { tab: "ckpt", sel: "#ckptbody", title: "Die gespeicherten Stände",
-    text: "Jede Trainingsdatei mit Datum, Matchzahl und bestem Benchmark. Über den Knopf rechts "
-        + "wird eine davon als Startpunkt für den nächsten Lauf eingetragen." },
-  { tab: "home", sel: "#helpbtn", title: "Das war die Tour",
-    text: "Über diesen Knopf kommst du jederzeit wieder hierher. Wenn du jetzt loslegen willst: "
-        + "Tempo messen lassen, dann im Bereich Steuerung das Sim-Training starten." },
+  { tab: "strategy", sel: "#stratrun", title: "Was er nie spielt",
+    text: "Die Analyse zählt jede Entscheidung mit. Am aussagekräftigsten ist die Liste der Karten, "
+        + "die er <b>nie</b> benutzt: eine Siegbedingung darin heißt, dass die Belohnungen nicht "
+        + "greifen." },
+  { tab: "towers", sel: "#towertbl", title: "Gegen welche Türme er spielt",
+    text: "Die Spalte <b>Gegner-Gewicht</b> entscheidet, wie oft der Gegner welchen Turm bekommt. "
+        + "Mehr Typen mit Gewicht heißt: er muss mit mehr Varianten zurechtkommen. Eigene Turmtypen "
+        + "kannst du hier anlegen, der Simulator benutzt sie sofort." },
 ];
 
 let tourIx = 0, tourOn = false;
@@ -1373,3 +1339,77 @@ $("#ckptreload").onclick = () => loadCheckpoints();
   setInterval(refresh, 3000);
   if (!localStorage.getItem("clashai.onboarded")) openModal("welcome");
 })();
+
+
+/* ---------------- Live ---------------- */
+let liveTimer = null;
+
+async function loadLive() {
+  if (!$("#livego").checked) await liveOnce();
+  liveSchedule();
+}
+function liveSchedule() {
+  clearInterval(liveTimer); liveTimer = null;
+  if (!$("#livego").checked) return;
+  liveTimer = setInterval(() => {
+    if ($(".tab.active").dataset.tab !== "live") return;   // im Hintergrund nichts abfragen
+    liveOnce();
+  }, +$("#liverate").value);
+}
+$("#livego").onchange = liveSchedule;
+$("#liverate").onchange = liveSchedule;
+$("#liveonce").onclick = () => liveOnce();
+$("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast("Fenstersuche zurückgesetzt."); liveOnce(); };
+
+async function liveOnce() {
+  const body = $("#livebody"), msg = $("#livemsg");
+  let d;
+  try { d = await api("/api/live"); }
+  catch (e) { msg.className = "msg err"; msg.textContent = e.message; return; }
+  if (!d.ok) {
+    msg.className = "msg err"; msg.textContent = d.error || "unbekannter Fehler";
+    body.innerHTML = "<p class='hint'>Läuft das Spiel und ist das Fenster sichtbar? Der Titel muss zu "
+      + "<code>window.title_contains</code> in den Einstellungen passen."
+      + (d.detail ? ` <br>Meldung des Systems: <code>${d.detail}</code>` : "") + "</p>";
+    return;
+  }
+  msg.className = "msg"; msg.textContent = `${d.ms} ms`;
+  const wrap = el("div", "heatwrap");
+  const left = el("div");
+  if (d.image) { const img = el("img"); img.src = d.image;
+    img.style.maxWidth = "420px"; img.style.borderRadius = "6px";
+    img.style.border = "1px solid var(--line)"; left.appendChild(img); }
+  wrap.appendChild(left);
+
+  const right = el("div"); right.style.minWidth = "320px";
+  const inMatch = d.state === "IN_MATCH";
+  const p = el("span", "pill" + (inMatch ? " run" : ""), "Zustand: " + d.state);
+  right.appendChild(p);
+  right.appendChild(el("span", "pill", `Fenster ${d.width}x${d.height}`));
+  if (d.elixir != null) right.appendChild(el("span", "pill", `Elixier ${d.elixir}`));
+
+  if (!inMatch) {
+    right.appendChild(el("p", "hint",
+      "Kein Match erkannt. Wenn du gerade spielst, passen die Vorlagen nicht zu deinem Client: "
+      + "dann hilft das Kommando „Match-Erkennung kalibrieren“ im Tab Steuerung."));
+  }
+  const t1 = el("table", "tbl");
+  t1.innerHTML = "<thead><tr><th>Handkarte</th><th>erkannt als</th><th>Sicherheit</th></tr></thead>";
+  const tb1 = el("tbody");
+  (d.hand || []).forEach(h => { const tr = el("tr");
+    tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "nicht erkannt"}</td><td>${h.score}</td>`;
+    tb1.appendChild(tr); });
+  t1.appendChild(tb1); right.appendChild(t1);
+
+  const t2 = el("table", "tbl");
+  t2.innerHTML = "<thead><tr><th>Bildvorlage</th><th>bester Wert</th></tr></thead>";
+  const tb2 = el("tbody");
+  Object.entries(d.template_scores || {}).forEach(([k, v]) => { const tr = el("tr");
+    tr.innerHTML = `<td><code>${k}</code></td><td>${v}</td>`; tb2.appendChild(tr); });
+  t2.appendChild(tb2); right.appendChild(t2);
+  right.appendChild(el("p", "hint",
+    "Die Werte sind Ähnlichkeiten von 0 bis 1. Erkannt wird ein Zustand erst ab der Schwelle in "
+    + "den Einstellungen, üblicherweise 0,8."));
+  wrap.appendChild(right);
+  body.innerHTML = ""; body.appendChild(wrap);
+}
