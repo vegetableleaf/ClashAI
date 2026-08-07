@@ -272,6 +272,8 @@ def fmt_value(v: Any) -> str:
         return _yaml_float(v)
     if isinstance(v, (list, tuple)):
         return "[" + ", ".join(fmt_value(x) for x in v) + "]"
+    if isinstance(v, dict):                       # flow mapping, the style these files already use
+        return "{" + ", ".join(f"{k}: {fmt_value(x)}" for k, x in v.items()) + "}"
     s = str(v)
     if s == "" or re.search(r"[:#\[\]{}&*!|>'\"%@`]", s) or s.strip() != s:
         return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
@@ -442,6 +444,146 @@ def _deck_bounds(lines: Sequence[str]) -> Tuple[int, int]:
     while end - 1 > head and (not lines[end - 1].strip() or lines[end - 1].lstrip().startswith("#")):
         end -= 1
     return head, end
+
+
+# --- tower troops (sim.tower_troops / opponent_tower_weights / king_tower) ---------
+# Which extra keys the engine understands per tower troop, beyond hp/dps/hit_speed
+# (see sim/engine.py `_make_tower`): Dagger Duchess' loaded burst and Royal Chef's buff.
+TOWER_EXTRA_FIELDS = ["ammo", "empty_dps", "reload_s",
+                      "cook_period_s", "cook_delay_s", "buff_mult", "buff_min_frac"]
+_TOWER_NAME = re.compile(r"^[a-z][a-z0-9_]{1,31}$")
+
+
+def _entry_comments(lines: Sequence[str], start: int, end: int) -> Dict[str, str]:
+    """Trailing comments of `  key: ...` lines inside a block, keyed by their key."""
+    out: Dict[str, str] = {}
+    for ln in lines[start:end]:
+        m = re.match(r"^\s+([A-Za-z0-9_]+)\s*:", ln)
+        if m:
+            _v, comment = _comment_split(ln)
+            if comment.strip():
+                out[m.group(1)] = comment.strip()
+    return out
+
+
+def _replace_mapping_block(text: str, path: Sequence[str], entries: Dict[str, Any]) -> str:
+    """Rewrite a nested `key:` block as `  name: <value>` lines, keeping the header line
+    (with its comment) and any per-entry trailing comment whose key survives."""
+    lines = text.split("\n")
+    head = _locate(lines, path)
+    indent = _indent_of(lines[head])
+    start, end, child_indent = _block_bounds(lines, head, indent)
+    comments = _entry_comments(lines, start, end)
+    body = [" " * child_indent + f"{k}: {fmt_value(v)}"
+            + (f"   {comments[k]}" if k in comments else "")
+            for k, v in entries.items()]
+    return "\n".join(lines[:start] + body + lines[end:])
+
+
+def read_towers(cfg_path: Path) -> Dict[str, Any]:
+    data = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+    sim = data.get("sim") or {}
+    return {
+        "my_tower_troop": sim.get("my_tower_troop", "princess"),
+        "my_tower_level": sim.get("my_tower_level", 15),
+        "tower_range": sim.get("tower_range", 0.20),
+        "king_range": sim.get("king_range", 0.187),
+        "tower_first_hit": sim.get("tower_first_hit", 0.8),
+        "king_tower": dict(sim.get("king_tower") or {}),
+        "tower_troops": {k: dict(v) for k, v in (sim.get("tower_troops") or {}).items()},
+        "opponent_tower_weights": dict(sim.get("opponent_tower_weights") or {}),
+        "extra_fields": TOWER_EXTRA_FIELDS,
+    }
+
+
+def _num(label: str, raw: Any, lo: float, hi: float, integer: bool = False):
+    try:
+        v = int(float(str(raw).strip())) if integer else float(str(raw).strip())
+    except (TypeError, ValueError):
+        raise EditError(f"{label}: '{raw}' ist keine Zahl") from None
+    if not lo <= v <= hi:
+        raise EditError(f"{label}: {v} liegt außerhalb von {lo}…{hi}")
+    return v
+
+
+def save_towers(cfg_path: Path, payload: Dict[str, Any], backup_dir: Path) -> Dict[str, Any]:
+    """Write the tower-troop setup back into config.yaml (blocks rewritten, comments kept).
+
+    Adding a troop here is enough for the engine to use it: `sim/engine.py` looks every
+    profile up by name at match reset, and the opponent rolls one from the weights -- so a
+    new entry immediately shows up as an opponent tower the policy has to cope with.
+    """
+    troops_in = payload.get("tower_troops") or {}
+    if not troops_in:
+        raise EditError("Mindestens ein Turm-Typ muss definiert sein.")
+    troops: Dict[str, Dict[str, Any]] = {}
+    for raw_name, spec in troops_in.items():
+        name = str(raw_name).strip().lower().replace(" ", "_").replace("-", "_")
+        if not _TOWER_NAME.match(name):
+            raise EditError(f"'{raw_name}' ist kein gültiger Turm-Name "
+                            "(Kleinbuchstaben, Ziffern, Unterstrich; 2-32 Zeichen).")
+        if name in troops:
+            raise EditError(f"Turm '{name}' ist doppelt.")
+        out: Dict[str, Any] = {
+            "hp": _num(f"{name}.hp", (spec or {}).get("hp"), 1, 1_000_000, integer=True),
+            "dps": _num(f"{name}.dps", (spec or {}).get("dps"), 0, 100_000, integer=True),
+            "hit_speed": _num(f"{name}.hit_speed", (spec or {}).get("hit_speed"), 0.05, 10.0),
+        }
+        for f in TOWER_EXTRA_FIELDS:
+            v = (spec or {}).get(f)
+            if v is None or str(v).strip() == "":
+                continue
+            out[f] = _num(f"{name}.{f}", v, 0, 100_000)
+            if f in ("ammo", "empty_dps"):
+                out[f] = int(out[f])
+        troops[name] = out
+
+    my = str(payload.get("my_tower_troop", "princess")).strip().lower()
+    if my not in troops:
+        raise EditError(f"Dein Turm-Typ '{my}' kommt in der Turmliste nicht vor.")
+
+    weights_in = payload.get("opponent_tower_weights") or {}
+    weights: Dict[str, int] = {}
+    for k, v in weights_in.items():
+        name = str(k).strip().lower()
+        if name not in troops:
+            raise EditError(f"Gewichtung für '{name}' hat keinen passenden Turm-Typ.")
+        w = int(_num(f"Gewichtung {name}", v, 0, 10_000, integer=True))
+        if w > 0:
+            weights[name] = w
+    if not weights:
+        raise EditError("Mindestens ein Gegner-Turm braucht eine Gewichtung größer 0.")
+
+    king_in = payload.get("king_tower") or {}
+    king = {
+        "hp": _num("König.hp", king_in.get("hp"), 1, 1_000_000, integer=True),
+        "dps": _num("König.dps", king_in.get("dps"), 0, 100_000, integer=True),
+        "hit_speed": _num("König.hit_speed", king_in.get("hit_speed"), 0.05, 10.0),
+    }
+    scalars = {
+        ("sim", "my_tower_troop"): my,
+        ("sim", "my_tower_level"): int(_num("Turm-Level", payload.get("my_tower_level", 15),
+                                            1, 20, integer=True)),
+        ("sim", "tower_range"): _num("Turm-Reichweite", payload.get("tower_range", 0.2), 0.01, 1.0),
+        ("sim", "king_range"): _num("König-Reichweite", payload.get("king_range", 0.187), 0.01, 1.0),
+        ("sim", "tower_first_hit"): _num("Verzögerung erster Schuss",
+                                         payload.get("tower_first_hit", 0.8), 0.0, 10.0),
+    }
+
+    text = cfg_path.read_text(encoding="utf-8")
+    data = yaml.safe_load(text) or {}
+    expected = copy.deepcopy(data)
+    new_text = _replace_mapping_block(text, ["sim", "tower_troops"], troops)
+    new_text = _replace_mapping_block(new_text, ["sim", "opponent_tower_weights"], weights)
+    new_text = patch_scalar(new_text, ["sim", "king_tower"], king)
+    expected["sim"]["tower_troops"] = troops
+    expected["sim"]["opponent_tower_weights"] = weights
+    expected["sim"]["king_tower"] = king
+    for p, v in scalars.items():
+        new_text = patch_scalar(new_text, list(p), v)
+        _deep_set(expected, list(p), v)
+    bak = _write_verified(cfg_path, new_text, expected, backup_dir)
+    return {"backup": str(bak), "troops": sorted(troops), "weights": weights}
 
 
 def save_deck(cards_path: Path, name: str, cards: List[Dict[str, Any]], backup_dir: Path,

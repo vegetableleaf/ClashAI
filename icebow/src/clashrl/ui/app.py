@@ -15,6 +15,7 @@ from flask import Flask, Response, jsonify, render_template, request, send_file
 
 from . import editor, jobs as jobcat
 from .ckpt import list_checkpoints
+from .hardware import probe, suggest
 from .metrics import MetricsStore, to_csv
 from .procs import ProcManager
 
@@ -57,18 +58,39 @@ def create_app(cfg) -> Flask:
     cards_path = root / "config" / "cards.yaml"
 
     app = Flask(__name__, static_folder="static", template_folder="templates")
-    app.config["JSON_SORT_KEYS"] = False
+    app.json.sort_keys = False        # keep config/deck/tower order as it is in the YAML files
 
     # -- helpers -----------------------------------------------------------
+    # The panel EDITS config.yaml, so a snapshot taken at startup goes stale the moment
+    # something is saved (the first version kept proposing a setting it had just applied).
+    # Re-read whenever the file's mtime moves -- also picks up edits made outside the UI.
+    _cfg_state = {"cfg": cfg, "mtime": cfg_path.stat().st_mtime if cfg_path.exists() else 0.0}
+
+    def C():
+        """The current config, reloaded on change."""
+        try:
+            m = cfg_path.stat().st_mtime
+        except OSError:
+            return _cfg_state["cfg"]
+        if m != _cfg_state["mtime"]:
+            from ..config import Config
+            try:
+                _cfg_state["cfg"] = Config.load(cfg_path)
+                _cfg_state["mtime"] = m
+            except Exception:                      # noqa: BLE001 -- keep serving the last good one
+                pass
+        return _cfg_state["cfg"]
+
     def sessions() -> List[str]:
-        d = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
+        c = C()
+        d = c.path(c.get("record", "out_dir", default="data/sessions"))
         if not d.exists():
             return []
         return sorted((p.name for p in d.iterdir() if p.is_dir()), reverse=True)
 
     def card_db():
         from ..cards import CardDB
-        return CardDB(cfg)
+        return CardDB(C())
 
     # -- pages -------------------------------------------------------------
     @app.get("/")
@@ -258,6 +280,149 @@ def create_app(cfg) -> Flask:
     @app.get("/api/checkpoints")
     def checkpoints():
         return jsonify(list_checkpoints(root / "data", metrics.runs()))
+
+    # -- hardware / speed --------------------------------------------------
+    def _bench_file():
+        p = root / "data" / "sim_bench.json"
+        if not p.exists():
+            return None
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+            d["mtime"] = p.stat().st_mtime
+            return d
+        except (OSError, json.JSONDecodeError):
+            return None
+
+    @app.get("/api/hardware")
+    def hardware():
+        info = probe()
+        cur_envs = int(C().get("sim", "envs", default=8))
+        sug = suggest(info, cur_envs)
+        aw, ah = (C().get("observation", "arena_size", default=[64, 96]) + [0, 0])[:2]
+        frame_bytes = int(aw) * int(ah) * 3
+        replay = int(C().get("train", "replay_size", default=100000))
+        bench = _bench_file()
+        return jsonify({
+            "hardware": info,
+            "suggestion": sug,
+            "current": {
+                "envs": cur_envs,
+                "batch_size": int(C().get("train", "batch_size", default=64)),
+                "replay_size": replay,
+                "eval_envs": int(C().get("sim", "eval_envs", default=8)),
+                "device": C().get("train", "device", default="cuda"),
+            },
+            # one uint8 frame per stored step (obs and next-obs share the array between
+            # consecutive transitions), so this is the dominant replay cost.
+            "replay_ram_estimate": replay * frame_bytes,
+            "frame_bytes": frame_bytes,
+            "bench": bench,
+        })
+
+    @app.post("/api/hardware/apply")
+    def hardware_apply():
+        """Write the MEASURED best env count (and optionally the hardware guesses)."""
+        body = request.get_json(force=True, silent=True) or {}
+        changes: Dict[str, Any] = {}
+        bench = _bench_file()
+        if body.get("envs") is not None:
+            changes["sim.envs"] = body["envs"]
+        elif bench and bench.get("best_envs"):
+            changes["sim.envs"] = bench["best_envs"]
+        if body.get("with_suggestion"):
+            sug = suggest(probe(), int(C().get("sim", "envs", default=8)))
+            changes.setdefault("train.batch_size", sug["batch_size"])
+            changes.setdefault("train.replay_size", sug["replay_size"])
+            changes.setdefault("sim.eval_envs", min(int(changes.get("sim.envs", sug["envs"])),
+                                                    sug["eval_envs"]))
+        if not changes:
+            return jsonify({"error": "Nichts zu übernehmen -- erst den Geschwindigkeits-Test laufen "
+                                     "lassen."}), 400
+        try:
+            res = editor.save_config_fields(cfg_path, changes, backup_dir)
+        except editor.EditError as exc:
+            return jsonify({"error": str(exc)}), 400
+        return jsonify(res)
+
+    # -- tower troops ------------------------------------------------------
+    @app.get("/api/towers")
+    def towers_get():
+        t = editor.read_towers(cfg_path)
+        t["defaults"] = {
+            "princess": {"hp": 4424, "dps": 197, "hit_speed": 0.8},
+        }
+        return jsonify(t)
+
+    @app.post("/api/towers")
+    def towers_set():
+        body = request.get_json(force=True, silent=True) or {}
+        try:
+            return jsonify(editor.save_towers(cfg_path, body, backup_dir))
+        except editor.EditError as exc:
+            return jsonify({"error": str(exc)}), 400
+        except OSError as exc:
+            return jsonify({"error": f"Schreiben fehlgeschlagen: {exc}"}), 500
+
+    # -- overview ----------------------------------------------------------
+    @app.get("/api/overview")
+    def overview():
+        """Status + the next sensible step, so the panel answers 'what now?' itself."""
+        db = card_db()
+        cks = list_checkpoints(root / "data", metrics.runs())
+        runs = metrics.runs()
+        bench = _bench_file()
+        cur_envs = int(C().get("sim", "envs", default=8))
+        stale = _stale_report(db)
+        sim_ck = next((c for c in cks if c["name"] == "policy_sim_best.pt"), None) \
+            or next((c for c in cks if c["name"] == "policy_sim.pt"), None)
+        steps: List[Dict[str, Any]] = []
+        if not bench:
+            steps.append({
+                "title": "Geschwindigkeit messen",
+                "why": "Der Simulator läuft aktuell mit sim.envs = %d. Wieviele Matches pro Sekunde "
+                       "dein PC damit schafft, weiß nur eine Messung." % cur_envs,
+                "cmd": "sim-bench", "tab": "run"})
+        elif bench.get("best_envs") and bench["best_envs"] != cur_envs:
+            best_mps = float(bench.get("best_mps") or 0.0)
+            cur_mps = next((float(r["mps"]) for r in bench.get("results", [])
+                            if r["envs"] == cur_envs), None)
+            why = f"Gemessen: {best_mps:.2f} Matches/s"
+            if cur_mps:
+                why += f" statt {cur_mps:.2f} bei der aktuellen Einstellung ({best_mps / cur_mps:.1f}x)"
+            steps.append({
+                "title": f"Schnellere Einstellung übernehmen (envs {cur_envs} → {bench['best_envs']})",
+                "why": why + ".", "action": "apply_bench", "tab": "speed"})
+        if sim_ck is None:
+            steps.append({"title": "Erstes Sim-Training starten",
+                          "why": "Es gibt noch keinen Policy-Checkpoint. train-sim lernt von Null "
+                                 "gegen skriptierte Gegner — ohne Spiel, ohne Aufnahmen.",
+                          "cmd": "train-sim", "tab": "run"})
+        else:
+            bwr = sim_ck.get("best_wr")
+            why = (f"Bester Benchmark bisher: {bwr:.0f} % gegen die festen Meta-Decks."
+                   if isinstance(bwr, (int, float)) and bwr >= 0
+                   else "Vorhandenen Checkpoint mit --resume weiterlernen.")
+            steps.append({"title": "Sim-Training fortsetzen", "why": why,
+                          "cmd": "train-sim", "tab": "run"})
+        if not (root / "data" / "policy_stats.json").exists() and sim_ck is not None:
+            steps.append({"title": "Strategie der Policy ansehen",
+                          "why": "policy-stats zeigt, welche Karten sie überhaupt spielt und wo — "
+                                 "die Grundlage, um Belohnungen zu beurteilen.",
+                          "cmd": "policy-stats", "tab": "run"})
+        if stale["missing_templates"]:
+            steps.append({"title": "Hand-Templates fehlen",
+                          "why": "Für " + ", ".join(stale["missing_templates"]) + " gibt es keine "
+                                 "Vorlagen. Das betrifft NUR das echte Spiel (play/label), nicht den "
+                                 "Simulator.", "tab": "deck"})
+        return jsonify({
+            "deck": {"name": db.deck_name(), "avg_elixir": db.deck_avg_elixir(),
+                     "cards": db.deck_names(), "identities": db.deck_identities()},
+            "checkpoints": cks[:6], "runs": runs[:5], "bench": bench,
+            "envs": cur_envs, "stale": stale, "steps": steps,
+            "towers": {"mine": C().get("sim", "my_tower_troop", default="princess"),
+                       "level": C().get("sim", "my_tower_level", default=15),
+                       "opponents": list((C().get("sim", "opponent_tower_weights", default={}) or {}))},
+        })
 
     @app.get("/api/logfile/<jid>")
     def logfile(jid: str):

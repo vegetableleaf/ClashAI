@@ -51,12 +51,25 @@ Statt jedes Kommando im Terminal zu tippen: **`start_ui.bat` im Repo-Root doppel
 `http://127.0.0.1:8765` — **nur localhost**, kein Netzwerkzugriff, keine Anmeldung —
 und öffnet den Browser.
 
+Beim ersten Start läuft eine **Einführung** in fünf Schritten (jederzeit über „Einführung“
+oben rechts erneut aufrufbar); der ToS-Hinweis steht darin und bleibt über das ⚠-Symbol
+in der Kopfzeile erreichbar.
+
 Die Oberfläche bietet:
 
+* **Übersicht** — Stand des Projekts (Checkpoints, Deck, Türme, gemessenes Tempo) und
+  konkrete Vorschläge, was als nächstes sinnvoll ist.
 * **Steuerung** — Start/Stop für `train-sim`, `train-sim-ppo`, `train-bc`, `train-rl`,
-  `play`, `record`, `label`, `outcomes`, `verify`, `diag`, `policy-stats`. Stop sendet
-  das Ctrl+C-Äquivalent, damit die bestehende Checkpoint-Speicherung beim Abbruch greift.
-  Zwei GPU-Jobs gleichzeitig lässt der Launcher nicht zu.
+  `play`, `record`, `label`, `outcomes`, `verify`, `diag`, `policy-stats`, `sim-bench`,
+  nach Zweck gruppiert. Stop sendet das Ctrl+C-Äquivalent, damit die bestehende
+  Checkpoint-Speicherung beim Abbruch greift. Zwei GPU-Jobs gleichzeitig lässt der
+  Launcher nicht zu.
+* **Tempo** — liest CPU, RAM und GPU aus, schätzt den RAM-Bedarf des Replay-Puffers und
+  misst mit `sim-bench`, wieviele Matches pro Sekunde dieser PC bei welcher Env-Zahl
+  schafft. Die schnellste gemessene Einstellung lässt sich mit einem Klick übernehmen.
+* **Türme** — Turmtruppen des Simulators: eigener Turm, Bezugslevel, Reichweiten,
+  Königsturm sowie beliebig viele Turmtypen mit HP/DPS/Schussintervall und der
+  Gewichtung, mit der der Gegner sie würfelt. Neue Typen wirken sofort, ohne Codeänderung.
 * **Live-Log** des laufenden Prozesses (Server-Sent Events); Volltext unter `data/ui_logs/`.
 * **Dashboard** — Winrate, Reward, Loss, Epsilon, Matches/Sekunde, Benchmark-Kurve,
   Restzeit bis zur Ziel-Matchzahl. Persistiert in `data/metrics.jsonl` (übersteht Neustarts),
@@ -72,6 +85,29 @@ Die Oberfläche bietet:
   übernehmbar als `--init` für den nächsten Lauf.
 
 Die CLI bleibt vollständig funktionsfähig — das UI ruft sie auf, es ersetzt sie nicht.
+
+### Trainingstempo
+
+`train-sim` schiebt seine Beobachtungen jetzt **gebündelt** auf die GPU statt einzeln
+(eine Kopie pro Batch statt 128 winziger Kopien je Optimierungsschritt). Gemessen auf
+einem RTX 3070 / 16 Threads, 60 Matches bei `--envs 16`, Seed 0, je zwei Läufe:
+
+| Pfad | Matches/s |
+|---|---|
+| vorher (pro Sample) | 1,04 / 1,01 |
+| nachher (gebündelt) | 2,07 / 1,90 |
+
+Dazu kommt die Env-Zahl. `run.py sim-bench` misst sie auf deinem Rechner (je 30 s,
+gleicher Seed, schreibt nach `data/bench/`, nie auf `policy_sim.pt`):
+
+| `sim.envs` | 8 | 16 | 32 | 48 |
+|---|---|---|---|---|
+| Matches/s | 2,30 | 3,33 | 4,60 | 4,76 |
+
+Zusammen also rund **5×** gegenüber dem alten Default (0,85 m/s bei 8 Envs). Die Kurve
+läuft ab ~32 Envs flach: `train-sim` ist EIN Prozess, die Envs rechnen wegen des GIL
+nacheinander auf einem Kern — mehr Envs verteilen nur die GPU-Arbeit auf mehr Matches.
+Echte Mehrkern-Nutzung braucht Worker-Prozesse (geplant).
 
 > ⚠️ Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS
 > (Warnhinweis steht im Launcher).

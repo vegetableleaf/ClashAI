@@ -16,6 +16,7 @@ from typing import Any, Dict, List
 COMMANDS: List[Dict[str, Any]] = [
     {
         "cmd": "train-sim",
+        "group": "Simulator-Training",
         "title": "Sim-Training (DDQN)",
         "desc": "Trainiert die Policy im headless Simulator gegen skriptierte Bots + Self-Play. "
                 "Der Hauptweg zu einem Prior; schreibt data/policy_sim.pt (+ _best).",
@@ -38,6 +39,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-sim-ppo",
+        "group": "Simulator-Training",
         "title": "Sim-Training (PPO)",
         "desc": "On-policy Geschwister von train-sim mit eigenem Checkpoint policy_sim_ppo.pt. "
                 "Der DDQN-Baseline-Checkpoint bleibt unberührt.",
@@ -56,6 +58,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-bc",
+        "group": "Aus Aufnahmen lernen",
         "title": "Behaviour Cloning",
         "desc": "Imitationslernen aus deinen gelabelten Aufnahmen -> data/policy.pt. "
                 "Braucht gelabelte Sessions (label) und Hand-Templates.",
@@ -70,6 +73,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-rl",
+        "group": "Live am Spiel",
         "title": "Live-RL (echte Matches)",
         "desc": "Fine-tuning auf echten Matches am laufenden Spiel. Braucht das Spielfenster "
                 "und die Maus -- der Rechner ist während des Laufs belegt.",
@@ -85,6 +89,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "play",
+        "group": "Live am Spiel",
         "title": "Spielen (Policy live)",
         "desc": "Lässt die trainierte Policy live spielen. Braucht Spielfenster + Maus.",
         "gpu": True,
@@ -96,6 +101,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "record",
+        "group": "Aus Aufnahmen lernen",
         "title": "Aufnehmen",
         "desc": "Nimmt dein eigenes Spiel auf (Bild + Mausklicks) als Imitationsdaten. "
                 "Belegt Bildschirm und Maus-Hook.",
@@ -105,6 +111,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "label",
+        "group": "Aus Aufnahmen lernen",
         "title": "Labeln",
         "desc": "Baut aus Aufnahmen den (Beobachtung, Aktion)-Datensatz für BC.",
         "gpu": True,
@@ -121,6 +128,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "outcomes",
+        "group": "Aus Aufnahmen lernen",
         "title": "Ergebnisse erkennen",
         "desc": "Erkennt Sieg/Niederlage pro Match aus dem Ergebnisbildschirm der Aufnahme.",
         "gpu": False,
@@ -133,6 +141,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "verify",
+        "group": "Analyse & Diagnose",
         "title": "Verifizieren",
         "desc": "Legt Overlays auf aufgezeichnete Frames, um Erkennung und Kalibrierung zu prüfen.",
         "gpu": False,
@@ -149,6 +158,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "diag",
+        "group": "Analyse & Diagnose",
         "title": "Diagnose",
         "desc": "Prüft die Menü-Navigation: Template-Match-Scores auf dem aktuellen Bildschirm.",
         "gpu": False,
@@ -156,7 +166,26 @@ COMMANDS: List[Dict[str, Any]] = [
         "args": [],
     },
     {
+        "cmd": "sim-bench",
+        "group": "Simulator-Training",
+        "title": "Geschwindigkeits-Test",
+        "desc": "Misst Matches/Sekunde bei verschiedenen Env-Zahlen auf DIESEM PC und schlägt die "
+                "schnellste Einstellung vor. Schreibt NICHT policy_sim.pt (eigener Ordner data/bench/).",
+        "gpu": True,
+        "metrics": False,
+        "args": [
+            {"name": "envs", "type": "str", "default": "", "label": "Env-Zahlen",
+             "help": "Kommaliste, z.B. 8,16,32,48. Leer = aus deiner Hardware abgeleitet."},
+            {"name": "seconds", "type": "float", "default": 30, "label": "Sekunden pro Messung",
+             "help": "Länger = weniger Rauschen. 30s pro Einstellung reichen für einen klaren Trend."},
+            {"name": "warmup", "type": "float", "default": 8, "label": "Aufwärmen (s)",
+             "help": "Verworfener Vorlauf, damit der CUDA-Start nicht die erste Messung verfälscht."},
+            {"name": "seed", "type": "int", "default": 0, "label": "Seed"},
+        ],
+    },
+    {
         "cmd": "policy-stats",
+        "group": "Analyse & Diagnose",
         "title": "Strategie-Analyse",
         "desc": "Spielt greedy Matches im Simulator und zählt, welche Karten die Policy wie oft "
                 "und wo spielt -> data/policy_stats.json (Strategie-Tab).",

@@ -11,6 +11,12 @@ Note: single-process (Python GIL) -- the K engine steps run serially, so this is
 inference + shared replay + sample diversity), not multi-core engine parallelism. The engine is cheap,
 so the win is GPU amortisation + throughput. (Multiprocess actors could saturate all cores later.)
 
+Throughput: host->device transfers are BATCHED (one copy per batch, uint8 converted on the GPU),
+which measured ~2x end-to-end vs the per-sample form. Raising --envs amortises the optimiser step
+over more matches and measured 2.30 / 3.33 / 4.60 / 4.76 matches/s at 8 / 16 / 32 / 48 envs on a
+RTX 3070 -- flattening out because the engine steps still share one core. `run.py sim-bench`
+re-measures both on your machine.
+
 Usage (PowerShell), from icebow/:
     .\.venv\Scripts\python.exe run.py train-sim --matches 20000 --envs 16   # start (from scratch)
     .\.venv\Scripts\python.exe run.py train-sim --resume                    # continue policy_sim.pt
@@ -41,13 +47,20 @@ def pfsp_weights(snaps, power: float, floor: float = 0.05, min_games: int = 5):
     return w
 
 
-def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None) -> None:
+def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
+              time_limit_s=None, quiet: bool = False):
+    """Train in the simulator. Returns a {matches, seconds, mps} summary.
+
+    `time_limit_s` stops the run after N wall-clock seconds (the same save path as
+    Ctrl+C) -- that is what `sim-bench` uses to time identical work at different
+    `--envs`; None keeps the old behaviour of running until `matches`.
+    """
     try:
         import torch
         import torch.nn.functional as F
     except ImportError as exc:  # noqa: BLE001
         print(f"[train-sim] PyTorch required ({exc}). Install the CUDA build (see README).")
-        return
+        return None
 
     from .train_rl import _build_net, _pick_device
     from .sim.env import SimMatchEnv
@@ -87,10 +100,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         if "gate" in ck:
             net.gate.load_state_dict(ck["gate"])
         resumed_best_wr = float(ck.get("best_wr", -1.0))
-        print(f"[train-sim] resumed {sim_path.name}"
-              + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0
-                 else " (no stored best -- back up policy_sim_best.pt once before relying on it)"))
-    else:
+        if not quiet:
+            print(f"[train-sim] resumed {sim_path.name}"
+                  + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0
+                     else " (no stored best -- back up policy_sim_best.pt once before relying on it)"))
+    elif not quiet:
         print(f"[train-sim] training FROM SCRATCH ({sim_path.name} will be written)")
     target = _build_net(cfg, device, n_cards, n_cells, threat_dim)
     target.load_state_dict(net.state_dict())
@@ -150,21 +164,25 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     def epsilon(s):
         return eps_end if s >= eps_steps else eps_start + (eps_end - eps_start) * (s / eps_steps)
 
-    def to_obs_t(o):
-        return torch.from_numpy(o).float().permute(2, 0, 1).to(device) / 255.0
+    # BATCHED host->device transfer. Converting per sample issues one CUDA copy per element:
+    # K per action choice and 2*batch_size per optimiser step (obs + next-obs), which at
+    # batch 64 is 128 tiny transfers whose launch overhead dwarfs the payload. Stacking first
+    # means ONE copy, and the uint8 frame is converted to float ON the GPU, so a quarter of
+    # the bytes crosses PCIe. Mathematically identical to the per-sample form.
+    def obs_batch(obs_list):
+        return (torch.from_numpy(np.stack(obs_list)).to(device)
+                .permute(0, 3, 1, 2).float() / 255.0)
 
-    def to_vec_t(v):
-        return torch.from_numpy(np.asarray(v, np.float32)).to(device)
+    def vec_batch(vec_list):
+        return torch.from_numpy(np.stack([np.asarray(v, np.float32) for v in vec_list])).to(device)
 
     def choose_batch(obs_b, hand_b, nxt_b, elx_b, thr_b, eps):
         """One batched forward for all K envs; per-env epsilon-greedy with its own hand mask/elixir."""
         net.eval()
-        obs_t = torch.stack([to_obs_t(o) for o in obs_b])
-        hand_t = torch.stack([to_vec_t(h) for h in hand_b])
+        obs_t = obs_batch(obs_b)
+        hand_t = vec_batch(hand_b)
         with torch.no_grad():
-            cq, ceq, gq = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
-                              torch.stack([to_vec_t(e) for e in elx_b]),
-                              torch.stack([to_vec_t(t) for t in thr_b]))
+            cq, ceq, gq = net(obs_t, hand_t, vec_batch(nxt_b), vec_batch(elx_b), vec_batch(thr_b))
         cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
         acts = []
         for i in range(len(obs_b)):
@@ -210,11 +228,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         if len(replay) < max(min_replay, batch_size):
             return None
         b = random.sample(replay, batch_size)
-        obs = torch.stack([to_obs_t(x[0]) for x in b]); hand = torch.stack([to_vec_t(x[1]) for x in b])
-        nobs = torch.stack([to_obs_t(x[5]) for x in b]); nhand = torch.stack([to_vec_t(x[6]) for x in b])
-        nxt = torch.stack([to_vec_t(x[7]) for x in b]); nnxt = torch.stack([to_vec_t(x[8]) for x in b])
-        elx = torch.stack([to_vec_t(x[9]) for x in b]); nelx = torch.stack([to_vec_t(x[10]) for x in b])
-        thr = torch.stack([to_vec_t(x[11]) for x in b]); nthr = torch.stack([to_vec_t(x[12]) for x in b])
+        obs = obs_batch([x[0] for x in b]); hand = vec_batch([x[1] for x in b])
+        nobs = obs_batch([x[5] for x in b]); nhand = vec_batch([x[6] for x in b])
+        nxt = vec_batch([x[7] for x in b]); nnxt = vec_batch([x[8] for x in b])
+        elx = vec_batch([x[9] for x in b]); nelx = vec_batch([x[10] for x in b])
+        thr = vec_batch([x[11] for x in b]); nthr = vec_batch([x[12] for x in b])
         play = torch.tensor([x[2][0] for x in b], device=device)
         card = torch.tensor([x[2][1] for x in b], device=device).unsqueeze(1)
         cell = torch.tensor([x[2][2] for x in b], device=device).unsqueeze(1)
@@ -310,10 +328,11 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
             seed = snapshot()                                    # a resumed policy seeds the league
             if keep_best:
                 _best_snap["net"] = seed                         # ...and the best-self sparring slot
-        print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
-              f"snapshot every {sp_snap_every}, league size {sp_league_size}"
-              + (", +best-self" if keep_best else "")
-              + (f", PFSP p={pfsp_power:g}" if pfsp_on else ""))
+        if not quiet:
+            print(f"[train-sim] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp} matches), "
+                  f"snapshot every {sp_snap_every}, league size {sp_league_size}"
+                  + (", +best-self" if keep_best else "")
+                  + (f", PFSP p={pfsp_power:g}" if pfsp_on else ""))
 
     # -- benchmark eval vs the FIXED scripted meta pool --------------------
     # A STABLE plateau signal (unlike the self-play win-rate, which self-references to ~50%): every
@@ -341,11 +360,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Greedy action per env (no epsilon, no `random` draw, no replay) for benchmarking."""
         net.eval()
-        obs_t = torch.stack([to_obs_t(o) for o in obs_b]); hand_t = torch.stack([to_vec_t(h) for h in hand_b])
+        obs_t = obs_batch(obs_b); hand_t = vec_batch(hand_b)
         with torch.no_grad():
-            cq, ceq, gq = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
-                              torch.stack([to_vec_t(e) for e in elx_b]),
-                              torch.stack([to_vec_t(t) for t in thr_b]))
+            cq, ceq, gq = net(obs_t, hand_t, vec_batch(nxt_b), vec_batch(elx_b), vec_batch(thr_b))
         cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
         acts = []
         for i in range(len(obs_b)):
@@ -397,17 +414,26 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     nstep = [_NStep(n_step, gamma) for _ in range(K)]   # per-env n-step return aggregators
 
     running = {"v": True}
-    signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
-    print(f"[train-sim] {device}: {K} vectorized env(s), up to {matches} matches "
-          f"(cards={n_cards}, cells={n_cells}). Ctrl+C to stop + save.")
+    try:
+        signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
+    except ValueError:                                 # called from a worker thread (sim-bench)
+        pass
+    if not quiet:
+        print(f"[train-sim] {device}: {K} vectorized env(s), up to {matches} matches "
+              f"(cards={n_cards}, cells={n_cells})"
+              + (f", Zeitlimit {time_limit_s:.0f}s" if time_limit_s else "")
+              + ". Ctrl+C to stop + save.")
     step = 0
     done_n = wins = losses = draws = 0
     win_hist: deque = deque(maxlen=max(log_every, 50))
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     last_loss = None
     t0 = time.time()
+    deadline = (t0 + float(time_limit_s)) if time_limit_s else None
     try:
         while running["v"] and done_n < matches:
+            if deadline is not None and time.time() >= deadline:
+                break
             eps = epsilon(step)
             acts = choose_batch(cobs, chand, cnxt, celx, cthr, eps)
             for i, env in enumerate(pool):
@@ -480,5 +506,9 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         pass
     finally:
         save()
-        print(f"[train-sim] stopped after {done_n} match(es); saved -> {sim_path} "
-              f"({wins}W-{losses}L-{draws}D)")
+        secs = time.time() - t0
+        if not quiet:
+            print(f"[train-sim] stopped after {done_n} match(es); saved -> {sim_path} "
+                  f"({wins}W-{losses}L-{draws}D)")
+    return {"matches": done_n, "seconds": secs, "mps": done_n / max(1e-6, secs),
+            "steps": step, "envs": K, "wins": wins, "losses": losses, "draws": draws}

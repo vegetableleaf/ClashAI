@@ -238,6 +238,16 @@ def _cmd_ui(args) -> None:
     serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
 
 
+def _cmd_sim_bench(args) -> None:
+    try:
+        from .ui.bench import sim_bench
+    except ImportError as exc:
+        print(f"[sim-bench] PyTorch wird benötigt ({exc}).")
+        return
+    sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
+              out=args.out, warmup=args.warmup)
+
+
 def _cmd_policy_stats(args) -> None:
     try:
         from .ui.rollout import policy_stats
@@ -524,6 +534,18 @@ def main() -> None:
     pst.add_argument("--size", choices=["576", "432"], default=None,
                      help="Board-Auflösung; muss zum Checkpoint passen")
     pst.set_defaults(func=_cmd_policy_stats)
+
+    sbn = sub.add_parser("sim-bench",
+                         help="misst die Trainingsgeschwindigkeit (Matches/s) bei verschiedenen "
+                              "--envs auf DIESEM PC -> data/sim_bench.json (schreibt NICHT policy_sim.pt)")
+    sbn.add_argument("--envs", default=None,
+                     help="Kommaliste zu messender Env-Zahlen (Default: aus der Hardware abgeleitet)")
+    sbn.add_argument("--seconds", type=float, default=45.0, help="Messdauer pro Einstellung")
+    sbn.add_argument("--warmup", type=float, default=8.0,
+                     help="verworfener Aufwärmlauf (CUDA-Kontext); 0 = aus")
+    sbn.add_argument("--seed", type=int, default=0, help="RNG-Seed (für alle Messungen gleich)")
+    sbn.add_argument("--out", default=None, help="Ziel-JSON (Default: data/sim_bench.json)")
+    sbn.set_defaults(func=_cmd_sim_bench)
 
     args = parser.parse_args()
     args.func(args)

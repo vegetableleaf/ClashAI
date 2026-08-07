@@ -10,34 +10,47 @@
 <header>
   <h1>ClashAI <span class="sub">Launcher</span></h1>
   <div id="statusbar"><span class="pill idle" id="runpill">kein Job aktiv</span></div>
+  <div class="spacer"></div>
+  <button id="helpbtn" class="btn small" title="Einführung erneut öffnen">Einführung</button>
+  <button id="tosbtn" class="btn small warnbtn" title="Hinweis zu den Nutzungsbedingungen">⚠</button>
 </header>
 
-<div class="tos">⚠ {{ tos }}</div>
-
 <nav class="tabs">
-  <button class="tab active" data-tab="run">Steuerung</button>
-  <button class="tab" data-tab="dash">Dashboard</button>
+  <button class="tab active" data-tab="home">Übersicht</button>
+  <button class="tab" data-tab="run">Steuerung</button>
+  <button class="tab" data-tab="dash">Fortschritt</button>
   <button class="tab" data-tab="strategy">Strategie</button>
   <button class="tab" data-tab="deck">Deck</button>
-  <button class="tab" data-tab="config">Config</button>
+  <button class="tab" data-tab="towers">Türme</button>
+  <button class="tab" data-tab="speed">Tempo</button>
+  <button class="tab" data-tab="config">Einstellungen</button>
   <button class="tab" data-tab="ckpt">Checkpoints</button>
 </nav>
 
 <main>
-  <!-- ---------------- Steuerung ---------------- -->
-  <section id="tab-run" class="panel active">
-    <div id="cmdgrid" class="grid"></div>
+  <!-- ---------------- Übersicht ---------------- -->
+  <section id="tab-home" class="panel active">
+    <div id="homebody"></div>
   </section>
 
-  <!-- ---------------- Dashboard ---------------- -->
+  <!-- ---------------- Steuerung ---------------- -->
+  <section id="tab-run" class="panel">
+    <p class="lead">Jede Kachel startet genau ein Kommando der Kommandozeile — dieselben, die du
+      sonst tippen würdest. <b>Stop</b> schickt das Abbruch-Signal, auf das die Trainings mit einem
+      gespeicherten Checkpoint reagieren; nichts geht verloren.</p>
+    <div id="cmdgrid"></div>
+  </section>
+
+  <!-- ---------------- Fortschritt ---------------- -->
   <section id="tab-dash" class="panel">
+    <p class="lead">Zahlen aus den laufenden und vergangenen Trainings. Wichtig: die
+      <b>Benchmark-Kurve</b> (greedy gegen feste Meta-Decks) ist das ehrliche Maß — die
+      Trainings-Winrate enthält Zufallszüge und Self-Play und pendelt sich von selbst um 50 % ein.</p>
     <div class="row">
-      <label>Lauf:
-        <select id="runselect"></select>
-      </label>
+      <label>Lauf: <select id="runselect"></select></label>
       <button id="dashreload" class="btn small">Aktualisieren</button>
       <a id="csvlink" class="btn small" href="/api/metrics.csv">CSV-Export</a>
-      <span class="hint">Metriken liegen in <code>data/metrics.jsonl</code> und überleben einen Neustart.</span>
+      <span class="hint">gespeichert in <code>data/metrics.jsonl</code></span>
     </div>
     <div id="kpis" class="kpis"></div>
     <div id="charts" class="charts"></div>
@@ -45,16 +58,22 @@
 
   <!-- ---------------- Strategie ---------------- -->
   <section id="tab-strategy" class="panel">
+    <p class="lead">Was die Policy <b>tatsächlich</b> tut: welche Karten sie legt, wohin, und wie oft
+      sie bewusst wartet. Eine Karte, die nie vorkommt, ist der deutlichste Hinweis auf eine
+      Belohnung, die nicht greift.</p>
     <div class="row">
-      <span class="hint">Zeigt, was die Policy wirklich tut. Erzeugt vom Kommando
-        <code>policy-stats</code> (Tab „Steuerung“) &rarr; <code>data/policy_stats.json</code>.</span>
+      <button id="stratrun" class="btn primary">Analyse starten</button>
       <button id="stratreload" class="btn small">Aktualisieren</button>
+      <span class="hint">Kommando <code>policy-stats</code> → <code>data/policy_stats.json</code></span>
     </div>
     <div id="stratbody"></div>
   </section>
 
   <!-- ---------------- Deck ---------------- -->
   <section id="tab-deck" class="panel">
+    <p class="lead">Das Deck bestimmt den Aktionsraum der Policy: jede Karte ist eine eigene Aktion,
+      eine Evolution zählt separat. Änderst du das Deck, passen alte Checkpoints und Datensätze
+      nicht mehr.</p>
     <div id="deckwarn"></div>
     <div class="row">
       <label>Deckname: <input id="deckname" type="text" size="40"></label>
@@ -68,47 +87,119 @@
       <button id="decksave" class="btn primary">Deck speichern</button>
       <span id="deckmsg" class="msg"></span>
     </div>
-    <p class="hint">Beim Speichern wird <code>config/cards.yaml</code> vorher nach
-      <code>data/config_backups/</code> gesichert. Nur der <code>deck:</code>-Block wird ersetzt,
-      alle Kommentare der Datei bleiben erhalten.</p>
+    <p class="hint">Vor dem Schreiben wird <code>config/cards.yaml</code> nach
+      <code>data/config_backups/</code> gesichert. Nur der <code>deck:</code>-Block wird ersetzt.</p>
   </section>
 
-  <!-- ---------------- Config ---------------- -->
-  <section id="tab-config" class="panel">
+  <!-- ---------------- Türme ---------------- -->
+  <section id="tab-towers" class="panel">
+    <p class="lead">Turmtruppen des Simulators. <b>Dein</b> Turm steht in jedem Match; der Gegner
+      würfelt seinen aus der Gewichtung — je mehr Typen dort mit Gewicht stehen, desto mehr
+      verschiedene Türme muss die Policy verkraften. Neue Türme wirken sofort, ohne Codeänderung.</p>
+    <div class="cfggroup">
+      <h3>Dein Turm</h3>
+      <div class="row">
+        <label>Turmtruppe <select id="mytower"></select></label>
+        <label>Level <input id="mytowerlevel" type="number" min="1" max="20" style="width:70px"></label>
+        <span class="hint">Im Simulator zählen nur <b>Verhältnisse</b>: dieses Level ist der Bezugspunkt,
+          an dem Gegnerlevel und Kartenlevel gemessen werden.</span>
+      </div>
+      <div class="row">
+        <label>Reichweite Turm <input id="towerrange" type="number" step="0.001" style="width:90px"></label>
+        <label>Reichweite König <input id="kingrange" type="number" step="0.001" style="width:90px"></label>
+        <label>Verzögerung erster Schuss (s)
+          <input id="towerfirsthit" type="number" step="0.05" style="width:80px"></label>
+      </div>
+    </div>
+    <div class="cfggroup">
+      <h3>Turmtypen</h3>
+      <p class="hint">HP und Schaden gelten auf dem Bezugslevel oben und werden mit 1,1^(Level−Bezug)
+        skaliert. <code>Schaden/Schuss = DPS × Schussintervall</code>. Die Zusatzfelder sind optional
+        und modellieren Spezialfähigkeiten (Dagger Duchess: Magazin; Royal Chef: Buff).</p>
+      <table class="tbl" id="towertbl">
+        <thead><tr><th>Name</th><th>HP</th><th>DPS</th><th>Schussintervall (s)</th>
+          <th>Gegner-Gewicht</th><th>Zusatzfelder</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="row">
+        <button id="toweradd" class="btn small">+ Turmtyp hinzufügen</button>
+        <span class="hint">Gewicht 0 = kommt beim Gegner nicht vor.</span>
+      </div>
+    </div>
+    <div class="cfggroup">
+      <h3>Königsturm</h3>
+      <div class="row">
+        <label>HP <input id="kinghp" type="number" style="width:100px"></label>
+        <label>DPS <input id="kingdps" type="number" style="width:90px"></label>
+        <label>Schussintervall <input id="kinghs" type="number" step="0.05" style="width:80px"></label>
+      </div>
+    </div>
     <div class="row">
+      <button id="towersave" class="btn primary">Türme speichern</button>
+      <button id="towerreload" class="btn small">Verwerfen</button>
+      <span id="towermsg" class="msg"></span>
+    </div>
+  </section>
+
+  <!-- ---------------- Tempo ---------------- -->
+  <section id="tab-speed" class="panel">
+    <p class="lead">Wie schnell dein PC üben kann — gemessen, nicht geraten. Der Test spielt mit
+      verschiedenen Env-Zahlen jeweils dieselbe Zeit und zählt die fertigen Matches. Er schreibt
+      dabei <b>nicht</b> deinen echten Checkpoint.</p>
+    <div id="speedbody"></div>
+  </section>
+
+  <!-- ---------------- Einstellungen ---------------- -->
+  <section id="tab-config" class="panel">
+    <p class="lead">Die wichtigsten Werte aus <code>config/config.yaml</code>. Es wird nur die
+      betroffene Zeile ersetzt, alle Kommentare bleiben stehen; vorher Backup, danach Gegenprüfung.
+      Ungültiges YAML wird nie geschrieben.</p>
+    <div class="row sticky">
       <button id="cfgsave" class="btn primary">Änderungen speichern</button>
       <button id="cfgreset" class="btn small">Verwerfen</button>
       <span id="cfgmsg" class="msg"></span>
     </div>
-    <p class="hint">Es wird nur die betroffene Zeile in <code>config/config.yaml</code> ersetzt —
-      Kommentare bleiben erhalten. Vor jedem Schreiben: Backup + Gegenprüfung, dass die Datei
-      danach exakt die gewollte Änderung enthält. Ungültiges YAML wird nie geschrieben.</p>
     <div id="cfgbody"></div>
   </section>
 
   <!-- ---------------- Checkpoints ---------------- -->
   <section id="tab-ckpt" class="panel">
-    <div class="row">
-      <button id="ckptreload" class="btn small">Aktualisieren</button>
-      <span class="hint">„Als --init übernehmen“ trägt den Checkpoint in die Startparameter des
-        gewählten Kommandos ein.</span>
-    </div>
+    <p class="lead">Trainierte Netze unter <code>data/</code>. „Als --init übernehmen“ trägt die
+      Datei als Startpunkt in die Kommando-Kacheln ein.</p>
+    <div class="row"><button id="ckptreload" class="btn small">Aktualisieren</button></div>
     <div id="ckptbody"></div>
   </section>
 </main>
 
 <!-- ---------------- Log ---------------- -->
-<section id="logpanel">
+<section id="logpanel" class="collapsed">
   <div class="loghead">
-    <strong>Live-Log</strong>
+    <button id="logtoggle" class="btn small" title="Log ein-/ausklappen">▲ Log</button>
     <select id="logselect"></select>
     <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-Scroll</label>
     <button id="logclear" class="btn small">Ansicht leeren</button>
-    <a id="logdl" class="btn small" href="#">Log herunterladen</a>
+    <a id="logdl" class="btn small" href="#">Log-Datei</a>
+    <span id="logstatus" class="hint"></span>
   </div>
   <pre id="log"></pre>
 </section>
 
+<!-- ---------------- Modal (Onboarding / Hinweise) ---------------- -->
+<div id="modal" class="modal hidden">
+  <div class="modalbox">
+    <div class="modalhead"><span id="modaltitle"></span>
+      <button id="modalx" class="btn small">✕</button></div>
+    <div id="modalbody" class="modalbody"></div>
+    <div class="modalfoot">
+      <span id="modalsteps" class="hint"></span>
+      <div class="spacer"></div>
+      <button id="modalback" class="btn small">Zurück</button>
+      <button id="modalnext" class="btn primary">Weiter</button>
+    </div>
+  </div>
+</div>
+
+<script>window.__TOS__ = {{ tos|tojson }};</script>
 <script src="/static/app.js"></script>
 </body>
 </html>
