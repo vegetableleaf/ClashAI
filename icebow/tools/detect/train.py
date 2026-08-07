@@ -86,6 +86,11 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=-1,
                     help="images per batch; -1 auto-sizes to your GPU (drop to yolo11l/m/s.pt if VRAM is tight)")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
+    ap.add_argument("--seed", type=int, default=0,
+                    help="training seed. Ultralytics runs seed=0 + deterministic=True, so re-running an "
+                         "UNCHANGED dataset reproduces the same weights -- change this to get a genuine "
+                         "replicate and measure the run-to-run noise floor (needed to know whether a "
+                         "1-3pp gap between generations is real or seed variance)")
     ap.add_argument("--status-aug", action="store_true",
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
@@ -113,7 +118,8 @@ def main() -> None:
         print("[train] " + _install_status_aug())
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
-        patience=args.patience, project=str(root / "runs" / "detect"), name="board",
+        patience=args.patience, seed=args.seed,
+        project=str(root / "runs" / "detect"), name="board",
         # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
         hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
     )
