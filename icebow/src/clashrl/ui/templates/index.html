@@ -9,231 +9,231 @@
 <body>
 <header>
   <h1>ClashAI <span class="sub">Launcher</span></h1>
-  <div id="statusbar"><span class="pill idle" id="runpill">kein Job aktiv</span></div>
+  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span></div>
   <div class="spacer"></div>
-  <button id="helpbtn" class="btn small" title="Einführung erneut öffnen">Einführung</button>
-  <button id="tosbtn" class="btn small" title="Hinweis zu den Nutzungsbedingungen">Hinweise</button>
+  <button id="helpbtn" class="btn small" title="Open the introduction again">Introduction</button>
+  <button id="tosbtn" class="btn small" title="Note on the terms of service">Notes</button>
 </header>
 
 <nav class="tabs">
-  <button class="tab active" data-tab="home">Übersicht</button>
-  <button class="tab" data-tab="run">Steuerung</button>
+  <button class="tab active" data-tab="home">Overview</button>
+  <button class="tab" data-tab="run">Control</button>
   <button class="tab" data-tab="live">Live</button>
-  <button class="tab" data-tab="dash">Fortschritt</button>
-  <button class="tab" data-tab="strategy">Strategie</button>
+  <button class="tab" data-tab="dash">Progress</button>
+  <button class="tab" data-tab="strategy">Strategy</button>
   <button class="tab" data-tab="deck">Deck</button>
-  <button class="tab" data-tab="towers">Türme</button>
+  <button class="tab" data-tab="towers">Towers</button>
   <button class="tab" data-tab="speed">Tempo</button>
-  <button class="tab" data-tab="config">Einstellungen</button>
+  <button class="tab" data-tab="config">Settings</button>
   <button class="tab" data-tab="ckpt">Checkpoints</button>
 </nav>
 
 <main>
-  <!-- ---------------- Übersicht ---------------- -->
+  <!-- Overview ---------------- -->
   <section id="tab-home" class="panel active">
     <div id="homebody"></div>
   </section>
 
-  <!-- ---------------- Steuerung ---------------- -->
+  <!-- Control ---------------- -->
   <section id="tab-run" class="panel">
-    <p class="lead">Jede Kachel startet genau ein Kommando der Kommandozeile: dieselben, die du
-      sonst tippen würdest. <b>Stop</b> schickt das Abbruch-Signal, auf das die Trainings mit einem
-      gespeicherten Checkpoint reagieren; nichts geht verloren.</p>
+    <p class="lead">Each tile starts exactly one command line command, the same ones you would
+      type yourself. <b>Stop</b> sends the interrupt the trainings answer by saving a checkpoint,
+      so nothing is lost.</p>
     <div id="cmdgrid"></div>
   </section>
 
-  <!-- ---------------- Live ---------------- -->
+  <!-- live ---------------- -->
   <section id="tab-live" class="panel">
-    <p class="lead">Was der Bot gerade sieht, und was er daraus liest. Nur mitlesen, es wird nichts
-      geklickt. Nützlich vor allem, um zu prüfen, ob das Fenster überhaupt erfasst wird und ob ein
-      Match als Match erkannt wird.</p>
+    <p class="lead">What the bot sees right now and what it reads from it. Read-only, nothing is
+      clicked. Mostly useful to check whether the window is captured at all and whether a match is
+      recognised as one.</p>
     <div class="row">
-      <label class="chk"><input type="checkbox" id="livego"> Live mitlesen</label>
-      <label>Takt <select id="liverate">
-        <option value="700">schnell</option>
+      <label class="chk"><input type="checkbox" id="livego"> Follow live</label>
+      <label>Rate <select id="liverate">
+        <option value="700">fast</option>
         <option value="1500" selected>normal</option>
-        <option value="4000">sparsam</option>
+        <option value="4000">easy on the CPU</option>
       </select></label>
-      <button id="liveonce" class="btn small">Einmal aktualisieren</button>
-      <button id="livereset" class="btn small" title="Fenstersuche neu starten, z.B. nach dem Verschieben">Fenster neu suchen</button>
+      <button id="liveonce" class="btn small">Refresh once</button>
+      <button id="livereset" class="btn small" title="Look the window up again, e.g. after moving it">Find the window again</button>
       <span id="livemsg" class="msg"></span>
     </div>
     <div id="livebody"></div>
   </section>
 
-  <!-- ---------------- Fortschritt ---------------- -->
+  <!-- Progress ---------------- -->
   <section id="tab-dash" class="panel">
-    <p class="lead">Zahlen aus den laufenden und vergangenen Trainings. Wichtig: die
-      <b>Benchmark-Kurve</b> (greedy gegen feste Meta-Decks) ist das ehrliche Maß: die
-      Trainings-Winrate enthält Zufallszüge und Self-Play und pendelt sich von selbst um 50 % ein.</p>
+    <p class="lead">Numbers from the current and past trainings. The <b>benchmark curve</b>
+      (greedy against fixed meta decks) is the honest measure; the training win rate contains
+      random moves and self-play and settles around 50 per cent on its own.</p>
     <div class="row">
-      <label>Lauf: <select id="runselect"></select></label>
+      <label>Run: <select id="runselect"></select></label>
       <button id="dashreload" class="btn small">Aktualisieren</button>
       <a id="csvlink" class="btn small" href="/api/metrics.csv">CSV-Export</a>
-      <span class="hint">gespeichert in <code>data/metrics.jsonl</code></span>
+      <span class="hint">stored in <code>data/metrics.jsonl</code></span>
     </div>
     <div id="kpis" class="kpis"></div>
     <div id="charts" class="charts"></div>
   </section>
 
-  <!-- ---------------- Strategie ---------------- -->
+  <!-- Strategy ---------------- -->
   <section id="tab-strategy" class="panel">
-    <p class="lead">Was die Policy <b>tatsächlich</b> tut: welche Karten sie legt, wohin, und wie oft
-      sie bewusst wartet. Eine Karte, die nie vorkommt, ist der deutlichste Hinweis auf eine
-      Belohnung, die nicht greift.</p>
+    <p class="lead">What the policy <b>actually</b> does: which cards it plays, where, and how
+      often it deliberately waits. A card that never appears is the clearest sign of a reward that
+      is not doing anything.</p>
     <div class="row">
-      <button id="stratrun" class="btn primary">Analyse starten</button>
+      <button id="stratrun" class="btn primary">Start analysis</button>
       <button id="stratreload" class="btn small">Aktualisieren</button>
-      <span class="hint">Kommando <code>policy-stats</code>, Ergebnis in <code>data/policy_stats.json</code></span>
+      <span class="hint">command <code>policy-stats</code>, result in <code>data/policy_stats.json</code></span>
     </div>
     <div id="stratbody"></div>
   </section>
 
-  <!-- ---------------- Deck ---------------- -->
+  <!-- deck ---------------- -->
   <section id="tab-deck" class="panel">
-    <p class="lead">Das Deck bestimmt den Aktionsraum der Policy: jede Karte ist eine eigene Aktion,
-      eine Evolution zählt separat. Änderst du das Deck, passen alte Checkpoints und Datensätze
-      nicht mehr.</p>
+    <p class="lead">The deck defines the policy's action space: every card is its own action and
+      an evolution counts separately. Change the deck and old checkpoints and datasets no longer
+      fit.</p>
     <div class="cfggroup">
-      <h3>Deck automatisch erkennen</h3>
-      <p class="hint">Erkennt die Karten aus einer Aufnahme, statt dass du Bildausschnitte von Hand
-        benennst. Voraussetzung ist einmalig <b>Kartenbilder holen</b>; danach läuft die Erkennung
-        offline. Das Ergebnis wird hier zur Bestätigung angezeigt und erst auf Knopfdruck in die
-        Liste unten übernommen.</p>
+      <h3>Detect the deck automatically</h3>
+      <p class="hint">Recognises the cards from a recording instead of having you name image crops
+        by hand. Needs <b>Fetch card pictures</b> once; after that the recognition runs offline. The
+        result is shown here for confirmation and only goes into the list below when you press the
+        button.</p>
       <div class="row">
-        <button id="detectrun" class="btn primary">Deck aus Aufnahme erkennen</button>
-        <button id="artrun" class="btn small">Kartenbilder holen</button>
-        <button id="detectreload" class="btn small">Ergebnis aktualisieren</button>
+        <button id="detectrun" class="btn primary">Detect the deck from a recording</button>
+        <button id="artrun" class="btn small">Fetch card pictures</button>
+        <button id="detectreload" class="btn small">Refresh the result</button>
         <span id="detectmsg" class="msg"></span>
       </div>
       <div id="detectbody"></div>
     </div>
     <div id="deckwarn"></div>
     <div class="row">
-      <label>Deckname: <input id="deckname" type="text" size="40"></label>
+      <label>Deck name: <input id="deckname" type="text" size="40"></label>
       <span id="deckavg" class="pill"></span>
     </div>
     <table class="tbl" id="decktbl">
-      <thead><tr><th>#</th><th>Karte</th><th>Elixier</th><th>Rolle</th><th>Level</th><th>Evo</th></tr></thead>
+      <thead><tr><th>#</th><th>Card</th><th>Elixir</th><th>Role</th><th>Level</th><th>Evo</th></tr></thead>
       <tbody></tbody>
     </table>
     <div class="row">
-      <button id="decksave" class="btn primary">Deck speichern</button>
+      <button id="decksave" class="btn primary">Save deck</button>
       <span id="deckmsg" class="msg"></span>
     </div>
-    <p class="hint">Vor dem Schreiben wird <code>config/cards.yaml</code> nach
-      <code>data/config_backups/</code> gesichert. Nur der <code>deck:</code>-Block wird ersetzt.</p>
+    <p class="hint">Before writing, <code>config/cards.yaml</code> is backed up to
+      <code>data/config_backups/</code>. Only the <code>deck:</code> block is replaced.</p>
   </section>
 
-  <!-- ---------------- Türme ---------------- -->
+  <!-- Towers ---------------- -->
   <section id="tab-towers" class="panel">
-    <p class="lead">Turmtruppen des Simulators. <b>Dein</b> Turm steht in jedem Match; der Gegner
-      würfelt seinen aus der Gewichtung: je mehr Typen dort mit Gewicht stehen, desto mehr
-      verschiedene Türme muss die Policy verkraften. Neue Türme wirken sofort, ohne Codeänderung.</p>
-    <div class="cfggroup">
-      <h3>Dein Turm</h3>
+    <p class="lead">Tower troops of the simulator. <b>Your</b> tower is the same every
+      match; the opponent rolls one from the weights, so the more types carry a weight the
+      more variety the policy has to cope with. New towers take effect immediately, with
+      no code change.</p>
+      <h3>Your tower</h3>
       <div class="row">
-        <label>Turmtruppe <select id="mytower"></select></label>
+        <label>Tower troop <select id="mytower"></select></label>
         <label>Level <input id="mytowerlevel" type="number" min="1" max="20" style="width:70px"></label>
-        <span class="hint">Im Simulator zählen nur <b>Verhältnisse</b>: dieses Level ist der Bezugspunkt,
-          an dem Gegnerlevel und Kartenlevel gemessen werden.</span>
+        <span class="hint">Only <b>ratios</b> matter in the simulator: this level is the reference
+          against which opponent levels and card levels are measured.</span>
       </div>
       <div class="row">
-        <label>Reichweite Turm <input id="towerrange" type="number" step="0.001" style="width:90px"></label>
-        <label>Reichweite König <input id="kingrange" type="number" step="0.001" style="width:90px"></label>
-        <label>Verzögerung erster Schuss (s)
+        <label>Tower range <input id="towerrange" type="number" step="0.001" style="width:90px"></label>
+        <label>King tower range <input id="kingrange" type="number" step="0.001" style="width:90px"></label>
+        <label>First shot delay (s)
           <input id="towerfirsthit" type="number" step="0.05" style="width:80px"></label>
       </div>
     </div>
     <div class="cfggroup">
-      <h3>Turmtypen</h3>
-      <p class="hint">HP und Schaden gelten auf dem Bezugslevel oben und werden mit 1,1^(Level-Bezug)
-        skaliert. <code>Schaden/Schuss = DPS × Schussintervall</code>. Die Zusatzfelder sind optional
-        und modellieren Spezialfähigkeiten (Dagger Duchess: Magazin; Royal Chef: Buff).</p>
+      <h3>Tower troops</h3>
+      <p class="hint">Hitpoints and damage apply at the reference level above and scale with
+        1.1^(level - reference). <code>damage per shot = DPS x shot interval</code>. The extra fields
+        are optional and model special abilities (Dagger Duchess: clip; Royal Chef: buff).</p>
       <table class="tbl" id="towertbl">
-        <thead><tr><th>Name</th><th>HP</th><th>DPS</th><th>Schussintervall (s)</th>
-          <th>Gegner-Gewicht</th><th>Zusatzfelder</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>HP</th><th>DPS</th><th>Shot interval (s)</th>
+          <th>Opponent weight</th><th>Extra fields</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
       <div class="row">
-        <button id="toweradd" class="btn small">+ Turmtyp hinzufügen</button>
-        <span class="hint">Gewicht 0 = kommt beim Gegner nicht vor.</span>
+        <button id="toweradd" class="btn small">Add a tower troop</button>
+        <span class="hint">Weight 0 means the opponent never gets it.</span>
       </div>
     </div>
     <div class="cfggroup">
-      <h3>Königsturm</h3>
+      <h3>King tower</h3>
       <div class="row">
         <label>HP <input id="kinghp" type="number" style="width:100px"></label>
         <label>DPS <input id="kingdps" type="number" style="width:90px"></label>
-        <label>Schussintervall <input id="kinghs" type="number" step="0.05" style="width:80px"></label>
+        <label>Shot interval <input id="kinghs" type="number" step="0.05" style="width:80px"></label>
       </div>
     </div>
     <div class="row">
-      <button id="towersave" class="btn primary">Türme speichern</button>
-      <button id="towerreload" class="btn small">Verwerfen</button>
+      <button id="towersave" class="btn primary">Save towers</button>
+      <button id="towerreload" class="btn small">Discard</button>
       <span id="towermsg" class="msg"></span>
     </div>
   </section>
 
-  <!-- ---------------- Tempo ---------------- -->
+  <!-- speed ---------------- -->
   <section id="tab-speed" class="panel">
-    <p class="lead">Wie schnell dein PC üben kann: gemessen, nicht geraten. Der Test spielt mit
-      verschiedenen Env-Zahlen jeweils dieselbe Zeit und zählt die fertigen Matches. Er schreibt
-      dabei <b>nicht</b> deinen echten Checkpoint.</p>
+    <p class="lead">How fast this machine can practise, measured rather than guessed. The benchmark
+      plays for the same amount of time at different numbers of parallel matches and counts the
+      finished ones. It does <b>not</b> touch your real checkpoint.</p>
     <div id="speedbody"></div>
   </section>
 
-  <!-- ---------------- Einstellungen ---------------- -->
+  <!-- Settings ---------------- -->
   <section id="tab-config" class="panel">
-    <p class="lead">Die wichtigsten Werte aus <code>config/config.yaml</code>. Es wird nur die
-      betroffene Zeile ersetzt, alle Kommentare bleiben stehen; vorher Backup, danach Gegenprüfung.
-      Ungültiges YAML wird nie geschrieben.</p>
+    <p class="lead">The settings that matter from <code>config/config.yaml</code>. Only the line in
+      question is replaced, every comment stays; a backup is taken first and the result is checked
+      afterwards. Invalid YAML is never written.</p>
     <div class="row sticky">
-      <button id="cfgsave" class="btn primary">Änderungen speichern</button>
-      <button id="cfgreset" class="btn small">Verwerfen</button>
+      <button id="cfgsave" class="btn primary">Save changes</button>
+      <button id="cfgreset" class="btn small">Discard</button>
       <span id="cfgmsg" class="msg"></span>
     </div>
     <div id="cfgbody"></div>
   </section>
 
-  <!-- ---------------- Checkpoints ---------------- -->
+  <!-- checkpoints ---------------- -->
   <section id="tab-ckpt" class="panel">
-    <p class="lead">Trainierte Netze unter <code>data/</code>. „Als --init übernehmen“ trägt die
-      Datei als Startpunkt in die Kommando-Kacheln ein.</p>
+    <p class="lead">Trained networks under <code>data/</code>. Use as --init enters the file as
+      the starting point in the command tiles.</p>
     <div class="row"><button id="ckptreload" class="btn small">Aktualisieren</button></div>
     <div id="ckptbody"></div>
   </section>
 </main>
 
-<!-- ---------------- Log ---------------- -->
+<!-- log ---------------- -->
 <section id="logpanel" class="collapsed">
   <div class="loghead">
-    <button id="logtoggle" class="btn small" title="Log ein-/ausklappen">Log anzeigen</button>
+    <button id="logtoggle" class="btn small" title="Show or hide the log">Show log</button>
     <select id="logselect"></select>
-    <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-Scroll</label>
-    <button id="logclear" class="btn small">Ansicht leeren</button>
-    <a id="logdl" class="btn small" href="#">Log-Datei</a>
+    <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-scroll</label>
+    <button id="logclear" class="btn small">Clear view</button>
+    <a id="logdl" class="btn small" href="#">Log file</a>
     <span id="logstatus" class="hint"></span>
   </div>
   <pre id="log"></pre>
 </section>
 
-<!-- ---------------- Modal (Hinweise) ---------------- -->
+<!-- Modal (Notes) ---------------- -->
 <div id="modal" class="modal hidden">
   <div class="modalbox">
     <div class="modalhead"><span id="modaltitle"></span>
-      <button id="modalx" class="btn small">Schließen</button></div>
+      <button id="modalx" class="btn small">Close</button></div>
     <div id="modalbody" class="modalbody"></div>
     <div class="modalfoot">
       <span id="modalsteps" class="hint"></span>
       <div class="spacer"></div>
-      <button id="modalback" class="btn small">Zurück</button>
-      <button id="modalnext" class="btn primary">Weiter</button>
+      <button id="modalback" class="btn small">Back</button>
+      <button id="modalnext" class="btn primary">Next</button>
     </div>
   </div>
 </div>
 
-<!-- ---------------- Geführte Tour ---------------- -->
+<!-- guided tour ---------------- -->
 <div id="tour" class="hidden">
   <div id="tourblock"></div>
   <div id="tourhole"></div>
@@ -243,9 +243,9 @@
     <div class="tf">
       <span id="tourcount" class="hint"></span>
       <div class="spacer"></div>
-      <button id="tourend" class="btn small">Tour beenden</button>
-      <button id="tourback" class="btn small">Zurück</button>
-      <button id="tournext" class="btn primary">Weiter</button>
+      <button id="tourend" class="btn small">End tour</button>
+      <button id="tourback" class="btn small">Back</button>
+      <button id="tournext" class="btn primary">Next</button>
     </div>
   </div>
 </div>

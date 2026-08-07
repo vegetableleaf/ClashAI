@@ -29,7 +29,7 @@ async function api(path, opts) {
 const post = (path, obj) => api(path, { method: "POST",
   headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj || {}) });
 
-/* Kurze Rückmeldung unten rechts statt eines blockierenden Browser-Dialogs. */
+/* A short note in the corner instead of a blocking browser dialog. */
 function toast(msg, seconds) {
   let box = $("#toast");
   if (!box) { box = el("div"); box.id = "toast"; document.body.appendChild(box); }
@@ -47,52 +47,48 @@ const LOADERS = { home: () => loadOverview(), live: () => loadLive(), dash: () =
 function showTab(name) {
   $$(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
   $$(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + name));
-  // gibt das Laden zurück, damit die Tour warten kann statt ins Leere zu zeigen
+  // returns the load promise so the tour can wait instead of pointing at nothing
   return LOADERS[name] ? LOADERS[name]().catch(e => console.error(name, e)) : Promise.resolve();
 }
 $$(".tab").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 
-/* ---------------- modal / Einführung ----------------
-   Eine geführte Tour: jeder Schritt erklärt eine Sache und hat den passenden Knopf
-   gleich daneben, damit man sie sofort ausprobiert statt sie nur zu lesen. */
+/* ---------------- welcome dialog ---------------- */
 const TOS = window.__TOS__ || "";
 
-/* --- Geführte Tour: markiert das gemeinte Bedienelement direkt auf der Seite ---
-   `sel` zeigt auf ein echtes Element. Fehlt es (weil es noch keine Daten gibt),
-   überspringt die Tour den Schritt, statt ins Leere zu zeigen. */
+/* --- Guided tour: highlights the control it is talking about, on the page itself ---
+   `sel` points at a real element. If it is missing (because there is no data yet)
+   the tour skips that step rather than pointing at nothing. */
 const TOUR = [
-  { tab: "live", sel: "#tab-live .row", title: "Sieht der Bot dein Spiel?",
-    text: "Hier steht, ob das Fenster erfasst wird, ob der Bildschirm als Match erkannt wird und "
-        + "welche Handkarten er liest. Wenn weiter unten etwas nicht funktioniert, sieht man hier "
-        + "zuerst warum." },
-  { tab: "run", sel: "#cmd-calibrate", title: "Wenn kein Match erkannt wird",
-    text: "Die mitgelieferten Vorlagen stammen aus einem englischen Client mit anderer "
-        + "Fenstergröße. Passt das nicht zu deinem Spiel, erkennt nichts ein Match und alles "
-        + "Weitere findet nichts. Dieses Kommando schneidet die Erkennung aus deiner eigenen "
-        + "Aufnahme neu zu." },
-  { tab: "run", sel: "#cmd-deck-detect", title: "Deck ohne Handarbeit",
-    text: "Liest die Karten aus einer Aufnahme und kann sie mit <b>Vorlagen gleich schreiben</b> "
-        + "direkt unter ihrem richtigen Namen ablegen. Damit entfällt das Umbenennen der "
-        + "Bildausschnitte, das sonst der lästigste Teil eines Deckwechsels ist." },
-  { tab: "run", sel: "#cmd-train-sim .foot", title: "Stop verliert nichts",
-    text: "<b>Stop</b> beendet geordnet und speichert dabei. Solange ein solcher Lauf aktiv ist, "
-        + "sind die anderen Start-Knöpfe gesperrt: Grafikkarte und Spielfenster gibt es nur einmal." },
-  { tab: "speed", sel: "#benchauto", title: "Mehr ist nicht schneller",
-    text: "Mehr gleichzeitige Matches steigern den Durchsatz nur bis zu einem Punkt, danach wird "
-        + "es wieder langsamer, und die Lernschritte je Match sinken durchgehend. Dieser Knopf "
-        + "misst beides und übernimmt die beste Einstellung." },
-  { tab: "dash", sel: "#charts", title: "Nur eine Kurve zählt",
-    text: "Die <b>Benchmark</b>-Kurve spielt ohne Zufall gegen feste Gegnerdecks und zeigt echten "
-        + "Fortschritt. Die <b>Winrate im Training</b> enthält Zufallszüge und Spiele gegen sich "
-        + "selbst und pendelt sich immer um 50 Prozent ein." },
-  { tab: "strategy", sel: "#stratrun", title: "Was er nie spielt",
-    text: "Die Analyse zählt jede Entscheidung mit. Am aussagekräftigsten ist die Liste der Karten, "
-        + "die er <b>nie</b> benutzt: eine Siegbedingung darin heißt, dass die Belohnungen nicht "
-        + "greifen." },
-  { tab: "towers", sel: "#towertbl", title: "Gegen welche Türme er spielt",
-    text: "Die Spalte <b>Gegner-Gewicht</b> entscheidet, wie oft der Gegner welchen Turm bekommt. "
-        + "Mehr Typen mit Gewicht heißt: er muss mit mehr Varianten zurechtkommen. Eigene Turmtypen "
-        + "kannst du hier anlegen, der Simulator benutzt sie sofort." },
+  { tab: "live", sel: "#tab-live .row", title: "Does the bot see your game?",
+    text: "This tells you whether the window is captured, whether the screen is recognised as a "
+        + "match, and which hand cards are read. When something further down produces nothing, "
+        + "this is where you find out why." },
+  { tab: "run", sel: "#cmd-calibrate", title: "When no match is recognised",
+    text: "The shipped templates come from an English client with a different window size. If "
+        + "that does not fit your game, nothing registers as a match and everything downstream "
+        + "silently finds nothing. This command re-cuts the detection from your own recording." },
+  { tab: "run", sel: "#cmd-deck-detect", title: "The deck without manual work",
+    text: "Reads the cards out of a recording, and with <b>Write hand templates</b> saves them "
+        + "under their real names right away. That removes the renaming of image crops, which is "
+        + "otherwise the most tedious part of a deck switch." },
+  { tab: "run", sel: "#cmd-train-sim .foot", title: "Stop loses nothing",
+    text: "<b>Stop</b> shuts the run down in order and saves on the way out. While such a run is "
+        + "active the other start buttons are disabled: there is only one GPU and one game window." },
+  { tab: "speed", sel: "#benchauto", title: "More is not faster",
+    text: "More parallel matches raise throughput only up to a point, after which it drops again, "
+        + "and the learning steps per match fall the whole way. This button measures both and "
+        + "applies the best setting." },
+  { tab: "dash", sel: "#charts", title: "Only one curve counts",
+    text: "The <b>benchmark</b> curve plays without randomness against fixed opponent decks and "
+        + "shows real progress. The <b>training win rate</b> contains random moves and games "
+        + "against itself, so it always settles around 50 per cent." },
+  { tab: "strategy", sel: "#stratrun", title: "What it never plays",
+    text: "The analysis counts every decision. The most telling part is the list of cards it "
+        + "<b>never</b> uses: a win condition in there means the rewards are not doing anything." },
+  { tab: "towers", sel: "#towertbl", title: "Which towers it plays against",
+    text: "The <b>opponent weight</b> column decides how often the opponent gets which tower. "
+        + "More types with a weight means it has to cope with more variants. You can add your own "
+        + "tower troops here and the simulator uses them immediately." },
 ];
 
 let tourIx = 0, tourOn = false;
@@ -104,8 +100,8 @@ function tourEl(step) {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function waitFor(step, ms) {
-  // Tabs laden ihren Inhalt nach. Ohne Warten würde die Tour Schritte überspringen,
-  // deren Ziel es im Moment des Umschaltens noch gar nicht gibt.
+  // Tabs load their content asynchronously. Without waiting, the tour would skip a
+  // step whose target does not exist yet at the moment of switching.
   const until = Date.now() + ms;
   for (;;) {
     const e = tourEl(step);
@@ -118,8 +114,8 @@ async function waitFor(step, ms) {
 let tourBusy = false;
 
 async function tourShow(i, dir) {
-  // Ein zweiter Klick auf Weiter, während der vorige Schritt noch lädt, würde zwei
-  // Durchläufe verschränken und Titel und Zähler auseinanderlaufen lassen.
+  // A second click on Next while the previous step is still loading would interleave
+  // two runs and let the title and the counter drift apart.
   if (tourBusy) return;
   tourBusy = true;
   try { await tourShowInner(i, dir); } finally { tourBusy = false; }
@@ -135,7 +131,7 @@ async function tourShowInner(i, dir) {
     }
     target = await waitFor(step, 2500);
     if (target) break;
-    i += dir;                                   // Ziel gibt es wirklich nicht: überspringen
+    i += dir;                                   // the target really does not exist: skip it
   }
   if (i < 0 || i >= TOUR.length || !target) return tourStop();
   tourIx = i;
@@ -143,7 +139,7 @@ async function tourShowInner(i, dir) {
   target.scrollIntoView({ behavior: "smooth", block: "center" });
   await sleep(320);                             // Ende des sanften Scrollens abwarten
   tourPlace(target, step);
-  await sleep(220);                             // nach spätem Umbruch noch einmal nachziehen
+  await sleep(220);                             // re-place once more after a late reflow
   if (tourOn && tourIx === i) tourPlace(target, step);
 }
 
@@ -160,7 +156,7 @@ function tourPlace(target, step) {
   $("#tourtext").innerHTML = step.text;
   $("#tourcount").textContent = `${tourIx + 1} von ${TOUR.length}`;
   $("#tourback").style.display = tourIx ? "" : "none";
-  $("#tournext").textContent = tourIx === TOUR.length - 1 ? "Fertig" : "Weiter";
+  $("#tournext").textContent = tourIx === TOUR.length - 1 ? "Done" : "Next";
 
   const card = $("#tourcard");
   card.style.visibility = "hidden";
@@ -199,12 +195,12 @@ window.addEventListener("resize", () => {
 });
 
 const WELCOME = `
-    <p>Diese Oberfläche bedient den Lern-Bot. Sie startet dieselben Kommandos, die sonst im
-    Terminal getippt werden, zeigt deren Ausgabe live an und schreibt die Zahlen mit.
-    Alles läuft nur auf diesem PC, ohne Anmeldung und ohne Datenversand.</p>
-    <div class="note"><b>Bevor du loslegst:</b> ${TOS}</div>
-    <p>Die Tour geht die Oberfläche durch und markiert dabei jedes Mal genau das Element, um das
-    es geht, damit du siehst, wo etwas steht und was es bewirkt. Sie führt nichts von selbst aus.</p>`;
+    <p>This panel drives the learning bot. It starts the same commands you would otherwise
+    type in a terminal, shows their output live and records the numbers. Everything runs on
+    this machine only, with no sign-in and nothing sent anywhere.</p>
+    <div class="note"><b>Before you start:</b> ${TOS}</div>
+    <p>The tour walks through the panel and highlights the exact control each step is
+    about, so you can see where things are and what they do. It runs nothing by itself.</p>`;
 
 let modalMode = "welcome";
 
@@ -219,23 +215,23 @@ function closeModal() {
 }
 function renderModal() {
   const tos = modalMode === "tos";
-  $("#modaltitle").textContent = tos ? "Hinweis zu den Nutzungsbedingungen"
-                                     : "ClashAI Launcher";
+  $("#modaltitle").textContent = tos ? "Note on the terms of service"
+                                     : "ClashAI control panel";
   $("#modalbody").innerHTML = tos
     ? `<div class="note">${TOS}</div>
-       <p>Den Simulator betrifft das nicht: er spielt gegen sich selbst, ohne Verbindung zum
-       echten Spiel. Betroffen sind die Kommandos, die das laufende Spiel bedienen,
-       also <code>play</code> und <code>train-rl</code>.</p>`
+       <p>This does not concern the simulator: it plays against itself with no connection to
+       the real game. It concerns the commands that drive the running game,
+       namely <code>play</code> and <code>train-rl</code>.</p>`
     : WELCOME;
   $("#modalsteps").textContent = "";
   $("#modalback").style.display = tos ? "none" : "";
-  $("#modalback").textContent = "Später";
-  $("#modalnext").textContent = tos ? "Schließen" : "Tour starten";
+  $("#modalback").textContent = "Later";
+  $("#modalnext").textContent = tos ? "Close" : "Start the tour";
 }
 $("#modalnext").onclick = () => (modalMode === "tos" ? closeModal() : tourStart());
 $("#modalback").onclick = () => closeModal();
 $("#modalx").onclick = () => closeModal();
-// Absichtlich KEIN Schliessen per Klick daneben: das Fenster geht nur über seine Knöpfe zu.
+// Deliberately no close-on-outside-click: the dialog only closes through its buttons.
 $("#helpbtn").onclick = () => openModal("welcome");
 $("#tosbtn").onclick = () => openModal("tos");
 
@@ -291,15 +287,15 @@ function collectArgs(cmd) {
 }
 
 const GROUP_HINT = {
-  "Simulator-Training": "Läuft ohne das Spiel. Hier entsteht die Policy.",
-  "Aus Aufnahmen lernen": "Braucht dein eigenes Spiel als Vorbild.",
-  "Live am Spiel": "Braucht das laufende Spiel, Fenster und Maus.",
-  "Analyse & Diagnose": "Messen und nachsehen, nichts wird trainiert.",
+  "Simulator training": "Runs without the game. This is where the policy comes from.",
+  "Learn from recordings": "Needs your own play as the example.",
+  "Live on the game": "Needs the running game, its window and the mouse.",
+  "Analysis and diagnosis": "Measuring and looking, nothing is trained.",
 };
 
 function renderCommands() {
-  // Nur neu zeichnen, wenn sich wirklich etwas geändert hat: der 3-Sekunden-Takt würde
-  // sonst beim Tippen den Fokus stehlen und offene Auswahllisten zuklappen.
+  // Only redraw when something actually changed: the three-second poll would otherwise
+  // steal focus while typing and close open dropdowns.
   const sig = JSON.stringify([S.commands.map(c => c.cmd), S.gpuBusy,
     S.jobs.filter(j => j.running).map(j => [j.cmd, j.id, j.stopping]), S.sessions,
     S.checkpoints.map(c => c.rel)]);
@@ -308,7 +304,7 @@ function renderCommands() {
     $$("#cmdgrid .card .foot .msg").forEach(m => {
       const cmd = m.closest(".card").id.replace("cmd-", "");
       const run = S.jobs.find(j => j.cmd === cmd && j.running);
-      if (run && !run.stopping) m.textContent = `läuft seit ${fmtDur(run.elapsed)}`;
+      if (run && !run.stopping) m.textContent = `running for ${fmtDur(run.elapsed)}`;
     });
     return;
   }
@@ -342,8 +338,8 @@ function commandCard(c) {
   const card = el("div", "card" + (c.gpu ? " gpu" : "")); card.id = "cmd-" + c.cmd;
   const head = el("div", "row"); head.style.margin = "0 0 2px";
   head.appendChild(el("h3", null, c.title));
-  if (c.gpu) { const p = el("span", "pill", "exklusiv"); p.title =
-    "Belegt GPU bzw. Spielfenster: es läuft immer nur ein solcher Job."; head.appendChild(p); }
+  if (c.gpu) { const p = el("span", "pill", "exclusive"); p.title =
+    "Holds the GPU or the game window: only one such job runs at a time."; head.appendChild(p); }
   card.appendChild(head);
   card.appendChild(el("div", "desc", c.desc));
   const args = el("div", "args");
@@ -356,7 +352,7 @@ function commandCard(c) {
   if (running) {
     btn.disabled = true;
     st.className = "msg ok";
-    st.textContent = running.stopping ? "stoppt und speichert ..." : `läuft seit ${fmtDur(running.elapsed)}`;
+    st.textContent = running.stopping ? "stopping and saving ..." : `running for ${fmtDur(running.elapsed)}`;
     stop.onclick = async () => {
       stop.disabled = true;
       try { await post(`/api/jobs/${running.id}/stop`); } catch (e) { toast(e.message); }
@@ -364,7 +360,7 @@ function commandCard(c) {
     };
   } else {
     stop.disabled = true;
-    if (c.gpu && S.gpuBusy) { btn.disabled = true; st.textContent = "wartet: anderer Job belegt GPU/Fenster"; }
+    if (c.gpu && S.gpuBusy) { btn.disabled = true; st.textContent = "waiting: another job holds the GPU or window"; }
     btn.onclick = () => startJob(c.cmd, collectArgs(c.cmd), st, btn);
   }
   row.appendChild(btn); row.appendChild(stop); row.appendChild(st);
@@ -393,8 +389,8 @@ async function startJob(cmd, args, statusEl, btn) {
 /* ---------------- log ---------------- */
 function setLogOpen(open) {
   $("#logpanel").classList.toggle("collapsed", !open);
-  document.body.classList.toggle("logopen", open);      // sonst verdeckt das Log die letzten Zeilen
-  $("#logtoggle").textContent = open ? "Log ausblenden" : "Log anzeigen";
+  document.body.classList.toggle("logopen", open);      // otherwise the log hides the last rows
+  $("#logtoggle").textContent = open ? "Hide log" : "Show log";
 }
 $("#logtoggle").onclick = () => setLogOpen($("#logpanel").classList.contains("collapsed"));
 
@@ -421,7 +417,7 @@ function attachLog(jid) {
     if (d.eof) {
       es.close(); S.stream = null;
       const stopped = [0, 130, 3221225786, -1073741510].includes(d.rc);
-      $("#logstatus").textContent = stopped ? "beendet" : `beendet (Exit-Code ${d.rc})`;
+      $("#logstatus").textContent = stopped ? "finished" : `finished with exit code ${d.rc}`;
       refresh();
       const cur = $(".tab.active").dataset.tab;
       if (LOADERS[cur]) LOADERS[cur]().catch(() => {});
@@ -442,7 +438,7 @@ function renderLogSelect() {
   sel.innerHTML = "";
   S.jobs.forEach(j => {
     const o = el("option", null, `${j.cmd} um ${new Date(j.started * 1000)
-      .toLocaleTimeString("de-DE")}${j.running ? " (läuft)" : ""}`);
+      .toLocaleTimeString("de-DE")}${j.running ? " (running)" : ""}`);
     o.value = j.id; sel.appendChild(o);
   });
   if (cur) sel.value = cur;
@@ -458,7 +454,7 @@ async function refresh() {
     if (running.length) {
       pill.className = "pill run";
       pill.textContent = running.map(j => `${j.cmd} · ${fmtDur(j.elapsed)}`).join(" | ");
-    } else { pill.className = "pill idle"; pill.textContent = "kein Job aktiv"; }
+    } else { pill.className = "pill idle"; pill.textContent = "no job running"; }
     renderCommands(); renderLogSelect();
     if (!S.streamJob && running.length) { attachLog(running[0].id); setLogOpen(true); }
   } catch (e) { console.error(e); }
@@ -507,12 +503,12 @@ function chartBox(title, sub, series, opts) {
   return box;
 }
 
-/* ---------------- Übersicht ---------------- */
+/* ---------------- overview ---------------- */
 async function loadOverview() {
   const d = await api("/api/overview");
   const b = $("#homebody"); b.innerHTML = "";
 
-  b.appendChild(el("h2", null, "Stand"));
+  b.appendChild(el("h2", null, "status"));
   const g = el("div", "statgrid");
   const card = (title, rows) => {
     const c = el("div", "statcard");
@@ -524,29 +520,29 @@ async function loadOverview() {
   const best = (d.checkpoints || []).find(c => c.best_wr != null && c.best_wr >= 0);
   g.appendChild(card("Policy", [
     ["Checkpoints", (d.checkpoints || []).length],
-    ["bester Benchmark", best ? best.best_wr.toFixed(0) + " %" : "noch keiner"],
-    ["Matches trainiert", best && best.matches != null ? int(best.matches) : "-"],
+    ["best benchmark", best ? best.best_wr.toFixed(0) + " %" : "none yet"],
+    ["matches trained", best && best.matches != null ? int(best.matches) : "-"],
   ]));
   g.appendChild(card("Deck", [
     ["Name", d.deck.name],
-    ["Ø Elixier", d.deck.avg_elixir ?? "-"],
-    ["Aktionen (Identitäten)", d.deck.identities.length],
+    ["Average elixir", d.deck.avg_elixir ?? "-"],
+    ["Actions (card identities)", d.deck.identities.length],
   ]));
-  g.appendChild(card("Türme im Simulator", [
-    ["deiner", d.towers.mine],
-    ["Bezugslevel", d.towers.level],
-    ["Gegnertypen", (d.towers.opponents || []).join(", ") || "-"],
+  g.appendChild(card("Towers in the simulator", [
+    ["yours", d.towers.mine],
+    ["reference level", d.towers.level],
+    ["opponent types", (d.towers.opponents || []).join(", ") || "-"],
   ]));
   const bench = d.bench;
-  g.appendChild(card("Tempo", [
-    ["eingestellt", `${d.envs} Envs`],
-    ["gemessen", bench ? num(bench.best_mps) + " Matches/s bei " + bench.best_envs + " Envs" : "noch nicht gemessen"],
-    ["das sind", bench ? int(bench.best_mps * 3600) + " Matches/Stunde" : "-"],
+  g.appendChild(card("Speed", [
+    ["configured", `${d.envs} Envs`],
+    ["measured", bench ? num(bench.best_mps) + " matches/s at " + bench.best_envs + " parallel matches" : "not measured yet"],
+    ["that is", bench ? int(bench.best_mps * 3600) + " matches per hour" : "-"],
   ]));
   b.appendChild(g);
 
   if ((d.runs || []).length) {
-    b.appendChild(el("h2", null, "Letzte Trainingsläufe"));
+    b.appendChild(el("h2", null, "Recent training runs"));
     const t = el("table", "tbl");
     t.innerHTML = "<thead><tr><th>Start</th><th>Kommando</th><th>Matches</th><th>bester Benchmark</th></tr></thead>";
     const tb = el("tbody");
@@ -574,83 +570,83 @@ async function loadSpeed() {
       r.appendChild(el("span", null, k)); r.appendChild(el("span", null, String(v))); c.appendChild(r); });
     return c;
   };
-  g.appendChild(card("Dieser PC", [
-    ["Betriebssystem", hw.os],
-    ["CPU-Threads", hw.cpu_logical ?? "-"],
-    ["Arbeitsspeicher", fmtSize(hw.ram_total)],
-    ["frei", fmtSize(hw.ram_available)],
+  g.appendChild(card("This machine", [
+    ["Operating system", hw.os],
+    ["CPU threads", hw.cpu_logical ?? "-"],
+    ["Memory", fmtSize(hw.ram_total)],
+    ["free", fmtSize(hw.ram_available)],
   ]));
-  g.appendChild(card("Grafikkarte", [
+  g.appendChild(card("Graphics card", [
     ["GPU", hw.gpu || "keine CUDA-GPU gefunden"],
     ["VRAM", fmtSize(hw.gpu_vram)],
     ["PyTorch", hw.torch || "-"],
     ["CUDA", hw.cuda || "-"],
   ]));
-  g.appendChild(card("Aktuelle Einstellung", [
-    ["Envs (gleichzeitige Matches)", cur.envs],
-    ["Batch-Größe", cur.batch_size],
-    ["Replay-Größe", int(cur.replay_size)],
-    ["Rechengerät", cur.device],
+  g.appendChild(card("Current setting", [
+    ["Parallel matches", cur.envs],
+    ["Batch size", cur.batch_size],
+    ["Replay size", int(cur.replay_size)],
+    ["Device", cur.device],
   ]));
-  g.appendChild(card("Speicherbedarf Replay", [
-    ["ein Bild", fmtSize(d.frame_bytes)],
-    ["Replay gesamt (Schätzung)", fmtSize(d.replay_ram_estimate)],
-    ["Anteil am RAM", hw.ram_total ? (100 * d.replay_ram_estimate / hw.ram_total).toFixed(0) + " %" : "-"],
+  g.appendChild(card("Replay memory", [
+    ["one frame", fmtSize(d.frame_bytes)],
+    ["replay total (estimate)", fmtSize(d.replay_ram_estimate)],
+    ["share of memory", hw.ram_total ? (100 * d.replay_ram_estimate / hw.ram_total).toFixed(0) + " %" : "-"],
   ]));
   b.appendChild(g);
 
   if (!hw.cuda_available) {
     const w = el("div", "row");
     w.appendChild(el("span", "pill bad",
-      "Keine nutzbare CUDA-GPU: das Training läuft auf der CPU und ist um ein Vielfaches langsamer."));
+      "No usable CUDA GPU: training runs on the CPU and is many times slower."));
     b.appendChild(w);
   }
   if (hw.ram_total && d.replay_ram_estimate > 0.5 * hw.ram_total) {
     const w = el("div", "row");
     w.appendChild(el("span", "pill warn",
-      `Der Replay-Puffer allein wäre grob ${fmtSize(d.replay_ram_estimate)}: mehr als die Hälfte `
-      + "deines RAM. Replay-Größe in den Einstellungen verkleinern."));
+      `The replay buffer alone would be roughly ${fmtSize(d.replay_ram_estimate)}, more than half `
+      + "of your memory. Reduce the replay size in the settings."));
     b.appendChild(w);
   }
 
   const notes = el("div", "cfggroup");
-  notes.appendChild(el("h3", null, "Warum die Env-Zahl zählt"));
+  notes.appendChild(el("h3", null, "Why the number of parallel matches matters"));
   (sug.notes || []).forEach(n => notes.appendChild(el("p", "hint", n)));
   b.appendChild(notes);
 
-  b.appendChild(el("h2", null, "Messung"));
+  b.appendChild(el("h2", null, "Measurement"));
   b.appendChild(el("p", "hint",
-    "Mehr gleichzeitige Matches sind nicht automatisch besser. Der Durchsatz steigt nur, solange "
-    + "die eine Optimierung pro Takt auf mehr Matches verteilt wird; danach bremsen die "
-    + "Simulationsschritte, die sich einen Kern teilen, und irgendwann wird es sogar wieder "
-    + "langsamer. Gleichzeitig sinkt die Zahl der Lernschritte, die auf ein einzelnes Match "
-    + "entfallen. Die Automatik steigert deshalb nur so lange, wie es wirklich schneller wird, "
-    + "und empfiehlt danach von den gleich schnellen Einstellungen die kleinste."));
+    "More parallel matches are not automatically better. Throughput only rises while the one "
+    + "optimisation per tick is spread over more matches; after that the simulation steps, which "
+    + "share a single core, become the brake and it eventually gets slower again. At the same "
+    + "time the number of learning steps that fall on a single match keeps dropping. The "
+    + "automatic search therefore only climbs while it really gets faster, and then recommends "
+    + "the smallest of the settings that are equally fast."));
 
   const runrow = el("div", "row");
   const secs = el("input"); secs.type = "number"; secs.value = 30; secs.min = 10; secs.style.width = "70px";
   const msg = el("span", "msg");
-  const autobtn = el("button", "btn primary", "Beste Einstellung automatisch finden und übernehmen");
+  const autobtn = el("button", "btn primary", "Find and apply the best setting");
   autobtn.id = "benchauto";
-  autobtn.title = "Verdoppelt die Zahl gleichzeitiger Matches, misst jedes Mal, hört auf wenn es "
-    + "nicht mehr schneller wird oder der Arbeitsspeicher knapp würde, und schreibt das Ergebnis "
-    + "in die Config.";
+  autobtn.title = "Doubles the number of parallel matches, measures each step, stops when it "
+    + "stops getting faster or memory would run short, and writes the result "
+    + "into the config.";
   autobtn.onclick = async () => {
     const j = await startJob("sim-bench", { auto: true, apply: true, seconds: secs.value, warmup: 8 },
                              msg, autobtn);
-    if (j) msg.textContent = "läuft: jede Stufe erscheint unten im Log.";
+    if (j) msg.textContent = "running: each step appears in the log below.";
   };
   const envsIn = el("input"); envsIn.type = "text"; envsIn.style.width = "140px";
   envsIn.value = (sug.bench_candidates || []).join(",");
-  const runbtn = el("button", "btn", "Nur diese Zahlen messen");
+  const runbtn = el("button", "btn", "Measure only these values");
   runbtn.id = "benchstart";
   runbtn.onclick = async () => {
     const j = await startJob("sim-bench", { envs: envsIn.value, seconds: secs.value, warmup: 8 },
                              msg, runbtn);
-    if (j) msg.textContent = "läuft: Ergebnisse erscheinen hier, sobald der Test fertig ist.";
+    if (j) msg.textContent = "running: results appear here once the benchmark is done.";
   };
   runrow.appendChild(autobtn);
-  runrow.appendChild(el("span", "hint", "Sekunden je Messung:")); runrow.appendChild(secs);
+  runrow.appendChild(el("span", "hint", "seconds per measurement:")); runrow.appendChild(secs);
   b.appendChild(runrow);
   const runrow2 = el("div", "row");
   runrow2.appendChild(runbtn); runrow2.appendChild(envsIn); runrow2.appendChild(msg);
@@ -658,7 +654,7 @@ async function loadSpeed() {
 
   const bench = d.bench;
   if (!bench) {
-    b.appendChild(el("p", "hint", "Noch keine Messung vorhanden."));
+    b.appendChild(el("p", "hint", "No measurement yet."));
     return;
   }
   const res = (bench.results || []).slice().sort((a, b2) => a.envs - b2.envs);
@@ -666,14 +662,14 @@ async function loadSpeed() {
   const t2 = el("table", "tbl"); t2.id = "benchtable";
   t2.innerHTML = `<thead><tr><th>gleichzeitige Matches</th><th>Matches/s</th><th></th>
     <th>Matches/Stunde</th><th>Lernschritte/s</th><th>Lernschritte je Match</th>
-    <th>gegenüber aktuell</th></tr></thead>`;
+    <th>vs current</th></tr></thead>`;
   const tb = el("tbody");
   const curRes = res.find(r => r.envs === bench.current_envs);
   res.forEach(r => {
     const tr = el("tr");
     const rel = curRes ? (r.mps / curRes.mps) : null;
-    const mark = r.envs === bench.best_envs ? " (empfohlen)"
-      : (r.envs === bench.peak_envs ? " (schnellste)" : "");
+    const mark = r.envs === bench.best_envs ? " (recommended)"
+      : (r.envs === bench.peak_envs ? " (fastest)" : "");
     tr.innerHTML = `<td>${r.envs}${mark}</td>
       <td>${num(r.mps)}</td>
       <td><div class="bar"><i style="width:${(100 * r.mps / maxMps).toFixed(0)}%"></i></div></td>
@@ -689,24 +685,24 @@ async function loadSpeed() {
     `Gemessen am ${fmtTime(bench.generated)}, ${bench.seconds_per_run} s je Stufe, Seed ${bench.seed}`
       + (bench.auto ? ", automatische Suche" : "") + ".",
   ];
-  if (bench.stop_reason) lines.push("Die Suche endete, weil: " + bench.stop_reason + ".");
+  if (bench.stop_reason) lines.push("The search stopped because: " + bench.stop_reason + ".");
   if (bench.peak_envs && bench.best_envs !== bench.peak_envs)
     lines.push(`Am schnellsten war ${bench.peak_envs}, empfohlen sind ${bench.best_envs}: `
-      + "beide liegen innerhalb von drei Prozent und sind damit praktisch gleich schnell, "
-      + "aber bei der kleineren Zahl wird jedes Match häufiger zum Lernen benutzt.");
-  lines.push("Die Werte gelten für frühes Training. Sobald das Spiel gegen frühere eigene "
-    + "Versionen hochgefahren ist, sinkt der Durchsatz etwas, weil der Gegner ein eigenes Netz rechnet.");
-  if (bench.applied) lines.push("Das Ergebnis wurde bereits in die Config übernommen.");
+      + "both are within three per cent and therefore effectively the same speed, "
+      + "but the smaller value uses every match for learning more often.");
+  lines.push("The numbers describe early training. Once games against earlier copies of "
+    + "itself ramp up, throughput drops a little because the opponent runs its own network.");
+  if (bench.applied) lines.push("The result has already been written to the config.");
   lines.forEach(l => b.appendChild(el("p", "hint", l)));
 
   const applyRow = el("div", "row");
-  const ap = el("button", "btn primary", `Empfehlung übernehmen (${bench.best_envs} gleichzeitige Matches)`);
+  const ap = el("button", "btn primary", `Apply the recommendation (${bench.best_envs} parallel matches)`);
   ap.id = "benchapply";
   ap.disabled = bench.best_envs === cur.envs;
-  if (ap.disabled) ap.textContent = `Bereits eingestellt (${cur.envs} gleichzeitige Matches)`;
+  if (ap.disabled) ap.textContent = `Already set (${cur.envs} parallel matches)`;
   ap.onclick = () => applyBench(false);
-  const ap2 = el("button", "btn", "zusätzlich Batch und Replay anpassen");
-  ap2.title = `Batch-Größe ${sug.batch_size}, Replay ${int(sug.replay_size)}, Benchmark-Envs ${sug.eval_envs}`;
+  const ap2 = el("button", "btn", "also adjust batch and replay");
+  ap2.title = `batch size ${sug.batch_size}, replay ${int(sug.replay_size)}, benchmark matches ${sug.eval_envs}`;
   ap2.onclick = () => applyBench(true);
   applyRow.appendChild(ap); applyRow.appendChild(ap2);
   b.appendChild(applyRow);
@@ -715,7 +711,7 @@ async function loadSpeed() {
 async function applyBench(withSuggestion) {
   try {
     const r = await post("/api/hardware/apply", { with_suggestion: !!withSuggestion });
-    toast("Übernommen: " + r.changed.map(c => `${c.key} von ${c.old} auf ${c.new}`).join(", ")
+    toast("Applied: " + r.changed.map(c => `${c.key} von ${c.old} auf ${c.new}`).join(", ")
       + ". Backup: " + String(r.backup).split(/[\\/]/).pop());
     loadSpeed(); loadOverview();
   } catch (e) { toast(e.message); }
@@ -740,7 +736,7 @@ $("#dashreload").onclick = () => loadRuns();
 
 async function loadDash() {
   if (!S.runId) {
-    $("#kpis").innerHTML = "<div class='hint'>Noch keine Trainingsläufe aufgezeichnet.</div>";
+    $("#kpis").innerHTML = "<div class='hint'>No training runs recorded yet.</div>";
     $("#charts").innerHTML = ""; return;
   }
   const { records } = await api(`/api/metrics?run=${encodeURIComponent(S.runId)}`);
@@ -757,78 +753,78 @@ async function loadDash() {
     d.appendChild(el("div", "v", v)); d.appendChild(el("div", "k", k)); kpis.appendChild(d); };
 
   const matches = last.matches || 0;
-  addK("Matches gespielt", int(matches));
-  if (last.winrate != null) addK("Winrate (Training)", last.winrate.toFixed(0) + " %",
-    "Gleitendes Fenster inkl. Exploration und Self-Play: kein Fortschrittsmaß.");
-  if (evals.length) addK("Bester Benchmark",
+  addK("matches played", int(matches));
+  if (last.winrate != null) addK("win rate (training)", last.winrate.toFixed(0) + " %",
+    "Rolling window including exploration and self-play, so not a measure of progress.");
+  if (evals.length) addK("best benchmark",
     Math.max(...evals.map(e => e.ladder_avg ?? 0)).toFixed(0) + " %",
-    "Geglättete Benchmark-Kurve: greedy gegen feste Meta-Decks. Das ehrliche Maß.");
-  if (last.mps != null) addK("Matches/Sekunde", num(last.mps));
-  if (last.w != null) addK("Bilanz", `${last.w}-${last.l}-${last.d ?? 0}`, "Siege-Niederlagen-Unentschieden");
+    "Smoothed benchmark curve: greedy against fixed meta decks. The honest measure.");
+  if (last.mps != null) addK("matches per second", num(last.mps));
+  if (last.w != null) addK("record", `${last.w}-${last.l}-${last.d ?? 0}`, "wins, losses, draws");
   if (last.loss != null) addK("Loss", num(last.loss, 3));
-  if (last.eps != null) addK("Epsilon", num(last.eps, 3), "Anteil zufälliger Züge (Exploration).");
+  if (last.eps != null) addK("Epsilon", num(last.eps, 3), "Share of random moves (exploration).");
   const elapsed = ((end ? end.t : (records[records.length - 1] || {}).t) || 0) - (start.t || 0);
-  if (elapsed > 0) addK("Laufzeit", fmtDur(elapsed));
+  if (elapsed > 0) addK("run time", fmtDur(elapsed));
   if (target && last.mps && matches < target && !end)
-    addK("Rest bis Ziel", fmtDur((target - matches) / Math.max(1e-6, last.mps)),
-      `Hochrechnung aus ${num(last.mps)} Matches/s bis ${int(target)} Matches.`);
-  else if (target) addK("Ziel", `${int(matches)} / ${int(target)}`);
-  if (end) addK("Status", end.rc === 0 ? "beendet" : `Exit ${end.rc}`);
+    addK("remaining to target", fmtDur((target - matches) / Math.max(1e-6, last.mps)),
+      `Extrapolated from ${num(last.mps)} matches/s to ${int(target)} matches.`);
+  else if (target) addK("target", `${int(matches)} / ${int(target)}`);
+  if (end) addK("status", end.rc === 0 ? "finished" : `Exit ${end.rc}`);
 
   const ch = $("#charts"); ch.innerHTML = "";
   const px = r => r.matches ?? 0;
   if (evals.length) {
     const s = [
       { name: "Ladder", color: "#4da3ff", points: evals.map(r => [px(r), r.ladder]), dots: true },
-      { name: "Ladder Ø", color: "#8fd0ff", points: evals.map(r => [px(r), r.ladder_avg]), w: 2.2 },
+      { name: "Ladder avg", color: "#8fd0ff", points: evals.map(r => [px(r), r.ladder_avg]), w: 2.2 },
     ];
     if (evals.some(r => r.fair != null)) {
       s.push({ name: "Fair", color: "#3ecf8e", dash: "3 3",
                points: evals.filter(r => r.fair != null).map(r => [px(r), r.fair]) });
-      s.push({ name: "Fair Ø", color: "#8ff0b5", w: 2.2,
+      s.push({ name: "Fair avg", color: "#8ff0b5", w: 2.2,
                points: evals.filter(r => r.fair_avg != null).map(r => [px(r), r.fair_avg]) });
     }
     ch.appendChild(chartBox("Benchmark (%)",
-      "Greedy gegen feste Meta-Decks. „Fair“ = Gegnerkarten auf deinem Level. Das ehrliche Maß.",
+      "Greedy against fixed meta decks. Fair means opponent cards at your level. The honest measure.",
       s, { y0: 0, y1: 100 }));
   }
   if (prog.length) {
-    ch.appendChild(chartBox("Winrate im Training (%)",
-      "Enthält Zufallszüge und Spiele gegen sich selbst und pendelt sich deshalb um 50 % ein.",
+    ch.appendChild(chartBox("Win rate during training (%)",
+      "Contains random moves and games against itself, so it settles around 50 per cent.",
       [{ name: "winrate", color: "#4da3ff", points: prog.map(r => [px(r), r.winrate]) }],
       { y0: 0, y1: 100 }));
-    ch.appendChild(chartBox("Reward pro Match",
-      "Summe aller Belohnungen eines Matches, gemittelt. Steigt, wenn die Belohnungen greifen.",
+    ch.appendChild(chartBox("Reward per match",
+      "Sum of a match's rewards, averaged. Rises when the rewards are doing something.",
       [{ name: "avg_rew", color: "#3ecf8e",
          points: prog.filter(r => r.avg_rew != null).map(r => [px(r), r.avg_rew]) }]));
     if (prog.some(r => r.loss != null))
-      ch.appendChild(chartBox("Loss", "Fehler der Wertschätzung. Muss nicht fallen: er folgt dem, was neu gelernt wird.",
+      ch.appendChild(chartBox("Loss", "Error of the value estimate. It need not fall; it follows whatever is being learned.",
         [{ name: "loss", color: "#ffb020",
            points: prog.filter(r => r.loss != null).map(r => [px(r), r.loss]) }]));
     if (prog.some(r => r.eps != null))
-      ch.appendChild(chartBox("Epsilon", "Anteil zufälliger Züge. Fällt planmäßig auf den Restwert.",
+      ch.appendChild(chartBox("Epsilon", "Share of random moves. Falls to the residual value as planned.",
         [{ name: "eps", color: "#c58cff",
            points: prog.filter(r => r.eps != null).map(r => [px(r), r.eps]) }], { y0: 0, y1: 1 }));
     if (prog.some(r => r.mps != null))
-      ch.appendChild(chartBox("Matches pro Sekunde", "Übungstempo. Sinkt, sobald Self-Play hochfährt.",
+      ch.appendChild(chartBox("Matches per second", "Practice speed. Drops once self-play ramps up.",
         [{ name: "m/s", color: "#7fd1e0",
            points: prog.filter(r => r.mps != null).map(r => [px(r), r.mps]) }], { y0: 0 }));
   }
   if (epochs.length) {
-    ch.appendChild(chartBox("BC-Loss pro Epoche", "Nachahmungslernen: Abweichung von deinen Zügen.",
+    ch.appendChild(chartBox("Imitation loss per epoch", "Imitation learning: deviation from your moves.",
       [{ name: "loss", color: "#ffb020", points: epochs.map((r, i) => [i, r.loss]) }]));
-    ch.appendChild(chartBox("BC-Trefferquote", "Anteil exakt getroffener Karten- bzw. Zellwahl.",
-      [{ name: "Karte", color: "#4da3ff", points: epochs.map((r, i) => [i, r.card_acc]) },
-       { name: "Zelle", color: "#3ecf8e", points: epochs.map((r, i) => [i, r.cell_acc]) }],
+    ch.appendChild(chartBox("Imitation accuracy", "Share of exactly matched card and cell choices.",
+      [{ name: "Card", color: "#4da3ff", points: epochs.map((r, i) => [i, r.card_acc]) },
+       { name: "Cell", color: "#3ecf8e", points: epochs.map((r, i) => [i, r.cell_acc]) }],
       { y0: 0, y1: 1 }));
   }
   if (rlm.length) {
     let w = 0;
     const cum = rlm.map((r, i) => { if (r.outcome === "win") w++; return [r.matches, 100 * w / (i + 1)]; });
-    ch.appendChild(chartBox("Live-RL: Winrate kumuliert (%)", "Echte Matches am laufenden Spiel.",
+    ch.appendChild(chartBox("Live RL: cumulative win rate (%)", "Real matches on the running game.",
       [{ name: "winrate", color: "#4da3ff", points: cum }], { y0: 0, y1: 100 }));
   }
-  if (!ch.children.length) ch.innerHTML = "<div class='hint'>Für diesen Lauf wurden keine Zahlen erkannt.</div>";
+  if (!ch.children.length) ch.innerHTML = "<div class='hint'>No numbers were recognised for this run.</div>";
 }
 
 /* ---------------- Strategie ---------------- */
@@ -845,7 +841,7 @@ function heatGrid(heat, gw, gh) {
     if (v > 0) {
       const a = Math.min(1, Math.pow(v / m, 0.55));
       d.style.background = `rgba(77,163,255,${(0.12 + 0.88 * a).toFixed(3)})`;
-      d.title = `Spalte ${c}, Zeile ${r}: ${v}×`;
+      d.title = `column ${c}, row ${r}: ${v} times`;
     }
     wrap.appendChild(d);
   }
@@ -858,8 +854,8 @@ async function loadStrategy() {
   S.strat = d;
   body.innerHTML = "";
   if (!d.available) {
-    body.innerHTML = `<p class="hint">Noch keine Analyse vorhanden. „Analyse starten“ spielt
-      60 Matches im Simulator und zählt jede Entscheidung mit (dauert ungefähr eine halbe Minute).</p>`;
+    body.innerHTML = `<p class="hint">No analysis yet. „Start analysis“ plays
+      60 matches in the simulator and counts every decision (about half a minute).</p>`;
     return;
   }
   const [gw, gh] = d.grid;
@@ -871,26 +867,26 @@ async function loadStrategy() {
   const k = el("div", "kpis");
   const addK = (key, v, title) => { const x = el("div", "kpi"); if (title) x.title = title;
     x.appendChild(el("div", "v", v)); x.appendChild(el("div", "k", key)); k.appendChild(x); };
-  addK("Karten gelegt", int(d.plays));
-  addK("bewusst gewartet", (100 * d.wait_rate_gate).toFixed(0) + " %",
-    "Anteil der Entscheidungen, in denen etwas spielbar war und das Netz trotzdem gehalten hat.");
-  addK("warten müssen", (100 * (d.wait_forced / Math.max(1, d.steps))).toFixed(0) + " %",
-    "Kein Elixier oder keine Karte verfügbar: keine Entscheidung des Netzes.");
-  if (d.avg_elixir_at_play != null) addK("Ø Elixier beim Legen", num(d.avg_elixir_at_play, 1));
-  addK("nie gespielt", String(d.never_played.length), d.never_played.join(", ") || "alle Karten kommen vor");
+  addK("cards played", int(d.plays));
+  addK("deliberately waited", (100 * d.wait_rate_gate).toFixed(0) + " %",
+    "Share of decisions where something was playable and the network held anyway.");
+  addK("had to wait", (100 * (d.wait_forced / Math.max(1, d.steps))).toFixed(0) + " %",
+    "No elixir or no card available, so not a decision of the network.");
+  if (d.avg_elixir_at_play != null) addK("average elixir when playing", num(d.avg_elixir_at_play, 1));
+  addK("never played", String(d.never_played.length), d.never_played.join(", ") || "every card appears");
   body.appendChild(k);
 
   if (d.never_played.length) {
     const w = el("div", "row");
     w.appendChild(el("span", "pill warn",
-      "Nie gespielt: " + d.never_played.join(", ")
-      + ". Diese Karten bringen der Policy aktuell keinen erkennbaren Vorteil."));
+      "Never played: " + d.never_played.join(", ")
+      + ". These cards currently give the policy no visible advantage."));
     body.appendChild(w);
   }
 
   const tbl = el("table", "tbl");
   tbl.innerHTML = `<thead><tr><th>Karte</th><th>Elixier</th><th>Level</th><th>gelegt</th>
-    <th>Anteil</th><th></th><th>Ø Zeile</th></tr></thead>`;
+    <th>Anteil</th><th></th><th>avg row</th></tr></thead>`;
   const tb = el("tbody");
   d.cards.slice().sort((a, b) => b.plays - a.plays).forEach(c => {
     const tr = el("tr");
@@ -902,13 +898,13 @@ async function loadStrategy() {
   });
   tbl.appendChild(tb); body.appendChild(tbl);
   body.appendChild(el("p", "hint",
-    "„Ø Zeile“ ist die mittlere Platzierungszeile: 0 = ganz oben (Gegnerseite), "
+    "The average row is the mean placement row: 0 is the top (opponent side), "
     + `${gh - 1} = ganz unten (deine Seite).`));
 
-  body.appendChild(el("h2", null, "Wohin sie legt"));
+  body.appendChild(el("h2", null, "Where it places"));
   const sel = el("select");
-  const o = el("option", null, "Alle Karten"); o.value = "total"; sel.appendChild(o);
-  d.cards.forEach((c, i) => { const oo = el("option", null, `${c.display} (${c.plays}×)`);
+  const o = el("option", null, "All cards"); o.value = "total"; sel.appendChild(o);
+  d.cards.forEach((c, i) => { const oo = el("option", null, `${c.display} (${c.plays})`);
     oo.value = String(i); sel.appendChild(oo); });
   sel.value = S.stratCard;
   const hw = el("div", "heatwrap");
@@ -917,9 +913,9 @@ async function loadStrategy() {
     const heat = sel.value === "total" ? d.heat : d.cards[+sel.value].heat;
     hw.appendChild(heatGrid(heat, gw, gh));
     const leg = el("div", "heatlegend");
-    leg.innerHTML = `Spielfeldraster ${gw}×${gh} (Einstellung <code>action.grid</code>).<br>
-      Oben = Gegnerseite, unten = deine Seite. Je heller, desto häufiger gewählt.<br>
-      Summe: ${int(heat.reduce((a, b) => a + b, 0))} Platzierungen.`;
+    leg.innerHTML = `Board grid ${gw}x${gh} (setting <code>action.grid</code>).<br>
+      Top is the opponent side, bottom is yours. Brighter means chosen more often.<br>
+      Total: ${int(heat.reduce((a, b) => a + b, 0))} placements.`;
     hw.appendChild(leg);
   };
   sel.onchange = () => { S.stratCard = sel.value; draw(); };
@@ -959,18 +955,18 @@ async function loadDeck() {
   const st = d.stale || {};
   const msgs = [];
   if ((st.missing_templates || []).length)
-    msgs.push(`Für <b>${st.missing_templates.join(", ")}</b> fehlen Hand-Vorlagen. Das betrifft nur
-      das echte Spiel (<code>play</code>, <code>label</code>): der Simulator läuft trotzdem.
-      Vorlagen erzeugt das Kommando <code>hand-templates</code> im Terminal.`);
+    msgs.push(`No hand templates for <b>${st.missing_templates.join(", ")}</b>. That only affects
+      the real game (<code>play</code>, <code>label</code>); the simulator runs regardless.
+      <code>deck-detect --write-templates</code> creates them.`);
   if ((st.stale_checkpoints || []).length)
-    msgs.push(`Diese Checkpoints wurden für ein anderes Deck trainiert und passen nicht mehr:
+    msgs.push(`These checkpoints were trained for a different deck and no longer fit:
       <b>${st.stale_checkpoints.join(", ")}</b>.`);
   if (st.datasets)
-    msgs.push(`Es liegen <b>${st.datasets}</b> gelabelte Datensätze vor. Ein Datensatz gilt immer
-      nur für ein Deck: nach einem Wechsel muss <code>label</code> neu laufen.`);
+    msgs.push(`There are <b>${st.datasets}</b> labelled datasets. A dataset only ever applies
+      to one deck, so after a change <code>label</code> has to run again.`);
   if (msgs.length) {
     const box = el("div", "cfggroup");
-    box.innerHTML = "<h3>Nach einem Deckwechsel zu beachten</h3>"
+    box.innerHTML = "<h3>After a deck change</h3>"
       + msgs.map(m => `<p class="hint">${m}</p>`).join("");
     warn.appendChild(box);
   }
@@ -987,8 +983,8 @@ async function loadDetect() {
   const d = await api("/api/deck-detect");
   if (!d.available) {
     body.appendChild(el("p", "hint", d.reference_bank === 0
-      ? "Noch keine Referenzbilder. Erst „Kartenbilder holen“, dann erkennen."
-      : "Noch kein Erkennungsergebnis vorhanden."));
+      ? "No reference pictures yet. Run Fetch card pictures first, then detect."
+      : "No detection result yet."));
     return;
   }
   const head = el("div", "row");
@@ -1015,7 +1011,7 @@ async function loadDetect() {
     const tdSel = el("td"); tdSel.appendChild(sel);
     const tdEvo = el("td"); tdEvo.appendChild(evo);
     const tdLvl = el("td"); tdLvl.appendChild(lvl);
-    tr.appendChild(el("td", null, s.display + (s.unsure ? "  (unsicher)" : "")));
+    tr.appendChild(el("td", null, s.display + (s.unsure ? "  (uncertain)" : "")));
     tr.appendChild(el("td", null, s.score.toFixed(3)));
     tr.appendChild(el("td", null, s.margin.toFixed(3)));
     tr.appendChild(tdEvo); tr.appendChild(tdLvl); tr.appendChild(tdSel);
@@ -1026,18 +1022,18 @@ async function loadDetect() {
   const unsure = (d.deck || []).filter(s => s.unsure).length;
   const notes = [];
   if ((d.deck || []).length < 8)
-    notes.push(`Es wurden nur ${d.deck.length} Karten gesehen. Eine längere Aufnahme zeigt alle acht;`
-      + " teure Karten kommen seltener ins Blatt.");
-  if (unsure) notes.push(`${unsure} Karte(n) sind knapp entschieden. Dort lohnt ein Blick in die`
-    + " Spalte Alternativen, bevor du übernimmst.");
+    notes.push(`Only ${d.deck.length} cards were seen. A longer recording shows all eight;`
+      + " expensive cards reach the hand less often.");
+  if (unsure) notes.push(`${unsure} card(s) were close calls. Check the`
+    + " alternatives column before applying.");
   notes.push(d.levels_from_account
-    ? "Die Level stammen aus deinem Account."
-    : "Die Level sind aus cards.yaml übernommen: im Blatt ist kein Level ablesbar. Mit Spieler-Tag"
-      + " und API-Token liest die Erkennung sie aus deinem Account.");
+    ? "The levels come from your account."
+    : "The levels are taken from cards.yaml: the tray does not show them. With a player tag"
+      + " and an API token the detection reads them from your account.");
   notes.forEach(n => body.appendChild(el("p", "hint", n)));
 
   const row = el("div", "row");
-  const apply = el("button", "btn primary", "In die Deckliste übernehmen");
+  const apply = el("button", "btn primary", "Apply to the deck list");
   apply.onclick = () => {
     const rows = $$("#detectbody tbody tr");
     const picks = rows.map((tr, i) => ({
@@ -1053,11 +1049,11 @@ async function loadDetect() {
       $("[data-role=evolved]", tr).checked = p.evolved;
       syncDeckRow(i);
     });
-    toast("Übernommen. Prüfe die Liste unten und speichere sie mit „Deck speichern“.");
+    toast("Applied. Check the list below and save it with Save deck.");
     $("#decktbl").scrollIntoView({ behavior: "smooth", block: "center" });
   };
   row.appendChild(apply);
-  row.appendChild(el("span", "hint", "Gespeichert wird erst mit „Deck speichern“ weiter unten."));
+  row.appendChild(el("span", "hint", "Nothing is saved until you press Save deck below."));
   body.appendChild(row);
 }
 
@@ -1075,7 +1071,7 @@ function renderDeckAvg() {
     return c ? c.elixir : null;
   }).filter(v => v != null);
   const avg = costs.length ? (costs.reduce((a, b) => a + b, 0) / costs.length).toFixed(2) : "-";
-  $("#deckavg").textContent = `Ø Elixier: ${avg}`;
+  $("#deckavg").textContent = `Average elixir: ${avg}`;
 }
 
 $("#decksave").onclick = async () => {
@@ -1086,7 +1082,7 @@ $("#decksave").onclick = async () => {
   }));
   const m = $("#deckmsg");
   if (!confirm("Deck in config/cards.yaml schreiben?\n\nEin Deckwechsel macht Vorlagen, gelabelte "
-    + "Datensätze und bestehende Checkpoints ungültig.")) return;
+    + "datasets and existing checkpoints invalid.")) return;
   try {
     const r = await post("/api/deck", { name: $("#deckname").value, cards });
     m.className = "msg ok";
@@ -1095,7 +1091,7 @@ $("#decksave").onclick = async () => {
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
 };
 
-/* ---------------- Türme ---------------- */
+/* ---------------- towers ---------------- */
 async function loadTowers() {
   const d = await api("/api/towers");
   S.towers = d;
@@ -1195,7 +1191,7 @@ $("#towersave").onclick = async () => {
     const r = await post("/api/towers", payload);
     m.className = "msg ok";
     m.textContent = `gespeichert: ${r.troops.join(", ")} | Gegner-Pool: `
-      + Object.entries(r.weights).map(([k, v]) => `${k}×${v}`).join(", ")
+      + Object.entries(r.weights).map(([k, v]) => `${k} x ${v}`).join(", ")
       + ` (Backup: ${String(r.backup).split(/[\\/]/).pop()})`;
     loadTowers();
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
@@ -1243,7 +1239,7 @@ async function loadConfig() {
         else { delete S.cfgDirty[f.key]; row.classList.remove("dirty"); }
         const n = Object.keys(S.cfgDirty).length;
         $("#cfgmsg").className = "msg";
-        $("#cfgmsg").textContent = n ? `${n} ungespeicherte Änderung(en)` : "";
+        $("#cfgmsg").textContent = n ? `${n} unsaved change(s)` : "";
       };
       inp.oninput = onch; inp.onchange = onch;
       right.appendChild(inp);
@@ -1256,13 +1252,13 @@ async function loadConfig() {
 
 $("#cfgsave").onclick = async () => {
   const m = $("#cfgmsg");
-  if (!Object.keys(S.cfgDirty).length) { m.className = "msg"; m.textContent = "nichts zu speichern"; return; }
+  if (!Object.keys(S.cfgDirty).length) { m.className = "msg"; m.textContent = "nothing to save"; return; }
   try {
     const r = await post("/api/config", { changes: S.cfgDirty });
     m.className = "msg ok";
     m.textContent = r.changed.length
       ? `${r.changed.length} Wert(e) gespeichert (Backup: ${String(r.backup).split(/[\\/]/).pop()})`
-      : "keine Änderung";
+      : "no change";
     loadConfig();
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
 };
@@ -1274,11 +1270,11 @@ async function loadCheckpoints() {
   S.checkpoints = list;
   $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, s.value));
   const body = $("#ckptbody"); body.innerHTML = "";
-  if (!list.length) { body.innerHTML = "<p class='hint'>Noch keine .pt-Dateien unter data/.</p>"; return; }
+  if (!list.length) { body.innerHTML = "<p class='hint'>No .pt files under data/ yet.</p>"; return; }
   const deckIds = (S.deck && S.deck.identities) || null;
   const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th>Datei</th><th>Datum</th><th>Matches</th><th>bester Benchmark</th>
-    <th>Raster</th><th>Deck</th><th>Größe</th><th></th></tr></thead>`;
+  tbl.innerHTML = `<thead><tr><th>File</th><th>Date</th><th>Matches</th><th>bester Benchmark</th>
+    <th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;
   const tb = el("tbody");
   list.forEach(c => {
     const tr = el("tr");
@@ -1286,11 +1282,11 @@ async function loadCheckpoints() {
     tr.innerHTML = `<td><code>${c.rel}</code></td><td>${fmtTime(c.mtime)}</td>
       <td>${c.matches != null ? int(c.matches) + (c.matches_estimated ? " *" : "") : "-"}</td>
       <td>${c.best_wr != null && c.best_wr >= 0 ? c.best_wr.toFixed(0) + " %" : "-"}</td>
-      <td>${c.grid ? c.grid.join("×") : "-"}</td>
-      <td>${c.deck ? (deckOk === false ? "<span class='pill warn'>anderes Deck</span>"
-        : (deckOk ? "passt" : c.deck.length + " Karten")) : "-"}</td>
+      <td>${c.grid ? c.grid.join("x") : "-"}</td>
+      <td>${c.deck ? (deckOk === false ? "<span class='pill warn'>different deck</span>"
+        : (deckOk ? "matches" : c.deck.length + " Karten")) : "-"}</td>
       <td>${fmtSize(c.size)}</td><td></td>`;
-    const btn = el("button", "btn small", "Als --init übernehmen");
+    const btn = el("button", "btn small", "Use as --init");
     btn.onclick = () => { $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, c.rel)); showTab("run"); };
     tr.lastElementChild.appendChild(btn);
     tb.appendChild(tr);
@@ -1298,7 +1294,7 @@ async function loadCheckpoints() {
   tbl.appendChild(tb); body.appendChild(tbl);
   if (list.some(c => c.matches_estimated))
     body.appendChild(el("p", "hint",
-      "* Matchzahl aus data/metrics.jsonl geschätzt: ältere Checkpoints speichern sie nicht selbst."));
+      "* Match count estimated from data/metrics.jsonl: older checkpoints do not store it."));
 }
 $("#ckptreload").onclick = () => loadCheckpoints();
 
@@ -1331,7 +1327,7 @@ function liveSchedule() {
 $("#livego").onchange = liveSchedule;
 $("#liverate").onchange = liveSchedule;
 $("#liveonce").onclick = () => liveOnce();
-$("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast("Fenstersuche zurückgesetzt."); liveOnce(); };
+$("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast("Window lookup reset."); liveOnce(); };
 
 async function liveOnce() {
   const body = $("#livebody"), msg = $("#livemsg");
@@ -1339,10 +1335,10 @@ async function liveOnce() {
   try { d = await api("/api/live"); }
   catch (e) { msg.className = "msg err"; msg.textContent = e.message; return; }
   if (!d.ok) {
-    msg.className = "msg err"; msg.textContent = d.error || "unbekannter Fehler";
-    body.innerHTML = "<p class='hint'>Läuft das Spiel und ist das Fenster sichtbar? Der Titel muss zu "
-      + "<code>window.title_contains</code> in den Einstellungen passen."
-      + (d.detail ? ` <br>Meldung des Systems: <code>${d.detail}</code>` : "") + "</p>";
+    msg.className = "msg err"; msg.textContent = d.error || "unknown error";
+    body.innerHTML = "<p class='hint'>Is the game running and the window visible? Its title has to match "
+      + "<code>window.title_contains</code> in the settings."
+      + (d.detail ? ` <br>System message: <code>${d.detail}</code>` : "") + "</p>";
     return;
   }
   msg.className = "msg"; msg.textContent = `${d.ms} ms`;
@@ -1355,50 +1351,50 @@ async function liveOnce() {
 
   const right = el("div"); right.style.minWidth = "320px";
   const inMatch = d.state === "IN_MATCH";
-  const p = el("span", "pill" + (inMatch ? " run" : ""), "Zustand: " + d.state);
+  const p = el("span", "pill" + (inMatch ? " run" : ""), "State: " + d.state);
   right.appendChild(p);
-  right.appendChild(el("span", "pill", `Fenster ${d.width}x${d.height}`));
-  if (d.elixir != null) right.appendChild(el("span", "pill", `Elixier ${d.elixir}`));
+  right.appendChild(el("span", "pill", `Window ${d.width}x${d.height}`));
+  if (d.elixir != null) right.appendChild(el("span", "pill", `Elixir ${d.elixir}`));
 
   if (!inMatch) {
     right.appendChild(el("p", "hint",
-      "Kein Match erkannt. Wenn du gerade spielst, passen die Vorlagen nicht zu deinem Client: "
-      + "dann hilft das Kommando „Match-Erkennung kalibrieren“ im Tab Steuerung."));
+      "No match recognised. If you are playing right now, the templates do not fit your client: "
+      + "the Calibrate match detection command in the Control tab fixes that."));
   }
   const t1 = el("table", "tbl");
-  t1.innerHTML = "<thead><tr><th>Handkarte</th><th>erkannt als</th><th>Sicherheit</th></tr></thead>";
+  t1.innerHTML = "<thead><tr><th>Hand slot</th><th>erkannt als</th><th>Sicherheit</th></tr></thead>";
   const tb1 = el("tbody");
   (d.hand || []).forEach(h => { const tr = el("tr");
-    tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "nicht erkannt"}</td><td>${h.score}</td>`;
+    tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "not recognised"}</td><td>${h.score}</td>`;
     tb1.appendChild(tr); });
   t1.appendChild(tb1); right.appendChild(t1);
 
   const st = (d.states || {});
-  right.appendChild(el("h3", null, "Wie der Bot den Bildschirm einordnet"));
+  right.appendChild(el("h3", null, "How the bot classifies the screen"));
   right.appendChild(el("p", "hint",
-    "Er probiert die Zustände von oben nach unten durch und nimmt den ERSTEN, dessen Vorlage "
-    + "ihre Schwelle erreicht. Deshalb wird ein Ergebnisbildschirm nie für ein laufendes Match "
-    + "gehalten. Gespielt wird nur im Zustand 'Im Match', alles andere ist Navigation."));
+    "It tries the states top to bottom and takes the FIRST whose template "
+    + "reaches its threshold. That is why a result screen is never mistaken for a running "
+    + "match. Cards are only played in the In a match state; everything else is navigation."));
   const t2 = el("table", "tbl");
-  t2.innerHTML = "<thead><tr><th>Zustand</th><th>Vorlage</th><th>Wert / Schwelle</th>"
-    + "<th>Was er dann tut</th></tr></thead>";
+  t2.innerHTML = "<thead><tr><th>State</th><th>Template</th><th>Score / threshold</th>"
+    + "<th>What it does then</th></tr></thead>";
   const tb2 = el("tbody");
   (st.order || []).forEach(row => {
     const tr = el("tr");
     if (row.matched) tr.style.background = "var(--bg3)";
     const names = (row.templates || []).map(x => `<code>${x.name}</code>`).join("<br>");
     const vals = (row.templates || []).map(x => {
-      if (x.missing) return "Vorlage fehlt";
-      if (x.too_small) return "Vorlage grösser als das Bild";
-      const mark = x.hit ? " erreicht" : "";
+      if (x.missing) return "template missing";
+      if (x.too_small) return "template larger than the frame";
+      const mark = x.hit ? " reached" : "";
       return `${x.score.toFixed(3)} / ${x.threshold.toFixed(2)}${mark}`;
     }).join("<br>");
-    tr.innerHTML = `<td>${row.label}${row.matched ? " <b>(trifft zu)</b>" : ""}</td>
+    tr.innerHTML = `<td>${row.label}${row.matched ? " <b>(matches)</b>" : ""}</td>
       <td>${names || "-"}</td><td>${vals || "-"}</td><td class="hint">${row.action}</td>`;
     tb2.appendChild(tr);
   });
   t2.appendChild(tb2); right.appendChild(t2);
-  if (st.unknown_means) right.appendChild(el("p", "hint", "Kein Treffer: " + st.unknown_means));
+  if (st.unknown_means) right.appendChild(el("p", "hint", "No match: " + st.unknown_means));
 
   wrap.appendChild(right);
   body.innerHTML = ""; body.appendChild(wrap);

@@ -113,4 +113,4 @@ def import_card_art(cfg, only_missing: bool = True, limit: Optional[int] = None)
     print(f"[cards-art] fertig: {got} Bilder geladen, {missing} Seiten ohne Bild, "
           f"{failed} Downloads fehlgeschlagen. Ordner: {out_dir}")
     if missing:
-        print("[cards-art] Karten ohne Wiki-Bild werden bei der Deckerkennung übersprungen.")
+        print("[cards-art] cards without a wiki picture are skipped during deck recognition.")

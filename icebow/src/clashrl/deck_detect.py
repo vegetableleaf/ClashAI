@@ -97,7 +97,7 @@ def _fetch_levels(cfg, player_tag: str) -> Dict[str, int]:
     token_env = cfg.get("sim", "api_token_env", default="CLASHRL_CR_API_TOKEN")
     token = os.environ.get(token_env, "").strip()
     if not token:
-        print(f"[deck-detect] kein API-Token in {token_env}: Level bleiben wie in cards.yaml.")
+        print(f"[deck-detect] no API token in {token_env}: levels stay as they are in cards.yaml.")
         return {}
     base = cfg.get("sim", "api_base", default="https://api.clashroyale.com/v1")
     tag = player_tag.strip()
@@ -110,11 +110,11 @@ def _fetch_levels(cfg, player_tag: str) -> Dict[str, int]:
         with urllib.request.urlopen(req, timeout=20) as r:
             data = json.loads(r.read().decode("utf-8"))
     except Exception as exc:                                # noqa: BLE001
-        print(f"[deck-detect] Abfrage des Accounts fehlgeschlagen ({exc!r}); Level bleiben unverändert.")
+        print(f"[deck-detect] could not query the account ({exc!r}); levels left unchanged.")
         return {}
     deck = data.get("currentDeck") or []
     if not deck:
-        print("[deck-detect] der Account liefert kein aktuelles Deck; Level bleiben unverändert.")
+        print("[deck-detect] the account returns no current deck; levels left unchanged.")
         return {}
     # The API counts levels within a rarity. The number shown in the game is
     # level + (highest maxLevel in the deck - this card's maxLevel).
@@ -126,7 +126,7 @@ def _fetch_levels(cfg, player_tag: str) -> Dict[str, int]:
             out[key] = int(c["level"]) + (top - int(c.get("maxLevel", top)))
         except (KeyError, TypeError, ValueError):
             continue
-    print(f"[deck-detect] Level aus dem Account gelesen: "
+    print(f"[deck-detect] levels read from the account: "
           + ", ".join(f"{k} {v}" for k, v in out.items()))
     return out
 
@@ -163,12 +163,12 @@ def _write_templates(cfg, faces, detections, min_score: float, min_margin: float
         cv2.imwrite(str(dst), face["key"])
         written.append(dst.name)
     if written:
-        print(f"[deck-detect] {len(written)} Hand-Vorlagen geschrieben: {', '.join(sorted(set(written)))}")
+        print(f"[deck-detect] {len(written)} hand templates written: {', '.join(sorted(set(written)))}")
     if existing:
-        print(f"[deck-detect] unverändert gelassen (schon vorhanden): {', '.join(sorted(set(existing)))}. "
-              "Mit --overwrite-templates werden sie ersetzt.")
+        print(f"[deck-detect] left alone because they already exist: {', '.join(sorted(set(existing)))}. "
+              "Use --overwrite-templates to replace them.")
     if skipped:
-        print(f"[deck-detect] {len(skipped)} Kartenbilder waren zu unsicher für eine Vorlage.")
+        print(f"[deck-detect] {len(skipped)} card images were too uncertain to write a template for.")
 
 
 def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
@@ -181,19 +181,19 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
 
     bank = load_reference_bank(cfg)
     if not bank:
-        print("[deck-detect] keine Referenzbilder gefunden. Einmalig `run.py cards-art` ausführen.")
+        print("[deck-detect] no reference pictures found. Run `run.py cards-art` once.")
         return
     db = CardDB(cfg)
 
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     session = Path(session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
-        print(f"[deck-detect] keine Aufnahme unter {root} gefunden. Erst `record` laufen lassen.")
+        print(f"[deck-detect] no recording found under {root}. Run `record` first.")
         return
     session = Path(session)
     video = next((session / n for n in ("video.mp4", "video.avi") if (session / n).exists()), None)
     if video is None:
-        print(f"[deck-detect] kein Video in {session}")
+        print(f"[deck-detect] no video in {session}")
         return
 
     vision = Vision(cfg)
@@ -224,11 +224,11 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
     cap.release()
 
     if not faces:
-        print(f"[deck-detect] in {session.name} wurden keine Handkarten gefunden. "
-              "Enthält die Aufnahme Matchszenen, und stimmt die Fensterkalibrierung?")
+        print(f"[deck-detect] in {session.name} no hand cards were found. "
+              "Does the recording contain match footage, and is the window calibrated?")
         return
-    print(f"[deck-detect] {session.name}: {frames_seen} Matchbilder, {len(faces)} "
-          f"unterschiedliche Kartenbilder, Abgleich gegen {len(bank)} Referenzkarten ...", flush=True)
+    print(f"[deck-detect] {session.name}: {frames_seen} match frames, {len(faces)} "
+          f"distinct card images, matched against {len(bank)} reference cards ...", flush=True)
 
     keys = list(bank)
     detections: List[Dict[str, Any]] = []
@@ -246,8 +246,8 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
         detections.append({"face": i, "samples": len(f["members"]),
                            "candidates": cands,
                            "margin": round(float(acc[order[0]] - acc[order[1]]), 4)})
-        print(f"[deck-detect]   Bild {i + 1}: {cands[0]['display']} ({cands[0]['score']:.3f}, "
-              f"Abstand zum zweiten {detections[-1]['margin']:.3f})", flush=True)
+        print(f"[deck-detect]   image {i + 1}: {cands[0]['display']} ({cands[0]['score']:.3f}, "
+              f"distance to runner-up {detections[-1]['margin']:.3f})", flush=True)
 
     # An evolved face is the same deck slot as its base card, so fold it back and
     # keep the better score of the two.
@@ -290,18 +290,18 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
     for s in chosen:
         s["unsure"] = s in unsure
     print("")
-    print(f"[deck-detect] erkanntes Deck ({len(chosen)} von 8 Plätzen):")
+    print(f"[deck-detect] deck recognised ({len(chosen)} of 8 slots):")
     for s in chosen:
         evo = " (Evo)" if s["evolved"] else ""
-        flag = "  UNSICHER" if s in unsure else ""
-        print(f"[deck-detect]   {s['display']}{evo:<6} Level {s['level']:<3} "
-              f"Sicherheit {s['score']:.3f}, Abstand {s['margin']:.3f}{flag}")
+        flag = "  UNCERTAIN" if s in unsure else ""
+        print(f"[deck-detect]   {s['display']}{evo:<6} level {s['level']:<3} "
+              f"confidence {s['score']:.3f}, margin {s['margin']:.3f}{flag}")
     if len(chosen) < 8:
-        print(f"[deck-detect] Es wurden nur {len(chosen)} Karten gesehen. Eine längere Aufnahme "
-              "zeigt alle acht; teure Karten tauchen seltener auf.")
+        print(f"[deck-detect] only {len(chosen)} cards were seen. A longer recording "
+              "shows all eight; expensive cards come up less often.")
     if unsure:
-        print("[deck-detect] Bei den unsicheren Karten bitte im Launcher aus der Vorschlagsliste "
-              "wählen, statt das Ergebnis ungeprüft zu übernehmen.")
+        print("[deck-detect] For the uncertain cards, pick from the candidate list in the panel "
+              "instead of accepting the result unchecked.")
 
     if write_templates:
         _write_templates(cfg, faces, detections, tpl_min_score, tpl_min_margin, overwrite_templates)
@@ -322,4 +322,4 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
         out_path = cfg.path(str(out_path))
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    print(f"[deck-detect] Vorschlag in {out_path}. Im Launcher unter Deck prüfen und übernehmen.")
+    print(f"[deck-detect] proposal written to {out_path}. Review and apply it in the panel under Deck.")

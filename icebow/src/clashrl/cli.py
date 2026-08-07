@@ -231,8 +231,8 @@ def _cmd_ui(args) -> None:
     try:
         from .ui.app import serve
     except ImportError as exc:
-        print(f"[ui] Flask wird benötigt ({exc}).\n"
-              "Installieren:\n"
+        print(f"[ui] Flask is required ({exc}).\n"
+              "Install it with:\n"
               "  .\\.venv\\Scripts\\python.exe -m pip install flask")
         return
     serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
@@ -241,6 +241,13 @@ def _cmd_ui(args) -> None:
 def _cmd_cards_art(args) -> None:
     from .card_art import import_card_art
     import_card_art(Config.load(args.config), only_missing=not args.refresh, limit=args.limit)
+
+
+def _cmd_import_from(args) -> None:
+    from .migrate import import_from
+    import_from(Config.load(args.config), args.old, dry_run=args.dry_run,
+                overwrite=args.overwrite, with_sessions=not args.no_sessions,
+                with_config=args.with_config)
 
 
 def _cmd_calibrate(args) -> None:
@@ -260,7 +267,7 @@ def _cmd_sim_bench(args) -> None:
     try:
         from .sim_bench import sim_bench
     except ImportError as exc:
-        print(f"[sim-bench] PyTorch wird benötigt ({exc}).")
+        print(f"[sim-bench] PyTorch is required ({exc}).")
         return
     sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
               out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
@@ -270,7 +277,7 @@ def _cmd_policy_stats(args) -> None:
     try:
         from .policy_stats import policy_stats
     except ImportError as exc:
-        print(f"[policy-stats] PyTorch wird benötigt ({exc}).")
+        print(f"[policy-stats] PyTorch is required ({exc}).")
         return
     policy_stats(_sized_config(args), ckpt=args.ckpt, matches=args.matches, envs=args.envs,
                  seed=args.seed, epsilon=args.epsilon, out=args.out)
@@ -393,8 +400,8 @@ def main() -> None:
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
     ply.add_argument("--init", default=None, metavar="CKPT",
-                     help="welchen Checkpoint er spielen soll, z.B. data/policy_sim_best.pt. "
-                          "Default: data/policy_rl.pt falls vorhanden, sonst data/policy.pt")
+                     help="which checkpoint to play, e.g. data/policy_sim_best.pt. "
+                          "Default: data/policy_rl.pt if present, else data/policy.pt")
     ply.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
     ply.set_defaults(func=_cmd_play)
@@ -534,78 +541,93 @@ def main() -> None:
     mrp.set_defaults(func=_cmd_mine_replays)
 
     uip = sub.add_parser("ui",
-                         help="lokale Launcher-Oberfläche im Browser (Start/Stop, Live-Log, "
-                              "Dashboard, Deck-/Config-Editor) -- bindet nur an 127.0.0.1")
-    uip.add_argument("--port", type=int, default=8765, help="Port (Default 8765)")
+                         help="local control panel in the browser (start/stop, live log, progress, "
+                              "deck and config editor); binds to 127.0.0.1 only")
+    uip.add_argument("--port", type=int, default=8765, help="port (default 8765)")
     uip.add_argument("--no-browser", action="store_true", dest="no_browser",
-                     help="Browser nicht automatisch öffnen")
+                     help="do not open the browser automatically")
     uip.set_defaults(func=_cmd_ui)
 
     pst = sub.add_parser("policy-stats",
-                         help="misst im Simulator, WAS die Policy spielt: Karten-Häufigkeit, "
+                         help="measures WHAT the policy plays in the simulator: card frequency, "
                               "Platzierungs-Heatmap, Wait-Gate-Quote -> data/policy_stats.json")
     pst.add_argument("--ckpt", default=None,
-                     help="Checkpoint (Default: data/policy_sim_best.pt, sonst policy_sim.pt)")
-    pst.add_argument("--matches", type=int, default=60, help="wieviele greedy Matches gespielt werden")
-    pst.add_argument("--envs", type=int, default=8, help="parallele Match-Instanzen")
-    pst.add_argument("--seed", type=int, default=4242, help="RNG-Seed des Simulators")
+                     help="checkpoint (default: data/policy_sim_best.pt, else policy_sim.pt)")
+    pst.add_argument("--matches", type=int, default=60, help="how many greedy matches to play")
+    pst.add_argument("--envs", type=int, default=8, help="matches running in parallel")
+    pst.add_argument("--seed", type=int, default=4242, help="RNG seed of the simulator")
     pst.add_argument("--epsilon", type=float, default=0.0,
-                     help="Zufallsanteil (0 = rein greedy, also das echte Verhalten)")
-    pst.add_argument("--out", default=None, help="Ziel-JSON (Default: data/policy_stats.json)")
+                     help="share of random moves (0 = purely greedy, the real behaviour)")
+    pst.add_argument("--out", default=None, help="output JSON (default: data/policy_stats.json)")
     pst.add_argument("--size", choices=["576", "432"], default=None,
-                     help="Board-Auflösung; muss zum Checkpoint passen")
+                     help="board resolution; has to match the checkpoint")
     pst.set_defaults(func=_cmd_policy_stats)
 
     sbn = sub.add_parser("sim-bench",
-                         help="misst die Trainingsgeschwindigkeit (Matches/s) bei verschiedenen "
-                              "--envs auf DIESEM PC -> data/sim_bench.json (schreibt NICHT policy_sim.pt)")
+                         help="measures training throughput (matches/s) at different --envs on THIS "
+                              "machine -> data/sim_bench.json (never writes policy_sim.pt)")
     sbn.add_argument("--auto", action="store_true",
-                     help="sucht die beste Env-Zahl selbst: verdoppelt sie, bis der Durchsatz nicht "
-                          "mehr steigt oder der RAM knapp wird")
+                     help="finds the best value on its own: doubles it until throughput stops "
+                          "rising or memory runs short")
     sbn.add_argument("--apply", action="store_true",
-                     help="schreibt die empfohlene Env-Zahl direkt in config.yaml (mit Sicherung)")
+                     help="write the recommended value straight into config.yaml (with a backup)")
     sbn.add_argument("--envs", default=None,
-                     help="Kommaliste zu messender Env-Zahlen (Default: aus der Hardware abgeleitet)")
-    sbn.add_argument("--seconds", type=float, default=45.0, help="Messdauer pro Einstellung")
+                     help="comma list of values to measure (default: derived from the hardware)")
+    sbn.add_argument("--seconds", type=float, default=45.0, help="measurement time per setting")
     sbn.add_argument("--warmup", type=float, default=8.0,
-                     help="verworfener Aufwärmlauf (CUDA-Kontext); 0 = aus")
-    sbn.add_argument("--seed", type=int, default=0, help="RNG-Seed (für alle Messungen gleich)")
-    sbn.add_argument("--out", default=None, help="Ziel-JSON (Default: data/sim_bench.json)")
+                     help="discarded warm-up run (CUDA context); 0 turns it off")
+    sbn.add_argument("--seed", type=int, default=0, help="RNG seed, the same for every measurement")
+    sbn.add_argument("--out", default=None, help="output JSON (default: data/sim_bench.json)")
     sbn.set_defaults(func=_cmd_sim_bench)
 
     car = sub.add_parser("cards-art",
-                         help="lädt je ein Referenzbild pro Karte vom Fandom-Wiki nach "
-                              "templates/cardart/ (Grundlage der automatischen Deckerkennung)")
+                         help="downloads one reference picture per card from the Fandom wiki into "
+                              "templates/cardart/ (basis for automatic deck recognition)")
     car.add_argument("--refresh", action="store_true",
-                     help="auch bereits vorhandene Bilder neu laden")
-    car.add_argument("--limit", type=int, default=None, help="nur die ersten N Karten (Test)")
+                     help="re-download pictures that are already there")
+    car.add_argument("--limit", type=int, default=None, help="only the first N cards (for a quick test)")
     car.set_defaults(func=_cmd_cards_art)
 
     ddt = sub.add_parser("deck-detect",
-                         help="erkennt die acht Deckkarten automatisch aus einer Aufnahme und "
-                              "schlägt sie zur Bestätigung vor (ersetzt das Umbenennen der Crops)")
-    ddt.add_argument("--session", default=None, help="Aufnahme (Default: neueste)")
-    ddt.add_argument("--samples", type=int, default=400, help="wieviele Videobilder abgetastet werden")
+                         help="recognises the eight deck cards from a recording and "
+                              "proposes them for confirmation (replaces renaming the crops by hand)")
+    ddt.add_argument("--session", default=None, help="recording (default: the newest)")
+    ddt.add_argument("--samples", type=int, default=400, help="how many video frames to sample")
     ddt.add_argument("--per-face", type=int, default=6, dest="per_face",
-                     help="wieviele Bilder je Kartengesicht gemittelt werden (mehr = sicherer)")
+                     help="how many views of one card face are averaged (more is safer)")
     ddt.add_argument("--player-tag", default=None, dest="player_tag",
-                     help="Spieler-Tag (z.B. #ABC123) -- liest die Kartenlevel aus deinem Account "
-                          "über die offizielle API; braucht einen Token in CLASHRL_CR_API_TOKEN")
-    ddt.add_argument("--out", default=None, help="Ziel-JSON (Default: data/deck_detect.json)")
+                     help="player tag (e.g. #ABC123): reads the card levels from your account "
+                          "through the official API; needs a token in CLASHRL_CR_API_TOKEN")
+    ddt.add_argument("--out", default=None, help="output JSON (default: data/deck_detect.json)")
     ddt.add_argument("--write-templates", action="store_true", dest="write_templates",
-                     help="schreibt die sicher erkannten Kartenbilder gleich als Hand-Vorlagen "
-                          "nach templates/cards/<karte>.png -- damit entfaellt das Umbenennen ganz")
+                     help="save every confidently recognised card as a hand template under "
+                          "templates/cards/<card>.png, which removes the renaming step")
     ddt.add_argument("--overwrite-templates", action="store_true", dest="overwrite_templates",
-                     help="ersetzt dabei auch schon vorhandene Vorlagen")
+                     help="also replace templates that already exist")
     ddt.set_defaults(func=_cmd_deck_detect)
 
     cal = sub.add_parser("calibrate",
-                         help="schneidet die Match-Erkennung aus DEINER Aufnahme neu zu (nötig bei "
-                              "anderer Fenstergröße oder anderer Spielsprache)")
-    cal.add_argument("--session", default=None, help="Aufnahme (Default: neueste)")
+                         help="re-cut the match detection from YOUR recording (needed for a different "
+                              "window size or a different game language)")
+    cal.add_argument("--session", default=None, help="recording (default: the newest)")
     cal.add_argument("--dry-run", action="store_true", dest="dry_run",
-                     help="nur berichten, nichts schreiben")
+                     help="report only, write nothing")
     cal.set_defaults(func=_cmd_calibrate)
+
+    imp = sub.add_parser("import-from",
+                         help="take checkpoints, recordings and templates from an older "
+                              "installation of this project")
+    imp.add_argument("old", help="path to the old folder (repository root or the icebow folder)")
+    imp.add_argument("--dry-run", action="store_true", dest="dry_run",
+                     help="only list what would be copied")
+    imp.add_argument("--overwrite", action="store_true",
+                     help="also replace files that already exist here")
+    imp.add_argument("--no-sessions", action="store_true", dest="no_sessions",
+                     help="skip the recordings (they are the large part)")
+    imp.add_argument("--with-config", action="store_true", dest="with_config",
+                     help="also take cards.yaml and config.yaml, which decide the deck and the "
+                          "screen calibration")
+    imp.set_defaults(func=_cmd_import_from)
 
     args = parser.parse_args()
     try:
@@ -615,7 +637,7 @@ def main() -> None:
         # itself -- most visibly while the env pool is still being built. Nothing has been
         # trained yet, so there is nothing to save; exit quietly instead of dumping a
         # traceback and a Windows control-C exit code that looks like a crash.
-        print("\n[clashrl] abgebrochen.", flush=True)
+        print("\n[clashrl] aborted.", flush=True)
         raise SystemExit(130)
 
 

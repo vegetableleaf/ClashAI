@@ -137,16 +137,16 @@ def suggest(info: Dict[str, Any], cur_envs: int = 8) -> Dict[str, Any]:
     candidates = [c for c in candidates if 1 <= c <= 96]
 
     notes = [
-        f"{cores} logische CPU-Kerne, "
+        f"{cores} logical CPU cores, "
         f"{(ram / 1024 ** 3):.0f} GB RAM"
-        + (f", {info.get('gpu')} mit {(vram / 1024 ** 3):.0f} GB VRAM" if cuda else ", keine nutzbare GPU"),
-        "train-sim läuft in EINEM Prozess: die Envs werden nacheinander auf einem Kern gerechnet. "
-        "Mehr Envs verteilen die GPU-Arbeit auf mehr Matches, skalieren aber nicht linear: "
-        "deshalb misst der Benchmark, statt zu raten.",
+        + (f", {info.get('gpu')} mit {(vram / 1024 ** 3):.0f} GB VRAM" if cuda else ", no usable GPU"),
+        "train-sim runs in ONE process: the parallel matches are stepped one after another on a single core. "
+        "More of them spread the GPU work over more matches but do not scale linearly, "
+        "which is why the benchmark measures instead of guessing.",
     ]
     if not cuda:
-        notes.append("Ohne CUDA läuft das Training auf der CPU und ist um ein Vielfaches langsamer. "
-                     "Passenden PyTorch-CUDA-Build installieren.")
+        notes.append("Without CUDA the training runs on the CPU and is many times slower. "
+                     "Install the matching PyTorch CUDA build.")
     return {
         "envs": int(envs), "batch_size": int(batch), "replay_size": int(replay),
         "eval_envs": int(eval_envs), "bench_candidates": candidates,

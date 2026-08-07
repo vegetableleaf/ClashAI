@@ -110,17 +110,17 @@ class ProcManager:
     def start(self, cmd: str, values: Dict[str, Any]) -> Job:
         spec = jobcat.BY_CMD.get(cmd)
         if spec is None:
-            raise jobcat.ArgError(f"unbekanntes Kommando: {cmd}")
+            raise jobcat.ArgError(f"unknown command: {cmd}")
         argv_tail = jobcat.build_argv(cmd, values)
         with self._lock:
             if spec["gpu"]:
                 busy = self.gpu_busy()
                 if busy is not None:
                     raise RuntimeError(
-                        f"'{busy.cmd}' läuft bereits und belegt GPU/Fenster. "
-                        f"Erst stoppen, dann '{cmd}' starten.")
+                        f"'{busy.cmd}' is already running and holds the GPU or the game window. "
+                        f"Stop it before starting '{cmd}'.")
             if any(j.cmd == cmd for j in self.active()):
-                raise RuntimeError(f"'{cmd}' läuft bereits.")
+                raise RuntimeError(f"'{cmd}' is already running.")
             jid = f"{cmd}-{time.strftime('%Y%m%d-%H%M%S')}"
             if jid in self.jobs:                          # same second, same command
                 jid += f"-{len(self.jobs)}"
@@ -174,7 +174,7 @@ class ProcManager:
                         except OSError:
                             pass
         except Exception as exc:                          # noqa: BLE001 -- reader must never take the UI down
-            job._emit(f"[ui] Log-Reader abgebrochen: {exc}")
+            job._emit(f"[ui] log reader stopped: {exc}")
         finally:
             job.rc = job.proc.wait()
             job.finished = time.time()
@@ -182,9 +182,9 @@ class ProcManager:
             # 130 = our own clean Ctrl+C exit, 0xC000013A = Windows' control-C exit code.
             # After a stop those mean "did what it was told", not "crashed".
             if job.stopping and job.rc in (0, 130, 3221225786, -1073741510):
-                job._emit(f"[ui] gestoppt und beendet nach {secs:.0f}s")
+                job._emit(f"[ui] stopped and exited after {secs:.0f}s")
             else:
-                job._emit(f"[ui] beendet (Exit-Code {job.rc}) nach {secs:.0f}s")
+                job._emit(f"[ui] exited with code {job.rc} after {secs:.0f}s")
             if job.track_metrics:
                 self.metrics.append({"kind": "run_end", "run": job.id, "cmd": job.cmd, "rc": job.rc})
 
@@ -195,15 +195,15 @@ class ProcManager:
         if not job.running:
             return job.info()
         job.stopping = True
-        job._emit("[ui] Stop-Signal gesendet. Ein laufendes Training speichert dabei seinen Stand; "
-                  "wird noch gestartet, bricht es einfach ab.")
+        job._emit("[ui] stop signal sent. A running training saves its checkpoint on the way out; "
+                  "one that is still starting up simply aborts.")
         try:
             if _IS_WIN:
                 os.kill(job.proc.pid, signal.CTRL_BREAK_EVENT)   # type: ignore[union-attr]
             else:
                 job.proc.send_signal(signal.SIGINT)               # type: ignore[union-attr]
         except (OSError, ValueError) as exc:
-            job._emit(f"[ui] Stop-Signal fehlgeschlagen ({exc}) -- beende hart.")
+            job._emit(f"[ui] stop signal failed ({exc}); terminating.")
             job.proc.terminate()                                  # type: ignore[union-attr]
         threading.Thread(target=self._escalate, args=(job, grace), daemon=True).start()
         return job.info()
@@ -216,14 +216,14 @@ class ProcManager:
                 return
             time.sleep(0.3)
         if job.running:
-            job._emit(f"[ui] nach {grace:.0f}s nicht beendet -- terminate()")
+            job._emit(f"[ui] still running after {grace:.0f}s; terminate()")
             try:
                 job.proc.terminate()                              # type: ignore[union-attr]
             except OSError:
                 pass
         time.sleep(5.0)
         if job.running:
-            job._emit("[ui] reagiert weiterhin nicht -- kill()")
+            job._emit("[ui] still not responding; kill()")
             try:
                 job.proc.kill()                                   # type: ignore[union-attr]
             except OSError:

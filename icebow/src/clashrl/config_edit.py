@@ -34,152 +34,152 @@ class EditError(ValueError):
 FIELDS: List[Dict[str, Any]] = [
     # -- Simulator / Trainingslauf
     {"path": ["sim", "envs"], "type": "int", "min": 1, "max": 256, "group": "Simulator",
-     "label": "Parallele Envs (sim.envs)",
-     "help": "Wieviele Match-Instanzen gleichzeitig laufen und einen Learner füttern. "
-             "Mehr = vielfältigerer Replay und bessere GPU-Auslastung, aber mehr RAM."},
+     "label": "Parallel matches (sim.envs)",
+     "help": "How many matches run at the same time feeding one learner. More means a more "
+             "varied replay buffer and better GPU use, but also more memory."},
     {"path": ["sim", "agent_dt"], "type": "float", "min": 0.1, "max": 5.0, "group": "Simulator",
-     "label": "Agenten-Takt in Sekunden (sim.agent_dt)",
-     "help": "Simulierte Sekunden zwischen zwei Entscheidungen. Kleiner = reaktiver, aber "
-             "deutlich mehr Schritte pro Match."},
+     "label": "Decision interval in seconds (sim.agent_dt)",
+     "help": "Simulated seconds between two decisions. Smaller reacts faster but costs many "
+             "more steps per match."},
     {"path": ["sim", "regulation_s"], "type": "int", "min": 30, "max": 600, "group": "Simulator",
-     "label": "Reguläre Spielzeit (s)", "help": "Länge eines Matches vor der Verlängerung."},
+     "label": "Regulation time (s)", "help": "Length of a match before overtime."},
     {"path": ["sim", "overtime_s"], "type": "int", "min": 0, "max": 600, "group": "Simulator",
-     "label": "Verlängerung (s)", "help": "Zusatzzeit, wenn nach regulärer Zeit unentschieden."},
+     "label": "Overtime (s)", "help": "Extra time when the score is level after regulation."},
     {"path": ["sim", "my_tower_level"], "type": "int", "min": 1, "max": 20, "group": "Simulator",
-     "label": "Eigenes Turm-Level",
-     "help": "Referenzlevel deiner Türme. Im Sim zählen nur VERHÄLTNISSE: dieses Level und die "
-             "Deck-Level müssen gemeinsam bewegt werden, sonst verschiebt sich die Balance."},
+     "label": "Your tower level",
+     "help": "Reference level of your towers. Only RATIOS matter in the simulator: move this "
+             "together with the card levels, or the balance shifts."},
     {"path": ["sim", "enemy_levels"], "type": "intlist", "group": "Simulator",
-     "label": "Gegner-Kartenlevel (Pool)",
-     "help": "Aus dieser Liste würfelt jede Gegnerkarte ihr Level. Höher = härterer Ladder-Benchmark."},
+     "label": "Opponent card levels (pool)",
+     "help": "Every opponent card rolls its level from this list. Higher makes the ladder benchmark harder."},
     {"path": ["sim", "adaptive_prob"], "type": "float", "min": 0.0, "max": 1.0, "group": "Simulator",
-     "label": "Anteil adaptiver Bots",
-     "help": "Wahrscheinlichkeit, dass ein skriptierter Gegner die adaptiven Regeln nutzt "
-             "(Anti-Siege, Konter halten, Bestrafen, Split-Push)."},
+     "label": "Share of adaptive bots",
+     "help": "Chance that a scripted opponent uses the adaptive rules: anti-siege, holding a "
+             "counter, punishing an overspend, split pushing."},
     # -- Exploration
     {"path": ["sim", "epsilon_start"], "type": "float", "min": 0.0, "max": 1.0, "group": "Exploration",
-     "label": "Epsilon Start", "help": "Anfangs-Zufallsanteil der Aktionswahl (1.0 = rein zufällig)."},
+     "label": "Epsilon start", "help": "Initial share of random moves (1.0 is fully random)."},
     {"path": ["sim", "epsilon_end"], "type": "float", "min": 0.0, "max": 1.0, "group": "Exploration",
-     "label": "Epsilon Ende", "help": "Rest-Zufall am Ende des Decays."},
+     "label": "Epsilon end", "help": "Remaining randomness once the decay is done."},
     {"path": ["sim", "epsilon_decay_steps"], "type": "int", "min": 1, "max": 10 ** 7,
-     "group": "Exploration", "label": "Epsilon-Decay Schritte",
-     "help": "Lernschritte (nicht Matches!), über die Epsilon linear von Start auf Ende fällt."},
+     "group": "Exploration", "label": "Epsilon decay steps",
+     "help": "Learning steps, not matches, over which epsilon falls linearly from start to end."},
     {"path": ["sim", "explore_count_based"], "type": "bool", "group": "Exploration",
-     "label": "Count-based Exploration",
-     "help": "Gewichtet zufällige Karten-Picks Richtung selten gespielter Karten, damit "
-             "situative Karten überhaupt getestet werden."},
+     "label": "Count-based exploration",
+     "help": "Weights random card picks toward rarely played cards, so situational cards get "
+             "tried at all."},
     {"path": ["train", "explore_wait_prob"], "type": "float", "min": 0.0, "max": 1.0,
-     "group": "Exploration", "label": "Warte-Anteil beim Explorieren",
-     "help": "Wie oft eine Zufallsaktion 'Warten' ist statt eine Karte zu legen."},
+     "group": "Exploration", "label": "Wait share while exploring",
+     "help": "How often a random action is a wait instead of playing a card."},
     {"path": ["train", "min_play_elixir"], "type": "int", "min": 0, "max": 10,
-     "group": "Exploration", "label": "Mindest-Elixier für Zufallsplay",
-     "help": "Unter diesem Stand wartet der Explorationszweig grundsätzlich."},
+     "group": "Exploration", "label": "Minimum elixir for a random play",
+     "help": "Below this the exploration branch always waits."},
     # -- Lernen
-    {"path": ["train", "device"], "type": "choice", "choices": ["cuda", "cpu"], "group": "Lernen",
-     "label": "Gerät", "help": "cuda = GPU. Fällt automatisch auf CPU zurück, wenn keine GPU nutzbar ist."},
-    {"path": ["train", "lr"], "type": "float", "min": 1e-7, "max": 1e-1, "group": "Lernen",
-     "label": "Lernrate", "help": "Adam-Lernrate. Zu hoch = instabile Q-Werte, zu niedrig = zäh."},
-    {"path": ["train", "gamma"], "type": "float", "min": 0.0, "max": 1.0, "group": "Lernen",
-     "label": "Gamma (Discount)", "help": "Wie stark späte Belohnungen zählen. 0.99 bedeutet einen "
-                                          "langen Horizont, kleinere Werte machen den Bot kurzsichtig."},
-    {"path": ["train", "n_step"], "type": "int", "min": 1, "max": 20, "group": "Lernen",
-     "label": "N-Step Returns",
-     "help": "Wieviele echte Belohnungen in das Lernziel einer Aktion einfließen. Höher = "
-             "schnellere Ursache-Wirkung-Zuordnung, aber mehr Varianz."},
-    {"path": ["train", "batch_size"], "type": "int", "min": 8, "max": 4096, "group": "Lernen",
-     "label": "Batch-Größe", "help": "Samples pro Optimierungsschritt."},
+    {"path": ["train", "device"], "type": "choice", "choices": ["cuda", "cpu"], "group": "Learning",
+     "label": "Device", "help": "cuda uses the GPU and falls back to the CPU when none is usable."},
+    {"path": ["train", "lr"], "type": "float", "min": 1e-7, "max": 1e-1, "group": "Learning",
+     "label": "Learning rate", "help": "Adam learning rate. Too high destabilises the Q values, too low crawls."},
+    {"path": ["train", "gamma"], "type": "float", "min": 0.0, "max": 1.0, "group": "Learning",
+     "label": "Gamma (Discount)", "help": "How much later rewards count. 0.99 is a long horizon; smaller values make the "
+                                          "bot short-sighted."},
+    {"path": ["train", "n_step"], "type": "int", "min": 1, "max": 20, "group": "Learning",
+     "label": "N-step returns",
+     "help": "How many real rewards go into the learning target of one action. Higher links "
+             "cause and effect faster but adds variance."},
+    {"path": ["train", "batch_size"], "type": "int", "min": 8, "max": 4096, "group": "Learning",
+     "label": "Batch size", "help": "Samples per optimisation step."},
     {"path": ["train", "replay_size"], "type": "int", "min": 1000, "max": 5_000_000,
-     "group": "Lernen", "label": "Replay-Größe", "help": "Maximale Anzahl gespeicherter Transitionen."},
-    {"path": ["train", "min_replay"], "type": "int", "min": 1, "max": 1_000_000, "group": "Lernen",
-     "label": "Replay-Mindestfüllung", "help": "Ab wievielen Transitionen der Learner startet."},
-    {"path": ["train", "target_sync"], "type": "int", "min": 1, "max": 100000, "group": "Lernen",
-     "label": "Target-Sync (Schritte)", "help": "Abstand, in dem das Target-Netz nachgezogen wird."},
-    {"path": ["train", "grad_clip"], "type": "float", "min": 0.0, "max": 1000.0, "group": "Lernen",
-     "label": "Gradient Clipping", "help": "Obergrenze der Gradientennorm."},
-    {"path": ["train", "bc_epochs"], "type": "int", "min": 1, "max": 500, "group": "Lernen",
-     "label": "BC-Epochen", "help": "Epochen pro Behaviour-Cloning-Durchlauf."},
+     "group": "Learning", "label": "Replay size", "help": "Maximum number of stored transitions."},
+    {"path": ["train", "min_replay"], "type": "int", "min": 1, "max": 1_000_000, "group": "Learning",
+     "label": "Replay warm-up", "help": "How many transitions before the learner starts."},
+    {"path": ["train", "target_sync"], "type": "int", "min": 1, "max": 100000, "group": "Learning",
+     "label": "Target sync (steps)", "help": "How often the target network is refreshed."},
+    {"path": ["train", "grad_clip"], "type": "float", "min": 0.0, "max": 1000.0, "group": "Learning",
+     "label": "Gradient clipping", "help": "Upper bound on the gradient norm."},
+    {"path": ["train", "bc_epochs"], "type": "int", "min": 1, "max": 500, "group": "Learning",
+     "label": "BC epochs", "help": "Epochs per behaviour cloning pass."},
     # -- Self-Play & Benchmark
     {"path": ["sim", "selfplay_prob"], "type": "float", "min": 0.0, "max": 1.0, "group": "Self-Play",
-     "label": "Self-Play Anteil", "help": "Wahrscheinlichkeit, gegen eine eingefrorene eigene Kopie "
-                                          "zu spielen statt gegen einen skriptierten Bot. 0 = aus."},
+     "label": "Self-play share", "help": "Chance of playing a frozen copy of itself instead of a "
+                                          "scripted bot. 0 turns it off."},
     {"path": ["sim", "selfplay_ramp_matches"], "type": "int", "min": 0, "max": 10 ** 7,
-     "group": "Self-Play", "label": "Self-Play Anlauf (Matches)",
-     "help": "Über wieviele Matches der Anteil linear hochgefahren wird."},
+     "group": "Self-Play", "label": "Self-play ramp (matches)",
+     "help": "Over how many matches that share is ramped up."},
     {"path": ["sim", "selfplay_snapshot_every"], "type": "int", "min": 1, "max": 10 ** 6,
-     "group": "Self-Play", "label": "Snapshot alle N Matches"},
+     "group": "Self-Play", "label": "Snapshot every N matches"},
     {"path": ["sim", "selfplay_league_size"], "type": "int", "min": 1, "max": 64,
-     "group": "Self-Play", "label": "Liga-Größe", "help": "Wieviele vergangene Kopien aufbewahrt werden."},
-    {"path": ["sim", "selfplay_pfsp"], "type": "bool", "group": "Self-Play", "label": "PFSP aktiv",
-     "help": "Bevorzugt beim Sparring die Snapshots, die dich aktuell schlagen."},
+     "group": "Self-Play", "label": "League size", "help": "How many past copies are kept."},
+    {"path": ["sim", "selfplay_pfsp"], "type": "bool", "group": "Self-Play", "label": "PFSP enabled",
+     "help": "Prefers sparring against the snapshots that currently beat you."},
     {"path": ["sim", "selfplay_pfsp_power"], "type": "float", "min": 0.0, "max": 8.0,
-     "group": "Self-Play", "label": "PFSP Schärfe", "help": "Höher = konzentrierter auf harte Gegner."},
+     "group": "Self-Play", "label": "PFSP sharpness", "help": "Higher concentrates harder on the difficult opponents."},
     {"path": ["sim", "eval_every_matches"], "type": "int", "min": 0, "max": 10 ** 6,
-     "group": "Benchmark", "label": "Benchmark alle N Matches", "help": "0 = kein Benchmark."},
+     "group": "Benchmark", "label": "Benchmark every N matches", "help": "0 disables it."},
     {"path": ["sim", "eval_matches"], "type": "int", "min": 1, "max": 5000, "group": "Benchmark",
-     "label": "Matches pro Benchmark",
-     "help": "Mehr = weniger Rauschen (~±4pp bei 150 gegen ~±10pp bei 24), aber längere Pause."},
+     "label": "Matches per benchmark",
+     "help": "More means less noise (about +-4pp at 150 against +-10pp at 24) but a longer pause."},
     {"path": ["sim", "eval_envs"], "type": "int", "min": 1, "max": 256, "group": "Benchmark",
-     "label": "Benchmark-Envs", "help": "Wird auf --envs gedeckelt."},
+     "label": "Benchmark matches", "help": "Capped at --envs."},
     {"path": ["sim", "eval_smooth_window"], "type": "int", "min": 1, "max": 50, "group": "Benchmark",
-     "label": "Glättungsfenster", "help": "Über wieviele Benchmarks der Durchschnitt läuft."},
-    {"path": ["sim", "fair_eval"], "type": "bool", "group": "Benchmark", "label": "Fairer Benchmark",
-     "help": "Zusätzlicher Durchlauf mit Gegnerkarten auf DEINEM Level (Handicap entfernt)."},
+     "label": "Smoothing window", "help": "How many benchmarks the average runs over."},
+    {"path": ["sim", "fair_eval"], "type": "bool", "group": "Benchmark", "label": "Fair benchmark",
+     "help": "An extra run with opponent cards at YOUR level, with the handicap removed."},
     {"path": ["sim", "log_every_matches"], "type": "int", "min": 1, "max": 10000,
-     "group": "Benchmark", "label": "Logzeile alle N Matches"},
+     "group": "Benchmark", "label": "Log line every N matches"},
     {"path": ["sim", "save_every_matches"], "type": "int", "min": 1, "max": 10000,
-     "group": "Benchmark", "label": "Checkpoint alle N Matches"},
+     "group": "Benchmark", "label": "Checkpoint every N matches"},
     # -- Belohnungen
-    {"path": ["rewards", "win"], "type": "float", "min": -100, "max": 100, "group": "Belohnungen",
-     "label": "Sieg", "help": "Endbelohnung für einen gewonnenen Match."},
-    {"path": ["rewards", "loss"], "type": "float", "min": -100, "max": 100, "group": "Belohnungen",
-     "label": "Niederlage"},
+    {"path": ["rewards", "win"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
+     "label": "Win", "help": "Final reward for winning a match."},
+    {"path": ["rewards", "loss"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
+     "label": "Loss"},
     {"path": ["rewards", "take_enemy_tower"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Gegnerturm zerstört"},
+     "group": "Rewards", "label": "Enemy tower destroyed"},
     {"path": ["rewards", "lose_own_tower"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Eigenen Turm verloren"},
+     "group": "Rewards", "label": "Own tower lost"},
     {"path": ["rewards", "tower_chip_scale"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Turmschaden-Skala", "help": "Formt Chip-Schaden am Turm."},
+     "group": "Rewards", "label": "Tower chip scale", "help": "Shapes the reward for chip damage on a tower."},
     {"path": ["rewards", "hp_scale"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "HP-Differenz-Skala"},
+     "group": "Rewards", "label": "Tower HP difference scale"},
     {"path": ["rewards", "threat_response"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Bedrohung gekontert"},
+     "group": "Rewards", "label": "Threat countered"},
     {"path": ["rewards", "threat_miss"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Bedrohung ignoriert"},
+     "group": "Rewards", "label": "Threat ignored"},
     {"path": ["rewards", "elixir_trade"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Elixier-Trade"},
+     "group": "Rewards", "label": "Elixir trade"},
     {"path": ["rewards", "wincon_exec"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Win-Condition richtig gesetzt"},
+     "group": "Rewards", "label": "Win condition placed well"},
     {"path": ["rewards", "wincon_misplace"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Win-Condition falsch gesetzt"},
+     "group": "Rewards", "label": "Win condition misplaced"},
     {"path": ["rewards", "leak_penalty"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Elixier verschwendet (Leak)"},
+     "group": "Rewards", "label": "Elixir leaked"},
     {"path": ["rewards", "spell_waste"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Zauber verschwendet"},
+     "group": "Rewards", "label": "Spell wasted"},
     {"path": ["rewards", "cycle_plan"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Cycle geplant"},
+     "group": "Rewards", "label": "Cycle planned"},
     {"path": ["rewards", "cycle_waste"], "type": "float", "min": -100, "max": 100,
-     "group": "Belohnungen", "label": "Cycle verschwendet"},
+     "group": "Rewards", "label": "Cycle wasted"},
     {"path": ["rewards", "correctness_cap"], "type": "float", "min": 0, "max": 1000,
-     "group": "Belohnungen", "label": "Deckel für Shaping-Summe",
-     "help": "Begrenzt, wieviel die 'Korrektheits'-Belohnungen gegenüber dem Spielausgang wiegen."},
+     "group": "Rewards", "label": "Cap on shaping rewards",
+     "help": "Limits how much the correctness rewards weigh against the match outcome."},
     # -- Wahrnehmung / Aktionen
-    {"path": ["action", "grid"], "type": "intlist", "group": "Wahrnehmung",
-     "label": "Platzierungsraster [Spalten, Zeilen]",
-     "help": "[18,32] fein / [18,24] grob. Muss zu Datensatz UND Checkpoint passen."},
-    {"path": ["observation", "arena_size"], "type": "intlist", "group": "Wahrnehmung",
-     "label": "Beobachtungsgröße [B,H]", "help": "Auflösung des Arena-Bildes für das CNN."},
-    {"path": ["observation", "use_detector"], "type": "bool", "group": "Wahrnehmung",
-     "label": "Detektor verwenden", "help": "YOLO-Erkennung für die semantische Beobachtung."},
+    {"path": ["action", "grid"], "type": "intlist", "group": "Perception",
+     "label": "Placement grid [columns, rows]",
+     "help": "[18,32] fine or [18,24] coarse. Has to match both the dataset and the checkpoint."},
+    {"path": ["observation", "arena_size"], "type": "intlist", "group": "Perception",
+     "label": "Observation size [W,H]", "help": "Resolution of the arena image fed to the network."},
+    {"path": ["observation", "use_detector"], "type": "bool", "group": "Perception",
+     "label": "Use the detector", "help": "YOLO detection for the semantic observation."},
     {"path": ["observation", "detector_conf"], "type": "float", "min": 0.0, "max": 1.0,
-     "group": "Wahrnehmung", "label": "Detektor-Konfidenz"},
-    {"path": ["record", "fps"], "type": "int", "min": 1, "max": 60, "group": "Wahrnehmung",
-     "label": "Aufnahme-FPS"},
-    {"path": ["window", "title_contains"], "type": "str", "group": "Wahrnehmung",
-     "label": "Fenstertitel enthält", "help": "So wird das Spielfenster gefunden."},
+     "group": "Perception", "label": "Detector confidence"},
+    {"path": ["record", "fps"], "type": "int", "min": 1, "max": 60, "group": "Perception",
+     "label": "Recording FPS"},
+    {"path": ["window", "title_contains"], "type": "str", "group": "Perception",
+     "label": "Window title contains", "help": "How the game window is found."},
     {"path": ["play", "act_period"], "type": "float", "min": 0.05, "max": 10.0, "group": "Live",
-     "label": "Aktions-Takt live (s)"},
+     "label": "Action interval when playing (s)"},
     {"path": ["play", "epsilon"], "type": "float", "min": 0.0, "max": 1.0, "group": "Live",
-     "label": "Epsilon live", "help": "0 = die Policy spielt rein greedy."},
+     "label": "Epsilon when playing", "help": "0 makes the policy purely greedy."},
 ]
 
 FIELD_BY_KEY: Dict[str, Dict[str, Any]] = {".".join(f["path"]): f for f in FIELDS}
@@ -208,7 +208,7 @@ def _find_key_line(lines: Sequence[str], key: str, start: int, end: int, indent:
     for i in range(start, end):
         if pat.match(lines[i]):
             return i
-    raise EditError(f"Schlüssel '{key}' nicht gefunden (Einrückung {indent}).")
+    raise EditError(f"key '{key}' not found (indent {indent}).")
 
 
 def _block_bounds(lines: Sequence[str], head: int, indent: int) -> Tuple[int, int, int]:
@@ -287,7 +287,7 @@ def patch_scalar(text: str, path: Sequence[str], value: Any) -> str:
     line = lines[idx]
     m = re.match(r"^(\s*[^:]+:)(.*)$", line)
     if not m:
-        raise EditError(f"Zeile für {'.'.join(path)} ist nicht patchbar: {line!r}")
+        raise EditError(f"the line for {'.'.join(path)} cannot be patched: {line!r}")
     head, rest = m.group(1), m.group(2)
     _old, comment = _comment_split(rest)
     lines[idx] = f"{head} {fmt_value(value)}" + (("  " + comment.strip()) if comment.strip() else "")
@@ -326,10 +326,10 @@ def _write_verified(path: Path, new_text: str, expected: Any, backup_dir: Path) 
     try:
         parsed = yaml.safe_load(new_text)
     except yaml.YAMLError as exc:
-        raise EditError(f"Ergebnis wäre ungültiges YAML -- nichts geschrieben ({exc})") from None
+        raise EditError(f"the result would not be valid YAML, so nothing was written ({exc})") from None
     if parsed != expected:
-        raise EditError("Sicherheitsprüfung fehlgeschlagen: das Ergebnis entspricht nicht exakt "
-                        "der beabsichtigten Änderung -- nichts geschrieben.")
+        raise EditError("safety check failed: the result is not exactly the intended change, "
+                        "so nothing was written.")
     bak = backup(path, backup_dir)
     path.write_text(new_text, encoding="utf-8")
     return bak
@@ -347,34 +347,34 @@ def coerce(field: Dict[str, Any], raw: Any) -> Any:
         try:
             v: Any = int(str(raw).strip())
         except (TypeError, ValueError):
-            raise EditError(f"{label}: '{raw}' ist keine ganze Zahl") from None
+            raise EditError(f"{label}: '{raw}' is not a whole number") from None
     elif t == "float":
         try:
             v = float(str(raw).strip())
         except (TypeError, ValueError):
-            raise EditError(f"{label}: '{raw}' ist keine Zahl") from None
+            raise EditError(f"{label}: '{raw}' is not a number") from None
     elif t == "intlist":
         parts = [p for p in re.split(r"[,\s\[\]]+", str(raw).strip()) if p]
         try:
             v = [int(p) for p in parts]
         except ValueError:
-            raise EditError(f"{label}: '{raw}' ist keine Liste ganzer Zahlen") from None
+            raise EditError(f"{label}: '{raw}' is not a list of whole numbers") from None
         if not v:
-            raise EditError(f"{label}: Liste darf nicht leer sein")
+            raise EditError(f"{label}: the list must not be empty")
         return v
     elif t == "choice":
         v = str(raw).strip()
         if v not in field.get("choices", []):
-            raise EditError(f"{label}: '{raw}' ist keine gültige Auswahl")
+            raise EditError(f"{label}: '{raw}' is not one of the choices")
         return v
     else:
         v = str(raw)
         return v
     lo, hi = field.get("min"), field.get("max")
     if lo is not None and v < lo:
-        raise EditError(f"{label}: {v} liegt unter dem Minimum {lo}")
+        raise EditError(f"{label}: {v} is below the minimum {lo}")
     if hi is not None and v > hi:
-        raise EditError(f"{label}: {v} liegt über dem Maximum {hi}")
+        raise EditError(f"{label}: {v} is above the maximum {hi}")
     return v
 
 
@@ -401,7 +401,7 @@ def save_config_fields(cfg_path: Path, changes: Dict[str, Any], backup_dir: Path
     for key, raw in (changes or {}).items():
         field = FIELD_BY_KEY.get(key)
         if field is None:
-            raise EditError(f"Feld '{key}' ist nicht editierbar.")
+            raise EditError(f"field '{key}' is not editable.")
         value = coerce(field, raw)
         old = _deep_get(data, field["path"], None)
         if old == value and type(old) is type(value):
@@ -433,7 +433,7 @@ def _deck_bounds(lines: Sequence[str]) -> Tuple[int, int]:
             head = i
             break
     if head is None:
-        raise EditError("Kein 'deck:'-Block in cards.yaml gefunden.")
+        raise EditError("no 'deck:' block found in cards.yaml.")
     j = head + 1
     while j < len(lines):
         ln = lines[j]
@@ -501,9 +501,9 @@ def _num(label: str, raw: Any, lo: float, hi: float, integer: bool = False):
     try:
         v = int(float(str(raw).strip())) if integer else float(str(raw).strip())
     except (TypeError, ValueError):
-        raise EditError(f"{label}: '{raw}' ist keine Zahl") from None
+        raise EditError(f"{label}: '{raw}' is not a number") from None
     if not lo <= v <= hi:
-        raise EditError(f"{label}: {v} liegt außerhalb von {lo}...{hi}")
+        raise EditError(f"{label}: {v} is outside {lo}...{hi}")
     return v
 
 
@@ -516,15 +516,15 @@ def save_towers(cfg_path: Path, payload: Dict[str, Any], backup_dir: Path) -> Di
     """
     troops_in = payload.get("tower_troops") or {}
     if not troops_in:
-        raise EditError("Mindestens ein Turm-Typ muss definiert sein.")
+        raise EditError("at least one tower troop has to be defined.")
     troops: Dict[str, Dict[str, Any]] = {}
     for raw_name, spec in troops_in.items():
         name = str(raw_name).strip().lower().replace(" ", "_").replace("-", "_")
         if not _TOWER_NAME.match(name):
-            raise EditError(f"'{raw_name}' ist kein gültiger Turm-Name "
-                            "(Kleinbuchstaben, Ziffern, Unterstrich; 2-32 Zeichen).")
+            raise EditError(f"'{raw_name}' is not a valid tower name "
+                            "(lower case, digits, underscore; 2 to 32 characters).")
         if name in troops:
-            raise EditError(f"Turm '{name}' ist doppelt.")
+            raise EditError(f"tower '{name}' appears twice.")
         out: Dict[str, Any] = {
             "hp": _num(f"{name}.hp", (spec or {}).get("hp"), 1, 1_000_000, integer=True),
             "dps": _num(f"{name}.dps", (spec or {}).get("dps"), 0, 100_000, integer=True),
@@ -541,33 +541,33 @@ def save_towers(cfg_path: Path, payload: Dict[str, Any], backup_dir: Path) -> Di
 
     my = str(payload.get("my_tower_troop", "princess")).strip().lower()
     if my not in troops:
-        raise EditError(f"Dein Turm-Typ '{my}' kommt in der Turmliste nicht vor.")
+        raise EditError(f"your tower troop '{my}' does not appear in the tower list.")
 
     weights_in = payload.get("opponent_tower_weights") or {}
     weights: Dict[str, int] = {}
     for k, v in weights_in.items():
         name = str(k).strip().lower()
         if name not in troops:
-            raise EditError(f"Gewichtung für '{name}' hat keinen passenden Turm-Typ.")
-        w = int(_num(f"Gewichtung {name}", v, 0, 10_000, integer=True))
+            raise EditError(f"the weight for '{name}' has no matching tower troop.")
+        w = int(_num(f"weight of {name}", v, 0, 10_000, integer=True))
         if w > 0:
             weights[name] = w
     if not weights:
-        raise EditError("Mindestens ein Gegner-Turm braucht eine Gewichtung größer 0.")
+        raise EditError("at least one opponent tower needs a weight above 0.")
 
     king_in = payload.get("king_tower") or {}
     king = {
-        "hp": _num("König.hp", king_in.get("hp"), 1, 1_000_000, integer=True),
-        "dps": _num("König.dps", king_in.get("dps"), 0, 100_000, integer=True),
-        "hit_speed": _num("König.hit_speed", king_in.get("hit_speed"), 0.05, 10.0),
+        "hp": _num("king.hp", king_in.get("hp"), 1, 1_000_000, integer=True),
+        "dps": _num("king.dps", king_in.get("dps"), 0, 100_000, integer=True),
+        "hit_speed": _num("king.hit_speed", king_in.get("hit_speed"), 0.05, 10.0),
     }
     scalars = {
         ("sim", "my_tower_troop"): my,
-        ("sim", "my_tower_level"): int(_num("Turm-Level", payload.get("my_tower_level", 15),
+        ("sim", "my_tower_level"): int(_num("tower level", payload.get("my_tower_level", 15),
                                             1, 20, integer=True)),
-        ("sim", "tower_range"): _num("Turm-Reichweite", payload.get("tower_range", 0.2), 0.01, 1.0),
-        ("sim", "king_range"): _num("König-Reichweite", payload.get("king_range", 0.187), 0.01, 1.0),
-        ("sim", "tower_first_hit"): _num("Verzögerung erster Schuss",
+        ("sim", "tower_range"): _num("tower range", payload.get("tower_range", 0.2), 0.01, 1.0),
+        ("sim", "king_range"): _num("king tower range", payload.get("king_range", 0.187), 0.01, 1.0),
+        ("sim", "tower_first_hit"): _num("first shot delay",
                                          payload.get("tower_first_hit", 0.8), 0.0, 10.0),
     }
 
@@ -591,24 +591,24 @@ def save_deck(cards_path: Path, name: str, cards: List[Dict[str, Any]], backup_d
               valid_keys: Optional[set] = None) -> Dict[str, Any]:
     """Rewrite ONLY the `deck:` block (flow style, as in the file), keeping per-card comments."""
     if not isinstance(cards, list) or not (1 <= len(cards) <= 8):
-        raise EditError("Ein Deck braucht 1-8 Karten (Clash Royale: genau 8).")
+        raise EditError("a deck needs 1 to 8 cards (Clash Royale: exactly 8).")
     seen = set()
     norm: List[Dict[str, Any]] = []
     for c in cards:
         key = str(c.get("card", "")).strip().lower()
         if not key:
-            raise EditError("Leerer Kartenname im Deck.")
+            raise EditError("empty card name in the deck.")
         if valid_keys is not None and key not in valid_keys:
-            raise EditError(f"Karte '{key}' steht nicht in der Kartendatenbank.")
+            raise EditError(f"card '{key}' is not in the card database.")
         if key in seen:
-            raise EditError(f"Karte '{key}' ist doppelt im Deck.")
+            raise EditError(f"card '{key}' appears twice in the deck.")
         seen.add(key)
         try:
             lvl = int(c.get("level", 11))
         except (TypeError, ValueError):
-            raise EditError(f"Level von '{key}' ist keine Zahl.") from None
+            raise EditError(f"the level of '{key}' is not a number.") from None
         if not 1 <= lvl <= 20:
-            raise EditError(f"Level von '{key}' muss zwischen 1 und 20 liegen.")
+            raise EditError(f"the level of '{key}' has to be between 1 and 20.")
         entry: Dict[str, Any] = {"card": key}
         if c.get("evolved"):
             entry["evolved"] = True

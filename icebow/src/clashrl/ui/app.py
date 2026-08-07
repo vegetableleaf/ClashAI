@@ -21,9 +21,9 @@ from .metrics import MetricsStore, to_csv
 from .procs import ProcManager
 
 TOS_WARNING = (
-    "Automatisiertes Spielen verstößt gegen die Supercell-Nutzungsbedingungen. "
-    "Dieses Projekt ist ein Lern-/Forschungsprojekt -- der Einsatz auf einem echten "
-    "Account kann zur Sperrung führen. Nutzung auf eigenes Risiko."
+    "Automating play violates the Supercell terms of service. This is a learning and "
+    "research project; using it on a real account can get that account banned. "
+    "Use at your own risk."
 )
 
 
@@ -32,22 +32,22 @@ def _card_role(c: Dict[str, Any]) -> str:
     # also a 'building' and Goblin Barrel also a 'spell'.
     flags = set(c.get("flags") or [])
     if c.get("win_condition"):
-        return "Win Condition" + (" (Belagerung)" if "siege" in flags else "")
+        return "Win condition" + (" (siege)" if "siege" in flags else "")
     if "siege" in flags:
-        return "Belagerung"
+        return "Siege"
     if c.get("kind") == "spell":
-        return "Zauber"
+        return "Spell"
     if c.get("kind") == "building":
-        return "Gebäude"
+        return "Building"
     if "tank" in flags:
         return "Tank"
     if "mini_tank" in flags:
-        return "Mini-Tank"
+        return "Mini tank"
     if "swarm" in flags:
-        return "Schwarm"
+        return "Swarm"
     if "ranged" in flags:
-        return "Fernkampf"
-    return "Truppe"
+        return "Ranged"
+    return "Troop"
 
 
 def create_app(cfg) -> Flask:
@@ -109,7 +109,7 @@ def create_app(cfg) -> Flask:
     @app.get("/api/state")
     def state():
         return jsonify({
-            "commands": jobcat.COMMANDS,
+            "commands": jobcat.available(root),
             "jobs": pm.list(),
             "gpu_busy": (pm.gpu_busy().id if pm.gpu_busy() else None),
             "sessions": sessions(),
@@ -127,7 +127,7 @@ def create_app(cfg) -> Flask:
         except (jobcat.ArgError, RuntimeError, KeyError) as exc:
             return jsonify({"error": str(exc)}), 400
         except OSError as exc:
-            return jsonify({"error": f"Start fehlgeschlagen: {exc}"}), 500
+            return jsonify({"error": f"could not start: {exc}"}), 500
         return jsonify(job.info())
 
     @app.post("/api/jobs/<jid>/stop")
@@ -135,20 +135,20 @@ def create_app(cfg) -> Flask:
         try:
             return jsonify(pm.stop(jid))
         except KeyError:
-            return jsonify({"error": "unbekannter Job"}), 404
+            return jsonify({"error": "unknown job"}), 404
 
     @app.get("/api/jobs/<jid>/log")
     def job_log(jid: str):
         job = pm.jobs.get(jid)
         if job is None:
-            return jsonify({"error": "unbekannter Job"}), 404
+            return jsonify({"error": "unknown job"}), 404
         return jsonify({"info": job.info(), "lines": list(job.lines)})
 
     @app.get("/api/jobs/<jid>/stream")
     def job_stream(jid: str):
         job = pm.jobs.get(jid)
         if job is None:
-            return jsonify({"error": "unbekannter Job"}), 404
+            return jsonify({"error": "unknown job"}), 404
         q = job.subscribe()
         backlog = list(job.lines)
 
@@ -278,7 +278,7 @@ def create_app(cfg) -> Flask:
         except editor.EditError as exc:
             return jsonify({"error": str(exc)}), 400
         except OSError as exc:
-            return jsonify({"error": f"Schreiben fehlgeschlagen: {exc}"}), 500
+            return jsonify({"error": f"could not write: {exc}"}), 500
         return jsonify(res)
 
     # -- config ------------------------------------------------------------
@@ -295,7 +295,7 @@ def create_app(cfg) -> Flask:
         except editor.EditError as exc:
             return jsonify({"error": str(exc)}), 400
         except OSError as exc:
-            return jsonify({"error": f"Schreiben fehlgeschlagen: {exc}"}), 500
+            return jsonify({"error": f"could not write: {exc}"}), 500
         return jsonify(res)
 
     # -- checkpoints -------------------------------------------------------
@@ -373,8 +373,7 @@ def create_app(cfg) -> Flask:
             changes.setdefault("sim.eval_envs", min(int(changes.get("sim.envs", sug["envs"])),
                                                     sug["eval_envs"]))
         if not changes:
-            return jsonify({"error": "Nichts zu übernehmen -- erst den Geschwindigkeits-Test laufen "
-                                     "lassen."}), 400
+            return jsonify({"error": "Nothing to apply. Run the throughput benchmark first."}), 400
         try:
             res = editor.save_config_fields(cfg_path, changes, backup_dir)
         except editor.EditError as exc:
@@ -398,7 +397,7 @@ def create_app(cfg) -> Flask:
         except editor.EditError as exc:
             return jsonify({"error": str(exc)}), 400
         except OSError as exc:
-            return jsonify({"error": f"Schreiben fehlgeschlagen: {exc}"}), 500
+            return jsonify({"error": f"could not write: {exc}"}), 500
 
     # -- overview ----------------------------------------------------------
     @app.get("/api/overview")
@@ -421,7 +420,7 @@ def create_app(cfg) -> Flask:
     def logfile(jid: str):
         job = pm.jobs.get(jid)
         if job is None or not job.log_path.exists():
-            return jsonify({"error": "kein Log"}), 404
+            return jsonify({"error": "no log"}), 404
         return send_file(job.log_path, as_attachment=True)
 
     app.proc_manager = pm                                     # type: ignore[attr-defined]
@@ -441,15 +440,14 @@ def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
     # not exclusive there), and requests then land on either process at random -- which
     # looks exactly like the UI ignoring your changes. Refuse instead.
     if _port_in_use(host, port):
-        print(f"[ui] Auf {host}:{port} läuft bereits ein Launcher.")
-        print(f"[ui] Entweder dort weiterarbeiten: http://{host}:{port}/")
-        print(f"[ui] oder das andere Fenster schließen, oder hier einen anderen Port wählen: "
-              f"run.py ui --port {port + 1}")
+        print(f"[ui] A panel is already running on {host}:{port}.")
+        print(f"[ui] Either use that one: http://{host}:{port}/")
+        print(f"[ui] or close it, or pick another port here: run.py ui --port {port + 1}")
         return
     app = create_app(cfg)
     url = f"http://{host}:{port}/"
     print(f"[ui] {TOS_WARNING}")
-    print(f"[ui] Launcher läuft auf {url}  (nur lokal erreichbar; Strg+C beendet ihn)")
+    print(f"[ui] panel running at {url}  (local only; Ctrl+C stops it)")
     if open_browser:
         import threading
         import webbrowser
@@ -461,10 +459,10 @@ def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
     finally:
         pm = getattr(app, "proc_manager", None)
         if pm is not None and pm.active():
-            print(f"[ui] stoppe {len(pm.active())} laufende(n) Job(s) ...")
+            print(f"[ui] stopping {len(pm.active())} running job(s) ...")
             pm.stop_all(grace=30.0)
             for _ in range(120):
                 if not pm.active():
                     break
                 time.sleep(0.5)
-        print("[ui] beendet.")
+        print("[ui] stopped.")

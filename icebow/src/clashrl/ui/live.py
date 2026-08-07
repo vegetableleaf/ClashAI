@@ -47,21 +47,21 @@ def reset() -> None:
 # not just the winner.
 STATE_ORDER = [
     ("MATCH_END", "match_end", "Ergebnisbildschirm",
-     "Tippt 'Nochmal spielen'. Bewegt sich danach nichts, tippt er nach ein paar Sekunden "
-     "stattdessen OK und landet wieder im Hauptmenü."),
-    ("IN_MATCH", "in_match", "Im Match",
-     "Der einzige Zustand, in dem die Policy spielt: Karte wählen, Feld wählen, klicken. "
-     "Alles andere ist Navigation."),
-    ("PARTY", "party_menu", "Party-Menü",
-     "Wählt 'Schnelles Spiel', um in ein Match zu kommen."),
-    ("HOME", "home_menu", "Hauptmenü",
-     "Sucht den Battle-Knopf im Bild und tippt ihn. Wird er nicht gefunden, tippt er die "
-     "fest eingetragene Stelle."),
+     "Taps 'Play again'. If nothing moves after a few seconds it taps OK "
+     "instead and ends up back on the home screen."),
+    ("IN_MATCH", "in_match", "In a match",
+     "The only state in which the policy plays: pick a card, pick a cell, click. "
+     "Everything else is navigation."),
+    ("PARTY", "party_menu", "Party menu",
+     "Picks 'Quick match' to get into a game."),
+    ("HOME", "home_menu", "Home screen",
+     "Locates the Battle button in the frame and taps it. If it cannot be found it taps the "
+     "fixed coordinate from the config."),
 ]
 
-UNKNOWN_MEANS = ("Kein Zustand hat seine Schwelle erreicht. Der Bot wartet dann einfach ab, "
-                 "statt blind zu klicken. Bleibt es dauerhaft dabei, passen die Vorlagen nicht "
-                 "zu deinem Client.")
+UNKNOWN_MEANS = ("No state reached its threshold. The bot then simply waits "
+                 "instead of clicking blindly. If it stays that way the templates do not match "
+                 "your client.")
 
 
 def state_report(cfg, vision, frame) -> Dict[str, Any]:
@@ -108,24 +108,24 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
     try:
         capture, vision = _ensure(cfg)
     except Exception as exc:                                  # noqa: BLE001
-        return {"ok": False, "error": f"Fenster/Erkennung nicht initialisierbar: {exc}"}
+        return {"ok": False, "error": f"could not initialise capture or vision: {exc}"}
 
     if capture.region is None:
-        return {"ok": False, "error": "Kein Aufnahmebereich. Läuft das Spiel, und passt "
-                                      "window.title_contains zum Fenstertitel?"}
+        return {"ok": False, "error": "No capture region. Is the game running, and does "
+                                      "window.title_contains match the window title?"}
     try:
         frame = capture.grab()
     except Exception as exc:                                  # noqa: BLE001
-        # Der gespeicherte Fensterbereich zeigt ins Leere, sobald das Fenster geschlossen,
-        # minimiert oder verschoben wurde. Verwerfen, damit der nächste Aufruf neu sucht.
+        # The stored window region points nowhere once the window is closed, minimised
+        # or moved. Drop it so the next call looks the window up again.
         reset()
         return {"ok": False,
-                "error": "Das Spielfenster lässt sich gerade nicht abfotografieren "
-                         "(geschlossen oder minimiert?). Es wird beim nächsten Versuch neu gesucht.",
+                "error": "The game window cannot be captured right now "
+                         "(closed or minimised?). It will be looked up again on the next attempt.",
                 "detail": str(exc)}
     if frame is None:
         reset()
-        return {"ok": False, "error": "Kein Bild erhalten. Fenster minimiert oder verschoben?"}
+        return {"ok": False, "error": "No frame received. Window minimised or moved?"}
 
     h, w = frame.shape[:2]
     reg = capture.region
@@ -138,7 +138,7 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
     try:
         out["state"] = vision.detect_state(frame).name
     except Exception as exc:                                  # noqa: BLE001
-        out["state"] = "FEHLER"
+        out["state"] = "ERROR"
         out["state_error"] = str(exc)
 
     out["states"] = state_report(cfg, vision, frame)

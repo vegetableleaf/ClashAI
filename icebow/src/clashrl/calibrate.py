@@ -82,18 +82,18 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     session = Path(session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
-        print(f"[calibrate] keine Aufnahme unter {root}. Erst `record` laufen lassen.")
+        print(f"[calibrate] no recording under {root}. Run `record` first.")
         return
     session = Path(session)
     video = next((session / n for n in ("video.mp4", "video.avi") if (session / n).exists()), None)
     if video is None:
-        print(f"[calibrate] kein Video in {session}")
+        print(f"[calibrate] no video in {session}")
         return
 
     clicks = _click_times(session)
     if not clicks:
-        print(f"[calibrate] {session.name} enthält keine geloggten Klicks. Ohne sie lässt sich nicht "
-              "sagen, welche Bilder aus einem Match stammen. Nimm eine Runde auf, in der du spielst.")
+        print(f"[calibrate] {session.name} contains no logged clicks. Without them there is no way to tell "
+              "which frames came from a match. Record a round in which you actually play.")
         return
     ftimes = _frame_times(session)
     cap = cv2.VideoCapture(str(video))
@@ -107,19 +107,19 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
         return min(abs(t - c) for c in clicks)
 
     first, last = clicks[0], clicks[-1]
-    # Positiv: gut IM Match. Der Anfang wird ausgespart, weil zwischen dem Battle-Klick und dem
-    # ersten Spielzug noch Menü und Ladebildschirm liegen. Pausen MITTEN im Match sind kein
-    # Gegenbeispiel -- man legt nicht alle vier Sekunden eine Karte.
-    # Negativ: alles vor dem ersten Klick (Menü) und alles nach dem letzten (Ergebnisbildschirm).
+    # Positive: well INSIDE the match. The opening is skipped because the menu and the
+    # loading screen sit between the Battle click and the first move. Pauses in the MIDDLE
+    # of a match are not counterexamples: nobody plays a card every four seconds.
+    # Negative: everything before the first click (menu) and after the last (result screen).
     in_idx = [i for i in range(n)
               if ftimes[i] >= first + lead_in_s and near_click(ftimes[i]) <= near_s]
     out_idx = [i for i in range(n)
                if ftimes[i] < first - 0.2 or ftimes[i] > last + away_s]
     if len(in_idx) < 5 or len(out_idx) < 5:
-        print(f"[calibrate] zu wenig Material: {len(in_idx)} Bilder im Match, {len(out_idx)} "
-              "ausserhalb.")
-        print("[calibrate] Am besten eine Aufnahme, die im MENÜ startet, ein ganzes Match zeigt und "
-              "nach dem Ergebnisbildschirm noch ein paar Sekunden weiterläuft.")
+        print(f"[calibrate] not enough material: {len(in_idx)} frames in a match, {len(out_idx)} "
+              "outside one.")
+        print("[calibrate] Best input: a recording that starts in the MENU, shows a full match and "
+              "keeps running a few seconds past the result screen.")
         cap.release()
         return
     in_idx = [in_idx[i] for i in np.linspace(0, len(in_idx) - 1, min(max_frames, len(in_idx))).astype(int)]
@@ -130,11 +130,11 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     outs = [vision._work(f) for f in (_grab(cap, i) for i in out_idx) if f is not None]
     cap.release()
     if not ins or not outs:
-        print("[calibrate] konnte die Bilder nicht lesen.")
+        print("[calibrate] could not read the frames.")
         return
 
-    print(f"[calibrate] {session.name}: {len(ins)} Bilder aus dem Match (nahe deinen Klicks), "
-          f"{len(outs)} ausserhalb. Arbeitsgröße {ins[0].shape[1]}x{ins[0].shape[0]}.", flush=True)
+    print(f"[calibrate] {session.name}: {len(ins)} frames from the match (near your clicks), "
+          f"{len(outs)} outside it. Working size {ins[0].shape[1]}x{ins[0].shape[0]}.", flush=True)
 
     # Wie gut schlagen sich die mitgelieferten Templates? Das ist die Diagnose.
     before = sum(1 for f in ins if vision.detect_state(_upscale(f)).name == "IN_MATCH")
@@ -148,46 +148,46 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
                 best_shipped = max(best_shipped, float(cv2.matchTemplate(
                     f, tm, cv2.TM_CCOEFF_NORMED).max()))
     thr = float((cfg.get("states", "in_match", default={}) or {}).get("threshold", 0.8))
-    print(f"[calibrate] mitgelieferte Templates: bester Wert {best_shipped:.3f} bei Schwelle {thr:.2f} "
-          f"-> {before}/{len(ins)} Matchbilder erkannt", flush=True)
+    print(f"[calibrate] shipped templates: best score {best_shipped:.3f} against threshold {thr:.2f} "
+          f"-> {before}/{len(ins)} match frames recognised", flush=True)
 
     gi = np.stack([cv2.cvtColor(f, cv2.COLOR_BGR2GRAY).astype(np.float32) for f in ins])
     go = np.stack([cv2.cvtColor(f, cv2.COLOR_BGR2GRAY).astype(np.float32) for f in outs])
     mean_in, std_in, mean_out = gi.mean(0), gi.std(0), go.mean(0)
     H, W = mean_in.shape
     if H < CAND_H or W < CAND_W:
-        print("[calibrate] Bild kleiner als der Suchausschnitt.")
+        print("[calibrate] frame smaller than the search window.")
         return
 
-    # Gesucht: ein Fenster, das WÄHREND des Matches ruhig ist (kleine Streuung) und sich von den
-    # Nicht-Match-Bildern deutlich unterscheidet. Integralbilder, damit das nicht ewig dauert.
+    # Wanted: a window that stays still DURING the match (low spread) and differs clearly
+    # from the non-match frames. Integral images keep the search from taking forever.
     diff = np.abs(mean_in - mean_out)
     s_diff = cv2.integral(diff)
     s_std = cv2.integral(std_in)
-    s_var = cv2.integral(cv2.Laplacian(mean_in, cv2.CV_32F) ** 2)   # Struktur, keine leere Fläche
+    s_var = cv2.integral(cv2.Laplacian(mean_in, cv2.CV_32F) ** 2)   # structure, not an empty surface
 
     def box(sumimg, y, x):
         return float(sumimg[y + CAND_H, x + CAND_W] - sumimg[y, x + CAND_W]
                      - sumimg[y + CAND_H, x] + sumimg[y, x]) / (CAND_W * CAND_H)
 
-    # Erste Stufe: grob vorsortieren. Ein Ausschnitt taugt nur, wenn er sich vom Menü
-    # unterscheidet UND während des Matches stillsteht -- die Arena selbst tut das nicht,
-    # deshalb geht die Unruhe quadratisch ein.
+    # First stage: a rough shortlist. A region is only useful if it differs from the menu
+    # AND stays still while playing. The arena itself does not, which is why movement
+    # enters the score squared.
     cands = []
     for y in range(0, H - CAND_H, STRIDE):
         for x in range(0, W - CAND_W, STRIDE):
             d, s, v = box(s_diff, y, x), box(s_std, y, x), box(s_var, y, x)
-            if v < 5.0:                       # zu glatt -> matcht überall
+            if v < 5.0:                       # too flat, it would match anywhere
                 continue
             cands.append((d / (1.0 + s) ** 2, y, x, d, s, v))
     if not cands:
-        print("[calibrate] kein brauchbarer Ausschnitt gefunden.")
+        print("[calibrate] no usable region found.")
         return
     cands.sort(reverse=True)
 
-    # Zweite Stufe: die Vorauswahl wirklich durchmessen. Entscheidend ist der ABSTAND
-    # zwischen dem schlechtesten Match-Bild und dem besten Nicht-Match-Bild; nur daraus
-    # lässt sich eine Schwelle ableiten, die in beide Richtungen hält.
+    # Second stage: actually measure the shortlist. What matters is the DISTANCE between
+    # the worst match frame and the best non-match frame; only that yields a threshold
+    # which holds in both directions.
     gi_u = [cv2.cvtColor(f, cv2.COLOR_BGR2GRAY) for f in ins]
     go_u = [cv2.cvtColor(f, cv2.COLOR_BGR2GRAY) for f in outs]
     probe_in, probe_out = gi_u[::max(1, len(gi_u) // 10)], go_u[::max(1, len(go_u) // 10)]
@@ -202,14 +202,14 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     for _pre, y, x, d, s, v in cands[:120]:
         m, si, _so = separation(y, x, probe_in, probe_out)
         scored.append((m, min(si), y, x, d, s, v))
-    # Ein knapper Abstand reicht nicht: gesucht ist ein Ausschnitt, den JEDES Matchbild klar
-    # trifft, sonst kippt die Erkennung bei der kleinsten Abweichung. Unter allen Kandidaten
-    # mit sicherem Abstand also der mit dem höchsten schlechtesten Treffer.
+    # A narrow margin is not enough: the region has to be hit clearly by EVERY match frame,
+    # otherwise the smallest deviation flips the detection. So among the candidates with a
+    # safe margin, take the one whose worst hit is highest.
     safe = [c for c in scored if c[0] >= 0.15]
     pick = max(safe, key=lambda c: c[1]) if safe else max(scored, key=lambda c: c[0])
     margin, worst_hit, y, x, d, s, v = pick
-    print(f"[calibrate] bester Ausschnitt bei x={x} y={y} ({CAND_W}x{CAND_H}): "
-          f"Unterschied zum Menue {d:.1f}, Unruhe im Match {s:.1f}, Abstand {margin:+.3f}",
+    print(f"[calibrate] best region at x={x} y={y} ({CAND_W}x{CAND_H}): "
+          f"difference from the menu {d:.1f}, movement during play {s:.1f}, separation {margin:+.3f}",
           flush=True)
 
     ref_gray = mean_in[y:y + CAND_H, x:x + CAND_W].astype(np.uint8)
@@ -220,21 +220,21 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     # denn ein falsches Positiv liesse den Bot im Menue losspielen.
     lo_in = float(np.quantile(sc_in, 0.10))
     hi_out = max(sc_out)
-    print(f"[calibrate] neuer Ausschnitt: Match-Bilder {min(sc_in):.3f}..{max(sc_in):.3f} "
-          f"(10%-Quantil {lo_in:.3f}), Nicht-Match {min(sc_out):.3f}..{max(sc_out):.3f}",
+    print(f"[calibrate] new region: match frames {min(sc_in):.3f}..{max(sc_in):.3f} "
+          f"(10th percentile {lo_in:.3f}), non-match {min(sc_out):.3f}..{max(sc_out):.3f}",
           flush=True)
     if lo_in <= hi_out + 0.03:
-        print("[calibrate] Die beiden Gruppen liegen zu dicht beieinander, eine sichere Schwelle "
-              "gibt es damit nicht. Es wurde nichts geschrieben.")
-        print("[calibrate] Am zuverlaessigsten wird es mit einer Aufnahme, die im Menue beginnt, "
-              "ein volles Match zeigt und nach dem Ergebnisbildschirm noch weiterlaeuft.")
+        print("[calibrate] The two groups are too close together for a safe threshold, "
+              "so nothing was written.")
+        print("[calibrate] This works most reliably with a recording that starts in the menu, "
+              "shows a full match and keeps running past the result screen.")
         return
     new_thr = round(hi_out + 0.5 * (lo_in - hi_out), 2)
     hit = sum(1 for vv in sc_in if vv >= new_thr)
-    print(f"[calibrate] Schwelle {new_thr:.2f}: trifft {hit}/{len(sc_in)} Matchbilder und "
-          f"0/{len(sc_out)} Nicht-Match-Bilder", flush=True)
+    print(f"[calibrate] threshold {new_thr:.2f}: hits {hit}/{len(sc_in)} match frames and "
+          f"0/{len(sc_out)} non-match frames", flush=True)
     if dry_run:
-        print("[calibrate] --dry-run: es wurde nichts geschrieben.")
+        print("[calibrate] --dry-run: nothing was written.")
         return
 
     tdir = cfg.path("templates")
@@ -258,14 +258,14 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
         new_text = _write_states_block(text, spec)
         yaml.safe_load(new_text)
     except (EditError, yaml.YAMLError) as exc:
-        print(f"[calibrate] Config konnte nicht sicher geschrieben werden ({exc}). "
-              f"Der Ausschnitt liegt in {out_png}; trag ihn von Hand unter states.in_match ein.")
+        print(f"[calibrate] the config could not be written safely ({exc}). "
+              f"The region is saved at {out_png}; add it under states.in_match by hand.")
         return
     bak = backup(cfg_path, cfg.path("data/config_backups"))
     cfg_path.write_text(new_text, encoding="utf-8")
-    print(f"[calibrate] {out_png.name} gespeichert und in config.yaml unter states.in_match "
-          f"eingetragen (Sicherung: {Path(bak).name}).")
-    print("[calibrate] Gegenprobe: `run.py label --all` sollte jetzt deutlich mehr Samples finden.")
+    print(f"[calibrate] {out_png.name} saved and registered in config.yaml under states.in_match "
+          f"(backup: {Path(bak).name}).")
+    print("[calibrate] Check: `run.py label --all` should now find far more samples.")
 
 
 def _upscale(work):

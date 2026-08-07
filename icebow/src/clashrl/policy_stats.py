@@ -45,7 +45,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
         best = data_dir / "policy_sim_best.pt"
         ck_path = best if best.exists() else data_dir / "policy_sim.pt"
     if not ck_path.exists():
-        print(f"[policy-stats] Checkpoint nicht gefunden: {ck_path}")
+        print(f"[policy-stats] checkpoint not found: {ck_path}")
         return
 
     K = max(1, int(envs))
@@ -67,10 +67,10 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     ck_cards = int(state.get("n_cards", n_cards))
     ck_cells = int(state.get("n_cells", n_cells))
     if ck_cards != n_cards or ck_cells != n_cells:
-        print(f"[policy-stats] Checkpoint passt nicht zur aktuellen Config: "
-              f"ckpt n_cards={ck_cards} n_cells={ck_cells}, aktuell {n_cards}/{n_cells}.")
-        print("[policy-stats] Deck in cards.yaml oder action.grid stimmen nicht mit dem "
-              "Checkpoint überein -- Analyse abgebrochen.")
+        print(f"[policy-stats] checkpoint does not match the current config: "
+              f"checkpoint has n_cards={ck_cards} n_cells={ck_cells}, current is {n_cards}/{n_cells}.")
+        print("[policy-stats] The deck in cards.yaml or action.grid does not agree with the "
+              "checkpoint; analysis aborted.")
         return
     net.policy.load_state_dict(state["model"])
     if "gate" in state:
@@ -102,7 +102,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     elx = [e.elixir_vec.copy() for e in pool]
     thr = [e.threat_vec.copy() for e in pool]
 
-    print(f"[policy-stats] {ck_path.name} auf {device}: {matches} greedy Matches, {K} Envs, "
+    print(f"[policy-stats] {ck_path.name} auf {device}: {matches} greedy matches, {K} envs, "
           f"Deck {', '.join(e0.deck_keys)}", flush=True)
     t0 = time.time()
     played = 0
@@ -160,7 +160,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
                 obs[i] = env.reset()
                 if played >= next_report:
                     next_report += max(1, matches // 10)
-                    print(f"[policy-stats] {played}/{matches} Matches "
+                    print(f"[policy-stats] {played}/{matches} matches "
                           f"({played / max(1e-6, time.time() - t0):.1f} m/s)", flush=True)
             else:
                 obs[i] = nobs
@@ -205,12 +205,12 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
 
-    print(f"[policy-stats] {played} Matches, Winrate {result['winrate']:.0f}% | "
-          f"{play_n} Plays, Gate-Warten {100 * result['wait_rate_gate']:.0f}% der Ticks "
-          f"(erzwungenes Warten {100 * wait_forced / max(1, steps):.0f}%)", flush=True)
+    print(f"[policy-stats] {played} matches, win rate {result['winrate']:.0f}% | "
+          f"{play_n} plays, the gate held on {100 * result['wait_rate_gate']:.0f}% of ticks "
+          f"(forced waits {100 * wait_forced / max(1, steps):.0f}%)", flush=True)
     for c in sorted(cards_out, key=lambda c: -c["plays"]):
-        print(f"[policy-stats]   {c['display']:<24} {c['plays']:>6} Plays "
+        print(f"[policy-stats]   {c['display']:<24} {c['plays']:>6} plays "
               f"({100 * c['share']:4.1f}%)", flush=True)
     if result["never_played"]:
-        print(f"[policy-stats] NIE gespielt: {', '.join(result['never_played'])}", flush=True)
+        print(f"[policy-stats] NEVER played: {', '.join(result['never_played'])}", flush=True)
     print(f"[policy-stats] -> {out_path}", flush=True)

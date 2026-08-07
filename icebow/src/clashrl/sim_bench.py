@@ -72,10 +72,10 @@ def _run(cfg, k: int, seconds: float, seed: int) -> Optional[Dict[str, Any]]:
 
 
 def _fmt(res: Dict[str, Any]) -> str:
-    return (f"envs={res['envs']:<4} {res['mps']:5.2f} Matches/s  "
+    return (f"envs={res['envs']:<4} {res['mps']:5.2f} matches/s  "
             f"{res['matches_per_hour']:8,.0f}/h  "
-            f"{res['updates_per_s']:6.1f} Lernschritte/s  "
-            f"{res['updates_per_match']:6.1f} je Match".replace(",", "."))
+            f"{res['updates_per_s']:6.1f} learning steps/s  "
+            f"{res['updates_per_match']:6.1f} per match".replace(",", "."))
 
 
 def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int = 0,
@@ -97,7 +97,7 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
           f"{info.get('gpu') or 'keine CUDA-GPU'} | torch {info.get('torch')}", flush=True)
 
     if warmup > 0:
-        print(f"[sim-bench] Aufwärmen ({warmup:.0f}s, wird verworfen) ...", flush=True)
+        print(f"[sim-bench] warm-up ({warmup:.0f}s, discarded) ...", flush=True)
         _run(cfg, 4, warmup, seed)
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -108,15 +108,15 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
     if auto:
         # Climb by doubling until it stops paying off. Two consecutive rounds without a
         # real gain end it -- one flat step can be measurement noise, two is a plateau.
-        print(f"[sim-bench] Automatik: verdopple die Zahl gleichzeitiger Matches, bis es nicht "
-              f"mehr schneller wird (je {seconds:.0f}s, Seed {seed})", flush=True)
+        print(f"[sim-bench] automatic search: doubling the number of parallel matches until it stops "
+              f"getting faster ({seconds:.0f}s each, seed {seed})", flush=True)
         k, best, flat = 4, 0.0, 0
         while k <= MAX_ENVS:
             res = _run(cfg, k, seconds, seed)
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
             if res is None:
-                stop_reason = f"Lauf mit {k} Envs lieferte kein Ergebnis"
+                stop_reason = f"the run with {k} envs produced no result"
                 break
             results.append(res)
             print("[sim-bench] " + _fmt(res), flush=True)
@@ -124,17 +124,17 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
             best = max(best, res["mps"])
             free = res.get("free_ram") or 0
             if free and free < SAFETY_RAM:
-                stop_reason = (f"nur noch {free / 1024 ** 3:.1f} GB RAM frei, "
-                               f"weiter wäre riskant")
+                stop_reason = (f"only {free / 1024 ** 3:.1f} GB of memory left, "
+                               f"going further would be risky")
                 break
             flat = flat + 1 if gain < 0.04 else 0
             if flat >= 2:
-                stop_reason = "zwei Verdopplungen ohne nennenswerten Gewinn"
+                stop_reason = "two doublings without a real gain"
                 break
             k *= 2
         else:
-            stop_reason = f"Obergrenze {MAX_ENVS} erreicht"
-        print(f"[sim-bench] Suche beendet: {stop_reason}", flush=True)
+            stop_reason = f"reached the {MAX_ENVS} limit"
+        print(f"[sim-bench] search finished: {stop_reason}", flush=True)
     else:
         if envs:
             try:
@@ -146,10 +146,10 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
             cand = sorted(set(sug["bench_candidates"]) | {cur_envs})
         cand = [c for c in cand if 1 <= c <= MAX_ENVS]
         if not cand:
-            print("[sim-bench] keine gültigen Env-Zahlen.")
+            print("[sim-bench] no valid values.")
             return
-        print(f"[sim-bench] messe {cand} Envs à {seconds:.0f}s (Seed {seed}); "
-              f"aktuell eingestellt: {cur_envs}", flush=True)
+        print(f"[sim-bench] measuring {cand} envs, {seconds:.0f}s each (seed {seed}); "
+              f"currently configured: {cur_envs}", flush=True)
         for k in cand:
             res = _run(cfg, k, seconds, seed)
             if torch.cuda.is_available():
@@ -160,7 +160,7 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
             print("[sim-bench] " + _fmt(res), flush=True)
 
     if not results:
-        print("[sim-bench] keine Messwerte.")
+        print("[sim-bench] no measurements.")
         return
 
     peak = max(results, key=lambda r: r["mps"])
@@ -173,22 +173,22 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
     base = next((r for r in results if r["envs"] == cur_envs), None)
 
     print("")
-    print(f"[sim-bench] Schnellste Messung: {peak['envs']} Envs mit {peak['mps']:.2f} Matches/s",
+    print(f"[sim-bench] fastest measurement: {peak['envs']} envs at {peak['mps']:.2f} matches/s",
           flush=True)
     if rec["envs"] != peak["envs"]:
-        print(f"[sim-bench] Empfehlung: {rec['envs']} Envs ({rec['mps']:.2f} Matches/s). Praktisch "
-              f"gleich schnell, aber {rec['updates_per_match']:.1f} statt "
-              f"{peak['updates_per_match']:.1f} Lernschritte je Match.", flush=True)
+        print(f"[sim-bench] recommendation: {rec['envs']} envs ({rec['mps']:.2f} matches/s). Practically "
+              f"the same speed, but {rec['updates_per_match']:.1f} instead of "
+              f"{peak['updates_per_match']:.1f} learning steps per match.", flush=True)
     else:
-        print(f"[sim-bench] Empfehlung: {rec['envs']} Envs", flush=True)
+        print(f"[sim-bench] recommendation: {rec['envs']} envs", flush=True)
     if base:
         f = rec["mps"] / max(1e-9, base["mps"])
-        print(f"[sim-bench] gegenüber der aktuellen Einstellung ({cur_envs} Envs, "
-              f"{base['mps']:.2f} Matches/s): Faktor {f:.2f}", flush=True)
+        print(f"[sim-bench] against the current setting ({cur_envs} envs, "
+              f"{base['mps']:.2f} matches/s): factor {f:.2f}", flush=True)
     worst = min(results, key=lambda r: r["updates_per_match"])
-    print(f"[sim-bench] Zum Vergleich: bei {worst['envs']} Envs sind es nur noch "
-          f"{worst['updates_per_match']:.1f} Lernschritte je Match. Mehr gleichzeitige Matches "
-          f"heissen nicht automatisch schneller gelernt.", flush=True)
+    print(f"[sim-bench] for comparison: at {worst['envs']} envs only "
+          f"{worst['updates_per_match']:.1f} learning steps per match are left. More parallel matches "
+          f"do not automatically mean faster learning.", flush=True)
 
     payload = {
         "generated": time.time(), "seconds_per_run": seconds, "seed": seed, "auto": bool(auto),
@@ -206,16 +206,16 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
                                           cfg.path("data/config_backups"))
             payload["applied"] = True
             payload["backup"] = r.get("backup")
-            print(f"[sim-bench] sim.envs von {cur_envs} auf {rec['envs']} gesetzt "
-                  f"(Sicherung: {Path(r['backup']).name})", flush=True)
+            print(f"[sim-bench] sim.envs set from {cur_envs} to {rec['envs']} "
+                  f"(backup: {Path(r['backup']).name})", flush=True)
         except Exception as exc:                        # noqa: BLE001
-            print(f"[sim-bench] Übernehmen fehlgeschlagen: {exc}", flush=True)
+            print(f"[sim-bench] could not apply: {exc}", flush=True)
     elif apply:
-        print("[sim-bench] die aktuelle Einstellung ist bereits die empfohlene.", flush=True)
+        print("[sim-bench] the current setting is already the recommended one.", flush=True)
 
     out_path = Path(out) if out else cfg.path("data/sim_bench.json")
     if not out_path.is_absolute():
         out_path = cfg.path(str(out_path))
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    print(f"[sim-bench] Ergebnis in {out_path}", flush=True)
+    print(f"[sim-bench] result written to {out_path}", flush=True)
