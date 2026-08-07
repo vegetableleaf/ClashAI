@@ -580,13 +580,15 @@ detect:
   label_queue_subdir: to_label   # flat folder UNDER images/ where detect-frames/-timelapse/harvest drop
                                  # NEW frames to hand-label. Import-safe (detect-import never touches it)
                                  # and FLAT so Label Studio Local Storage points straight at it (no train\ backslash bug).
-  # train-rl annotation harvest: while training LIVE, drop game frames into images/to_label (to hand-label)
-  # so a session doubles as data collection. Additive/non-destructive (new trl_* stems). Re-sync Label
-  # Studio Local Storage to pick them up.
-  capture_during_train: false    # set false to disable the harvest during train-rl
+  # ANNOTATION HARVEST -- shared by `train-rl` AND `record`: drop live game frames into images/to_label
+  # (empty labels, to hand-label) so a session doubles as detector data collection. Additive and
+  # non-destructive (new trl_* stems, flat folder that survives detect-import). Re-sync Label Studio
+  # Local Storage to pick them up. `record` only harvests IN_MATCH frames -- it reads the screen state
+  # once per capture_every_s so menus and result screens never reach the queue.
+  capture_during_train: true     # set false to disable the harvest during train-rl / record
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
-  capture_session_max: 500       # cap frames for the whole train-rl session
+  capture_session_max: 500       # cap frames for the whole train-rl / record session
 
 # --- External-replay strategy mining (Stage 4 groundwork) ----------------
 # `run.py mine-replays` distils strong-player rocket-cycle replay VIDEOS into deck-agnostic
