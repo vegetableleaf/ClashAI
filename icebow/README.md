@@ -44,6 +44,45 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
 
+## Launcher (browser panel): `run.py ui`
+
+Instead of typing every command in the terminal: **double-click `start_ui.bat` in the repo
+root** (or `.\.venv\Scripts\python.exe run.py ui`). That starts a local server on
+`http://127.0.0.1:8765`, localhost only, no sign-in, and opens the browser.
+
+Described in full in [docs/LAUNCHER.md](docs/LAUNCHER.md); the order that gets you to
+usable data is in [docs/PIPELINE.md](docs/PIPELINE.md).
+
+Briefly, what is in there:
+
+* **Live** shows the current game frame and what the bot reads from it. If anything is
+  producing no data, this is where you see why first.
+* **Control** starts and stops every command, grouped by purpose. Stop shuts things down
+  cleanly and saves along the way; the launcher never lets two GPU jobs run at once.
+* **Progress** shows benchmark, reward, loss, throughput and the time remaining to the
+  target count. Everything is written to `data/metrics.jsonl` and survives a restart.
+* **Deck** shows and edits the current deck (auto-recognition is a companion tool, see
+  [docs/PIPELINE.md](docs/PIPELINE.md); the panel works without it).
+* **Settings** edits the important values from `config.yaml`, line by line and with a
+  backup, so every comment in the file is preserved.
+* **Checkpoints** lists the trained policies and lets you adopt one as `--init`.
+
+The panel only ever shows the commands your checkout actually has (`run.py --help`), so
+it works whether or not the sim-throughput, sim-bench or deck-recognition tooling are
+also installed.
+
+On first launch a short tour walks through the points that are not self-explanatory.
+
+> The same rule applies here: automated play violates the Supercell ToS. The notice sits
+> in the launcher under "Notes".
+
+### If the panel's Live tab shows no data
+
+The bundled screen templates come from an English client at a particular window size. At
+a different size or language, `detect_state` finds no match, and everything downstream
+finds nothing without failing outright. The companion `calibrate` tool (see
+[docs/PIPELINE.md](docs/PIPELINE.md)) re-cuts the detection from your own recording.
+
 ## Setup
 
 ```powershell
