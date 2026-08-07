@@ -158,6 +158,20 @@ observation:
                                  # 0.35 buys another +1.1pp recall but costs 0.7pp precision; held back until the
                                  # canvas obs channel is live and phantom boxes have a measurable cost.
                                  # Re-tune per detector generation (sweep, don't inherit).
+  # PER-CLASS gate overrides (base card key -> conf). A SINGLE global threshold assumes every class is
+  # calibrated the same way; measured on board-16 they are not. Breaking each class's val misses into
+  # blind / low-conf / wrong-class showed the failure modes differ completely:
+  #   hog_rider  R 0.33 @0.40 with precision 1.00, R 0.42 @0.30 STILL 1.00  -- purely over-gated
+  #   knight     R 0.57/P 0.78 @0.40 -> R 0.62/P 0.80 @0.30                 -- better on BOTH axes
+  #   tesla/x_bow gain ~nothing below 0.40 and only shed precision          -- leave them high
+  #   guards     gains NO recall at any gate, precision collapses 0.75->0.50 -- lowering is pure loss
+  # Detection runs at the LOWEST gate in play and each box is judged against its own class's
+  # threshold, so lowering one card costs nothing anywhere else. Variants share their BASE key's gate.
+  # EMPTY ON PURPOSE: those numbers come from ONE generation on 12-63 val instances, and the sparky
+  # lesson (0.50/0.75/0.62 across three generations on n=8 was noise) says an override needs a STABLE
+  # measurement ACROSS generations. Populate only after board-17 and board-18 agree, using
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt`.
+  detector_conf_by_card: {}
   perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
                                  # at this rate; the act loop reads a fresh snapshot at decision time (staleness
                                  # <= 1 period instead of 'blind since the last act'), tracker velocities are
@@ -551,7 +565,7 @@ play:
 overlay_replay:
   enabled: true              # master gate
   seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
-  fps: 30                    # clip frame rate (max 60). MEASURED on this machine: grab 14.9ms + draw 0.9
+  fps: 50                    # clip frame rate (max 60). MEASURED on this machine: grab 14.9ms + draw 0.9
                              # + resize 0.3 + encode 1.0 = 17.1ms/frame => a ~58 fps CEILING with nothing
                              # else running, and the GRAB is 87% of that. 60 is therefore right at the
                              # limit (~1 full core) and will drop slots once train-rl's perception loop

@@ -325,11 +325,19 @@ class BoardDetector:
     """Thin wrapper over an Ultralytics detector (YOLO/RT-DETR). ``available`` is False when no
     weights are found, so the miner can report readiness instead of crashing."""
 
-    def __init__(self, model=None, names: Optional[Dict[int, str]] = None, db=None, fly_offset: float = 0.0):
+    def __init__(self, model=None, names: Optional[Dict[int, str]] = None, db=None, fly_offset: float = 0.0,
+                 conf_by_card: Optional[Dict[str, float]] = None):
         self._model = model
         self._names = names or {}
         self._db = db                      # CardDB, for the flying-unit shadow correction (None -> skip)
         self._fly_offset = float(fly_offset)   # normalized DOWNWARD shift from a flyer's sprite to its shadow
+        # PER-CLASS confidence gates (base card key -> gate). One global threshold assumes every class
+        # is calibrated the same way, and measurement says they are not: on board-16 hog_rider sat at
+        # precision 1.00 at the 0.40 gate (clearly over-gated -- it was throwing away correct boxes for
+        # nothing) while tesla/x_bow gain no recall below 0.40 and only lose precision. Detection runs
+        # at the LOWEST gate in play and each box is then judged against its own class's threshold, so
+        # lowering one card costs nothing anywhere else. Empty = the single global gate, as before.
+        self._conf_by_card = {str(k): float(v) for k, v in (conf_by_card or {}).items()}
 
     @property
     def available(self) -> bool:
@@ -339,17 +347,20 @@ class BoardDetector:
         if self._model is None:
             return []
         h, w = frame.shape[:2]
-        res = self._model.predict(frame, conf=conf, verbose=False)[0]
+        floor = min([float(conf)] + list(self._conf_by_card.values())) if self._conf_by_card else float(conf)
+        res = self._model.predict(frame, conf=floor, verbose=False)[0]
         out: List[Detection] = []
         for b in res.boxes:
             x1, y1, x2, y2 = (float(v) for v in b.xyxy[0].tolist())
             cx, cy = (x1 + x2) / 2 / w, (y1 + y2) / 2 / h
             bw, bh = (x2 - x1) / w, (y2 - y1) / h
             cls = self._names.get(int(b.cls[0]), str(int(b.cls[0])))
+            base = card_threat.base_key(cls)
+            if float(b.conf[0]) < self._conf_by_card.get(base, float(conf)):
+                continue                   # below THIS class's gate (variants share the base's gate)
             # STATELESS colour evidence: the HP-bar scan (reliable, often absent) and the
             # overwhelming-body-art fallback. The preliminary team from these alone is what OFFLINE
             # single-frame consumers get; live paths run TeamTracker.tag() on top (motion/plays/pockets).
-            base = card_threat.base_key(cls)
             c = self._db.get(base) if self._db is not None else None
             multi = bool(c and int(c.get("count") or 1) > 1)     # multi-unit card -> bars all through the box
             bar = _bar_vote(frame, cx, cy, bw, bh, multi=multi)
@@ -391,7 +402,8 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
         db = CardDB(cfg)
     except Exception:
         db = None
-    return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset)
+    return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
+                         conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None))
 
 
 # ---------------------------------------------------------------------------
