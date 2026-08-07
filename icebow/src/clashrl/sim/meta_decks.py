@@ -18,7 +18,7 @@ _BUILTIN = [
 ]
 
 _HEAVY_TANKS = {"golem", "lava_hound", "electro_giant", "goblin_giant", "pekka", "mega_knight",
-                "giant", "royal_giant", "giant_skeleton", "elixir_golem", "super_lava_hound"}
+                "giant", "royal_giant", "giant_skeleton", "elixir_golem"}
 
 
 def _base(k: str) -> str:

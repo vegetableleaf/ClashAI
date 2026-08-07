@@ -67,6 +67,7 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
     # 2) their battle logs -> tally 8-card decks (both sides)
     tally: Counter = Counter()
     seen = 0
+    n_event = 0
     for i, tag in enumerate(tags):
         enc = urllib.parse.quote(tag, safe="")
         try:
@@ -76,12 +77,20 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
         for b in battles:
             for side in ("team", "opponent"):
                 for entry in b.get(side, []):
+                    raw = entry.get("cards", [])
                     keys = []
-                    for c in entry.get("cards", []):
+                    for c in raw:
                         k = _name_to_key(c.get("name", ""))
                         base_k = k[:-4] if k.endswith("_evo") else k
                         if db.get(base_k):
                             keys.append(base_k)
+                    # A battle log covers EVERY mode, including limited-time events, so decks
+                    # holding party_*/super_*/Heal/etc. show up here. Those cards were purged from
+                    # the KB, so they no longer resolve -- which means a deck containing one is
+                    # short of 8 and is dropped by the check below. Counted separately so the
+                    # filtering is visible rather than silently shrinking the sample.
+                    if len(raw) == 8 and len(keys) < 8:
+                        n_event += 1
                     if len(keys) == 8:
                         tally[tuple(sorted(keys))] += 1
                         seen += 1
@@ -92,6 +101,9 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
     if not tally:
         print("[decks-import] no valid decks parsed; curated decks kept.")
         return
+    if n_event:
+        print(f"[decks-import] dropped {n_event} deck-sightings containing event-only/unknown cards "
+              f"({100 * n_event / (seen + n_event):.1f}% of sightings) -- ladder-legal decks only.")
 
     top_decks = tally.most_common(limit)
     lines = ["# Imported from the official Clash Royale API (top-player battle logs).",

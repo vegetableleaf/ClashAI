@@ -26,7 +26,7 @@ for the opposite. It runs on PC via Google Play Games — the same rendering it 
 ## Pipeline
 
 ```
-0. train-sim headless simulator: pretrain vs ~1000 meta decks + self-play  [BUILT]
+0. train-sim headless simulator: pretrain vs ~400 meta decks + self-play   [BUILT]
 1. record    you play on PC; capture screen + your mouse                    [BUILT]
 2. label     sessions -> (observation, action) dataset                      [BUILT]
 3. outcomes  auto win/loss per match from the results scoreboard            [BUILT]

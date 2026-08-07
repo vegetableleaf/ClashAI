@@ -690,14 +690,6 @@ cards:
     range: melee
     verified: false
 
-  santa_hog_rider:
-    display: "Santa Hog Rider"
-    win_condition: true
-    targets: buildings_only
-    flags: [building_targeting, jump]
-    range: melee
-    verified: false
-
   goblin_drill:
     display: "Goblin Drill"
     win_condition: true
@@ -896,7 +888,6 @@ cards:
   night_witch: {range: melee, verified: false}
   pekka: {range: melee, attacks: [ground], flags: [tank], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, verified: false}
-  raging_prince: {range: melee, verified: false}
   rascals: {range: melee, verified: false}
   royal_ghost: {range: melee, verified: false}
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield

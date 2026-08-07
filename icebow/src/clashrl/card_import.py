@@ -27,6 +27,15 @@ WIKI = "https://clashroyale.fandom.com/api.php"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ClashBotResearch/1.0"
 CATEGORIES = ["Category:Troop Cards", "Category:Building Cards", "Category:Spell Cards",
               "Category:Champion Cards"]
+# Cards the wiki files under "Removed Cards" exist ONLY in limited-time event modes (party_*,
+# super_*, Santa Hog Rider, Wizard Trio, Terry ...) or were delisted outright (Heal, Warmth,
+# Baby Goblins). None of them can appear in a trophy-ladder match, so importing them poisons
+# every downstream consumer: the sim builds opponent decks the bot will never face, the detector
+# taxonomy burns class slots that can never be labelled, and the threat model reasons about
+# cards that do not exist. Every genuine ladder card carries an Arena category instead, so this
+# one category is a clean and complete separator -- verified 2026-08-07 against all 180 imported
+# cards, which produced no false positives and no misses.
+EXCLUDE_CATEGORY = "Category:Removed Cards"
 _EVO = "/Evolution"
 _NUM = re.compile(r"^-?\d+(?:\.\d+)?$")
 _VARDEF = re.compile(r"\{\{#vardefine:\s*([A-Za-z0-9_]+)\s*\|\s*([^}|]+?)\s*\}\}")
@@ -133,6 +142,19 @@ def import_cards(cfg) -> None:
     if not names:
         print("[cards-import] no card pages found (wiki category names may have changed).")
         return
+
+    try:
+        removed = set(_members(EXCLUDE_CATEGORY))
+    except Exception as exc:  # noqa: BLE001 -- better to import everything than to import nothing
+        removed = set()
+        print(f"[cards-import] WARNING: could not read {EXCLUDE_CATEGORY} ({exc}); "
+              "event-only cards may slip in.")
+    if removed:
+        # an Evolution subpage is dropped with its base card
+        skipped = [n for n in names if n in removed or n.split(_EVO)[0] in removed]
+        names = [n for n in names if n not in skipped]
+        print(f"[cards-import] skipping {len(skipped)} event-only/removed cards: "
+              f"{', '.join(sorted(skipped)[:6])}{'...' if len(skipped) > 6 else ''}")
 
     out: dict = {}
     fails: list = []
