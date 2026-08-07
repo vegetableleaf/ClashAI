@@ -145,6 +145,26 @@ def _cmd_train_sim_ppo(args) -> None:
                   seed=args.seed, envs=args.envs, init=args.init)
 
 
+def _cmd_sim_bench(args) -> None:
+    try:
+        from .sim_bench import sim_bench
+    except ImportError as exc:
+        print(f"[sim-bench] PyTorch is required ({exc}).")
+        return
+    sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
+              out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
+
+
+def _cmd_policy_stats(args) -> None:
+    try:
+        from .policy_stats import policy_stats
+    except ImportError as exc:
+        print(f"[policy-stats] PyTorch is required ({exc}).")
+        return
+    policy_stats(_sized_config(args), ckpt=args.ckpt, matches=args.matches, envs=args.envs,
+                 seed=args.seed, epsilon=args.epsilon, out=args.out)
+
+
 def _cmd_decks_import(args) -> None:
     from .deck_import import import_decks
     import_decks(Config.load(args.config), limit=args.limit, players=args.players)
@@ -338,6 +358,38 @@ def main() -> None:
     tsp.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
+
+    sbn = sub.add_parser("sim-bench",
+                         help="measures training throughput (matches/s) at different --envs on THIS "
+                              "machine -> data/sim_bench.json (never writes policy_sim.pt)")
+    sbn.add_argument("--auto", action="store_true",
+                     help="finds the best value on its own: doubles it until throughput stops "
+                          "rising or memory runs short")
+    sbn.add_argument("--apply", action="store_true",
+                     help="write the recommended value straight into config.yaml (with a backup)")
+    sbn.add_argument("--envs", default=None,
+                     help="comma list of values to measure (default: derived from the hardware)")
+    sbn.add_argument("--seconds", type=float, default=45.0, help="measurement time per setting")
+    sbn.add_argument("--warmup", type=float, default=8.0,
+                     help="discarded warm-up run (CUDA context); 0 turns it off")
+    sbn.add_argument("--seed", type=int, default=0, help="RNG seed, the same for every measurement")
+    sbn.add_argument("--out", default=None, help="output JSON (default: data/sim_bench.json)")
+    sbn.set_defaults(func=_cmd_sim_bench)
+
+    pst = sub.add_parser("policy-stats",
+                         help="measures WHAT the policy plays in the simulator: card frequency, "
+                              "placement heatmap, wait-gate rate -> data/policy_stats.json")
+    pst.add_argument("--ckpt", default=None,
+                     help="checkpoint (default: data/policy_sim_best.pt, else policy_sim.pt)")
+    pst.add_argument("--matches", type=int, default=60, help="how many greedy matches to play")
+    pst.add_argument("--envs", type=int, default=8, help="matches running in parallel")
+    pst.add_argument("--seed", type=int, default=4242, help="RNG seed of the simulator")
+    pst.add_argument("--epsilon", type=float, default=0.0,
+                     help="share of random moves (0 = purely greedy, the real behaviour)")
+    pst.add_argument("--out", default=None, help="output JSON (default: data/policy_stats.json)")
+    pst.add_argument("--size", choices=["576", "432"], default=None,
+                     help="board resolution; has to match the checkpoint")
+    pst.set_defaults(func=_cmd_policy_stats)
 
     dki = sub.add_parser("decks-import",
                          help="import the current top meta decks from the official CR API into config/meta_decks.yaml")
