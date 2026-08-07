@@ -25,6 +25,7 @@ import hashlib
 import json
 import math
 import random
+import shutil
 import threading
 import time
 from collections import Counter, defaultdict
@@ -738,6 +739,148 @@ def _load_split(root: Path) -> dict:
     if p.exists():
         return json.loads(p.read_text(encoding="utf-8"))
     return {q.stem: sp for sp in ("train", "val") for q in (root / "images" / sp).glob("*.jpg")}
+
+
+def _md5(p: Path) -> str:
+    return hashlib.md5(p.read_bytes()).hexdigest()
+
+
+def detect_adopt(cfg, json_path, images_dir=None, prefix=None, dry_run=False) -> None:
+    r"""ADOPT an outside annotation batch (someone else's Label Studio export + their image folder)
+    into the labelling queue, renaming around filename COLLISIONS automatically.
+
+    THE PROBLEM THIS EXISTS FOR: a helper exporting from their own machine produces generic names
+    like ``frame_0005.png``, and every batch they send restarts the numbering. The import matches
+    annotations to images BY BASENAME, so a second batch reusing those names would overwrite the
+    first batch's images in the queue and leave the FIRST batch's annotations describing somebody
+    else's pixels -- silently, with nothing downstream able to notice. That exact collision arrived
+    with batch3 (40/40 names reused, 0/40 identical pixels).
+
+    So each incoming file is md5-compared against the queue entry of the same name:
+      * no file of that name        -> no conflict
+      * same name, IDENTICAL bytes  -> already adopted; skipped, and the annotations keep pointing
+                                       at the existing copy (re-running this is a no-op)
+      * same name, DIFFERENT bytes  -> COLLISION -> the whole batch takes a ``prefix``
+    The prefix is applied to the WHOLE batch rather than only the clashing files, because a
+    half-renamed batch is far harder to reason about later than a uniformly named one.
+
+    The export is rewritten to match (``batch3.json`` keeps its name so a folder-mode import still
+    finds it) and the untouched original is preserved as ``<name>.raw.json.bak`` -- the ``.bak``
+    suffix deliberately keeps it OUT of the ``*.json`` glob so it can never be imported twice.
+
+    NB the stable train/val split hashes the FILENAME, so a rename decides which side a frame lands
+    on: adopt once, before the first import, and never rename afterwards.
+    """
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    qdir = root / "images" / cfg.get("detect", "label_queue_subdir", default="to_label")
+    jp = Path(json_path)
+    if not jp.exists():
+        jp = root / json_path
+    if not jp.exists():
+        print(f"[detect-adopt] no export at {json_path}")
+        return
+
+    tasks = json.loads(jp.read_text(encoding="utf-8"))
+    if isinstance(tasks, dict):
+        tasks = tasks.get("annotations") or tasks.get("tasks") or [tasks]
+    refs = {}                                   # basename -> how many tasks reference it
+    for t in tasks:
+        d = t.get("data") if isinstance(t.get("data"), dict) else None
+        ref = (d or {}).get("image") or t.get("image")
+        if ref:
+            refs[_ls_export_image_name(ref)] = refs.get(_ls_export_image_name(ref), 0) + 1
+    if not refs:
+        print("[detect-adopt] the export references no images")
+        return
+
+    # locate the image folder: given, or the sibling folder holding the most of these names
+    src = None
+    if images_dir:
+        src = Path(images_dir)
+        if not src.exists():
+            src = root / str(images_dir)
+    if src is None:
+        best, n_best = None, 0
+        for cand in root.iterdir():
+            if not cand.is_dir() or cand.name in ("images", "labels", "sprites", "synth"):
+                continue
+            hits = sum(1 for p in cand.rglob("*") if p.name in refs)
+            if hits > n_best:
+                best, n_best = cand, hits
+        src = best
+    if src is None or not src.exists():
+        print(f"[detect-adopt] could not find the image folder -- pass --images (looked for "
+              f"{len(refs)} names like {sorted(refs)[:2]})")
+        return
+    found = {p.name: p for p in src.rglob("*") if p.name in refs}
+    print(f"[detect-adopt] {jp.name}: {len(tasks)} task(s), {len(refs)} image ref(s)")
+    print(f"[detect-adopt] images from {src}: {len(found)} matched, {len(refs) - len(found)} missing")
+
+    # classify every incoming file against what the queue already holds
+    clash, same, fresh = [], [], []
+    for name, p in sorted(found.items()):
+        q = qdir / name
+        if not q.exists():
+            fresh.append(name)
+        elif _md5(q) == _md5(p):
+            same.append(name)
+        else:
+            clash.append(name)
+    print(f"[detect-adopt] new {len(fresh)}, already-adopted (identical bytes) {len(same)}, "
+          f"COLLIDING {len(clash)}")
+    if clash:
+        print(f"               e.g. {clash[:4]}")
+
+    if not clash:
+        pre = ""
+        print("[detect-adopt] no collisions -> keeping the original filenames")
+    else:
+        pre = prefix if prefix else f"{jp.stem.replace('.', '_')}_"
+        print(f"[detect-adopt] COLLISION -> prefixing the whole batch with '{pre}'")
+        # a prefixed name must itself be free
+        busy = [n for n in found if (qdir / (pre + n)).exists()
+                and _md5(qdir / (pre + n)) != _md5(found[n])]
+        if busy:
+            print(f"[detect-adopt] ABORT: '{pre}' is already taken by different images ({busy[:3]}) "
+                  f"-- pass a different --prefix")
+            return
+
+    if dry_run:
+        print("[detect-adopt] --dry-run: nothing written")
+        return
+
+    if pre:
+        for t in tasks:                          # rewrite refs so basenames match the copied files
+            d = t.get("data") if isinstance(t.get("data"), dict) else None
+            if not d:
+                continue
+            for k, v in list(d.items()):
+                if isinstance(v, str):
+                    b = _ls_export_image_name(v)
+                    if b in refs and not b.startswith(pre):
+                        d[k] = v.replace(b, pre + b)
+        bak = jp.with_suffix(".raw.json.bak")
+        shutil.copy2(jp, bak)
+        jp.write_text(json.dumps(tasks), encoding="utf-8")
+        print(f"[detect-adopt] rewrote {jp.name}; original preserved as {bak.name}")
+
+    qdir.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for name, p in sorted(found.items()):
+        dst = qdir / (pre + name)
+        if dst.exists() and _md5(dst) == _md5(p):
+            continue
+        shutil.copy2(p, dst)
+        copied += 1
+    print(f"[detect-adopt] copied {copied} image(s) -> {qdir}")
+
+    names = _load_classes(cfg)
+    pairs, unmatched, unknown = _ls_json_pairs(jp, root, {n: i for i, n in enumerate(names)})
+    print(f"[detect-adopt] VERIFY: {len(pairs)} pair(s), {sum(len(l) for _s, _i, l in pairs)} boxes, "
+          f"{unmatched} unmatched, {len(unknown)} unknown class(es)")
+    if unknown:
+        print(f"               unknown: {', '.join(unknown[:10])}")
+    print("[detect-adopt] ready -- include this json in the next detect-import")
 
 
 def detect_import(cfg, export_dir, val_frac=None) -> None:

@@ -165,6 +165,12 @@ def _cmd_autolabel(args) -> None:
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
 
 
+def _cmd_detect_adopt(args) -> None:
+    from .detect import detect_adopt
+    detect_adopt(Config.load(args.config), args.json, images_dir=args.images,
+                 prefix=args.prefix, dry_run=args.dry_run)
+
+
 def _cmd_detect_import(args) -> None:
     from .detect import detect_import
     detect_import(Config.load(args.config), args.export, args.val_frac)
@@ -364,6 +370,20 @@ def main() -> None:
     din.add_argument("--export", required=True, help="path to the LS export: a JSON file / folder (recommended on Windows), or a YOLO export folder (classes.txt + labels/)")
     din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
     din.set_defaults(func=_cmd_detect_import)
+
+    dad = sub.add_parser("detect-adopt",
+                         help="ADOPT someone else's export + image folder into the labelling queue, "
+                              "renaming around filename COLLISIONS automatically (a helper's generic "
+                              "frame_0005.png restarts every batch and would otherwise overwrite the "
+                              "previous batch's images, silently repointing its annotations)")
+    dad.add_argument("--json", required=True, help="their Label Studio JSON export")
+    dad.add_argument("--images", default=None,
+                     help="folder holding their image files (default: auto-detect under data/detect)")
+    dad.add_argument("--prefix", default=None,
+                     help="rename prefix to apply on collision (default: the json's stem, e.g. batch4_)")
+    dad.add_argument("--dry-run", action="store_true",
+                     help="report what WOULD happen and write nothing")
+    dad.set_defaults(func=_cmd_detect_adopt)
 
     dfr = sub.add_parser("detect-frames",
                          help="add more in-match frames from a session to data/detect for hand-labelling (non-destructive)")
