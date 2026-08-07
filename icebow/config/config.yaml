@@ -171,32 +171,33 @@ observation:
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
-  # VALUES BELOW = the CURRENT detector (board-14: board-13's annotations + ~117 more real frames + the
-  # 1000-image copy-paste SYNTH set) measured BASE-FOLDED on the WHITELIST at the LIVE gate
-  # (detector_conf 0.40): mean recall 0.724 / precision 0.910. Set slightly BELOW measurement to err
-  # sparse. Re-measure after each detector retrain with `run.py detect-eval --sweep`.
-  sim_detector_recall: 0.70      # GLOBAL fallback (mid-tier + thin-val cards): just under the measured 0.724 mean
-  sim_detector_precision: 0.90   # ~10% of seen detections relabelled (measured folded 0.910 @0.40 -- the previous
-                                 # 0.93 was inherited from board-13 and was OPTIMISTIC vs what the detector does)
+  # VALUES BELOW = the CURRENT detector (board-15: the FIRST leak-free generation -- its sprite bank is
+  # train-only, so no val pixels reached training via the synth set; 1255 real + 2000 synth) measured
+  # BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.40): mean recall 0.704 / precision
+  # 0.906. board-14 measured 0.724/0.910 but that was INFLATED by the leak -- an equal honest score
+  # means board-15 is the better model. Re-measure after each retrain with `run.py detect-eval --sweep`.
+  sim_detector_recall: 0.70      # GLOBAL fallback (mid-tier + thin-val cards): matches the measured 0.704 mean
+  sim_detector_precision: 0.90   # ~10% of seen detections relabelled (measured folded 0.906 @0.40)
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed. ONLY
-  # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-14 @ conf 0.40) are listed;
+  # cards with a TRUSTWORTHY measurement (>=8 val instances, base-folded, board-15 @ conf 0.40) are listed;
   # thin-val cards deliberately stay on the global rate. Precision stays global (per-card precision needs
   # the detector's CONFUSION MATRIX, not a scalar). Re-bucket after each detector retrain.
   sim_detector_recall_by_card:
-    # reliable -- measured R >= ~0.75 folded @0.40 on board-14 (n >= 8 val)
+    # reliable -- measured R >= ~0.75 folded @0.40 on board-15 (n >= 8 val)
     balloon: 0.90                # R 1.00, n=11 (capped -- a perfect thin-val score is not a real 1.0)
-    ice_wizard: 0.88             # R 0.92, n=84 (up from 0.84 on board-13)
-    royal_recruit: 0.78          # R 0.80, n=40
+    ice_wizard: 0.90             # R 0.93, n=85 -- the best-supported card in the set, up 0.84 -> 0.92 -> 0.93
+    cannon: 0.80                 # R 0.85, n=13 (0.85 on board-14 too -- two generations agree, promoted)
+    royal_recruit: 0.78          # R 0.80, n=40 (flat across three generations)
     ronin: 0.75                  # R 0.77, n=13
-    bowler: 0.72                 # R 0.75, n=8 (held after the board-13 synth recovery from 0.25)
-    sparky: 0.72                 # R 0.75, n=8 (recovered from 0.50 -- the board-13 dip did not persist)
-    # weak -- measured R <= ~0.56 folded @0.40 (well-supported)
-    knight: 0.55                 # R 0.56, n=48 -- DOWN from 0.68; dragged by knight_hero (R 0.56, n=16)
-    mega_knight: 0.55            # R 0.56, n=18
-    ice_spirit: 0.42             # R 0.42, n=19 (gave back the board-13 synth gain of 0.67)
-    hog_rider: 0.42              # R 0.42, n=12
-    # (skeletons 0.70 / miner 0.76 / ice_golem 0.71 ~= global -> unlisted. archers 0.83 and musketeer 0.91
-    #  both jumped but sit on n=11/n=6 val, too thin to promote -- left on the global rate.)
+    bowler: 0.72                 # R 0.75, n=8 (held since the board-13 synth recovery from 0.25)
+    # weak -- measured R <= ~0.67 folded @0.40 (well-supported)
+    knight: 0.65                 # R 0.67, n=48 -- RECOVERED from board-14's 0.56; biggest gain of the run
+    mega_knight: 0.65            # R 0.67, n=18 (up from 0.56)
+    hog_rider: 0.48              # R 0.50, n=12 (up from 0.42)
+    ice_spirit: 0.45             # R 0.47, n=19 (up from 0.42; still short of the board-13 synth spike 0.67)
+    # (skeletons 0.69 / miner 0.70 ~= global -> unlisted. DROPPED sparky: 0.50 -> 0.75 -> 0.62 across three
+    #  generations on n=8 is noise, not a level, so it belongs on the global rate. ice_golem 0.71 -> 0.29 and
+    #  musketeer 0.91 -> 0.73 swung just as hard on n=7/n=11 -- all left global until the val counts grow.)
   # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
   # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
   team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
