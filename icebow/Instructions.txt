@@ -401,21 +401,87 @@ The workflow (all commands from the icebow folder):
          .\.venv\Scripts\python.exe run.py detect-frames --count 200
          .\.venv\Scripts\python.exe run.py autolabel --all --preview
 
+  1b. OPTIONAL - label the frames that actually teach it something. The queue grows to
+      thousands of frames and hand-labelling is the slowest part of this whole project,
+      so don't work through it in file order. This ranks the UNLABELLED frames by how
+      confused the current detector is on them - AMBIGUITY (two classes fighting over
+      one box) and UNCERTAINTY (mid-confidence guesses) - and copies the top N into
+      images/to_label_priority/ for Label Studio to point at:
+
+         .\.venv\Scripts\python.exe run.py label-queue --classes wizard,valkyrie --n 150 --copy
+
+      Use --device cpu if a training run is using the GPU, and pass --weights
+      runs/detect/board-16/weights/best.pt (the last COMPLETE run) - by default it picks
+      the NEWEST weights, which mid-training is a half-trained checkpoint.
+
   2. Hand-label those frames in Label Studio (free, labelstud.io): draw a box around
      each unit and pick its class. Export as Label Studio JSON, then import + split
      into train/val:
 
          .\.venv\Scripts\python.exe run.py detect-import --export <your-export.json>
 
+     --export also takes a COMMA-SEPARATED LIST or a folder holding several exports;
+     they are merged and deduplicated by image (the copy with the most boxes wins).
+
+  2b. IF SOMEONE ELSE LABELS FOR YOU - adopt their export + image folder first. Their
+      files are usually named frame_0001.png and the numbering RESTARTS every batch, so
+      a second batch would overwrite the first batch's images and leave its annotations
+      describing unrelated frames, silently. This md5-compares each incoming file
+      against the queue and auto-prefixes the batch if the names collide:
+
+         .\.venv\Scripts\python.exe run.py detect-adopt --json <their-export.json>
+
+      Add --dry-run first to see what it would do. Re-running it is a no-op.
+
+  2c. OPTIONAL - fuse every batch*.json into one self-contained export, so you have a
+      single file to re-import or archive instead of a growing pile:
+
+         .\.venv\Scripts\python.exe run.py detect-merge
+
+      Re-run it after any new export or detect-adopt: the merged file is a SNAPSHOT.
+
   3. Train the detector (uses the "ultralytics" package from requirements):
 
          python tools/detect/train.py
+
+     If it stops early - a closed terminal, or CUDA out of memory because something else
+     grabbed the GPU - continue where it left off instead of starting over:
+
+         python tools/detect/train.py --resume board-17
+
+     Resume keeps the run's own folder, epoch count and best.pt. It restores every other
+     setting from the checkpoint, so you CANNOT lower --batch on a resume; if you OOM'd,
+     free memory (close recorders/browsers, kill leftover python processes) or set
+     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True, which fixes the common case where
+     a run survives many epochs and then dies to allocator fragmentation.
+
+     Copy-paste augmentation (optional) cuts labelled units out of their background and
+     pastes them onto other arenas, so the detector learns the UNIT and not the lawn:
+
+         .\.venv\Scripts\python.exe run.py sprites
+         .\.venv\Scripts\python.exe run.py sprites --synth 1000
+
+     Always rebuild the sprites BEFORE the synths - the synths are composited from the
+     bank, so a stale bank silently poisons the training set.
 
   4. Check how good it is on random frames, and preview the "what's on the board" map
      the policy would receive:
 
          .\.venv\Scripts\python.exe run.py detect-preview
          .\.venv\Scripts\python.exe run.py detect-obs
+
+     For the numbers that actually gate Stage 3 - presence recall, per-card recall, and
+     the confidence sweep - use detect-eval. Pass the same --subset to every generation
+     or the comparison is meaningless: labelling GROWS the val set, so two runs scored on
+     "their own" val sets are not comparable.
+
+         .\.venv\Scripts\python.exe run.py detect-eval --sweep --subset data/detect/val_board15.txt
+
+     Re-tune observation.detector_conf from that sweep each generation instead of
+     inheriting the old value; a checkpoint's confidences are calibrated differently every
+     time. If one card is clearly over- or under-gated you can override it alone via
+     observation.detector_conf_by_card - but only once two generations agree, since a
+     single run on a handful of val instances is noise.
 
   5. When the detector is solid, turn it on in config/config.yaml by setting
      observation.use_detector: true (and, for the extra "who is attacking what"

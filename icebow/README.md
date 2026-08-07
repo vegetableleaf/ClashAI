@@ -83,6 +83,23 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
 `record.*`, `observation.arena_size`, `action.grid`, `rewards.*`, `outcome.*`,
 `env.*` (live RL + tower anchors), `train.*`.
 
+### Watching it play
+
+- `preview` — a side window during `train-rl` showing live frames with the detector's
+  team-coloured boxes, fed from the detector pass the env already runs (no extra
+  inference). It's a *screen* grab, so the window must never cover the game; it
+  auto-positions to the right of the capture region.
+- `overlay_replay` — **off by default.** When on, the first `seconds` of **every**
+  match is recorded to `data/overlayed_replays/match_<stamp>.mp4` with the boxes burned
+  in. The opening is where placement, the first read of the opponent, and the
+  detector's coverage of a clean board are all visible at once.
+  The video runs at `fps` (max 60, default 30) while the **boxes** refresh at
+  `observation.perception_hz`, so a clip shows real perception latency instead of
+  hiding it. Clips are wall-clock paced — if capture can't keep up, frames are
+  duplicated rather than letting the clip play fast-forward — and the achieved capture
+  rate prints when each clip closes.
+- `monitor` — optional Discord screenshots/clips during long unattended runs.
+
 ## Status
 
 - ✅ Project skeleton + `record` (screen + mouse capture).
@@ -118,6 +135,45 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
   card/cell Q-function (card values masked to the hand) plus a learned **no-op**
   gate; it saves to
   `train.rl_checkpoint`, which `play` then prefers (`run.py train-rl`).
+
+### Stage 3 — the board object detector (in progress)
+
+Teaches the bot to actually *see* the opponent (what unit, where) instead of inferring
+it from red pixels. Gated behind `observation.use_detector`; see
+`Instructions.txt` → Stage 11 for the full workflow.
+
+- ✅ `detect-frames` / `autolabel` — export in-match frames to hand-label, and
+  auto-box **your own** troops (a card you played is a known class at a known spot).
+- ✅ `label-queue` — rank the **unlabelled** backlog by how much labelling each frame
+  would teach: **ambiguity** (two classes claiming one box) and **uncertainty**
+  (mid-confidence guesses). Hand-labelling is the slowest part of the project, so
+  don't work the queue in file order (`run.py label-queue --classes wizard,valkyrie
+  --n 150 --copy`).
+- ✅ `detect-adopt` — ingest **someone else's** export + image folder. Their frames are
+  usually `frame_0001.png` with numbering that restarts every batch, so a second batch
+  would overwrite the first and leave its annotations describing unrelated images.
+  Each file is md5-compared against the queue and the batch is auto-prefixed on
+  collision (`run.py detect-adopt --json their-export.json [--dry-run]`).
+- ✅ `detect-merge` — fuse every `batch*.json` into one self-contained export,
+  deduplicated by image (`run.py detect-merge`). The result is a **snapshot** — re-run
+  it after any new export.
+- ✅ `detect-import` — import Label Studio JSON (a file, a **comma list**, or a folder
+  of several) into the Ultralytics train/val split, remapping classes **by name** and
+  deduplicating repeated tasks (`run.py detect-import --export batch_all.json`).
+- ✅ `sprites` — cut labelled units out of their background (GrabCut) into a per-class
+  sprite bank, then `--synth N` composites them onto other arenas so the detector
+  learns the **unit**, not the lawn. The cut is **occlusion-aware**: a box more than
+  35% covered by a neighbour is rejected rather than guessed at. Always rebuild the
+  bank *before* the synths.
+- ✅ `detect-eval` — the gating numbers: presence recall, base-folded per-card recall,
+  and a confidence sweep. Pass the **same `--subset`** to every generation — labelling
+  grows the val set, so runs scored on their own val sets are not comparable
+  (`run.py detect-eval --sweep --subset data/detect/val_board15.txt`).
+- ✅ `detect-preview` / `detect-obs` — see the raw boxes, and the semantic
+  enemy/ally/building/spell channels the policy would receive.
+- ✅ `tools/detect/train.py --resume [RUN]` — continue an interrupted run in its own
+  folder, keeping its epoch count and `best.pt`. Resume restores every other setting
+  from the checkpoint, so you **cannot** lower `--batch` on a resume.
 
 ## Recording note
 

@@ -1150,6 +1150,131 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-08-07  —  Overlay replays: record the opening of every match with boxes
+------------------------------------------------------------------------------
+- NEW config block `overlay_replay` (OFF by default): when on, a background thread records the
+  first `seconds` of EVERY match to data/overlayed_replays/match_<stamp>.mp4 with the detector's
+  team-coloured boxes burned in. Same shape as the preview window -- its own private WindowCapture
+  (mss handles are per-thread, so the env's capture is untouched).
+- The BOXES refresh at observation.perception_hz (~0.1s, the same feed the preview uses) while the
+  VIDEO runs at overlay_replay.fps, so a clip shows the policy's real perception latency rather
+  than hiding it.
+- 60 fps is ALLOWED but is the ceiling: measured on this machine, grab 14.86ms + draw 0.94 + resize
+  0.32 + encode 0.97 = 17.09 ms/frame => ~58 fps with nothing else running, and the GRAB alone is
+  87% of that. Default 30. ~25 MB per 60s clip at 60fps/scale 0.5.
+- WALL-CLOCK PACED: cv2.VideoWriter bakes the REQUESTED fps into the header, so a run that only
+  sustains 40 while claiming 60 plays 1.5x too fast -- fatal for a tool meant to judge reaction
+  timing. Missed slots are now filled by duplicating the newest frame, and the ACHIEVED capture
+  rate prints when each clip closes.
+
+
+------------------------------------------------------------------------------
+2026-08-07  —  Sprite bank: the cutter was grabbing the unit standing ON TOP
+------------------------------------------------------------------------------
+- BUG: `_cut_sprite` seeded GrabCut with only the target's own box and knew nothing about the other
+  annotations in the frame. When a second unit overlaps, the shared pixels are unattributable from a
+  2D box alone and GrabCut prefers the UNOCCLUDED body -- so the bank filled with sprites of the
+  WRONG card, which `--synth` then pasted into training images as pure label noise.
+- SCALE: of 5120 train boxes, 32.6% are overlapped at all, 10.4% by >30%, 3.2% by >70%. The
+  worst-hit classes are the worst-recall ones -- bats 25% heavily occluded, guards 26%, knight 16%,
+  valkyrie 14% -- while the deck cards are clean (tesla 0.048 mean, x_bow 0.052, miner 0.027).
+- FIX: the other boxes are free supervision. Build an occluder mask, REJECT above 35% covered, and
+  below that pin those pixels to definite BACKGROUND so the occluder's colours train the background
+  model. The exclusion is re-asserted after grabcut, after the morphology, and after the alpha
+  feather (that last one was the difference between 1.07% and 0.00% residual). `_aoe` decals are
+  excluded from the occluder set -- units stand ON them.
+- MEASURED: share of sprite pixels that are actually a neighbour's body went mean 11.66% -> 0.00%,
+  worst 51.22% -> 0.00%. Bank rebuilt: 4663 kept, 318 rejected as too occluded.
+- NB rebuilding the bank REQUIRES regenerating the synths, or training still carries the old
+  contamination.
+
+
+------------------------------------------------------------------------------
+2026-08-07  —  Annotation plumbing: adopt / merge / multi-json import
+------------------------------------------------------------------------------
+- `detect-import --export` now accepts a single .json, a COMMA-SEPARATED LIST, or a folder holding
+  several (all merged). Previously a folder silently used only `sorted(glob)[0]`.
+- It also DEDUPES tasks by image basename, keeping the copy with the most boxes. Label Studio keeps
+  several tasks per image when a frame is re-labelled: 54 such duplicates existed, 53 of them
+  DISAGREED, and the old loop was pure last-write-wins -- an arbitrary coin flip over which
+  annotation survived. The printed counts are now DISTINCT IMAGES, which is what lands on disk
+  (reporting len(pairs) had overstated the dataset by the duplicate count).
+- NEW `run.py detect-adopt --json X [--images F] [--prefix P] [--dry-run]` -- ingest someone else's
+  export + image folder. Each incoming file is md5-compared against the queue entry of the same
+  name: free name -> copy; IDENTICAL bytes -> already adopted, skip (re-running is a no-op);
+  DIFFERENT bytes -> collision, and the whole batch takes a prefix. WHY: a helper's generic
+  frame_0005.png restarts every batch, and their second batch reused all 40 names with different
+  pixels -- copying it in would have overwritten the first batch's images and left ITS 215
+  annotations describing unrelated frames, silently.
+- NEW `run.py detect-merge [--sources] [--out] [--dry-run]` -- fuse every batch*.json into one
+  self-contained export (default data/detect/batch_all.json), deduped by the same rule so importing
+  the merged file equals importing the sources together. Skips *.raw.json.bak and its own output.
+- NEW `tools/detect/train.py --resume [RUN]` -- continue an interrupted run in its own folder,
+  keeping its epoch count and best.pt. NOTE resume restores args from the checkpoint, so you CANNOT
+  lower --batch on a resume; survive an OOM by freeing memory or changing the allocator instead.
+
+
+------------------------------------------------------------------------------
+2026-08-07  —  Detector diagnosis: knight is NOT a lookalike problem
+------------------------------------------------------------------------------
+- Every val ground-truth box was bucketed by WHY it failed (detect at conf 0.03, then classify as
+  HIT / right-class-but-below-gate / WRONG CLASS / blind). Each bucket has a different fix, and this
+  had never been measured.
+- KNIGHT (n=63): 59% hit, 17% right-class-but-under-confident (conf median 0.19), 13% blind, and
+  only 11% wrong class -- those 7 scattered across SIX classes, so there is no confuser to
+  disambiguate against. The earlier "knight is lookalike-confused" claim in these logs was WRONG.
+- The classes that DO need disambiguation: wizard 60% wrong class (-> musketeer), valkyrie 31%.
+  Genuinely data-starved (blind-dominated): guards 36%, bats 25%. Gate-limited: hog_rider 42%
+  under-confident, knight 17%.
+- KILLED HYPOTHESIS: base/_evo/_hero classes splitting confidence on one box so neither clears the
+  gate -- across the whole val set only 2 boxes would flip. Do not revisit.
+- NEW `observation.detector_conf_by_card` (base key -> gate), applied inside BoardDetector.detect()
+  so every live path benefits with no call-site changes: predict runs at the FLOOR, then each box is
+  judged against its own class's gate. hog_rider sat at precision 1.00 at gate 0.40 (purely
+  over-gated); knight improves on BOTH axes at 0.30; guards gains nothing at any gate. Left EMPTY on
+  purpose -- one generation on 12-63 val instances is not a stable measurement.
+- NEW `run.py label-queue [--classes] [--n] [--copy] [--device cpu]` -- rank the ~2600 unlabelled
+  frames by AMBIGUITY (two classes claim one box, scored so a 0.45-vs-0.40 standoff outranks
+  0.80-vs-0.05) and UNCERTAINTY (mid-band lone detections), so scarce labelling time goes to frames
+  that resolve a confusion instead of boards the detector already reads.
+
+
+------------------------------------------------------------------------------
+2026-08-07  —  Data-scaling law + annotation priorities (measured)
+------------------------------------------------------------------------------
+- Fitted per-class recall against TRAIN instance count over 36 classes:
+  recall = 0.183*log10(n) + 0.330, i.e. +5.5 pp per DOUBLING of a class's instances.
+  CAVEAT weighted R^2 is only 0.20 -- class difficulty dominates volume (at ~50 instances recall
+  ranges from guards 0.27 to archers 1.00), so this predicts the population, not a single class.
+- From 1488 train images: +1000 images ~ +3.8 pp. But it is logarithmic, so the marginal rate
+  collapses -- 1st +1000 = 3.3 pp/1k, +5000 total = 1.0 pp/1k, +10000 = 0.5 pp/1k.
+- "Per 1000 images" is the wrong unit: +100 instances is worth +11.6 pp to firecracker (30) and
+  +1.4 pp to tesla (504). Target weak classes; it wins on the macro (whitelist-like) metric even
+  though it loses on the support-weighted one.
+- Gap list ranked by ENCOUNTER x MISS over the 1000-deck meta pool (a card you never face is worth
+  zero labels): fireball is the MOST COMMON card in the meta at 21.6% of decks and has 12 boxes,
+  with fireball_aoe at 4 -- the single highest-value target, and the class blocking splash-memory.
+  Then zap_aoe 0 boxes / 11.4%, lightning_aoe 0 / 9.7%. NB filter out party_*/super_* first: they
+  are event-only, excluded from the taxonomy by design, and otherwise pollute the ranking.
+
+
+------------------------------------------------------------------------------
+2026-08-07  —  replay_mine pointed at a folder that never existed
+------------------------------------------------------------------------------
+- `replay_mine.replays_dir` was `data/replays`, which does not exist -- mine-replays would have
+  found nothing and reported "no replays" rather than failing loudly. Repointed at the real folder.
+- `frame_stride: 3` on 60 fps footage = 516k frames -> 172k detector passes (~6 h). Raised to 30
+  (2 samples/sec -> 17.2k passes, ~35 min); a card can only be played about once a second, so no
+  placement is lost.
+- The Hunter CR footage is 143 min, 60 fps, portrait, aspect 0.463 -- the SAME aspect as the helper's
+  annotation frames (0.461), so those labels come from this very footage and improve detection on
+  exactly what will be mined. He also plays the same X-Bow/Tesla archetype, so the priors are
+  directly relevant.
+- CAUTION: `mine-replays` only "reports readiness" when NO detector exists. With weights present it
+  starts mining on the GPU immediately -- do not run it while a detector training is in flight.
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they
