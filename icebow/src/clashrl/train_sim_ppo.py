@@ -223,6 +223,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     "value": net.value.state_dict(), "algo": "ppo",
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
                     "threat_dim": threat_dim, "deck": e0.deck_keys, "best_wr": best_wr,
+                    "matches": done_n,     # matches played when this file was written (checkpoint inventory)
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
     # -- self-play league (identical machinery to train_sim; snapshots are DQN-CLASS wrappers so

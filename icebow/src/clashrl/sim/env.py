@@ -16,7 +16,7 @@ from typing import Tuple
 import numpy as np
 
 from ..actions import ActionSpace
-from ..cards import CardDB
+from ..cards import shared as shared_db
 from .. import card_threat
 from .. import interactions
 from ..cycle import cycle_vector
@@ -33,7 +33,7 @@ class SimMatchEnv:
     def __init__(self, cfg, seed: int = 0):
         self.cfg = cfg
         self.rng = random.Random(seed)
-        self.db = CardDB(cfg)
+        self.db = shared_db(cfg)          # read-only + shared: building one per env cost ~0.4 s each
         self.actions = ActionSpace(cfg)
         self.gw, self.gh = int(self.actions.gw), int(self.actions.gh)
         self.n_cells = int(self.actions.n_cells)
