@@ -237,3 +237,30 @@ class CardDB:
 
 def load(cfg=None, path=None) -> CardDB:
     return CardDB(cfg, path)
+
+
+_SHARED: Dict[str, "CardDB"] = {}
+
+
+def shared(cfg=None, path=None) -> CardDB:
+    """A CardDB reused across callers, keyed by the files it was built from.
+
+    Building one parses cards.yaml plus cards_stats.json, which is wasted work when a
+    vectorised run creates dozens of environments that all read the same knowledge base
+    (64 envs spent ~27 s on it). The instance is treated as READ-ONLY -- nothing in the
+    codebase writes to it -- and the cache drops as soon as either file's timestamp moves,
+    so an edited deck still takes effect on the next run.
+    """
+    if path is None and cfg is not None:
+        path = cfg.path(cfg.get("cards", "file", default="config/cards.yaml"))
+    p = Path(path) if path else Path(__file__).resolve().parents[2] / "config" / "cards.yaml"
+    stats = p.parent / "cards_stats.json"
+    try:
+        key = f"{p}|{p.stat().st_mtime_ns}|{stats.stat().st_mtime_ns if stats.exists() else 0}"
+    except OSError:
+        return CardDB(cfg, path)
+    db = _SHARED.get(key)
+    if db is None:
+        _SHARED.clear()                       # only ever one generation is useful
+        db = _SHARED[key] = CardDB(cfg, p)
+    return db
