@@ -774,7 +774,11 @@ def detect_merge(cfg, sources=None, out=None, dry_run=False) -> None:
             p = Path(s)
             srcs.append(p if p.exists() else root / s)
     else:
-        srcs = sorted(p for p in root.glob("batch*.json") if p.resolve() != outp.resolve())
+        # NB the default output is itself called batch_all.json and so matches this glob -- exclude
+        # BOTH the actual output and that default name, otherwise `--out other.json` would quietly
+        # fold a previous merge back in as if it were a source export.
+        skip = {outp.resolve(), (root / "batch_all.json").resolve()}
+        srcs = sorted(p for p in root.glob("batch*.json") if p.resolve() not in skip)
     srcs = [p for p in srcs if p.exists() and p.suffix.lower() == ".json"]
     if not srcs:
         print(f"[detect-merge] no source exports found under {root} (looked for batch*.json)")
