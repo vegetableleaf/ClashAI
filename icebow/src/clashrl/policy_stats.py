@@ -33,8 +33,8 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
 
     import numpy as np
 
-    from ..sim.env import SimMatchEnv
-    from ..train_rl import _build_net, _pick_device
+    from .sim.env import SimMatchEnv
+    from .train_rl import _build_net, _pick_device
 
     data_dir = cfg.path("data")
     if ckpt:

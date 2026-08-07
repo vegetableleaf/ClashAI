@@ -89,7 +89,7 @@ class InMatchGrace:
         return state
 
 
-def play(cfg) -> None:
+def play(cfg, init: str | None = None) -> None:
     try:
         import torch
         from .model import PolicyNet
@@ -100,10 +100,26 @@ def play(cfg) -> None:
 
     ckpt_path = cfg.path(cfg.get("train", "checkpoint", default="data/policy.pt"))
     rl_path = cfg.path(cfg.get("train", "rl_checkpoint", default="data/policy_rl.pt"))
-    if rl_path.exists():
+    if init:                                  # explicit pick, e.g. the simulator prior
+        p = Path(init)
+        ckpt_path = p if p.is_absolute() else cfg.path(init)
+        if not ckpt_path.exists():
+            print(f"[play] --init checkpoint not found: {ckpt_path}")
+            return
+    elif rl_path.exists():
         ckpt_path = rl_path   # prefer the RL-fine-tuned policy when available
     if not ckpt_path.exists():
-        print(f"[play] no policy at {ckpt_path}. Train one first with `train-bc`.")
+        # A simulator run produces a perfectly usable policy; only the imitation path
+        # writes data/policy.pt, so pointing at what IS there beats "train one first".
+        found = sorted(p.name for p in cfg.path("data").glob("*.pt")) if cfg.path("data").exists() else []
+        print(f"[play] no policy at {ckpt_path}.")
+        if found:
+            pick = "policy_sim_best.pt" if "policy_sim_best.pt" in found else found[0]
+            print(f"[play] available under data/: {', '.join(found)}")
+            print(f"[play] use one of them directly, e.g.:  run.py play --init data/{pick}")
+            print("[play] (in the launcher: the 'Checkpoint' field of the Spielen tile)")
+        else:
+            print("[play] nothing trained yet. `train-sim` produces one without needing the game.")
         return
 
     ckpt = torch.load(ckpt_path, map_location="cpu")

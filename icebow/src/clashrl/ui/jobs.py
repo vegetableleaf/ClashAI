@@ -95,6 +95,10 @@ COMMANDS: List[Dict[str, Any]] = [
         "gpu": True,
         "metrics": False,
         "args": [
+            {"name": "init", "type": "ckpt", "default": "", "label": "Checkpoint",
+             "help": "Welchen Stand er spielen soll. Leer = data/policy_rl.pt falls vorhanden, "
+                     "sonst data/policy.pt. Ein reiner Simulator-Stand wie policy_sim_best.pt "
+                     "funktioniert genauso."},
             {"name": "size", "type": "choice", "choices": ["", "576", "432"], "default": "",
              "label": "Board-Auflösung", "help": "Muss zum Policy-Checkpoint passen."},
         ],

@@ -13,9 +13,10 @@ from typing import Any, Dict, List
 
 from flask import Flask, Response, jsonify, render_template, request, send_file
 
-from . import editor, jobs as jobcat
+from . import jobs as jobcat
+from .. import config_edit as editor
 from .ckpt import list_checkpoints
-from .hardware import probe, suggest
+from ..hardware import probe, suggest
 from .metrics import MetricsStore, to_csv
 from .procs import ProcManager
 
@@ -402,59 +403,15 @@ def create_app(cfg) -> Flask:
     # -- overview ----------------------------------------------------------
     @app.get("/api/overview")
     def overview():
-        """Status + the next sensible step, so the panel answers 'what now?' itself."""
+        """Plain status. No generic advice: what is worth doing next depends on the
+        project, not on what a panel can infer from a few file names."""
         db = card_db()
         cks = list_checkpoints(root / "data", metrics.runs())
-        runs = metrics.runs()
-        bench = _bench_file()
-        cur_envs = int(C().get("sim", "envs", default=8))
-        stale = _stale_report(db)
-        sim_ck = next((c for c in cks if c["name"] == "policy_sim_best.pt"), None) \
-            or next((c for c in cks if c["name"] == "policy_sim.pt"), None)
-        steps: List[Dict[str, Any]] = []
-        if not bench:
-            steps.append({
-                "title": "Geschwindigkeit messen",
-                "why": "Der Simulator läuft aktuell mit sim.envs = %d. Wieviele Matches pro Sekunde "
-                       "dein PC damit schafft, weiß nur eine Messung." % cur_envs,
-                "cmd": "sim-bench", "tab": "run"})
-        elif bench.get("best_envs") and bench["best_envs"] != cur_envs:
-            best_mps = float(bench.get("best_mps") or 0.0)
-            cur_mps = next((float(r["mps"]) for r in bench.get("results", [])
-                            if r["envs"] == cur_envs), None)
-            why = f"Gemessen: {best_mps:.2f} Matches/s"
-            if cur_mps:
-                why += f" statt {cur_mps:.2f} bei der aktuellen Einstellung ({best_mps / cur_mps:.1f}x)"
-            steps.append({
-                "title": f"Schnellere Einstellung übernehmen: envs {cur_envs} auf {bench['best_envs']}",
-                "why": why + ".", "action": "apply_bench", "tab": "speed"})
-        if sim_ck is None:
-            steps.append({"title": "Erstes Sim-Training starten",
-                          "why": "Es gibt noch keinen Policy-Checkpoint. train-sim lernt von Null "
-                                 "gegen skriptierte Gegner: ohne Spiel, ohne Aufnahmen.",
-                          "cmd": "train-sim", "tab": "run"})
-        else:
-            bwr = sim_ck.get("best_wr")
-            why = (f"Bester Benchmark bisher: {bwr:.0f} % gegen die festen Meta-Decks."
-                   if isinstance(bwr, (int, float)) and bwr >= 0
-                   else "Vorhandenen Checkpoint mit --resume weiterlernen.")
-            steps.append({"title": "Sim-Training fortsetzen", "why": why,
-                          "cmd": "train-sim", "tab": "run"})
-        if not (root / "data" / "policy_stats.json").exists() and sim_ck is not None:
-            steps.append({"title": "Strategie der Policy ansehen",
-                          "why": "policy-stats zeigt, welche Karten sie überhaupt spielt und wo: "
-                                 "die Grundlage, um Belohnungen zu beurteilen.",
-                          "cmd": "policy-stats", "tab": "run"})
-        if stale["missing_templates"]:
-            steps.append({"title": "Hand-Templates fehlen",
-                          "why": "Für " + ", ".join(stale["missing_templates"]) + " gibt es keine "
-                                 "Vorlagen. Das betrifft NUR das echte Spiel (play/label), nicht den "
-                                 "Simulator.", "tab": "deck"})
         return jsonify({
             "deck": {"name": db.deck_name(), "avg_elixir": db.deck_avg_elixir(),
                      "cards": db.deck_names(), "identities": db.deck_identities()},
-            "checkpoints": cks[:6], "runs": runs[:5], "bench": bench,
-            "envs": cur_envs, "stale": stale, "steps": steps,
+            "checkpoints": cks[:6], "runs": metrics.runs()[:5], "bench": _bench_file(),
+            "envs": int(C().get("sim", "envs", default=8)), "stale": _stale_report(db),
             "towers": {"mine": C().get("sim", "my_tower_troop", default="princess"),
                        "level": C().get("sim", "my_tower_level", default=15),
                        "opponents": list((C().get("sim", "opponent_tower_weights", default={}) or {}))},

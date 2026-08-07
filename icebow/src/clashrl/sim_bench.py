@@ -45,7 +45,7 @@ NEAR_PEAK = 0.97                    # settings within 3% of the peak count as eq
 
 def _bench_config(cfg, tag: str):
     """A copy of the config that writes nowhere important and does not pause to eval."""
-    from ..config import Config
+    from .config import Config
     data = copy.deepcopy(cfg.data)
     data.setdefault("train", {})["sim_checkpoint"] = f"data/bench/policy_bench_{tag}.pt"
     sim = data.setdefault("sim", {})
@@ -56,7 +56,7 @@ def _bench_config(cfg, tag: str):
 
 
 def _run(cfg, k: int, seconds: float, seed: int) -> Optional[Dict[str, Any]]:
-    from ..train_sim import train_sim
+    from .train_sim import train_sim
     rss0 = rss_bytes() or 0
     res = train_sim(_bench_config(cfg, str(k)), matches=10 ** 9, seed=seed, envs=k,
                     time_limit_s=seconds, quiet=True)
@@ -199,7 +199,7 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
     }
 
     if apply and rec["envs"] != cur_envs:
-        from . import editor
+        from . import config_edit as editor
         try:
             r = editor.save_config_fields(cfg.path("config/config.yaml"),
                                           {"sim.envs": rec["envs"]},

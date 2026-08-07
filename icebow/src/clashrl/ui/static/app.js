@@ -512,34 +512,6 @@ async function loadOverview() {
   const d = await api("/api/overview");
   const b = $("#homebody"); b.innerHTML = "";
 
-  const steps = el("div", "steps");
-  b.appendChild(el("h2", null, "Nächste sinnvolle Schritte"));
-  (d.steps || []).forEach(s => {
-    const box = el("div", "step");
-    const txt = el("div", "txt");
-    txt.appendChild(el("div", "t", s.title));
-    txt.appendChild(el("div", "w", s.why));
-    box.appendChild(txt);
-    if (s.cmd) {
-      const go = el("button", "btn primary", "Starten");
-      go.onclick = () => { showTab("run"); const card = $("#cmd-" + s.cmd);
-        if (card) { card.scrollIntoView({ behavior: "smooth", block: "center" });
-                    card.style.outline = "2px solid var(--acc)";
-                    setTimeout(() => card.style.outline = "", 1800); } };
-      box.appendChild(go);
-    } else if (s.action === "apply_bench") {
-      const go = el("button", "btn primary", "Übernehmen");
-      go.onclick = () => applyBench(true);
-      box.appendChild(go);
-    } else if (s.tab) {
-      const go = el("button", "btn", "Ansehen");
-      go.onclick = () => showTab(s.tab);
-      box.appendChild(go);
-    }
-    steps.appendChild(box);
-  });
-  b.appendChild(steps);
-
   b.appendChild(el("h2", null, "Stand"));
   const g = el("div", "statgrid");
   const card = (title, rows) => {
@@ -1401,15 +1373,33 @@ async function liveOnce() {
     tb1.appendChild(tr); });
   t1.appendChild(tb1); right.appendChild(t1);
 
-  const t2 = el("table", "tbl");
-  t2.innerHTML = "<thead><tr><th>Bildvorlage</th><th>bester Wert</th></tr></thead>";
-  const tb2 = el("tbody");
-  Object.entries(d.template_scores || {}).forEach(([k, v]) => { const tr = el("tr");
-    tr.innerHTML = `<td><code>${k}</code></td><td>${v}</td>`; tb2.appendChild(tr); });
-  t2.appendChild(tb2); right.appendChild(t2);
+  const st = (d.states || {});
+  right.appendChild(el("h3", null, "Wie der Bot den Bildschirm einordnet"));
   right.appendChild(el("p", "hint",
-    "Die Werte sind Ähnlichkeiten von 0 bis 1. Erkannt wird ein Zustand erst ab der Schwelle in "
-    + "den Einstellungen, üblicherweise 0,8."));
+    "Er probiert die Zustände von oben nach unten durch und nimmt den ERSTEN, dessen Vorlage "
+    + "ihre Schwelle erreicht. Deshalb wird ein Ergebnisbildschirm nie für ein laufendes Match "
+    + "gehalten. Gespielt wird nur im Zustand 'Im Match', alles andere ist Navigation."));
+  const t2 = el("table", "tbl");
+  t2.innerHTML = "<thead><tr><th>Zustand</th><th>Vorlage</th><th>Wert / Schwelle</th>"
+    + "<th>Was er dann tut</th></tr></thead>";
+  const tb2 = el("tbody");
+  (st.order || []).forEach(row => {
+    const tr = el("tr");
+    if (row.matched) tr.style.background = "var(--bg3)";
+    const names = (row.templates || []).map(x => `<code>${x.name}</code>`).join("<br>");
+    const vals = (row.templates || []).map(x => {
+      if (x.missing) return "Vorlage fehlt";
+      if (x.too_small) return "Vorlage grösser als das Bild";
+      const mark = x.hit ? " erreicht" : "";
+      return `${x.score.toFixed(3)} / ${x.threshold.toFixed(2)}${mark}`;
+    }).join("<br>");
+    tr.innerHTML = `<td>${row.label}${row.matched ? " <b>(trifft zu)</b>" : ""}</td>
+      <td>${names || "-"}</td><td>${vals || "-"}</td><td class="hint">${row.action}</td>`;
+    tb2.appendChild(tr);
+  });
+  t2.appendChild(tb2); right.appendChild(t2);
+  if (st.unknown_means) right.appendChild(el("p", "hint", "Kein Treffer: " + st.unknown_means));
+
   wrap.appendChild(right);
   body.innerHTML = ""; body.appendChild(wrap);
 }

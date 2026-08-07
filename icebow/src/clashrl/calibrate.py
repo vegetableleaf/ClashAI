@@ -241,7 +241,7 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     tdir.mkdir(parents=True, exist_ok=True)
     out_png = tdir / "in_match_local.png"
     cv2.imwrite(str(out_png), med)
-    from .ui.editor import EditError, patch_scalar, backup
+    from .config_edit import EditError, patch_scalar, backup
     import yaml
     cfg_path = cfg.path("config/config.yaml")
     text = cfg_path.read_text(encoding="utf-8")

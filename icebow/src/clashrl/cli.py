@@ -119,7 +119,7 @@ def _cmd_train_rl(args) -> None:
 
 def _cmd_play(args) -> None:
     from .play import play
-    play(_sized_config(args))
+    play(_sized_config(args), init=args.init)
 
 
 def _cmd_train_sim(args) -> None:
@@ -258,7 +258,7 @@ def _cmd_deck_detect(args) -> None:
 
 def _cmd_sim_bench(args) -> None:
     try:
-        from .ui.bench import sim_bench
+        from .sim_bench import sim_bench
     except ImportError as exc:
         print(f"[sim-bench] PyTorch wird benötigt ({exc}).")
         return
@@ -268,7 +268,7 @@ def _cmd_sim_bench(args) -> None:
 
 def _cmd_policy_stats(args) -> None:
     try:
-        from .ui.rollout import policy_stats
+        from .policy_stats import policy_stats
     except ImportError as exc:
         print(f"[policy-stats] PyTorch wird benötigt ({exc}).")
         return
@@ -392,6 +392,9 @@ def main() -> None:
     dki.set_defaults(func=_cmd_decks_import)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
+    ply.add_argument("--init", default=None, metavar="CKPT",
+                     help="welchen Checkpoint er spielen soll, z.B. data/policy_sim_best.pt. "
+                          "Default: data/policy_rl.pt falls vorhanden, sonst data/policy.pt")
     ply.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
     ply.set_defaults(func=_cmd_play)
