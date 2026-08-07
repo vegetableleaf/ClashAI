@@ -60,6 +60,13 @@ def create_app(cfg) -> Flask:
     app = Flask(__name__, static_folder="static", template_folder="templates")
     app.json.sort_keys = False        # keep config/deck/tower order as it is in the YAML files
 
+    @app.after_request
+    def _no_store(resp):
+        # Never let a browser keep the page, the scripts or an API answer: after an update
+        # a cached app.js silently drives a UI that no longer matches the server.
+        resp.headers["Cache-Control"] = "no-store, max-age=0"
+        return resp
+
     # -- helpers -----------------------------------------------------------
     # The panel EDITS config.yaml, so a snapshot taken at startup goes stale the moment
     # something is saved (the first version kept proposing a setting it had just applied).
@@ -390,12 +397,12 @@ def create_app(cfg) -> Flask:
             if cur_mps:
                 why += f" statt {cur_mps:.2f} bei der aktuellen Einstellung ({best_mps / cur_mps:.1f}x)"
             steps.append({
-                "title": f"Schnellere Einstellung übernehmen (envs {cur_envs} → {bench['best_envs']})",
+                "title": f"Schnellere Einstellung übernehmen: envs {cur_envs} auf {bench['best_envs']}",
                 "why": why + ".", "action": "apply_bench", "tab": "speed"})
         if sim_ck is None:
             steps.append({"title": "Erstes Sim-Training starten",
                           "why": "Es gibt noch keinen Policy-Checkpoint. train-sim lernt von Null "
-                                 "gegen skriptierte Gegner — ohne Spiel, ohne Aufnahmen.",
+                                 "gegen skriptierte Gegner: ohne Spiel, ohne Aufnahmen.",
                           "cmd": "train-sim", "tab": "run"})
         else:
             bwr = sim_ck.get("best_wr")
@@ -406,7 +413,7 @@ def create_app(cfg) -> Flask:
                           "cmd": "train-sim", "tab": "run"})
         if not (root / "data" / "policy_stats.json").exists() and sim_ck is not None:
             steps.append({"title": "Strategie der Policy ansehen",
-                          "why": "policy-stats zeigt, welche Karten sie überhaupt spielt und wo — "
+                          "why": "policy-stats zeigt, welche Karten sie überhaupt spielt und wo: "
                                  "die Grundlage, um Belohnungen zu beurteilen.",
                           "cmd": "policy-stats", "tab": "run"})
         if stale["missing_templates"]:
@@ -435,8 +442,24 @@ def create_app(cfg) -> Flask:
     return app
 
 
+def _port_in_use(host: str, port: int) -> bool:
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(0.4)
+        return s.connect_ex((host, port)) == 0
+
+
 def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
     host = "127.0.0.1"                                        # localhost ONLY -- never 0.0.0.0
+    # Windows lets a second server bind a port that is already listening (SO_REUSEADDR is
+    # not exclusive there), and requests then land on either process at random -- which
+    # looks exactly like the UI ignoring your changes. Refuse instead.
+    if _port_in_use(host, port):
+        print(f"[ui] Auf {host}:{port} läuft bereits ein Launcher.")
+        print(f"[ui] Entweder dort weiterarbeiten: http://{host}:{port}/")
+        print(f"[ui] oder das andere Fenster schließen, oder hier einen anderen Port wählen: "
+              f"run.py ui --port {port + 1}")
+        return
     app = create_app(cfg)
     url = f"http://{host}:{port}/"
     print(f"[ui] {TOS_WARNING}")

@@ -12,7 +12,7 @@
   <div id="statusbar"><span class="pill idle" id="runpill">kein Job aktiv</span></div>
   <div class="spacer"></div>
   <button id="helpbtn" class="btn small" title="Einführung erneut öffnen">Einführung</button>
-  <button id="tosbtn" class="btn small warnbtn" title="Hinweis zu den Nutzungsbedingungen">⚠</button>
+  <button id="tosbtn" class="btn small" title="Hinweis zu den Nutzungsbedingungen">Hinweise</button>
 </header>
 
 <nav class="tabs">
@@ -35,7 +35,7 @@
 
   <!-- ---------------- Steuerung ---------------- -->
   <section id="tab-run" class="panel">
-    <p class="lead">Jede Kachel startet genau ein Kommando der Kommandozeile — dieselben, die du
+    <p class="lead">Jede Kachel startet genau ein Kommando der Kommandozeile: dieselben, die du
       sonst tippen würdest. <b>Stop</b> schickt das Abbruch-Signal, auf das die Trainings mit einem
       gespeicherten Checkpoint reagieren; nichts geht verloren.</p>
     <div id="cmdgrid"></div>
@@ -44,7 +44,7 @@
   <!-- ---------------- Fortschritt ---------------- -->
   <section id="tab-dash" class="panel">
     <p class="lead">Zahlen aus den laufenden und vergangenen Trainings. Wichtig: die
-      <b>Benchmark-Kurve</b> (greedy gegen feste Meta-Decks) ist das ehrliche Maß — die
+      <b>Benchmark-Kurve</b> (greedy gegen feste Meta-Decks) ist das ehrliche Maß: die
       Trainings-Winrate enthält Zufallszüge und Self-Play und pendelt sich von selbst um 50 % ein.</p>
     <div class="row">
       <label>Lauf: <select id="runselect"></select></label>
@@ -64,7 +64,7 @@
     <div class="row">
       <button id="stratrun" class="btn primary">Analyse starten</button>
       <button id="stratreload" class="btn small">Aktualisieren</button>
-      <span class="hint">Kommando <code>policy-stats</code> → <code>data/policy_stats.json</code></span>
+      <span class="hint">Kommando <code>policy-stats</code>, Ergebnis in <code>data/policy_stats.json</code></span>
     </div>
     <div id="stratbody"></div>
   </section>
@@ -94,7 +94,7 @@
   <!-- ---------------- Türme ---------------- -->
   <section id="tab-towers" class="panel">
     <p class="lead">Turmtruppen des Simulators. <b>Dein</b> Turm steht in jedem Match; der Gegner
-      würfelt seinen aus der Gewichtung — je mehr Typen dort mit Gewicht stehen, desto mehr
+      würfelt seinen aus der Gewichtung: je mehr Typen dort mit Gewicht stehen, desto mehr
       verschiedene Türme muss die Policy verkraften. Neue Türme wirken sofort, ohne Codeänderung.</p>
     <div class="cfggroup">
       <h3>Dein Turm</h3>
@@ -113,7 +113,7 @@
     </div>
     <div class="cfggroup">
       <h3>Turmtypen</h3>
-      <p class="hint">HP und Schaden gelten auf dem Bezugslevel oben und werden mit 1,1^(Level−Bezug)
+      <p class="hint">HP und Schaden gelten auf dem Bezugslevel oben und werden mit 1,1^(Level-Bezug)
         skaliert. <code>Schaden/Schuss = DPS × Schussintervall</code>. Die Zusatzfelder sind optional
         und modellieren Spezialfähigkeiten (Dagger Duchess: Magazin; Royal Chef: Buff).</p>
       <table class="tbl" id="towertbl">
@@ -143,7 +143,7 @@
 
   <!-- ---------------- Tempo ---------------- -->
   <section id="tab-speed" class="panel">
-    <p class="lead">Wie schnell dein PC üben kann — gemessen, nicht geraten. Der Test spielt mit
+    <p class="lead">Wie schnell dein PC üben kann: gemessen, nicht geraten. Der Test spielt mit
       verschiedenen Env-Zahlen jeweils dieselbe Zeit und zählt die fertigen Matches. Er schreibt
       dabei <b>nicht</b> deinen echten Checkpoint.</p>
     <div id="speedbody"></div>
@@ -174,7 +174,7 @@
 <!-- ---------------- Log ---------------- -->
 <section id="logpanel" class="collapsed">
   <div class="loghead">
-    <button id="logtoggle" class="btn small" title="Log ein-/ausklappen">▲ Log</button>
+    <button id="logtoggle" class="btn small" title="Log ein-/ausklappen">Log anzeigen</button>
     <select id="logselect"></select>
     <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-Scroll</label>
     <button id="logclear" class="btn small">Ansicht leeren</button>
@@ -188,7 +188,7 @@
 <div id="modal" class="modal hidden">
   <div class="modalbox">
     <div class="modalhead"><span id="modaltitle"></span>
-      <button id="modalx" class="btn small">✕</button></div>
+      <button id="modalx" class="btn small">X</button></div>
     <div id="modalbody" class="modalbody"></div>
     <div class="modalfoot">
       <span id="modalsteps" class="hint"></span>

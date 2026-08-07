@@ -109,7 +109,7 @@ def suggest(info: Dict[str, Any], cur_envs: int = 8) -> Dict[str, Any]:
         f"{(ram / 1024 ** 3):.0f} GB RAM"
         + (f", {info.get('gpu')} mit {(vram / 1024 ** 3):.0f} GB VRAM" if cuda else ", keine nutzbare GPU"),
         "train-sim läuft in EINEM Prozess: die Envs werden nacheinander auf einem Kern gerechnet. "
-        "Mehr Envs verteilen die GPU-Arbeit auf mehr Matches, skalieren aber nicht linear — "
+        "Mehr Envs verteilen die GPU-Arbeit auf mehr Matches, skalieren aber nicht linear: "
         "deshalb misst der Benchmark, statt zu raten.",
     ]
     if not cuda:

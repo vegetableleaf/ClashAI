@@ -36,22 +36,40 @@ def diagnose(cfg) -> None:
         spec = cfg.get("states", key, default=None)
         if not spec:
             continue
-        thr = float(spec.get("threshold", 0.8))
-        for name in (spec.get("templates") or [spec.get("template")]):
+        thr_default = float(spec.get("threshold", 0.8))
+        for entry in (spec.get("templates") or [spec.get("template")]):
+            # A templates list may mix plain filenames with dict entries carrying their OWN
+            # threshold + search region (the strict OVERTIME banner). Mirror detect_state
+            # exactly, otherwise the diagnosis reports a score the bot never computes.
+            if isinstance(entry, dict):
+                name = entry.get("template")
+                thr = float(entry.get("threshold", thr_default))
+                region = entry.get("region")
+            else:
+                name, thr, region = entry, thr_default, None
             tmpl = vision._templates.get(name) if name else None
             if tmpl is None:
                 print(f"[diag] {key:11}: template '{name}' MISSING from templates/")
                 continue
-            if work.shape[0] < tmpl.shape[0] or work.shape[1] < tmpl.shape[1]:
-                print(f"[diag] {key:11}: template '{name}' larger than the frame (scale mismatch)")
+            area = work
+            ox = oy = 0
+            if region:                        # normalized [x0, y0, x1, y1] search window
+                hh, ww = work.shape[:2]
+                x0, y0, x1, y1 = region
+                ox, oy = max(0, int(x0 * ww)), max(0, int(y0 * hh))
+                area = work[oy:min(hh, int(round(y1 * hh))), ox:min(ww, int(round(x1 * ww)))]
+            if area.shape[0] < tmpl.shape[0] or area.shape[1] < tmpl.shape[1]:
+                print(f"[diag] {key:11}: template '{name}' larger than the "
+                      f"{'search region' if region else 'frame'} (scale mismatch)")
                 continue
-            res = cv2.matchTemplate(work, tmpl, cv2.TM_CCOEFF_NORMED)
+            res = cv2.matchTemplate(area, tmpl, cv2.TM_CCOEFF_NORMED)
             _, mv, _, ml = cv2.minMaxLoc(res)
-            cx = (ml[0] + tmpl.shape[1] / 2.0) / work.shape[1]
-            cy = (ml[1] + tmpl.shape[0] / 2.0) / work.shape[0]
+            cx = (ox + ml[0] + tmpl.shape[1] / 2.0) / work.shape[1]
+            cy = (oy + ml[1] + tmpl.shape[0] / 2.0) / work.shape[0]
             hit = "MATCH" if mv >= thr else " no  "
+            reg = f" region={list(region)}" if region else ""
             print(f"[diag] {key:11} {name:18} score={mv:.3f} thr={thr:.2f} [{hit}] "
-                  f"center=({cx:.3f},{cy:.3f})")
+                  f"center=({cx:.3f},{cy:.3f}){reg}")
 
     print(f"[diag] detect_state -> {vision.detect_state(frame).name}")
     batt = cfg.get("buttons", "battle_button", default=None)

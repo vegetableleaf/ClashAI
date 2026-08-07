@@ -80,7 +80,8 @@ FIELDS: List[Dict[str, Any]] = [
     {"path": ["train", "lr"], "type": "float", "min": 1e-7, "max": 1e-1, "group": "Lernen",
      "label": "Lernrate", "help": "Adam-Lernrate. Zu hoch = instabile Q-Werte, zu niedrig = zäh."},
     {"path": ["train", "gamma"], "type": "float", "min": 0.0, "max": 1.0, "group": "Lernen",
-     "label": "Gamma (Discount)", "help": "Wie stark späte Belohnungen zählen. 0.99 ≈ langer Horizont."},
+     "label": "Gamma (Discount)", "help": "Wie stark späte Belohnungen zählen. 0.99 bedeutet einen "
+                                          "langen Horizont, kleinere Werte machen den Bot kurzsichtig."},
     {"path": ["train", "n_step"], "type": "int", "min": 1, "max": 20, "group": "Lernen",
      "label": "N-Step Returns",
      "help": "Wieviele echte Belohnungen in das Lernziel einer Aktion einfließen. Höher = "
@@ -391,7 +392,7 @@ def read_config_fields(cfg_path: Path) -> List[Dict[str, Any]]:
 
 
 def save_config_fields(cfg_path: Path, changes: Dict[str, Any], backup_dir: Path) -> Dict[str, Any]:
-    """Apply {`sim.envs`: 12, ...}. Returns {'backup':…, 'changed':[…]} or raises."""
+    """Apply {`sim.envs`: 12, ...}. Returns {'backup':..., 'changed':[...]} or raises."""
     text = cfg_path.read_text(encoding="utf-8")
     data = yaml.safe_load(text) or {}
     expected = copy.deepcopy(data)
@@ -502,7 +503,7 @@ def _num(label: str, raw: Any, lo: float, hi: float, integer: bool = False):
     except (TypeError, ValueError):
         raise EditError(f"{label}: '{raw}' ist keine Zahl") from None
     if not lo <= v <= hi:
-        raise EditError(f"{label}: {v} liegt außerhalb von {lo}…{hi}")
+        raise EditError(f"{label}: {v} liegt außerhalb von {lo}...{hi}")
     return v
 
 

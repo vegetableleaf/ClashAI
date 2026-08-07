@@ -9,15 +9,15 @@ const $ = (sel, el) => (el || document).querySelector(sel);
 const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
 const el = (tag, cls, txt) => { const e = document.createElement(tag);
   if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
-const fmtTime = t => t ? new Date(t * 1000).toLocaleString("de-DE") : "–";
+const fmtTime = t => t ? new Date(t * 1000).toLocaleString("de-DE") : "-";
 const fmtDur = s => { s = Math.max(0, Math.round(s));
   const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60);
   return h ? `${h} h ${m} min` : (m ? `${m} min ${s % 60} s` : `${s} s`); };
-const fmtSize = b => b == null ? "–" : (b >= 1e9 ? (b / 1073741824).toFixed(1) + " GB"
+const fmtSize = b => b == null ? "-" : (b >= 1e9 ? (b / 1073741824).toFixed(1) + " GB"
   : (b >= 1e6 ? (b / 1048576).toFixed(0) + " MB" : (b / 1024).toFixed(0) + " KB"));
-const num = (v, d = 2) => v == null ? "–" : Number(v).toLocaleString("de-DE",
+const num = (v, d = 2) => v == null ? "-" : Number(v).toLocaleString("de-DE",
   { minimumFractionDigits: d, maximumFractionDigits: d });
-const int = v => v == null ? "–" : Math.round(v).toLocaleString("de-DE");
+const int = v => v == null ? "-" : Math.round(v).toLocaleString("de-DE");
 
 async function api(path, opts) {
   const r = await fetch(path, opts);
@@ -28,6 +28,17 @@ async function api(path, opts) {
 }
 const post = (path, obj) => api(path, { method: "POST",
   headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj || {}) });
+
+/* Kurze Rückmeldung unten rechts statt eines blockierenden Browser-Dialogs. */
+function toast(msg, seconds) {
+  let box = $("#toast");
+  if (!box) { box = el("div"); box.id = "toast"; document.body.appendChild(box); }
+  box.textContent = msg;
+  box.classList.add("show");
+  clearTimeout(box._t);
+  box._t = setTimeout(() => box.classList.remove("show"), (seconds || 8) * 1000);
+  box.onclick = () => box.classList.remove("show");
+}
 
 /* ---------------- tabs ---------------- */
 const LOADERS = { home: () => loadOverview(), dash: () => loadRuns(), strategy: () => loadStrategy(),
@@ -40,55 +51,118 @@ function showTab(name) {
 }
 $$(".tab").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 
-/* ---------------- modal / onboarding ---------------- */
+/* ---------------- modal / Einführung ----------------
+   Eine geführte Tour: jeder Schritt erklärt eine Sache und hat den passenden Knopf
+   gleich daneben, damit man sie sofort ausprobiert statt sie nur zu lesen. */
 const TOS = window.__TOS__ || "";
+
+function goTo(tab, cmd) {
+  closeModal();
+  showTab(tab);
+  if (cmd) setTimeout(() => {
+    const card = $("#cmd-" + cmd);
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      card.style.outline = "2px solid var(--acc)";
+      setTimeout(() => card.style.outline = "", 2500);
+    }
+  }, 120);
+}
+
 const STEPS = [
-  { title: "Willkommen beim ClashAI-Launcher", body: `
-    <p>Dieses Fenster ist eine Bedienoberfläche für den Lern-Bot. Es führt die Kommandos aus, die
-    sonst im Terminal getippt werden, zeigt ihre Ausgabe live und zeichnet den Fortschritt auf.</p>
-    <p>Alles läuft <b>nur auf deinem PC</b> (127.0.0.1). Keine Anmeldung, keine Cloud, kein
-    Datenversand.</p>
-    <div class="note"><b>Wichtig:</b> ${TOS}</div>
-    <p class="hint">Diese Einführung kannst du jederzeit über „Einführung“ oben rechts erneut öffnen.</p>` },
-  { title: "Zwei Wege zu lernen", body: `
-    <h4>1. Simulator — schnell, ohne Spiel</h4>
-    <p>Ein nachgebautes Clash Royale läuft ohne Grafik im Hintergrund. Der Bot spielt dort
-    tausende Matches gegen skriptierte Gegner und gegen frühere Versionen von sich selbst.
-    <b>Damit fängst du an</b> — es braucht weder das Spiel noch Aufnahmen.</p>
-    <p class="hint">Kachel „Sim-Training (DDQN)“ im Tab <b>Steuerung</b>.</p>
-    <h4>2. Echtes Spiel — langsam, aber echt</h4>
-    <p>Aufnehmen → Labeln → Nachahmen (Behaviour Cloning) → Live-RL. Dieser Weg braucht das
-    laufende Spiel, die Maus und Vorlagen für deine Karten. Ein Match dauert hier echte Minuten
-    statt Sekundenbruchteile.</p>
-    <div class="tip">Empfehlung: erst im Simulator eine brauchbare Policy erzeugen und diese
-    später als Startpunkt (<code>--init</code>) für das echte Spiel verwenden.</div>` },
-  { title: "Tempo: der PC wird ausgemessen", body: `
-    <p>Wieviele Übungsmatches pro Sekunde möglich sind, hängt an deiner Hardware — und an einer
-    Einstellung: <code>sim.envs</code>, die Zahl gleichzeitig laufender Matches.</p>
-    <p>Der Tab <b>Tempo</b> liest CPU, RAM und GPU aus und misst dann mit einem kurzen Testlauf,
-    welche Einstellung auf <i>deinem</i> Rechner tatsächlich am schnellsten ist. Ein Klick
-    übernimmt sie.</p>
-    <div class="tip">Der Test rührt deinen trainierten Checkpoint nicht an — er schreibt in einen
-    eigenen Ordner <code>data/bench/</code>.</div>` },
-  { title: "Worauf du beim Fortschritt schaust", body: `
+  { title: "Was das hier ist", body: `
+    <p>Diese Oberfläche bedient den Lern-Bot. Sie startet dieselben Kommandos, die du sonst im
+    Terminal tippen würdest, zeigt deren Ausgabe live an und schreibt die Zahlen mit.</p>
+    <p>Alles läuft nur auf deinem PC (127.0.0.1). Keine Anmeldung, keine Cloud, kein Datenversand.</p>
+    <div class="note"><b>Bevor du weitermachst:</b> ${TOS}</div>
+    <p class="hint">Diese Einführung ist jederzeit über „Einführung“ oben rechts erreichbar.
+    Du kannst sie in jedem Schritt schließen und später dort weitermachen.</p>` },
+
+  { title: "Schritt 1: miss, wie schnell dein PC üben kann", body: `
+    <p>Der Bot lernt in einem nachgebauten Clash Royale, das ohne Grafik im Hintergrund läuft.
+    Wie viele Übungsmatches pro Sekunde dabei herauskommen, hängt an deiner Hardware und an einer
+    Einstellung: der Zahl gleichzeitig laufender Matches.</p>
+    <p>Statt das zu raten, misst der Test es. Er spielt bei mehreren Einstellungen jeweils gleich
+    lange und zählt die fertigen Matches. Deinen trainierten Stand fasst er nicht an: er schreibt
+    in einen eigenen Ordner.</p>`,
+    actions: [{ label: "Test jetzt starten (etwa 2 Minuten)", primary: true, run: async () => {
+        const j = await startJob("sim-bench", { envs: "8,16,32,48", seconds: 20, warmup: 6 }, null, null);
+        closeModal(); showTab("speed");
+        if (j) toast("Der Test läuft. Unten im Log siehst du jede Messung; "
+          + "wenn er fertig ist, erscheint im Tab „Tempo“ die Tabelle und ein Knopf, "
+          + "der die schnellste Einstellung übernimmt.");
+      } },
+      { label: "Nur den Tab ansehen", run: () => goTo("speed") }],
+    note: "Was du danach siehst: eine Tabelle mit Matches pro Sekunde je Einstellung. "
+      + "Die Zeile mit dem höchsten Wert ist die, die du übernehmen willst." },
+
+  { title: "Schritt 2: das Training starten", body: `
+    <p>Das eigentliche Lernen läuft im Tab <b>Steuerung</b>, Kachel „Sim-Training (DDQN)“. Wichtig
+    sind dort drei Felder:</p>
     <ul>
-      <li><b>Benchmark-Kurve</b> (Tab Fortschritt): der Bot spielt ohne Zufall gegen feste
-        Meta-Decks. Das ist das ehrliche Maß. Wird sie flach, lernt er nichts mehr dazu.</li>
-      <li><b>Trainings-Winrate</b>: enthält Zufallszüge und Spiele gegen sich selbst — pendelt
-        sich zwangsläufig um 50 % ein. Nicht als Fortschritt lesen.</li>
-      <li><b>Strategie</b> (eigener Tab): welche Karten die Policy überhaupt spielt und wohin.
-        Karten, die nie vorkommen, sind der deutlichste Hinweis auf falsch gesetzte Belohnungen.</li>
+      <li><b>Matches</b>: die Obergrenze, bei der der Lauf von selbst aufhört.</li>
+      <li><b>Fortsetzen</b>: angehakt lernt er an seinem gespeicherten Stand weiter, sonst
+        fängt er bei Null an.</li>
+      <li><b>Stop</b>: beendet den Lauf sauber und speichert dabei. Du verlierst nichts, wenn du
+        zwischendurch aufhörst.</li>
     </ul>
-    <div class="tip">Alle Zahlen landen in <code>data/metrics.jsonl</code> und überleben einen
-    Neustart; per CSV-Export kannst du sie auch in einer Tabelle ansehen.</div>` },
-  { title: "Deck und Türme", body: `
-    <p><b>Deck</b> bestimmt, welche Aktionen die Policy überhaupt hat — jede Karte ist eine eigene
-    Aktion. Nach einem Deckwechsel passen alte Checkpoints und Datensätze nicht mehr; der Launcher
-    warnt dich dann.</p>
-    <p><b>Türme</b> bestimmen den Gegner: dein Turm steht fest, der gegnerische wird pro Match aus
-    einer Gewichtung gewürfelt. Je mehr Turmtypen dort Gewicht haben, desto vielseitiger muss die
-    Policy spielen. Neue Turmtypen kannst du direkt anlegen — der Simulator benutzt sie sofort.</p>
-    <p>Fertig. Der Tab <b>Übersicht</b> schlägt dir immer den nächsten sinnvollen Schritt vor.</p>` },
+    <p>Ein erster Lauf über ein paar tausend Matches ist ein guter Anfang. Das darf ruhig
+    nebenbei laufen.</p>`,
+    actions: [{ label: "Zur Kachel springen", primary: true, run: () => goTo("run", "train-sim") }],
+    note: "Achte darauf: solange ein solcher Lauf aktiv ist, sind die anderen Start-Knöpfe "
+      + "gesperrt: GPU und Spielfenster gibt es nur einmal." },
+
+  { title: "Schritt 3: den Fortschritt richtig lesen", body: `
+    <p>Im Tab <b>Fortschritt</b> stehen zwei Winrate-Kurven, und nur eine davon bedeutet etwas:</p>
+    <ul>
+      <li><b>Benchmark</b>: der Bot spielt ohne Zufallszüge gegen feste Gegnerdecks. Das ist das
+        ehrliche Maß. Steigt sie, lernt er. Wird sie flach, ist er ausgelernt.</li>
+      <li><b>Winrate im Training</b>: enthält Zufallszüge und Spiele gegen sich selbst. Sie
+        pendelt sich zwangsläufig um 50 % ein. Daran erkennst du nichts.</li>
+    </ul>
+    <p>Darunter stehen Reward, Loss, Epsilon und das Tempo. Alle Werte landen in einer Datei und
+    überleben einen Neustart; über „CSV-Export“ kannst du sie in einer Tabelle ansehen.</p>`,
+    actions: [{ label: "Fortschritt öffnen", primary: true, run: () => goTo("dash") }],
+    note: "Wenn dort noch nichts steht, hat einfach noch kein Training gelaufen." },
+
+  { title: "Schritt 4: nachsehen, was er tatsächlich spielt", body: `
+    <p>Eine hohe Winrate sagt noch nicht, ob der Bot vernünftig spielt. Die Analyse lässt ihn
+    60 Matches ohne Zufall spielen und zählt jede Entscheidung mit: welche Karte wie oft, an
+    welche Stelle, und wie oft er bewusst wartet.</p>
+    <p>Am aussagekräftigsten ist die Liste der Karten, die er <b>nie</b> spielt. Eine
+    Siegbedingung, die dort auftaucht, ist ein deutliches Zeichen, dass die Belohnungen nicht
+    greifen.</p>`,
+    actions: [{ label: "Analyse jetzt starten (etwa 30 Sekunden)", primary: true, run: async () => {
+        const j = await startJob("policy-stats", { matches: 60, envs: 8 }, null, null);
+        closeModal(); showTab("strategy");
+        if (j) toast("Die Analyse läuft. Sobald sie fertig ist, auf „Aktualisieren“ klicken.");
+      } },
+      { label: "Nur den Tab ansehen", run: () => goTo("strategy") }],
+    note: "Braucht einen bereits trainierten Stand. Ohne den bricht sie mit einer Meldung ab." },
+
+  { title: "Schritt 5: Deck und Türme", body: `
+    <p>Das <b>Deck</b> legt fest, welche Aktionen der Bot überhaupt hat: jede Karte ist eine
+    eigene Aktion, eine Evolution zählt getrennt. Nach einem Deckwechsel passen alte Stände und
+    Datensätze nicht mehr zusammen; die Oberfläche sagt dir dann, was davon betroffen ist.</p>
+    <p>Die <b>Türme</b> bestimmen, wogegen er spielt. Dein Turm steht in jedem Match, der
+    gegnerische wird pro Match aus einer Gewichtung gezogen. Je mehr Turmtypen dort ein Gewicht
+    haben, desto vielseitiger muss er spielen. Eigene Turmtypen kannst du dort anlegen: der
+    Simulator benutzt sie sofort, ohne dass am Code etwas geändert werden muss.</p>`,
+    actions: [{ label: "Deck ansehen", run: () => goTo("deck") },
+              { label: "Türme ansehen", run: () => goTo("towers") }] },
+
+  { title: "Das war es", body: `
+    <p>Kurz zusammengefasst, in der Reihenfolge:</p>
+    <ul>
+      <li><b>Tempo</b> messen und die schnellste Einstellung übernehmen.</li>
+      <li><b>Steuerung</b>: Sim-Training starten, laufen lassen, mit Stop sauber beenden.</li>
+      <li><b>Fortschritt</b>: auf die Benchmark-Kurve schauen, nicht auf die Trainings-Winrate.</li>
+      <li><b>Strategie</b>: prüfen, ob er alle Karten benutzt.</li>
+      <li><b>Deck</b> und <b>Türme</b> anpassen, wenn du etwas anderes trainieren willst.</li>
+    </ul>
+    <p>Der Tab <b>Übersicht</b> nimmt dir das ab: er zeigt den aktuellen Stand und schlägt den
+    nächsten sinnvollen Schritt vor, jeweils mit Begründung.</p>`,
+    actions: [{ label: "Zur Übersicht", primary: true, run: () => goTo("home") }] },
 ];
 let stepIx = 0, modalMode = "onboard";
 
@@ -102,13 +176,12 @@ function closeModal() {
   if (modalMode === "onboard") localStorage.setItem("clashai.onboarded", "1");
 }
 function renderModal() {
-  const single = modalMode === "tos";
-  if (single) {
+  if (modalMode === "tos") {
     $("#modaltitle").textContent = "Hinweis zu den Nutzungsbedingungen";
     $("#modalbody").innerHTML = `<div class="note">${TOS}</div>
-      <p>Der Simulator ist davon nicht betroffen — er spielt gegen sich selbst, ohne Verbindung
-      zum echten Spiel. Betroffen sind die Kommandos, die das laufende Spiel bedienen
-      (<code>play</code>, <code>train-rl</code>).</p>`;
+      <p>Den Simulator betrifft das nicht: er spielt gegen sich selbst, ohne Verbindung zum
+      echten Spiel. Betroffen sind die Kommandos, die das laufende Spiel bedienen:
+      <code>play</code> und <code>train-rl</code>.</p>`;
     $("#modalsteps").textContent = "";
     $("#modalback").style.display = "none";
     $("#modalnext").textContent = "Schließen";
@@ -116,10 +189,25 @@ function renderModal() {
   }
   const s = STEPS[stepIx];
   $("#modaltitle").textContent = s.title;
-  $("#modalbody").innerHTML = s.body;
+  const body = $("#modalbody");
+  body.innerHTML = s.body;
+  if (s.actions && s.actions.length) {
+    const box = el("div", "do");
+    box.appendChild(el("div", "dot", "Zum Ausprobieren:"));
+    const row = el("div", "row"); row.style.margin = "0";
+    s.actions.forEach(a => {
+      const b = el("button", "btn" + (a.primary ? " primary" : ""), a.label);
+      b.onclick = () => a.run();
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    if (s.note) { const n = el("div", "dot", s.note); n.style.marginTop = "8px"; box.appendChild(n); }
+    body.appendChild(box);
+  }
+  body.scrollTop = 0;
   $("#modalsteps").textContent = `Schritt ${stepIx + 1} von ${STEPS.length}`;
   $("#modalback").style.display = stepIx ? "" : "none";
-  $("#modalnext").textContent = stepIx === STEPS.length - 1 ? "Los geht's" : "Weiter";
+  $("#modalnext").textContent = stepIx === STEPS.length - 1 ? "Schließen" : "Weiter";
 }
 $("#modalnext").onclick = () => {
   if (modalMode === "tos" || stepIx === STEPS.length - 1) return closeModal();
@@ -167,7 +255,7 @@ function fillCkptSelect(sel, current) {
   sel.innerHTML = "";
   const o0 = el("option", null, "(Standard)"); o0.value = ""; sel.appendChild(o0);
   S.checkpoints.forEach(c => {
-    const wr = (c.best_wr != null && c.best_wr >= 0) ? ` — bester Benchmark ${c.best_wr.toFixed(0)} %` : "";
+    const wr = (c.best_wr != null && c.best_wr >= 0) ? `: bester Benchmark ${c.best_wr.toFixed(0)} %` : "";
     const o = el("option", null, c.name + wr); o.value = c.rel; sel.appendChild(o);
   });
   sel.value = keep;
@@ -190,7 +278,21 @@ const GROUP_HINT = {
 };
 
 function renderCommands() {
+  // Nur neu zeichnen, wenn sich wirklich etwas geändert hat: der 3-Sekunden-Takt würde
+  // sonst beim Tippen den Fokus stehlen und offene Auswahllisten zuklappen.
+  const sig = JSON.stringify([S.commands.map(c => c.cmd), S.gpuBusy,
+    S.jobs.filter(j => j.running).map(j => [j.cmd, j.id, j.stopping]), S.sessions,
+    S.checkpoints.map(c => c.rel)]);
   const g = $("#cmdgrid");
+  if (g.dataset.sig === sig) {
+    $$("#cmdgrid .card .foot .msg").forEach(m => {
+      const cmd = m.closest(".card").id.replace("cmd-", "");
+      const run = S.jobs.find(j => j.cmd === cmd && j.running);
+      if (run && !run.stopping) m.textContent = `läuft seit ${fmtDur(run.elapsed)}`;
+    });
+    return;
+  }
+  g.dataset.sig = sig;
   const keep = {};
   $$("#cmdgrid [data-arg]").forEach(i => { keep[i.id] = i.dataset.type === "bool" ? i.checked : i.value; });
   g.innerHTML = "";
@@ -221,7 +323,7 @@ function commandCard(c) {
   const head = el("div", "row"); head.style.margin = "0 0 2px";
   head.appendChild(el("h3", null, c.title));
   if (c.gpu) { const p = el("span", "pill", "exklusiv"); p.title =
-    "Belegt GPU bzw. Spielfenster — es läuft immer nur ein solcher Job."; head.appendChild(p); }
+    "Belegt GPU bzw. Spielfenster: es läuft immer nur ein solcher Job."; head.appendChild(p); }
   card.appendChild(head);
   card.appendChild(el("div", "desc", c.desc));
   const args = el("div", "args");
@@ -234,10 +336,10 @@ function commandCard(c) {
   if (running) {
     btn.disabled = true;
     st.className = "msg ok";
-    st.textContent = running.stopping ? "stoppt und speichert …" : `läuft seit ${fmtDur(running.elapsed)}`;
+    st.textContent = running.stopping ? "stoppt und speichert ..." : `läuft seit ${fmtDur(running.elapsed)}`;
     stop.onclick = async () => {
       stop.disabled = true;
-      try { await post(`/api/jobs/${running.id}/stop`); } catch (e) { alert(e.message); }
+      try { await post(`/api/jobs/${running.id}/stop`); } catch (e) { toast(e.message); }
       refresh();
     };
   } else {
@@ -252,7 +354,7 @@ function commandCard(c) {
 
 async function startJob(cmd, args, statusEl, btn) {
   if (btn) btn.disabled = true;
-  if (statusEl) { statusEl.className = "msg"; statusEl.textContent = "starte …"; }
+  if (statusEl) { statusEl.className = "msg"; statusEl.textContent = "starte ..."; }
   try {
     const j = await post("/api/jobs/start", { cmd, args: args || {} });
     attachLog(j.id);
@@ -261,7 +363,7 @@ async function startJob(cmd, args, statusEl, btn) {
     return j;
   } catch (e) {
     if (statusEl) { statusEl.className = "msg err"; statusEl.textContent = e.message; }
-    else alert(e.message);
+    else toast(e.message);
     if (btn) btn.disabled = false;
     await refresh();
     return null;
@@ -269,11 +371,12 @@ async function startJob(cmd, args, statusEl, btn) {
 }
 
 /* ---------------- log ---------------- */
-function setLogOpen(open) { $("#logpanel").classList.toggle("collapsed", !open); }
-$("#logtoggle").onclick = () => {
-  const p = $("#logpanel"); p.classList.toggle("collapsed");
-  $("#logtoggle").textContent = p.classList.contains("collapsed") ? "▲ Log" : "▼ Log";
-};
+function setLogOpen(open) {
+  $("#logpanel").classList.toggle("collapsed", !open);
+  document.body.classList.toggle("logopen", open);      // sonst verdeckt das Log die letzten Zeilen
+  $("#logtoggle").textContent = open ? "Log ausblenden" : "Log anzeigen";
+}
+$("#logtoggle").onclick = () => setLogOpen($("#logpanel").classList.contains("collapsed"));
 
 function logLine(line) {
   const pre = $("#log");
@@ -312,9 +415,12 @@ $("#logselect").onchange = e => { if (e.target.value) attachLog(e.target.value);
 
 function renderLogSelect() {
   const sel = $("#logselect"), cur = S.streamJob;
+  const sig = JSON.stringify(S.jobs.map(j => [j.id, j.running]));
+  if (sel.dataset.sig === sig) { if (cur && sel.value !== cur) sel.value = cur; return; }
+  sel.dataset.sig = sig;
   sel.innerHTML = "";
   S.jobs.forEach(j => {
-    const o = el("option", null, `${j.cmd} — ${new Date(j.started * 1000)
+    const o = el("option", null, `${j.cmd} um ${new Date(j.started * 1000)
       .toLocaleTimeString("de-DE")}${j.running ? " (läuft)" : ""}`);
     o.value = j.id; sel.appendChild(o);
   });
@@ -426,23 +532,23 @@ async function loadOverview() {
   g.appendChild(card("Policy", [
     ["Checkpoints", (d.checkpoints || []).length],
     ["bester Benchmark", best ? best.best_wr.toFixed(0) + " %" : "noch keiner"],
-    ["Matches trainiert", best && best.matches != null ? int(best.matches) : "–"],
+    ["Matches trainiert", best && best.matches != null ? int(best.matches) : "-"],
   ]));
   g.appendChild(card("Deck", [
     ["Name", d.deck.name],
-    ["Ø Elixier", d.deck.avg_elixir ?? "–"],
+    ["Ø Elixier", d.deck.avg_elixir ?? "-"],
     ["Aktionen (Identitäten)", d.deck.identities.length],
   ]));
   g.appendChild(card("Türme im Simulator", [
     ["deiner", d.towers.mine],
     ["Bezugslevel", d.towers.level],
-    ["Gegnertypen", (d.towers.opponents || []).join(", ") || "–"],
+    ["Gegnertypen", (d.towers.opponents || []).join(", ") || "-"],
   ]));
   const bench = d.bench;
   g.appendChild(card("Tempo", [
     ["eingestellt", `${d.envs} Envs`],
     ["gemessen", bench ? num(bench.best_mps) + " Matches/s bei " + bench.best_envs + " Envs" : "noch nicht gemessen"],
-    ["das sind", bench ? int(bench.best_mps * 3600) + " Matches/Stunde" : "–"],
+    ["das sind", bench ? int(bench.best_mps * 3600) + " Matches/Stunde" : "-"],
   ]));
   b.appendChild(g);
 
@@ -452,8 +558,8 @@ async function loadOverview() {
     t.innerHTML = "<thead><tr><th>Start</th><th>Kommando</th><th>Matches</th><th>bester Benchmark</th></tr></thead>";
     const tb = el("tbody");
     d.runs.forEach(r => { const tr = el("tr");
-      tr.innerHTML = `<td>${fmtTime(r.start)}</td><td>${r.cmd || "–"}</td><td>${int(r.matches)}</td>
-        <td>${r.best != null ? r.best.toFixed(0) + " %" : "–"}</td>`;
+      tr.innerHTML = `<td>${fmtTime(r.start)}</td><td>${r.cmd || "-"}</td><td>${int(r.matches)}</td>
+        <td>${r.best != null ? r.best.toFixed(0) + " %" : "-"}</td>`;
       tr.style.cursor = "pointer";
       tr.onclick = () => { S.runId = r.run; showTab("dash"); };
       tb.appendChild(tr); });
@@ -477,15 +583,15 @@ async function loadSpeed() {
   };
   g.appendChild(card("Dieser PC", [
     ["Betriebssystem", hw.os],
-    ["CPU-Threads", hw.cpu_logical ?? "–"],
+    ["CPU-Threads", hw.cpu_logical ?? "-"],
     ["Arbeitsspeicher", fmtSize(hw.ram_total)],
     ["frei", fmtSize(hw.ram_available)],
   ]));
   g.appendChild(card("Grafikkarte", [
     ["GPU", hw.gpu || "keine CUDA-GPU gefunden"],
     ["VRAM", fmtSize(hw.gpu_vram)],
-    ["PyTorch", hw.torch || "–"],
-    ["CUDA", hw.cuda || "–"],
+    ["PyTorch", hw.torch || "-"],
+    ["CUDA", hw.cuda || "-"],
   ]));
   g.appendChild(card("Aktuelle Einstellung", [
     ["Envs (gleichzeitige Matches)", cur.envs],
@@ -496,20 +602,20 @@ async function loadSpeed() {
   g.appendChild(card("Speicherbedarf Replay", [
     ["ein Bild", fmtSize(d.frame_bytes)],
     ["Replay gesamt (Schätzung)", fmtSize(d.replay_ram_estimate)],
-    ["Anteil am RAM", hw.ram_total ? (100 * d.replay_ram_estimate / hw.ram_total).toFixed(0) + " %" : "–"],
+    ["Anteil am RAM", hw.ram_total ? (100 * d.replay_ram_estimate / hw.ram_total).toFixed(0) + " %" : "-"],
   ]));
   b.appendChild(g);
 
   if (!hw.cuda_available) {
     const w = el("div", "row");
     w.appendChild(el("span", "pill bad",
-      "Keine nutzbare CUDA-GPU — das Training läuft auf der CPU und ist um ein Vielfaches langsamer."));
+      "Keine nutzbare CUDA-GPU: das Training läuft auf der CPU und ist um ein Vielfaches langsamer."));
     b.appendChild(w);
   }
   if (hw.ram_total && d.replay_ram_estimate > 0.5 * hw.ram_total) {
     const w = el("div", "row");
     w.appendChild(el("span", "pill warn",
-      `Der Replay-Puffer allein wäre grob ${fmtSize(d.replay_ram_estimate)} — mehr als die Hälfte `
+      `Der Replay-Puffer allein wäre grob ${fmtSize(d.replay_ram_estimate)}: mehr als die Hälfte `
       + "deines RAM. Replay-Größe in den Einstellungen verkleinern."));
     b.appendChild(w);
   }
@@ -528,7 +634,7 @@ async function loadSpeed() {
   const msg = el("span", "msg");
   runbtn.onclick = async () => {
     const j = await startJob("sim-bench", { envs: envsIn.value, seconds: secs.value, warmup: 8 }, msg, runbtn);
-    if (j) msg.textContent = "läuft — Ergebnisse erscheinen hier, sobald der Test fertig ist.";
+    if (j) msg.textContent = "läuft: Ergebnisse erscheinen hier, sobald der Test fertig ist.";
   };
   runrow.appendChild(runbtn);
   runrow.appendChild(el("span", "hint", "zu testende Env-Zahlen:")); runrow.appendChild(envsIn);
@@ -551,10 +657,10 @@ async function loadSpeed() {
   res.forEach(r => {
     const tr = el("tr");
     const rel = curRes ? (r.mps / curRes.mps) : null;
-    tr.innerHTML = `<td>${r.envs}${r.envs === bench.best_envs ? " ⭐" : ""}</td>
+    tr.innerHTML = `<td>${r.envs}${r.envs === bench.best_envs ? " (schnellste)" : ""}</td>
       <td>${num(r.mps)}</td><td>${int(r.matches_per_hour)}</td>
       <td><div class="bar"><i style="width:${(100 * r.mps / maxMps).toFixed(0)}%"></i></div></td>
-      <td>${rel ? (rel >= 1 ? "+" : "") + ((rel - 1) * 100).toFixed(0) + " %" : "–"}</td>`;
+      <td>${rel ? (rel >= 1 ? "+" : "") + ((rel - 1) * 100).toFixed(0) + " %" : "-"}</td>`;
     tb.appendChild(tr);
   });
   t.appendChild(tb); b.appendChild(t);
@@ -569,7 +675,7 @@ async function loadSpeed() {
   ap.disabled = bench.best_envs === cur.envs;
   if (ap.disabled) ap.textContent = `Bereits übernommen (envs = ${cur.envs})`;
   ap.onclick = () => applyBench(false);
-  const ap2 = el("button", "btn", "…plus Vorschläge für Batch & Replay");
+  const ap2 = el("button", "btn", "...plus Vorschläge für Batch & Replay");
   ap2.title = `Batch-Größe ${sug.batch_size}, Replay ${int(sug.replay_size)}, Benchmark-Envs ${sug.eval_envs}`;
   ap2.onclick = () => applyBench(true);
   applyRow.appendChild(ap); applyRow.appendChild(ap2);
@@ -579,10 +685,10 @@ async function loadSpeed() {
 async function applyBench(withSuggestion) {
   try {
     const r = await post("/api/hardware/apply", { with_suggestion: !!withSuggestion });
-    alert("Übernommen: " + r.changed.map(c => `${c.key} ${c.old} → ${c.new}`).join(", ")
-      + `\n\nBackup: ${String(r.backup).split(/[\\/]/).pop()}`);
+    toast("Übernommen: " + r.changed.map(c => `${c.key} von ${c.old} auf ${c.new}`).join(", ")
+      + ". Backup: " + String(r.backup).split(/[\\/]/).pop());
     loadSpeed(); loadOverview();
-  } catch (e) { alert(e.message); }
+  } catch (e) { toast(e.message); }
 }
 
 /* ---------------- Fortschritt ---------------- */
@@ -591,7 +697,7 @@ async function loadRuns() {
   const sel = $("#runselect"); const cur = S.runId || (runs[0] && runs[0].run);
   sel.innerHTML = "";
   runs.forEach(r => {
-    const o = el("option", null, `${r.cmd || "?"} — ${fmtTime(r.start)} — ${int(r.matches)} Matches`);
+    const o = el("option", null, `${r.cmd || "?"} vom ${fmtTime(r.start)} (${int(r.matches)} Matches)`);
     o.value = r.run; sel.appendChild(o);
   });
   if (cur) sel.value = cur;
@@ -623,12 +729,12 @@ async function loadDash() {
   const matches = last.matches || 0;
   addK("Matches gespielt", int(matches));
   if (last.winrate != null) addK("Winrate (Training)", last.winrate.toFixed(0) + " %",
-    "Gleitendes Fenster inkl. Exploration und Self-Play — kein Fortschrittsmaß.");
+    "Gleitendes Fenster inkl. Exploration und Self-Play: kein Fortschrittsmaß.");
   if (evals.length) addK("Bester Benchmark",
     Math.max(...evals.map(e => e.ladder_avg ?? 0)).toFixed(0) + " %",
     "Geglättete Benchmark-Kurve: greedy gegen feste Meta-Decks. Das ehrliche Maß.");
   if (last.mps != null) addK("Matches/Sekunde", num(last.mps));
-  if (last.w != null) addK("Bilanz", `${last.w}–${last.l}–${last.d ?? 0}`, "Siege–Niederlagen–Unentschieden");
+  if (last.w != null) addK("Bilanz", `${last.w}-${last.l}-${last.d ?? 0}`, "Siege-Niederlagen-Unentschieden");
   if (last.loss != null) addK("Loss", num(last.loss, 3));
   if (last.eps != null) addK("Epsilon", num(last.eps, 3), "Anteil zufälliger Züge (Exploration).");
   const elapsed = ((end ? end.t : (records[records.length - 1] || {}).t) || 0) - (start.t || 0);
@@ -658,7 +764,7 @@ async function loadDash() {
   }
   if (prog.length) {
     ch.appendChild(chartBox("Winrate im Training (%)",
-      "Enthält Zufallszüge und Self-Play — pendelt sich um 50 % ein, das ist normal.",
+      "Enthält Zufallszüge und Spiele gegen sich selbst und pendelt sich deshalb um 50 % ein.",
       [{ name: "winrate", color: "#4da3ff", points: prog.map(r => [px(r), r.winrate]) }],
       { y0: 0, y1: 100 }));
     ch.appendChild(chartBox("Reward pro Match",
@@ -666,7 +772,7 @@ async function loadDash() {
       [{ name: "avg_rew", color: "#3ecf8e",
          points: prog.filter(r => r.avg_rew != null).map(r => [px(r), r.avg_rew]) }]));
     if (prog.some(r => r.loss != null))
-      ch.appendChild(chartBox("Loss", "Fehler der Wertschätzung. Muss nicht fallen — er folgt dem, was neu gelernt wird.",
+      ch.appendChild(chartBox("Loss", "Fehler der Wertschätzung. Muss nicht fallen: er folgt dem, was neu gelernt wird.",
         [{ name: "loss", color: "#ffb020",
            points: prog.filter(r => r.loss != null).map(r => [px(r), r.loss]) }]));
     if (prog.some(r => r.eps != null))
@@ -739,7 +845,7 @@ async function loadStrategy() {
   addK("bewusst gewartet", (100 * d.wait_rate_gate).toFixed(0) + " %",
     "Anteil der Entscheidungen, in denen etwas spielbar war und das Netz trotzdem gehalten hat.");
   addK("warten müssen", (100 * (d.wait_forced / Math.max(1, d.steps))).toFixed(0) + " %",
-    "Kein Elixier oder keine Karte verfügbar — keine Entscheidung des Netzes.");
+    "Kein Elixier oder keine Karte verfügbar: keine Entscheidung des Netzes.");
   if (d.avg_elixir_at_play != null) addK("Ø Elixier beim Legen", num(d.avg_elixir_at_play, 1));
   addK("nie gespielt", String(d.never_played.length), d.never_played.join(", ") || "alle Karten kommen vor");
   body.appendChild(k);
@@ -748,7 +854,7 @@ async function loadStrategy() {
     const w = el("div", "row");
     w.appendChild(el("span", "pill warn",
       "Nie gespielt: " + d.never_played.join(", ")
-      + " — diese Karten bringen der Policy aktuell keinen erkennbaren Vorteil."));
+      + ". Diese Karten bringen der Policy aktuell keinen erkennbaren Vorteil."));
     body.appendChild(w);
   }
 
@@ -761,7 +867,7 @@ async function loadStrategy() {
     tr.innerHTML = `<td>${c.display}</td><td>${c.elixir ?? "?"}</td><td>${c.level ?? "?"}</td>
       <td>${int(c.plays)}</td><td>${(100 * c.share).toFixed(1)} %</td>
       <td><div class="bar"><i style="width:${(100 * c.share).toFixed(1)}%"></i></div></td>
-      <td>${c.mean_row != null ? c.mean_row.toFixed(1) : "–"}</td>`;
+      <td>${c.mean_row != null ? c.mean_row.toFixed(1) : "-"}</td>`;
     tb.appendChild(tr);
   });
   tbl.appendChild(tb); body.appendChild(tbl);
@@ -824,14 +930,14 @@ async function loadDeck() {
   const msgs = [];
   if ((st.missing_templates || []).length)
     msgs.push(`Für <b>${st.missing_templates.join(", ")}</b> fehlen Hand-Vorlagen. Das betrifft nur
-      das echte Spiel (<code>play</code>, <code>label</code>) — der Simulator läuft trotzdem.
+      das echte Spiel (<code>play</code>, <code>label</code>): der Simulator läuft trotzdem.
       Vorlagen erzeugt das Kommando <code>hand-templates</code> im Terminal.`);
   if ((st.stale_checkpoints || []).length)
     msgs.push(`Diese Checkpoints wurden für ein anderes Deck trainiert und passen nicht mehr:
       <b>${st.stale_checkpoints.join(", ")}</b>.`);
   if (st.datasets)
     msgs.push(`Es liegen <b>${st.datasets}</b> gelabelte Datensätze vor. Ein Datensatz gilt immer
-      nur für ein Deck — nach einem Wechsel muss <code>label</code> neu laufen.`);
+      nur für ein Deck: nach einem Wechsel muss <code>label</code> neu laufen.`);
   if (msgs.length) {
     const box = el("div", "cfggroup");
     box.innerHTML = "<h3>Nach einem Deckwechsel zu beachten</h3>"
@@ -853,7 +959,7 @@ function renderDeckAvg() {
     const c = S.deck.catalog.find(x => x.key === $("[data-role=card]", tr).value);
     return c ? c.elixir : null;
   }).filter(v => v != null);
-  const avg = costs.length ? (costs.reduce((a, b) => a + b, 0) / costs.length).toFixed(2) : "–";
+  const avg = costs.length ? (costs.reduce((a, b) => a + b, 0) / costs.length).toFixed(2) : "-";
   $("#deckavg").textContent = `Ø Elixier: ${avg}`;
 }
 
@@ -996,7 +1102,7 @@ async function loadConfig() {
       left.appendChild(el("div", "lbl", f.label));
       const help = el("div", "help");
       help.textContent = (f.help ? f.help + "  " : "") + `(${f.key}`
-        + (f.min != null ? `, ${f.min}…${f.max}` : "") + ")";
+        + (f.min != null ? `, ${f.min}...${f.max}` : "") + ")";
       left.appendChild(help);
       const right = el("div");
       let inp;
@@ -1063,11 +1169,11 @@ async function loadCheckpoints() {
     const tr = el("tr");
     const deckOk = (!deckIds || !c.deck) ? null : JSON.stringify(c.deck) === JSON.stringify(deckIds);
     tr.innerHTML = `<td><code>${c.rel}</code></td><td>${fmtTime(c.mtime)}</td>
-      <td>${c.matches != null ? int(c.matches) + (c.matches_estimated ? " *" : "") : "–"}</td>
-      <td>${c.best_wr != null && c.best_wr >= 0 ? c.best_wr.toFixed(0) + " %" : "–"}</td>
-      <td>${c.grid ? c.grid.join("×") : "–"}</td>
+      <td>${c.matches != null ? int(c.matches) + (c.matches_estimated ? " *" : "") : "-"}</td>
+      <td>${c.best_wr != null && c.best_wr >= 0 ? c.best_wr.toFixed(0) + " %" : "-"}</td>
+      <td>${c.grid ? c.grid.join("×") : "-"}</td>
       <td>${c.deck ? (deckOk === false ? "<span class='pill warn'>anderes Deck</span>"
-        : (deckOk ? "passt" : c.deck.length + " Karten")) : "–"}</td>
+        : (deckOk ? "passt" : c.deck.length + " Karten")) : "-"}</td>
       <td>${fmtSize(c.size)}</td><td></td>`;
     const btn = el("button", "btn small", "Als --init übernehmen");
     btn.onclick = () => { $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, c.rel)); showTab("run"); };
@@ -1077,7 +1183,7 @@ async function loadCheckpoints() {
   tbl.appendChild(tb); body.appendChild(tbl);
   if (list.some(c => c.matches_estimated))
     body.appendChild(el("p", "hint",
-      "* Matchzahl aus data/metrics.jsonl geschätzt — ältere Checkpoints speichern sie nicht selbst."));
+      "* Matchzahl aus data/metrics.jsonl geschätzt: ältere Checkpoints speichern sie nicht selbst."));
 }
 $("#ckptreload").onclick = () => loadCheckpoints();
 

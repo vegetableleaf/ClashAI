@@ -1,13 +1,14 @@
 /* Launcher UI -- offline, no webfonts, no CDN. */
 :root{
   --bg:#12151c; --bg2:#181d26; --bg3:#1f2532; --fg:#e6e9ef; --dim:#98a2b3;
-  --line:#2a3140; --acc:#4da3ff; --ok:#3ecf8e; --warn:#ffb020; --bad:#ff6b6b;
+  --line:#2a3140; --acc:#4da3ff; --ok:#8fb6d8; --warn:#c3cbd8; --bad:#d68a8a;
   --mono:Consolas,"Cascadia Mono","Courier New",monospace;
   --logh:34px;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);
   font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding-bottom:calc(var(--logh) + 20px)}
+body.logopen{padding-bottom:300px}     /* expanded log must not cover the last rows */
 header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--bg2);
   border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
 h1{font-size:18px;margin:0;font-weight:600}
@@ -15,7 +16,6 @@ h1 .sub{color:var(--dim);font-weight:400}
 h2{font-size:16px;margin:20px 0 8px}
 h3{font-size:13px;margin:0 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em}
 .spacer{flex:1}
-.warnbtn{background:#3a2a10;border-color:#5a4420;color:#ffd79a}
 .tabs{display:flex;gap:2px;padding:0 12px;background:var(--bg2);border-bottom:1px solid var(--line);
   flex-wrap:wrap;position:sticky;top:47px;z-index:29}
 .tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--dim);
@@ -59,12 +59,11 @@ input:focus,select:focus{outline:1px solid var(--acc)}
 .btn.small{padding:3px 8px;font-size:12px}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
 .pill{background:var(--bg3);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px}
-.pill.run{background:#14361f;border-color:#2c6b3f;color:#8ff0b5}
+.pill.run{border-color:#3c5f80;color:#cfe2f5}
 .pill.idle{color:var(--dim)}
-.pill.warn{background:#3a2a10;border-color:#5a4420;color:#ffd79a}
-.pill.bad{background:#3a1414;border-color:#6b2c2c;color:#ffb3b3}
+.pill.warn,.pill.bad{color:#c3cbd8;border-color:#3a4356}
 .msg{font-size:12px}
-.msg.ok{color:var(--ok)} .msg.err{color:var(--bad)}
+.msg.ok{color:var(--dim)} .msg.err{color:var(--bad)}
 
 .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0}
 .kpi{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
@@ -101,7 +100,7 @@ svg{display:block;width:100%;height:180px}
 
 /* Übersicht */
 .steps{display:grid;gap:10px;margin:10px 0}
-.step{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--acc);
+.step{background:var(--bg2);border:1px solid var(--line);
   border-radius:8px;padding:10px 12px;display:flex;gap:12px;align-items:center}
 .step .txt{flex:1}
 .step .t{font-weight:600;font-size:13px}
@@ -136,8 +135,16 @@ svg{display:block;width:100%;height:180px}
 .modalbody h4{margin:14px 0 4px;font-size:13px}
 .modalbody ul{margin:6px 0;padding-left:20px}
 .modalbody li{margin:3px 0}
-.modalbody .note{background:#3a2a10;border:1px solid #5a4420;color:#ffd79a;border-radius:6px;
-  padding:9px 11px;margin:10px 0;font-size:12px}
-.modalbody .tip{background:var(--bg3);border-left:3px solid var(--acc);border-radius:4px;
-  padding:8px 11px;margin:10px 0;font-size:12px;color:#c3cbd8}
+.modalbody .note,.modalbody .tip{background:var(--bg3);border:1px solid var(--line);
+  border-radius:6px;padding:9px 11px;margin:10px 0;font-size:12px;color:#c3cbd8}
+.modalbody .do{background:var(--bg3);border:1px solid var(--line);border-radius:6px;
+  padding:10px 12px;margin:12px 0}
+.modalbody .do .dot{font-size:12px;color:var(--dim);margin-bottom:7px}
 .modalfoot{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
+
+#toast{position:fixed;right:16px;bottom:calc(var(--logh) + 16px);max-width:420px;z-index:70;
+  background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:11px 14px;
+  font-size:13px;color:#c3cbd8;box-shadow:0 8px 30px rgba(0,0,0,.45);cursor:pointer;
+  opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .15s,transform .15s}
+#toast.show{opacity:1;transform:none;pointer-events:auto}
+body.logopen #toast{bottom:300px}
