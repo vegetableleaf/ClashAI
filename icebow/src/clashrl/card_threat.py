@@ -285,7 +285,13 @@ class OpponentMemory:
 def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
     """Does a card with profile ``play`` counter the RECOGNISED threat block ``threat_id``
     (the vector from :func:`identity_threat_vector`)? Role-based, KB-grounded: air-defence vs
-    flying, splash vs swarm, a building/high-DPS vs a tank, a building vs a building-targeter."""
+    flying, splash vs swarm, a building/high-DPS vs a tank, a building vs a building-targeter,
+    and -- see below -- a body vs a bare win condition, damage vs enemy siege.
+
+    This answers ROLE VALIDITY only ("can this card deal with that"), never elixir efficiency:
+    spending a 6-cost spell on a 3-cost threat is judged by the elixir_trade term, which already
+    prices overspending. Keeping the two separate is why this stays a small role table.
+    """
     if threat_id is None or len(threat_id) < IDENTITY_DIM or threat_id[0] < 0.5:
         return False
     if threat_id[3] >= 0.5 and (play.attacks_air or play.flying):      # flying threat -> air defence
@@ -296,6 +302,20 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
         return True
     if threat_id[6] >= 0.5 and play.building:                          # building-targeter -> a building
         return True
+    # ENEMY SIEGE (a win-condition BUILDING shelling from range: X-Bow / Mortar). It will not walk
+    # into anything, so the answer has to travel TO it: a spell, or a troop that can out-DPS it.
+    # A defensive building of ours is explicitly excluded -- siege outranges it (X-Bow ~11.5 tiles
+    # vs a Tesla's ~5.5), so it would sit there never firing a shot.
+    if threat_id[5] >= 0.5 and threat_id[4] >= 0.5:
+        return play.spell or (play.kind == "troop" and (play.dps or 0) >= 150)
+    # BARE WIN CONDITION -- a win-condition TROOP carrying no other role (Miner is the archetype:
+    # not a tank, not air, not a swarm, and NOT building-targeting, so every branch above misses it).
+    # It walks straight at the tower, so the answer is simply a BODY that engages it: any troop, or a
+    # defensive (non-siege) building. Spells are excluded because a single spell rarely kills one and
+    # the trade is bad; a siege building of ours cannot defend at all. Tanks and buildings are excluded
+    # from this branch so heavy/siege win conditions keep their stricter rules above.
+    if threat_id[5] >= 0.5 and threat_id[1] < 0.5 and threat_id[4] < 0.5:
+        return play.kind == "troop" or (play.building and not play.siege)
     return False
 
 
