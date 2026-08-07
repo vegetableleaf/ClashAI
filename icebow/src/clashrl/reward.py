@@ -265,6 +265,93 @@ def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, acts):
     return acts.cell_at(nx, cy)                       # nearer lane column, model's own depth row
 
 
+# Board geometry shared by the placement assists below (engine frame: river y=0.5, your side is
+# the HIGH-y half, ground units cross only at a bridge).
+BRIDGE_XS = (0.25, 0.75)
+TILE = 0.16 / 5.5                # one board tile, normalized (long reach 0.16 == 5.5 tiles)
+
+
+def _front_row_y(acts, deploy_top):
+    """Centre-y of the FRONTMOST row an ordinary card can actually be deployed on.
+
+    ``action.deploy_top`` is a clamp line, not a row: the nearest grid row to it can sit ABOVE it
+    and would simply be pushed back by deploy_clamp, silently undoing any correction aimed there.
+    """
+    best = None
+    for r in range(acts.gh):
+        y = acts.cell_center(0, r)[1]
+        if y >= deploy_top and (best is None or y < best):
+            best = y
+    return deploy_top if best is None else best
+
+
+def xbow_offense_depth_cell(cx, cy, defense_y, deploy_top, acts,
+                            bridge_tol=0.045, lane_back_rows=1):
+    """Set the DEPTH of an OFFENSIVE X-Bow from the column it was placed in.
+
+    The X-Bow's reach to the enemy princess is a RADIUS, so the frontmost row is not uniformly
+    correct -- how far forward it must sit depends on how far off-lane it is:
+
+    * BEHIND A BRIDGE (the tiles troops actually cross, x ~ 0.25 / 0.75) the bow is nearly in the
+      tower's own column, so it still locks the tower a row further back. That row buys the thing
+      the frontmost one cannot: ROOM to drop a Knight/Tesla IN FRONT of the bow to absorb the
+      answer. Measured at lane x: 0.260 out at the front row, 0.291 one back -- both inside 0.36.
+    * CENTRE (anywhere between the two crossings) the path to the tower is diagonal and longer, so
+      the bow must sit on the FRONTMOST deployable row or it falls short. Measured at centre x:
+      0.347 at the front row and 0.358 one row back, against a 0.36 range -- no slack at all.
+
+    Keeps the model's column (it chooses the side). Returns a corrected cell, or None when the
+    depth is already right or the bow is DEFENSIVE (cy >= defense_y, judged by its own band).
+    """
+    if cy >= defense_y:
+        return None
+    row_h = abs(acts.cell_center(0, 1)[1] - acts.cell_center(0, 0)[1]) or TILE
+    ty = _front_row_y(acts, deploy_top)
+    if min(abs(cx - b) for b in BRIDGE_XS) <= bridge_tol:
+        ty += lane_back_rows * row_h                  # in-lane: one row back for the blocker
+    if abs(cy - ty) <= 0.4 * row_h:
+        return None                                   # already on the right row
+    return acts.cell_at(cx, ty)
+
+
+def tesla_pull_cell(wx, wy, sight, front_y, back_y, acts, bridges=BRIDGE_XS):
+    """CENTRE-PULL a lane win condition: the furthest-from-the-attack tile that still aggros it.
+
+    A win condition dropped at one bridge beelines the near princess tower, and only that tower
+    ever shoots it. A defensive building placed inside its AGGRO radius but pulled toward the
+    middle drags it off that line, so it walks across the centre under fire instead. The best spot
+    is therefore the one that maximises horizontal distance from the attacking side while STILL
+    sitting inside the win condition's sight radius -- any further and it is not pulled at all.
+
+    ``sight`` is the card's own aggro radius from the KB (``CardDB.sight_range_tiles`` -> normalized),
+    so a 9.5-tile Hog is pulled much further across than a 5.5-tile Ram Rider. Solves
+    ``dx = sqrt(sight^2 - dy^2)`` for the placement row and steps that far toward mid-board.
+    Returns None when the row is already outside the radius (no pull is possible from there).
+    """
+    ty = 0.5 * (float(front_y) + float(back_y))
+    dy = abs(ty - wy)
+    if dy >= sight:
+        return None                                   # unreachable from this row -- no pull exists
+    dx = float(np.sqrt(max(0.0, sight * sight - dy * dy)))
+    sgn = 1.0 if wx < 0.5 else -1.0                   # step AWAY from the attacking side
+    lo, hi = min(bridges), max(bridges)
+    # The grid is COARSE (a cell is ~0.05 wide, wider than the margin we are aiming for), so the
+    # ideal x can snap to a cell whose CENTRE sits outside the aggro radius -- which would place a
+    # building the win condition never even looks at, the exact failure this assist exists to avoid.
+    # Walk inward a cell at a time until the SNAPPED centre is genuinely inside.
+    cw = abs(acts.cell_center(1, 0)[0] - acts.cell_center(0, 0)[0]) or 0.02
+    for _ in range(8):
+        tx = min(max(wx + sgn * dx, lo), hi)
+        cell = acts.cell_at(tx, ty)
+        px, py = acts.cell_center(cell % acts.gw, cell // acts.gw)
+        if np.hypot(px - wx, py - wy) <= sight:
+            return cell
+        dx -= cw                                      # too far out -- give back one column
+        if dx <= 0:
+            return None
+    return None
+
+
 def threat_side(frame, cfg=None, min_frac=0.02):
     """Which of your two lanes has an advancing enemy threat: -1 left, +1 right, 0 none.
     Compares enemy (red) troop mass in the left vs right half of YOUR side of the arena

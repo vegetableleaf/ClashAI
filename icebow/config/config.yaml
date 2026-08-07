@@ -475,6 +475,22 @@ env:
   xbow_defense_back: 0.62              # ...down to ~your princess-tower line. BEHIND the towers (deeper) is rarely useful ->
                                        #    earns only rewards.xbow_deep_frac of the win-condition credit (soft nudge, not a punishment)
   xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: X-Bow chipped LESS than this fraction of a tower by 2x elixir -> switch to defensive X-Bow + rocket-cycle
+  # --- PRESCRIBED PLACEMENTS (aim assists, not shaping: the policy still decides WHEN and WHAT) ----
+  # OFFENSIVE X-BOW DEPTH. Reach to the enemy princess is a RADIUS, so the correct row depends on
+  # the column. BEHIND A BRIDGE (x ~ 0.25 / 0.75) the bow is nearly in the tower's own lane and
+  # still locks it one row back -- and that row is what leaves space to drop a Knight/Tesla IN
+  # FRONT of the bow to absorb the answer. OFF-LANE (the central area between the two crossings)
+  # the path is diagonal and longer, so it must sit on the frontmost deployable row. Measured
+  # against xbow_range 0.36: lane 0.260 front / 0.291 one back (both fine); centre 0.342 front /
+  # 0.358 one back (one row deeper and it falls short). No knob needed -- the rule is geometric.
+  # TESLA CENTRE-PULL vs a lane win condition: a wincon dropped at one bridge beelines the near
+  # tower and only that tower ever shoots it. Placing the Tesla at the FAR EDGE of that wincon's
+  # own aggro radius drags it across the middle instead. The pull distance comes from the card's
+  # KB sight range, so a 9.5-tile Hog is dragged ~0.22 across while a 5.5-tile Ram Rider moves
+  # ~0.12. The band below is the row the Tesla is placed on: behind the bridge, in front of your
+  # princess-tower line (0.615).
+  tesla_pull_front: 0.52               # ...from just behind the bridge...
+  tesla_pull_back: 0.59                # ...to just in front of your princess towers (midpoint is used)
   # SIM matchup doctrine (reads the opponent's style): vs a fast CYCLE / heavy BEATDOWN deck, or a
   # SPLIT-LANE deck built on these wide two-lane win conditions (one X-Bow can't cover both lanes),
   # play defensive X-Bow + rocket-cycle from the start.

@@ -28,7 +28,8 @@ from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
                      pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell,
-                     xbow_lock_cell)
+                     xbow_lock_cell, xbow_offense_depth_cell, tesla_pull_cell)
+from .reward import TILE as _TILE
 from .clock import ElixirClock
 from .states import GameState
 from .nav import MenuNavigator
@@ -97,6 +98,7 @@ class LiveMatchEnv:
         self.tornado_ids = set()
         self.miner_ids = set()
         self.xbow_ids = set()
+        self.tesla_ids = set()                          # centre-pull assist target (see _lane_wincon)
         self.defensive_kind = {}                        # id -> defender kind (Tesla / Ice Wizard) for reactive_ids
         for i, key in enumerate(self.vision.deck_keys):
             base = key[:-4] if key.endswith("_evo") else key
@@ -115,6 +117,7 @@ class LiveMatchEnv:
                 self.xbow_ids.add(i)
             if base == "tesla":
                 self.defensive_kind[i] = "tesla"
+                self.tesla_ids.add(i)
             elif base == "ice_wizard":
                 self.defensive_kind[i] = "ice_wizard"
         # ROCKET and MINER may target ANYWHERE; every other card (troops, X-Bow, royal delivery) is your-half only.
@@ -138,6 +141,9 @@ class LiveMatchEnv:
         self._match_bonus = 0.0
         # X-Bow win-condition geometry (offence forward-in-range / defence back-centre) + the phase gauge
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
+        self.deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
+        self.tesla_pull_front = float(cfg.get("env", "tesla_pull_front", default=0.52))
+        self.tesla_pull_back = float(cfg.get("env", "tesla_pull_back", default=0.59))
         self.xbow_defense_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
         self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
         self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
@@ -393,6 +399,30 @@ class LiveMatchEnv:
         else:
             self._team_tracker.record_play(cx, cy, time.time(), base=base)
 
+    def _lane_wincon(self):
+        """The enemy WIN CONDITION currently pushing a lane, as ``(x, y, sight_radius)`` for the
+        Tesla centre-pull assist -- or None when there is nothing worth pulling.
+
+        Picks the DEEPEST recognised enemy win condition on your half (the one actually committing)
+        and returns its own KB aggro radius, so how far the Tesla can be pulled toward mid-board
+        scales with the card: a 9.5-tile Hog drags much further across than a 5.5-tile Ram Rider.
+        Ignores anything already near mid-board -- a centre pull only makes sense against a push
+        that is committed to ONE side.
+        """
+        best = None
+        for d in self._last_dets_all:
+            if d.team == "mine" or d.gy < 0.5:
+                continue
+            prof = card_threat.profile(self.db, card_threat.base_key(d.base))
+            if not prof.win_condition or abs(d.cx - 0.5) < self.intercept_lane:
+                continue
+            if best is None or d.gy > best.gy:
+                best = d
+        if best is None:
+            return None
+        sight = float(self.db.sight_range_tiles(card_threat.base_key(best.base))) * _TILE
+        return best.cx, best.gy, sight
+
     def _track_pump(self, now: float) -> None:
         """Watch the tagged detections for an enemy ELIXIR COLLECTOR on their half: the FIRST sighting
         anchors the punish window (env.pump_rocket_window_s -- a pump left alive past it has already
@@ -629,6 +659,27 @@ class LiveMatchEnv:
                 snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_front, self.actions)
                 if snapped is not None:
                     cell = snapped
+                # ...then fix its DEPTH from the column it ended up in: behind a bridge it can sit a
+                # row back (leaving room to body-block the answer in front of it), off-lane it must
+                # be on the frontmost deployable row or the diagonal puts the tower out of reach.
+                gx, gy = cell % self.gw, cell // self.gw
+                cx, cy = self.actions.cell_center(gx, gy)
+                depth = xbow_offense_depth_cell(cx, cy, self.xbow_defense_front,
+                                                self.deploy_top, self.actions)
+                if depth is not None:
+                    cell = depth
+            elif card_id in self.tesla_ids:
+                # CENTRE-PULL: a win condition dropped at one bridge beelines the near tower and only
+                # that tower shoots it. Placing the Tesla at the far edge of the wincon's OWN aggro
+                # radius drags it across the middle instead. Uses that card's KB sight range, so a
+                # 9.5-tile Hog is pulled much further than a 5.5-tile Ram Rider.
+                wc = self._lane_wincon()
+                if wc is not None:
+                    wx, wy, sight = wc
+                    pull = tesla_pull_cell(wx, wy, sight, self.tesla_pull_front,
+                                           self.tesla_pull_back, self.actions)
+                    if pull is not None:
+                        cell = pull
             action = (play, card_id, cell)
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
