@@ -108,12 +108,16 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     deck = [d for d in deck if not (d in seen or seen.add(d))]
 
     if weights is None:
-        runs = sorted(glob.glob(str(root.parent.parent / "runs" / "detect" / "*" / "weights" / "best.pt")),
-                      key=os.path.getmtime)
-        if not runs:
-            print("[detect-eval] no trained weights under runs/detect/*/weights/best.pt")
-            return
-        weights = runs[-1]
+        pinned = cfg.get("detect", "weights", default=None)
+        if pinned and Path(cfg.path(pinned)).exists():
+            weights = str(cfg.path(pinned))          # evaluate the OPERATING detector by default
+        else:
+            runs = sorted(glob.glob(str(root.parent.parent / "runs" / "detect" / "*" / "weights" / "best.pt")),
+                          key=os.path.getmtime)
+            if not runs:
+                print("[detect-eval] no trained weights under runs/detect/*/weights/best.pt")
+                return
+            weights = runs[-1]
     imgs = sorted(glob.glob(str(root / "images" / "val" / "*.jpg")))
     if not imgs:
         print(f"[detect-eval] no val images under {root/'images'/'val'}")

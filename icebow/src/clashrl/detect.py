@@ -1309,11 +1309,24 @@ class TrainFrameCollector:
 
 
 def _resolve_weights(cfg, weights):
-    """Return the detector weights path: the given --weights, else the most recently trained
-    runs/detect/*/weights/best.pt."""
+    """Detector weights: an explicit --weights, else the PINNED ``detect.weights``, else the most
+    recently trained runs/detect/*/weights/best.pt.
+
+    THE PIN EXISTS BECAUSE NEWEST != BEST. Measured 2026-08-07 on the frozen val subset: board-17
+    trained last but scored whitelist identity recall 0.675 vs board-16's 0.724 and FAILED the 0.70
+    gate, so an mtime default silently promoted a regressed detector into live play, replay mining
+    and the label queue. A generation is only the operating detector once `detect-eval` says so.
+    """
     runs = Path(cfg.path("runs/detect"))
     if weights:
         return Path(weights), runs
+    pinned = cfg.get("detect", "weights", default=None)
+    if pinned:
+        p = Path(cfg.path(pinned))
+        if p.exists():
+            return p, runs
+        print(f"[detect] WARNING: detect.weights points at {p}, which does not exist -- "
+              "falling back to the newest run")
     cands = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime)
     return (cands[-1] if cands else None), runs
 

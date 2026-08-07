@@ -622,6 +622,16 @@ monitor:
 # else the detector learns to treat them as background.
 detect:
   classes_file: config/detect_classes.yaml
+  # THE OPERATING DETECTOR, pinned. null = use whichever run was trained MOST RECENTLY, which is a
+  # trap: newest is not best. Measured 2026-08-07 on the frozen val subset (identical 241 images /
+  # 817 boxes for every generation), board-17 trained last but REGRESSED -- whitelist identity
+  # recall 0.675 / precision 0.882, failing the 0.70 gate, vs board-16's 0.724 / 0.911 which passes.
+  # Its ultralytics mAP50 looked best (0.7144) only because it validated on a larger val set. With
+  # no pin, `play` / `train-rl` / `mine-replays` / `label-queue` would all have silently adopted the
+  # worse detector. Promote a new generation ONLY after
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt` beats the incumbent, and
+  # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
+  weights: runs/detect/board-16/weights/best.pt
   dataset_dir: data/detect
   spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
   spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
