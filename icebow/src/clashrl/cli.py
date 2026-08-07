@@ -205,6 +205,12 @@ def _cmd_detect_eval(args) -> None:
                 sweep=args.sweep, device=args.device, subset=args.subset)
 
 
+def _cmd_label_queue(args) -> None:
+    from .label_queue import label_queue
+    label_queue(Config.load(args.config), classes=args.classes, n=args.n, weights=args.weights,
+                lo=args.lo, hi=args.hi, device=args.device, limit=args.limit, copy=args.copy)
+
+
 def _cmd_detect_obs(args) -> None:
     from .detect_obs import detect_obs_preview
     detect_obs_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
@@ -425,6 +431,25 @@ def main() -> None:
                      help="file of val STEMS (one per line) to score instead of the whole val dir -- labelling "
                           "GROWS val, so pass the same snapshot to both generations for a like-for-like compare")
     dev.set_defaults(func=_cmd_detect_eval)
+
+    lq = sub.add_parser("label-queue",
+                        help="rank the UNLABELLED frames by how much labelling each would teach the "
+                             "detector -- AMBIGUITY (two classes claim one box) and UNCERTAINTY "
+                             "(mid-confidence detections), so scarce labelling time goes to the frames "
+                             "that resolve a confusion instead of to boards it already reads")
+    lq.add_argument("--classes", default=None,
+                    help="comma list to focus on (e.g. wizard,valkyrie,musketeer); default = all classes")
+    lq.add_argument("--n", type=int, default=150, help="how many frames to shortlist (default 150)")
+    lq.add_argument("--weights", default=None, help="best.pt (default: newest runs/detect/*/weights/best.pt)")
+    lq.add_argument("--lo", type=float, default=0.15, help="bottom of the 'uncertain' confidence band")
+    lq.add_argument("--hi", type=float, default=0.60, help="top of the 'uncertain' confidence band")
+    lq.add_argument("--device", default=None,
+                    help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
+    lq.add_argument("--limit", type=int, default=None, help="only scan the first N queue frames (quick trial)")
+    lq.add_argument("--copy", action="store_true",
+                    help="also COPY the shortlist into images/to_label_priority/ so Label Studio can "
+                         "point at just those (originals are left in place)")
+    lq.set_defaults(func=_cmd_label_queue)
 
     dob = sub.add_parser("detect-obs",
                          help="preview the Stage-3 semantic obs (detector -> enemy/ally/building/spell channels) on real frames")
