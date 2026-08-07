@@ -165,6 +165,11 @@ def _cmd_autolabel(args) -> None:
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
 
 
+def _cmd_detect_merge(args) -> None:
+    from .detect import detect_merge
+    detect_merge(Config.load(args.config), sources=args.sources, out=args.out, dry_run=args.dry_run)
+
+
 def _cmd_detect_adopt(args) -> None:
     from .detect import detect_adopt
     detect_adopt(Config.load(args.config), args.json, images_dir=args.images,
@@ -384,6 +389,17 @@ def main() -> None:
     dad.add_argument("--dry-run", action="store_true",
                      help="report what WOULD happen and write nothing")
     dad.set_defaults(func=_cmd_detect_adopt)
+
+    dmg = sub.add_parser("detect-merge",
+                         help="fuse several Label Studio exports into ONE combined json (deduped by "
+                              "image, richest annotation wins) -- a single self-contained artifact "
+                              "instead of a growing pile of batch*.json")
+    dmg.add_argument("--sources", default=None,
+                     help="comma list of exports (default: every batch*.json in the dataset dir, "
+                          "skipping *.raw.json.bak and the output itself)")
+    dmg.add_argument("--out", default=None, help="output path (default: data/detect/batch_all.json)")
+    dmg.add_argument("--dry-run", action="store_true", help="report the merge and write nothing")
+    dmg.set_defaults(func=_cmd_detect_merge)
 
     dfr = sub.add_parser("detect-frames",
                          help="add more in-match frames from a session to data/detect for hand-labelling (non-destructive)")

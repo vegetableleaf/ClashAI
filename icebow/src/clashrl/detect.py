@@ -741,6 +741,94 @@ def _load_split(root: Path) -> dict:
     return {q.stem: sp for sp in ("train", "val") for q in (root / "images" / sp).glob("*.jpg")}
 
 
+def detect_merge(cfg, sources=None, out=None, dry_run=False) -> None:
+    r"""Fuse several Label Studio exports into ONE combined export.
+
+    The importer already accepts a comma list or a whole folder, so merging is not required to
+    train -- it exists to leave a SINGLE self-contained artifact that is easy to re-import, hand to
+    someone else, or archive, instead of a growing pile of batch*.json whose combination has to be
+    reconstructed from memory every time.
+
+    Tasks are deduplicated by resolved image BASENAME using the same rule as the importer -- the
+    copy with the MOST boxes wins -- so importing the merged file is byte-for-byte equivalent to
+    importing the sources together, and re-merging after a re-export is idempotent.
+
+    Sources default to every ``batch*.json`` in the dataset dir. ``*.raw.json.bak`` backups written
+    by ``detect-adopt`` are skipped automatically (that is the whole reason for the ``.bak``), as is
+    the output file itself, so re-running never folds a previous merge back into itself.
+
+    NB the merged file is a SNAPSHOT: re-run it after any new export or `detect-adopt`, or it will
+    quietly import a stale view of the annotations.
+    """
+    root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
+    outp = Path(out) if out else root / "batch_all.json"
+    if not outp.is_absolute():
+        outp = root / outp
+
+    if sources:
+        srcs = []
+        for s in str(sources).split(","):
+            s = s.strip()
+            if not s:
+                continue
+            p = Path(s)
+            srcs.append(p if p.exists() else root / s)
+    else:
+        srcs = sorted(p for p in root.glob("batch*.json") if p.resolve() != outp.resolve())
+    srcs = [p for p in srcs if p.exists() and p.suffix.lower() == ".json"]
+    if not srcs:
+        print(f"[detect-merge] no source exports found under {root} (looked for batch*.json)")
+        return
+
+    names = _load_classes(cfg)
+    name_to_idx = {n: i for i, n in enumerate(names)}
+    best: dict = {}                       # basename -> (n_boxes, task)
+    per_src, dup = {}, 0
+    for sp in srcs:
+        tasks = json.loads(sp.read_text(encoding="utf-8"))
+        if isinstance(tasks, dict):
+            tasks = tasks.get("annotations") or tasks.get("tasks") or [tasks]
+        kept = 0
+        for t in tasks:
+            d = t.get("data") if isinstance(t.get("data"), dict) else None
+            ref = (d or {}).get("image") or t.get("image")
+            if not ref:
+                continue
+            key = _ls_export_image_name(ref)
+            n_box = len(_ls_task_regions(t))
+            prev = best.get(key)
+            if prev is None:
+                best[key] = (n_box, t)
+                kept += 1
+            else:
+                dup += 1
+                if n_box > prev[0]:
+                    best[key] = (n_box, t)
+        per_src[sp.name] = (len(tasks), kept)
+        print(f"[detect-merge] {sp.name:22s} {len(tasks):5d} task(s), {kept:5d} new image(s)")
+
+    merged = [t for _n, t in best.values()]
+    print(f"[detect-merge] -> {len(merged)} distinct image(s), "
+          f"{sum(n for n, _t in best.values())} boxes, {dup} duplicate task(s) collapsed")
+
+    if dry_run:
+        print("[detect-merge] --dry-run: nothing written")
+        return
+
+    outp.write_text(json.dumps(merged), encoding="utf-8")
+    print(f"[detect-merge] wrote {outp}")
+
+    pairs, unmatched, unknown = _ls_json_pairs(outp, root, name_to_idx)
+    print(f"[detect-merge] VERIFY: {len(pairs)} pair(s) resolve to an image on disk, "
+          f"{unmatched} unmatched, {len(unknown)} unknown class(es)")
+    if unmatched:
+        print(f"               {unmatched} annotation(s) have no image in images/** -- run "
+              f"detect-adopt for that batch, or its frames were never copied in")
+    if unknown:
+        print(f"               unknown classes: {', '.join(unknown[:10])}")
+    print(f"[detect-merge] import with:  run.py detect-import --export {outp}")
+
+
 def _md5(p: Path) -> str:
     return hashlib.md5(p.read_bytes()).hexdigest()
 
