@@ -241,7 +241,23 @@ def train_rl(cfg, init: str | None = None) -> None:
               f"(every {collector.every_s:.0f}s, <= {collector.per_match}/match, <= {collector.session_max}/session)")
 
     running = {"v": True}
-    signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
+
+    def _on_sigint(*_a):
+        """First Ctrl+C = stop cleanly and save. Second = abort NOW.
+
+        A handler that only sets a flag silently disarms Ctrl+C anywhere the flag is not polled --
+        which is every menu-navigation loop between matches. Restoring the default handler on the
+        second press guarantees an escape hatch no matter where execution is parked."""
+        if running["v"]:
+            running["v"] = False
+            print("\n[train-rl] stop requested -- finishing the current match/step and saving. "
+                  "Press Ctrl+C again to abort immediately.", flush=True)
+        else:
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            raise KeyboardInterrupt
+
+    signal.signal(signal.SIGINT, _on_sigint)
+    env.stop_requested = lambda: not running["v"]     # lets reset() bail out of menu navigation
 
     def epsilon(step):
         if step >= eps_steps:
@@ -371,6 +387,8 @@ def train_rl(cfg, init: str | None = None) -> None:
         while running["v"]:
             obs = env.reset()
             if obs is None:
+                if getattr(env, "stopped", False):
+                    break                    # Ctrl+C while navigating menus -- not a lost window
                 print("[train-rl] lost the game window; retrying...")
                 time.sleep(1.0)
                 continue

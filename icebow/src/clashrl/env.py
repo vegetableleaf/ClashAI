@@ -215,6 +215,10 @@ class LiveMatchEnv:
         self._pump_last_t = 0.0                          # last read that still saw it
         self._pump_xy = None                             # its latest (cx, gy)
         self._cycle_tracker = CycleTracker(self.n_cards)   # live estimate of the upcoming-card order (graded next_vec)
+        # Optional callable -> True when the caller wants to stop. reset() navigates menus in an
+        # UNBOUNDED loop waiting for a match, so without this a trainer whose SIGINT handler only sets
+        # a flag can never be interrupted between matches: the flag is set and nothing ever reads it.
+        self.stop_requested = None
         if self.use_detector:
             self.threat_vec = np.concatenate(
                 [self.threat_vec, self._threat_id,
@@ -323,7 +327,12 @@ class LiveMatchEnv:
 
     # -- episode lifecycle --------------------------------------------
     def reset(self) -> Optional[np.ndarray]:
-        """Navigate menus until a match starts; return the first observation."""
+        """Navigate menus until a match starts; return the first observation.
+
+        Returns None if the game window is lost OR ``stop_requested()`` goes True -- callers use
+        ``self.stopped`` to tell the two apart.
+        """
+        self.stopped = False
         self.tower.reset()
         self.tower_hp.reset()
         self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
@@ -331,6 +340,9 @@ class LiveMatchEnv:
         self._match_bonus = 0.0
         self._nav.reset_state()
         while True:
+            if self.stop_requested is not None and self.stop_requested():
+                self.stopped = True          # a deliberate stop, NOT a lost window
+                return None
             frame = self._grab()
             if frame is None:
                 return None
