@@ -45,9 +45,24 @@ def classify_style(db, cards: List[str]) -> str:
     return "control"
 
 
+_CACHE: dict = {}
+
+
 def load_meta_decks(cfg, db) -> List[dict]:
-    """Return [{name, weight, cards, style}], validated against the KB. Falls back to the built-ins."""
+    """Return [{name, weight, cards, style}], validated against the KB. Falls back to the built-ins.
+
+    Cached by the file's timestamp: parsing ~1000 decks out of a 140 KB YAML and classifying
+    each one is pure startup cost that a vectorised run would otherwise pay once per env.
+    Callers get their own dicts, so nobody can disturb another env by editing an entry.
+    """
     path = Path(cfg.path(cfg.get("sim", "meta_decks_file", default="config/meta_decks.yaml")))
+    try:
+        key = (str(path), path.stat().st_mtime_ns if path.exists() else 0, id(db))
+    except OSError:
+        key = None
+    if key is not None and key in _CACHE:
+        return [{**d, "cards": list(d["cards"])} for d in _CACHE[key]]
+
     out: List[dict] = []
     if path.exists():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -57,5 +72,9 @@ def load_meta_decks(cfg, db) -> List[dict]:
                 out.append({"name": str(d.get("name", "deck")), "weight": float(d.get("weight", 1.0)),
                             "cards": cards, "style": classify_style(db, cards)})
     if not out:
-        out = [{"name": n, "weight": 1.0, "cards": c, "style": classify_style(db, c)} for n, c in _BUILTIN]
-    return out
+        out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c)}
+               for n, c in _BUILTIN]
+    if key is not None:
+        _CACHE.clear()                        # only the current generation is useful
+        _CACHE[key] = out
+    return [{**d, "cards": list(d["cards"])} for d in out]
