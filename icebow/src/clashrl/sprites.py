@@ -35,6 +35,7 @@ from .detect import _load_classes
 
 _MIN_BOX_PX = 12          # boxes smaller than this per side are too thin to segment usefully
 _COV_MIN, _COV_MAX = 0.08, 0.97   # kept-pixel fraction of the box outside this range = failed cut
+_MAX_OCC = 0.35           # a box this far covered by OTHER annotations is too ambiguous to cut (see _cut_sprite)
 
 
 def _boxes_of(label_path: Path):
@@ -51,12 +52,20 @@ def _boxes_of(label_path: Path):
     return out
 
 
-def _cut_sprite(img, box_px, margin: float = 0.25):
+def _cut_sprite(img, box_px, margin: float = 0.25, others=()):
     """GrabCut one annotated box out of its background.
 
-    box_px = (x0, y0, x1, y1) pixel corners of the ANNOTATION. Returns (sprite_bgra, crop, rect,
-    reason): sprite is the tight RGBA cutout or None, crop is the margin-expanded context (for the
-    verify panels), rect the box within that crop, reason a reject string or "" on success."""
+    box_px = (x0, y0, x1, y1) pixel corners of the ANNOTATION. ``others`` = the pixel corners of the
+    OTHER annotated boxes in the same image, which is what makes the cut occlusion-aware: when a
+    second unit stands over the annotated one, GrabCut has no way to know which body owns the shared
+    pixels and reliably prefers the UNOCCLUDED (on-top) one -- so the bank fills with sprites of the
+    wrong card, filed under this class. Those pixels are therefore forced to definite BACKGROUND
+    (the occluder's colours train the background model, actively pushing it out) and erased from the
+    alpha, and a box covered past ``_MAX_OCC`` is rejected outright rather than guessed at.
+
+    Returns (sprite_bgra, crop, rect, reason): sprite is the tight RGBA cutout or None, crop is the
+    margin-expanded context (for the verify panels), rect the box within that crop, reason a reject
+    string or "" on success."""
     H, W = img.shape[:2]
     x0, y0, x1, y1 = (int(round(v)) for v in box_px)
     x0, y0 = max(0, x0), max(0, y0)
@@ -74,14 +83,40 @@ def _cut_sprite(img, box_px, margin: float = 0.25):
     if pl or pt or pr or pb:
         crop = cv2.copyMakeBorder(crop, pt, pb, pl, pr, cv2.BORDER_REPLICATE)
     rect = (mx, my, bw, bh)                       # the annotation box inside the crop
-    mask = np.zeros(crop.shape[:2], np.uint8)
-    try:
-        cv2.grabCut(crop, mask, rect, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64),
-                    5, cv2.GC_INIT_WITH_RECT)
-    except cv2.error:
-        return None, crop, rect, "grabcut-error"
+    # OCCLUDER MASK: the pixels of THIS box that a NEIGHBOURING annotation also claims.
+    occ = np.zeros((bh, bw), np.uint8)
+    for ob in others:
+        ix0, iy0 = max(x0, int(round(ob[0]))), max(y0, int(round(ob[1])))
+        ix1, iy1 = min(x1, int(round(ob[2]))), min(y1, int(round(ob[3])))
+        if ix1 > ix0 and iy1 > iy0:
+            occ[iy0 - y0:iy1 - y0, ix0 - x0:ix1 - x0] = 1
+    occ_n = int(occ.sum())
+    occ_frac = occ_n / float(bw * bh)
+    if occ_frac > _MAX_OCC:
+        return None, crop, rect, f"occluded ({occ_frac:.0%})"
+    occ_crop = np.zeros(crop.shape[:2], np.uint8)
+    occ_crop[my:my + bh, mx:mx + bw] = occ
+    vis = max(1.0, float(bw * bh - occ_n))        # VISIBLE box area: coverage is judged against this,
+                                                  # else an occluded box looks like a failed cut
+    bgd, fgd = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
+    if occ_n:
+        # mask init so the neighbour's pixels can be pinned to definite background
+        mask = np.full(crop.shape[:2], cv2.GC_BGD, np.uint8)
+        mask[my:my + bh, mx:mx + bw] = cv2.GC_PR_FGD
+        mask[occ_crop == 1] = cv2.GC_BGD
+        try:
+            cv2.grabCut(crop, mask, None, bgd, fgd, 5, cv2.GC_INIT_WITH_MASK)
+        except cv2.error:
+            return None, crop, rect, "grabcut-error"
+    else:
+        mask = np.zeros(crop.shape[:2], np.uint8)
+        try:
+            cv2.grabCut(crop, mask, rect, bgd, fgd, 5, cv2.GC_INIT_WITH_RECT)
+        except cv2.error:
+            return None, crop, rect, "grabcut-error"
     fg = ((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD)).astype(np.uint8)
-    if float(fg[my:my + bh, mx:mx + bw].sum()) / float(bw * bh) < _COV_MIN:
+    fg[occ_crop == 1] = 0
+    if float(fg[my:my + bh, mx:mx + bw].sum()) / vis < _COV_MIN:
         # RETRY for low-contrast cases (blue unit on blue arena, purple deploy-tile overlay): the
         # rect init let the background model swallow everything. Seed a mask init instead -- ring =
         # definite background, box = probable foreground, the CENTRAL CORE of the box = definite
@@ -90,20 +125,23 @@ def _cut_sprite(img, box_px, margin: float = 0.25):
         mask[my:my + bh, mx:mx + bw] = cv2.GC_PR_FGD
         core = (my + bh // 4, my + (3 * bh) // 4, mx + bw // 4, mx + (3 * bw) // 4)
         mask[core[0]:core[1], core[2]:core[3]] = cv2.GC_FGD
+        mask[occ_crop == 1] = cv2.GC_BGD           # never seed the core on a neighbour's body
         try:
             cv2.grabCut(crop, mask, None, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64),
                         5, cv2.GC_INIT_WITH_MASK)
         except cv2.error:
             return None, crop, rect, "grabcut-error"
         fg = ((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD)).astype(np.uint8)
+        fg[occ_crop == 1] = 0
         # the forced core ALWAYS survives a mask init -- only accept the retry if the model actually
         # grew beyond it (a bare rectangular core = a failed cut, not a sprite)
         beyond = fg[my:my + bh, mx:mx + bw].copy()
         beyond[bh // 4:(3 * bh) // 4, bw // 4:(3 * bw) // 4] = 0
-        if float(beyond.sum()) / float(bw * bh) < 0.06:
+        if float(beyond.sum()) / vis < 0.06:
             return None, crop, rect, "empty-mask (retry stayed at the core)"
     fg = cv2.morphologyEx(fg, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     fg = cv2.morphologyEx(fg, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+    fg[occ_crop == 1] = 0                          # morphology can bleed back over the neighbour
     # keep only components that touch the CENTRAL half of the box (stray background blobs out)
     n, lab = cv2.connectedComponents(fg)
     if n > 1:
@@ -113,12 +151,13 @@ def _cut_sprite(img, box_px, margin: float = 0.25):
         keep = {int(v) for v in np.unique(centre) if v != 0}
         fg = np.isin(lab, list(keep)).astype(np.uint8) if keep else np.zeros_like(fg)
     box_fg = fg[my:my + bh, mx:mx + bw]
-    cov = float(box_fg.sum()) / float(bw * bh)
+    cov = float(box_fg.sum()) / vis
     if cov < _COV_MIN:
         return None, crop, rect, f"empty-mask ({cov:.0%})"
     if cov > _COV_MAX:
         return None, crop, rect, f"kept-everything ({cov:.0%})"
     alpha = cv2.GaussianBlur(box_fg * 255, (3, 3), 0)          # 1px feather vs hard halos
+    alpha[occ == 1] = 0                                        # ...which must not feather back onto a neighbour
     sprite = cv2.cvtColor(crop[my:my + bh, mx:mx + bw], cv2.COLOR_BGR2BGRA)
     sprite[:, :, 3] = alpha
     ys, xs = np.where(alpha > 8)                               # tight-crop to the visible pixels
@@ -175,6 +214,13 @@ def extract_sprites(cfg, split: str = "train", margin: float = 0.25, limit: int 
         if img is None:
             continue
         H, W = img.shape[:2]
+        # pixel corners of every box in this frame -> the occluder set for each cut. _aoe decals are
+        # translucent GROUND overlays that units stand ON, so they never occlude and are excluded.
+        px = []
+        for (cid, cx, cy, w, h) in boxes:
+            nm = classes[cid] if 0 <= cid < len(classes) else ""
+            px.append(None if nm.endswith("_aoe") else
+                      ((cx - w / 2) * W, (cy - h / 2) * H, (cx + w / 2) * W, (cy + h / 2) * H))
         for bi, (cid, cx, cy, w, h) in enumerate(boxes):
             if not (0 <= cid < len(classes)):
                 continue
@@ -183,7 +229,8 @@ def extract_sprites(cfg, split: str = "train", margin: float = 0.25, limit: int 
                 aoe += 1
                 continue
             box = ((cx - w / 2) * W, (cy - h / 2) * H, (cx + w / 2) * W, (cy + h / 2) * H)
-            sprite, _crop, _rect, reason = _cut_sprite(img, box, margin)
+            others = [r for k, r in enumerate(px) if k != bi and r is not None]
+            sprite, _crop, _rect, reason = _cut_sprite(img, box, margin, others)
             if sprite is None:
                 rejected += 1
                 reasons[reason.split(" (")[0]] = reasons.get(reason.split(" (")[0], 0) + 1
@@ -239,20 +286,24 @@ def verify_sprites(cfg, count: int = 24, margin: float = 0.25) -> None:
     for ip, boxes in _iter_annotations(cfg, "all"):
         for bi, b in enumerate(boxes):
             if 0 <= b[0] < len(classes) and not classes[b[0]].endswith("_aoe"):
-                all_boxes.append((ip, bi, b))
+                all_boxes.append((ip, bi, b, boxes))
     if not all_boxes:
         print("[sprites] no annotated boxes found under data/detect -- run detect-import first.")
         return
     sample = random.sample(all_boxes, min(count, len(all_boxes)))
     PH = 108                                                    # panel height
     panels, ok_n = [], 0
-    for ip, bi, (cid, cx, cy, w, h) in sample:
+    for ip, bi, (cid, cx, cy, w, h), sibs in sample:
         img = cv2.imread(str(ip))
         if img is None:
             continue
         H, W = img.shape[:2]
         box = ((cx - w / 2) * W, (cy - h / 2) * H, (cx + w / 2) * W, (cy + h / 2) * H)
-        sprite, crop, rect, reason = _cut_sprite(img, box, margin)
+        others = [((b[1] - b[3] / 2) * W, (b[2] - b[4] / 2) * H,
+                   (b[1] + b[3] / 2) * W, (b[2] + b[4] / 2) * H)
+                  for k, b in enumerate(sibs)
+                  if k != bi and 0 <= b[0] < len(classes) and not classes[b[0]].endswith("_aoe")]
+        sprite, crop, rect, reason = _cut_sprite(img, box, margin, others)
         if crop is None:
             continue
         src = crop.copy()
