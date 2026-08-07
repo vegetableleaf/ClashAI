@@ -403,7 +403,22 @@ def play(cfg) -> None:
                                       base=card_threat.base_key(vision.deck_keys[card_id]))
 
     running = {"v": True}
-    signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
+
+    def _on_sigint(*_a):
+        """First Ctrl+C = stop cleanly. Second = abort NOW.
+
+        A flag-only handler disarms Ctrl+C anywhere the flag is not polled. The main loop here does
+        poll it every iteration, but restoring the default handler on the second press guarantees an
+        escape hatch even if something inside an iteration blocks (nav, taps, a wedged capture)."""
+        if running["v"]:
+            running["v"] = False
+            print("\n[play] stop requested -- finishing this iteration. "
+                  "Press Ctrl+C again to abort immediately.", flush=True)
+        else:
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            raise KeyboardInterrupt
+
+    signal.signal(signal.SIGINT, _on_sigint)
 
     log_path = Path(cfg.path("data")) / f"play_{datetime.now():%Y%m%d_%H%M%S}.log"
     try:
