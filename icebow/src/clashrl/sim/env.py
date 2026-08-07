@@ -257,6 +257,16 @@ class SimMatchEnv:
             return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
+        if prof.pull:
+            # A PULL spell is not a role counter and must not be graded as one. Its payoff is the CLUMP --
+            # ice-wizard splash landing on everything, a centre Rocket hitting the whole push, a wincon
+            # dragged off a tower, your king woken early -- none of which exists at cast time. Grading it
+            # here charged an UNCAPPED -1.0 the moment it was cast on any non-swarm push, while the
+            # execution credit that repays it arrives 2-3.5s later and is INSIDE correctness_cap: a tornado
+            # that clumped 2 enemies still netted -0.75, teaching the policy that the deck's signature
+            # defensive play is a mistake. Judged solely by _nado_shaping now; an EMPTY pull is still
+            # punished by spell_waste, so this is not a free pass.
+            return 0.0
         if card_threat.counters(prof, tid):
             return self.w_threat_response if intercept else 0.0          # right counter; full only if it intercepts
         return self.w_threat_miss if intercept else 0.0                  # wrong role dropped as a defence = a misread

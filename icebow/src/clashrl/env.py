@@ -481,6 +481,9 @@ class LiveMatchEnv:
                 return self.w_threat_miss * 0.4        # a defender on a quiet board = premature (small)
             return 0.0
         intercept = self._same_lane(cx) and cy >= 0.5
+        if prof.pull:
+            return 0.0        # PULL spells are graded by their delayed clump payoff, not by role match
+                              # (see sim/env._threat_response) -- spell_waste still punishes an empty cast
         if card_threat.counters(prof, tid):
             return self.w_threat_response if intercept else 0.0
         return self.w_threat_miss if intercept else 0.0

@@ -77,6 +77,8 @@ class ThreatProfile:
     tower_damage: Optional[int] = None
     attack_range: Optional[str] = None   # attack reach: melee | short | long (from CardDB.attack_range)
     melee: bool = False                  # a melee attacker (reach == melee) -- e.g. a tornado-pull target
+    pull: bool = False                   # a PULL spell (Tornado): its value is the clump it creates, which
+                                         # only exists 2-3.5s later -- so it must NOT be graded by role match
 
     def roles(self) -> List[str]:
         """Active role tags, most strategically salient first (for display / aggregation)."""
@@ -146,6 +148,7 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         tower_damage=db.tower_damage(base),
         attack_range=reach,
         melee=reach == "melee",
+        pull=("pull" in flags),
     )
 
 
