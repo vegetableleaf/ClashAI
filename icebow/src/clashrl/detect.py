@@ -779,6 +779,23 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
         print(f"[detect-import] matched 0 annotations to images from the {src_desc} -- check the export "
               "and that its images are in the dataset (the labelling queue).")
         return
+    # DEDUPE BY STEM. Label Studio can hold several TASKS for the same image (re-labelled, or the
+    # queue imported twice). They all write to one filename, so the last one silently won -- and the
+    # copies usually DISAGREE, making that a coin flip over which annotation survived. Keep the
+    # RICHEST copy (most boxes) instead. This also makes the summary honest: the counts below are
+    # DISTINCT IMAGES, which is what lands on disk -- reporting len(pairs) overstated the dataset by
+    # the number of duplicate tasks and looked like images had gone missing.
+    best: dict = {}
+    n_dup = 0
+    for stem, img, lines in pairs:
+        prev = best.get(stem)
+        if prev is None:
+            best[stem] = (stem, img, lines)
+            continue
+        n_dup += 1
+        if len(lines) > len(prev[2]):
+            best[stem] = (stem, img, lines)
+    pairs = list(best.values())
     vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
     manifest = _load_split(root)                 # BEFORE the wipe -- it may have to bootstrap from disk
     # the export is the source of truth -> clear the old split, then write fresh
@@ -805,6 +822,9 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
 
     print(f"[detect-import] imported {len(pairs)} images ({len(pairs) - n_val} train / {n_val} val), "
           f"{n_box} boxes from the {src_desc} -> {root}")
+    if n_dup:
+        print(f"[detect-import] {n_dup} duplicate task(s) collapsed onto an already-seen image "
+              f"(kept the copy with the most boxes) -- the counts above are DISTINCT images")
     print(f"[detect-import] split.json: {n_new} new image(s) assigned, {len(pairs) - n_new} kept their "
           f"existing side (so this generation stays comparable to the last)")
     if unknown:
