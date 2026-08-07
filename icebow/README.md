@@ -44,95 +44,49 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
 
-## Launcher (Browser-Oberfläche) — `run.py ui`
+## Launcher (Browser-Oberfläche): `run.py ui`
 
 Statt jedes Kommando im Terminal zu tippen: **`start_ui.bat` im Repo-Root doppelklicken**
-(oder `.\.venv\Scripts\python.exe run.py ui`). Es startet einen lokalen Server auf
-`http://127.0.0.1:8765` — **nur localhost**, kein Netzwerkzugriff, keine Anmeldung —
-und öffnet den Browser.
+(oder `.\.venv\Scripts\python.exe run.py ui`). Das startet einen lokalen Server auf
+`http://127.0.0.1:8765`, nur localhost, keine Anmeldung, und öffnet den Browser.
 
-Beim ersten Start erscheint ein kurzes Willkommensfenster mit dem ToS-Hinweis und startet
-auf Wunsch eine **geführte Tour**: sie wechselt selbst durch die Bereiche und hebt dabei
-jeweils genau das Bedienelement hervor, um das es geht. Beides ist jederzeit über
-„Einführung“ bzw. „Hinweise“ oben rechts wieder erreichbar.
+Ausführlich beschrieben in [docs/LAUNCHER.md](docs/LAUNCHER.md); die Reihenfolge bis zu
+brauchbaren Daten steht in [docs/PIPELINE.md](docs/PIPELINE.md).
 
-Die Oberfläche bietet:
+Kurz, was dort zu finden ist:
 
-* **Übersicht** — Stand des Projekts (Checkpoints, Deck, Türme, gemessenes Tempo) und
-  konkrete Vorschläge, was als nächstes sinnvoll ist.
-* **Steuerung** — Start/Stop für `train-sim`, `train-sim-ppo`, `train-bc`, `train-rl`,
-  `play`, `record`, `label`, `outcomes`, `verify`, `diag`, `policy-stats`, `sim-bench`,
-  nach Zweck gruppiert. Stop sendet das Ctrl+C-Äquivalent, damit die bestehende
-  Checkpoint-Speicherung beim Abbruch greift. Zwei GPU-Jobs gleichzeitig lässt der
-  Launcher nicht zu.
-* **Tempo** — liest CPU, RAM und GPU aus, schätzt den RAM-Bedarf des Replay-Puffers und
-  misst mit `sim-bench`, wieviele Matches pro Sekunde dieser PC bei welcher Env-Zahl
-  schafft. `sim-bench --auto` verdoppelt die Zahl gleichzeitiger Matches so lange, bis es
-  nicht mehr schneller wird oder der Arbeitsspeicher knapp würde, und `--apply` schreibt
-  das Ergebnis gleich in die Config.
-* **Deck erkennen** — `cards-art` lädt einmalig je ein Referenzbild pro Karte aus dem
-  Fandom-Wiki, danach ordnet `deck-detect` die Kartenbilder einer Aufnahme automatisch den
-  Karten zu. Das manuelle Umbenennen von `_cand_*.png` entfällt; das Ergebnis wird im
-  Deck-Tab mit Sicherheitswert und Alternativen zur Bestätigung angezeigt.
-* **Türme** — Turmtruppen des Simulators: eigener Turm, Bezugslevel, Reichweiten,
-  Königsturm sowie beliebig viele Turmtypen mit HP/DPS/Schussintervall und der
-  Gewichtung, mit der der Gegner sie würfelt. Neue Typen wirken sofort, ohne Codeänderung.
-* **Live-Log** des laufenden Prozesses (Server-Sent Events); Volltext unter `data/ui_logs/`.
-* **Dashboard** — Winrate, Reward, Loss, Epsilon, Matches/Sekunde, Benchmark-Kurve,
-  Restzeit bis zur Ziel-Matchzahl. Persistiert in `data/metrics.jsonl` (übersteht Neustarts),
-  CSV-Export per Knopfdruck.
-* **Strategie** — welche Karten die Policy wie oft spielt, Platzierungs-Heatmap über
-  `action.grid`, Wait-Gate-Quote, nie gespielte Karten. Datenquelle: `run.py policy-stats`.
-* **Deck** — aktuelles Deck aus `cards.yaml` mit Elixier/Rolle/Durchschnitt, Karten per
-  Auswahlliste tauschbar, Level pro Karte. Warnt, was ein Deckwechsel ungültig macht.
-* **Config** — die wichtigsten Felder aus `config.yaml` mit Erklärung und Validierung.
-  Geschrieben wird **zeilenweise**, sodass alle Kommentare der Datei erhalten bleiben;
-  vorher Backup nach `data/config_backups/`, ungültiges YAML wird nie geschrieben.
-* **Checkpoints** — `.pt`-Dateien mit Datum, Matchzahl, bestem Benchmark und Deck-Abgleich;
-  übernehmbar als `--init` für den nächsten Lauf.
+* **Live** zeigt das aktuelle Spielbild und was der Bot daraus liest. Wenn irgendetwas
+  keine Daten liefert, sieht man hier zuerst warum.
+* **Steuerung** startet und stoppt alle Kommandos, nach Zweck gruppiert. Stop beendet
+  geordnet und speichert dabei; zwei GPU-Jobs gleichzeitig lässt der Launcher nicht zu.
+* **Fortschritt** zeigt Benchmark, Reward, Loss, Tempo und die Restzeit bis zur Zielzahl.
+  Alles landet in `data/metrics.jsonl` und übersteht einen Neustart.
+* **Strategie** zählt, welche Karten die Policy wirklich spielt und wohin.
+* **Deck** erkennt das Deck automatisch aus einer Aufnahme und schreibt auf Wunsch die
+  Hand-Vorlagen gleich mit.
+* **Türme** definiert die Turmtruppen des Simulators samt Gewichtung des Gegners.
+* **Tempo** misst, wieviele Matches pro Sekunde dieser PC schafft, und übernimmt die
+  beste Einstellung.
+* **Einstellungen** bearbeitet die wichtigsten Werte aus `config.yaml`, zeilenweise und
+  mit Sicherung, sodass alle Kommentare der Datei erhalten bleiben.
+* **Checkpoints** listet die trainierten Stände und übernimmt einen als `--init`.
 
-Die CLI bleibt vollständig funktionsfähig — das UI ruft sie auf, es ersetzt sie nicht.
+Beim ersten Start führt eine kurze Tour durch die Punkte, die nicht selbsterklärend sind.
 
-### Trainingstempo
+> Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS. Der Hinweis
+> steht im Launcher unter „Hinweise“.
 
-`train-sim` schiebt seine Beobachtungen jetzt **gebündelt** auf die GPU statt einzeln
-(eine Kopie pro Batch statt 128 winziger Kopien je Optimierungsschritt). Gemessen auf
-einem RTX 3070 / 16 Threads, 60 Matches bei `--envs 16`, Seed 0, je zwei Läufe:
+### Wenn nichts Daten liefert
 
-| Pfad | Matches/s |
-|---|---|
-| vorher (pro Sample) | 1,04 / 1,01 |
-| nachher (gebündelt) | 2,07 / 1,90 |
+Die mitgelieferten Bildschirm-Vorlagen stammen aus einem englischen Client mit einer
+bestimmten Fenstergröße. Bei anderer Größe oder Sprache erkennt `detect_state` kein
+Match, und alles Weitere findet nichts, ohne zu scheitern. Gegenmittel:
 
-Dazu kommt die Env-Zahl. `run.py sim-bench` misst sie auf deinem Rechner (je 30 s,
-gleicher Seed, schreibt nach `data/bench/`, nie auf `policy_sim.pt`):
+```powershell
+.\.venv\Scripts\python.exe run.py calibrate      # schneidet die Erkennung neu zu
+```
 
-Dazu kommt die Zahl gleichzeitiger Matches. `run.py sim-bench --auto` verdoppelt sie und
-misst jede Stufe (je 25 s, gleicher Seed, schreibt nach `data/bench/`, nie auf
-`policy_sim.pt`):
-
-| gleichzeitige Matches | 8 | 16 | 32 | 64 | 128 | 256 |
-|---|---|---|---|---|---|---|
-| Matches/s | 2,20 | 3,16 | 4,08 | **4,32** | 3,47 | 2,35 |
-| Lernschritte je Match | 23,1 | 12,0 | 6,1 | 3,6 | 2,6 | 2,3 |
-
-Mehr ist also ausdrücklich **nicht** immer besser: ab 64 fällt der Durchsatz wieder, und
-die Zahl der Lernschritte, die auf ein einzelnes Match entfallen, sinkt durchgehend. Die
-Automatik hört deshalb auf, sobald zwei Verdopplungen nichts mehr bringen, und empfiehlt
-von den gleich schnellen Einstellungen die kleinste.
-
-Zusammen mit dem Transfer-Fix rund **5×** gegenüber dem alten Default (0,85 m/s bei 8
-Envs, alter Code). Die Kurve flacht ab, weil `train-sim` EIN Prozess ist: die Envs rechnen
-wegen des GIL nacheinander auf einem Kern. Echte Mehrkern-Nutzung braucht Worker-Prozesse
-(geplant).
-
-Der **Start** eines Laufs kostete vorher ~0,4 s pro Env, weil jede Env-Instanz sich ihre
-eigene Kartendatenbank baute und die ~1000 Meta-Decks neu parste: bei 64 Envs rund 27 s,
-bevor der erste Zug fiel. Beides wird jetzt einmal geladen und geteilt (schreibgeschützt,
-Cache verfällt bei geänderter Datei). 64 Envs brauchen dafür noch 0,12 s.
-
-> ⚠️ Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS
-> (Warnhinweis steht im Launcher).
+Details und die Messwerte dazu in [docs/PIPELINE.md](docs/PIPELINE.md).
 
 ## Setup
 
