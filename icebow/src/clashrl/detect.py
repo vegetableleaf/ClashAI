@@ -745,34 +745,59 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     (order/compaction-proof) and lays images + labels into the Ultralytics train/val split + rebuilds
     data.yaml -- the export becomes the source of truth, so the previous split is replaced.
 
-    Accepts EITHER a **JSON export** (a .json file, or a folder containing one) OR a **YOLO export**
-    (a folder with ``classes.txt`` + ``labels/`` + optionally ``images/``). PREFER JSON on Windows:
-    the YOLO export CRASHES when Local Storage serves files via ``?d=...\\...`` URLs -- the per-image
-    label filename Label Studio derives then contains ``? = \\`` (illegal on Windows). Images are
-    matched by basename to the current dataset (the labelling queue / existing split), so a plain
-    'JSON' export (no image files) is enough.
+    Accepts a **JSON export** (a .json file, a COMMA-SEPARATED list of them, or a folder holding
+    several -- all are MERGED, which is how a second annotator's export is folded in) OR a **YOLO
+    export** (a folder with ``classes.txt`` + ``labels/`` + optionally ``images/``). PREFER JSON on
+    Windows: the YOLO export CRASHES when Local Storage serves files via ``?d=...\\...`` URLs -- the
+    per-image label filename Label Studio derives then contains ``? = \\`` (illegal on Windows).
+    Images are matched by BASENAME to the current dataset (the labelling queue / existing split), so
+    a plain 'JSON' export (no image files) is enough -- but ONLY if the frames it references are
+    actually in the dataset. An export made against someone else's local folder matches nothing
+    until their image files are dropped into the labelling queue.
     """
-    export = Path(export_dir)
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
 
-    json_path = None
-    if export.is_file() and export.suffix.lower() == ".json":
-        json_path = export
-    elif export.is_dir() and not ((export / "classes.txt").exists() and (export / "labels").exists()):
-        js = sorted(export.glob("*.json"))
-        json_path = js[0] if js else None
+    # ONE OR MORE exports. `export_dir` may be a single .json, a COMMA-SEPARATED list of .json files,
+    # a folder holding several .json (ALL are merged, not just the first), or a YOLO-export folder.
+    # Merging happens on the PAIR list and conflicts are settled by the dedupe below (richest
+    # annotation wins), so two people labelling DIFFERENT frames simply add up, and where they
+    # overlap the denser labelling is kept -- no manual JSON surgery needed.
+    sources = [Path(s.strip()) for s in str(export_dir).split(",") if s.strip()]
+    json_paths, yolo_dirs = [], []
+    for src in sources:
+        if src.is_file() and src.suffix.lower() == ".json":
+            json_paths.append(src)
+        elif src.is_dir():
+            js = sorted(p for p in src.glob("*.json") if p.name != "split.json")
+            if js:                                   # JSON WINS when a folder has both shapes: it is
+                json_paths.extend(js)                # the recommended export, and the dataset root
+            elif (src / "classes.txt").exists() and (src / "labels").exists():   # itself carries a
+                yolo_dirs.append(src)                # stray classes.txt + labels/ that would else win
 
-    if json_path is not None:
-        pairs, unmatched, unknown = _ls_json_pairs(json_path, root, name_to_idx)
-        src_desc = f"JSON export ({json_path.name})"
-    elif export.is_dir() and (export / "classes.txt").exists() and (export / "labels").exists():
-        pairs, unmatched, unknown = _yolo_export_pairs(export, root, name_to_idx)
-        src_desc = "YOLO export"
-    else:
-        print(f"[detect-import] {export} is not a Label Studio export -- expected a .json file, OR a "
-              "folder with either a *.json (JSON export) or classes.txt + labels/ (YOLO export).")
+    pairs, unmatched, unknown_set, descs = [], 0, set(), []
+    for jp in json_paths:
+        p, u, k = _ls_json_pairs(jp, root, name_to_idx)
+        pairs += p
+        unmatched += u
+        unknown_set.update(k)
+        descs.append(jp.name)
+        print(f"[detect-import] {jp.name}: {len(p)} matched, {u} unmatched")
+    for yd in yolo_dirs:
+        p, u, k = _yolo_export_pairs(yd, root, name_to_idx)
+        pairs += p
+        unmatched += u
+        unknown_set.update(k)
+        descs.append(f"{yd.name} (YOLO)")
+        print(f"[detect-import] {yd.name} (YOLO export): {len(p)} matched, {u} unmatched")
+    unknown = sorted(unknown_set)
+    src_desc = " + ".join(descs) if descs else ""
+
+    if not descs:
+        print(f"[detect-import] {export_dir} is not a Label Studio export -- expected a .json file, a "
+              "comma-separated list of .json files, OR a folder with either *.json (JSON export) or "
+              "classes.txt + labels/ (YOLO export).")
         return
 
     if not pairs:
