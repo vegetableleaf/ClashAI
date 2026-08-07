@@ -139,7 +139,7 @@ def suggest(info: Dict[str, Any], cur_envs: int = 8) -> Dict[str, Any]:
     notes = [
         f"{cores} logical CPU cores, "
         f"{(ram / 1024 ** 3):.0f} GB RAM"
-        + (f", {info.get('gpu')} mit {(vram / 1024 ** 3):.0f} GB VRAM" if cuda else ", no usable GPU"),
+        + (f", {info.get('gpu')} with {(vram / 1024 ** 3):.0f} GB VRAM" if cuda else ", no usable GPU"),
         "train-sim runs in ONE process: the parallel matches are stepped one after another on a single core. "
         "More of them spread the GPU work over more matches but do not scale linearly, "
         "which is why the benchmark measures instead of guessing.",

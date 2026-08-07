@@ -421,7 +421,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     if not quiet:
         print(f"[train-sim] {device}: {K} vectorized env(s), up to {matches} matches "
               f"(cards={n_cards}, cells={n_cells})"
-              + (f", Zeitlimit {time_limit_s:.0f}s" if time_limit_s else "")
+              + (f", time limit {time_limit_s:.0f}s" if time_limit_s else "")
               + ". Ctrl+C to stop + save.")
     step = 0
     done_n = wins = losses = draws = 0

@@ -215,9 +215,9 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     ref_gray = mean_in[y:y + CAND_H, x:x + CAND_W].astype(np.uint8)
     med = ins[len(ins) // 2][y:y + CAND_H, x:x + CAND_W].copy()
     _m, sc_in, sc_out = separation(y, x, gi_u, go_u)
-    # Ein einzelnes Matchbild darf danebenliegen (verdeckte Karte, Emote): dafuer das
-    # 10-Prozent-Quantil. Bei den Nicht-Match-Bildern zaehlt dagegen der HOECHSTE Wert,
-    # denn ein falsches Positiv liesse den Bot im Menue losspielen.
+    # A single in-match frame is allowed to be an outlier (a card icon in the way, an
+    # emote): hence the 10th-percentile. For the non-match frames the HIGHEST value
+    # counts instead, because a false positive would let the bot start playing in a menu.
     lo_in = float(np.quantile(sc_in, 0.10))
     hi_out = max(sc_out)
     print(f"[calibrate] new region: match frames {min(sc_in):.3f}..{max(sc_in):.3f} "
@@ -281,7 +281,7 @@ def _write_states_block(text: str, spec: dict) -> str:
             head = i
             break
     if head is None:
-        raise ValueError("states.in_match nicht gefunden")
+        raise ValueError("states.in_match not found")
     j = head + 1
     while j < len(lines):
         ln = lines[j]

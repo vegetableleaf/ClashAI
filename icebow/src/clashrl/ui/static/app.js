@@ -242,7 +242,7 @@ function argInput(cmd, a) {
   if (a.type === "bool") { inp = el("input"); inp.type = "checkbox"; inp.checked = !!a.default; }
   else if (a.type === "choice") {
     inp = el("select");
-    (a.choices || []).forEach(c => { const o = el("option", null, c === "" ? "(Standard)" : c);
+    (a.choices || []).forEach(c => { const o = el("option", null, c === "" ? "(default)" : c);
       o.value = c; inp.appendChild(o); });
     inp.value = a.default ?? "";
   } else if (a.type === "session") {
@@ -269,9 +269,9 @@ function argInput(cmd, a) {
 function fillCkptSelect(sel, current) {
   const keep = current || sel.value || "";
   sel.innerHTML = "";
-  const o0 = el("option", null, "(Standard)"); o0.value = ""; sel.appendChild(o0);
+  const o0 = el("option", null, "(default)"); o0.value = ""; sel.appendChild(o0);
   S.checkpoints.forEach(c => {
-    const wr = (c.best_wr != null && c.best_wr >= 0) ? `: bester Benchmark ${c.best_wr.toFixed(0)} %` : "";
+    const wr = (c.best_wr != null && c.best_wr >= 0) ? `: best benchmark ${c.best_wr.toFixed(0)} %` : "";
     const o = el("option", null, c.name + wr); o.value = c.rel; sel.appendChild(o);
   });
   sel.value = keep;
@@ -544,7 +544,7 @@ async function loadOverview() {
   if ((d.runs || []).length) {
     b.appendChild(el("h2", null, "Recent training runs"));
     const t = el("table", "tbl");
-    t.innerHTML = "<thead><tr><th>Start</th><th>Kommando</th><th>Matches</th><th>bester Benchmark</th></tr></thead>";
+    t.innerHTML = "<thead><tr><th>Start</th><th>Command</th><th>Matches</th><th>Best benchmark</th></tr></thead>";
     const tb = el("tbody");
     d.runs.forEach(r => { const tr = el("tr");
       tr.innerHTML = `<td>${fmtTime(r.start)}</td><td>${r.cmd || "-"}</td><td>${int(r.matches)}</td>
@@ -1273,7 +1273,7 @@ async function loadCheckpoints() {
   if (!list.length) { body.innerHTML = "<p class='hint'>No .pt files under data/ yet.</p>"; return; }
   const deckIds = (S.deck && S.deck.identities) || null;
   const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th>File</th><th>Date</th><th>Matches</th><th>bester Benchmark</th>
+  tbl.innerHTML = `<thead><tr><th>File</th><th>Date</th><th>Matches</th><th>Best benchmark</th>
     <th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;
   const tb = el("tbody");
   list.forEach(c => {

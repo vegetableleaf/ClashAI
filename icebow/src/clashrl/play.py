@@ -117,7 +117,7 @@ def play(cfg, init: str | None = None) -> None:
             pick = "policy_sim_best.pt" if "policy_sim_best.pt" in found else found[0]
             print(f"[play] available under data/: {', '.join(found)}")
             print(f"[play] use one of them directly, e.g.:  run.py play --init data/{pick}")
-            print("[play] (in the launcher: the 'Checkpoint' field of the Spielen tile)")
+            print("[play] (in the launcher: the 'Checkpoint' field of the Play tile)")
         else:
             print("[play] nothing trained yet. `train-sim` produces one without needing the game.")
         return

@@ -550,7 +550,7 @@ def main() -> None:
 
     pst = sub.add_parser("policy-stats",
                          help="measures WHAT the policy plays in the simulator: card frequency, "
-                              "Platzierungs-Heatmap, Wait-Gate-Quote -> data/policy_stats.json")
+                              "placement heatmap, wait-gate rate -> data/policy_stats.json")
     pst.add_argument("--ckpt", default=None,
                      help="checkpoint (default: data/policy_sim_best.pt, else policy_sim.pt)")
     pst.add_argument("--matches", type=int, default=60, help="how many greedy matches to play")

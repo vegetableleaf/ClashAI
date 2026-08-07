@@ -156,7 +156,7 @@ def _write_templates(cfg, faces, detections, min_score: float, min_margin: float
             continue
         dst = out_dir / f"{best['key']}.png"
         if dst.name in written:
-            continue                      # mehrere Ansichten derselben Karte: eine Vorlage reicht
+            continue                      # several views of the same card: one template is enough
         if dst.exists() and not overwrite:
             existing.append(dst.name)
             continue

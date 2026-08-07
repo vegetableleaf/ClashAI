@@ -44,49 +44,49 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
 
-## Launcher (Browser-Oberfläche): `run.py ui`
+## Launcher (browser panel): `run.py ui`
 
-Statt jedes Kommando im Terminal zu tippen: **`start_ui.bat` im Repo-Root doppelklicken**
-(oder `.\.venv\Scripts\python.exe run.py ui`). Das startet einen lokalen Server auf
-`http://127.0.0.1:8765`, nur localhost, keine Anmeldung, und öffnet den Browser.
+Instead of typing every command in the terminal: **double-click `start_ui.bat` in the repo
+root** (or `.\.venv\Scripts\python.exe run.py ui`). That starts a local server on
+`http://127.0.0.1:8765`, localhost only, no sign-in, and opens the browser.
 
-Ausführlich beschrieben in [docs/LAUNCHER.md](docs/LAUNCHER.md); die Reihenfolge bis zu
-brauchbaren Daten steht in [docs/PIPELINE.md](docs/PIPELINE.md).
+Described in full in [docs/LAUNCHER.md](docs/LAUNCHER.md); the order that gets you to
+usable data is in [docs/PIPELINE.md](docs/PIPELINE.md).
 
-Kurz, was dort zu finden ist:
+Briefly, what is in there:
 
-* **Live** zeigt das aktuelle Spielbild und was der Bot daraus liest. Wenn irgendetwas
-  keine Daten liefert, sieht man hier zuerst warum.
-* **Steuerung** startet und stoppt alle Kommandos, nach Zweck gruppiert. Stop beendet
-  geordnet und speichert dabei; zwei GPU-Jobs gleichzeitig lässt der Launcher nicht zu.
-* **Fortschritt** zeigt Benchmark, Reward, Loss, Tempo und die Restzeit bis zur Zielzahl.
-  Alles landet in `data/metrics.jsonl` und übersteht einen Neustart.
-* **Strategie** zählt, welche Karten die Policy wirklich spielt und wohin.
-* **Deck** erkennt das Deck automatisch aus einer Aufnahme und schreibt auf Wunsch die
-  Hand-Vorlagen gleich mit.
-* **Türme** definiert die Turmtruppen des Simulators samt Gewichtung des Gegners.
-* **Tempo** misst, wieviele Matches pro Sekunde dieser PC schafft, und übernimmt die
-  beste Einstellung.
-* **Einstellungen** bearbeitet die wichtigsten Werte aus `config.yaml`, zeilenweise und
-  mit Sicherung, sodass alle Kommentare der Datei erhalten bleiben.
-* **Checkpoints** listet die trainierten Stände und übernimmt einen als `--init`.
+* **Live** shows the current game frame and what the bot reads from it. If anything is
+  producing no data, this is where you see why first.
+* **Control** starts and stops every command, grouped by purpose. Stop shuts things down
+  cleanly and saves along the way; the launcher never lets two GPU jobs run at once.
+* **Progress** shows benchmark, reward, loss, throughput and the time remaining to the
+  target count. Everything is written to `data/metrics.jsonl` and survives a restart.
+* **Strategy** counts which cards the policy actually plays, and where.
+* **Deck** recognises the deck automatically from a recording and, on request, writes the
+  hand templates along with it.
+* **Towers** defines the simulator's tower troops together with the opponent's weighting.
+* **Tempo** measures how many matches per second this PC manages, and adopts the best
+  setting.
+* **Settings** edits the important values from `config.yaml`, line by line and with a
+  backup, so every comment in the file is preserved.
+* **Checkpoints** lists the trained policies and lets you adopt one as `--init`.
 
-Beim ersten Start führt eine kurze Tour durch die Punkte, die nicht selbsterklärend sind.
+On first launch a short tour walks through the points that are not self-explanatory.
 
-> Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS. Der Hinweis
-> steht im Launcher unter „Hinweise“.
+> The same rule applies here: automated play violates the Supercell ToS. The notice sits
+> in the launcher under "Notes".
 
-### Wenn nichts Daten liefert
+### If nothing produces data
 
-Die mitgelieferten Bildschirm-Vorlagen stammen aus einem englischen Client mit einer
-bestimmten Fenstergröße. Bei anderer Größe oder Sprache erkennt `detect_state` kein
-Match, und alles Weitere findet nichts, ohne zu scheitern. Gegenmittel:
+The bundled screen templates come from an English client at a particular window size. At
+a different size or language, `detect_state` finds no match, and everything downstream
+finds nothing without failing outright. The fix:
 
 ```powershell
-.\.venv\Scripts\python.exe run.py calibrate      # schneidet die Erkennung neu zu
+.\.venv\Scripts\python.exe run.py calibrate      # re-cuts the detection from your own recording
 ```
 
-Details und die Messwerte dazu in [docs/PIPELINE.md](docs/PIPELINE.md).
+Details and the measurements behind it are in [docs/PIPELINE.md](docs/PIPELINE.md).
 
 ## Setup
 

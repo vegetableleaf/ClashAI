@@ -98,7 +98,7 @@ svg{display:block;width:100%;height:180px}
 .cfgfield .help{font-size:11px;color:var(--dim);margin-top:2px}
 .cfgfield.dirty{background:#1a2436}
 
-/* Übersicht */
+/* Overview */
 .steps{display:grid;gap:10px;margin:10px 0}
 .step{background:var(--bg2);border:1px solid var(--line);
   border-radius:8px;padding:10px 12px;display:flex;gap:12px;align-items:center}
@@ -142,8 +142,8 @@ svg{display:block;width:100%;height:180px}
 .modalbody .do .dot{font-size:12px;color:var(--dim);margin-bottom:7px}
 .modalfoot{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
 
-/* Geführte Tour: ein Loch im abgedunkelten Bildschirm über dem gemeinten Element,
-   daneben die Erklärung. Schließt ausschliesslich über die Knöpfe. */
+/* Guided tour: a hole in the dimmed screen over the control it is talking about,
+   with the explanation beside it. Closes only through its buttons. */
 #tour.hidden{display:none}
 #tourhole{position:fixed;border-radius:8px;pointer-events:none;z-index:80;
   box-shadow:0 0 0 9999px rgba(8,10,15,.72);
