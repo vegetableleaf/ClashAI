@@ -4,15 +4,21 @@ so the sim's opponents reflect what's actually played right now.
 Data source (sanctioned, no scraping): the official API (https://developer.clashroyale.com) -- top
 global players -> their recent BATTLE LOGS -> the 8-card decks both sides used -> tallied by frequency
 -> the top N. Needs a FREE API token (IP-locked to where you run this): create one at
-developer.clashroyale.com, then set it in the env var named by `sim.api_token_env`
+developer.clashroyale.com, then either write it into the git-ignored file `sim.api_token_file`
+(default data/cr_api_token.txt) or set the env var named by `sim.api_token_env`
 (default CLASHRL_CR_API_TOKEN). Without a token this prints instructions and leaves the curated
 config/meta_decks.yaml in place.
+
+A battle log covers EVERY mode, including limited-time events, so it offers decks holding cards that
+do not exist in trophy ladder. Those cards were purged from the KB, so they no longer resolve and the
+decks holding them are dropped (and counted) -- the sim only ever trains against ladder-legal decks.
 
 Best-effort: the rankings endpoint/season can change; on an error the message says so and the curated
 fallback keeps working. Card names are mapped to KB keys (evolutions fold to their base).
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -36,15 +42,72 @@ def _get(url: str, token: str, timeout: float = 20.0):
         return json.loads(resp.read().decode("utf-8"))
 
 
+def _load_token(cfg) -> str:
+    """The CR API token from the env var (preferred) or the git-ignored file, or "".
+
+    Same two-source pattern as :func:`clashrl.monitor._load_webhook`. The FILE matters more here
+    than it looks: setting the env var means pasting a long-lived credential on a command line,
+    where it lands in shell history -- and on PowerShell `set NAME value` is `Set-Variable`, which
+    makes a shell variable that ``os.environ`` never sees, so it silently looks like it worked.
+    """
+    env_name = cfg.get("sim", "api_token_env", default="CLASHRL_CR_API_TOKEN")
+    tok = os.environ.get(env_name, "") if env_name else ""
+    if tok.strip():
+        return tok.strip()
+    fpath = cfg.get("sim", "api_token_file", default="data/cr_api_token.txt")
+    p = Path(cfg.path(fpath))
+    if p.exists():
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                return line
+    return ""
+
+
+def _diagnose_403(token: str) -> str:
+    """Explain a 403 by naming the IP the key allows vs the IP this machine actually has.
+
+    The key is IP-LOCKED by Supercell and residential IPs rotate, so "403" is nearly always
+    "your IP changed" -- but the raw error can't say that, and finding your public IP is a
+    manual lookup. The JWT's PAYLOAD carries the allowlist in plain base64url (read-only, no
+    signature check, nothing secret printed), so the exact mismatch can be reported instead.
+    """
+    bits = []
+    try:
+        payload = token.split(".")[1]
+        payload += "=" * (-len(payload) % 4)                 # base64url is unpadded
+        cidrs = []
+        for lim in json.loads(base64.urlsafe_b64decode(payload)).get("limits", []):
+            cidrs += lim.get("cidrs", []) or []
+        if cidrs:
+            bits.append(f"key allows {', '.join(cidrs)}")
+    except Exception:  # noqa: BLE001 -- diagnosis is best-effort; never mask the original error
+        return ""
+    try:
+        with urllib.request.urlopen("https://api.ipify.org", timeout=10) as r:
+            mine = r.read().decode().strip()
+        bits.append(f"this machine is {mine}")
+        if cidrs and not any(mine == c.split("/")[0] for c in cidrs):
+            bits.append(f"MISMATCH -> add {mine} to the key (or make a new one) at "
+                        "developer.clashroyale.com")
+    except Exception:  # noqa: BLE001
+        pass
+    return "; ".join(bits)
+
+
 def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
     from .cards import CardDB
     db = CardDB(cfg)
     token_env = cfg.get("sim", "api_token_env", default="CLASHRL_CR_API_TOKEN")
-    token = os.environ.get(token_env, "").strip()
+    token = _load_token(cfg)
     out_path = Path(cfg.path(cfg.get("sim", "meta_decks_file", default="config/meta_decks.yaml")))
     if not token:
+        tf = cfg.get("sim", "api_token_file", default="data/cr_api_token.txt")
         print(f"[decks-import] no API token. Get a FREE one at https://developer.clashroyale.com "
-              f"(create a key locked to THIS machine's public IP), then set env {token_env} and re-run.\n"
+              f"(create a key locked to THIS machine's public IP), then EITHER write it into the "
+              f"git-ignored file {tf} (one line, keeps it out of shell history) OR set env {token_env} "
+              f"-- in PowerShell that is `$env:{token_env} = \"...\"`, NOT `set {token_env} ...`, "
+              f"which only makes a shell variable.\n"
               f"  Until then the curated {out_path.name} is used as-is.")
         return
     base = cfg.get("sim", "api_base", default="https://api.clashroyale.com/v1")
@@ -54,8 +117,10 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
         top = _get(f"{base}/locations/global/rankings/players?limit={players}", token)
         tags = [p["tag"] for p in top.get("items", [])][:players]
     except urllib.error.HTTPError as e:
+        why = _diagnose_403(token) if e.code == 403 else ""
         print(f"[decks-import] rankings fetch failed (HTTP {e.code}). A 403 = bad token / wrong IP; "
-              "a 404 = the endpoint/season moved. Curated decks kept.")
+              "a 404 = the endpoint/season moved. Curated decks kept."
+              + (f"\n  {why}" if why else ""))
         return
     except Exception as e:  # noqa: BLE001
         print(f"[decks-import] rankings fetch failed: {e!r}. Curated decks kept.")

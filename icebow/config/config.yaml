@@ -783,4 +783,9 @@ sim:
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
   api_token_env: CLASHRL_CR_API_TOKEN       # env var holding your official CR API token (developer.clashroyale.com; IP-locked)
+  api_token_file: data/cr_api_token.txt     # git-ignored fallback file with the token (data/ is ignored), one line.
+                                            # PREFER THIS over the env var: exporting a token on a command line puts a
+                                            # long-lived credential into shell history, and on PowerShell `set NAME value`
+                                            # is Set-Variable -- it makes a SHELL variable that os.environ never sees, so
+                                            # it silently looks like it worked. Correct env syntax is `$env:NAME = "..."`.
   api_base: https://api.clashroyale.com/v1  # official Clash Royale API base URL
