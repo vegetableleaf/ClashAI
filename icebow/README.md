@@ -51,9 +51,10 @@ Statt jedes Kommando im Terminal zu tippen: **`start_ui.bat` im Repo-Root doppel
 `http://127.0.0.1:8765` — **nur localhost**, kein Netzwerkzugriff, keine Anmeldung —
 und öffnet den Browser.
 
-Beim ersten Start läuft eine **Einführung** in fünf Schritten (jederzeit über „Einführung“
-oben rechts erneut aufrufbar); der ToS-Hinweis steht darin und bleibt über das ⚠-Symbol
-in der Kopfzeile erreichbar.
+Beim ersten Start erscheint ein kurzes Willkommensfenster mit dem ToS-Hinweis und startet
+auf Wunsch eine **geführte Tour**: sie wechselt selbst durch die Bereiche und hebt dabei
+jeweils genau das Bedienelement hervor, um das es geht. Beides ist jederzeit über
+„Einführung“ bzw. „Hinweise“ oben rechts wieder erreichbar.
 
 Die Oberfläche bietet:
 
@@ -66,7 +67,13 @@ Die Oberfläche bietet:
   Launcher nicht zu.
 * **Tempo** — liest CPU, RAM und GPU aus, schätzt den RAM-Bedarf des Replay-Puffers und
   misst mit `sim-bench`, wieviele Matches pro Sekunde dieser PC bei welcher Env-Zahl
-  schafft. Die schnellste gemessene Einstellung lässt sich mit einem Klick übernehmen.
+  schafft. `sim-bench --auto` verdoppelt die Zahl gleichzeitiger Matches so lange, bis es
+  nicht mehr schneller wird oder der Arbeitsspeicher knapp würde, und `--apply` schreibt
+  das Ergebnis gleich in die Config.
+* **Deck erkennen** — `cards-art` lädt einmalig je ein Referenzbild pro Karte aus dem
+  Fandom-Wiki, danach ordnet `deck-detect` die Kartenbilder einer Aufnahme automatisch den
+  Karten zu. Das manuelle Umbenennen von `_cand_*.png` entfällt; das Ergebnis wird im
+  Deck-Tab mit Sicherheitswert und Alternativen zur Bestätigung angezeigt.
 * **Türme** — Turmtruppen des Simulators: eigener Turm, Bezugslevel, Reichweiten,
   Königsturm sowie beliebig viele Turmtypen mit HP/DPS/Schussintervall und der
   Gewichtung, mit der der Gegner sie würfelt. Neue Typen wirken sofort, ohne Codeänderung.
@@ -100,14 +107,24 @@ einem RTX 3070 / 16 Threads, 60 Matches bei `--envs 16`, Seed 0, je zwei Läufe:
 Dazu kommt die Env-Zahl. `run.py sim-bench` misst sie auf deinem Rechner (je 30 s,
 gleicher Seed, schreibt nach `data/bench/`, nie auf `policy_sim.pt`):
 
-| `sim.envs` | 8 | 16 | 32 | 48 |
-|---|---|---|---|---|
-| Matches/s | 2,30 | 3,33 | 4,60 | 4,76 |
+Dazu kommt die Zahl gleichzeitiger Matches. `run.py sim-bench --auto` verdoppelt sie und
+misst jede Stufe (je 25 s, gleicher Seed, schreibt nach `data/bench/`, nie auf
+`policy_sim.pt`):
 
-Zusammen also rund **5×** gegenüber dem alten Default (0,85 m/s bei 8 Envs). Die Kurve
-läuft ab ~32 Envs flach: `train-sim` ist EIN Prozess, die Envs rechnen wegen des GIL
-nacheinander auf einem Kern — mehr Envs verteilen nur die GPU-Arbeit auf mehr Matches.
-Echte Mehrkern-Nutzung braucht Worker-Prozesse (geplant).
+| gleichzeitige Matches | 8 | 16 | 32 | 64 | 128 | 256 |
+|---|---|---|---|---|---|---|
+| Matches/s | 2,20 | 3,16 | 4,08 | **4,32** | 3,47 | 2,35 |
+| Lernschritte je Match | 23,1 | 12,0 | 6,1 | 3,6 | 2,6 | 2,3 |
+
+Mehr ist also ausdrücklich **nicht** immer besser: ab 64 fällt der Durchsatz wieder, und
+die Zahl der Lernschritte, die auf ein einzelnes Match entfallen, sinkt durchgehend. Die
+Automatik hört deshalb auf, sobald zwei Verdopplungen nichts mehr bringen, und empfiehlt
+von den gleich schnellen Einstellungen die kleinste.
+
+Zusammen mit dem Transfer-Fix rund **5×** gegenüber dem alten Default (0,85 m/s bei 8
+Envs, alter Code). Die Kurve flacht ab, weil `train-sim` EIN Prozess ist: die Envs rechnen
+wegen des GIL nacheinander auf einem Kern. Echte Mehrkern-Nutzung braucht Worker-Prozesse
+(geplant).
 
 > ⚠️ Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS
 > (Warnhinweis steht im Launcher).

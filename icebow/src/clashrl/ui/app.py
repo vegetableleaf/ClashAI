@@ -203,6 +203,20 @@ def create_app(cfg) -> Flask:
         data["mtime"] = p.stat().st_mtime
         return jsonify(data)
 
+    @app.get("/api/deck-detect")
+    def deck_detect():
+        p = root / "data" / "deck_detect.json"
+        if not p.exists():
+            return jsonify({"available": False})
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            return jsonify({"available": False, "error": str(exc)})
+        data["available"] = True
+        art = root / "templates" / "cardart"
+        data["reference_bank"] = len(list(art.glob("*.png"))) if art.exists() else 0
+        return jsonify(data)
+
     # -- deck --------------------------------------------------------------
     @app.get("/api/deck")
     def deck_get():

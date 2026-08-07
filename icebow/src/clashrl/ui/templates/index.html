@@ -74,6 +74,20 @@
     <p class="lead">Das Deck bestimmt den Aktionsraum der Policy: jede Karte ist eine eigene Aktion,
       eine Evolution zählt separat. Änderst du das Deck, passen alte Checkpoints und Datensätze
       nicht mehr.</p>
+    <div class="cfggroup">
+      <h3>Deck automatisch erkennen</h3>
+      <p class="hint">Erkennt die Karten aus einer Aufnahme, statt dass du Bildausschnitte von Hand
+        benennst. Voraussetzung ist einmalig <b>Kartenbilder holen</b>; danach läuft die Erkennung
+        offline. Das Ergebnis wird hier zur Bestätigung angezeigt und erst auf Knopfdruck in die
+        Liste unten übernommen.</p>
+      <div class="row">
+        <button id="detectrun" class="btn primary">Deck aus Aufnahme erkennen</button>
+        <button id="artrun" class="btn small">Kartenbilder holen</button>
+        <button id="detectreload" class="btn small">Ergebnis aktualisieren</button>
+        <span id="detectmsg" class="msg"></span>
+      </div>
+      <div id="detectbody"></div>
+    </div>
     <div id="deckwarn"></div>
     <div class="row">
       <label>Deckname: <input id="deckname" type="text" size="40"></label>
@@ -184,17 +198,34 @@
   <pre id="log"></pre>
 </section>
 
-<!-- ---------------- Modal (Onboarding / Hinweise) ---------------- -->
+<!-- ---------------- Modal (Hinweise) ---------------- -->
 <div id="modal" class="modal hidden">
   <div class="modalbox">
     <div class="modalhead"><span id="modaltitle"></span>
-      <button id="modalx" class="btn small">X</button></div>
+      <button id="modalx" class="btn small">Schließen</button></div>
     <div id="modalbody" class="modalbody"></div>
     <div class="modalfoot">
       <span id="modalsteps" class="hint"></span>
       <div class="spacer"></div>
       <button id="modalback" class="btn small">Zurück</button>
       <button id="modalnext" class="btn primary">Weiter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- Geführte Tour ---------------- -->
+<div id="tour" class="hidden">
+  <div id="tourblock"></div>
+  <div id="tourhole"></div>
+  <div id="tourcard">
+    <div class="th"><span id="tourtitle"></span></div>
+    <div id="tourtext"></div>
+    <div class="tf">
+      <span id="tourcount" class="hint"></span>
+      <div class="spacer"></div>
+      <button id="tourend" class="btn small">Tour beenden</button>
+      <button id="tourback" class="btn small">Zurück</button>
+      <button id="tournext" class="btn primary">Weiter</button>
     </div>
   </div>
 </div>

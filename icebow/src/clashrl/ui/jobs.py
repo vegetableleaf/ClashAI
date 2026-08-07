@@ -166,6 +166,39 @@ COMMANDS: List[Dict[str, Any]] = [
         "args": [],
     },
     {
+        "cmd": "cards-art",
+        "group": "Aus Aufnahmen lernen",
+        "title": "Kartenbilder holen",
+        "desc": "Lädt einmalig je ein Referenzbild pro Karte aus dem Clash-Royale-Wiki nach "
+                "templates/cardart/. Grundlage für die automatische Deckerkennung.",
+        "gpu": False,
+        "metrics": False,
+        "args": [
+            {"name": "refresh", "type": "bool", "default": False, "label": "Vorhandene neu laden"},
+        ],
+    },
+    {
+        "cmd": "deck-detect",
+        "group": "Aus Aufnahmen lernen",
+        "title": "Deck erkennen",
+        "desc": "Erkennt die Deckkarten automatisch aus einer Aufnahme, statt dass du Bildausschnitte "
+                "von Hand benennst. Das Ergebnis wird im Deck-Tab zur Bestätigung angezeigt.",
+        "gpu": False,
+        "metrics": False,
+        "args": [
+            {"name": "session", "type": "session", "default": "", "label": "Aufnahme",
+             "help": "Leer = neueste."},
+            {"name": "samples", "type": "int", "default": 400, "label": "Abgetastete Videobilder",
+             "help": "Mehr Bilder finden auch selten gespielte Karten."},
+            {"name": "per-face", "type": "int", "default": 6, "label": "Bilder je Karte",
+             "help": "Über so viele Ansichten derselben Karte wird gemittelt. Sechs reichten in "
+                     "der Messung für alle Karten."},
+            {"name": "player-tag", "type": "str", "default": "", "label": "Spieler-Tag (optional)",
+             "help": "Mit Tag und API-Token werden zusätzlich die Kartenlevel aus deinem Account "
+                     "gelesen. Ohne bleiben die Level aus cards.yaml stehen."},
+        ],
+    },
+    {
         "cmd": "sim-bench",
         "group": "Simulator-Training",
         "title": "Geschwindigkeits-Test",
@@ -174,8 +207,13 @@ COMMANDS: List[Dict[str, Any]] = [
         "gpu": True,
         "metrics": False,
         "args": [
-            {"name": "envs", "type": "str", "default": "", "label": "Env-Zahlen",
-             "help": "Kommaliste, z.B. 8,16,32,48. Leer = aus deiner Hardware abgeleitet."},
+            {"name": "auto", "type": "bool", "default": True, "label": "Automatisch suchen",
+             "help": "Verdoppelt die Zahl gleichzeitiger Matches so lange, bis es nicht mehr "
+                     "schneller wird oder der Arbeitsspeicher knapp würde."},
+            {"name": "apply", "type": "bool", "default": True, "label": "Ergebnis übernehmen",
+             "help": "Schreibt die empfohlene Einstellung gleich in die Config (mit Sicherung)."},
+            {"name": "envs", "type": "str", "default": "", "label": "Env-Zahlen (ohne Automatik)",
+             "help": "Kommaliste, z.B. 8,16,32,48. Wird nur ohne Automatik verwendet."},
             {"name": "seconds", "type": "float", "default": 30, "label": "Sekunden pro Messung",
              "help": "Länger = weniger Rauschen. 30s pro Einstellung reichen für einen klaren Trend."},
             {"name": "warmup", "type": "float", "default": 8, "label": "Aufwärmen (s)",

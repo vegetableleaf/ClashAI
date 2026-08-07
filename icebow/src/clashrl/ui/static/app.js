@@ -47,7 +47,8 @@ const LOADERS = { home: () => loadOverview(), dash: () => loadRuns(), strategy: 
 function showTab(name) {
   $$(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
   $$(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + name));
-  if (LOADERS[name]) LOADERS[name]().catch(e => console.error(name, e));
+  // gibt das Laden zurück, damit die Tour warten kann statt ins Leere zu zeigen
+  return LOADERS[name] ? LOADERS[name]().catch(e => console.error(name, e)) : Promise.resolve();
 }
 $$(".tab").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 
@@ -56,167 +57,220 @@ $$(".tab").forEach(t => t.onclick = () => showTab(t.dataset.tab));
    gleich daneben, damit man sie sofort ausprobiert statt sie nur zu lesen. */
 const TOS = window.__TOS__ || "";
 
-function goTo(tab, cmd) {
-  closeModal();
-  showTab(tab);
-  if (cmd) setTimeout(() => {
-    const card = $("#cmd-" + cmd);
-    if (card) {
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
-      card.style.outline = "2px solid var(--acc)";
-      setTimeout(() => card.style.outline = "", 2500);
-    }
-  }, 120);
+/* --- Geführte Tour: markiert das gemeinte Bedienelement direkt auf der Seite ---
+   `sel` zeigt auf ein echtes Element. Fehlt es (weil es noch keine Daten gibt),
+   überspringt die Tour den Schritt, statt ins Leere zu zeigen. */
+const TOUR = [
+  { tab: "home", sel: ".tabs", title: "Die Bereiche",
+    text: "Oben wechselst du zwischen den Bereichen. Von links nach rechts entspricht das grob "
+        + "der Reihenfolge, in der du sie brauchst: erst Übersicht und Steuerung, dann Fortschritt "
+        + "und Strategie, ganz rechts die Einstellungen." },
+  { tab: "home", sel: "#homebody .steps", title: "Was als Nächstes zu tun ist",
+    text: "Hier steht der nächste sinnvolle Schritt, jeweils mit Begründung. Der Knopf rechts "
+        + "bringt dich direkt dorthin oder führt ihn gleich aus. Wenn du nicht weiterweisst, "
+        + "fängst du hier an." },
+  { tab: "home", sel: "#homebody .statgrid", title: "Der aktuelle Stand",
+    text: "Vier Kacheln: wie weit die Policy ist, welches Deck eingestellt ist, gegen welche Türme "
+        + "sie spielt und wie schnell dein PC übt." },
+  { tab: "speed", sel: "#speedbody .statgrid", title: "Was in deinem PC steckt",
+    text: "Ausgelesen, nicht geraten: Kerne, Arbeitsspeicher, Grafikkarte. Die vierte Kachel "
+        + "schätzt, wieviel Arbeitsspeicher der Erfahrungsspeicher des Trainings belegen wird." },
+  { tab: "speed", sel: "#benchauto", title: "Hier findest du die beste Einstellung",
+    text: "Der Knopf probiert selbstständig immer mehr gleichzeitige Simulationen aus und misst "
+        + "jedesmal, wieviele Matches pro Sekunde herauskommen. Er hört auf, wenn es nicht mehr "
+        + "schneller wird oder der Arbeitsspeicher knapp würde, und übernimmt das Ergebnis." },
+  { tab: "speed", sel: "#benchtable", title: "Die Messwerte",
+    text: "Jede Zeile ist eine gemessene Einstellung. Die Balken zeigen den Unterschied. Mehr "
+        + "gleichzeitige Simulationen sind nicht automatisch schneller: ab einem Punkt bringt "
+        + "es nichts mehr, und genau den sucht die Automatik." },
+  { tab: "run", sel: "#cmd-train-sim", title: "Hier trainierst du",
+    text: "Diese Kachel startet das Training im Simulator. Das ist der Weg, mit dem du anfängst: "
+        + "er braucht weder das Spiel noch Aufnahmen." },
+  { tab: "run", sel: "#arg-train-sim-matches", title: "Wie lange er üben soll",
+    text: "Obergrenze an Matches, danach hört der Lauf von selbst auf. Ein paar tausend sind ein "
+        + "guter erster Lauf. Du kannst jederzeit vorher aufhören." },
+  { tab: "run", sel: "#arg-train-sim-resume", title: "Weiterlernen statt neu anfangen",
+    text: "Angehakt macht er an seinem gespeicherten Stand weiter. Nicht angehakt fängt er bei "
+        + "Null an und überschreibt den Stand." },
+  { tab: "run", sel: "#cmd-train-sim .foot", title: "Starten und sauber beenden",
+    text: "<b>Stop</b> bricht nicht ab, sondern beendet den Lauf geordnet und speichert dabei. "
+        + "Du verlierst nichts, wenn du zwischendurch aufhörst. Solange ein solcher Lauf aktiv "
+        + "ist, sind die anderen Start-Knöpfe gesperrt: Grafikkarte und Spielfenster gibt es nur einmal." },
+  { tab: "run", sel: ".loghead", title: "Die laufende Ausgabe",
+    text: "Unten läuft mit, was das gestartete Kommando ausgibt. Über die Auswahl kommst du auch "
+        + "an ältere Läufe, und die vollständige Datei liegt unter data/ui_logs/." },
+  { tab: "dash", sel: "#kpis", title: "Die Kennzahlen des Laufs",
+    text: "Gespielte Matches, Tempo, Bilanz und die Hochrechnung, wie lange es bis zur eingestellten "
+        + "Matchzahl noch dauert." },
+  { tab: "dash", sel: "#charts", title: "Die eine Kurve, die zählt",
+    text: "Die <b>Benchmark</b>-Kurve misst ohne Zufallszüge gegen feste Gegnerdecks: nur sie zeigt "
+        + "echten Fortschritt. Die <b>Winrate im Training</b> enthält Zufall und Spiele gegen sich "
+        + "selbst und pendelt sich immer um 50 Prozent ein." },
+  { tab: "strategy", sel: "#stratrun", title: "Nachsehen, was er wirklich spielt",
+    text: "Dieser Knopf lässt ihn 60 Matches ohne Zufall spielen und zählt jede Entscheidung mit. "
+        + "Danach siehst du hier, welche Karte wie oft und wohin gelegt wird, und vor allem: welche "
+        + "Karte er nie benutzt." },
+  { tab: "deck", sel: "#decktbl", title: "Das Deck",
+    text: "Jede Zeile ist eine Karte und damit eine mögliche Aktion. Karte über die Auswahlliste "
+        + "tauschen, Level daneben eintragen. Gespeichert wird erst auf Knopfdruck, und vorher wird "
+        + "die Datei gesichert." },
+  { tab: "towers", sel: "#towertbl", title: "Die Türme",
+    text: "Oben stellst du deinen eigenen Turm ein, hier die Turmtypen samt Werten. Die Spalte "
+        + "<b>Gegner-Gewicht</b> entscheidet, wie oft der Gegner welchen Turm bekommt. Mehr Typen "
+        + "mit Gewicht heisst: er muss gegen mehr Varianten zurechtkommen." },
+  { tab: "config", sel: "#cfgsave", title: "Einstellungen",
+    text: "Alle wichtigen Werte mit Erklärung. Geändertes wird farblich markiert und erst mit diesem "
+        + "Knopf geschrieben, mit Sicherung der alten Datei und einer Gegenprüfung danach." },
+  { tab: "ckpt", sel: "#ckptbody", title: "Die gespeicherten Stände",
+    text: "Jede Trainingsdatei mit Datum, Matchzahl und bestem Benchmark. Über den Knopf rechts "
+        + "wird eine davon als Startpunkt für den nächsten Lauf eingetragen." },
+  { tab: "home", sel: "#helpbtn", title: "Das war die Tour",
+    text: "Über diesen Knopf kommst du jederzeit wieder hierher. Wenn du jetzt loslegen willst: "
+        + "Tempo messen lassen, dann im Bereich Steuerung das Sim-Training starten." },
+];
+
+let tourIx = 0, tourOn = false;
+
+function tourEl(step) {
+  try { return step.sel ? document.querySelector(step.sel) : null; } catch (e) { return null; }
 }
 
-const STEPS = [
-  { title: "Was das hier ist", body: `
-    <p>Diese Oberfläche bedient den Lern-Bot. Sie startet dieselben Kommandos, die du sonst im
-    Terminal tippen würdest, zeigt deren Ausgabe live an und schreibt die Zahlen mit.</p>
-    <p>Alles läuft nur auf deinem PC (127.0.0.1). Keine Anmeldung, keine Cloud, kein Datenversand.</p>
-    <div class="note"><b>Bevor du weitermachst:</b> ${TOS}</div>
-    <p class="hint">Diese Einführung ist jederzeit über „Einführung“ oben rechts erreichbar.
-    Du kannst sie in jedem Schritt schließen und später dort weitermachen.</p>` },
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-  { title: "Schritt 1: miss, wie schnell dein PC üben kann", body: `
-    <p>Der Bot lernt in einem nachgebauten Clash Royale, das ohne Grafik im Hintergrund läuft.
-    Wie viele Übungsmatches pro Sekunde dabei herauskommen, hängt an deiner Hardware und an einer
-    Einstellung: der Zahl gleichzeitig laufender Matches.</p>
-    <p>Statt das zu raten, misst der Test es. Er spielt bei mehreren Einstellungen jeweils gleich
-    lange und zählt die fertigen Matches. Deinen trainierten Stand fasst er nicht an: er schreibt
-    in einen eigenen Ordner.</p>`,
-    actions: [{ label: "Test jetzt starten (etwa 2 Minuten)", primary: true, run: async () => {
-        const j = await startJob("sim-bench", { envs: "8,16,32,48", seconds: 20, warmup: 6 }, null, null);
-        closeModal(); showTab("speed");
-        if (j) toast("Der Test läuft. Unten im Log siehst du jede Messung; "
-          + "wenn er fertig ist, erscheint im Tab „Tempo“ die Tabelle und ein Knopf, "
-          + "der die schnellste Einstellung übernimmt.");
-      } },
-      { label: "Nur den Tab ansehen", run: () => goTo("speed") }],
-    note: "Was du danach siehst: eine Tabelle mit Matches pro Sekunde je Einstellung. "
-      + "Die Zeile mit dem höchsten Wert ist die, die du übernehmen willst." },
+async function waitFor(step, ms) {
+  // Tabs laden ihren Inhalt nach. Ohne Warten würde die Tour Schritte überspringen,
+  // deren Ziel es im Moment des Umschaltens noch gar nicht gibt.
+  const until = Date.now() + ms;
+  for (;;) {
+    const e = tourEl(step);
+    if (e) return e;
+    if (Date.now() > until) return null;
+    await sleep(80);
+  }
+}
 
-  { title: "Schritt 2: das Training starten", body: `
-    <p>Das eigentliche Lernen läuft im Tab <b>Steuerung</b>, Kachel „Sim-Training (DDQN)“. Wichtig
-    sind dort drei Felder:</p>
-    <ul>
-      <li><b>Matches</b>: die Obergrenze, bei der der Lauf von selbst aufhört.</li>
-      <li><b>Fortsetzen</b>: angehakt lernt er an seinem gespeicherten Stand weiter, sonst
-        fängt er bei Null an.</li>
-      <li><b>Stop</b>: beendet den Lauf sauber und speichert dabei. Du verlierst nichts, wenn du
-        zwischendurch aufhörst.</li>
-    </ul>
-    <p>Ein erster Lauf über ein paar tausend Matches ist ein guter Anfang. Das darf ruhig
-    nebenbei laufen.</p>`,
-    actions: [{ label: "Zur Kachel springen", primary: true, run: () => goTo("run", "train-sim") }],
-    note: "Achte darauf: solange ein solcher Lauf aktiv ist, sind die anderen Start-Knöpfe "
-      + "gesperrt: GPU und Spielfenster gibt es nur einmal." },
+let tourBusy = false;
 
-  { title: "Schritt 3: den Fortschritt richtig lesen", body: `
-    <p>Im Tab <b>Fortschritt</b> stehen zwei Winrate-Kurven, und nur eine davon bedeutet etwas:</p>
-    <ul>
-      <li><b>Benchmark</b>: der Bot spielt ohne Zufallszüge gegen feste Gegnerdecks. Das ist das
-        ehrliche Maß. Steigt sie, lernt er. Wird sie flach, ist er ausgelernt.</li>
-      <li><b>Winrate im Training</b>: enthält Zufallszüge und Spiele gegen sich selbst. Sie
-        pendelt sich zwangsläufig um 50 % ein. Daran erkennst du nichts.</li>
-    </ul>
-    <p>Darunter stehen Reward, Loss, Epsilon und das Tempo. Alle Werte landen in einer Datei und
-    überleben einen Neustart; über „CSV-Export“ kannst du sie in einer Tabelle ansehen.</p>`,
-    actions: [{ label: "Fortschritt öffnen", primary: true, run: () => goTo("dash") }],
-    note: "Wenn dort noch nichts steht, hat einfach noch kein Training gelaufen." },
+async function tourShow(i, dir) {
+  // Ein zweiter Klick auf Weiter, während der vorige Schritt noch lädt, würde zwei
+  // Durchläufe verschränken und Titel und Zähler auseinanderlaufen lassen.
+  if (tourBusy) return;
+  tourBusy = true;
+  try { await tourShowInner(i, dir); } finally { tourBusy = false; }
+}
 
-  { title: "Schritt 4: nachsehen, was er tatsächlich spielt", body: `
-    <p>Eine hohe Winrate sagt noch nicht, ob der Bot vernünftig spielt. Die Analyse lässt ihn
-    60 Matches ohne Zufall spielen und zählt jede Entscheidung mit: welche Karte wie oft, an
-    welche Stelle, und wie oft er bewusst wartet.</p>
-    <p>Am aussagekräftigsten ist die Liste der Karten, die er <b>nie</b> spielt. Eine
-    Siegbedingung, die dort auftaucht, ist ein deutliches Zeichen, dass die Belohnungen nicht
-    greifen.</p>`,
-    actions: [{ label: "Analyse jetzt starten (etwa 30 Sekunden)", primary: true, run: async () => {
-        const j = await startJob("policy-stats", { matches: 60, envs: 8 }, null, null);
-        closeModal(); showTab("strategy");
-        if (j) toast("Die Analyse läuft. Sobald sie fertig ist, auf „Aktualisieren“ klicken.");
-      } },
-      { label: "Nur den Tab ansehen", run: () => goTo("strategy") }],
-    note: "Braucht einen bereits trainierten Stand. Ohne den bricht sie mit einer Meldung ab." },
+async function tourShowInner(i, dir) {
+  dir = dir || 1;
+  let target = null;
+  while (i >= 0 && i < TOUR.length) {
+    const step = TOUR[i];
+    if (step.tab && $(".tab.active").dataset.tab !== step.tab) {
+      await showTab(step.tab);
+    }
+    target = await waitFor(step, 2500);
+    if (target) break;
+    i += dir;                                   // Ziel gibt es wirklich nicht: überspringen
+  }
+  if (i < 0 || i >= TOUR.length || !target) return tourStop();
+  tourIx = i;
+  const step = TOUR[i];
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+  await sleep(320);                             // Ende des sanften Scrollens abwarten
+  tourPlace(target, step);
+  await sleep(220);                             // nach spätem Umbruch noch einmal nachziehen
+  if (tourOn && tourIx === i) tourPlace(target, step);
+}
 
-  { title: "Schritt 5: Deck und Türme", body: `
-    <p>Das <b>Deck</b> legt fest, welche Aktionen der Bot überhaupt hat: jede Karte ist eine
-    eigene Aktion, eine Evolution zählt getrennt. Nach einem Deckwechsel passen alte Stände und
-    Datensätze nicht mehr zusammen; die Oberfläche sagt dir dann, was davon betroffen ist.</p>
-    <p>Die <b>Türme</b> bestimmen, wogegen er spielt. Dein Turm steht in jedem Match, der
-    gegnerische wird pro Match aus einer Gewichtung gezogen. Je mehr Turmtypen dort ein Gewicht
-    haben, desto vielseitiger muss er spielen. Eigene Turmtypen kannst du dort anlegen: der
-    Simulator benutzt sie sofort, ohne dass am Code etwas geändert werden muss.</p>`,
-    actions: [{ label: "Deck ansehen", run: () => goTo("deck") },
-              { label: "Türme ansehen", run: () => goTo("towers") }] },
+function tourPlace(target, step) {
+  const pad = 6;
+  const r = target.getBoundingClientRect();
+  const hole = $("#tourhole");
+  hole.style.top = (r.top - pad) + "px";
+  hole.style.left = (r.left - pad) + "px";
+  hole.style.width = (r.width + 2 * pad) + "px";
+  hole.style.height = (r.height + 2 * pad) + "px";
 
-  { title: "Das war es", body: `
-    <p>Kurz zusammengefasst, in der Reihenfolge:</p>
-    <ul>
-      <li><b>Tempo</b> messen und die schnellste Einstellung übernehmen.</li>
-      <li><b>Steuerung</b>: Sim-Training starten, laufen lassen, mit Stop sauber beenden.</li>
-      <li><b>Fortschritt</b>: auf die Benchmark-Kurve schauen, nicht auf die Trainings-Winrate.</li>
-      <li><b>Strategie</b>: prüfen, ob er alle Karten benutzt.</li>
-      <li><b>Deck</b> und <b>Türme</b> anpassen, wenn du etwas anderes trainieren willst.</li>
-    </ul>
-    <p>Der Tab <b>Übersicht</b> nimmt dir das ab: er zeigt den aktuellen Stand und schlägt den
-    nächsten sinnvollen Schritt vor, jeweils mit Begründung.</p>`,
-    actions: [{ label: "Zur Übersicht", primary: true, run: () => goTo("home") }] },
-];
-let stepIx = 0, modalMode = "onboard";
+  $("#tourtitle").textContent = step.title;
+  $("#tourtext").innerHTML = step.text;
+  $("#tourcount").textContent = `${tourIx + 1} von ${TOUR.length}`;
+  $("#tourback").style.display = tourIx ? "" : "none";
+  $("#tournext").textContent = tourIx === TOUR.length - 1 ? "Fertig" : "Weiter";
+
+  const card = $("#tourcard");
+  card.style.visibility = "hidden";
+  card.style.top = "0px"; card.style.left = "0px";
+  const ch = card.offsetHeight, cw = card.offsetWidth;
+  let top = r.bottom + 14, left = r.left;
+  if (top + ch > window.innerHeight - 10) top = Math.max(10, r.top - ch - 14);
+  if (top + ch > window.innerHeight - 10) top = Math.max(10, (window.innerHeight - ch) / 2);
+  left = Math.min(Math.max(10, left), window.innerWidth - cw - 10);
+  card.style.top = top + "px";
+  card.style.left = left + "px";
+  card.style.visibility = "";
+}
+
+function tourStart() {
+  closeModal();
+  tourOn = true;
+  $("#tour").classList.remove("hidden");
+  tourShow(0, 1);
+}
+function tourStop() {
+  tourOn = false;
+  $("#tour").classList.add("hidden");
+  localStorage.setItem("clashai.onboarded", "1");
+}
+$("#tournext").onclick = () => {
+  if (tourIx >= TOUR.length - 1) return tourStop();
+  tourShow(tourIx + 1, 1);
+};
+$("#tourback").onclick = () => tourShow(tourIx - 1, -1);
+$("#tourend").onclick = () => tourStop();
+window.addEventListener("resize", () => {
+  if (!tourOn) return;
+  const t = tourEl(TOUR[tourIx]);
+  if (t) tourPlace(t, TOUR[tourIx]);
+});
+
+const WELCOME = `
+    <p>Diese Oberfläche bedient den Lern-Bot. Sie startet dieselben Kommandos, die sonst im
+    Terminal getippt werden, zeigt deren Ausgabe live an und schreibt die Zahlen mit.
+    Alles läuft nur auf diesem PC, ohne Anmeldung und ohne Datenversand.</p>
+    <div class="note"><b>Bevor du loslegst:</b> ${TOS}</div>
+    <p>Die Tour geht die Oberfläche durch und markiert dabei jedes Mal genau das Element, um das
+    es geht, damit du siehst, wo etwas steht und was es bewirkt. Sie führt nichts von selbst aus.</p>`;
+
+let modalMode = "welcome";
 
 function openModal(mode) {
-  modalMode = mode; stepIx = 0;
+  modalMode = mode;
   $("#modal").classList.remove("hidden");
   renderModal();
 }
 function closeModal() {
   $("#modal").classList.add("hidden");
-  if (modalMode === "onboard") localStorage.setItem("clashai.onboarded", "1");
+  if (modalMode === "welcome") localStorage.setItem("clashai.onboarded", "1");
 }
 function renderModal() {
-  if (modalMode === "tos") {
-    $("#modaltitle").textContent = "Hinweis zu den Nutzungsbedingungen";
-    $("#modalbody").innerHTML = `<div class="note">${TOS}</div>
-      <p>Den Simulator betrifft das nicht: er spielt gegen sich selbst, ohne Verbindung zum
-      echten Spiel. Betroffen sind die Kommandos, die das laufende Spiel bedienen:
-      <code>play</code> und <code>train-rl</code>.</p>`;
-    $("#modalsteps").textContent = "";
-    $("#modalback").style.display = "none";
-    $("#modalnext").textContent = "Schließen";
-    return;
-  }
-  const s = STEPS[stepIx];
-  $("#modaltitle").textContent = s.title;
-  const body = $("#modalbody");
-  body.innerHTML = s.body;
-  if (s.actions && s.actions.length) {
-    const box = el("div", "do");
-    box.appendChild(el("div", "dot", "Zum Ausprobieren:"));
-    const row = el("div", "row"); row.style.margin = "0";
-    s.actions.forEach(a => {
-      const b = el("button", "btn" + (a.primary ? " primary" : ""), a.label);
-      b.onclick = () => a.run();
-      row.appendChild(b);
-    });
-    box.appendChild(row);
-    if (s.note) { const n = el("div", "dot", s.note); n.style.marginTop = "8px"; box.appendChild(n); }
-    body.appendChild(box);
-  }
-  body.scrollTop = 0;
-  $("#modalsteps").textContent = `Schritt ${stepIx + 1} von ${STEPS.length}`;
-  $("#modalback").style.display = stepIx ? "" : "none";
-  $("#modalnext").textContent = stepIx === STEPS.length - 1 ? "Schließen" : "Weiter";
+  const tos = modalMode === "tos";
+  $("#modaltitle").textContent = tos ? "Hinweis zu den Nutzungsbedingungen"
+                                     : "ClashAI Launcher";
+  $("#modalbody").innerHTML = tos
+    ? `<div class="note">${TOS}</div>
+       <p>Den Simulator betrifft das nicht: er spielt gegen sich selbst, ohne Verbindung zum
+       echten Spiel. Betroffen sind die Kommandos, die das laufende Spiel bedienen,
+       also <code>play</code> und <code>train-rl</code>.</p>`
+    : WELCOME;
+  $("#modalsteps").textContent = "";
+  $("#modalback").style.display = tos ? "none" : "";
+  $("#modalback").textContent = "Später";
+  $("#modalnext").textContent = tos ? "Schließen" : "Tour starten";
 }
-$("#modalnext").onclick = () => {
-  if (modalMode === "tos" || stepIx === STEPS.length - 1) return closeModal();
-  stepIx++; renderModal();
-};
-$("#modalback").onclick = () => { if (stepIx) { stepIx--; renderModal(); } };
-$("#modalx").onclick = closeModal;
-$("#modal").onclick = e => { if (e.target.id === "modal") closeModal(); };
-$("#helpbtn").onclick = () => openModal("onboard");
+$("#modalnext").onclick = () => (modalMode === "tos" ? closeModal() : tourStart());
+$("#modalback").onclick = () => closeModal();
+$("#modalx").onclick = () => closeModal();
+// Absichtlich KEIN Schliessen per Klick daneben: das Fenster geht nur über seine Knöpfe zu.
+$("#helpbtn").onclick = () => openModal("welcome");
 $("#tosbtn").onclick = () => openModal("tos");
 
 /* ---------------- Steuerung ---------------- */
@@ -626,21 +680,42 @@ async function loadSpeed() {
   b.appendChild(notes);
 
   b.appendChild(el("h2", null, "Messung"));
+  b.appendChild(el("p", "hint",
+    "Mehr gleichzeitige Matches sind nicht automatisch besser. Der Durchsatz steigt nur, solange "
+    + "die eine Optimierung pro Takt auf mehr Matches verteilt wird; danach bremsen die "
+    + "Simulationsschritte, die sich einen Kern teilen, und irgendwann wird es sogar wieder "
+    + "langsamer. Gleichzeitig sinkt die Zahl der Lernschritte, die auf ein einzelnes Match "
+    + "entfallen. Die Automatik steigert deshalb nur so lange, wie es wirklich schneller wird, "
+    + "und empfiehlt danach von den gleich schnellen Einstellungen die kleinste."));
+
   const runrow = el("div", "row");
-  const runbtn = el("button", "btn primary", "Geschwindigkeits-Test starten");
   const secs = el("input"); secs.type = "number"; secs.value = 30; secs.min = 10; secs.style.width = "70px";
-  const envsIn = el("input"); envsIn.type = "text"; envsIn.style.width = "150px";
-  envsIn.value = (sug.bench_candidates || []).join(",");
   const msg = el("span", "msg");
+  const autobtn = el("button", "btn primary", "Beste Einstellung automatisch finden und übernehmen");
+  autobtn.id = "benchauto";
+  autobtn.title = "Verdoppelt die Zahl gleichzeitiger Matches, misst jedes Mal, hört auf wenn es "
+    + "nicht mehr schneller wird oder der Arbeitsspeicher knapp würde, und schreibt das Ergebnis "
+    + "in die Config.";
+  autobtn.onclick = async () => {
+    const j = await startJob("sim-bench", { auto: true, apply: true, seconds: secs.value, warmup: 8 },
+                             msg, autobtn);
+    if (j) msg.textContent = "läuft: jede Stufe erscheint unten im Log.";
+  };
+  const envsIn = el("input"); envsIn.type = "text"; envsIn.style.width = "140px";
+  envsIn.value = (sug.bench_candidates || []).join(",");
+  const runbtn = el("button", "btn", "Nur diese Zahlen messen");
+  runbtn.id = "benchstart";
   runbtn.onclick = async () => {
-    const j = await startJob("sim-bench", { envs: envsIn.value, seconds: secs.value, warmup: 8 }, msg, runbtn);
+    const j = await startJob("sim-bench", { envs: envsIn.value, seconds: secs.value, warmup: 8 },
+                             msg, runbtn);
     if (j) msg.textContent = "läuft: Ergebnisse erscheinen hier, sobald der Test fertig ist.";
   };
-  runrow.appendChild(runbtn);
-  runrow.appendChild(el("span", "hint", "zu testende Env-Zahlen:")); runrow.appendChild(envsIn);
+  runrow.appendChild(autobtn);
   runrow.appendChild(el("span", "hint", "Sekunden je Messung:")); runrow.appendChild(secs);
-  runrow.appendChild(msg);
   b.appendChild(runrow);
+  const runrow2 = el("div", "row");
+  runrow2.appendChild(runbtn); runrow2.appendChild(envsIn); runrow2.appendChild(msg);
+  b.appendChild(runrow2);
 
   const bench = d.bench;
   if (!bench) {
@@ -649,33 +724,49 @@ async function loadSpeed() {
   }
   const res = (bench.results || []).slice().sort((a, b2) => a.envs - b2.envs);
   const maxMps = Math.max(...res.map(r => r.mps), 0.0001);
-  const t = el("table", "tbl");
-  t.innerHTML = `<thead><tr><th>Envs</th><th>Matches/s</th><th>Matches/Stunde</th><th></th>
+  const t2 = el("table", "tbl"); t2.id = "benchtable";
+  t2.innerHTML = `<thead><tr><th>gleichzeitige Matches</th><th>Matches/s</th><th></th>
+    <th>Matches/Stunde</th><th>Lernschritte/s</th><th>Lernschritte je Match</th>
     <th>gegenüber aktuell</th></tr></thead>`;
   const tb = el("tbody");
   const curRes = res.find(r => r.envs === bench.current_envs);
   res.forEach(r => {
     const tr = el("tr");
     const rel = curRes ? (r.mps / curRes.mps) : null;
-    tr.innerHTML = `<td>${r.envs}${r.envs === bench.best_envs ? " (schnellste)" : ""}</td>
-      <td>${num(r.mps)}</td><td>${int(r.matches_per_hour)}</td>
+    const mark = r.envs === bench.best_envs ? " (empfohlen)"
+      : (r.envs === bench.peak_envs ? " (schnellste)" : "");
+    tr.innerHTML = `<td>${r.envs}${mark}</td>
+      <td>${num(r.mps)}</td>
       <td><div class="bar"><i style="width:${(100 * r.mps / maxMps).toFixed(0)}%"></i></div></td>
+      <td>${int(r.matches_per_hour)}</td>
+      <td>${r.updates_per_s != null ? num(r.updates_per_s, 1) : "-"}</td>
+      <td>${r.updates_per_match != null ? num(r.updates_per_match, 1) : "-"}</td>
       <td>${rel ? (rel >= 1 ? "+" : "") + ((rel - 1) * 100).toFixed(0) + " %" : "-"}</td>`;
     tb.appendChild(tr);
   });
-  t.appendChild(tb); b.appendChild(t);
-  b.appendChild(el("p", "hint",
-    `Gemessen am ${fmtTime(bench.generated)} mit ${bench.seconds_per_run} s je Einstellung, Seed `
-    + `${bench.seed}. Die Zahlen gelten für frühes Training; sobald Self-Play hochgefahren ist, `
-    + "sinkt der Durchsatz etwas, weil der Gegner ein eigenes Netz rechnet."));
+  t2.appendChild(tb); b.appendChild(t2);
+
+  const lines = [
+    `Gemessen am ${fmtTime(bench.generated)}, ${bench.seconds_per_run} s je Stufe, Seed ${bench.seed}`
+      + (bench.auto ? ", automatische Suche" : "") + ".",
+  ];
+  if (bench.stop_reason) lines.push("Die Suche endete, weil: " + bench.stop_reason + ".");
+  if (bench.peak_envs && bench.best_envs !== bench.peak_envs)
+    lines.push(`Am schnellsten war ${bench.peak_envs}, empfohlen sind ${bench.best_envs}: `
+      + "beide liegen innerhalb von drei Prozent und sind damit praktisch gleich schnell, "
+      + "aber bei der kleineren Zahl wird jedes Match häufiger zum Lernen benutzt.");
+  lines.push("Die Werte gelten für frühes Training. Sobald das Spiel gegen frühere eigene "
+    + "Versionen hochgefahren ist, sinkt der Durchsatz etwas, weil der Gegner ein eigenes Netz rechnet.");
+  if (bench.applied) lines.push("Das Ergebnis wurde bereits in die Config übernommen.");
+  lines.forEach(l => b.appendChild(el("p", "hint", l)));
 
   const applyRow = el("div", "row");
-  const ap = el("button", "btn primary",
-    `Schnellste Einstellung übernehmen (envs = ${bench.best_envs})`);
+  const ap = el("button", "btn primary", `Empfehlung übernehmen (${bench.best_envs} gleichzeitige Matches)`);
+  ap.id = "benchapply";
   ap.disabled = bench.best_envs === cur.envs;
-  if (ap.disabled) ap.textContent = `Bereits übernommen (envs = ${cur.envs})`;
+  if (ap.disabled) ap.textContent = `Bereits eingestellt (${cur.envs} gleichzeitige Matches)`;
   ap.onclick = () => applyBench(false);
-  const ap2 = el("button", "btn", "...plus Vorschläge für Batch & Replay");
+  const ap2 = el("button", "btn", "zusätzlich Batch und Replay anpassen");
   ap2.title = `Batch-Größe ${sug.batch_size}, Replay ${int(sug.replay_size)}, Benchmark-Envs ${sug.eval_envs}`;
   ap2.onclick = () => applyBench(true);
   applyRow.appendChild(ap); applyRow.appendChild(ap2);
@@ -944,6 +1035,91 @@ async function loadDeck() {
       + msgs.map(m => `<p class="hint">${m}</p>`).join("");
     warn.appendChild(box);
   }
+  await loadDetect().catch(() => {});
+}
+
+/* --- automatische Deckerkennung --- */
+$("#detectrun").onclick = () => startJob("deck-detect", {}, $("#detectmsg"), null);
+$("#artrun").onclick = () => startJob("cards-art", {}, $("#detectmsg"), null);
+$("#detectreload").onclick = () => loadDetect();
+
+async function loadDetect() {
+  const body = $("#detectbody"); body.innerHTML = "";
+  const d = await api("/api/deck-detect");
+  if (!d.available) {
+    body.appendChild(el("p", "hint", d.reference_bank === 0
+      ? "Noch keine Referenzbilder. Erst „Kartenbilder holen“, dann erkennen."
+      : "Noch kein Erkennungsergebnis vorhanden."));
+    return;
+  }
+  const head = el("div", "row");
+  [`Aufnahme ${d.session}`, `${d.frames} Matchbilder`, `${d.faces} Kartenbilder`,
+   `${d.reference_cards} Referenzkarten`, `erkannt ${fmtTime(d.generated)}`]
+    .forEach(x => head.appendChild(el("span", "pill", x)));
+  body.appendChild(head);
+
+  const tbl = el("table", "tbl");
+  tbl.innerHTML = `<thead><tr><th>erkannt als</th><th>Sicherheit</th><th>Abstand zum zweiten</th>
+    <th>Evo</th><th>Level</th><th>Alternativen</th></tr></thead>`;
+  const tb = el("tbody");
+  (d.deck || []).forEach((s, i) => {
+    const tr = el("tr");
+    const sel = el("select"); sel.dataset.pick = String(i);
+    (s.alternatives || []).forEach(a => {
+      const o = el("option", null, `${a.display} (${a.score.toFixed(3)})`);
+      o.value = a.key.replace(/_evo$/, ""); sel.appendChild(o);
+    });
+    sel.value = s.card;
+    const evo = el("input"); evo.type = "checkbox"; evo.checked = !!s.evolved; evo.dataset.evo = String(i);
+    const lvl = el("input"); lvl.type = "number"; lvl.min = "1"; lvl.max = "20";
+    lvl.value = s.level; lvl.dataset.lvl = String(i); lvl.style.width = "62px";
+    const tdSel = el("td"); tdSel.appendChild(sel);
+    const tdEvo = el("td"); tdEvo.appendChild(evo);
+    const tdLvl = el("td"); tdLvl.appendChild(lvl);
+    tr.appendChild(el("td", null, s.display + (s.unsure ? "  (unsicher)" : "")));
+    tr.appendChild(el("td", null, s.score.toFixed(3)));
+    tr.appendChild(el("td", null, s.margin.toFixed(3)));
+    tr.appendChild(tdEvo); tr.appendChild(tdLvl); tr.appendChild(tdSel);
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); body.appendChild(tbl);
+
+  const unsure = (d.deck || []).filter(s => s.unsure).length;
+  const notes = [];
+  if ((d.deck || []).length < 8)
+    notes.push(`Es wurden nur ${d.deck.length} Karten gesehen. Eine längere Aufnahme zeigt alle acht;`
+      + " teure Karten kommen seltener ins Blatt.");
+  if (unsure) notes.push(`${unsure} Karte(n) sind knapp entschieden. Dort lohnt ein Blick in die`
+    + " Spalte Alternativen, bevor du übernimmst.");
+  notes.push(d.levels_from_account
+    ? "Die Level stammen aus deinem Account."
+    : "Die Level sind aus cards.yaml übernommen: im Blatt ist kein Level ablesbar. Mit Spieler-Tag"
+      + " und API-Token liest die Erkennung sie aus deinem Account.");
+  notes.forEach(n => body.appendChild(el("p", "hint", n)));
+
+  const row = el("div", "row");
+  const apply = el("button", "btn primary", "In die Deckliste übernehmen");
+  apply.onclick = () => {
+    const rows = $$("#detectbody tbody tr");
+    const picks = rows.map((tr, i) => ({
+      card: $(`[data-pick="${i}"]`, tr).value,
+      evolved: $(`[data-evo="${i}"]`, tr).checked,
+      level: +$(`[data-lvl="${i}"]`, tr).value,
+    }));
+    const target = $$("#decktbl tbody tr");
+    picks.slice(0, target.length).forEach((p, i) => {
+      const tr = target[i];
+      $("[data-role=card]", tr).value = p.card;
+      $("[data-role=level]", tr).value = p.level;
+      $("[data-role=evolved]", tr).checked = p.evolved;
+      syncDeckRow(i);
+    });
+    toast("Übernommen. Prüfe die Liste unten und speichere sie mit „Deck speichern“.");
+    $("#decktbl").scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  row.appendChild(apply);
+  row.appendChild(el("span", "hint", "Gespeichert wird erst mit „Deck speichern“ weiter unten."));
+  body.appendChild(row);
 }
 
 function syncDeckRow(i) {
@@ -1194,5 +1370,5 @@ $("#ckptreload").onclick = () => loadCheckpoints();
   await refresh();
   await loadOverview().catch(e => console.error(e));
   setInterval(refresh, 3000);
-  if (!localStorage.getItem("clashai.onboarded")) openModal("onboard");
+  if (!localStorage.getItem("clashai.onboarded")) openModal("welcome");
 })();

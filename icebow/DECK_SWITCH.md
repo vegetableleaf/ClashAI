@@ -25,8 +25,19 @@ cycle-chip the tower in 2×/3× elixir. Cheap cards (The Log / Skeletons) cycle 
 2. **Re-record from scratch with the new deck.** The BC dataset is deck-specific — old recordings
    teach dead cards (Tornado/Ronin/Ice-Spirit) and none show Miner/X-Bow play, so they are useless
    for this deck. Play many matches: `python run.py record` → Ctrl+C after the results screen.
-3. **Rebuild card templates** (needed before labeling — hand recognition is template matching):
-   `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
+3. **Identify the deck automatically** (new, replaces most of the renaming below):
+   `python run.py cards-art` once to fetch a reference picture per card, then
+   `python run.py deck-detect` reads the deck straight out of the recording and proposes it
+   in the launcher's Deck tab, with a confidence and alternatives per card. Confirm there and
+   save. Measured on the 190 labelled crops in `templates/cards/` with all 181 reference
+   pictures competing: 83 % correct from a single crop, 12 of 12 cards correct when 6 crops of
+   a card are averaged (which is what `deck-detect` does). Card LEVELS are not readable in the
+   tray -- pass `--player-tag "#YOURTAG"` with an API token to read them from your account, or
+   set them by hand in the Deck tab.
+
+   `hand-templates` is still needed for the templates that `play` / `label` match against at
+   run time. **Rebuild card templates** (needed before labeling — hand recognition is template
+   matching): `python run.py hand-templates` → rename each `_cand_*.png` crop to its deck key:
    `tornado.png`, `tesla.png` + `tesla_evo.png`, `ice_wizard.png`, `x_bow.png`, `rocket.png`,
    `knight.png` + `knight_evo.png`, `the_log.png`, `skeletons.png` (evolved cards cycle between
    their normal and evolved face, so capture BOTH; extra crops of one card: `<key>_2.png`).

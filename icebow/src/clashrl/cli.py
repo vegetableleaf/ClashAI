@@ -238,6 +238,17 @@ def _cmd_ui(args) -> None:
     serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
 
 
+def _cmd_cards_art(args) -> None:
+    from .card_art import import_card_art
+    import_card_art(Config.load(args.config), only_missing=not args.refresh, limit=args.limit)
+
+
+def _cmd_deck_detect(args) -> None:
+    from .deck_detect import detect_deck
+    detect_deck(Config.load(args.config), session_arg=args.session, samples=args.samples,
+                per_face=args.per_face, player_tag=args.player_tag, out=args.out)
+
+
 def _cmd_sim_bench(args) -> None:
     try:
         from .ui.bench import sim_bench
@@ -245,7 +256,7 @@ def _cmd_sim_bench(args) -> None:
         print(f"[sim-bench] PyTorch wird benötigt ({exc}).")
         return
     sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
-              out=args.out, warmup=args.warmup)
+              out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
 
 
 def _cmd_policy_stats(args) -> None:
@@ -538,6 +549,11 @@ def main() -> None:
     sbn = sub.add_parser("sim-bench",
                          help="misst die Trainingsgeschwindigkeit (Matches/s) bei verschiedenen "
                               "--envs auf DIESEM PC -> data/sim_bench.json (schreibt NICHT policy_sim.pt)")
+    sbn.add_argument("--auto", action="store_true",
+                     help="sucht die beste Env-Zahl selbst: verdoppelt sie, bis der Durchsatz nicht "
+                          "mehr steigt oder der RAM knapp wird")
+    sbn.add_argument("--apply", action="store_true",
+                     help="schreibt die empfohlene Env-Zahl direkt in config.yaml (mit Sicherung)")
     sbn.add_argument("--envs", default=None,
                      help="Kommaliste zu messender Env-Zahlen (Default: aus der Hardware abgeleitet)")
     sbn.add_argument("--seconds", type=float, default=45.0, help="Messdauer pro Einstellung")
@@ -546,6 +562,27 @@ def main() -> None:
     sbn.add_argument("--seed", type=int, default=0, help="RNG-Seed (für alle Messungen gleich)")
     sbn.add_argument("--out", default=None, help="Ziel-JSON (Default: data/sim_bench.json)")
     sbn.set_defaults(func=_cmd_sim_bench)
+
+    car = sub.add_parser("cards-art",
+                         help="lädt je ein Referenzbild pro Karte vom Fandom-Wiki nach "
+                              "templates/cardart/ (Grundlage der automatischen Deckerkennung)")
+    car.add_argument("--refresh", action="store_true",
+                     help="auch bereits vorhandene Bilder neu laden")
+    car.add_argument("--limit", type=int, default=None, help="nur die ersten N Karten (Test)")
+    car.set_defaults(func=_cmd_cards_art)
+
+    ddt = sub.add_parser("deck-detect",
+                         help="erkennt die acht Deckkarten automatisch aus einer Aufnahme und "
+                              "schlägt sie zur Bestätigung vor (ersetzt das Umbenennen der Crops)")
+    ddt.add_argument("--session", default=None, help="Aufnahme (Default: neueste)")
+    ddt.add_argument("--samples", type=int, default=400, help="wieviele Videobilder abgetastet werden")
+    ddt.add_argument("--per-face", type=int, default=6, dest="per_face",
+                     help="wieviele Bilder je Kartengesicht gemittelt werden (mehr = sicherer)")
+    ddt.add_argument("--player-tag", default=None, dest="player_tag",
+                     help="Spieler-Tag (z.B. #ABC123) -- liest die Kartenlevel aus deinem Account "
+                          "über die offizielle API; braucht einen Token in CLASHRL_CR_API_TOKEN")
+    ddt.add_argument("--out", default=None, help="Ziel-JSON (Default: data/deck_detect.json)")
+    ddt.set_defaults(func=_cmd_deck_detect)
 
     args = parser.parse_args()
     args.func(args)

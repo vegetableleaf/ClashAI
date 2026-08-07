@@ -53,6 +53,38 @@ def _avail_ram_bytes() -> Optional[int]:
     return None
 
 
+def rss_bytes() -> Optional[int]:
+    """Resident memory of THIS process, so the benchmark can see what a pool of envs costs."""
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+
+        class _Counters(ctypes.Structure):
+            _fields_ = [("cb", wintypes.DWORD), ("PageFaultCount", wintypes.DWORD),
+                        ("PeakWorkingSetSize", ctypes.c_size_t), ("WorkingSetSize", ctypes.c_size_t),
+                        ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                        ("PagefileUsage", ctypes.c_size_t), ("PeakPagefileUsage", ctypes.c_size_t)]
+
+        c = _Counters()
+        c.cb = ctypes.sizeof(_Counters)
+        h = ctypes.windll.kernel32.GetCurrentProcess()
+        if ctypes.windll.psapi.GetProcessMemoryInfo(h, ctypes.byref(c), c.cb):
+            return int(c.WorkingSetSize)
+        return None
+    try:
+        with open("/proc/self/statm", "r", encoding="ascii") as f:
+            return int(f.read().split()[1]) * os.sysconf("SC_PAGE_SIZE")
+    except OSError:
+        return None
+
+
+def free_ram_bytes() -> Optional[int]:
+    return _avail_ram_bytes()
+
+
 def probe() -> Dict[str, Any]:
     """Read the machine. Never raises -- unknown fields come back as None."""
     info: Dict[str, Any] = {
