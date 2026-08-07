@@ -302,18 +302,19 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
         return True
     if threat_id[6] >= 0.5 and play.building:                          # building-targeter -> a building
         return True
-    # ENEMY SIEGE (a win-condition BUILDING shelling from range: X-Bow / Mortar). It will not walk
-    # into anything, so the answer has to travel TO it: a spell, or a troop that can out-DPS it.
-    # A defensive building of ours is explicitly excluded -- siege outranges it (X-Bow ~11.5 tiles
-    # vs a Tesla's ~5.5), so it would sit there never firing a shot.
-    if threat_id[5] >= 0.5 and threat_id[4] >= 0.5:
-        return play.spell or (play.kind == "troop" and (play.dps or 0) >= 150)
     # BARE WIN CONDITION -- a win-condition TROOP carrying no other role (Miner is the archetype:
     # not a tank, not air, not a swarm, and NOT building-targeting, so every branch above misses it).
-    # It walks straight at the tower, so the answer is simply a BODY that engages it: any troop, or a
-    # defensive (non-siege) building. Spells are excluded because a single spell rarely kills one and
-    # the trade is bad; a siege building of ours cannot defend at all. Tanks and buildings are excluded
-    # from this branch so heavy/siege win conditions keep their stricter rules above.
+    # It walks (or tunnels) straight at the tower, so the answer is simply a BODY that engages it: any
+    # troop, or a defensive (non-siege) building. Spells are excluded because one rarely kills a lone
+    # win condition and the trade is bad; our own siege building cannot defend. Tanks and buildings are
+    # excluded from this branch so heavy/siege win conditions keep their stricter rules above.
+    #
+    # NB there is deliberately NO enemy-siege branch: an offensive X-Bow/Mortar is deployed on the
+    # OPPONENT'S half, and identity_threat_vector only admits enemies that have crossed onto YOURS
+    # (sim/view.identity_items filters local y >= 0.5, and env.py filters gy >= 0.5). Enemy siege
+    # therefore never reaches this function, so a branch for it would be dead code. Answering it --
+    # e.g. a Tesla at the bridge, which outranges nothing but sits close enough to shell the bow --
+    # requires the threat block to see ACROSS the river first.
     if threat_id[5] >= 0.5 and threat_id[1] < 0.5 and threat_id[4] < 0.5:
         return play.kind == "troop" or (play.building and not play.siege)
     return False

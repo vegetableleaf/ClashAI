@@ -50,6 +50,7 @@ class ScriptedBot:
         self._backline_done = False                              # one backline-support opening per match
         self._backline_prob = float(cfg.get("sim", "backline_support_prob", default=0.05))
         self._backline_until = float(cfg.get("sim", "backline_support_until_s", default=45.0))
+        self.anywhere_prob = float(cfg.get("sim", "anywhere_deploy_prob", default=0.75))   # Miner-style tower drops
         # --- adaptive knobs (rolled per bot -> a POPULATION of skill levels, not one clone) ---
         self.adaptive = bool(adaptive)
         ad = cfg.get("sim", "adaptive", default={}) or {}
@@ -202,6 +203,17 @@ class ScriptedBot:
         offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0]
         if not offense:
             return
+        # DEPLOY-ANYWHERE cards (Miner / Goblin Drill, KB flag) tunnel STRAIGHT to the defender's tower --
+        # they never walk the lane. Dropping one at the bridge like a Knight, which is what the generic
+        # offense path did, means the agent never trains on the scenario the card actually creates: an
+        # enemy suddenly ON its tower with no approach to read. Placed on a live princess tower here.
+        anywhere = [s for s in offense if s.deploy_anywhere]
+        if anywhere and self.rng.random() < self.anywhere_prob:
+            tw = [t for t in eng.towers[1 - team][:2] if t.alive]
+            if tw:
+                target = self.rng.choice(tw)
+                if eng.deploy(team, self.rng.choice(anywhere), target.x, target.y):
+                    return
         splitting = self.adaptive and self.split_know and self._nado_seen
         if splitting:
             self._flip = not self._flip                          # tornado seen -> stop stacking one lane

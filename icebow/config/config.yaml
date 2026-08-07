@@ -584,7 +584,7 @@ detect:
   # non-destructive (new trl_* stems, flat folder that survives detect-import). Re-sync Label Studio
   # Local Storage to pick them up. `record` only harvests IN_MATCH frames -- it reads the screen state
   # once per capture_every_s so menus and result screens never reach the queue.
-  capture_during_train: true     # set false to disable the harvest during train-rl / record
+  capture_during_train: true    # set false to disable the harvest during train-rl / record
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl / record session
@@ -647,6 +647,11 @@ sim:
   enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
   backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
   backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
+  anywhere_deploy_prob: 0.75          # chance a bot holding a DEPLOY_ANYWHERE card (cards.yaml flag: Miner /
+                                      # Goblin Drill) tunnels it straight onto a live princess tower instead of
+                                      # walking it from the bridge. Without this the sim never produces the
+                                      # scenario -- an enemy suddenly ON your tower with no approach to read --
+                                      # so the policy cannot learn to answer it however the reward is shaped.
   # --- ADAPTIVE scripted bots (Tier-1 'smart opponents', TRAINING ONLY: only train_sim's opponent
   # provider passes adaptive=True; the eval benchmark + fair eval never do, so eval curves stay
   # comparable across runs). Each training bot rolls adaptive_prob; an adaptive bot then rolls each

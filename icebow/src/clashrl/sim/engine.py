@@ -65,6 +65,8 @@ class CardSpec:
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.02      # collision radius (soft body-block)
+    deploy_anywhere: bool = False   # KB flag: tunnels/drills to ANY tile (Miner, Goblin Drill) -- it does not
+                                    # walk the lane, so it is placed straight onto the defender's tower
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
@@ -163,6 +165,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
+        deploy_anywhere=("deploy_anywhere" in flags),
         kamikaze="kamikaze" in flags, lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,

@@ -702,7 +702,7 @@ cards:
     display: "Goblin Drill"
     win_condition: true
     targets: buildings_only
-    flags: [spawner, building_targeting]
+    flags: [spawner, building_targeting, deploy_anywhere]   # drills up anywhere, same as the Miner
     verified: false
 
   graveyard:
@@ -729,7 +729,9 @@ cards:
     display: "Miner"
     win_condition: true
     targets: any
-    flags: []
+    flags: [deploy_anywhere]   # TUNNELS: deployable on ANY tile incl. the defender's tower, so he skips the
+                               # lane entirely. Without this the sim's bot drops him at the bridge like a
+                               # Knight and the policy never trains on the scenario that actually happens.
     range: melee
     crown_tower_damage: 78     # L11 basis: Miner's signature nerf -- ~40% of his 194 hit vs crown towers
                                # (wiki-style reduced value; USER VERIFY exact number). Without it the sim
