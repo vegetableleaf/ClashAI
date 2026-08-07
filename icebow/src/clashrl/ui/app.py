@@ -302,6 +302,21 @@ def create_app(cfg) -> Flask:
     def checkpoints():
         return jsonify(list_checkpoints(root / "data", metrics.runs()))
 
+    # -- live view ---------------------------------------------------------
+    @app.get("/api/live")
+    def live_view():
+        from .live import snapshot
+        try:
+            return jsonify(snapshot(C(), width=int(request.args.get("width", 420))))
+        except Exception as exc:                       # noqa: BLE001 -- must never break the panel
+            return jsonify({"ok": False, "error": str(exc)})
+
+    @app.post("/api/live/reset")
+    def live_reset():
+        from .live import reset
+        reset()
+        return jsonify({"ok": True})
+
     # -- hardware / speed --------------------------------------------------
     def _bench_file():
         p = root / "data" / "sim_bench.json"

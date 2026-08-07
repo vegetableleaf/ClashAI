@@ -178,6 +178,22 @@ COMMANDS: List[Dict[str, Any]] = [
         ],
     },
     {
+        "cmd": "calibrate",
+        "group": "Aus Aufnahmen lernen",
+        "title": "Match-Erkennung kalibrieren",
+        "desc": "Schneidet die Erkennung 'ich bin in einem Match' aus DEINER Aufnahme neu zu. "
+                "Nötig, wenn dein Fenster anders groß ist oder das Spiel in einer anderen Sprache "
+                "läuft als die mitgelieferten Vorlagen.",
+        "gpu": False,
+        "metrics": False,
+        "args": [
+            {"name": "session", "type": "session", "default": "", "label": "Aufnahme",
+             "help": "Leer = neueste. Die Aufnahme muss deine Klicks enthalten."},
+            {"name": "dry-run", "type": "bool", "default": False, "label": "Nur prüfen",
+             "help": "Berichtet das Ergebnis, schreibt aber nichts."},
+        ],
+    },
+    {
         "cmd": "deck-detect",
         "group": "Aus Aufnahmen lernen",
         "title": "Deck erkennen",
@@ -193,6 +209,12 @@ COMMANDS: List[Dict[str, Any]] = [
             {"name": "per-face", "type": "int", "default": 6, "label": "Bilder je Karte",
              "help": "Über so viele Ansichten derselben Karte wird gemittelt. Sechs reichten in "
                      "der Messung für alle Karten."},
+            {"name": "write-templates", "type": "bool", "default": False,
+             "label": "Vorlagen gleich schreiben",
+             "help": "Speichert jede sicher erkannte Karte als Hand-Vorlage unter ihrem richtigen "
+                     "Namen. Damit entfällt das Umbenennen der Bildausschnitte vollständig."},
+            {"name": "overwrite-templates", "type": "bool", "default": False,
+             "label": "Vorhandene ersetzen"},
             {"name": "player-tag", "type": "str", "default": "", "label": "Spieler-Tag (optional)",
              "help": "Mit Tag und API-Token werden zusätzlich die Kartenlevel aus deinem Account "
                      "gelesen. Ohne bleiben die Level aus cards.yaml stehen."},

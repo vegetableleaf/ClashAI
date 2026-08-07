@@ -243,10 +243,17 @@ def _cmd_cards_art(args) -> None:
     import_card_art(Config.load(args.config), only_missing=not args.refresh, limit=args.limit)
 
 
+def _cmd_calibrate(args) -> None:
+    from .calibrate import calibrate
+    calibrate(Config.load(args.config), session_arg=args.session, dry_run=args.dry_run)
+
+
 def _cmd_deck_detect(args) -> None:
     from .deck_detect import detect_deck
     detect_deck(Config.load(args.config), session_arg=args.session, samples=args.samples,
-                per_face=args.per_face, player_tag=args.player_tag, out=args.out)
+                per_face=args.per_face, player_tag=args.player_tag, out=args.out,
+                write_templates=args.write_templates,
+                overwrite_templates=args.overwrite_templates)
 
 
 def _cmd_sim_bench(args) -> None:
@@ -582,7 +589,20 @@ def main() -> None:
                      help="Spieler-Tag (z.B. #ABC123) -- liest die Kartenlevel aus deinem Account "
                           "über die offizielle API; braucht einen Token in CLASHRL_CR_API_TOKEN")
     ddt.add_argument("--out", default=None, help="Ziel-JSON (Default: data/deck_detect.json)")
+    ddt.add_argument("--write-templates", action="store_true", dest="write_templates",
+                     help="schreibt die sicher erkannten Kartenbilder gleich als Hand-Vorlagen "
+                          "nach templates/cards/<karte>.png -- damit entfaellt das Umbenennen ganz")
+    ddt.add_argument("--overwrite-templates", action="store_true", dest="overwrite_templates",
+                     help="ersetzt dabei auch schon vorhandene Vorlagen")
     ddt.set_defaults(func=_cmd_deck_detect)
+
+    cal = sub.add_parser("calibrate",
+                         help="schneidet die Match-Erkennung aus DEINER Aufnahme neu zu (nötig bei "
+                              "anderer Fenstergröße oder anderer Spielsprache)")
+    cal.add_argument("--session", default=None, help="Aufnahme (Default: neueste)")
+    cal.add_argument("--dry-run", action="store_true", dest="dry_run",
+                     help="nur berichten, nichts schreiben")
+    cal.set_defaults(func=_cmd_calibrate)
 
     args = parser.parse_args()
     try:

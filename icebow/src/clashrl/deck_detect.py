@@ -137,9 +137,45 @@ def _latest_session(root: Path):
     return max(found, key=lambda p: p.name) if found else None
 
 
+def _write_templates(cfg, faces, detections, min_score: float, min_margin: float,
+                     overwrite: bool) -> None:
+    """Save the confidently identified faces as hand templates under their real name.
+
+    This is the step that used to be manual: `hand-templates` dumps `_cand_*.png` and you
+    rename them. Once a face has been identified there is nothing left to rename, so the
+    crop is written straight to `<key>.png`. Only confident faces are written -- a wrong
+    name here would silently poison hand recognition for every later run.
+    """
+    out_dir = cfg.path(cfg.get("hand", "templates_dir", default="templates/cards"))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written, skipped, existing = [], [], []
+    for face, det in zip(faces, detections):
+        best = det["candidates"][0]
+        if best["score"] < min_score or det["margin"] < min_margin:
+            skipped.append(f"{best['display']} ({best['score']:.2f}/{det['margin']:.2f})")
+            continue
+        dst = out_dir / f"{best['key']}.png"
+        if dst.name in written:
+            continue                      # mehrere Ansichten derselben Karte: eine Vorlage reicht
+        if dst.exists() and not overwrite:
+            existing.append(dst.name)
+            continue
+        cv2.imwrite(str(dst), face["key"])
+        written.append(dst.name)
+    if written:
+        print(f"[deck-detect] {len(written)} Hand-Vorlagen geschrieben: {', '.join(sorted(set(written)))}")
+    if existing:
+        print(f"[deck-detect] unverändert gelassen (schon vorhanden): {', '.join(sorted(set(existing)))}. "
+              "Mit --overwrite-templates werden sie ersetzt.")
+    if skipped:
+        print(f"[deck-detect] {len(skipped)} Kartenbilder waren zu unsicher für eine Vorlage.")
+
+
 def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
                 distinct: float = 0.8, per_face: int = 6, top: int = 5,
-                player_tag: Optional[str] = None, out: Optional[str] = None) -> None:
+                player_tag: Optional[str] = None, out: Optional[str] = None,
+                write_templates: bool = False, overwrite_templates: bool = False,
+                tpl_min_score: float = 0.65, tpl_min_margin: float = 0.08) -> None:
     from .cards import CardDB
     from .vision import Vision
 
@@ -266,6 +302,9 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
     if unsure:
         print("[deck-detect] Bei den unsicheren Karten bitte im Launcher aus der Vorschlagsliste "
               "wählen, statt das Ergebnis ungeprüft zu übernehmen.")
+
+    if write_templates:
+        _write_templates(cfg, faces, detections, tpl_min_score, tpl_min_margin, overwrite_templates)
 
     payload = {
         "generated": time.time(),
