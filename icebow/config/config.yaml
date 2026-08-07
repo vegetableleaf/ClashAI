@@ -647,10 +647,17 @@ detect:
 # footage that has no mouse log; until then the command reports readiness. Enable the priors in
 # training via rewards.strategy_prior_scale (default 0 = off). See clashrl/replay_mine.py.
 replay_mine:
-  replays_dir: data/replays      # drop pro/top-ladder rocket-cycle replay videos here (mp4/avi/mkv/mov/webm)
-  frame_stride: 3                # sample every Nth frame when mining (higher = faster, coarser)
+  replays_dir: data/detect/HunterCR_replays   # where the replay VIDEOS actually live (mp4/avi/mkv/mov/webm).
+                                 # Was data/replays, which never existed -- mine-replays would have found
+                                 # nothing and reported "no replays" rather than failing loudly.
+  frame_stride: 30               # sample every Nth frame. The footage is 60 fps and ~143 min = ~515k frames,
+                                 # so the old stride 3 meant ~172k detector passes (~6 h on this GPU). A card
+                                 # can only be PLAYED about once a second, so 2 samples/sec (stride 30) loses
+                                 # no placement while cutting the pass to ~17k frames (~35 min). Lower it only
+                                 # if you need sub-second timing of a spell's travel.
   detect_conf: 0.30              # detector confidence threshold for a unit to count
   learn_side: bottom             # which player to imitate: the featured/blue player is usually on the bottom
+                                 # -- CONFIRMED correct for this footage: Hunter plays the BOTTOM (blue) side.
 
 # --- Headless simulator (train-sim): fast, no-vision RL from scratch ------
 # `run.py train-sim` trains the SAME policy against a medium-fidelity, stat-driven match engine
