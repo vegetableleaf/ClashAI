@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClashAI Launcher</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>ClashAI <span class="sub">Launcher</span></h1>
+  <div id="statusbar"><span class="pill idle" id="runpill">kein Job aktiv</span></div>
+</header>
+
+<div class="tos">⚠ {{ tos }}</div>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="run">Steuerung</button>
+  <button class="tab" data-tab="dash">Dashboard</button>
+  <button class="tab" data-tab="strategy">Strategie</button>
+  <button class="tab" data-tab="deck">Deck</button>
+  <button class="tab" data-tab="config">Config</button>
+  <button class="tab" data-tab="ckpt">Checkpoints</button>
+</nav>
+
+<main>
+  <!-- ---------------- Steuerung ---------------- -->
+  <section id="tab-run" class="panel active">
+    <div id="cmdgrid" class="grid"></div>
+  </section>
+
+  <!-- ---------------- Dashboard ---------------- -->
+  <section id="tab-dash" class="panel">
+    <div class="row">
+      <label>Lauf:
+        <select id="runselect"></select>
+      </label>
+      <button id="dashreload" class="btn small">Aktualisieren</button>
+      <a id="csvlink" class="btn small" href="/api/metrics.csv">CSV-Export</a>
+      <span class="hint">Metriken liegen in <code>data/metrics.jsonl</code> und überleben einen Neustart.</span>
+    </div>
+    <div id="kpis" class="kpis"></div>
+    <div id="charts" class="charts"></div>
+  </section>
+
+  <!-- ---------------- Strategie ---------------- -->
+  <section id="tab-strategy" class="panel">
+    <div class="row">
+      <span class="hint">Zeigt, was die Policy wirklich tut. Erzeugt vom Kommando
+        <code>policy-stats</code> (Tab „Steuerung“) &rarr; <code>data/policy_stats.json</code>.</span>
+      <button id="stratreload" class="btn small">Aktualisieren</button>
+    </div>
+    <div id="stratbody"></div>
+  </section>
+
+  <!-- ---------------- Deck ---------------- -->
+  <section id="tab-deck" class="panel">
+    <div id="deckwarn"></div>
+    <div class="row">
+      <label>Deckname: <input id="deckname" type="text" size="40"></label>
+      <span id="deckavg" class="pill"></span>
+    </div>
+    <table class="tbl" id="decktbl">
+      <thead><tr><th>#</th><th>Karte</th><th>Elixier</th><th>Rolle</th><th>Level</th><th>Evo</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="row">
+      <button id="decksave" class="btn primary">Deck speichern</button>
+      <span id="deckmsg" class="msg"></span>
+    </div>
+    <p class="hint">Beim Speichern wird <code>config/cards.yaml</code> vorher nach
+      <code>data/config_backups/</code> gesichert. Nur der <code>deck:</code>-Block wird ersetzt,
+      alle Kommentare der Datei bleiben erhalten.</p>
+  </section>
+
+  <!-- ---------------- Config ---------------- -->
+  <section id="tab-config" class="panel">
+    <div class="row">
+      <button id="cfgsave" class="btn primary">Änderungen speichern</button>
+      <button id="cfgreset" class="btn small">Verwerfen</button>
+      <span id="cfgmsg" class="msg"></span>
+    </div>
+    <p class="hint">Es wird nur die betroffene Zeile in <code>config/config.yaml</code> ersetzt —
+      Kommentare bleiben erhalten. Vor jedem Schreiben: Backup + Gegenprüfung, dass die Datei
+      danach exakt die gewollte Änderung enthält. Ungültiges YAML wird nie geschrieben.</p>
+    <div id="cfgbody"></div>
+  </section>
+
+  <!-- ---------------- Checkpoints ---------------- -->
+  <section id="tab-ckpt" class="panel">
+    <div class="row">
+      <button id="ckptreload" class="btn small">Aktualisieren</button>
+      <span class="hint">„Als --init übernehmen“ trägt den Checkpoint in die Startparameter des
+        gewählten Kommandos ein.</span>
+    </div>
+    <div id="ckptbody"></div>
+  </section>
+</main>
+
+<!-- ---------------- Log ---------------- -->
+<section id="logpanel">
+  <div class="loghead">
+    <strong>Live-Log</strong>
+    <select id="logselect"></select>
+    <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-Scroll</label>
+    <button id="logclear" class="btn small">Ansicht leeren</button>
+    <a id="logdl" class="btn small" href="#">Log herunterladen</a>
+  </div>
+  <pre id="log"></pre>
+</section>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -12,6 +12,7 @@ Subcommands (built incrementally):
 from __future__ import annotations
 
 import argparse
+import os
 
 from .config import Config
 
@@ -226,7 +227,35 @@ def _cmd_mine_replays(args) -> None:
     mine_replays(Config.load(args.config), args.replays, args.weights, args.conf, args.stride)
 
 
+def _cmd_ui(args) -> None:
+    try:
+        from .ui.app import serve
+    except ImportError as exc:
+        print(f"[ui] Flask wird benötigt ({exc}).\n"
+              "Installieren:\n"
+              "  .\\.venv\\Scripts\\python.exe -m pip install flask")
+        return
+    serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
+
+
+def _cmd_policy_stats(args) -> None:
+    try:
+        from .ui.rollout import policy_stats
+    except ImportError as exc:
+        print(f"[policy-stats] PyTorch wird benötigt ({exc}).")
+        return
+    policy_stats(_sized_config(args), ckpt=args.ckpt, matches=args.matches, envs=args.envs,
+                 seed=args.seed, epsilon=args.epsilon, out=args.out)
+
+
 def main() -> None:
+    # The UI launches us in our own process group, where Windows can only deliver
+    # Ctrl+Break -- whose default action kills us before any `finally: save()` runs.
+    # Map it onto the normal Ctrl+C path. Env-gated, so a plain CLI run is unchanged.
+    if os.environ.get("CLASHRL_UI_CHILD"):
+        from .ui.child import install_stop_signal
+        install_stop_signal()
+
     parser = argparse.ArgumentParser(
         prog="clashrl",
         description="Learning Clash Royale bot (imitation learning -> RL).",
@@ -472,6 +501,29 @@ def main() -> None:
     mrp.add_argument("--conf", type=float, default=None, help="detector confidence threshold (default: replay_mine.detect_conf)")
     mrp.add_argument("--stride", type=int, default=None, help="sample every Nth frame (default: replay_mine.frame_stride)")
     mrp.set_defaults(func=_cmd_mine_replays)
+
+    uip = sub.add_parser("ui",
+                         help="lokale Launcher-Oberfläche im Browser (Start/Stop, Live-Log, "
+                              "Dashboard, Deck-/Config-Editor) -- bindet nur an 127.0.0.1")
+    uip.add_argument("--port", type=int, default=8765, help="Port (Default 8765)")
+    uip.add_argument("--no-browser", action="store_true", dest="no_browser",
+                     help="Browser nicht automatisch öffnen")
+    uip.set_defaults(func=_cmd_ui)
+
+    pst = sub.add_parser("policy-stats",
+                         help="misst im Simulator, WAS die Policy spielt: Karten-Häufigkeit, "
+                              "Platzierungs-Heatmap, Wait-Gate-Quote -> data/policy_stats.json")
+    pst.add_argument("--ckpt", default=None,
+                     help="Checkpoint (Default: data/policy_sim_best.pt, sonst policy_sim.pt)")
+    pst.add_argument("--matches", type=int, default=60, help="wieviele greedy Matches gespielt werden")
+    pst.add_argument("--envs", type=int, default=8, help="parallele Match-Instanzen")
+    pst.add_argument("--seed", type=int, default=4242, help="RNG-Seed des Simulators")
+    pst.add_argument("--epsilon", type=float, default=0.0,
+                     help="Zufallsanteil (0 = rein greedy, also das echte Verhalten)")
+    pst.add_argument("--out", default=None, help="Ziel-JSON (Default: data/policy_stats.json)")
+    pst.add_argument("--size", choices=["576", "432"], default=None,
+                     help="Board-Auflösung; muss zum Checkpoint passen")
+    pst.set_defaults(func=_cmd_policy_stats)
 
     args = parser.parse_args()
     args.func(args)

@@ -44,6 +44,38 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
 
+## Launcher (Browser-Oberfläche) — `run.py ui`
+
+Statt jedes Kommando im Terminal zu tippen: **`start_ui.bat` im Repo-Root doppelklicken**
+(oder `.\.venv\Scripts\python.exe run.py ui`). Es startet einen lokalen Server auf
+`http://127.0.0.1:8765` — **nur localhost**, kein Netzwerkzugriff, keine Anmeldung —
+und öffnet den Browser.
+
+Die Oberfläche bietet:
+
+* **Steuerung** — Start/Stop für `train-sim`, `train-sim-ppo`, `train-bc`, `train-rl`,
+  `play`, `record`, `label`, `outcomes`, `verify`, `diag`, `policy-stats`. Stop sendet
+  das Ctrl+C-Äquivalent, damit die bestehende Checkpoint-Speicherung beim Abbruch greift.
+  Zwei GPU-Jobs gleichzeitig lässt der Launcher nicht zu.
+* **Live-Log** des laufenden Prozesses (Server-Sent Events); Volltext unter `data/ui_logs/`.
+* **Dashboard** — Winrate, Reward, Loss, Epsilon, Matches/Sekunde, Benchmark-Kurve,
+  Restzeit bis zur Ziel-Matchzahl. Persistiert in `data/metrics.jsonl` (übersteht Neustarts),
+  CSV-Export per Knopfdruck.
+* **Strategie** — welche Karten die Policy wie oft spielt, Platzierungs-Heatmap über
+  `action.grid`, Wait-Gate-Quote, nie gespielte Karten. Datenquelle: `run.py policy-stats`.
+* **Deck** — aktuelles Deck aus `cards.yaml` mit Elixier/Rolle/Durchschnitt, Karten per
+  Auswahlliste tauschbar, Level pro Karte. Warnt, was ein Deckwechsel ungültig macht.
+* **Config** — die wichtigsten Felder aus `config.yaml` mit Erklärung und Validierung.
+  Geschrieben wird **zeilenweise**, sodass alle Kommentare der Datei erhalten bleiben;
+  vorher Backup nach `data/config_backups/`, ungültiges YAML wird nie geschrieben.
+* **Checkpoints** — `.pt`-Dateien mit Datum, Matchzahl, bestem Benchmark und Deck-Abgleich;
+  übernehmbar als `--init` für den nächsten Lauf.
+
+Die CLI bleibt vollständig funktionsfähig — das UI ruft sie auf, es ersetzt sie nicht.
+
+> ⚠️ Auch hier gilt: Automatisiertes Spielen verstößt gegen die Supercell-ToS
+> (Warnhinweis steht im Launcher).
+
 ## Setup
 
 ```powershell
