@@ -882,7 +882,7 @@ cards:
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
   fisherman: {range: melee, verified: false}
-  giant_skeleton: {range: melee, attacks: [ground], targets: buildings_only, flags: [tank, death_damage], verified: false}   # 6e tank; the DEATH BOMB is the threat, so kill it away from your tower
+  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
   golden_knight: {range: melee, verified: false}
