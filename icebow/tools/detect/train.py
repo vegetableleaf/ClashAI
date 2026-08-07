@@ -95,6 +95,12 @@ def main() -> None:
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
                          "Albumentations if installed. Default OFF (leaves training unchanged).")
+    ap.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
+                    help="CONTINUE an interrupted run instead of starting a new one. Bare --resume picks the "
+                         "newest runs/detect/*/weights/last.pt; pass a run name (e.g. board-17) to pick one. "
+                         "Training dies quietly whenever its terminal is closed, and the run keeps its own "
+                         "folder/epoch count/best.pt, so resuming loses nothing. All other flags are IGNORED -- "
+                         "ultralytics restores them from the checkpoint's own args.")
     args = ap.parse_args()
 
     is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
@@ -109,6 +115,22 @@ def main() -> None:
     if not data.exists():
         raise SystemExit(f"no dataset at {data}\n"
                          "Build it first:  run.py autolabel --all   (then hand-label the frames).")
+
+    if args.resume:
+        runs = root / "runs" / "detect"
+        if args.resume == "auto":
+            ckpts = sorted(runs.glob("*/weights/last.pt"), key=lambda p: p.stat().st_mtime)
+            if not ckpts:
+                raise SystemExit(f"no runs/detect/*/weights/last.pt to resume under {runs}")
+            ckpt = ckpts[-1]
+        else:
+            ckpt = runs / args.resume / "weights" / "last.pt"
+            if not ckpt.exists():
+                raise SystemExit(f"no checkpoint at {ckpt}")
+        print(f"[train] RESUMING {ckpt.parents[1].name} from {ckpt}")
+        (RTDETR if is_rtdetr else YOLO)(str(ckpt)).train(resume=True)
+        print(f"done -> {ckpt.parents[0] / 'best.pt'}")
+        return
 
     model = (RTDETR if is_rtdetr else YOLO)(args.model)
     print(f"[train] {'RT-DETR' if is_rtdetr else 'YOLO'} from {args.model}  ->  {data}")
