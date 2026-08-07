@@ -12,6 +12,7 @@ Subcommands (built incrementally):
 from __future__ import annotations
 
 import argparse
+import os
 
 from .config import Config
 
@@ -118,7 +119,7 @@ def _cmd_train_rl(args) -> None:
 
 def _cmd_play(args) -> None:
     from .play import play
-    play(_sized_config(args))
+    play(_sized_config(args), init=args.init)
 
 
 def _cmd_train_sim(args) -> None:
@@ -186,6 +187,24 @@ def _cmd_deck_detect(args) -> None:
 def _cmd_calibrate(args) -> None:
     from .calibrate import calibrate
     calibrate(Config.load(args.config), session_arg=args.session, dry_run=args.dry_run)
+
+
+def _cmd_ui(args) -> None:
+    try:
+        from .ui.app import serve
+    except ImportError as exc:
+        print(f"[ui] Flask is required ({exc}).\n"
+              "Install it with:\n"
+              "  .\\.venv\\Scripts\\python.exe -m pip install flask")
+        return
+    serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
+
+
+def _cmd_import_from(args) -> None:
+    from .migrate import import_from
+    import_from(Config.load(args.config), args.old, dry_run=args.dry_run,
+                overwrite=args.overwrite, with_sessions=not args.no_sessions,
+                with_config=args.with_config)
 
 
 def _cmd_diag(args) -> None:
@@ -276,6 +295,13 @@ def _cmd_mine_replays(args) -> None:
 
 
 def main() -> None:
+    # The UI launches us in our own process group, where Windows can only deliver
+    # Ctrl+Break -- whose default action kills us before any `finally: save()` runs.
+    # Map it onto the normal Ctrl+C path. Env-gated, so a plain CLI run is unchanged.
+    if os.environ.get("CLASHRL_UI_CHILD"):
+        from .ui.child import install_stop_signal
+        install_stop_signal()
+
     parser = argparse.ArgumentParser(
         prog="clashrl",
         description="Learning Clash Royale bot (imitation learning -> RL).",
@@ -450,6 +476,9 @@ def main() -> None:
     cal.set_defaults(func=_cmd_calibrate)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
+    ply.add_argument("--init", default=None, metavar="CKPT",
+                     help="which checkpoint to play, e.g. data/policy_sim_best.pt. "
+                          "Default: data/policy_rl.pt if present, else data/policy.pt")
     ply.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
     ply.set_defaults(func=_cmd_play)
@@ -613,8 +642,39 @@ def main() -> None:
     mrp.add_argument("--stride", type=int, default=None, help="sample every Nth frame (default: replay_mine.frame_stride)")
     mrp.set_defaults(func=_cmd_mine_replays)
 
+    uip = sub.add_parser("ui",
+                         help="local control panel in the browser (start/stop, live log, progress, "
+                              "deck and config editor); binds to 127.0.0.1 only")
+    uip.add_argument("--port", type=int, default=8765, help="port (default 8765)")
+    uip.add_argument("--no-browser", action="store_true", dest="no_browser",
+                     help="do not open the browser automatically")
+    uip.set_defaults(func=_cmd_ui)
+
+    imp = sub.add_parser("import-from",
+                         help="take checkpoints, recordings and templates from an older "
+                              "installation of this project")
+    imp.add_argument("old", help="path to the old folder (repository root or the icebow folder)")
+    imp.add_argument("--dry-run", action="store_true", dest="dry_run",
+                     help="only list what would be copied")
+    imp.add_argument("--overwrite", action="store_true",
+                     help="also replace files that already exist here")
+    imp.add_argument("--no-sessions", action="store_true", dest="no_sessions",
+                     help="skip the recordings (they are the large part)")
+    imp.add_argument("--with-config", action="store_true", dest="with_config",
+                     help="also take cards.yaml and config.yaml, which decide the deck and the "
+                          "screen calibration")
+    imp.set_defaults(func=_cmd_import_from)
+
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except KeyboardInterrupt:
+        # Ctrl+C (or the launcher's stop button) during a phase the command does not guard
+        # itself -- most visibly while the env pool is still being built. Nothing has been
+        # trained yet, so there is nothing to save; exit quietly instead of dumping a
+        # traceback and a Windows control-C exit code that looks like a crash.
+        print("\n[clashrl] aborted.", flush=True)
+        raise SystemExit(130)
 
 
 if __name__ == "__main__":
