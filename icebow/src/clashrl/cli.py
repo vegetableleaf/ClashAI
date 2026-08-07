@@ -202,7 +202,7 @@ def _cmd_sprites(args) -> None:
 def _cmd_detect_eval(args) -> None:
     from .detect_eval import detect_eval
     detect_eval(Config.load(args.config), weights=args.weights, conf=args.conf,
-                sweep=args.sweep, device=args.device)
+                sweep=args.sweep, device=args.device, subset=args.subset)
 
 
 def _cmd_detect_obs(args) -> None:
@@ -421,6 +421,9 @@ def main() -> None:
                           "instead of inheriting the previous operating point")
     dev.add_argument("--device", default=None,
                      help="torch device for inference, e.g. cpu -- use cpu to evaluate WITHOUT touching a busy GPU")
+    dev.add_argument("--subset", default=None,
+                     help="file of val STEMS (one per line) to score instead of the whole val dir -- labelling "
+                          "GROWS val, so pass the same snapshot to both generations for a like-for-like compare")
     dev.set_defaults(func=_cmd_detect_eval)
 
     dob = sub.add_parser("detect-obs",

@@ -86,7 +86,8 @@ def _match(frames, gate, class_aware, keep=None):
 
 
 def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
-                sweep: bool = False, device: str | None = None) -> None:
+                sweep: bool = False, device: str | None = None,
+                subset: str | None = None) -> None:
     try:
         from ultralytics import YOLO
     except ImportError as exc:  # noqa: BLE001
@@ -117,6 +118,24 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     if not imgs:
         print(f"[detect-eval] no val images under {root/'images'/'val'}")
         return
+    if subset:
+        # Restrict to a SNAPSHOT of val stems. Labelling grows the val set (new images hash into it),
+        # so generation N+1 is scored on a SUPERSET of generation N's val -- the split manifest keeps
+        # old images on their old side, but the totals still differ, and a 2pp move could be nothing but
+        # the added images. Scoring both models on the shared snapshot removes that: neither trained on
+        # those frames, so it is a like-for-like head-to-head.
+        # utf-8-SIG: PowerShell's `Set-Content -Encoding utf8` writes a BOM, which would otherwise glue
+        # itself to the first stem and silently drop that one image from the comparison.
+        keep = {ln.strip() for ln in Path(subset).read_text(encoding="utf-8-sig").splitlines() if ln.strip()}
+        have = {Path(p).stem for p in imgs}
+        imgs = [p for p in imgs if Path(p).stem in keep]
+        missing = keep - have
+        print(f"[detect-eval] SUBSET {Path(subset).name}: {len(imgs)}/{len(keep)} stems present"
+              + (f" ({len(missing)} no longer in val -- excluded from BOTH sides only if you"
+                 f" re-run the other model with the same --subset)" if missing else ""))
+        if not imgs:
+            print("[detect-eval] subset matched nothing -- is it a stem list (no .jpg extension)?")
+            return
     print(f"[detect-eval] weights {weights}")
     print(f"[detect-eval] val {len(imgs)} images (REAL only -- synth is never validated on)")
 
