@@ -19,7 +19,8 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
-                     xbow_lock_cell)
+                     xbow_lock_cell, xbow_offense_depth_cell, tesla_pull_cell)
+from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
 from . import interactions
@@ -147,6 +148,13 @@ def play(cfg) -> None:
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
     xbow_defense_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
+    tesla_ids = {i for i, key in enumerate(vision.deck_keys)
+                 if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
+    _deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
+    _pull_front = float(cfg.get("env", "tesla_pull_front", default=0.52))
+    _pull_back = float(cfg.get("env", "tesla_pull_back", default=0.59))
+    _intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))
+    _wincon = {"xy": None, "sight": 0.0, "last": 0.0}   # deepest lane win condition, for the Tesla pull
     # Cell-head DEPLOYABLE mask: anywhere cards (rocket / miner) -> all cells; every other card only
     # YOUR half. Applied before the cell argmax so play never taps an enemy-half cell that can't
     # deploy (the 'impossible coordinate' that made the bot look inactive).
@@ -262,6 +270,22 @@ def play(cfg) -> None:
             elif _pump["t0"] is not None and now_p - _pump["last"] > 6.0:
                 _pump["t0"] = None
                 _pump["xy"] = None
+            # LANE WIN CONDITION -> the Tesla centre-pull target. Deepest recognised enemy wincon that is
+            # committed to ONE side; its own KB aggro radius sets how far the Tesla can sit toward mid-board.
+            wc = None
+            for d in dets_all:
+                if d.team == "mine" or d.gy < 0.5 or abs(d.cx - 0.5) < _intercept_lane:
+                    continue
+                if not card_threat.profile(_db, card_threat.base_key(d.base)).win_condition:
+                    continue
+                if wc is None or d.gy > wc.gy:
+                    wc = d
+            if wc is not None:
+                _wincon["xy"] = (wc.cx, wc.gy)
+                _wincon["sight"] = float(_db.sight_range_tiles(card_threat.base_key(wc.base))) * _TILE
+                _wincon["last"] = now_p
+            elif _wincon["xy"] is not None and now_p - _wincon["last"] > 3.0:
+                _wincon["xy"] = None                     # stale -- the push is gone
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
@@ -390,6 +414,21 @@ def play(cfg) -> None:
             snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_front, actions)
             if snapped is not None:
                 cell = snapped
+            # ...then set its DEPTH from the column: behind a bridge it sits a row back (room to
+            # body-block the answer in front of it); off-lane it must be on the frontmost row or the
+            # diagonal to the tower is too long. See reward.xbow_offense_depth_cell.
+            gx, gy = cell % gw, cell // gw
+            cx, cy = actions.cell_center(gx, gy)
+            depth = xbow_offense_depth_cell(cx, cy, xbow_defense_front, _deploy_top, actions)
+            if depth is not None:
+                cell = depth
+        elif card_id in tesla_ids and _wincon["xy"] is not None:
+            # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
+            # across the middle instead of beelining the near princess tower.
+            pull = tesla_pull_cell(_wincon["xy"][0], _wincon["xy"][1], _wincon["sight"],
+                                   _pull_front, _pull_back, actions)
+            if pull is not None:
+                cell = pull
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
         _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
