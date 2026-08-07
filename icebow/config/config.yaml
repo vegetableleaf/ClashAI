@@ -539,6 +539,20 @@ play:
                                  # typical matchmaking wait so a real search is not cancelled early.
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
 
+# --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
+# When enabled, a background thread (its own screen capture, like the preview window) records the
+# first `seconds` of EVERY match to out_dir/match_<stamp>.mp4 with draw_detections() overlaid --
+# the opening is where placement, the first read of the opponent, and the detector's coverage of a
+# clean board are all visible at once. The VIDEO is smooth at `fps`, but the boxes only refresh as
+# fast as the policy actually perceives, so a clip shows real perception latency rather than hiding
+# it. Costs one extra screen grab + encode per frame; off by default.
+overlay_replay:
+  enabled: false             # master gate
+  seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
+  fps: 10                    # clip frame rate (the recorder's own grab rate)
+  scale: 0.5                 # downscale before encoding (0.5 = half size)
+  out_dir: data/overlayed_replays   # one mp4 per match (falls back to .avi/MJPG if mp4v is missing)
+
 # --- Live detector preview (train-rl side window) ---
 # Pops a small window beside the game during train-rl showing each captured frame with the
 # detector's team-coloured boxes -- exactly what the policy's perception sees, fed from the SAME

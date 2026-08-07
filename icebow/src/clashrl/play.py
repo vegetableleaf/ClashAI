@@ -155,6 +155,8 @@ def play(cfg) -> None:
     _pull_back = float(cfg.get("env", "tesla_pull_back", default=0.59))
     _intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))
     _wincon = {"xy": None, "sight": 0.0, "last": 0.0}   # deepest lane win condition, for the Tesla pull
+    from .detect import OverlayReplayRecorder
+    _replay_rec = OverlayReplayRecorder(cfg)            # overlay_replay gate: clip each match opening
     # Cell-head DEPLOYABLE mask: anywhere cards (rocket / miner) -> all cells; every other card only
     # YOUR half. Applied before the cell argmax so play never taps an enemy-half cell that can't
     # deploy (the 'impossible coordinate' that made the bot look inactive).
@@ -286,6 +288,7 @@ def play(cfg) -> None:
                 _wincon["last"] = now_p
             elif _wincon["xy"] is not None and now_p - _wincon["last"] > 3.0:
                 _wincon["xy"] = None                     # stale -- the push is gone
+        _replay_rec.update(dets_all)                 # overlay replay: newest boxes for the clip
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
         items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
         now = time.time()
@@ -505,6 +508,7 @@ def play(cfg) -> None:
                     else:
                         _team_tracker.reset()
                     _cycle_tracker.reset()        # forget last match's cycle order
+                    _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
                     prev_mult = 1
                 prev = state
 

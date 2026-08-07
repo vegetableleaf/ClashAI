@@ -239,8 +239,9 @@ class LiveMatchEnv:
             self.threat_vec = np.concatenate(
                 [self.threat_vec, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
         # live side-window: each frame + the detector's team-coloured boxes (train-rl babysitting).
-        from .detect import LivePreview
+        from .detect import LivePreview, OverlayReplayRecorder
         self._preview = LivePreview(cfg)
+        self._replay_rec = OverlayReplayRecorder(cfg)   # overlay_replay gate: clip each match opening
         # CONTINUOUS PERCEPTION (~10Hz): a background thread runs the detector + team tracker so the
         # act loop reads a <=1-period-old snapshot instead of being blind between decisions, tracker
         # velocities are finely sampled (rocket lead / motion team evidence), and the preview is live.
@@ -296,6 +297,7 @@ class LiveMatchEnv:
         self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
+        self._replay_rec.update(self._last_dets_all)     # overlay replay: newest boxes for the clip
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
             mine_a, enemy_a, _ = _anchors(self.cfg)
@@ -355,6 +357,7 @@ class LiveMatchEnv:
             state = self.vision.detect_state(frame)
             if state == GameState.IN_MATCH:
                 self.clock.reset()               # zero the 2x/3x elixir clock at match start
+                self._replay_rec.new_match()     # arm a fresh overlay-replay clip for this match
                 self.elixir_mult = 1
                 self.elixir = self.vision.read_elixir(frame)
                 self.elixir_vec = np.asarray([self.elixir / 10.0], dtype=np.float32)

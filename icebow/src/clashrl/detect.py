@@ -346,6 +346,126 @@ class LivePreview:
             time.sleep(max(0.0, period - (time.time() - t0)))
 
 
+class OverlayReplayRecorder:
+    """Record the OPENING of every match to a video with the detector's boxes burned in.
+
+    Same shape as :class:`LivePreview` -- a background thread owning a PRIVATE WindowCapture (mss
+    handles are per-thread, so the env's own capture is untouched) that grabs live frames and
+    redraws the newest cached detections onto them. The difference is where the frames go: instead
+    of a window, the first ``overlay_replay.seconds`` of each match are written to
+    ``overlay_replay.out_dir/match_<stamp>.mp4``. Recording is capped per match precisely because
+    the opening is the diagnostic part -- it is where placement, the first read of the opponent,
+    and the detector's coverage of a clean board are all visible.
+
+    Writing frames the RECORDER grabs (rather than the ones the policy acted on) keeps the video
+    smooth at ``overlay_replay.fps``, while the boxes still refresh only as fast as the policy
+    actually perceives -- so the clip shows real perception latency instead of hiding it.
+    """
+
+    def __init__(self, cfg):
+        self.enabled = bool(cfg.get("overlay_replay", "enabled", default=False))
+        self.seconds = float(cfg.get("overlay_replay", "seconds", default=60.0))
+        self.fps = min(30.0, max(1.0, float(cfg.get("overlay_replay", "fps", default=10.0))))
+        self.scale = float(cfg.get("overlay_replay", "scale", default=0.5))
+        self.out_dir = Path(cfg.path(cfg.get("overlay_replay", "out_dir",
+                                             default="data/overlayed_replays")))
+        self._title_contains = cfg.get("window", "title_contains", default=None)
+        self._region_cfg = cfg.get("window", "region", default=None)
+        self._dets: list = []
+        self._start_req = False          # a new match asked for a clip
+        self._lock = threading.Lock()
+        self._thread = None
+        self.n_clips = 0
+
+    def new_match(self) -> None:
+        """Call when a match STARTS -- arms a fresh clip (the previous one is closed first)."""
+        if not self.enabled:
+            return
+        with self._lock:
+            self._start_req = True
+
+    def update(self, dets) -> None:
+        """Cache the newest tagged detections (and start the recorder thread on first use)."""
+        if not self.enabled:
+            return
+        with self._lock:
+            self._dets = list(dets or [])
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._run, name="clashrl-overlay-rec", daemon=True)
+            self._thread.start()
+
+    def close(self) -> None:
+        """Stop the recorder and finish any clip in progress."""
+        self.enabled = False
+
+    def _open(self, size):
+        self.out_dir.mkdir(parents=True, exist_ok=True)
+        stamp = time.strftime("%Y%m%d_%H%M%S")
+        path = self.out_dir / f"match_{stamp}.mp4"
+        w = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), self.fps, size)
+        if not w.isOpened():                                   # codec fallback, as in record.py
+            path = self.out_dir / f"match_{stamp}.avi"
+            w = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"MJPG"), self.fps, size)
+        return (w, path) if w.isOpened() else (None, None)
+
+    def _run(self) -> None:
+        try:
+            from .capture import WindowCapture
+            cap = WindowCapture(self._title_contains, self._region_cfg)
+        except Exception:
+            self.enabled = False
+            return
+        period = 1.0 / self.fps
+        writer = path = None
+        size = None
+        t_end = 0.0
+        while self.enabled:
+            t0 = time.time()
+            try:
+                with self._lock:
+                    start_req, dets = self._start_req, self._dets
+                    self._start_req = False
+                if start_req and writer is not None:           # a new match cuts the previous clip
+                    writer.release()
+                    writer = None
+                if start_req:
+                    t_end = t0 + self.seconds
+                    size = None                                # (re)derive from the next frame
+                if t_end and t0 >= t_end and writer is not None:
+                    writer.release()
+                    writer, t_end = None, 0.0
+                    self.n_clips += 1
+                    print(f"[overlay-replay] saved {path}", flush=True)
+                if not t_end or t0 >= t_end:
+                    time.sleep(period)
+                    continue
+                frame = cap.grab()
+                if frame is None:
+                    cap.refresh_region()
+                    time.sleep(0.5)
+                    continue
+                out = draw_detections(frame, dets)
+                if self.scale and self.scale != 1.0:
+                    out = cv2.resize(out, None, fx=self.scale, fy=self.scale)
+                if writer is None:
+                    size = (out.shape[1], out.shape[0])
+                    writer, path = self._open(size)
+                    if writer is None:
+                        self.enabled = False                   # no usable codec -> silent no-op
+                        break
+                elif (out.shape[1], out.shape[0]) != size:      # window resized mid-clip
+                    out = cv2.resize(out, size)
+                writer.write(out)
+            except Exception:
+                self.enabled = False
+                break
+            time.sleep(max(0.0, period - (time.time() - t0)))
+        if writer is not None:
+            writer.release()
+            self.n_clips += 1
+            print(f"[overlay-replay] saved {path}", flush=True)
+
+
 def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}
