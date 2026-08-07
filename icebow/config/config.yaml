@@ -565,6 +565,11 @@ play:
 overlay_replay:
   enabled: true              # master gate
   seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
+  max_clips: 5               # HARD CAP per session (process lifetime). train-rl plays unattended for
+                             # hours, so an uncapped recorder quietly fills the disk with clips nobody
+                             # watches -- and the early ones are the useful ones anyway, since they all
+                             # show the same policy. On the last clip the recorder shuts its thread down
+                             # rather than idling, so it stops grabbing the screen entirely. 0 = no cap.
   fps: 50                    # clip frame rate (max 60). MEASURED on this machine: grab 14.9ms + draw 0.9
                              # + resize 0.3 + encode 1.0 = 17.1ms/frame => a ~58 fps CEILING with nothing
                              # else running, and the GRAB is 87% of that. 60 is therefore right at the

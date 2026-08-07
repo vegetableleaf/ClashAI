@@ -370,6 +370,10 @@ class OverlayReplayRecorder:
         self.scale = float(cfg.get("overlay_replay", "scale", default=0.5))
         self.out_dir = Path(cfg.path(cfg.get("overlay_replay", "out_dir",
                                              default="data/overlayed_replays")))
+        # Hard cap PER SESSION (process lifetime). A train-rl run plays matches unattended for hours,
+        # so an uncapped recorder quietly fills the disk with clips nobody watches -- and the first
+        # few are the useful ones anyway, since they all show the same policy. 0 = no cap.
+        self.max_clips = int(cfg.get("overlay_replay", "max_clips", default=5))
         self._title_contains = cfg.get("window", "title_contains", default=None)
         self._region_cfg = cfg.get("window", "region", default=None)
         self._dets: list = []
@@ -378,9 +382,13 @@ class OverlayReplayRecorder:
         self._thread = None
         self.n_clips = 0
 
+    @property
+    def _capped(self) -> bool:
+        return self.max_clips > 0 and self.n_clips >= self.max_clips
+
     def new_match(self) -> None:
         """Call when a match STARTS -- arms a fresh clip (the previous one is closed first)."""
-        if not self.enabled:
+        if not self.enabled or self._capped:
             return
         with self._lock:
             self._start_req = True
@@ -433,6 +441,13 @@ class OverlayReplayRecorder:
                     print(f"[overlay-replay] saved {path} ({n_frames} frames, "
                           f"captured {n_grabs / max(1e-6, time.time() - t_start):.1f} fps)", flush=True)
                     writer, t_end = None, 0.0
+                    if self._capped:
+                        # cap reached -> stop the thread outright rather than idling, so it drops its
+                        # screen capture instead of grabbing frames nobody will ever write
+                        print(f"[overlay-replay] {self.n_clips}/{self.max_clips} clip(s) recorded "
+                              f"-- cap reached, recorder off for this session", flush=True)
+                        self.enabled = False
+                        break
                 if start_req:
                     t_end = t0 + self.seconds
                     t_start, n_frames, n_grabs = t0, 0, 0

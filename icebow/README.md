@@ -97,7 +97,10 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
   `observation.perception_hz`, so a clip shows real perception latency instead of
   hiding it. Clips are wall-clock paced — if capture can't keep up, frames are
   duplicated rather than letting the clip play fast-forward — and the achieved capture
-  rate prints when each clip closes.
+  rate prints when each clip closes. `max_clips` (default 5, `0` = unlimited) is a hard
+  cap **per session**: an overnight `train-rl` would otherwise bury the disk in clips of
+  the same policy. On the last one the recorder shuts its thread down, so it stops
+  grabbing the screen entirely for the rest of the run.
 - `monitor` — optional Discord screenshots/clips during long unattended runs.
 
 ## Status
