@@ -36,4 +36,9 @@ runs/
 Thumbs.db
 desktop.ini
 
+# --- Card reference pictures (third-party art, regenerable) ---
+# `run.py cards-art` re-downloads these from the Fandom wiki whenever they are needed.
+# Not committed: they are someone else's images and cost ~2.6 MB.
+icebow/templates/cardart/
+
 # Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png
