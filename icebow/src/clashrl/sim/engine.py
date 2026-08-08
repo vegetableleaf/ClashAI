@@ -62,6 +62,7 @@ _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit count
 # it would swing.
 _PRINCESS_HALF = 1.5
 _KING_HALF = 2.0
+_TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
@@ -302,6 +303,17 @@ def _dist(ax, ay, bx, by) -> float:
 tile_dist = _dist          # public alias: reward geometry must measure in tiles too
 
 
+def _clamp_xy(x: float, y: float, r: float):
+    """Keep a body of radius ``r`` TILES inside the arena walls.
+
+    Per AXIS, because one normalised unit is 18 tiles across but 32 up -- the old flat
+    `clamp(v, 0.03, 0.97)` meant 0.54 tiles of margin in x but 0.96 in y, which is wider than the
+    strip behind the king tower and left a troop placed there permanently clipping it.
+    """
+    mx, my = r / _TILES_X, r / _TILES_Y
+    return min(max(x, mx), 1.0 - mx), min(max(y, my), 1.0 - my)
+
+
 def _body_radius(ref) -> float:
     """Hitbox radius (tiles) of a Unit or a Tower."""
     spec = getattr(ref, "spec", None)
@@ -490,7 +502,8 @@ class SimEngine:
         for ox, oy in offs:
             dx = (ox - mx) * step / _TILES_X             # tiles -> normalised, per axis
             dy = (oy - my) * step / _TILES_Y
-            u = Unit(spec, team, min(max(x + dx, 0.03), 0.97), min(max(y + dy, 0.03), 0.97), spec.hp)
+            cx, cy = _clamp_xy(x + dx, y + dy, spec.radius)
+            u = Unit(spec, team, cx, cy, spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
             if spec.siege:
@@ -538,6 +551,53 @@ class SimEngine:
         u.target = None
         return (None, None)
 
+    def _steer_around_towers(self, u: Unit, tx: float, ty: float):
+        """Aim a GROUND unit around any tower body sitting on its straight path.
+
+        Towers are SOLID -- a troop walks around one, it never passes through. That single rule is
+        also what makes a multi-unit card placed BEHIND a tower split: the members spawn a little
+        either side of the centre line, each rounds the nearer shoulder, and they arrive in opposite
+        lanes, exactly as Archers/Skeletons/Goblins do in game. Nothing about splitting is special-
+        cased; it falls out of the collision.
+
+        Air units fly over everything, and the unit's own target is never avoided (it has to be able
+        to walk up and hit it).
+        """
+        if u.spec.flying:
+            return tx, ty
+        dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        if d < 1e-6:
+            return tx, ty
+        ux, uy = dxt / d, dyt / d                            # travel direction, tiles
+        best = None
+        for tw in self.towers[0] + self.towers[1]:
+            if not tw.alive or tw is u.target:
+                continue
+            block = tw.radius + u.spec.radius
+            wx, wy = (tw.x - u.x) * _TILES_X, (tw.y - u.y) * _TILES_Y
+            along = wx * ux + wy * uy                        # how far ahead the tower sits
+            if along <= 0.0 or along - block > d:
+                continue                                     # behind us, or past where we are going
+            lx, ly = wx - along * ux, wy - along * uy         # perpendicular offset to its centre
+            lat = math.hypot(lx, ly)
+            if lat >= block:
+                continue                                     # the path already clears it
+            if best is None or along < best[0]:
+                best = (along, tw, lx, ly, lat, block)       # dodge the NEAREST blocker first
+        if best is None:
+            return tx, ty
+        _along, tw, lx, ly, lat, block = best
+        if lat > 1e-6:
+            px, py = lx / lat, ly / lat                      # from the path line toward the tower
+        else:
+            # Dead-on: round the shoulder this unit is ALREADY on. Two members of one card sitting
+            # a hair either side of the centre therefore peel off in opposite directions.
+            side = 1.0 if u.x <= tw.x else -1.0
+            px, py = -uy * side, ux * side
+        m = block + _TOWER_CLEAR
+        return (tw.x - px * m / _TILES_X, tw.y - py * m / _TILES_Y)
+
     def _move_toward(self, u: Unit, tx: float, ty: float, dt: float, spd_mult: float = 1.0) -> None:
         # ground units cross the river only at a bridge
         if not u.spec.flying and (u.y - _RIVER) * (ty - _RIVER) < 0:
@@ -546,6 +606,7 @@ class SimEngine:
                 tx, ty = bx, _RIVER
             else:
                 tx, ty = bx, ty                              # aligned with the bridge -> cross straight
+        tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
         # step in TILES, then convert back per axis (one normalised unit != one tile on both axes)
         dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
         d = math.hypot(dxt, dyt)
@@ -554,6 +615,29 @@ class SimEngine:
         step = min(u.spec.speed * spd_mult * dt, d)
         u.x += (dxt / d) * step / _TILES_X
         u.y += (dyt / d) * step / _TILES_Y
+
+    def _separate_towers(self) -> None:
+        """Towers are SOLID BODIES: shove any ground unit that has ended up inside one back out to
+        its edge. Steering keeps a walking troop clear; this catches the other ways a unit can end up
+        overlapping -- a deploy right against a tower, Log knockback, a tornado pull. Air flies over.
+        Unconditional (not under `sim.collision`, which toggles the SOFT unit-vs-unit push): a troop
+        standing inside a crown tower is never legal."""
+        towers = self.towers[0] + self.towers[1]
+        for u in self.units:
+            if u.hp <= 0 or u.spec.flying:
+                continue
+            for tw in towers:
+                if not tw.alive:
+                    continue
+                mind = tw.radius + u.spec.radius
+                dxt, dyt = (u.x - tw.x) * _TILES_X, (u.y - tw.y) * _TILES_Y
+                d = math.hypot(dxt, dyt)
+                if d >= mind:
+                    continue
+                if d <= 1e-6:                                # dead centre -> push out the near side
+                    dxt, dyt, d = 0.0, (1.0 if u.y >= tw.y else -1.0), 1.0
+                u.x, u.y = _clamp_xy(tw.x + (dxt / d) * mind / _TILES_X,
+                                     tw.y + (dyt / d) * mind / _TILES_Y, u.spec.radius)
 
     def _separate(self) -> None:
         """Soft collision so units can't stack -- approximate body-blocking: a wall of troops physically
@@ -569,20 +653,27 @@ class SimEngine:
                 dx, dy = (a.x - b.x) * _TILES_X, (a.y - b.y) * _TILES_Y   # TILES
                 d = math.hypot(dx, dy)
                 mind = a.spec.radius + b.spec.radius
-                if d >= mind or d <= 1e-6:
+                if d >= mind:
                     continue
+                if d <= 1e-6:
+                    # EXACTLY coincident (two copies of a 1-unit card dropped on one tile, or a
+                    # tornado pull collapsing bodies onto the centre). Skipping these -- what this
+                    # used to do -- meant perfectly stacked units NEVER unstacked. Pick a stable
+                    # per-pair direction so they always resolve, and deterministically. NB the
+                    # overlap below must still use the TRUE distance (0), not the unit direction.
+                    ang = 2.0 * math.pi * (((i * 7 + j * 13) % 16) / 16.0)
+                    ux, uy = math.cos(ang), math.sin(ang)
+                else:
+                    ux, uy = dx / d, dy / d
                 overlap = mind - d
-                ux, uy = dx / d, dy / d
                 am = 0.0 if a.spec.kind == "building" else 1.0
                 bm = 0.0 if b.spec.kind == "building" else 1.0
                 s = am + bm
                 if s <= 0:
                     continue
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
-                a.x = min(max(a.x + px * (am / s), 0.03), 0.97)
-                a.y = min(max(a.y + py * (am / s), 0.03), 0.97)
-                b.x = min(max(b.x - px * (bm / s), 0.03), 0.97)
-                b.y = min(max(b.y - py * (bm / s), 0.03), 0.97)
+                a.x, a.y = _clamp_xy(a.x + px * (am / s), a.y + py * (am / s), a.spec.radius)
+                b.x, b.y = _clamp_xy(b.x - px * (bm / s), b.y - py * (bm / s), b.spec.radius)
 
     def advance(self, dt: float) -> None:
         if self.done:
@@ -655,6 +746,7 @@ class SimEngine:
                 self._move_toward(u, rx, ry, dt, spd)
         if self.collide:
             self._separate()
+        self._separate_towers()             # towers are solid whatever the soft-collision toggle says
         # towers fire (+ Royal Chef cooks periodic ally buffs)
         for team in (0, 1):
             for tw in self.towers[team]:
@@ -791,7 +883,8 @@ class SimEngine:
         sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
         for i in range(s.spec.spawn_count if sp is not None else 0):
             ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0   # tiles -> normalised
-            u = Unit(sp, s.team, min(max(s.x + ox, 0.03), 0.97), min(max(s.y, 0.03), 0.97), sp.hp)
+            sx, sy = _clamp_xy(s.x + ox, s.y, sp.radius)
+            u = Unit(sp, s.team, sx, sy, sp.hp)
             u.deploy_left = sp.deploy_time
             u.pulse_cd = sp.pulse_interval
             self.units.append(u)
