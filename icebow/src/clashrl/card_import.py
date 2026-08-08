@@ -175,6 +175,33 @@ def _parse_attr_tables(wt: str) -> dict:
             "hit_speed": _tiles(sp.get("Hit Speed")),
             "flying": (sp.get("Transport") or "").lower() == "air" or None,
         }.items() if v is not None}
+    def _any(col):
+        """First non-empty value of `col` across ANY table on the page.
+
+        These columns do not live on the card's own Cost row -- `Cycles` sits on an Evolution's
+        separate table, `Death Damage Splash Radius` on a death-effect table -- so they must be
+        searched page-wide rather than read off `main`.
+        """
+        for r in rows:
+            if r.get(col):
+                return r[col]
+        return None
+
+    cyc = _ANYNUM.search(_any("Cycles") or "")
+    pct = _ANYNUM.search(_any("Slowdown") or "")
+    out.update({
+        # EVOLUTION CYCLES: how many base plays charge the Evolution. Four cards were sitting on an
+        # UNVERIFIED guess of 1; the wiki publishes 2 for Musketeer / Valkyrie / Archers / Skeletons.
+        "evo_cycles": int(cyc.group()) if cyc else None,
+        "death_radius_tiles": _tiles(_any("Death Damage Splash Radius")),
+        "stun_duration_s": _tiles(_any("Stun Duration")),
+        "freeze_duration_s": _tiles(_any("Freeze Duration")),
+        "slow_duration_s": _tiles(_any("Slow Duration")),
+        "slow_pct": float(pct.group()) if pct else None,
+        "jump_time_s": _tiles(_any("Jump Time")),
+        "dash_time_s": _tiles(_any("Dash Time")),
+        "projectile_width_tiles": _tiles(_any("Projectile Width")),
+    })
     if _KAMIKAZE.search(intro):
         out["kamikaze"] = True       # spirits: leap at the target, hit once, die on impact
     charge = next((r for r in rows if r.get("Charge Range")), None)
@@ -292,6 +319,18 @@ def _parse_card(page: str, wt: str) -> dict:
         "crown_tower_damage": int(crown) if crown is not None else None,
         "lifetime_s": _lit(vd.get("life")),
         "damage_stages": damage_stages,
+        # SECONDARY DAMAGE + SHIELD, all level-scaled vardefines the importer never read. The engine
+        # was guessing a shield as a fraction of hitpoints and had no death damage at all, so a
+        # Balloon or Giant Skeleton dying was silent -- which is most of what those cards are for.
+        # `Shield_11` is capitalised on Royal Recruits, hence the case-insensitive lookup.
+        "shield_hp": _pick(vd, "shield") or _pick({k.lower(): v for k, v in vd.items()}, "shield"),
+        "death_damage": _pick(vd, "death"),
+        "charge_damage": _pick(vd, "charge"),      # Prince 783 / Dark Prince 532 on a completed charge
+        "dash_damage": _pick(vd, "dash"),          # Bandit 389
+        "jump_damage": _pick(vd, "jump"),          # Mega Knight 537 on landing
+        "spawn_damage": _pick(vd, "spawn"),        # Mega Knight 430 / Goblin Drill 84 on surfacing
+        "spawn_crown_damage": _pick(vd, "spawn_crown"),
+        "hits_per_attack": _lit(vd.get("dmg_hits")),   # Electro Dragon chains to 3
     }
     entry.update(_parse_attr_tables(wt))
     if re.search(r"\b(?:jump|hop|leap)\w*\s+(?:over|across)\s+(?:the\s+)?river",

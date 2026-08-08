@@ -108,6 +108,12 @@ class CardSpec:
     # Dragon / Mighty Miner). Empty = flat damage. The ramp resets whenever the target changes.
     dmg_stages: tuple = ()
     stage_time: float = 2.0   # seconds on one target before stepping up a stage
+    # DEATH DAMAGE: an area hit centred on the body when it dies (Balloon 240 in 3 tiles, Giant
+    # Skeleton 688 in 3, Bomb Tower 222, Ice Golem 84). Published per level by the wiki; the engine
+    # previously had the `death_damage` role FLAG but never the number, so these cards died silently
+    # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
+    death_dmg: float = 0.0
+    death_radius: float = 0.0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.64      # collision radius, TILES (soft body-block)
@@ -272,7 +278,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spawner_delay=(float(spw.get("delay") or 0.0) if spawner_spec is not None else 0.0),
         spawner_range=(spw.get("range") if spawner_spec is not None else None),
         spawner_death=(int(spw.get("on_death") or 0) if spawner_spec is not None else 0),
-        shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0),
+        shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
+                   else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
+        death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
+        # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
+        # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
+        death_radius=float(c.get("death_radius_tiles")
+                           or (2.0 if c.get("death_damage") else 0.0)),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -935,11 +948,34 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
+                self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
                 continue
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _death_blast(self, u: "Unit") -> None:
+        """Area damage centred on a body that has just died.
+
+        This is the whole point of a Balloon (240 over 3 tiles) or a Giant Skeleton (688 over 3):
+        killing them is not free, and dropping them ON something is the play. It hits enemy UNITS and
+        also a crown tower in radius, so a Balloon that dies at the tower still delivers. Ground-only
+        death damage cannot touch flyers, matching the normal splash rule.
+        """
+        s = u.spec
+        if s.death_dmg <= 0.0 or s.death_radius <= 0.0:
+            return
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0:
+                continue
+            if s.ground_only and e.spec.flying:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= s.death_radius + e.spec.radius:
+                self._hurt(e, s.death_dmg)
+        for tw in self._enemy_towers(u.team):
+            if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
+                self._damage_tower(tw, s.death_dmg, u.team)
 
     def _tick_spawners(self, dt: float) -> None:
         """Produce troops from spawners (Goblin Hut, Tombstone, Barbarian Hut, Goblin Drill, Furnace,

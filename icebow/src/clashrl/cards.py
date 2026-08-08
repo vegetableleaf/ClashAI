@@ -247,12 +247,35 @@ class CardDB:
         """How many times the BASE card must be PLAYED before its Evolution is available.
 
         cycles:2 => base, base, EVO (every 3rd play is evolved). 0 when the card has no
-        evolution, so callers can treat 0 as 'never evolves'."""
+        evolution, so callers can treat 0 as 'never evolves'.
+
+        A curated `evolution.cycles` still wins, but the wiki publishes this as a `Cycles` column on
+        the Evolution page and the importer now reads it for 39 cards. Four (musketeer, skeletons,
+        archers, valkyrie) had been sitting on an UNVERIFIED hand-guess of 1 when the real value is 2
+        -- an evolution arriving every 2nd play instead of every 3rd is a large cycle-economy error.
+        """
         c = self.get(name) or {}
         ev = c.get("evolution") or {}
         if not isinstance(ev, dict) or not ev.get("available"):
             return 0
-        return int(ev.get("cycles") or 0)
+        if ev.get("cycles"):
+            return int(ev["cycles"])
+        evo = self.get(f"{_key(name)}_evo") or {}     # the wiki's Cycles column lives on the EVO page
+        return int(evo.get("evo_cycles") or 0)
+
+    def shield_hp(self, name: str) -> float:
+        """Shield pool absorbed before hitpoints (Dark Prince 240, Guards 256, Royal Recruits 240).
+
+        Published per level by the wiki as `shield_11`. The engine previously GUESSED this as a flat
+        fraction of the card's own hitpoints, which is wrong in both directions: Guards are 3 bodies
+        of ~130hp carrying a 256 shield EACH (a bigger pool than their health), while a Dark Prince's
+        240 is small next to his. Returns 0.0 for cards with no shield.
+        """
+        c = self.get(name) or {}
+        v = c.get("shield_hp")
+        if v is None:
+            v = (self._base_card(name) or {}).get("shield_hp")
+        return float(v) if v is not None else 0.0
 
     def attacks_air(self, name: str) -> bool:
         c = self.get(name)

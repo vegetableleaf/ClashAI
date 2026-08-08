@@ -96,7 +96,7 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged]
-    evolution: {available: true, cycles: 1, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
+    evolution: {available: true, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
     verified: true
     hitpoints: null
     damage: null
@@ -278,7 +278,7 @@ cards:
     win_condition: false
     targets: any
     flags: [swarm]
-    evolution: {available: true, cycles: 1, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
+    evolution: {available: true, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
     verified: true
     hitpoints: null
     damage: null
@@ -319,7 +319,7 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged]
-    evolution: {available: true, cycles: 1, effect: "extra range / speed", gains: [extra_range]}
+    evolution: {available: true, effect: "extra range / speed", gains: [extra_range]}
     verified: true
     hitpoints: null
     damage: null
@@ -399,7 +399,7 @@ cards:
     win_condition: false
     targets: any
     flags: [splash, mini_tank]
-    evolution: {available: true, cycles: 1, effect: "spin knockback / lifesteal", gains: [knockback]}
+    evolution: {available: true, effect: "spin knockback / lifesteal", gains: [knockback]}
     verified: true
     hitpoints: null
     damage: null
