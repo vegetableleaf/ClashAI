@@ -152,6 +152,9 @@ class SimMatchEnv:
         self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))        # <= this elixir counts as a 'cycle' card
         self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
         self.quiet_board_free_elixir = float(cfg.get("env", "quiet_board_free_elixir", default=8.0))
+        self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
+        self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
+        self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
@@ -338,15 +341,21 @@ class SimMatchEnv:
         u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
         return float(u.x), float(u.y)
 
-    def _leaking_first(self) -> bool:
+    def _leaking_first(self, spend: float = 0.0) -> bool:
         """True when waiting costs more than committing. On a QUIET board the safe default is to hold --
         a defender dropped in one lane cannot answer a push in the other, so it can simply be played
         around. The exception is the elixir race: if you are near the cap AND hold more than the
         opponent, YOUR bar overflows first, so the elixir wasted by waiting exceeds what the lane
         commitment risks. Reward-side only (uses the opponent's true elixir, which the policy cannot
-        see -- see the observability note in _threat_response)."""
-        return (self.eng.elixir[0] >= self.quiet_board_free_elixir
-                and self.eng.elixir[0] > self.eng.elixir[1])
+        see -- see the observability note in _threat_response).
+
+        ``spend`` is ADDED BACK because the caller runs inside step()'s `if eng.deploy(...)` block,
+        where the engine has ALREADY deducted the card. This grades the DECISION, which was taken
+        before paying. Reading the engine raw asked "are you still near the cap AFTER paying?" -- for a
+        3-cost card that needs 11 elixir, so it only ever fired for 1-cost cards. The opponent has not
+        acted yet at this point, so eng.elixir[1] is correctly their elixir at decision time."""
+        mine = self.eng.elixir[0] + spend
+        return mine >= self.quiet_board_free_elixir and mine > self.eng.elixir[1]
 
     def _threat_response(self, card_id: int, nx: float, ny: float) -> float:
         """(1) THREAT-RESPONSE correctness: did you play the KB-correct counter to the ASSESSED threat,
@@ -364,7 +373,7 @@ class SimMatchEnv:
                 # was taught to overflow its bar rather than spend. MEASURED: real threats exist on only
                 # 14.8% of steps, so the board is usually quiet and this branch was firing on ~12.5
                 # plays/match at -0.4 -- the single biggest negative in the reward.
-                if self._leaking_first():
+                if self._leaking_first(self.specs[card_id].elixir):
                     return 0.0
                 return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
             return 0.0
@@ -397,6 +406,17 @@ class SimMatchEnv:
                 return self.w_threat_miss
         return 0.0
 
+    def _punish_window(self, spend: float = 0.0) -> bool:
+        """The opponent has overcommitted and is now BROKE relative to you, so a siege goes up before
+        they can afford an answer. This is what turns an offensive X-Bow from a gamble into a punish.
+        Reward-side only: it reads the opponent's TRUE elixir, which the policy cannot observe (see the
+        observability note on _leaking_first). ``spend`` is added back for the same pre-spend reason:
+        an X-Bow costs 6, so measured POST-spend this needed a 10-elixir lead and fired EXACTLY ZERO
+        times in 162 X-Bow plays, despite the window being open on 28% of steps."""
+        mine = self.eng.elixir[0] + spend
+        return (self.eng.elixir[1] <= self.punish_opp_elixir
+                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
+
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
         forward-in-range (offensive) / back-centre (defensive), Miner chipping the princess (not the king),
@@ -412,9 +432,17 @@ class SimMatchEnv:
             in_band = central and self.xbow_front <= ny <= self.xbow_back
             behind = central and ny > self.xbow_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
+            # PUNISH OVERRIDE, checked BEFORE the phase gate. An opponent who has just overcommitted
+            # cannot answer a siege before it starts firing, and that is worth breaking defensive
+            # posture for -- "immediately punish" is conditional on the ELIXIR RACE, not on the matchup
+            # doctrine. Without this the clause was unreachable: _defensive is set on sight of a cycle
+            # or beatdown deck (most of the meta pool), so MEASURED 145 of 152 X-Bow plays took the
+            # defensive branch and only 5 were ever offensive AND in a punish window.
+            if d <= self.xbow_range and self._punish_window(self.specs[card_id].elixir):
+                return self.w_wincon * self.xbow_punish_mult
             if self._defensive:                              # DEFENSIVE phase: centre-band only; forward is wrong now
                 return self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
-            if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition set
+            if d <= self.xbow_range:                          # OFFENSIVE: forward, in tower range = win condition set
                 return self.w_wincon
             return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:

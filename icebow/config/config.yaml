@@ -321,6 +321,10 @@ rewards:
   xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
                            #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
+  # PUNISH WINDOW: an offensive X-Bow is a gamble when the opponent can still answer it, but a PUNISH
+  # once they have overcommitted and cannot -- the siege starts firing before their answer is affordable.
+  # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
+  xbow_punish_mult: 1.5
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
   cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
   cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
@@ -423,6 +427,12 @@ env:
   # wastes more than the lane commitment costs -- then a cycle card or a back Knight/Ice Wiz is right.
   # Below this, or without the elixir lead, the penalty still applies.
   quiet_board_free_elixir: 8.0
+  # PUNISH WINDOW for the offensive X-Bow (rewards.xbow_punish_mult). BOTH must hold: the opponent is
+  # broke in ABSOLUTE terms (below this they cannot afford a typical 3-5 elixir X-Bow answer) and you
+  # are ahead by this GAP. The absolute term matters on its own -- a 4-elixir lead while they sit on 6
+  # still lets them answer, so the gap alone would mis-fire.
+  punish_opp_elixir: 4.0
+  punish_elixir_gap: 4.0
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
   tower_chip_power: 2.0          # convexity of the tower-chip reward: >1 -> PARTIAL chip worth sub-proportionally little
