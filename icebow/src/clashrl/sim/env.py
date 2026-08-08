@@ -467,7 +467,14 @@ class SimMatchEnv:
         no such plan and no spare elixir. Neutral otherwise. ``card_id`` = the card just played, or -1."""
         if card_id < 0 or self.specs[card_id].elixir > self.cycle_cheap_max:
             return 0.0                                       # only cheap 'cycle' cards qualify
-        elx = self.eng.elixir[0]
+        # PRE-spend elixir: this grades the DECISION, which was taken before the card was paid for.
+        # step() calls this AFTER eng.deploy() has already deducted the cost, so reading the engine
+        # directly asked "do you STILL hold 7 after paying?" -- with cheap_max 3 that needs 10 elixir
+        # (the cap), so the reward branch was all but unreachable while the penalty fired on nearly
+        # every cheap play. MEASURED over 20 matches before this fix: ~0.35 bonuses vs ~15.5 penalties
+        # per match (-6.04/match), i.e. a flat -0.4 tax on about half of all plays -- exactly backwards
+        # for a CYCLE deck, whose whole plan is cheap plays that rotate back to the win condition.
+        elx = self.eng.elixir[0] + self.specs[card_id].elixir
         if self._needed_counter_coming(set(self._hand_ids())):
             return self.w_cycle_plan if elx >= self.cycle_spare_elixir else 0.0
         return self.w_cycle_waste if elx < self.cycle_spare_elixir else 0.0
@@ -612,7 +619,19 @@ class SimMatchEnv:
                 if self._forced_expensive_spend(card_id, ny):
                     spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
-                reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
+                wincon = self._wincon_exec(card_id, nx, ny)                     # (3) win-condition executed right
+                reward += self._bonus(wincon)
+                if wincon > 0.0:
+                    # ONE play, ONE grade. The trade term measures enemy TROOP value eliminated, but a
+                    # correctly-executed win condition (X-Bow in range / Miner chipping the princess /
+                    # rocket-cycle chip) kills no troops BY DESIGN -- it damages TOWERS, which is already
+                    # credited by the convex tower-chip term and the crown jump. Billing its elixir here
+                    # as well charged the deck's own game plan as pure waste: MEASURED -9.32/match on the
+                    # trade term, the single largest negative in the whole reward. Same rule the pull
+                    # spells already follow -- a play graded by its OWN correctness term is not graded
+                    # again here. A MISPLACED win condition (wincon < 0) still pays its spend, so
+                    # throwing the X-Bow away is still a mistake.
+                    spent = 0.0
                 reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
