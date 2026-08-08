@@ -6,6 +6,7 @@ coordinates share the same pixel space.
 """
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -30,7 +31,13 @@ class Region:
 class WindowCapture:
     def __init__(self, title_contains: Optional[str], region: Optional[List[int]] = None):
         self.title_contains = title_contains
-        self._sct = mss.mss()
+        # mss wraps thread-local GDI/BitBlt resources on Windows -- an instance made on one
+        # thread fails (silently or with "BitBlt failed") when grabbed from another. play/env
+        # only ever call grab() from their own single loop thread, so a shared instance was
+        # never a problem there; the launcher's Flask server runs threaded=True, so a request
+        # can land on a different worker thread each time. threading.local() gives every
+        # thread its own mss() the first time IT calls grab(), instead of sharing one.
+        self._sct_local = threading.local()
         if region is not None and (not isinstance(region, (list, tuple)) or len(region) != 4):
             print(f"[capture] window.region must be 4 numbers [left, top, width, height] or null "
                   f"(got {region!r}) -- ignoring it and auto-detecting the window by title instead.")
@@ -39,6 +46,14 @@ class WindowCapture:
         self._region: Optional[Region] = Region(*region) if region else None
         if self._region is None:
             self.refresh_region()
+
+    @property
+    def _sct(self) -> mss.mss:
+        sct = getattr(self._sct_local, "sct", None)
+        if sct is None:
+            sct = mss.mss()
+            self._sct_local.sct = sct
+        return sct
 
     def refresh_region(self) -> Optional[Region]:
         if self._explicit or gw is None or not self.title_contains:
