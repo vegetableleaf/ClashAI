@@ -341,13 +341,17 @@ def play(cfg, init: str | None = None) -> None:
     _home = cfg.get("states", "home_menu", default={}) or {}
     home_tpl, home_thr = _home.get("template", "home_menu.png"), float(_home.get("threshold", 0.8))
 
+    _match_stats = {"ticks": 0, "blind": 0}
+
     def act_in_match(frame) -> None:
         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
         tower_tracker.step(frame)
         obs = vision.observe(frame)
         hand_ids = vision.recognize_hand(frame)
         hand_vec = vision.hand_multihot(hand_ids)
+        _match_stats["ticks"] += 1
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
+            _match_stats["blind"] += 1
             return
         next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
@@ -514,6 +518,15 @@ def play(cfg, init: str | None = None) -> None:
             state = grace.update(vision.detect_state(frame), time.time())
             if state != prev:
                 log(f"[play] state: {state.name}")
+                if prev == GameState.IN_MATCH and _match_stats["ticks"]:
+                    # blind = the hand wasn't recognised at all, so nothing could be played that
+                    # tick regardless of what the policy wanted. A run of these means the hand
+                    # templates don't match this session (recalibrate), not "the policy passed".
+                    t, b = _match_stats["ticks"], _match_stats["blind"]
+                    if b:
+                        log(f"[play] hand recognised on {t - b}/{t} decision ticks this match "
+                            f"({b} blind -- templates found no card at all).")
+                    _match_stats["ticks"] = _match_stats["blind"] = 0
                 if state == GameState.IN_MATCH:   # new match -> reset the tower trackers
                     hp_tracker.reset()
                     tower_tracker.reset()
