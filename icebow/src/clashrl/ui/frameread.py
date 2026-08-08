@@ -58,22 +58,55 @@ def read_frame(cfg, path: Path, detector_conf: float = 0.25) -> Dict[str, Any]:
         out["state_error"] = str(exc)
 
     # -- 2. hand cards ---------------------------------------------------
-    hand: Dict[str, Any] = {"slots": [], "how": "template match against templates/cards/*.png",
-                            "trained": False}
+    hand: Dict[str, Any] = {"slots": [], "how": "template match against templates/cards/*.png "
+                                                "(colour first, equalised luminance as a retry "
+                                                "for greyed-out cards)", "trained": False}
     try:
         keys = list(getattr(vision, "deck_keys", []) or [])
+        boxes = _hand_boxes(cfg, vision)
         for i, (cx, cy) in enumerate(vision.hand_slots):
-            idx, score = vision.match_card(vision.hand_crop(frame, cx, cy))
+            crop = vision.hand_crop(frame, cx, cy)
+            empty = vision.slot_is_empty(crop)
+            idx, score = (-1, 0.0) if empty else vision.match_card(crop)
+            # The greying is the game saying "you cannot afford this yet" -- worth reporting,
+            # since a card can be correctly identified and still be unplayable.
+            sat = float(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)[:, :, 1].mean()) if crop.size else 0.0
             hand["slots"].append({
                 "slot": i,
                 "card": keys[idx] if 0 <= idx < len(keys) else None,
+                "state": "empty" if empty else ("read" if idx >= 0 else "unknown"),
+                "affordable": None if empty else bool(sat >= 60),
                 "score": round(float(score), 3),
-                "box": _hand_boxes(cfg, vision)[i],
+                "box": boxes[i],
             })
         hand["read"] = sum(1 for s in hand["slots"] if s["card"])
+        hand["empty"] = sum(1 for s in hand["slots"] if s["state"] == "empty")
+        # Cards with no template at all can never be read; naming them beats a bare "?".
+        hand["no_template"] = [k for k, tl in zip(keys, getattr(vision, "_card_tpls", []))
+                               if not tl]
     except Exception as exc:                          # noqa: BLE001
         hand["error"] = str(exc)
     out["hand"] = hand
+
+    # -- 2b. the NEXT card ------------------------------------------------
+    nxt: Dict[str, Any] = {"how": "template match against templates/next/*.png (its own set: "
+                                  "the preview is smaller and blue-tinted)", "trained": False}
+    try:
+        keys = list(getattr(vision, "deck_keys", []) or [])
+        have = [k for k, tl in zip(keys, getattr(vision, "_next_tpls", [])) if tl]
+        idx = vision.recognize_next(frame)
+        nxt["card"] = keys[idx] if 0 <= idx < len(keys) else None
+        nxt["has_templates"] = have
+        if not have:
+            nxt["error"] = ("no templates/next/*.png for this deck -- the preview cannot be "
+                            "read until they exist")
+        if vision.next_slot:
+            nxt["box"] = {"x": vision.next_slot[0] - vision.next_card_w,
+                          "y": vision.next_slot[1] - vision.next_card_h,
+                          "w": 2 * vision.next_card_w, "h": 2 * vision.next_card_h}
+    except Exception as exc:                          # noqa: BLE001
+        nxt["error"] = str(exc)
+    out["next"] = nxt
 
     # -- 3. elixir -------------------------------------------------------
     elixir: Dict[str, Any] = {"how": "counts filled pips on the bar (HSV threshold)",
@@ -88,24 +121,20 @@ def read_frame(cfg, path: Path, detector_conf: float = 0.25) -> Dict[str, Any]:
     out["elixir"] = elixir
 
     # -- 4. tower HP -----------------------------------------------------
-    towers: Dict[str, Any] = {"how": "small digit CNN over the HP bar crops (hp_digits.npz)",
+    towers: Dict[str, Any] = {"how": "the NUMBER via a small digit CNN (hp_digits.npz), and "
+                                     "independently the BAR FILL by colour -- the bar also says "
+                                     "whether the tower is still standing at all",
                               "trained": True, "readings": []}
     try:
-        from ..tower_hp import _boxes, read_tower_hp
-        vals = read_tower_hp(frame, cfg)
-        enemy, mine = _boxes(cfg)                     # same source the reader crops from
-        boxes = {f"E{i + 1}": b for i, b in enumerate(enemy)}
-        boxes.update({f"M{i + 1}": b for i, b in enumerate(mine)})
-        label = {"E": "opponent tower", "M": "your tower"}
-        for name, res in sorted(vals.items()):
-            hp, conf = (res if isinstance(res, tuple) else (res, None))
-            b = boxes.get(name)
+        from ..tower_hp import read_towers
+        rect = lambda b: ({"x": b[0], "y": b[1], "w": b[2] - b[0], "h": b[3] - b[1]}  # noqa: E731
+                          if b else None)
+        for t in read_towers(frame, cfg):
             towers["readings"].append({
-                "name": name,
-                "label": f"{label.get(name[0], name)} {name[1:]}",
-                "hp": hp,
-                "conf": round(float(conf), 3) if conf is not None else None,
-                "box": ({"x": b[0], "y": b[1], "w": b[2] - b[0], "h": b[3] - b[1]} if b else None),
+                "name": t["name"], "label": t["label"], "kind": t["kind"], "side": t["side"],
+                "hp": t["hp"], "conf": t["conf"], "state": t["state"],
+                "fill": None if t["fill"] is None else round(t["fill"], 3),
+                "box": rect(t["box"]), "bar": rect(t["bar"]),
             })
     except Exception as exc:                          # noqa: BLE001
         towers["error"] = str(exc)

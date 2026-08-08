@@ -38,6 +38,9 @@ class Vision:
         self.card_w = float(cfg.get("hand", "card_w", default=0.055))
         self.card_h = float(cfg.get("hand", "card_h", default=0.045))
         self.match_threshold = float(cfg.get("hand", "match_threshold", default=0.5))
+        # Threshold for the colour-blind (greyed-card) retry -- see match_card. Kept separate
+        # because equalised luminance scores differently from a colour match.
+        self.gray_threshold = float(cfg.get("hand", "gray_threshold", default=0.5))
         # the "next card" preview sits left of the tray and is drawn smaller
         self.next_slot = cfg.get("hand", "next_slot", default=[])
         self.next_card_w = float(cfg.get("hand", "next_card_w", default=self.card_w * 0.72))
@@ -91,6 +94,28 @@ class Vision:
         y0, y1 = int((cy - self.card_h) * h), int((cy + self.card_h) * h)
         return frame[max(0, y0):y1, max(0, x0):x1]
 
+    @staticmethod
+    def _shape_only(img: np.ndarray) -> np.ndarray:
+        """Grayscale + CLAHE: what the card looks like with its colour thrown away.
+
+        Clash Royale DESATURATES a card you cannot currently afford, and the templates are
+        cut from affordable (full-colour) cards, so a colour match on a greyed card scores far
+        below threshold. Measured over 484 tray crops from session 20260808_152522: 286 were
+        greyed (mean HSV saturation < 60) and 45 % of those were not recognised at all. The
+        greying changes chroma, not structure, so matching on equalised luminance recovers
+        them without touching the (already reliable) colour path.
+        """
+        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4)).apply(g)
+
+    def _gray_tpl(self, tp: np.ndarray) -> np.ndarray:
+        cache = self.__dict__.setdefault("_gray_cache", {})
+        key = id(tp)
+        hit = cache.get(key)
+        if hit is None:
+            hit = cache[key] = self._shape_only(tp)
+        return hit
+
     def match_card(self, crop: np.ndarray, top_frac: float = 1.0, tpls: list = None) -> tuple:
         """(deck_index, score) of the best-matching deck card for a slot crop; (-1, s) if none.
 
@@ -98,21 +123,52 @@ class Vision:
         template -- used for the 'next' preview, whose bottom shows a "1sec" cycle timer and an
         elixir badge the card art doesn't have. ``tpls`` selects which template set to match
         against (default: the in-hand templates; the next preview passes its own set).
+
+        Colour first; if nothing clears the threshold, the same comparison runs on equalised
+        luminance, which is what rescues a greyed-out (unaffordable) card.
         """
-        best_i, best_s = -1, -1.0
         tpls = self._card_tpls if tpls is None else tpls
-        if crop.size:
+        if not crop.size:
+            return -1, -1.0
+
+        def scan(prep):
+            bi, bs = -1, -1.0
+            src = prep(crop) if prep else crop
             for i, tl in enumerate(tpls):
                 for tp in tl:
-                    c = cv2.resize(crop, (tp.shape[1], tp.shape[0]), interpolation=cv2.INTER_AREA)
-                    t = tp
+                    t = self._gray_tpl(tp) if prep else tp
+                    c = cv2.resize(src, (t.shape[1], t.shape[0]), interpolation=cv2.INTER_AREA)
+                    tt = t
                     if top_frac < 1.0:
-                        th = max(1, int(round(tp.shape[0] * top_frac)))
-                        c, t = c[:th], tp[:th]
-                    s = float(cv2.matchTemplate(c, t, cv2.TM_CCOEFF_NORMED).max())
-                    if s > best_s:
-                        best_i, best_s = i, s
-        return (best_i if best_s >= self.match_threshold else -1), best_s
+                        th = max(1, int(round(t.shape[0] * top_frac)))
+                        c, tt = c[:th], t[:th]
+                    s = float(cv2.matchTemplate(c, tt, cv2.TM_CCOEFF_NORMED).max())
+                    if s > bs:
+                        bi, bs = i, s
+            return bi, bs
+
+        best_i, best_s = scan(None)
+        if best_s >= self.match_threshold:
+            return best_i, best_s
+        gi, gs = scan(self._shape_only)
+        if gs >= self.gray_threshold:
+            return gi, gs
+        return -1, max(best_s, gs)
+
+    # A tray slot whose card has just been played shows a flat blue placeholder with a crown
+    # until the next card slides in. That is not an unrecognised card, it is NO card, and
+    # reporting it as "?" made the hand read look far worse than it is: of 185 unmatched crops
+    # in session 20260808_152522, 37 were this placeholder. Measured separation is total --
+    # every placeholder is over 75 % Clash-blue, no real card art reaches it.
+    _EMPTY_BLUE = ((100, 120, 60), (120, 255, 255))
+    _EMPTY_MIN_FRAC = 0.75
+
+    def slot_is_empty(self, crop: np.ndarray) -> bool:
+        """True when this tray slot is the blue placeholder rather than a card."""
+        if not crop.size:
+            return False
+        m = cv2.inRange(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV), *self._EMPTY_BLUE)
+        return float((m > 0).sum()) / (crop.shape[0] * crop.shape[1]) > self._EMPTY_MIN_FRAC
 
     def recognize_hand(self, frame: np.ndarray) -> list:
         """Identities of the 4 hand cards as deck indices (or -1 if unrecognized).

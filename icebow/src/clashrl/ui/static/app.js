@@ -1429,9 +1429,16 @@ function labDrawRead(g, cv) {
     g.fillStyle = colour; g.fillText(text, x + 3, Math.max(10, y - 3));
   };
   (r.hand && r.hand.slots || []).forEach(s =>
-    rect(s.box, READ_COLOURS.hand, s.card ? `${s.card} ${s.score}` : `? ${s.score}`));
-  (r.towers && r.towers.readings || []).forEach(t =>
-    rect(t.box, READ_COLOURS.tower, t.hp == null ? "HP ?" : `HP ${t.hp}`));
+    rect(s.box, READ_COLOURS.hand, s.state === "empty" ? "empty"
+      : (s.card ? `${s.card}${s.affordable === false ? " (greyed)" : ""}` : `? ${s.score}`)));
+  if (r.next && r.next.box) rect(r.next.box, READ_COLOURS.hand, `next: ${r.next.card || "?"}`);
+  (r.towers && r.towers.readings || []).forEach(t => {
+    const pc = t.fill == null ? null : Math.round(t.fill * 100) + "%";
+    const txt = t.state === "destroyed" ? "destroyed"
+      : t.state === "no_bar" ? "king: no bar"
+      : t.hp != null ? `${t.hp}${pc ? "  " + pc : ""}` : (pc || "?");
+    rect(t.bar || t.box, READ_COLOURS.tower, txt);
+  });
   (r.elixir && r.elixir.pips || []).forEach((p, i) => {
     const filled = i < (r.elixir.value || 0);
     g.strokeStyle = READ_COLOURS.elixir; g.lineWidth = filled ? 3 : 1;
@@ -1463,14 +1470,21 @@ function labReadout() {
   const c = el("div", "statcard");
   c.appendChild(row("screen", "template match against templates/*.png", r.state || "?", null, false));
   const h = r.hand || {};
-  c.appendChild(row("hand cards", h.how || "", (h.slots || []).map(s => s.card || "?").join(", ")
-    || "-", READ_COLOURS.hand, false));
+  c.appendChild(row("hand cards", h.how || "", (h.slots || []).map(s =>
+    s.state === "empty" ? "(empty)" : (s.card || "?") + (s.affordable === false ? "*" : ""))
+    .join(", ") || "-", READ_COLOURS.hand, false));
+  const nx = r.next || {};
+  c.appendChild(row("next card", nx.how || "", nx.card || (nx.error ? "no templates" : "?"),
+    READ_COLOURS.hand, false));
   c.appendChild(row("elixir", (r.elixir || {}).how || "",
     (r.elixir || {}).value != null ? String(r.elixir.value) : "-", READ_COLOURS.elixir, false));
   const t = r.towers || {};
-  c.appendChild(row("tower HP", t.how || "",
-    (t.readings || []).map(x => `${x.label || x.name}: ${x.hp == null ? "?" : x.hp}`).join("  |  ")
-    || "-", READ_COLOURS.tower, true));
+  const towerText = x => x.state === "destroyed" ? "destroyed"
+    : x.state === "no_bar" ? "no bar drawn"
+    : [x.hp != null ? x.hp : null, x.fill != null ? Math.round(x.fill * 100) + "%" : null]
+        .filter(Boolean).join(" / ") || "?";
+  (t.readings || []).forEach(x =>
+    c.appendChild(row(x.label || x.name, t.how || "", towerText(x), READ_COLOURS.tower, true)));
   const u = r.units || {};
   c.appendChild(row("units on the board", u.how || "",
     u.error ? u.error : `${(u.boxes || []).length} found`, READ_COLOURS.unit, true));
@@ -1480,16 +1494,18 @@ function labReadout() {
     + "the simulator. A wrong value here is a wrong value there."));
   // A number that is wrong is almost always a box in the wrong place, and the boxes are
   // per-window. Say where to fix it rather than leaving a "?" with no next step.
-  const badHp = (t.readings || []).some(x => x.hp == null);
-  const badHand = (h.slots || []).some(s => !s.card);
-  if (badHp || badHand) {
-    box.appendChild(el("p", "hint",
-      (badHp ? "A tower reads '?': either something covers the number on this frame, or the "
-             + "crop does not fit your window (env.*_tower_hp_boxes in Settings; the dashed "
-             + "boxes above show where it is looking). " : "")
-      + (badHand ? "A hand slot reads '?': that card has no template yet -- run Detect the deck "
-                 + "with 'Write hand templates'." : "")));
-  }
+  const covered = (t.readings || []).filter(x => x.state === "covered").length;
+  const unknown = (h.slots || []).filter(s => s.state === "unknown").length;
+  const notes = [];
+  if (covered) notes.push(`${covered} tower number(s) are covered on this frame -- the bar still `
+    + "gives the level, so the tower is not lost, only its exact HP.");
+  if (unknown) notes.push(`${unknown} hand slot(s) unread.`
+    + ((h.no_template || []).length ? ` ${h.no_template.join(", ")} has no template at all: run `
+      + "Detect the deck with 'Write hand templates'." : ""));
+  if ((nx.has_templates || []).length === 0)
+    notes.push("The next-card preview needs its own templates under templates/next/ -- without "
+               + "them the playing AI cannot see what is coming and cannot plan its cycle.");
+  if (notes.length) box.appendChild(el("p", "hint", notes.join(" ")));
   out.appendChild(box);
 }
 
