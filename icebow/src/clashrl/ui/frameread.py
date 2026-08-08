@@ -39,10 +39,16 @@ def _hand_boxes(cfg, vision) -> List[Dict[str, float]]:
 
 
 def read_frame(cfg, path: Path, detector_conf: float = 0.25) -> Dict[str, Any]:
-    """Everything the bot would extract from this frame, with the regions it looked at."""
+    """Everything the bot would extract from a SAVED frame."""
     frame = cv2.imread(str(path))
     if frame is None:
         return {"error": f"could not read {path.name}"}
+    return read_bgr(cfg, frame, detector_conf)
+
+
+def read_bgr(cfg, frame, detector_conf: float = 0.25) -> Dict[str, Any]:
+    """Same, for a frame already in memory -- the live view grabs one and passes it here, so
+    the panel shows the LIVE reading and the labelling reading through identical code."""
     h, w = frame.shape[:2]
     out: Dict[str, Any] = {"size": [w, h], "readers": []}
 
@@ -56,6 +62,10 @@ def read_frame(cfg, path: Path, detector_conf: float = 0.25) -> Dict[str, Any]:
     except Exception as exc:                          # noqa: BLE001
         out["state"] = None
         out["state_error"] = str(exc)
+    # Everything below only means something during a match. The Live tab looks at whatever is
+    # on screen, which is a menu most of the time.
+    in_match = out.get("state") == "IN_MATCH"
+    out["in_match"] = in_match
 
     # -- 2. hand cards ---------------------------------------------------
     hand: Dict[str, Any] = {"slots": [], "how": "template match against templates/cards/*.png "
@@ -130,10 +140,14 @@ def read_frame(cfg, path: Path, detector_conf: float = 0.25) -> Dict[str, Any]:
         rect = lambda b: ({"x": b[0], "y": b[1], "w": b[2] - b[0], "h": b[3] - b[1]}  # noqa: E731
                           if b else None)
         for t in read_towers(frame, cfg):
+            # On a menu screen there are no bars anywhere, and "no bar" would otherwise read as
+            # "destroyed" for all four princesses. Outside a match none of these readers mean
+            # anything, so say that instead of asserting six wrong values.
+            st = t["state"] if in_match else "no_match"
             towers["readings"].append({
                 "name": t["name"], "label": t["label"], "kind": t["kind"], "side": t["side"],
-                "hp": t["hp"], "conf": t["conf"], "state": t["state"],
-                "fill": None if t["fill"] is None else round(t["fill"], 3),
+                "hp": t["hp"] if in_match else None, "conf": t["conf"], "state": st,
+                "fill": None if (t["fill"] is None or not in_match) else round(t["fill"], 3),
                 "box": rect(t["box"]), "bar": rect(t["bar"]),
             })
     except Exception as exc:                          # noqa: BLE001

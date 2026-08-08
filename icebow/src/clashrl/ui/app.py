@@ -339,6 +339,14 @@ def create_app(cfg) -> Flask:
             return jsonify({"error": "no such frame"}), 404
         return send_file(p)
 
+    @app.get("/api/label/samples")
+    def label_samples():
+        """A few of YOUR labelled frames, for the Models tab to show instead of ultralytics'
+        augmented training mosaics."""
+        n = max(1, min(12, int(request.args.get("n", 4))))
+        return jsonify({"names": labeler.samples_with_boxes(C(), n),
+                        "classes": labeler.classes(C())})
+
     @app.get("/api/label/read/<name>")
     def label_read(name: str):
         """Everything the bot reads off this one frame -- all five readers, not just the
@@ -376,7 +384,8 @@ def create_app(cfg) -> Flask:
     def live_view():
         from .live import snapshot
         try:
-            return jsonify(snapshot(C(), width=int(request.args.get("width", 420))))
+            return jsonify(snapshot(C(), width=int(request.args.get("width", 420)),
+                                    read=request.args.get("read") == "1"))
         except Exception as exc:                       # noqa: BLE001 -- must never break the panel
             return jsonify({"ok": False, "error": str(exc)})
 

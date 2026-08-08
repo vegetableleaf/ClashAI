@@ -126,7 +126,7 @@ def _detector_report(cfg) -> Dict[str, Any]:
     }
 
 
-def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
+def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False) -> Dict[str, Any]:
     """One frame plus the bot's reading of it. Never raises; reports the problem instead."""
     t0 = time.time()
     try:
@@ -190,6 +190,16 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
         out["elixir"] = None
 
     out["detector"] = _detector_report(cfg)
+
+    # The FULL read -- towers, next card, detector boxes -- through exactly the same code the
+    # Labelling tab uses on a saved frame, so "what the bot sees right now" and "what the bot
+    # saw in that recording" cannot drift apart. Off by default: it loads the detector.
+    if read:
+        try:
+            from . import frameread
+            out["read"] = frameread.read_bgr(cfg, frame)
+        except Exception as exc:                              # noqa: BLE001
+            out["read_error"] = str(exc)
 
     scale = width / float(w)
     small = cv2.resize(frame, (width, max(1, int(round(h * scale)))), interpolation=cv2.INTER_AREA)

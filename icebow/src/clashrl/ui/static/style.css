@@ -74,6 +74,10 @@ details>summary{cursor:pointer;color:var(--dim);font-size:12px;font-family:var(-
   padding:3px 0;user-select:none}
 details>summary:hover{color:var(--fg)}
 details[open]>summary{color:var(--fg)}
+/* labelled-frame gallery: side by side, each frame with its boxes drawn on top */
+.taughtgal{display:flex;flex-wrap:wrap;gap:10px}
+.taughtitem{position:relative;flex:0 0 auto;max-width:260px;border:1px solid var(--line)}
+.taughtitem p{margin:2px 4px;font-size:11px}
 .msg{font-size:11px}
 .msg.ok{color:var(--dim)} .msg.err{color:var(--bad)}
 

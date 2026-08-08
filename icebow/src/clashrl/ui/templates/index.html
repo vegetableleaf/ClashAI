@@ -68,6 +68,10 @@
     </details>
     <div class="row">
       <label class="chk"><input type="checkbox" id="livego"> Follow live</label>
+      <!-- The same overlay the Labelling tab draws, on the live window: every reader's
+           region and value, plus the detector's boxes. Off by default -- it loads the
+           detector, which costs a second on the first frame. -->
+      <label class="chk"><input type="checkbox" id="livemark"> Mark what the bot sees</label>
       <label>Rate <select id="liverate">
         <option value="700">fast</option>
         <option value="1500" selected>normal</option>
@@ -82,9 +86,14 @@
 
   <!-- Progress ---------------- -->
   <section id="tab-dash" class="panel">
-    <p class="lead">Numbers from the current and past trainings. The <b>benchmark curve</b>
-      (greedy against fixed meta decks) is the honest measure; the training win rate contains
-      random moves and self-play and settles around 50 per cent on its own.</p>
+    <p class="lead">Numbers from the current and past trainings of the <b>playing AI</b>. The
+      <b>benchmark curve</b> (greedy against fixed meta decks) is the honest measure; the
+      training win rate contains random moves and self-play and settles around 50 per cent on
+      its own.</p>
+    <!-- The other network trains on a completely different scale (epochs, mAP) and writes to
+         a different file, so it gets its own strip here rather than being forced into the
+         same charts. -->
+    <div id="visionprog"></div>
     <div class="row">
       <label>Run: <select id="runselect"></select></label>
       <button id="dashreload" class="btn small">Refresh</button>

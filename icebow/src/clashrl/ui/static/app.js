@@ -795,7 +795,39 @@ async function loadRuns() {
 }
 $("#dashreload").onclick = () => loadRuns();
 
+/* The vision AI on the Progress tab too -- it is the other half of the project and its
+   training was only visible under Models, which is where you look for FILES, not progress. */
+async function loadVisionProgress() {
+  const host = $("#visionprog");
+  if (!host) return;
+  let v;
+  try { v = (await api("/api/models")).vision || {}; } catch (e) { host.innerHTML = ""; return; }
+  const pr = v.progress || {}, rows = pr.rows || [], mt = v.metrics || {};
+  host.innerHTML = "";
+  const box = el("div", "cfggroup");
+  box.appendChild(el("h3", null, "Vision AI (the detector)"));
+  if (!rows.length) {
+    box.appendChild(el("p", "hint", v.trained
+      ? "Trained, but the epoch log of that run is gone (a later training start truncates it)."
+      : "Not trained yet. Label frames in the Labelling tab, then run Train the vision AI."));
+  } else {
+    const last = rows[rows.length - 1];
+    const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
+    box.appendChild(el("p", "hint",
+      `${pr.running ? "training now" : "last run"} -- epoch ${last.epoch != null ? last.epoch : "?"}`
+      + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
+      + `  |  best mAP50 ${pct1(best)}  |  quality of the installed model ${pct1(mt.mAP50)}`
+      + `  |  trained on ${v.boxes} boxes`));
+    box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+  }
+  const b = el("button", "btn small", "Open the Models tab");
+  b.onclick = () => showTab("ckpt");
+  box.appendChild(b);
+  host.appendChild(box);
+}
+
 async function loadDash() {
+  loadVisionProgress().catch(() => {});
   if (!S.runId) {
     $("#kpis").innerHTML = "<div class='hint'>No training runs recorded yet.</div>";
     $("#charts").innerHTML = ""; return;
@@ -1415,8 +1447,12 @@ function labDraw() {
    here, and cannot see in a log line that just says the HP is 7151. */
 const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c" };
 
-function labDrawRead(g, cv) {
-  const r = LAB.read;
+function labDrawRead(g, cv) { drawRead(g, cv, LAB.read); }
+
+/* Shared by the Labelling tab (saved frame) and the Live tab (the window right now) --
+   same data, same drawing, so the two views can never tell different stories. */
+function drawRead(g, cv, r) {
+  if (!r) return;
   const rect = (b, colour, text) => {
     if (!b) return;
     const x = b.x * cv.width, y = b.y * cv.height, w = b.w * cv.width, h = b.h * cv.height;
@@ -1434,7 +1470,8 @@ function labDrawRead(g, cv) {
   if (r.next && r.next.box) rect(r.next.box, READ_COLOURS.hand, `next: ${r.next.card || "?"}`);
   (r.towers && r.towers.readings || []).forEach(t => {
     const pc = t.fill == null ? null : Math.round(t.fill * 100) + "%";
-    const txt = t.state === "destroyed" ? "destroyed"
+    const txt = t.state === "no_match" ? ""
+      : t.state === "destroyed" ? "destroyed"
       : t.state === "no_bar" ? "king: no bar"
       : t.hp != null ? `${t.hp}${pc ? "  " + pc : ""}` : (pc || "?");
     rect(t.bar || t.box, READ_COLOURS.tower, txt);
@@ -1452,8 +1489,13 @@ function labDrawRead(g, cv) {
 function labReadout() {
   const out = $("#labreadout");
   out.innerHTML = "";
-  const r = LAB.read;
-  if (!r) return;
+  if (LAB.read) out.appendChild(readoutCard(LAB.read));
+}
+
+const liveReadout = readoutCard;      // the Live tab wants the same panel
+
+function readoutCard(r) {
+  if (!r) return el("div");
   const row = (what, how, value, colour, trained) => {
     const d = el("div", "kv");
     const k = el("span", null, what);
@@ -1465,6 +1507,9 @@ function labReadout() {
   };
   const box = el("div", "cfggroup");
   box.appendChild(el("h3", null, "What this frame reads as"));
+  if (r.in_match === false) box.appendChild(el("p", "hint",
+    `This screen is ${r.state || "not recognised"}, not a match. Everything below except the `
+    + "screen state only means something during a match, so it is not shown."));
   box.appendChild(el("p", "hint",
     "Five separate readers, only one of which is the vision AI. Hover a line for how it works."));
   const c = el("div", "statcard");
@@ -1479,7 +1524,8 @@ function labReadout() {
   c.appendChild(row("elixir", (r.elixir || {}).how || "",
     (r.elixir || {}).value != null ? String(r.elixir.value) : "-", READ_COLOURS.elixir, false));
   const t = r.towers || {};
-  const towerText = x => x.state === "destroyed" ? "destroyed"
+  const towerText = x => x.state === "no_match" ? "-"
+    : x.state === "destroyed" ? "destroyed"
     : x.state === "no_bar" ? "no bar drawn"
     : [x.hp != null ? x.hp : null, x.fill != null ? Math.round(x.fill * 100) + "%" : null]
         .filter(Boolean).join(" / ") || "?";
@@ -1506,7 +1552,7 @@ function labReadout() {
     notes.push("The next-card preview needs its own templates under templates/next/ -- without "
                + "them the playing AI cannot see what is coming and cannot plan its cycle.");
   if (notes.length) box.appendChild(el("p", "hint", notes.join(" ")));
-  out.appendChild(box);
+  return box;
 }
 
 async function labReadFrame() {
@@ -1811,20 +1857,71 @@ function visionProgress(pr, v) {
       + (empty > 0 ? ` Note that ${empty} of your ${v.labelled_train + v.labelled_val} saved `
                      + "frames have NO box on them, which actively teaches it to find nothing." : "")));
   }
-  const shots = v.preview_files || [];
-  if (shots.length) {
+  // "What it was taught", drawn from YOUR frames. The ultralytics mosaics that used to sit
+  // here (train_batch*.jpg) are augmented, colour-jittered, randomly cropped 4x4 grids --
+  // a picture of the augmentation pipeline, not of your data, and unreadable as either.
+  const taught = el("details");
+  taught.appendChild(el("summary", null, "See the frames it was taught on"));
+  const gal = el("div"); gal.className = "taughtgal";
+  taught.appendChild(gal);
+  box.appendChild(taught);
+  taught.addEventListener("toggle", () => { if (taught.open && !gal.dataset.loaded) loadTaught(gal); },
+                          { once: false });
+  // Ultralytics' own summary curves stay available -- those ARE readable, unlike the mosaics.
+  if ((v.preview_files || []).includes("results.png")) {
     const d = el("details");
-    d.appendChild(el("summary", null, "See what it was taught and what it answers"));
-    shots.forEach(f => {
-      const wrap = el("div"); wrap.style.margin = "8px 0";
-      wrap.appendChild(el("p", "hint", (v.previews && v.previews[f]) || f));
-      const img = el("img"); img.src = `/api/vision/preview/${v.run}/${f}`;
-      img.style.maxWidth = "100%"; img.style.border = "1px solid var(--line)"; img.loading = "lazy";
-      wrap.appendChild(img); d.appendChild(wrap);
-    });
-    box.appendChild(d);
+    d.appendChild(el("summary", null, "Ultralytics' own loss and metric curves"));
+    const img = el("img"); img.src = `/api/vision/preview/${v.run}/results.png`;
+    img.style.maxWidth = "100%"; img.loading = "lazy";
+    d.appendChild(img); box.appendChild(d);
   }
   return box;
+}
+
+/* Each sample is the untouched frame with its boxes drawn over it -- same conversion as the
+   Labelling tab, so a box that looks right here is right in the dataset. */
+async function loadTaught(gal) {
+  gal.dataset.loaded = "1";
+  gal.innerHTML = "<p class='hint'>loading ...</p>";
+  let d;
+  try { d = await api("/api/label/samples?n=4"); }
+  catch (e) { gal.innerHTML = ""; gal.appendChild(el("p", "msg err", e.message)); return; }
+  gal.innerHTML = "";
+  if (!(d.names || []).length) {
+    gal.appendChild(el("p", "hint",
+      "No labelled frame carries a box yet, so there is nothing it could have been taught."));
+    return;
+  }
+  const classes = d.classes || [];
+  d.names.forEach(name => {
+    const holder = el("div"); holder.className = "taughtitem";
+    const img = el("img"); img.style.display = "block"; img.style.maxWidth = "100%";
+    const cv = el("canvas");
+    cv.style.position = "absolute"; cv.style.left = "0"; cv.style.top = "0";
+    cv.style.pointerEvents = "none";
+    holder.appendChild(img); holder.appendChild(cv);
+    holder.appendChild(el("p", "hint", name));
+    gal.appendChild(holder);
+    img.onload = async () => {
+      let boxes = [];
+      try { boxes = (await api(`/api/label/boxes/${encodeURIComponent(name)}`)).boxes || []; }
+      catch (e) { /* frame without a label file: leave it bare */ }
+      cv.width = img.clientWidth; cv.height = img.clientHeight;
+      const g = cv.getContext("2d");
+      boxes.forEach(b => {
+        const x = (b.cx - b.w / 2) * cv.width, y = (b.cy - b.h / 2) * cv.height;
+        g.strokeStyle = "#6f9b7c"; g.lineWidth = 2;
+        g.strokeRect(x, y, b.w * cv.width, b.h * cv.height);
+        const nm = classes[b.cls] || String(b.cls);
+        g.font = "11px Consolas, monospace";
+        g.fillStyle = "rgba(11,14,20,.85)";
+        g.fillRect(x, Math.max(0, y - 14), g.measureText(nm).width + 6, 14);
+        g.fillStyle = "#6f9b7c";
+        g.fillText(nm, x + 3, Math.max(10, y - 3));
+      });
+    };
+    img.src = `/api/label/image/${encodeURIComponent(name)}`;
+  });
 }
 
 /* Minimal inline chart. The metrics tab's charting is bound to metrics.jsonl, and this is
@@ -1875,6 +1972,7 @@ function liveSchedule() {
   }, +$("#liverate").value);
 }
 $("#livego").onchange = liveSchedule;
+$("#livemark").onchange = () => liveOnce();
 $("#liverate").onchange = liveSchedule;
 $("#liveonce").onclick = () => liveOnce();
 $("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast("Window lookup reset."); liveOnce(); };
@@ -1882,7 +1980,7 @@ $("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast
 async function liveOnce() {
   const body = $("#livebody"), msg = $("#livemsg");
   let d;
-  try { d = await api("/api/live"); }
+  try { d = await api("/api/live" + ($("#livemark").checked ? "?read=1" : "")); }
   catch (e) { msg.className = "msg err"; msg.textContent = e.message; return; }
   if (!d.ok) {
     msg.className = "msg err"; msg.textContent = d.error || "unknown error";
@@ -1894,10 +1992,32 @@ async function liveOnce() {
   msg.className = "msg"; msg.textContent = `${d.ms} ms`;
   const wrap = el("div", "heatwrap");
   const left = el("div");
-  if (d.image) { const img = el("img"); img.src = d.image;
+  if (d.image) {
+    // The markings go on a canvas ON TOP of the frame rather than being burned into the
+    // JPEG server-side: the picture stays the raw capture, so what you compare against is
+    // still exactly what was grabbed.
+    const holder = el("div"); holder.style.position = "relative";
+    holder.style.display = "inline-block";
+    const img = el("img"); img.src = d.image;
     img.style.maxWidth = "420px"; img.style.borderRadius = "6px";
-    img.style.border = "1px solid var(--line)"; left.appendChild(img); }
+    img.style.display = "block"; img.style.border = "1px solid var(--line)";
+    holder.appendChild(img);
+    if (d.read) {
+      const cv = el("canvas");
+      cv.style.position = "absolute"; cv.style.left = "0"; cv.style.top = "0";
+      cv.style.pointerEvents = "none";
+      holder.appendChild(cv);
+      const paint = () => {
+        cv.width = img.clientWidth; cv.height = img.clientHeight;
+        if (cv.width) drawRead(cv.getContext("2d"), cv, d.read);
+      };
+      if (img.complete && img.clientWidth) paint(); else img.onload = paint;
+    }
+    left.appendChild(holder);
+    if (d.read_error) left.appendChild(el("p", "msg err", d.read_error));
+  }
   wrap.appendChild(left);
+  if (d.read) left.appendChild(liveReadout(d.read));
 
   const right = el("div"); right.style.minWidth = "320px";
   const inMatch = d.state === "IN_MATCH";

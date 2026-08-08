@@ -68,6 +68,30 @@ def queue(cfg, limit: int = 500) -> List[str]:
     return [p.name for p in files[:limit]]
 
 
+def samples_with_boxes(cfg, limit: int = 6) -> List[str]:
+    """Names of already-labelled frames that actually carry boxes, newest first.
+
+    The Models tab used to illustrate "what it was taught" with Ultralytics' own
+    train_batch mosaics -- a 4x4 grid of augmented, colour-jittered, randomly cropped
+    tiles with hairline boxes. That is a debugging artefact of the augmentation pipeline,
+    not a picture of your data, and it reads as noise. These are your frames, unmodified,
+    with your boxes drawn by the same code as the Labelling tab.
+    """
+    out: List[str] = []
+    for split in ("train", "val"):
+        img_dir, lbl_dir = _split_dirs(cfg, split)
+        if not img_dir.is_dir() or not lbl_dir.is_dir():
+            continue
+        for p in img_dir.iterdir():
+            if p.suffix.lower() not in (".jpg", ".jpeg", ".png"):
+                continue
+            lp = lbl_dir / f"{p.stem}.txt"
+            if lp.is_file() and any(ln.strip() for ln in lp.read_text(encoding="utf-8").splitlines()):
+                out.append((p.stat().st_mtime, p.name))
+    out.sort(reverse=True)
+    return [n for _, n in out[:limit]]
+
+
 def labelled(cfg) -> Dict[str, Any]:
     """What is already labelled, and how much of it actually carries boxes.
 
