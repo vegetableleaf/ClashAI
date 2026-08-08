@@ -391,10 +391,21 @@ class SimEngine:
             self.spells.append(_Spell(team, x, y, spec, delay))
             return True
         n = max(1, spec.count)
+        # SWARM FORMATION. A multi-unit card spawns its members in a compact cluster CENTRED on the
+        # drop point, spread by unit size -- so each body is separately killable, blockable and
+        # splash-able, which is the whole point of a swarm.
+        # (Was: `ox = x + off` then `Unit(..., x + ox)` = x DOUBLED. A swarm asked for (0.30, 0.60)
+        #  spawned at (0.58-0.62, 0.97) and one asked for the centre landed every member on the
+        #  (0.97, 0.97) clamp corner. Every multi-unit card in the game was affected -- your own
+        #  Skeletons, and the opponents' Archers / Barbarians / Minions / Minion Horde / Skeleton
+        #  Army -- and for team 1 the doubling threw their swarms across the river into YOUR half.)
+        cols = int(math.ceil(math.sqrt(n)))
+        rows = int(math.ceil(n / cols))
+        step = max(0.012, spec.radius * 2.2)          # touching-but-not-overlapping bodies
         for i in range(n):
-            ox = x + (0.02 * ((i % 3) - 1)) if n > 1 else 0.0
-            oy = y + (0.02 * ((i // 3) - 0.5)) if n > 1 else 0.0
-            u = Unit(spec, team, min(max(x + ox, 0.03), 0.97), min(max(y + oy, 0.03), 0.97), spec.hp)
+            dx = ((i % cols) - (cols - 1) / 2.0) * step
+            dy = ((i // cols) - (rows - 1) / 2.0) * step
+            u = Unit(spec, team, min(max(x + dx, 0.03), 0.97), min(max(y + dy, 0.03), 0.97), spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
             if spec.siege:

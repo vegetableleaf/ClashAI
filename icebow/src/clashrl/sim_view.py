@@ -58,6 +58,8 @@ _SPELL = (90, 210, 245)
 _SHIELD = (240, 240, 240)
 _STUN = (60, 220, 240)
 _SLOW = (240, 200, 120)
+_GRID = (58, 118, 64)          # faint cell lines
+_GRID_EDGE = (80, 150, 88)     # arena_box border + the deploy line
 
 _HUD_TOP = 54
 _HUD_BOT = 58
@@ -81,8 +83,14 @@ def _hp_bar(img, cx: int, top: int, w: int, frac: float, h: int = 3) -> None:
         cv2.rectangle(img, (x0, top), (x0 + int((x1 - x0) * frac), top + h), col, -1)
 
 
-def render_frame(eng, width: int = 460, note: str = "") -> np.ndarray:
-    """Draw the engine's CURRENT state. Team 0 (you) is at the BOTTOM, matching the live screen."""
+def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray:
+    """Draw the engine's CURRENT state. Team 0 (you) is at the BOTTOM, matching the live screen.
+
+    ``acts`` (an ActionSpace) overlays the PLACEMENT GRID -- the discrete cells the policy actually
+    chooses among, drawn over `action.arena_box`, with the deploy line (`action.deploy_top`) marked.
+    Placement in this engine is otherwise CONTINUOUS: the grid is what discretises the agent, but the
+    scripted opponents deploy at raw continuous coordinates, and nothing snaps a deploy to a tile.
+    """
     W = int(width)
     BH = int(W / _ASPECT)
     H = BH + _HUD_TOP + _HUD_BOT
@@ -98,6 +106,21 @@ def render_frame(eng, width: int = 460, note: str = "") -> np.ndarray:
     for bx in _BRIDGES:                                   # the two crossings
         x0, x1 = int((bx - 0.045) * W), int((bx + 0.045) * W)
         cv2.rectangle(img, (x0, ry0), (x1, ry1), _BRIDGE, -1)
+
+    # --- placement grid ------------------------------------------------------------------------
+    if acts is not None:
+        bx0, by0, bx1, by1 = acts.bx0, acts.by0, acts.bx1, acts.by1
+        for gx in range(int(acts.gw) + 1):
+            x = bx0 + (bx1 - bx0) * gx / acts.gw
+            cv2.line(img, px(x, by0), px(x, by1), _GRID, 1)
+        for gy in range(int(acts.gh) + 1):
+            y = by0 + (by1 - by0) * gy / acts.gh
+            cv2.line(img, px(bx0, y), px(bx1, y), _GRID, 1)
+        cv2.rectangle(img, px(bx0, by0), px(bx1, by1), _GRID_EDGE, 1)
+        dy = float(acts.deploy_top)                       # troops can't be placed above this
+        cv2.line(img, px(bx0, dy), px(bx1, dy), _GRID_EDGE, 1)
+        cv2.putText(img, f"grid {acts.gw}x{acts.gh}", (px(bx0, by1)[0] + 3, px(bx0, by1)[1] - 4),
+                    cv2.FONT_HERSHEY_PLAIN, 0.7, _GRID_EDGE, 1)
     cv2.line(img, (int(0.5 * W), _HUD_TOP), (int(0.5 * W), _HUD_TOP + BH), _LINE, 1)
 
     # --- vortices (under everything: they are a ground effect) ---------------------------------
@@ -259,8 +282,10 @@ def _policy_agent(env, path: str):
 
 # --------------------------------------------------------------------------------------------
 def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int = 0,
-             policy: "str | None" = None, out: "str | None" = None, window: bool = True) -> None:
+             policy: "str | None" = None, out: "str | None" = None, window: bool = True,
+             grid: bool = True) -> None:
     env = SimMatchEnv(cfg, seed=seed)
+    acts = env.actions if grid else None
     agent = _policy_agent(env, policy) if policy else _random_agent
     writer, frames = None, {"n": 0}
     delay = max(1, int(1000 / max(1, fps)))
@@ -278,7 +303,7 @@ def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int =
     def sink(e, note=""):
         if state["quit"]:
             return
-        img = render_frame(e.eng, width, note)
+        img = render_frame(e.eng, width, note, acts)
         frames["n"] += 1
         if writer is not None:
             writer.write(img)

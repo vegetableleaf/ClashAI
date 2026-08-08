@@ -162,7 +162,8 @@ def _cmd_sim_view(args) -> None:
         print(f"[sim-view] OpenCV is required ({exc}).")
         return
     sim_view(_sized_config(args), matches=args.matches, width=args.width, fps=args.fps,
-             seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window)
+             seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window,
+             grid=not args.no_grid)
 
 
 def _cmd_policy_stats(args) -> None:
@@ -419,6 +420,8 @@ def main() -> None:
     svw.add_argument("--out", default=None, help="also write an mp4 here (e.g. data/sim_debug.mp4)")
     svw.add_argument("--no-window", action="store_true",
                      help="headless: only write --out (for a machine with no display)")
+    svw.add_argument("--no-grid", action="store_true",
+                     help="hide the placement-grid overlay (action.grid over action.arena_box)")
     svw.add_argument("--size", choices=sorted(_GRID_SIZES), default=None,
                      help="override action.grid (must match the --policy checkpoint's n_cells)")
     svw.set_defaults(func=_cmd_sim_view)
