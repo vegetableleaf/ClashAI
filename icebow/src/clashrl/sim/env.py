@@ -151,6 +151,7 @@ class SimMatchEnv:
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))     # same-lane tolerance for an intercept
         self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))        # <= this elixir counts as a 'cycle' card
         self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
+        self.quiet_board_free_elixir = float(cfg.get("env", "quiet_board_free_elixir", default=8.0))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
@@ -337,6 +338,16 @@ class SimMatchEnv:
         u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
         return float(u.x), float(u.y)
 
+    def _leaking_first(self) -> bool:
+        """True when waiting costs more than committing. On a QUIET board the safe default is to hold --
+        a defender dropped in one lane cannot answer a push in the other, so it can simply be played
+        around. The exception is the elixir race: if you are near the cap AND hold more than the
+        opponent, YOUR bar overflows first, so the elixir wasted by waiting exceeds what the lane
+        commitment risks. Reward-side only (uses the opponent's true elixir, which the policy cannot
+        see -- see the observability note in _threat_response)."""
+        return (self.eng.elixir[0] >= self.quiet_board_free_elixir
+                and self.eng.elixir[0] > self.eng.elixir[1])
+
     def _threat_response(self, card_id: int, nx: float, ny: float) -> float:
         """(1) THREAT-RESPONSE correctness: did you play the KB-correct counter to the ASSESSED threat,
         placed to intercept it? Right counter in the threat's lane -> +; the WRONG role dropped as a
@@ -347,6 +358,14 @@ class SimMatchEnv:
         prof = self._deck_profiles[card_id]
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
+                # QUIET BOARD. Holding is right by default, but not when you are about to leak FIRST.
+                # Without this the reward CONTRADICTED the leak term: at >= 9.99 elixir, playing a cheap
+                # defender scored -0.4 (premature) while simply waiting scored -0.2 (leak), so the policy
+                # was taught to overflow its bar rather than spend. MEASURED: real threats exist on only
+                # 14.8% of steps, so the board is usually quiet and this branch was firing on ~12.5
+                # plays/match at -0.4 -- the single biggest negative in the reward.
+                if self._leaking_first():
+                    return 0.0
                 return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
             return 0.0
         tx, ty = self._threat_pos()
