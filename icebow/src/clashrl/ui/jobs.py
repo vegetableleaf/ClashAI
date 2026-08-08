@@ -16,7 +16,7 @@ from typing import Any, Dict, List
 COMMANDS: List[Dict[str, Any]] = [
     {
         "cmd": "train-sim",
-        "group": "Simulator training",
+        "group": "Playing AI: training",
         "title": "Sim training (DDQN)",
         "desc": "Trains the policy in the headless simulator against scripted bots and past "
                 "copies of itself. The main route to a usable policy; writes data/policy_sim.pt.",
@@ -39,7 +39,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-sim-ppo",
-        "group": "Simulator training",
+        "group": "Playing AI: training",
         "title": "Sim training (PPO)",
         "desc": "On-policy sibling of train-sim with its own checkpoint policy_sim_ppo.pt. "
                 "The DDQN baseline checkpoint is left alone.",
@@ -58,7 +58,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "sim-bench",
-        "group": "Simulator training",
+        "group": "Playing AI: run and measure",
         "title": "Throughput benchmark",
         "desc": "Measures matches per second at different numbers of parallel matches on THIS "
                 "machine and suggests the best setting. Writes to data/bench/, never to "
@@ -82,7 +82,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-bc",
-        "group": "Learn from recordings",
+        "group": "Playing AI: training",
         "title": "Behaviour cloning",
         "desc": "Imitation learning from your labelled recordings into data/policy.pt. "
                 "Needs labelled sessions and hand templates.",
@@ -97,7 +97,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "record",
-        "group": "Learn from recordings",
+        "group": "Setup: screen and deck",
         "title": "Record",
         "desc": "Records your own play (screen and mouse clicks) as imitation data. "
                 "Occupies the screen and the mouse hook.",
@@ -107,7 +107,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "calibrate",
-        "group": "Learn from recordings",
+        "group": "Setup: screen and deck",
         "title": "Calibrate match detection",
         "desc": "Re-cuts the 'I am in a match' detection from YOUR recording. Needed when your "
                 "window has a different size, or the game runs in a different language than the "
@@ -123,7 +123,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "cards-art",
-        "group": "Learn from recordings",
+        "group": "Setup: screen and deck",
         "title": "Fetch card pictures",
         "desc": "Downloads one reference picture per card from the Clash Royale wiki into "
                 "templates/cardart/. The basis for automatic deck recognition; needed once.",
@@ -135,7 +135,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "deck-detect",
-        "group": "Learn from recordings",
+        "group": "Setup: screen and deck",
         "title": "Detect the deck",
         "desc": "Reads the deck out of a recording instead of having you rename image crops. "
                 "The proposal is shown in the Deck tab for confirmation.",
@@ -162,7 +162,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "import-from",
-        "group": "Learn from recordings",
+        "group": "Setup: screen and deck",
         "title": "Import an older installation",
         "desc": "Copies checkpoints, recordings and templates out of an older copy of this "
                 "project. Nothing is deleted and nothing here is overwritten unless you say so.",
@@ -185,7 +185,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "detect-train",
-        "group": "Learn from recordings",
+        "group": "Vision AI: training",
         "title": "Train the vision AI",
         "desc": "Trains the board detector on the frames you labelled in the Labelling tab. "
                 "This is the SECOND network -- it names the units on the board; it does not "
@@ -207,7 +207,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "label",
-        "group": "Learn from recordings",
+        "group": "Playing AI: training",
         "title": "Label",
         "desc": "Turns recordings into the (observation, action) dataset used by behaviour cloning.",
         "gpu": True,
@@ -224,7 +224,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "outcomes",
-        "group": "Learn from recordings",
+        "group": "Check the setup",
         "title": "Detect results",
         "desc": "Reads win/loss per match off the result screen of a recording.",
         "gpu": False,
@@ -237,7 +237,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "train-rl",
-        "group": "Live on the game",
+        "group": "Playing AI: training",
         "title": "Live RL (real matches)",
         "desc": "Fine-tuning on real matches in the running game. Needs the game window and the "
                 "mouse, so the machine is occupied while it runs.",
@@ -252,7 +252,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "play",
-        "group": "Live on the game",
+        "group": "Playing AI: run and measure",
         "title": "Play (policy live)",
         "desc": "Lets the trained policy play by itself. Needs the game window and the mouse.",
         "gpu": True,
@@ -268,7 +268,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "verify",
-        "group": "Analysis and diagnosis",
+        "group": "Check the setup",
         "title": "Verify",
         "desc": "Draws overlays on recorded frames to check recognition and calibration.",
         "gpu": False,
@@ -285,7 +285,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "diag",
-        "group": "Analysis and diagnosis",
+        "group": "Check the setup",
         "title": "Diagnose",
         "desc": "Checks menu navigation: how well each screen template matches the current screen.",
         "gpu": False,
@@ -294,7 +294,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "policy-stats",
-        "group": "Analysis and diagnosis",
+        "group": "Playing AI: run and measure",
         "title": "Strategy analysis",
         "desc": "Plays greedy matches in the simulator and counts which cards the policy plays, "
                 "how often and where, into data/policy_stats.json.",

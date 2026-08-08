@@ -288,11 +288,20 @@ function collectArgs(cmd) {
 }
 
 const GROUP_HINT = {
-  "Simulator training": "Runs without the game. This is where the policy comes from.",
-  "Learn from recordings": "Needs your own play as the example.",
-  "Live on the game": "Needs the running game, its window and the mouse.",
-  "Analysis and diagnosis": "Measuring and looking, nothing is trained.",
+  "Setup: screen and deck": "Teaches the bot to READ your screen. No AI is trained here, but "
+    + "nothing below works until this is right.",
+  "Playing AI: training": "Trains the network that decides which card to play where.",
+  "Playing AI: run and measure": "Uses that same network, or measures it.",
+  "Vision AI: training": "Trains the SECOND network: the one that names the units on the board. "
+    + "It does not play.",
+  "Check the setup": "Looking and measuring only, nothing is trained.",
 };
+
+// Fixed display order: setup first because everything below depends on it, then the two
+// networks, then the read-only checks. Without this the order follows the catalog, which
+// is grouped by how the code grew rather than by what you do first.
+const GROUP_ORDER = ["Setup: screen and deck", "Playing AI: training",
+                     "Playing AI: run and measure", "Vision AI: training", "Check the setup"];
 
 function renderCommands() {
   // Only redraw when something actually changed: the three-second poll would otherwise
@@ -320,6 +329,8 @@ function renderCommands() {
     if (!grp) groups.push(grp = { name, items: [] });
     grp.items.push(c);
   });
+  const rank = n => { const i = GROUP_ORDER.indexOf(n); return i < 0 ? GROUP_ORDER.length : i; };
+  groups.sort((a, b) => rank(a.name) - rank(b.name));
   groups.forEach(grp => {
     const box = el("div", "groupbox");
     const h = el("h2", null, grp.name);
