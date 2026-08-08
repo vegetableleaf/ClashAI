@@ -140,8 +140,87 @@ def _last_metrics(run_dir: Path) -> Dict[str, Any]:
         return {}
 
 
-def _detector_status(root: Path) -> Dict[str, Any]:
-    """Trained weights, measured quality, labelled data, and what is still unlabelled."""
+# Ultralytics writes these next to every run. They are the only place you can SEE what the
+# detector was fed and what it answered, which is what "is it learning anything" actually means.
+_PREVIEWS = {
+    "train_batch0.jpg": "A training batch with YOUR boxes drawn in -- what it is being taught.",
+    "train_batch1.jpg": "Another training batch.",
+    "train_batch2.jpg": "Another training batch.",
+    "val_batch0_labels.jpg": "Validation frames with the true boxes.",
+    "val_batch0_pred.jpg": "The same frames with what the detector PREDICTED. Empty here means "
+                           "it currently finds nothing.",
+    "labels.jpg": "How the labelled boxes are distributed over the classes and the board.",
+    "results.png": "Ultralytics' own loss/metric curves for the whole run.",
+    "confusion_matrix_normalized.png": "Which classes get mistaken for which.",
+}
+
+
+def _progress(run_dir: Path) -> Dict[str, Any]:
+    """Per-epoch history of one run, plus whether it is still going.
+
+    results.csv is appended after every epoch, so this doubles as the live view of a running
+    training -- the panel had no way at all to show that something was happening.
+    """
+    csv = run_dir / "results.csv"
+    if not csv.is_file():
+        return {}
+    try:
+        lines = [ln for ln in csv.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        head = [c.strip() for c in lines[0].split(",")]
+        rows = []
+        for ln in lines[1:]:
+            row = dict(zip(head, ln.split(",")))
+            get = lambda k: (float(row[k]) if row.get(k) not in (None, "", "nan") else None)  # noqa: E731
+            rows.append({"epoch": get("epoch"), "mAP50": get("metrics/mAP50(B)"),
+                         "cls_loss": get("train/cls_loss"), "box_loss": get("train/box_loss")})
+    except (OSError, ValueError, IndexError):
+        return {}
+    total = None
+    args = run_dir / "args.yaml"
+    if args.is_file():                       # epochs asked for, so "12 of 120" instead of "12"
+        for ln in args.read_text(encoding="utf-8").splitlines():
+            if ln.startswith("epochs:"):
+                try:
+                    total = int(ln.split(":", 1)[1].strip())
+                except ValueError:
+                    pass
+                break
+    import time as _t
+    # Ultralytics writes results.png only when the run FINISHES, so its absence plus a
+    # recently touched csv is a reliable "still going" -- freshness alone would keep calling
+    # a run that ended two minutes ago live.
+    running = (not (run_dir / "results.png").is_file()
+               and (_t.time() - csv.stat().st_mtime) < 600)
+    return {"rows": rows, "epochs_total": total, "running": running}
+
+
+def _run_info(run_dir: Path) -> Dict[str, Any]:
+    best = run_dir / "weights" / "best.pt"
+    st = best.stat() if best.is_file() else None
+    csv = run_dir / "results.csv"
+    # results.csv is touched every epoch, best.pt only when the score improves: take the later
+    # of the two so a long run that stopped improving still sorts as the most recent activity.
+    mtime = max([t for t in (st.st_mtime if st else None,
+                             csv.stat().st_mtime if csv.is_file() else None) if t]
+                or [run_dir.stat().st_mtime])
+    return {
+        "name": run_dir.name,
+        "rel": f"runs/detect/{run_dir.name}/weights/best.pt",
+        "mtime": mtime,
+        "size": st.st_size if st else None,
+        "has_weights": bool(st),
+        "metrics": _last_metrics(run_dir),
+        "previews": [f for f in _PREVIEWS if (run_dir / f).is_file()],
+    }
+
+
+def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]:
+    """The ONE detector in use, why it is the one, and every run that could replace it.
+
+    `pinned` is config detect.weights. It exists because newest != best, but a pin left over
+    from another machine points at a run that is not here -- and the fallback to "newest" is
+    silent. That has to be visible, or the panel shows the quality of a model nothing uses.
+    """
     det = root / "data" / "detect"
     runs = root / "runs" / "detect"
     weights = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime,
@@ -159,11 +238,36 @@ def _detector_status(root: Path) -> Dict[str, Any]:
             k = len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
             boxes += k
             with_boxes += bool(k)
+    # Which run actually gets loaded, and why -- mirroring _resolve_weights() in detect.py.
+    pin_path = (root / pinned) if pinned else None
+    pin_ok = bool(pin_path and pin_path.exists())
+    if pin_ok:
+        active_dir, why = pin_path.parent.parent, "pinned in config (detect.weights)"
+    elif weights:
+        active_dir = weights[0].parent.parent
+        why = ("the newest run -- the pinned one does not exist here" if pinned
+               else "the newest run (nothing is pinned)")
+    else:
+        active_dir, why = None, None
+    # A run that has only just started has a results.csv but no best.pt yet -- include it, or
+    # the panel stays empty for the first minutes of exactly the training you are watching.
+    dirs = [d for d in (runs.iterdir() if runs.is_dir() else [])
+            if d.is_dir() and ((d / "weights" / "best.pt").is_file() or (d / "results.csv").is_file())]
+    all_runs = sorted((_run_info(d) for d in dirs), key=lambda r: r["mtime"], reverse=True)
     return {
         "trained": bool(weights),
-        "weights": str(weights[0]) if weights else None,
-        "runs": [p.parent.parent.name for p in weights],
-        "metrics": _last_metrics(weights[0].parent.parent) if weights else {},
+        "weights": str(active_dir / "weights" / "best.pt") if active_dir else None,
+        "active_run": active_dir.name if active_dir else None,
+        "active_why": why,
+        "pinned": pinned,
+        "pinned_ok": pin_ok,
+        "pinned_missing": bool(pinned) and not pin_ok,
+        "runs": all_runs,
+        "metrics": _last_metrics(active_dir) if active_dir else {},
+        # progress of the NEWEST run, not the active one: that is the one training right now
+        "progress": _progress(runs / all_runs[0]["name"]) if all_runs else {},
+        "newest_run": all_runs[0]["name"] if all_runs else None,
+        "previews": _PREVIEWS,
         "labelled_train": n(det / "images" / "train"),
         "labelled_val": n(det / "images" / "val"),
         "to_label": n(det / "images" / "to_label"),
@@ -175,7 +279,8 @@ def _detector_status(root: Path) -> Dict[str, Any]:
     }
 
 
-def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None,
+           pinned: Optional[str] = None) -> Dict[str, Any]:
     """Both networks, each with ONE headline entry plus its variants.
 
     The headline for the playing AI is the file `play` would actually load with no --init,
@@ -194,5 +299,5 @@ def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None) -> D
             "suggested": suggest if (suggest and suggest is not main) else None,
             "all": cks,
         },
-        "vision": _detector_status(root),
+        "vision": _detector_status(root, pinned),
     }

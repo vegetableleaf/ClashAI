@@ -287,22 +287,36 @@ function collectArgs(cmd) {
   return out;
 }
 
+// EXACTLY ONE heading per network. An earlier version split each network by what the
+// command does ("... : training" / "... : run and measure"), which put the word "Playing AI"
+// on the page three times and made it impossible to count the models. The stage now rides
+// on the card instead (STAGE_TAG below), so the headings answer only "whose is this".
 const GROUP_HINT = {
-  "Setup: screen and deck": "Plain template matching, no neural network: which screen is showing, "
-    + "and which cards are in hand. Separate from BOTH AIs, and nothing below works until it fits "
-    + "your client.",
-  "Playing AI: training": "Trains the network that decides which card to play where.",
-  "Playing AI: run and measure": "Uses that same network, or measures it.",
-  "Vision AI: training": "Trains the SECOND network: the one that names the units on the board. "
-    + "It does not play.",
+  "Setup (no AI)": "No network at all. Plain template matching plus the recorder: which screen is "
+    + "showing, which cards are in hand, and the raw frames both AIs learn from. Nothing below "
+    + "works until this fits your client.",
+  "Playing AI": "MODEL 1 of 2. Decides which card to play where. One network -- the tiles below "
+    + "are its data, its three training routes and running it; they do not create more models.",
+  "Vision AI": "MODEL 2 of 2. Names the units on the board in a screenshot. It never plays. Its "
+    + "training data is what you draw in the Labelling tab.",
   "Check the setup": "Looking and measuring only, nothing is trained.",
 };
 
 // Fixed display order: setup first because everything below depends on it, then the two
 // networks, then the read-only checks. Without this the order follows the catalog, which
 // is grouped by how the code grew rather than by what you do first.
-const GROUP_ORDER = ["Setup: screen and deck", "Playing AI: training",
-                     "Playing AI: run and measure", "Vision AI: training", "Check the setup"];
+const GROUP_ORDER = ["Setup (no AI)", "Playing AI", "Vision AI", "Check the setup"];
+
+// Order and wording of the per-card stage tag. Within a group the cards follow this, so a
+// group always reads data -> train -> run rather than catalog order.
+const STAGE_TAG = {
+  setup: ["setup", "Configures the reading of the screen; trains nothing."],
+  data:  ["data", "Produces training data. Does not train anything itself."],
+  train: ["train", "Trains this group's network."],
+  run:   ["run", "Uses the trained network, or measures it."],
+  check: ["check", "Read-only diagnosis."],
+};
+const STAGE_ORDER = ["setup", "data", "train", "run", "check"];
 
 function renderCommands() {
   // Only redraw when something actually changed: the three-second poll would otherwise
@@ -332,12 +346,14 @@ function renderCommands() {
   });
   const rank = n => { const i = GROUP_ORDER.indexOf(n); return i < 0 ? GROUP_ORDER.length : i; };
   groups.sort((a, b) => rank(a.name) - rank(b.name));
+  const srank = s => { const i = STAGE_ORDER.indexOf(s); return i < 0 ? STAGE_ORDER.length : i; };
   groups.forEach(grp => {
     const box = el("div", "groupbox");
     const h = el("h2", null, grp.name);
     if (GROUP_HINT[grp.name]) h.appendChild(el("small", null, GROUP_HINT[grp.name]));
     box.appendChild(h);
     const grid = el("div", "grid");
+    grp.items.sort((a, b) => srank(a.stage) - srank(b.stage));
     grp.items.forEach(c => grid.appendChild(commandCard(c)));
     box.appendChild(grid);
     g.appendChild(box);
@@ -351,6 +367,8 @@ function commandCard(c) {
   const card = el("div", "card" + (c.gpu ? " gpu" : "")); card.id = "cmd-" + c.cmd;
   const head = el("div", "row"); head.style.margin = "0 0 2px";
   head.appendChild(el("h3", null, c.title));
+  const tag = STAGE_TAG[c.stage];
+  if (tag) { const p = el("span", "pill stage", tag[0]); p.title = tag[1]; head.appendChild(p); }
   if (c.gpu) { const p = el("span", "pill", "exclusive"); p.title =
     "Holds the GPU or the game window: only one such job runs at a time."; head.appendChild(p); }
   card.appendChild(head);
@@ -1311,7 +1329,45 @@ $("#cfgreset").onclick = () => loadConfig();
    Boxes are stored the way YOLO wants them: normalised CENTRE + size, not corners.
    The canvas works in pixels, so every conversion happens at the boundary here --
    getting it wrong trains a detector that aims half a box off, silently. */
-const LAB = { queue: [], ix: 0, boxes: [], classes: [], drag: null, natural: [0, 0] };
+const LAB = { queue: [], ix: 0, boxes: [], classes: [], drag: null, natural: [0, 0],
+              recent: [] };      // class ids, most recently used first
+
+/* The class list is the taxonomy's own file order (236 entries, unsorted), which is
+   unusable: you scroll forever looking for "minions". Sorted alphabetically, with the
+   ones you just used pinned on top, and filtered by the search box. The OPTION VALUE
+   stays the original index -- that is the YOLO class id and must not be re-numbered. */
+function labFillClasses(filter) {
+  const sel = $("#labclass");
+  const q = (filter || "").trim().toLowerCase();
+  const keep = LAB.classes.map((name, id) => ({ name, id }))
+    .filter(c => !q || c.name.toLowerCase().includes(q));
+  const rank = c => {
+    const r = LAB.recent.indexOf(c.id);
+    return r < 0 ? LAB.recent.length : r;                 // recent first, in use order
+  };
+  keep.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+  const prev = sel.value;
+  sel.innerHTML = "";
+  keep.forEach(c => {
+    const o = el("option", null, LAB.recent.includes(c.id) ? c.name + "  *" : c.name);
+    o.value = String(c.id);
+    sel.appendChild(o);
+  });
+  if (keep.some(c => String(c.id) === prev)) sel.value = prev;
+  $("#labclassmsg").textContent = q
+    ? `${keep.length} of ${LAB.classes.length} classes`
+    : `${LAB.classes.length} classes, * = recently used`;
+}
+
+/* A match uses eight cards, so the same handful of classes come up over and over. Keeping
+   them pinned to the top is what makes labelling a few hundred boxes bearable. Survives a
+   reload: the queue outlives the page. */
+function labRecent(id) {
+  if (!Number.isInteger(id)) return;
+  LAB.recent = [id, ...LAB.recent.filter(x => x !== id)].slice(0, 12);
+  try { localStorage.setItem("clashai.labrecent", JSON.stringify(LAB.recent)); } catch (e) { /* private mode */ }
+  labFillClasses($("#labsearch").value);
+}
 
 function labToNorm(x, y, w, h, cw, ch) {
   return { cx: (x + w / 2) / cw, cy: (y + h / 2) / ch, w: w / cw, h: h / ch };
@@ -1375,11 +1431,11 @@ async function loadLabeling() {
   const st = await api("/api/label/status");
   LAB.classes = st.classes || [];
   LAB.queue = st.queue || [];
-  const sel = $("#labclass");
-  if (sel.options.length !== LAB.classes.length) {
-    sel.innerHTML = "";
-    LAB.classes.forEach((c, i) => { const o = el("option", null, c); o.value = String(i); sel.appendChild(o); });
+  if (!LAB.recent.length) {
+    try { LAB.recent = JSON.parse(localStorage.getItem("clashai.labrecent") || "[]"); }
+    catch (e) { LAB.recent = []; }
   }
+  labFillClasses($("#labsearch").value);
   const s = $("#labstats"); s.innerHTML = "";
   const pill = (t, cls) => s.appendChild(el("span", "pill" + (cls ? " " + cls : ""), t));
   pill(`${st.queue_count} waiting to label`, st.queue_count ? "run" : "");
@@ -1414,6 +1470,7 @@ async function loadLabeling() {
     const b = labToNorm(Math.min(d.x0, d.x1), Math.min(d.y0, d.y1), w, h, cv.width, cv.height);
     b.cls = +$("#labclass").value || 0;
     LAB.boxes.push(b);
+    labRecent(b.cls);
     labDraw();
   };
   $("#labundo").onclick = () => { LAB.boxes.pop(); labDraw(); };
@@ -1421,6 +1478,17 @@ async function loadLabeling() {
   $("#labprev").onclick = () => labLoad(LAB.ix - 1);
   $("#labsave").onclick = () => labSave(false);
   $("#labempty").onclick = () => labSave(true);
+  const search = $("#labsearch");
+  search.oninput = () => labFillClasses(search.value);
+  // Enter takes the first match, so the whole pick is type-three-letters-and-Enter and the
+  // mouse never leaves the board.
+  search.onkeydown = ev => {
+    if (ev.key !== "Enter") return;
+    ev.preventDefault();
+    const sel = $("#labclass");
+    if (sel.options.length) { sel.selectedIndex = 0; labRecent(+sel.value); }
+  };
+  window.addEventListener("resize", () => { if ($(".tab.active").dataset.tab === "labeling") labDraw(); });
   window.addEventListener("resize", () => { if ($(".tab.active").dataset.tab === "labeling") labDraw(); });
 })();
 
@@ -1461,9 +1529,20 @@ function headlineCard(title, subtitle, rows, extra) {
   return box;
 }
 
+let visionTimer = null;
+
 async function loadCheckpoints() {
   const m = await api("/api/models");
   const list = (m.policy && m.policy.all) || [];
+  // While the detector trains, redraw on its own: results.csv gains a line per epoch, so
+  // this is the "is it learning" view updating live rather than on a manual Refresh.
+  clearInterval(visionTimer); visionTimer = null;
+  if (m.vision && m.vision.progress && m.vision.progress.running) {
+    visionTimer = setInterval(() => {
+      if ($(".tab.active").dataset.tab !== "ckpt") return;
+      loadCheckpoints().catch(() => {});
+    }, 10000);
+  }
   S.checkpoints = list;
   $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, s.value));
   const body = $("#ckptbody"); body.innerHTML = "";
@@ -1484,56 +1563,22 @@ async function loadCheckpoints() {
   if (sug) pExtra.appendChild(el("p", "hint",
     `play uses ${main ? main.rel : "-"} by default, but ${sug.rel} scored higher `
     + `(${sug.best_wr != null ? sug.best_wr.toFixed(0) + " %" : "-"}). Pick it explicitly in the Play tile if you want that one.`));
-  body.appendChild(headlineCard("1. Playing AI (the policy)",
-    "One network. The files below are the same network at different stages -- training "
-    + "overwrites them in place, it does not create new ones.", pRows, pExtra));
+  // The variants are one <details> instead of a permanent table: the page has to answer
+  // "how many models are there" (two) before it answers "which files exist" (six).
+  if (list.length) pExtra.appendChild(fileDetails(list, deckIds));
+  body.appendChild(headlineCard("Model 1 of 2 -- Playing AI (the policy)",
+    "ONE network. Every file below is that same network at a different stage; training "
+    + "overwrites them in place and never creates a new model.", pRows, pExtra));
 
   /* --- 2. the vision AI --- */
-  const v = m.vision || {};
-  const mt = v.metrics || {};
-  const pct = x => x == null ? "-" : (100 * x).toFixed(1) + " %";
-  const vRows = [
-    ["trained", v.trained ? "yes" : "NO"],
-    ["quality (mAP50)", pct(mt.mAP50),
-     "Share of units it both finds and names correctly. 0 means it detects nothing usable."],
-    ["precision / recall", `${pct(mt.precision)} / ${pct(mt.recall)}`,
-     "Of what it reports, how much is right / of what is there, how much it finds."],
-    ["training data", `${v.boxes} boxes on ${v.frames_with_boxes} frame(s)`],
-    ["labelled frames", `${v.labelled_train} train / ${v.labelled_val} validation`],
-    ["waiting to be labelled", v.to_label],
-    ["classes it can name", v.classes],
-  ];
-  const vExtra = el("div");
-  vExtra.appendChild(el("p", "hint",
-    "Finds and names the units on the board in a screenshot. Separate network, separate "
-    + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
-    + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
-  // The honest reading: weights existing is not the same as a detector that works, and a
-  // useless one is worse than none (it feeds the policy confident nonsense).
-  if (v.trained && (mt.mAP50 == null || mt.mAP50 < 0.05)) {
-    const w = el("div", "cfggroup");
-    w.innerHTML = "<h3>Trained, but it detects nothing yet</h3>"
-      + `<p class='hint'>Quality is ${pct(mt.mAP50)}. That is what ${v.boxes} boxes buys -- the `
-      + "file exists, the pipeline works, the model is not useful. It needs hundreds of boxes "
-      + "across many frames.</p>"
-      + "<p class='hint'>Draw them in the <b>Labelling</b> tab, then run <b>Train the vision AI</b> "
-      + "in the Control tab.</p>";
-    vExtra.appendChild(w);
-  } else if (!v.trained) {
-    vExtra.appendChild(el("p", "hint",
-      `No weights under ${v.runs_dir}. Frames are collected automatically while train-rl runs `
-      + `(${v.to_label} waiting). Label them in the Labelling tab, then run "Train the vision AI" `
-      + "in the Control tab."));
-  }
-  body.appendChild(headlineCard("2. Vision AI (the detector)",
-    "One network, trained from your labelled frames.", vRows, vExtra));
+  body.appendChild(visionCard(m.vision || {}));
+  if (!list.length) body.appendChild(el("p", "hint", "No .pt files under data/ yet."));
+}
 
-  /* --- the full file list, for when you do want it --- */
-  if (!list.length) {
-    body.appendChild(el("p", "hint", "No .pt files under data/ yet."));
-    return;
-  }
-  body.appendChild(el("h2", null, "All playing-AI files"));
+/* Every policy file, folded away. Same table as before, one click further in. */
+function fileDetails(list, deckIds) {
+  const d = el("details"); d.className = "filelist";
+  d.appendChild(el("summary", null, `All ${list.length} files of this one model`));
   const tbl = el("table", "tbl");
   tbl.innerHTML = `<thead><tr><th>What it is</th><th>File</th><th>Date</th><th>Matches</th>
     <th>Best benchmark</th><th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;
@@ -1555,10 +1600,158 @@ async function loadCheckpoints() {
     tr.lastElementChild.appendChild(btn);
     tb.appendChild(tr);
   });
-  tbl.appendChild(tb); body.appendChild(tbl);
+  tbl.appendChild(tb); d.appendChild(tbl);
   if (list.some(c => c.matches_estimated))
-    body.appendChild(el("p", "hint",
+    d.appendChild(el("p", "hint",
       "* Match count estimated from data/metrics.jsonl: older checkpoints do not store it."));
+  return d;
+}
+
+const pct1 = x => x == null ? "-" : (100 * x).toFixed(1) + " %";
+
+function visionCard(v) {
+  const mt = v.metrics || {}, pr = v.progress || {};
+  const rows = [
+    ["model in use", v.active_run || "none yet", v.active_why || ""],
+    ["quality (mAP50)", pct1(mt.mAP50),
+     "Share of units it both finds and names correctly. 0 means it detects nothing usable."],
+    ["precision / recall", `${pct1(mt.precision)} / ${pct1(mt.recall)}`,
+     "Of what it reports, how much is right / of what is there, how much it finds."],
+    ["training data", `${v.boxes} boxes on ${v.frames_with_boxes} frame(s)`,
+     "Boxes are what it learns from. A frame saved without a box teaches it that there is "
+     + "nothing there."],
+    ["labelled frames", `${v.labelled_train} train / ${v.labelled_val} validation`
+     + ((v.labelled_train + v.labelled_val) > v.frames_with_boxes
+        ? `  (${v.labelled_train + v.labelled_val - v.frames_with_boxes} of them EMPTY)` : "")],
+    ["waiting to be labelled", v.to_label],
+    ["classes it can name", v.classes],
+  ];
+  const extra = el("div");
+  extra.appendChild(el("p", "hint",
+    "Finds and names the units on the board in a screenshot. Separate network, separate "
+    + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
+    + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
+
+  // A pin inherited from another machine resolves to nothing and falls back to "newest"
+  // silently, which is how you end up reading the score of a model nothing loads.
+  if (v.pinned_missing) {
+    const w = el("div", "cfggroup");
+    w.innerHTML = "<h3>The pinned model does not exist here</h3>"
+      + `<p class='hint'>config detect.weights points at <code>${v.pinned}</code>, which is not `
+      + `in this checkout, so everything silently falls back to <b>${v.active_run || "nothing"}</b>. `
+      + "Pick one below to fix the pin.</p>";
+    extra.appendChild(w);
+  }
+  extra.appendChild(visionProgress(pr, v));
+  if (v.runs && v.runs.length) extra.appendChild(visionRuns(v));
+  if (!v.trained) extra.appendChild(el("p", "hint",
+    `No weights under ${v.runs_dir}. Label frames in the Labelling tab, then run `
+    + '"Train the vision AI" in the Control tab.'));
+  return headlineCard("Model 2 of 2 -- Vision AI (the detector)",
+    "ONE network too. Each training writes a new run folder, but only the one marked below "
+    + "is loaded by play, train-rl and the overlay clips.", rows, extra);
+}
+
+/* Is it learning anything? The question the panel could not answer at all before.
+   results.csv gets a line per epoch, so this works live as well as after the fact. */
+function visionProgress(pr, v) {
+  const box = el("div", "cfggroup");
+  const rows = pr.rows || [];
+  if (!rows.length) {
+    box.appendChild(el("h3", null, "Training progress"));
+    box.appendChild(el("p", "hint", "Nothing has trained yet, so there is no curve to show."));
+    return box;
+  }
+  const last = rows[rows.length - 1];
+  const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
+  box.appendChild(el("h3", null, pr.running ? "Training right now" : "Last training run"));
+  const head = el("p", "hint",
+    `${v.newest_run}: epoch ${last.epoch != null ? last.epoch : "?"}`
+    + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
+    + `  |  best mAP50 so far ${pct1(best)}`
+    + `  |  box loss ${last.box_loss != null ? last.box_loss.toFixed(2) : "-"}`
+    + `, class loss ${last.cls_loss != null ? last.cls_loss.toFixed(1) : "-"}`);
+  box.appendChild(head);
+  box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+  // The honest reading: a falling loss with a flat zero mAP means it is fitting the few
+  // boxes it has and still finding nothing -- which is a data problem, not a training one.
+  if (best != null && best < 0.05) {
+    const empty = (v.labelled_train + v.labelled_val) - v.frames_with_boxes;
+    box.appendChild(el("p", "hint",
+      `${pr.running ? "It is training, but it is not learning" : "It trained, but it did not learn"} `
+      + `anything usable: mAP50 stays at ${pct1(best)} after ${rows.length} epochs. That is what `
+      + `${v.boxes} boxes on ${v.frames_with_boxes} frame(s) buys -- a detector for ${v.classes} `
+      + "classes needs hundreds. More epochs will not fix it; more labelled frames will."
+      + (empty > 0 ? ` Note that ${empty} of your ${v.labelled_train + v.labelled_val} saved `
+                     + "frames have NO box on them, which actively teaches it to find nothing." : "")));
+  }
+  const shots = (v.runs || []).find(r => r.name === v.newest_run);
+  if (shots && shots.previews && shots.previews.length) {
+    const d = el("details");
+    d.appendChild(el("summary", null, "See what it was taught and what it answers"));
+    shots.previews.forEach(f => {
+      const wrap = el("div"); wrap.style.margin = "8px 0";
+      wrap.appendChild(el("p", "hint", (v.previews && v.previews[f]) || f));
+      const img = el("img"); img.src = `/api/vision/preview/${v.newest_run}/${f}`;
+      img.style.maxWidth = "100%"; img.style.border = "1px solid var(--line)"; img.loading = "lazy";
+      wrap.appendChild(img); d.appendChild(wrap);
+    });
+    box.appendChild(d);
+  }
+  return box;
+}
+
+/* Minimal inline chart. The metrics tab's charting is bound to metrics.jsonl, and this is
+   a different source (ultralytics' csv), so it draws its own rather than bending that one. */
+function sparkline(vals, title) {
+  const w = 520, h = 90, pad = 4;
+  const hi = Math.max(0.02, ...vals);
+  const pts = vals.map((y, i) => {
+    const x = pad + (vals.length < 2 ? 0 : i * (w - 2 * pad) / (vals.length - 1));
+    return `${x.toFixed(1)},${(h - pad - (y / hi) * (h - 2 * pad)).toFixed(1)}`;
+  }).join(" ");
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.setAttribute("width", "100%"); svg.setAttribute("height", "90");
+  svg.innerHTML = `<title>${title}</title>`
+    + `<rect x="0" y="0" width="${w}" height="${h}" fill="none" stroke="var(--line)"/>`
+    + `<polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="1.5"/>`
+    + `<text x="6" y="12" fill="var(--dim)" font-size="10">${title} (top = ${pct1(hi)})</text>`;
+  return svg;
+}
+
+function visionRuns(v) {
+  const d = el("details"); d.className = "filelist";
+  d.appendChild(el("summary", null,
+    `All ${v.runs.length} training run(s) -- only "${v.active_run || "none"}" is in use`));
+  d.appendChild(el("p", "hint",
+    "Each training writes a new folder (board, board-2, ...). They are attempts, not extra "
+    + "models. Newest is not automatically best, so the one in use is pinned explicitly."));
+  const tbl = el("table", "tbl");
+  tbl.innerHTML = `<thead><tr><th></th><th>Run</th><th>Date</th><th>mAP50</th>
+    <th>Precision</th><th>Recall</th><th>Size</th><th></th></tr></thead>`;
+  const tb = el("tbody");
+  v.runs.forEach(r => {
+    const mt = r.metrics || {}, active = r.name === v.active_run;
+    const tr = el("tr");
+    tr.innerHTML = `<td>${active ? "<span class='pill run'>in use</span>" : ""}</td>
+      <td><code>${r.name}</code></td><td>${fmtTime(r.mtime)}</td>
+      <td>${pct1(mt.mAP50)}</td><td>${pct1(mt.precision)}</td><td>${pct1(mt.recall)}</td>
+      <td>${r.size ? fmtSize(r.size) : "training ..."}</td><td></td>`;
+    if (!active && r.has_weights) {
+      const b = el("button", "btn small", "Use this one");
+      b.onclick = async () => {
+        b.disabled = true;
+        try { await post("/api/vision/pin", { run: r.name }); toast(`Vision AI: now using ${r.name}.`); }
+        catch (e) { toast(e.message); }
+        loadCheckpoints();
+      };
+      tr.lastElementChild.appendChild(b);
+    }
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); d.appendChild(tbl);
+  return d;
 }
 $("#ckptreload").onclick = () => loadCheckpoints();
 

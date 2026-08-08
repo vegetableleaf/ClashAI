@@ -224,7 +224,12 @@
     <div class="row">
       <button id="labprev" class="btn small">Previous</button>
       <button id="labnext" class="btn small">Next frame</button>
-      <label>Class <select id="labclass"></select></label>
+      <!-- 236 classes in the taxonomy's own order is unusable without a filter: type a few
+           letters, the list narrows, the class ids underneath stay untouched. -->
+      <label>Class <input id="labsearch" type="text" placeholder="search ..." size="12"
+             title="Filters the list below. Enter picks the first match."></label>
+      <select id="labclass" title="Recently used first, then alphabetical."></select>
+      <span id="labclassmsg" class="msg"></span>
       <button id="labsave" class="btn primary">Save and continue</button>
       <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
       <button id="labundo" class="btn small">Undo box</button>

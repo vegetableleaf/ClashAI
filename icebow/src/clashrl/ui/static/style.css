@@ -66,6 +66,14 @@ input:focus,select:focus{outline:1px solid var(--acc);border-color:var(--acc)}
 .pill.run{border-color:var(--acc);color:var(--acc)}
 .pill.idle{color:var(--dim)}
 .pill.warn,.pill.bad{color:var(--bad);border-color:var(--bad)}
+/* stage tag on a command card: quiet, it labels the step rather than announcing anything */
+.pill.stage{color:var(--dim);border-style:dashed;text-transform:lowercase}
+/* folded detail: the variants of a model are one click away, not part of the headline */
+details{margin:8px 0}
+details>summary{cursor:pointer;color:var(--dim);font-size:12px;font-family:var(--mono);
+  padding:3px 0;user-select:none}
+details>summary:hover{color:var(--fg)}
+details[open]>summary{color:var(--fg)}
 .msg{font-size:11px}
 .msg.ok{color:var(--dim)} .msg.err{color:var(--bad)}
 

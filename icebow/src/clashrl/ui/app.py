@@ -307,7 +307,37 @@ def create_app(cfg) -> Flask:
     @app.get("/api/models")
     def models_view():
         """The two networks told apart -- see ckpt.models()."""
-        return jsonify(ckpt_models(root, metrics.runs()))
+        return jsonify(ckpt_models(root, metrics.runs(),
+                                   pinned=C().get("detect", "weights", default=None)))
+
+    # -- vision AI: previews and which run is the operating one ------------
+    @app.get("/api/vision/preview/<run>/<name>")
+    def vision_preview(run: str, name: str):
+        """One of ultralytics' own run images. This is the ONLY place you get to see what the
+        detector was taught and what it answers, so it is worth serving directly."""
+        from .ckpt import _PREVIEWS
+        if name not in _PREVIEWS or "/" in run or "\\" in run or run.startswith("."):
+            return jsonify({"error": "not a preview image"}), 400
+        p = root / "runs" / "detect" / run / name
+        if not p.is_file():
+            return jsonify({"error": "no such image"}), 404
+        return send_file(p)
+
+    @app.post("/api/vision/pin")
+    def vision_pin():
+        """Make one run THE detector (config detect.weights), the same way play resolves it."""
+        body = request.get_json(force=True, silent=True) or {}
+        run = str(body.get("run", "")).strip()
+        rel = f"runs/detect/{run}/weights/best.pt"
+        if not run or "/" in run or "\\" in run or not (root / rel).is_file():
+            return jsonify({"error": f"no trained weights at {rel}"}), 400
+        try:
+            res = editor.save_config_fields(cfg_path, {"detect.weights": rel}, backup_dir)
+        except editor.EditError as exc:
+            return jsonify({"error": str(exc)}), 400
+        except OSError as exc:
+            return jsonify({"error": f"could not write: {exc}"}), 500
+        return jsonify(res)
 
     # -- box labelling (vision AI training data) ---------------------------
     @app.get("/api/label/status")
