@@ -105,3 +105,57 @@ def list_checkpoints(data_dir: Path, metrics_runs: Optional[List[Dict[str, Any]]
         })
     out.sort(key=lambda c: c["mtime"], reverse=True)
     return out
+
+
+# --- the two models, told apart -----------------------------------------------------
+# This project trains TWO completely separate networks, and the flat data/*.pt listing
+# hid that. They have different jobs, different training commands, different files, and
+# one is useless without the other:
+#   PLAYING AI  -- decides which card to play where. Trains in the simulator (no game
+#                  needed) and optionally fine-tunes on live matches.
+#   VISION AI   -- finds and names the units on the board in a screenshot. Trained from
+#                  hand-labelled frames; without it the playing AI is blind to what the
+#                  opponent has on the field.
+
+def _detector_status(root: Path) -> Dict[str, Any]:
+    """Trained weights, labelled data, and what is still waiting to be labelled."""
+    det = root / "data" / "detect"
+    runs = root / "runs" / "detect"
+    weights = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime,
+                     reverse=True) if runs.exists() else []
+    n = lambda p, pat="*": len(list(p.glob(pat))) if p.exists() else 0    # noqa: E731
+    classes = det / "classes.txt"
+    return {
+        "trained": bool(weights),
+        "weights": str(weights[0]) if weights else None,
+        "runs": [p.parent.parent.name for p in weights],
+        "labelled_train": n(det / "images" / "train"),
+        "labelled_val": n(det / "images" / "val"),
+        "to_label": n(det / "images" / "to_label"),
+        "classes": len(classes.read_text(encoding="utf-8").split()) if classes.exists() else 0,
+        "runs_dir": str(runs),
+        "to_label_dir": str(det / "images" / "to_label"),
+    }
+
+
+def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    """Both networks, each with ONE headline entry plus its variants.
+
+    The headline for the playing AI is the file `play` would actually load with no --init,
+    because that is the question the list has to answer -- not which file is newest.
+    """
+    cks = list_checkpoints(root / "data", metrics_runs)
+    by_name = {c["name"]: c for c in cks}
+    # play's own order: data/policy_rl.pt when present, else train.checkpoint (policy.pt).
+    # policy_sim_best.pt is usually the strongest thing available, so surface it as the
+    # suggestion when it exists and nothing has been fine-tuned live yet.
+    main = by_name.get("policy_rl.pt") or by_name.get("policy.pt")
+    suggest = by_name.get("policy_sim_best.pt")
+    return {
+        "policy": {
+            "main": main,
+            "suggested": suggest if (suggest and suggest is not main) else None,
+            "all": cks,
+        },
+        "vision": _detector_status(root),
+    }

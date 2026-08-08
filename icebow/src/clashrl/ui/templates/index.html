@@ -25,7 +25,7 @@
   <button class="tab" data-tab="towers">Towers</button>
   <button class="tab" data-tab="speed">Tempo</button>
   <button class="tab" data-tab="config">Settings</button>
-  <button class="tab" data-tab="ckpt">Checkpoints</button>
+  <button class="tab" data-tab="ckpt">Models</button>
 </nav>
 
 <main>
@@ -196,13 +196,12 @@
     <div id="cfgbody"></div>
   </section>
 
-  <!-- checkpoints ---------------- -->
+  <!-- models ---------------- -->
   <section id="tab-ckpt" class="panel">
-    <p class="lead">Trained networks under <code>data/</code>. There are only ever a handful:
-      each trainer writes to its own fixed file and overwrites it as it goes, so training again
-      does <b>not</b> pile up new ones. <code>_best</code> keeps the best benchmark score ever
-      reached, <code>_prev</code> is the automatic backup from before the last live run. Use as
-      --init enters the file as the starting point in the command tiles.</p>
+    <p class="lead">This project trains <b>two separate networks</b>. They have different jobs,
+      different training commands and different files, and the playing AI is half blind without
+      the vision one. Each has <b>one</b> model you actually use; the extra files below it are
+      that same model at different stages, not competing AIs.</p>
     <div class="row"><button id="ckptreload" class="btn small">Refresh</button></div>
     <div id="ckptbody"></div>
   </section>

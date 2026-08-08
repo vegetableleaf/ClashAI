@@ -1294,14 +1294,79 @@ $("#cfgsave").onclick = async () => {
 };
 $("#cfgreset").onclick = () => loadConfig();
 
-/* ---------------- Checkpoints ---------------- */
+/* ---------------- Models (the two networks, told apart) ---------------- */
+function headlineCard(title, subtitle, rows, extra) {
+  const box = el("div", "cfggroup");
+  box.appendChild(el("h3", null, title));
+  if (subtitle) box.appendChild(el("p", "hint", subtitle));
+  const g = el("div", "statgrid");
+  const c = el("div", "statcard");
+  rows.forEach(([k, v, t]) => {
+    const r = el("div", "kv"); if (t) r.title = t;
+    r.appendChild(el("span", null, k)); r.appendChild(el("span", null, String(v)));
+    c.appendChild(r);
+  });
+  g.appendChild(c); box.appendChild(g);
+  if (extra) box.appendChild(extra);
+  return box;
+}
+
 async function loadCheckpoints() {
-  const list = await api("/api/checkpoints");
+  const m = await api("/api/models");
+  const list = (m.policy && m.policy.all) || [];
   S.checkpoints = list;
   $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, s.value));
   const body = $("#ckptbody"); body.innerHTML = "";
-  if (!list.length) { body.innerHTML = "<p class='hint'>No .pt files under data/ yet.</p>"; return; }
   const deckIds = (S.deck && S.deck.identities) || null;
+
+  /* --- 1. the playing AI --- */
+  const main = m.policy && m.policy.main, sug = m.policy && m.policy.suggested;
+  const pRows = main
+    ? [["file", main.rel], ["what it is", main.role || "-", main.role_help || ""],
+       ["trained on", main.matches != null ? int(main.matches) + " matches" : "-"],
+       ["best benchmark", main.best_wr != null && main.best_wr >= 0 ? main.best_wr.toFixed(0) + " %" : "-"]]
+    : [["file", "none yet"], ["what to do", "run Train in the simulator"]];
+  const pExtra = el("div");
+  pExtra.appendChild(el("p", "hint",
+    "Decides which card to play where. Trains in the simulator without the game running; "
+    + "train-rl then fine-tunes the same network on real matches. This is the one that gets "
+    + "better at Clash Royale."));
+  if (sug) pExtra.appendChild(el("p", "hint",
+    `play uses ${main ? main.rel : "-"} by default, but ${sug.rel} scored higher `
+    + `(${sug.best_wr != null ? sug.best_wr.toFixed(0) + " %" : "-"}). Pick it explicitly in the Play tile if you want that one.`));
+  body.appendChild(headlineCard("1. Playing AI (the policy)",
+    "One network. The files below are the same network at different stages -- training "
+    + "overwrites them in place, it does not create new ones.", pRows, pExtra));
+
+  /* --- 2. the vision AI --- */
+  const v = m.vision || {};
+  const vRows = [
+    ["trained", v.trained ? "yes" : "NO"],
+    ["weights", v.weights || "none"],
+    ["labelled frames", `${v.labelled_train} train / ${v.labelled_val} validation`],
+    ["waiting to be labelled", v.to_label],
+    ["classes it can name", v.classes],
+  ];
+  const vExtra = el("div");
+  vExtra.appendChild(el("p", "hint",
+    "Finds and names the units on the board in a screenshot. Separate network, separate "
+    + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
+    + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
+  if (!v.trained) {
+    vExtra.appendChild(el("p", "hint",
+      `No weights under ${v.runs_dir}. Frames are collected automatically while train-rl runs `
+      + `(${v.to_label} waiting in ${v.to_label_dir}); they have to be labelled, then trained with `
+      + "tools/detect/train.py. This is the piece that is not wired into this panel yet."));
+  }
+  body.appendChild(headlineCard("2. Vision AI (the detector)",
+    "One network, trained from your labelled frames.", vRows, vExtra));
+
+  /* --- the full file list, for when you do want it --- */
+  if (!list.length) {
+    body.appendChild(el("p", "hint", "No .pt files under data/ yet."));
+    return;
+  }
+  body.appendChild(el("h2", null, "All playing-AI files"));
   const tbl = el("table", "tbl");
   tbl.innerHTML = `<thead><tr><th>What it is</th><th>File</th><th>Date</th><th>Matches</th>
     <th>Best benchmark</th><th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;

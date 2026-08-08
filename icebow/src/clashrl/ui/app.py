@@ -15,7 +15,7 @@ from flask import Flask, Response, jsonify, render_template, request, send_file
 
 from . import jobs as jobcat
 from .. import config_edit as editor
-from .ckpt import list_checkpoints
+from .ckpt import list_checkpoints, models as ckpt_models
 from ..hardware import probe, suggest
 from .metrics import MetricsStore, to_csv
 from .procs import ProcManager
@@ -302,6 +302,11 @@ def create_app(cfg) -> Flask:
     @app.get("/api/checkpoints")
     def checkpoints():
         return jsonify(list_checkpoints(root / "data", metrics.runs()))
+
+    @app.get("/api/models")
+    def models_view():
+        """The two networks told apart -- see ckpt.models()."""
+        return jsonify(ckpt_models(root, metrics.runs()))
 
     # -- live view ---------------------------------------------------------
     @app.get("/api/live")
