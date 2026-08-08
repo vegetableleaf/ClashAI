@@ -205,6 +205,25 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.putText(img, _short(u.spec.key), (c[0] - r - 2, c[1] + r + 10),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _TXT, 1)
 
+    # --- projectiles in flight ---------------------------------------------------------------
+    # Shots are real entities with real travel time, so they are drawn: a Mortar shell crawling at
+    # 5 tiles/s next to a Musketeer bullet at 16.7 is the clearest way to see that. AREA shots
+    # (radius > 0) also show the blast they will make, so you can watch a push walk out of one --
+    # and a hollow marker means the shot cannot touch air.
+    for p in getattr(eng, "projectiles", []):
+        c = px(p.x, p.y)
+        col = _TEAM[p.team]
+        if p.radius > 0:
+            cv2.ellipse(img, c, rad_px(p.radius), 0, 0, 360, col, 1)
+        if p.pierce:                                      # keeps going past its target
+            cv2.drawMarker(img, c, col, cv2.MARKER_TILTED_CROSS, 7, 1)
+        elif p.ground_only:                               # cannot hit air
+            cv2.circle(img, c, 3, col, 1)
+        else:
+            cv2.circle(img, c, 2, col, -1)
+        cv2.putText(img, _short(p.label.removesuffix("_projectile")) + "*", (c[0] + 5, c[1] - 4),
+                    cv2.FONT_HERSHEY_PLAIN, 0.6, col, 1)
+
     # --- HUD ---------------------------------------------------------------------------------
     reg, ot = eng.regulation, eng.overtime
     phase = "3x" if eng.t >= reg else ("2x" if eng.t >= reg - 60.0 else "1x")

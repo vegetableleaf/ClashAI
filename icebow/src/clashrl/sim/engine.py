@@ -124,6 +124,12 @@ class CardSpec:
     pull_radius: float = 0.0  # vortex effect radius (5.5 tiles -- much wider than a damage spell)
     pull_duration: float = 0.0  # seconds the vortex stays active (damage is spread over this)
     gen_every: float = 0.0    # ELIXIR COLLECTOR: +1 elixir to its OWNER every this many seconds (0 = none)
+    river_jump: bool = False  # crosses the river WITHOUT a bridge (Hog/Royal Hogs/Ram Rider/Prince/Dark Prince)
+    # --- projectile (0 speed = the hit lands instantly, which is how everything used to work) ---
+    proj_speed: float = 0.0   # TILES/second the shot travels
+    proj_radius: float = 0.0  # blast radius of the shot in tiles (0 = single target)
+    proj_range: float = 0.0   # how far the shot flies (> reach for the piercing shots)
+    proj_pierce: bool = False # keeps going past its target (Firecracker rocket / Magic Archer / Bowler)
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -137,6 +143,15 @@ _TORNADO_RADIUS = 5.5                   # tiles
 _TORNADO_DURATION = 1.05
 _TORNADO_PULL = 11.2                    # tiles/s (edge reaches centre in ~0.5s)
 _ROCKET_RADIUS = 2.0                    # rocket's REAL 2-tile blast
+
+# The spec carried by a CROWN TOWER's shot. Towers are not cards, so they have no CardSpec of their
+# own -- this is a neutral one: single target, no splash, no status. Only the fields a projectile
+# actually reads matter.
+_TOWER_SHOT = CardSpec(
+    key="tower_shot", base="tower_shot", kind="tower", elixir=0, hp=0.0, dps=0.0, reach=0.0,
+    speed=0.0, count=1, flying=False, attacks_air=True, splash=False, building_only=False,
+    siege=False, kamikaze=False, lifetime=None, spell_radius=0.0, spell_dmg=0.0,
+    spell_tower_dmg=0.0, spell_delay=0.0)
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
@@ -152,13 +167,15 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
     tower_dmg = float(db.tower_damage(base) or dmg)
     reach = float(db.attack_range_tiles(base))                 # TILES, attacker centre -> target EDGE
-    speed = _SPEED.get(c.get("speed"), _SPEED["medium"])           # TILES/s
+    # Move speed: the wiki publishes an exact rating per card ("Very Fast (120)", 60 units = 1 tile/s),
+    # imported as `speed_tiles`. The categorical bucket is only a fallback for cards that parse missed.
+    speed = db.speed_tiles(base) or _SPEED.get(c.get("speed"), _SPEED["medium"])   # TILES/s
     count = int(c.get("count") or 1)
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     siege = "siege" in flags
-    spell_radius = 3.5 if base == "royal_delivery" else 2.9   # tiles
-    if base == "rocket":
-        spell_radius = _ROCKET_RADIUS                         # honest 2-tile blast
+    # Spell blast radius, live from the wiki (Fireball 2.5, Rocket 2.0, Arrows 3.5, Zap 2.5) -- the old
+    # flat 2.9 default was wrong for every one of them.
+    spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
     # a ROLLING spell (The Log / Barbarian Barrel) = knockback AND ground-only corridor. Knockback alone
@@ -196,6 +213,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     ct = db.crown_tower_damage(base)                           # troops with a reduced crown value (Miner) hit towers softer
     tower_hit_dmg = float(ct) * sc if ct is not None else hit_dmg
     radius = float(db.collision_radius_tiles(base))             # body radius, TILES (cr-api-data)
+    proj = db.projectile(base) or {}
     spawn_spec, spawn_count = None, 0
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
@@ -205,7 +223,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
         deploy_anywhere=("deploy_anywhere" in flags),
-        kamikaze="kamikaze" in flags, lifetime=lifetime,
+        kamikaze=("kamikaze" in flags or bool(db.is_kamikaze(base))), lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
@@ -219,7 +237,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
         pull_duration=(_TORNADO_DURATION if pulls else 0.0),
-        gen_every=gen_every)
+        gen_every=gen_every,
+        river_jump=bool(db.river_jump(base)),
+        proj_speed=float(proj.get("speed") or 0.0),
+        proj_radius=float(proj.get("radius") or 0.0),
+        proj_range=float(proj.get("range") or 0.0),
+        proj_pierce=bool(proj.get("pierce")))
 
 
 @dataclass
@@ -240,6 +263,10 @@ class Unit:
     shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
     dmg_mult: float = 1.0        # per-unit damage multiplier (Royal Chef pancake buff; 1.0 = normal)
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
+    locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
+                                 # targets just because something wandered closer; only an aggro RESET frees it
+    aggro_reset: bool = False    # set by a stun/freeze, a Log knockback, or being SHOVED out of reach of what
+                                 # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
 
     def __post_init__(self):
@@ -293,6 +320,40 @@ class _Vortex:
     y: float
     spec: CardSpec
     left: float                   # active seconds remaining
+
+
+@dataclass
+class Projectile:
+    """A shot IN FLIGHT. Attacks used to land instantly, which is wrong in two ways that matter:
+    a Mortar shell (300 = 5 tiles/s) took the same zero time to arrive as a Musketeer bullet
+    (1000 = 16.7 tiles/s), and area shots could never be walked out of.
+
+    Two flight models, chosen by whether the shot has a blast radius -- which is exactly how the
+    game behaves:
+      * radius == 0  -> a TRACKING shot. It follows its target and cannot miss, but FIZZLES if the
+                        target dies mid-flight (the damage is simply never dealt).
+      * radius >  0  -> an AREA shot at the ground POINT the target occupied when it was fired.
+                        It explodes there whatever happens, so a push that keeps moving walks out
+                        of it -- the reason Mortar and Bomber miss fast troops.
+    `pierce` shots (Firecracker's rocket, Magic Archer, Executioner's axe, Bowler's boulder) keep
+    travelling their full projectile_range along the launch heading, hitting each enemy once.
+    """
+    label: str                    # "<card>_projectile" / "<tower troop>_projectile" (for the debugger)
+    team: int
+    x: float
+    y: float
+    tx: float                     # aim point (area shots) -- updated each tick for tracking shots
+    ty: float
+    target: object                # intended Unit/Tower; None once it no longer matters
+    spec: CardSpec                # the FIRING card (splash flag + status effects it applies)
+    dmg: float
+    tower_dmg: float
+    radius: float                 # blast radius in TILES (0 = single target)
+    speed: float                  # TILES/second
+    left: float                   # TILES of flight remaining (piercing shots fly their full range)
+    ground_only: bool = False     # some shots cannot touch air (the KB's `attacks` list says so)
+    pierce: bool = False
+    hit: set = field(default_factory=set)   # ids already damaged by a piercing shot
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -365,6 +426,10 @@ class SimEngine:
         self.overtime = float(cfg.get("sim", "overtime_s", default=60.0))
         self.siege_sight = float(cfg.get("sim", "siege_sight", default=11.5))  # X-Bow, tiles
         self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # troop aggro radius, tiles
+        # Crown-tower shot speed, TILES/s. Tower troops are not cards, so the wiki's per-card
+        # projectile table does not cover them; 10 t/s matches the Archers-class arrow (600 game
+        # units / 60) the Princess Tower fires.
+        self.tower_proj_speed = float(cfg.get("sim", "tower_projectile_tiles_s", default=10.0))
         self.slow_factor = float(cfg.get("sim", "slow_factor", default=0.5))   # SLOW -> this x move + attack speed
         self.slow_dur = float(cfg.get("sim", "slow_duration", default=2.0))
         self.stun_dur = float(cfg.get("sim", "stun_duration", default=0.5))
@@ -398,6 +463,7 @@ class SimEngine:
         self.units: List[Unit] = []
         self.spells: List[_Spell] = []
         self.vortices: List[_Vortex] = []        # landed tornadoes (active pull areas)
+        self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
         # Your side always plays your equipped troop at your level; the opponent's tower troop + level are
@@ -519,9 +585,19 @@ class SimEngine:
         return e.hp > 0 and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
     def _acquire(self, u: Unit):
-        """(kind, ref) this unit heads for -- with target COMMITMENT + an aggro/sight range: real CR units
-        lock onto a target and only notice enemy UNITS within sight, otherwise they march at the tower.
-        Building-only troops (Miner / Hog) ignore troops and always go for the tower.
+        """(kind, ref) this unit heads for.
+
+        Real CR targeting is STICKY, and stickier still once a unit is actually swinging:
+
+        * A unit that has ENGAGED its target (``u.locked``) keeps it. Dropping a defender next to a
+          troop that is already hitting your tower does NOT make it turn round -- only an aggro
+          RESET does (see ``u.aggro_reset``: stuns/freezes, a Log knockback, or being shoved out of
+          reach by a body spawned between it and its target).
+        * A unit still WALKING re-evaluates, but a new enemy only steals aggro if it is genuinely
+          CLOSER than whatever the unit is already heading for. This is what stops the old bug where
+          a defender parked BEHIND the princess tower dragged an attacker past the tower to reach
+          it -- the tower is nearer, so the attacker hits the tower.
+        * Building-only troops (Miner / Hog) ignore troops entirely and always go for the tower.
 
         All ranges are measured to the target's hitbox EDGE (:func:`_gap`), so a big body is noticed
         and engaged from further out than a skeleton standing in the same spot."""
@@ -531,22 +607,34 @@ class SimEngine:
             u.target = tw
             return ("tower", tw) if tw else (None, None)
         sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
-        t = u.target                                          # stay COMMITTED to a live unit target (with a leash)
-        if isinstance(t, Unit) and t.hp > 0 and self._valid_foe(u, t) \
-                and _gap(u.x, u.y, t) <= sight * 1.8:
-            return ("unit", t)
+        if u.aggro_reset:                                     # knocked/stunned/shoved -> forget the lock
+            u.aggro_reset = False
+            u.locked = False
+            u.target = None
+        t = u.target
+        if isinstance(t, Unit):
+            cur_kind = "unit"
+            cur_ok = t.hp > 0 and self._valid_foe(u, t) and _gap(u.x, u.y, t) <= sight * 1.8
+        elif isinstance(t, Tower):
+            cur_kind = "tower"
+            cur_ok = t.alive and t in towers
+        else:
+            cur_kind, cur_ok = None, False
+        if cur_ok and u.locked:                               # already swinging -> nothing else exists
+            return (cur_kind, t)
+        cur_gap = _gap(u.x, u.y, t) if cur_ok else float("inf")
         foes = [e for e in self.units if e.team != u.team and self._valid_foe(u, e)
                 and _gap(u.x, u.y, e) <= sight]
-        if foes:                                              # an enemy unit is within aggro range -> engage nearest
+        if foes:
             e = min(foes, key=lambda e: _gap(u.x, u.y, e))
-            u.target = e
-            return ("unit", e)
+            if _gap(u.x, u.y, e) < cur_gap:                   # ...only if it is CLOSER than the current target
+                u.target, u.locked = e, False
+                return ("unit", e)
+        if cur_ok:
+            return (cur_kind, t)
         if towers:                                            # nothing in sight -> march at a tower
-            if isinstance(t, Tower) and t.alive and t in towers:
-                return ("tower", t)                           # COMMIT: don't re-pick every tick (that oscillates
-                                                              # between two near-equidistant towers mid-walk)
             tw = min(towers, key=lambda t: _gap(u.x, u.y, t))
-            u.target = tw
+            u.target, u.locked = tw, False
             return ("tower", tw)
         u.target = None
         return (None, None)
@@ -599,8 +687,11 @@ class SimEngine:
         return (tw.x - px * m / _TILES_X, tw.y - py * m / _TILES_Y)
 
     def _move_toward(self, u: Unit, tx: float, ty: float, dt: float, spd_mult: float = 1.0) -> None:
-        # ground units cross the river only at a bridge
-        if not u.spec.flying and (u.y - _RIVER) * (ty - _RIVER) < 0:
+        # Ground units cross the river only at a bridge -- unless they JUMP it. Hog Rider, Royal Hogs,
+        # Ram Rider, Prince and Dark Prince vault the river anywhere along it (imported per card from
+        # the wiki as `river_jump`), which is why a Hog dropped at the edge does not walk to the lane
+        # first. Air ignores the river entirely.
+        if not u.spec.flying and not u.spec.river_jump and (u.y - _RIVER) * (ty - _RIVER) < 0:
             bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
             if abs(u.x - bx) * _TILES_X > 0.4:               # not yet in the bridge lane (tiles)
                 tx, ty = bx, _RIVER
@@ -674,6 +765,15 @@ class SimEngine:
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
                 a.x, a.y = _clamp_xy(a.x + px * (am / s), a.y + py * (am / s), a.spec.radius)
                 b.x, b.y = _clamp_xy(b.x - px * (bm / s), b.y - py * (bm / s), b.spec.radius)
+                # Being SHOVED off what you were hitting resets aggro. This is the real mechanic
+                # behind dropping a body between a melee attacker and the tower it is chewing on:
+                # the attacker is pushed out, loses its lock, and re-picks -- and the thing now in
+                # its face is the nearest target, so it turns on the defender. Only fires when the
+                # push actually breaks reach, so a crowd milling around one target can't thrash.
+                for m in (a, b):
+                    if m.locked and m.target is not None \
+                            and _gap(m.x, m.y, m.target) > m.spec.reach + m.reach_extra + _REACH_SLOP:
+                        m.aggro_reset = True
 
     def advance(self, dt: float) -> None:
         if self.done:
@@ -737,6 +837,7 @@ class SimEngine:
             reach = u.spec.reach + u.reach_extra
             if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
+                u.locked = True                             # ...and committed: only an aggro reset breaks it now
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.cooldown = u.spec.hit_speed / spd
@@ -747,6 +848,7 @@ class SimEngine:
         if self.collide:
             self._separate()
         self._separate_towers()             # towers are solid whatever the soft-collision toggle says
+        self._tick_projectiles(dt)          # shots in flight advance AFTER everything has moved
         # towers fire (+ Royal Chef cooks periodic ally buffs)
         for team in (0, 1):
             for tw in self.towers[team]:
@@ -784,25 +886,103 @@ class SimEngine:
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
         dmg = u.spec.hit_dmg * u.dmg_mult                    # one discrete hit (DPS x hit_speed; x Royal Chef buff)
+        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult
+        if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
+            self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
+            return
+        self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+
+    def _land_hit(self, team: int, kind: str, ref, spec: CardSpec, dmg: float,
+                  tower_dmg: float) -> None:
+        """Deal one hit that has ARRIVED (either instantly, or as a projectile reaching its target)."""
         if kind == "tower":
             # crown towers take the REDUCED per-hit value when the card has one (Miner) -- real CR's
             # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
-            self._damage_tower(ref, u.spec.tower_hit_dmg * u.dmg_mult, u.team)
+            self._damage_tower(ref, tower_dmg, team)
             return
         self._hurt(ref, dmg)
-        self._apply_status(u.spec, ref)
-        if u.spec.splash:
+        self._apply_status(spec, ref)
+        if spec.splash:
             for e in self.units:
-                if e.team != u.team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
+                if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
                     self._hurt(e, dmg)
-                    self._apply_status(u.spec, e)
+                    self._apply_status(spec, e)
+
+    def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
+                dmg: float, tower_dmg: float) -> None:
+        radius = spec.proj_radius
+        rng = spec.proj_range or (spec.reach + _REACH_SLOP)
+        self.projectiles.append(Projectile(
+            label=label, team=team, x=x, y=y, tx=ref.x, ty=ref.y, target=ref, spec=spec,
+            dmg=dmg, tower_dmg=tower_dmg, radius=radius, speed=spec.proj_speed,
+            left=max(rng, _dist(x, y, ref.x, ref.y)),
+            ground_only=not spec.attacks_air, pierce=spec.proj_pierce))
+
+    def _tick_projectiles(self, dt: float) -> None:
+        for p in list(self.projectiles):
+            if p.target is not None and not p.pierce and p.radius <= 0.0:
+                alive = (p.target.hp > 0) if isinstance(p.target, Unit) else p.target.alive
+                if not alive:
+                    self.projectiles.remove(p)      # single-target shot whose target died mid-flight fizzles
+                    continue
+                p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
+            step = p.speed * dt
+            dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
+            d = math.hypot(dxt, dyt)
+            if d > 1e-9:
+                move = min(step, d) if not p.pierce else step
+                p.x += (dxt / d) * move / _TILES_X
+                p.y += (dyt / d) * move / _TILES_Y
+            p.left -= step
+            if p.pierce:                              # damages everything it passes through, once each
+                for e in self.units:
+                    if e.team == p.team or e.hp <= 0 or id(e) in p.hit:
+                        continue
+                    if p.ground_only and e.spec.flying:
+                        continue
+                    if _dist(p.x, p.y, e.x, e.y) <= max(p.radius, 0.5) + e.spec.radius:
+                        p.hit.add(id(e))
+                        self._hurt(e, p.dmg)
+                        self._apply_status(p.spec, e)
+                if p.left <= 0.0:
+                    self.projectiles.remove(p)
+                continue
+            if d <= step or p.left <= 0.0:            # ARRIVED
+                self._impact(p)
+                self.projectiles.remove(p)
+
+    def _impact(self, p: Projectile) -> None:
+        if p.radius > 0.0:                            # AREA shot: explodes where it landed, hit or miss
+            for e in self.units:
+                if e.team == p.team or e.hp <= 0:
+                    continue
+                if p.ground_only and e.spec.flying:
+                    continue
+                if _dist(p.x, p.y, e.x, e.y) <= p.radius + e.spec.radius:
+                    self._hurt(e, p.dmg)
+                    self._apply_status(p.spec, e)
+            for tw in self._enemy_towers(p.team):
+                if _gap(p.x, p.y, tw) <= p.radius:
+                    self._damage_tower(tw, p.tower_dmg, p.team)
+            return
+        ref = p.target
+        if ref is None:
+            return
+        if isinstance(ref, Tower):
+            if ref.alive:
+                self._damage_tower(ref, p.tower_dmg, p.team)
+            return
+        if ref.hp > 0:
+            self._land_hit(p.team, "unit", ref, p.spec, p.dmg, p.tower_dmg)
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
         """Apply a hitter's/spell's crowd-control to a struck ground/air unit."""
         if spec.freezes:
             e.stun_left = max(e.stun_left, self.freeze_dur)
-        elif spec.stuns:
+            e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
+        elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
             e.stun_left = max(e.stun_left, self.stun_dur)
+            e.aggro_reset = True
         if spec.slows:
             e.slow_left = max(e.slow_left, self.slow_dur)
 
@@ -815,6 +995,7 @@ class SimEngine:
                 self._hurt(e, u.spec.pulse_dmg)
                 if u.spec.pulse_stun > 0:
                     e.stun_left = max(e.stun_left, u.spec.pulse_stun)
+                    e.aggro_reset = True
 
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
         """DISCRETE single-target tower shots. Cadence + damage come from the tower troop; Dagger Duchess
@@ -834,7 +1015,13 @@ class SimEngine:
         if tw.reload_left > 0.0:
             return
         tgt = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
-        self._hurt(tgt, tw.hit_dmg)                             # towers are single-target (no splash)
+        # Crown towers shoot a real, travelling, TRACKING shot -- so a Princess Tower arrow crossing 7
+        # tiles takes about as long as it does on screen, and the debugger can draw it.
+        self.projectiles.append(Projectile(
+            label=f"{tw.troop}_projectile", team=team, x=tw.x, y=tw.y, tx=tgt.x, ty=tgt.y,
+            target=tgt, spec=_TOWER_SHOT, dmg=tw.hit_dmg, tower_dmg=tw.hit_dmg,
+            radius=0.0, speed=self.tower_proj_speed,
+            left=rng + 2.0, ground_only=False))
         # accumulate (+=) rather than reset (=) the cooldown so the fractional remainder carries and the
         # AVERAGE cadence stays exact on the 0.1s physics grid (a reset would round every shot up a tick).
         if tw.ammo_max > 0.0 and tw.ammo >= 1.0:                # Dagger Duchess: fast while the clip has daggers
@@ -926,6 +1113,9 @@ class SimEngine:
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
                 self._hurt(e, s.spec.spell_dmg)
                 e.y += fdir * s.spec.knockback / _TILES_Y     # knock back in the roll direction
+                e.aggro_reset = True                          # the shove breaks its lock -- it re-picks from
+                                                              # where it LANDS, so a Log can pull a locked
+                                                              # attacker onto whatever is now nearest
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir * _TILES_Y
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:

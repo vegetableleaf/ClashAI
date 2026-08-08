@@ -20,6 +20,18 @@ def _key(name: str) -> str:
             .replace(" ", "_").replace("-", "_").replace(".", "").replace("'", ""))
 
 
+# ---------------------------------------------------------------------------------------------
+# PROVENANCE WARNING for the three tables below. They were baked from RoyaleAPI's cr-api-data,
+# which is ABANDONED: its last commit is 2023-10-18, so it predates every balance change and card
+# released since, and knows nothing of e.g. boss_bandit / spirit_empress / goblinstein / rune_giant.
+#   * ATTACK RANGE now has a LIVE source -- the Fandom wiki's unit-attributes table, imported into
+#     cards_stats.json as `range_tiles` -- and `attack_range_tiles` prefers it, so _RANGE_TILES is
+#     now only a fallback for cards the wiki parse misses.
+#   * COLLISION RADIUS and SIGHT RANGE have NO live source: Supercell does not publish either and
+#     the wiki does not tabulate them. They stay here because both are PHYSICAL properties that are
+#     rebalanced far less often than damage/HP -- but treat them as approximate, and as UNKNOWN for
+#     any card released after 2023-10.
+# ---------------------------------------------------------------------------------------------
 # AGGRO/SIGHT range in TILES per base card, sourced from the game data (RoyaleAPI cr-api-data
 # `characters[].sight_range`, 1000 game units = 1 tile; verified 2026-08-03). Only the cards that
 # DIFFER from the 5.5-tile baseline are listed -- everything else (79 of 125 characters) is 5.5.
@@ -201,6 +213,47 @@ class CardDB:
     def is_flying(self, name: str) -> bool:
         c = self.get(name)
         return bool(c and c.get("movement") == "air")
+
+    def river_jump(self, name: str) -> bool:
+        """Crosses the river WITHOUT using a bridge (Hog/Royal Hogs/Ram Rider/Prince/Dark Prince).
+
+        Imported from the card's own wiki prose ("He is able to jump over the river"), not a
+        hand-written list, so a future card with the ability picks it up on the next import."""
+        c = self.get(name)
+        return bool(c and c.get("river_jump"))
+
+    def is_kamikaze(self, name: str) -> bool:
+        """Leaps at its target, lands ONE hit, and dies on impact (the four spirits)."""
+        c = self.get(name)
+        return bool(c and c.get("kamikaze"))
+
+    def speed_tiles(self, name: str) -> Optional[float]:
+        """Move speed in TILES/SECOND, from the wiki's speed rating (60 units = 1 tile/s)."""
+        c = self.get(name)
+        v = c.get("speed_tiles") if c else None
+        return float(v) if v is not None else None
+
+    def projectile(self, name: str) -> Optional[dict]:
+        """This card's shot, or None when it hits instantly / has no attack.
+
+        speed is TILES/SECOND, radius is the blast footprint in tiles (0 = single target).
+        `pierce` marks a shot that keeps travelling past its target (Firecracker's rocket,
+        Magic Archer, Executioner's axe, Bowler's boulder) -- those carry a longer
+        `projectile_range` than the unit's own attack range.
+        """
+        c = self.get(name)
+        if not c:
+            return None
+        spd = c.get("projectile_speed")
+        if not spd:
+            return None
+        rng = c.get("projectile_range")
+        return {
+            "speed": float(spd) / 60.0,
+            "radius": float(c.get("projectile_radius") or c.get("splash_radius") or 0.0),
+            "range": float(rng) if rng else None,
+            "pierce": bool(rng and rng > (c.get("range_tiles") or 0)),
+        }
 
     def is_spell(self, name: str) -> bool:
         return self.kind(name) == "spell"
