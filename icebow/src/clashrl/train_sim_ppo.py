@@ -54,7 +54,7 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float):
 
 
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
-                  init: str | None = None) -> None:
+                  init: str | None = None, device: str | None = None) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -74,7 +74,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
     gw, gh = e0.gw, e0.gh
-    device = _pick_device(cfg)
+    # MEASURED 2026-08-08: this trainer is FASTER ON CPU -- 1.0 match/s vs 0.2 on the GPU while a
+    # detector run shared it. The match engine is pure Python (CPU-bound whatever the net does) and
+    # the policy is ~2 MB, so every tiny forward pass pays more in kernel-launch + transfer overhead
+    # than it saves, and it also competes for VRAM. `--device cpu` therefore both speeds this up and
+    # lets it run alongside a detector train without an OOM risk.
+    device = torch.device(device) if device else _pick_device(cfg)
 
     class PPONet(nn.Module):
         """Actor-critic over the SAME PolicyNet trunk/heads the DQN uses (logits, not Q) + a value head."""

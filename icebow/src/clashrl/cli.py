@@ -142,7 +142,7 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
-                  seed=args.seed, envs=args.envs, init=args.init)
+                  seed=args.seed, envs=args.envs, init=args.init, device=args.device)
 
 
 def _cmd_sim_bench(args) -> None:
@@ -386,6 +386,10 @@ def main() -> None:
                      help="parallel (vectorized) match instances (default: sim.envs)")
     tsp.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
+    tsp.add_argument("--device", choices=["cpu", "cuda"], default=None,
+                     help="override train.device. CPU is MEASURED FASTER for this trainer (1.0 vs 0.2 "
+                          "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
+                          "the GPU entirely, so PPO can run alongside a detector train")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     sbn = sub.add_parser("sim-bench",
