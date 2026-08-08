@@ -119,6 +119,14 @@ class SimMatchEnv:
         self._deck_profiles = [card_threat.profile(self.db, _base(k)) for k in self.deck_keys]
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)
         self._prev_ident_depth = 0.0     # deepest recognised-threat depth last step (for approach velocity)
+        # REWARD-side twin of the above, built WITHOUT detector noise. The observation must stay noisy
+        # (that is the perception the policy has to cope with) but GRADING must not be: with
+        # sim_detector_recall 0.72, ~28% of real threats are invisible to the noisy vector, so a
+        # correctly pre-placed defender was scored as a "premature defender on a quiet board" (-0.4)
+        # whenever the referee happened not to see the push it answered. This file's own contract at the
+        # top says rewards are computed from GROUND TRUTH; these three terms were the exception.
+        self._threat_id_true = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self._prev_ident_depth_true = 0.0
         self._opp_mem = card_threat.OpponentMemory(self.db)   # per-match opponent short-term memory (Stage 3)
 
         r = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
@@ -201,6 +209,7 @@ class SimMatchEnv:
         self.elixir = 0
         self._last_frame = self._last_obs
         self._prev_ident_depth = 0.0
+        self._prev_ident_depth_true = 0.0
         self._opp_mem.reset()
 
     # -- hand cycle --------------------------------------------------------
@@ -259,6 +268,12 @@ class SimMatchEnv:
                                       self.det_recall_by_card),
             self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
+        # ...and the un-noised twin the REWARD grades against (never enters the observation).
+        self._threat_id_true = card_threat.identity_threat_vector(
+            view.identity_items(self.eng, 0, self.detector_cards),
+            self.db, prev_depth=self._prev_ident_depth_true, dt=self.agent_dt,
+            horizon=self.predict_horizon)
+        self._prev_ident_depth_true = float(self._threat_id_true[7])
         mem = self._opp_mem.update(
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
@@ -326,8 +341,9 @@ class SimMatchEnv:
         """(1) THREAT-RESPONSE correctness: did you play the KB-correct counter to the ASSESSED threat,
         placed to intercept it? Right counter in the threat's lane -> +; the WRONG role dropped as a
         defence, or a pure defender played with no threat (premature) -> -. Offensive placements are
-        judged by wincon_exec / the trade term, not here."""
-        tid = self._threat_id
+        judged by wincon_exec / the trade term, not here. Grades on the GROUND-TRUTH threat identity,
+        not the detector-noised one the policy observes."""
+        tid = self._threat_id_true
         prof = self._deck_profiles[card_id]
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
@@ -351,8 +367,9 @@ class SimMatchEnv:
 
     def _threat_miss_idle(self) -> float:
         """No play while an ANSWERABLE threat is present (a counter is in hand AND affordable) = a missed
-        defence. Uncapped penalty (this is the 'ignored the push' case the old idle_penalty covered)."""
-        tid = self._threat_id
+        defence. Uncapped penalty (this is the 'ignored the push' case the old idle_penalty covered).
+        Ground-truth threat: the objective is defined by the real board, not by what the detector saw."""
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return 0.0
         for cid in self._hand_ids():
@@ -449,11 +466,12 @@ class SimMatchEnv:
 
     def _needed_counter_coming(self, hand) -> bool:
         """True when the current hand has NO KB counter to the assessed threat but the deck DOES (an
-        upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile."""
+        upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile. Ground-truth
+        threat (this feeds cycle_plan, a reward term)."""
         if (self._fresh_pump() is not None and not (set(hand) & self.rocket_ids)
                 and any(r not in hand for r in self.rocket_ids)):
             return True                                      # a fresh enemy PUMP is a rocket job: cycle to it
-        tid = self._threat_id
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return False
         if any(card_threat.counters(self._deck_profiles[c], tid) for c in hand):
