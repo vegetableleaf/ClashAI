@@ -260,8 +260,13 @@ class CardDB:
             "unit": str(unit),
             "count": int(sp.get("count") or 1),
             "on_death": int(sp.get("on_death") or 0),
-            "interval": float(c.get("spawn_interval_s") or 0.0),
-            "delay": float(c.get("spawn_delay_s") or 0.0),
+            # Timings come from the imported attribute table, but a curated `interval`/`delay` wins:
+            # the wiki contradicts ITSELF on some cards (Tombstone's table says 4s while its prose
+            # says 3.5s AND its Common modifier says "doubled, for a total of 1.75 seconds", which
+            # only works from 3.5). An override is for a source that is provably wrong, not for
+            # convenience -- every one carries its cross-check in cards.yaml.
+            "interval": float(sp.get("interval") or c.get("spawn_interval_s") or 0.0),
+            "delay": float(sp.get("delay") or c.get("spawn_delay_s") or 0.0),
             "range": float(c["spawn_range_tiles"]) if c.get("spawn_range_tiles") else None,
         }
 
