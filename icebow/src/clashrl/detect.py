@@ -1323,14 +1323,19 @@ class TrainFrameCollector:
         return True
 
 
-def _resolve_weights(cfg, weights):
-    """Detector weights: an explicit --weights, else the PINNED ``detect.weights``, else the most
-    recently trained runs/detect/*/weights/best.pt.
+VISION_RUN = "vision"           # the ONE detector's folder; tools/detect/train.py writes here
 
-    THE PIN EXISTS BECAUSE NEWEST != BEST. Measured 2026-08-07 on the frozen val subset: board-17
-    trained last but scored whitelist identity recall 0.675 vs board-16's 0.724 and FAILED the 0.70
-    gate, so an mtime default silently promoted a regressed detector into live play, replay mining
-    and the label queue. A generation is only the operating detector once `detect-eval` says so.
+
+def _resolve_weights(cfg, weights):
+    """Detector weights: an explicit --weights, else THE vision model.
+
+    There is exactly one detector in this project and it always lives at
+    runs/detect/vision/weights/best.pt. Earlier this globbed runs/detect/*/weights/best.pt and
+    took the newest, which is how a pile of identically named board/board-2/board-3 folders
+    turned into "which model is actually running?" -- with the answer changing under you every
+    time something trained. ``detect.weights`` still overrides, for pointing at an archived
+    copy; a value that does not exist is now an error you can see rather than a silent
+    fallback to whatever trained last.
     """
     runs = Path(cfg.path("runs/detect"))
     if weights:
@@ -1341,9 +1346,9 @@ def _resolve_weights(cfg, weights):
         if p.exists():
             return p, runs
         print(f"[detect] WARNING: detect.weights points at {p}, which does not exist -- "
-              "falling back to the newest run")
-    cands = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime)
-    return (cands[-1] if cands else None), runs
+              f"using the vision model at runs/detect/{VISION_RUN}/weights/best.pt instead")
+    p = runs / VISION_RUN / "weights" / "best.pt"
+    return (p if p.exists() else None), runs
 
 
 def detect_preview(cfg, session_arg=None, count=24, weights=None, conf=0.25) -> None:

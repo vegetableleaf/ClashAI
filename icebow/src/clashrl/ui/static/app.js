@@ -1330,7 +1330,8 @@ $("#cfgreset").onclick = () => loadConfig();
    The canvas works in pixels, so every conversion happens at the boundary here --
    getting it wrong trains a detector that aims half a box off, silently. */
 const LAB = { queue: [], ix: 0, boxes: [], classes: [], drag: null, natural: [0, 0],
-              recent: [] };      // class ids, most recently used first
+              recent: [],        // class ids, most recently used first
+              read: null };      // full-frame reader result, see labReadFrame()
 
 /* The class list is the taxonomy's own file order (236 entries, unsorted), which is
    unusable: you scroll forever looking for "minions". Sorted alphabetically, with the
@@ -1394,6 +1395,7 @@ function labDraw() {
     g.fillStyle = "#6f9b7c";
     g.fillText(name, p.x + 3, Math.max(11, p.y - 4));
   });
+  if (LAB.read) labDrawRead(g, cv);
   if (LAB.drag) {
     const d = LAB.drag;
     g.strokeStyle = "#c3cbd8"; g.setLineDash([4, 3]); g.lineWidth = 1.5;
@@ -1406,6 +1408,102 @@ function labDraw() {
     ? "<b>Boxes on this frame</b><br>" + LAB.boxes.map((b, i) =>
         `${i + 1}. ${LAB.classes[b.cls] || b.cls}`).join("<br>")
     : "No boxes yet. Drag around a unit on the board.";
+}
+
+/* Every reader's region drawn on the same frame, in its own colour. The point is that a
+   wrong number is almost always a crop sitting in the wrong place -- which you can SEE
+   here, and cannot see in a log line that just says the HP is 7151. */
+const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c" };
+
+function labDrawRead(g, cv) {
+  const r = LAB.read;
+  const rect = (b, colour, text) => {
+    if (!b) return;
+    const x = b.x * cv.width, y = b.y * cv.height, w = b.w * cv.width, h = b.h * cv.height;
+    g.strokeStyle = colour; g.lineWidth = 1.5; g.setLineDash([3, 2]);
+    g.strokeRect(x, y, w, h); g.setLineDash([]);
+    if (!text) return;
+    g.font = "11px Consolas, monospace";
+    const tw = g.measureText(text).width + 6;
+    g.fillStyle = "rgba(11,14,20,.85)"; g.fillRect(x, Math.max(0, y - 14), tw, 14);
+    g.fillStyle = colour; g.fillText(text, x + 3, Math.max(10, y - 3));
+  };
+  (r.hand && r.hand.slots || []).forEach(s =>
+    rect(s.box, READ_COLOURS.hand, s.card ? `${s.card} ${s.score}` : `? ${s.score}`));
+  (r.towers && r.towers.readings || []).forEach(t =>
+    rect(t.box, READ_COLOURS.tower, t.hp == null ? "HP ?" : `HP ${t.hp}`));
+  (r.elixir && r.elixir.pips || []).forEach((p, i) => {
+    const filled = i < (r.elixir.value || 0);
+    g.strokeStyle = READ_COLOURS.elixir; g.lineWidth = filled ? 3 : 1;
+    g.beginPath(); g.arc(p.x * cv.width, p.y * cv.height, 5, 0, 6.284); g.stroke();
+  });
+  (r.units && r.units.boxes || []).forEach(u =>
+    rect({ x: u.cx - u.w / 2, y: u.cy - u.h / 2, w: u.w, h: u.h },
+         READ_COLOURS.unit, `${u.cls} ${u.conf}`));
+}
+
+function labReadout() {
+  const out = $("#labreadout");
+  out.innerHTML = "";
+  const r = LAB.read;
+  if (!r) return;
+  const row = (what, how, value, colour, trained) => {
+    const d = el("div", "kv");
+    const k = el("span", null, what);
+    if (colour) k.style.color = colour;
+    d.appendChild(k);
+    d.appendChild(el("span", null, value));
+    d.title = how + (trained ? "" : "  --  no neural network involved");
+    return d;
+  };
+  const box = el("div", "cfggroup");
+  box.appendChild(el("h3", null, "What this frame reads as"));
+  box.appendChild(el("p", "hint",
+    "Five separate readers, only one of which is the vision AI. Hover a line for how it works."));
+  const c = el("div", "statcard");
+  c.appendChild(row("screen", "template match against templates/*.png", r.state || "?", null, false));
+  const h = r.hand || {};
+  c.appendChild(row("hand cards", h.how || "", (h.slots || []).map(s => s.card || "?").join(", ")
+    || "-", READ_COLOURS.hand, false));
+  c.appendChild(row("elixir", (r.elixir || {}).how || "",
+    (r.elixir || {}).value != null ? String(r.elixir.value) : "-", READ_COLOURS.elixir, false));
+  const t = r.towers || {};
+  c.appendChild(row("tower HP", t.how || "",
+    (t.readings || []).map(x => `${x.label || x.name}: ${x.hp == null ? "?" : x.hp}`).join("  |  ")
+    || "-", READ_COLOURS.tower, true));
+  const u = r.units || {};
+  c.appendChild(row("units on the board", u.how || "",
+    u.error ? u.error : `${(u.boxes || []).length} found`, READ_COLOURS.unit, true));
+  const g = el("div", "statgrid"); g.appendChild(c); box.appendChild(g);
+  box.appendChild(el("p", "hint",
+    "This is exactly the set of numbers the playing AI receives -- the same shape it gets in "
+    + "the simulator. A wrong value here is a wrong value there."));
+  // A number that is wrong is almost always a box in the wrong place, and the boxes are
+  // per-window. Say where to fix it rather than leaving a "?" with no next step.
+  const badHp = (t.readings || []).some(x => x.hp == null);
+  const badHand = (h.slots || []).some(s => !s.card);
+  if (badHp || badHand) {
+    box.appendChild(el("p", "hint",
+      (badHp ? "A tower reads '?': either something covers the number on this frame, or the "
+             + "crop does not fit your window (env.*_tower_hp_boxes in Settings; the dashed "
+             + "boxes above show where it is looking). " : "")
+      + (badHand ? "A hand slot reads '?': that card has no template yet -- run Detect the deck "
+                 + "with 'Write hand templates'." : "")));
+  }
+  out.appendChild(box);
+}
+
+async function labReadFrame() {
+  if (!$("#labread").checked || !LAB.queue.length) { LAB.read = null; labReadout(); labDraw(); return; }
+  const m = $("#labreadmsg");
+  m.className = "msg"; m.textContent = "reading ...";
+  try {
+    LAB.read = await api(`/api/label/read/${encodeURIComponent(LAB.queue[LAB.ix])}`);
+    m.textContent = "";
+  } catch (e) {
+    LAB.read = null; m.className = "msg err"; m.textContent = e.message;
+  }
+  labReadout(); labDraw();
 }
 
 async function labLoad(i) {
@@ -1425,6 +1523,8 @@ async function labLoad(i) {
   img.src = `/api/label/image/${encodeURIComponent(name)}?t=${Date.now()}`;
   $("#labmsg").className = "msg";
   $("#labmsg").textContent = `frame ${LAB.ix + 1} of ${LAB.queue.length}: ${name}`;
+  LAB.read = null; labReadout();
+  labReadFrame().catch(() => {});          // no-op unless the checkbox is on
 }
 
 async function loadLabeling() {
@@ -1478,6 +1578,7 @@ async function loadLabeling() {
   $("#labprev").onclick = () => labLoad(LAB.ix - 1);
   $("#labsave").onclick = () => labSave(false);
   $("#labempty").onclick = () => labSave(true);
+  $("#labread").onchange = () => labReadFrame().catch(() => {});
   const search = $("#labsearch");
   search.oninput = () => labFillClasses(search.value);
   // Enter takes the first match, so the whole pick is type-three-letters-and-Enter and the
@@ -1612,7 +1713,8 @@ const pct1 = x => x == null ? "-" : (100 * x).toFixed(1) + " %";
 function visionCard(v) {
   const mt = v.metrics || {}, pr = v.progress || {};
   const rows = [
-    ["model in use", v.active_run || "none yet", v.active_why || ""],
+    ["file", v.rel || "none yet",
+     "There is one vision model. Training replaces it; it does not add another."],
     ["quality (mAP50)", pct1(mt.mAP50),
      "Share of units it both finds and names correctly. 0 means it detects nothing usable."],
     ["precision / recall", `${pct1(mt.precision)} / ${pct1(mt.recall)}`,
@@ -1632,24 +1734,28 @@ function visionCard(v) {
     + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
     + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
 
-  // A pin inherited from another machine resolves to nothing and falls back to "newest"
-  // silently, which is how you end up reading the score of a model nothing loads.
   if (v.pinned_missing) {
     const w = el("div", "cfggroup");
-    w.innerHTML = "<h3>The pinned model does not exist here</h3>"
-      + `<p class='hint'>config detect.weights points at <code>${v.pinned}</code>, which is not `
-      + `in this checkout, so everything silently falls back to <b>${v.active_run || "nothing"}</b>. `
-      + "Pick one below to fix the pin.</p>";
+    w.innerHTML = "<h3>Settings point at a model that is not here</h3>"
+      + `<p class='hint'>config detect.weights is <code>${v.pinned}</code>, which does not exist, `
+      + "so the vision model is used instead. Clear or correct it in Settings.</p>";
     extra.appendChild(w);
+  } else if (v.pinned_elsewhere) {
+    extra.appendChild(el("p", "hint",
+      `Settings override the vision model with ${v.pinned}. That is what is running.`));
+  }
+  if (v.strays && v.strays.length) {
+    extra.appendChild(el("p", "hint",
+      `Left over from before there was one model: ${v.strays.join(", ")} under runs/detect/. `
+      + "Nothing loads them; they can be deleted."));
   }
   extra.appendChild(visionProgress(pr, v));
-  if (v.runs && v.runs.length) extra.appendChild(visionRuns(v));
   if (!v.trained) extra.appendChild(el("p", "hint",
-    `No weights under ${v.runs_dir}. Label frames in the Labelling tab, then run `
-    + '"Train the vision AI" in the Control tab.'));
+    `Not trained yet. Label frames in the Labelling tab, then run "Train the vision AI" `
+    + "in the Control tab."));
   return headlineCard("Model 2 of 2 -- Vision AI (the detector)",
-    "ONE network too. Each training writes a new run folder, but only the one marked below "
-    + "is loaded by play, train-rl and the overlay clips.", rows, extra);
+    "ONE network, ONE file. Every training overwrites it -- this project does not keep a "
+    + "generation per run.", rows, extra);
 }
 
 /* Is it learning anything? The question the panel could not answer at all before.
@@ -1659,14 +1765,18 @@ function visionProgress(pr, v) {
   const rows = pr.rows || [];
   if (!rows.length) {
     box.appendChild(el("h3", null, "Training progress"));
-    box.appendChild(el("p", "hint", "Nothing has trained yet, so there is no curve to show."));
+    box.appendChild(el("p", "hint", v.trained
+      ? "The weights are here, but no record of the run that made them: starting a training "
+        + "truncates the epoch log, so an aborted start erases the previous run's curve. The "
+        + "next completed training writes a model card that survives this."
+      : "Nothing has trained yet, so there is no curve to show."));
     return box;
   }
   const last = rows[rows.length - 1];
   const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
   box.appendChild(el("h3", null, pr.running ? "Training right now" : "Last training run"));
   const head = el("p", "hint",
-    `${v.newest_run}: epoch ${last.epoch != null ? last.epoch : "?"}`
+    `epoch ${last.epoch != null ? last.epoch : "?"}`
     + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
     + `  |  best mAP50 so far ${pct1(best)}`
     + `  |  box loss ${last.box_loss != null ? last.box_loss.toFixed(2) : "-"}`
@@ -1685,14 +1795,14 @@ function visionProgress(pr, v) {
       + (empty > 0 ? ` Note that ${empty} of your ${v.labelled_train + v.labelled_val} saved `
                      + "frames have NO box on them, which actively teaches it to find nothing." : "")));
   }
-  const shots = (v.runs || []).find(r => r.name === v.newest_run);
-  if (shots && shots.previews && shots.previews.length) {
+  const shots = v.preview_files || [];
+  if (shots.length) {
     const d = el("details");
     d.appendChild(el("summary", null, "See what it was taught and what it answers"));
-    shots.previews.forEach(f => {
+    shots.forEach(f => {
       const wrap = el("div"); wrap.style.margin = "8px 0";
       wrap.appendChild(el("p", "hint", (v.previews && v.previews[f]) || f));
-      const img = el("img"); img.src = `/api/vision/preview/${v.newest_run}/${f}`;
+      const img = el("img"); img.src = `/api/vision/preview/${v.run}/${f}`;
       img.style.maxWidth = "100%"; img.style.border = "1px solid var(--line)"; img.loading = "lazy";
       wrap.appendChild(img); d.appendChild(wrap);
     });
@@ -1720,39 +1830,6 @@ function sparkline(vals, title) {
   return svg;
 }
 
-function visionRuns(v) {
-  const d = el("details"); d.className = "filelist";
-  d.appendChild(el("summary", null,
-    `All ${v.runs.length} training run(s) -- only "${v.active_run || "none"}" is in use`));
-  d.appendChild(el("p", "hint",
-    "Each training writes a new folder (board, board-2, ...). They are attempts, not extra "
-    + "models. Newest is not automatically best, so the one in use is pinned explicitly."));
-  const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th></th><th>Run</th><th>Date</th><th>mAP50</th>
-    <th>Precision</th><th>Recall</th><th>Size</th><th></th></tr></thead>`;
-  const tb = el("tbody");
-  v.runs.forEach(r => {
-    const mt = r.metrics || {}, active = r.name === v.active_run;
-    const tr = el("tr");
-    tr.innerHTML = `<td>${active ? "<span class='pill run'>in use</span>" : ""}</td>
-      <td><code>${r.name}</code></td><td>${fmtTime(r.mtime)}</td>
-      <td>${pct1(mt.mAP50)}</td><td>${pct1(mt.precision)}</td><td>${pct1(mt.recall)}</td>
-      <td>${r.size ? fmtSize(r.size) : "training ..."}</td><td></td>`;
-    if (!active && r.has_weights) {
-      const b = el("button", "btn small", "Use this one");
-      b.onclick = async () => {
-        b.disabled = true;
-        try { await post("/api/vision/pin", { run: r.name }); toast(`Vision AI: now using ${r.name}.`); }
-        catch (e) { toast(e.message); }
-        loadCheckpoints();
-      };
-      tr.lastElementChild.appendChild(b);
-    }
-    tb.appendChild(tr);
-  });
-  tbl.appendChild(tb); d.appendChild(tbl);
-  return d;
-}
 $("#ckptreload").onclick = () => loadCheckpoints();
 
 /* ---------------- boot ---------------- */

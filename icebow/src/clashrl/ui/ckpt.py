@@ -194,6 +194,21 @@ def _progress(run_dir: Path) -> Dict[str, Any]:
     return {"rows": rows, "epochs_total": total, "running": running}
 
 
+def _model_card(run_dir: Optional[Path]) -> Dict[str, Any]:
+    """What the installed weights are, written by the trainer when a run FINISHES."""
+    if run_dir is None:
+        return {}
+    p = run_dir / "model_card.json"
+    if not p.is_file():
+        return {}
+    try:
+        import json
+        card = json.loads(p.read_text(encoding="utf-8"))
+        return card if isinstance(card, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
 def _run_info(run_dir: Path) -> Dict[str, Any]:
     best = run_dir / "weights" / "best.pt"
     st = best.stat() if best.is_file() else None
@@ -214,17 +229,20 @@ def _run_info(run_dir: Path) -> Dict[str, Any]:
     }
 
 
-def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]:
-    """The ONE detector in use, why it is the one, and every run that could replace it.
+VISION_RUN = "vision"           # mirrors detect.VISION_RUN / tools/detect/train.py RUN_NAME
 
-    `pinned` is config detect.weights. It exists because newest != best, but a pin left over
-    from another machine points at a run that is not here -- and the fallback to "newest" is
-    silent. That has to be visible, or the panel shows the quality of a model nothing uses.
+
+def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]:
+    """THE vision model: one folder, one best.pt, one score.
+
+    There used to be a run per training (board, board-2, board-3 ...) and whatever trained
+    last quietly became the operating detector. There is now exactly one, at
+    runs/detect/vision, which a retrain replaces. `pinned` (config detect.weights) can still
+    point somewhere else; if it points at something missing, say so rather than swapping in
+    a different model silently.
     """
     det = root / "data" / "detect"
     runs = root / "runs" / "detect"
-    weights = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime,
-                     reverse=True) if runs.exists() else []
     n = lambda p, pat="*": len(list(p.glob(pat))) if p.exists() else 0    # noqa: E731
     classes = det / "classes.txt"
     # boxes actually drawn -- an empty label file is legal YOLO ("nothing here") but a set
@@ -238,36 +256,36 @@ def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]
             k = len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
             boxes += k
             with_boxes += bool(k)
-    # Which run actually gets loaded, and why -- mirroring _resolve_weights() in detect.py.
+    # Mirrors _resolve_weights() in detect.py: an explicit pin wins, otherwise THE vision model.
+    home = runs / VISION_RUN
     pin_path = (root / pinned) if pinned else None
     pin_ok = bool(pin_path and pin_path.exists())
-    if pin_ok:
-        active_dir, why = pin_path.parent.parent, "pinned in config (detect.weights)"
-    elif weights:
-        active_dir = weights[0].parent.parent
-        why = ("the newest run -- the pinned one does not exist here" if pinned
-               else "the newest run (nothing is pinned)")
-    else:
-        active_dir, why = None, None
-    # A run that has only just started has a results.csv but no best.pt yet -- include it, or
-    # the panel stays empty for the first minutes of exactly the training you are watching.
-    dirs = [d for d in (runs.iterdir() if runs.is_dir() else [])
-            if d.is_dir() and ((d / "weights" / "best.pt").is_file() or (d / "results.csv").is_file())]
-    all_runs = sorted((_run_info(d) for d in dirs), key=lambda r: r["mtime"], reverse=True)
+    pin_elsewhere = bool(pin_ok and pin_path.parent.parent.name != VISION_RUN)
+    active_dir = pin_path.parent.parent if pin_ok else (
+        home if (home / "weights" / "best.pt").is_file() or (home / "results.csv").is_file() else None)
+    # Anything left over from when every training made its own folder. Not models -- clutter.
+    strays = sorted(d.name for d in (runs.iterdir() if runs.is_dir() else [])
+                    if d.is_dir() and d.name != VISION_RUN
+                    and (d / "weights" / "best.pt").is_file())
+    info = _run_info(active_dir) if active_dir else {}
     return {
-        "trained": bool(weights),
+        "trained": bool(active_dir and (active_dir / "weights" / "best.pt").is_file()),
         "weights": str(active_dir / "weights" / "best.pt") if active_dir else None,
-        "active_run": active_dir.name if active_dir else None,
-        "active_why": why,
+        "run": active_dir.name if active_dir else None,
+        "rel": f"runs/detect/{active_dir.name}/weights/best.pt" if active_dir else None,
+        "mtime": info.get("mtime"),
+        "size": info.get("size"),
         "pinned": pinned,
-        "pinned_ok": pin_ok,
         "pinned_missing": bool(pinned) and not pin_ok,
-        "runs": all_runs,
-        "metrics": _last_metrics(active_dir) if active_dir else {},
-        # progress of the NEWEST run, not the active one: that is the one training right now
-        "progress": _progress(runs / all_runs[0]["name"]) if all_runs else {},
-        "newest_run": all_runs[0]["name"] if all_runs else None,
+        "pinned_elsewhere": pin_elsewhere,
+        "strays": strays,
+        # The CARD describes the weights on disk; results.csv describes whatever is training
+        # now (and is truncated the moment a new run starts). Prefer the card.
+        "metrics": _model_card(active_dir) or (_last_metrics(active_dir) if active_dir else {}),
+        "metrics_from": ("card" if _model_card(active_dir) else "results.csv") if active_dir else None,
+        "progress": _progress(active_dir) if active_dir else {},
         "previews": _PREVIEWS,
+        "preview_files": info.get("previews", []),
         "labelled_train": n(det / "images" / "train"),
         "labelled_val": n(det / "images" / "val"),
         "to_label": n(det / "images" / "to_label"),

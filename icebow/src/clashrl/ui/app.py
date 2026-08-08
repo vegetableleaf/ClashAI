@@ -323,21 +323,6 @@ def create_app(cfg) -> Flask:
             return jsonify({"error": "no such image"}), 404
         return send_file(p)
 
-    @app.post("/api/vision/pin")
-    def vision_pin():
-        """Make one run THE detector (config detect.weights), the same way play resolves it."""
-        body = request.get_json(force=True, silent=True) or {}
-        run = str(body.get("run", "")).strip()
-        rel = f"runs/detect/{run}/weights/best.pt"
-        if not run or "/" in run or "\\" in run or not (root / rel).is_file():
-            return jsonify({"error": f"no trained weights at {rel}"}), 400
-        try:
-            res = editor.save_config_fields(cfg_path, {"detect.weights": rel}, backup_dir)
-        except editor.EditError as exc:
-            return jsonify({"error": str(exc)}), 400
-        except OSError as exc:
-            return jsonify({"error": f"could not write: {exc}"}), 500
-        return jsonify(res)
 
     # -- box labelling (vision AI training data) ---------------------------
     @app.get("/api/label/status")
@@ -353,6 +338,19 @@ def create_app(cfg) -> Flask:
         if p is None:
             return jsonify({"error": "no such frame"}), 404
         return send_file(p)
+
+    @app.get("/api/label/read/<name>")
+    def label_read(name: str):
+        """Everything the bot reads off this one frame -- all five readers, not just the
+        detector. See ui/frameread.py."""
+        from . import frameread
+        try:
+            p = labeler.find_image(C(), name)
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        if p is None:
+            return jsonify({"error": "no such frame"}), 404
+        return jsonify(frameread.read_frame(C(), p))
 
     @app.get("/api/label/boxes/<name>")
     def label_boxes(name: str):

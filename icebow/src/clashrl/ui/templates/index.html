@@ -235,6 +235,14 @@
       <button id="labundo" class="btn small">Undo box</button>
       <span id="labmsg" class="msg"></span>
     </div>
+    <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
+         state) always ran silently, so this frame looked like it was only "units or
+         nothing". Show every reading on the same picture instead. -->
+    <div class="row">
+      <label><input type="checkbox" id="labread"> Show everything the bot reads off this frame</label>
+      <span id="labreadmsg" class="msg"></span>
+    </div>
+    <div id="labreadout"></div>
     <div id="labwrap" class="heatwrap">
       <div id="labcanvaswrap" style="position:relative;display:inline-block">
         <img id="labimg" alt="frame to label" style="display:block;max-width:100%">
