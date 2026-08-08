@@ -654,6 +654,7 @@ cards:
     targets: buildings_only
     flags: [building_targeting, kamikaze]
     range: melee
+    count: 2
     verified: false
 
   goblin_giant:
@@ -678,6 +679,7 @@ cards:
     targets: buildings_only
     flags: [building_targeting, swarm]
     range: melee
+    count: 4
     verified: false
 
   electro_giant:
@@ -758,6 +760,7 @@ cards:
     targets: any
     flags: [ranged]
     range: long
+    count: 3
     verified: false
 
   # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
@@ -872,19 +875,19 @@ cards:
   # -- melee --
   bandit: {range: melee, verified: false}
   barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
-  bats: {range: melee, verified: false}
+  bats: {range: melee, count: 5, verified: false}
   battle_healer: {range: melee, verified: false}
   berserker: {range: melee, verified: false}
   boss_bandit: {range: melee, verified: false}
   dark_prince: {range: melee, verified: false}
-  elite_barbarians: {range: melee, verified: false}
+  elite_barbarians: {range: melee, count: 2, verified: false}
   fire_spirit: {range: melee, verified: false}
   fisherman: {range: melee, verified: false}
   giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower
-  goblins: {range: melee, verified: false}
-  goblin_gang: {range: melee, verified: false}
+  goblins: {range: melee, count: 3, verified: false}
+  goblin_gang: {range: melee, count: 5, verified: false}   # 3 stab goblins + 2 spear goblins
   golden_knight: {range: melee, verified: false}
-  guards: {range: melee, verified: false}
+  guards: {range: melee, count: 3, verified: false}
   heal_spirit: {range: melee, verified: false}
   ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
   lumberjack: {range: melee, verified: false}
@@ -894,9 +897,9 @@ cards:
   night_witch: {range: melee, verified: false}
   pekka: {range: melee, attacks: [ground], flags: [tank], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, verified: false}
-  rascals: {range: melee, verified: false}
+  rascals: {range: melee, count: 3, verified: false}   # 1 Rascal Boy + 2 Rascal Girls
   royal_ghost: {range: melee, verified: false}
-  royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
+  royal_recruits: {range: melee, count: 6, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank], verified: false}
   suspicious_bush: {range: melee, verified: false}
@@ -905,7 +908,7 @@ cards:
   hunter: {range: short, attacks: [air, ground], flags: [ranged], verified: false}
   minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
   phoenix: {range: short, verified: false}
-  skeleton_dragons: {range: short, verified: false}
+  skeleton_dragons: {range: short, count: 2, verified: false}
   # -- long --
   archer_queen: {range: long, verified: false}
   bowler: {range: long, attacks: [ground], splash: true, flags: [splash], verified: false}
@@ -922,9 +925,9 @@ cards:
   mother_witch: {range: long, verified: false}
   princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
   sparky: {range: long, attacks: [ground], flags: [splash], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
-  spear_goblins: {range: long, verified: false}
+  spear_goblins: {range: long, count: 3, verified: false}
   witch: {range: long, flags: [splash, spawner], verified: false}              # 5e AREA support that keeps spawning skeletons -> spell it or it out-values you
-  zappies: {range: long, verified: false}
+  zappies: {range: long, count: 3, verified: false}
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
   furnace: {range: long, verified: false}                                       # long-range single target
