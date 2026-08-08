@@ -297,7 +297,8 @@ def outcomes(cfg, session_arg: Optional[str] = None, do_all: bool = False,
     if do_all:
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
     else:
-        one = Path(session_arg) if session_arg else _latest_session(root)
+        from .label import _resolve_session
+        one = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
         sessions = [one] if one else []
     if not sessions:
         print(f"[outcomes] no sessions under {root}")

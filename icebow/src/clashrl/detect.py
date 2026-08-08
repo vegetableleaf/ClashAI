@@ -37,7 +37,7 @@ import cv2
 import numpy as np
 import yaml
 
-from .label import _extract_plays, _latest_session
+from .label import _extract_plays, _latest_session, _resolve_session
 from .vision import Vision
 
 
@@ -512,7 +512,7 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     if do_all:
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
     else:
-        one = Path(session_arg) if session_arg else _latest_session(root)
+        one = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
         sessions = [one] if one else []
     if not sessions:
         print(f"[autolabel] no sessions under {root}")

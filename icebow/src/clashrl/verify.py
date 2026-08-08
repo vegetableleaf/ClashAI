@@ -41,7 +41,8 @@ def verify(cfg, session_arg=None, towers=False, hand=False, spells=False, threat
             print(f"\n[verify] ===== session {s.name} =====")
             verify(cfg, str(s), towers, hand, spells, threats, clock, all_sessions=False)
         return
-    session = Path(session_arg) if session_arg else _latest_session(root)
+    from .label import _resolve_session
+    session = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
         print(f"[verify] no session found under {root}")
         return

@@ -34,7 +34,8 @@ def _latest_session(root: Path):
 def build_hand_templates(cfg, session_arg=None, only_new: bool = True,
                          distinct: float = 0.8, samples: int = 500) -> None:
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    session = Path(session_arg) if session_arg else _latest_session(root)
+    from .label import _resolve_session
+    session = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
         print(f"[hand-templates] no session found under {root}")
         return

@@ -80,7 +80,8 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     from .vision import Vision
 
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    session = Path(session_arg) if session_arg else _latest_session(root)
+    from .label import _resolve_session
+    session = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
     if session is None or not Path(session).exists():
         print(f"[calibrate] no recording under {root}. Run `record` first.")
         return
