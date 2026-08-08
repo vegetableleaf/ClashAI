@@ -1592,7 +1592,14 @@
    "rarity": "legendary",
    "kind": "troop",
    "hitpoints": 1295,
+   "damage": 35,
    "hit_speed": 0.4,
+   "dps": 88,
+   "damage_stages": [
+    35.0,
+    120.0,
+    422.0
+   ],
    "count": 1,
    "movement": "air",
    "speed_tiles": 1.0,
@@ -1609,7 +1616,14 @@
    "rarity": "legendary",
    "kind": "troop",
    "hitpoints": 1295,
+   "damage": 35,
    "hit_speed": 0.4,
+   "dps": 88,
+   "damage_stages": [
+    35.0,
+    120.0,
+    422.0
+   ],
    "count": 1,
    "movement": "air",
    "speed_tiles": 1.0,
@@ -1628,8 +1642,15 @@
    "rarity": "rare",
    "kind": "building",
    "hitpoints": 1748,
+   "damage": 43,
    "hit_speed": 0.4,
-   "lifetime_s": 30.0
+   "dps": 108,
+   "lifetime_s": 30.0,
+   "damage_stages": [
+    43.0,
+    158.0,
+    847.0
+   ]
   },
   "knight": {
    "display": "Knight",
@@ -1864,7 +1885,14 @@
    "rarity": "champion",
    "kind": "troop",
    "hitpoints": 2250,
+   "damage": 40,
    "hit_speed": 0.4,
+   "dps": 100,
+   "damage_stages": [
+    40.0,
+    204.0,
+    409.0
+   ],
    "count": 1,
    "movement": "ground",
    "speed_tiles": 1.0,
