@@ -232,14 +232,13 @@ def _run_info(run_dir: Path) -> Dict[str, Any]:
 VISION_RUN = "vision"           # mirrors detect.VISION_RUN / tools/detect/train.py RUN_NAME
 
 
-def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]:
+def _detector_status(root: Path) -> Dict[str, Any]:
     """THE vision model: one folder, one best.pt, one score.
 
     There used to be a run per training (board, board-2, board-3 ...) and whatever trained
-    last quietly became the operating detector. There is now exactly one, at
-    runs/detect/vision, which a retrain replaces. `pinned` (config detect.weights) can still
-    point somewhere else; if it points at something missing, say so rather than swapping in
-    a different model silently.
+    last quietly became the operating detector; then a config pin, which just moved the
+    question. There is now exactly one, at runs/detect/vision, and a retrain replaces it.
+    Nothing selects and nothing can be selected.
     """
     det = root / "data" / "detect"
     runs = root / "runs" / "detect"
@@ -258,11 +257,8 @@ def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]
             with_boxes += bool(k)
     # Mirrors _resolve_weights() in detect.py: an explicit pin wins, otherwise THE vision model.
     home = runs / VISION_RUN
-    pin_path = (root / pinned) if pinned else None
-    pin_ok = bool(pin_path and pin_path.exists())
-    pin_elsewhere = bool(pin_ok and pin_path.parent.parent.name != VISION_RUN)
-    active_dir = pin_path.parent.parent if pin_ok else (
-        home if (home / "weights" / "best.pt").is_file() or (home / "results.csv").is_file() else None)
+    active_dir = (home if (home / "weights" / "best.pt").is_file()
+                  or (home / "results.csv").is_file() else None)
     # Anything left over from when every training made its own folder. Not models -- clutter.
     strays = sorted(d.name for d in (runs.iterdir() if runs.is_dir() else [])
                     if d.is_dir() and d.name != VISION_RUN
@@ -275,9 +271,6 @@ def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]
         "rel": f"runs/detect/{active_dir.name}/weights/best.pt" if active_dir else None,
         "mtime": info.get("mtime"),
         "size": info.get("size"),
-        "pinned": pinned,
-        "pinned_missing": bool(pinned) and not pin_ok,
-        "pinned_elsewhere": pin_elsewhere,
         "strays": strays,
         # The CARD describes the weights on disk; results.csv describes whatever is training
         # now (and is truncated the moment a new run starts). Prefer the card.
@@ -297,8 +290,7 @@ def _detector_status(root: Path, pinned: Optional[str] = None) -> Dict[str, Any]
     }
 
 
-def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None,
-           pinned: Optional[str] = None) -> Dict[str, Any]:
+def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
     """Both networks, each with ONE headline entry plus its variants.
 
     The headline for the playing AI is the file `play` would actually load with no --init,
@@ -317,5 +309,5 @@ def models(root: Path, metrics_runs: Optional[List[Dict[str, Any]]] = None,
             "suggested": suggest if (suggest and suggest is not main) else None,
             "all": cks,
         },
-        "vision": _detector_status(root, pinned),
+        "vision": _detector_status(root),
     }

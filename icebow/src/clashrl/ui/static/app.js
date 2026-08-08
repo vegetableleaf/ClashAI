@@ -1796,16 +1796,6 @@ function visionCard(v) {
     + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
     + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
 
-  if (v.pinned_missing) {
-    const w = el("div", "cfggroup");
-    w.innerHTML = "<h3>Settings point at a model that is not here</h3>"
-      + `<p class='hint'>config detect.weights is <code>${v.pinned}</code>, which does not exist, `
-      + "so the vision model is used instead. Clear or correct it in Settings.</p>";
-    extra.appendChild(w);
-  } else if (v.pinned_elsewhere) {
-    extra.appendChild(el("p", "hint",
-      `Settings override the vision model with ${v.pinned}. That is what is running.`));
-  }
   if (v.strays && v.strays.length) {
     extra.appendChild(el("p", "hint",
       `Left over from before there was one model: ${v.strays.join(", ")} under runs/detect/. `
@@ -1893,6 +1883,11 @@ async function loadTaught(gal) {
     return;
   }
   const classes = d.classes || [];
+  const legend = el("p", "hint",
+    "Solid green = the boxes you drew. Dashed orange = what the model predicts on the same "
+    + "frame, at a deliberately low confidence floor so you can see what it is reaching for.");
+  legend.style.flex = "1 0 100%";
+  gal.appendChild(legend);
   d.names.forEach(name => {
     const holder = el("div"); holder.className = "taughtitem";
     const img = el("img"); img.style.display = "block"; img.style.maxWidth = "100%";
@@ -1901,24 +1896,38 @@ async function loadTaught(gal) {
     cv.style.pointerEvents = "none";
     holder.appendChild(img); holder.appendChild(cv);
     holder.appendChild(el("p", "hint", name));
+    const cap = el("p", "hint", "..."); cap.dataset.pred = name;
+    holder.appendChild(cap);
     gal.appendChild(holder);
     img.onload = async () => {
-      let boxes = [];
-      try { boxes = (await api(`/api/label/boxes/${encodeURIComponent(name)}`)).boxes || []; }
-      catch (e) { /* frame without a label file: leave it bare */ }
       cv.width = img.clientWidth; cv.height = img.clientHeight;
       const g = cv.getContext("2d");
-      boxes.forEach(b => {
+      const draw = (b, colour, label, dashed) => {
         const x = (b.cx - b.w / 2) * cv.width, y = (b.cy - b.h / 2) * cv.height;
-        g.strokeStyle = "#6f9b7c"; g.lineWidth = 2;
+        g.strokeStyle = colour; g.lineWidth = 2;
+        if (dashed) g.setLineDash([4, 3]);
         g.strokeRect(x, y, b.w * cv.width, b.h * cv.height);
-        const nm = classes[b.cls] || String(b.cls);
+        g.setLineDash([]);
         g.font = "11px Consolas, monospace";
         g.fillStyle = "rgba(11,14,20,.85)";
-        g.fillRect(x, Math.max(0, y - 14), g.measureText(nm).width + 6, 14);
-        g.fillStyle = "#6f9b7c";
-        g.fillText(nm, x + 3, Math.max(10, y - 3));
-      });
+        g.fillRect(x, Math.max(0, y - 14), g.measureText(label).width + 6, 14);
+        g.fillStyle = colour;
+        g.fillText(label, x + 3, Math.max(10, y - 3));
+      };
+      // GREEN = what you drew, ORANGE = what the model answers. Side by side on the same
+      // frame is the only view that says HOW it is wrong rather than just how wrong.
+      try {
+        const truth = (await api(`/api/label/boxes/${encodeURIComponent(name)}`)).boxes || [];
+        truth.forEach(b => draw(b, "#6f9b7c", classes[b.cls] || String(b.cls), false));
+      } catch (e) { /* frame without a label file: leave it bare */ }
+      try {
+        const pred = await api(`/api/label/predict/${encodeURIComponent(name)}`);
+        (pred.boxes || []).forEach(b => draw(b, "#d8a24a", `${b.cls} ${b.conf}`, true));
+        const cap = gal.querySelector(`[data-pred="${CSS.escape(name)}"]`);
+        if (cap) cap.textContent = pred.trained
+          ? `model found ${(pred.boxes || []).length} (conf ${pred.conf})`
+          : "no trained model";
+      } catch (e) { /* detector not loadable: the truth boxes still show */ }
     };
     img.src = `/api/label/image/${encodeURIComponent(name)}`;
   });

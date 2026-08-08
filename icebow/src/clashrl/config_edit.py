@@ -210,13 +210,6 @@ FIELDS: List[Dict[str, Any]] = [
              "disk). 0 removes the cap."},
     {"path": ["overlay_replay", "out_dir"], "type": "str",
      "group": "Detector preview & clips", "label": "Clip folder"},
-    # The operating vision model. Editable so the Models tab can promote a run instead of
-    # requiring a hand edit -- and because a pin inherited from another machine points at a
-    # run that is not here, which silently falls back to "newest".
-    {"path": ["detect", "weights"], "type": "str",
-     "group": "Detector preview & clips", "label": "Vision AI in use (detect.weights)",
-     "help": "Path to the run whose best.pt play, train-rl, label-queue and the clips all load. "
-             "Newest is NOT automatically best, so this is pinned rather than guessed."},
 ]
 
 FIELD_BY_KEY: Dict[str, Dict[str, Any]] = {".".join(f["path"]): f for f in FIELDS}

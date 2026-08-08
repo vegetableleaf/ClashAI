@@ -182,7 +182,7 @@ def write_model_card(run_dir: Path, args) -> None:
     except (OSError, ValueError, IndexError):
         pass
     try:
-        det = run_dir.parents[1] / "data" / "detect"
+        det = run_dir.parents[2] / "data" / "detect"   # runs/detect/<run> -> icebow/
         boxes = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
                     for split in ("train", "val")
                     for p in (det / "labels" / split).glob("*.txt"))

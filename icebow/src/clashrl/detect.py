@@ -1327,26 +1327,22 @@ VISION_RUN = "vision"           # the ONE detector's folder; tools/detect/train.
 
 
 def _resolve_weights(cfg, weights):
-    """Detector weights: an explicit --weights, else THE vision model.
+    """THE vision model: runs/detect/vision/weights/best.pt. There is no second one.
 
-    There is exactly one detector in this project and it always lives at
-    runs/detect/vision/weights/best.pt. Earlier this globbed runs/detect/*/weights/best.pt and
-    took the newest, which is how a pile of identically named board/board-2/board-3 folders
-    turned into "which model is actually running?" -- with the answer changing under you every
-    time something trained. ``detect.weights`` still overrides, for pointing at an archived
-    copy; a value that does not exist is now an error you can see rather than a silent
-    fallback to whatever trained last.
+    History, because this used to be three different answers: it globbed
+    runs/detect/*/weights/best.pt and took the newest (so the operating detector silently
+    changed every time anything trained), then a ``detect.weights`` pin was added to stop
+    that (so the operating detector depended on a config value that could point at a run
+    from another machine). Both were ways of choosing between models that should never have
+    existed as separate models in the first place. Training writes one folder and replaces
+    it; this reads that folder; nothing selects.
+
+    ``weights`` (the --weights flag) still works for the offline tools that legitimately
+    compare two checkpoint files, e.g. detect-eval.
     """
     runs = Path(cfg.path("runs/detect"))
     if weights:
         return Path(weights), runs
-    pinned = cfg.get("detect", "weights", default=None)
-    if pinned:
-        p = Path(cfg.path(pinned))
-        if p.exists():
-            return p, runs
-        print(f"[detect] WARNING: detect.weights points at {p}, which does not exist -- "
-              f"using the vision model at runs/detect/{VISION_RUN}/weights/best.pt instead")
     p = runs / VISION_RUN / "weights" / "best.pt"
     return (p if p.exists() else None), runs
 

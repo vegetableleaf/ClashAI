@@ -108,16 +108,14 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     deck = [d for d in deck if not (d in seen or seen.add(d))]
 
     if weights is None:
-        pinned = cfg.get("detect", "weights", default=None)
-        if pinned and Path(cfg.path(pinned)).exists():
-            weights = str(cfg.path(pinned))          # evaluate the OPERATING detector by default
-        else:
-            runs = sorted(glob.glob(str(root.parent.parent / "runs" / "detect" / "*" / "weights" / "best.pt")),
-                          key=os.path.getmtime)
-            if not runs:
-                print("[detect-eval] no trained weights under runs/detect/*/weights/best.pt")
-                return
-            weights = runs[-1]
+        # Default to THE vision model, the one everything else loads; --weights is still how
+        # you point this at an archived file to compare two of them.
+        from .detect import _resolve_weights
+        wpath, _ = _resolve_weights(cfg, None)
+        if wpath is None:
+            print("[detect-eval] no trained vision model at runs/detect/vision/weights/best.pt")
+            return
+        weights = str(wpath)
     imgs = sorted(glob.glob(str(root / "images" / "val" / "*.jpg")))
     if not imgs:
         print(f"[detect-eval] no val images under {root/'images'/'val'}")

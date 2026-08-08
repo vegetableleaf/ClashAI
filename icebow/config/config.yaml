@@ -631,8 +631,6 @@ monitor:
 # else the detector learns to treat them as background.
 detect:
   classes_file: config/detect_classes.yaml
-  # THE ONE VISION MODEL. Training always writes runs/detect/vision/weights/best.pt and
-  # REPLACES what was there -- there is a single detector in this project, not a
-  # generation per training run. This key only exists to point somewhere else (e.g. an
-  # archived copy you want to compare against); leave it as is to use the vision model.
-  weights: runs/detect/vision/weights/best.pt
+  # The ONE vision model lives at runs/detect/vision/weights/best.pt and training
+  # replaces it. There is deliberately no key to point somewhere else: every version of
+  # that (newest-wins, then a pin) turned one network into "which one is running?".

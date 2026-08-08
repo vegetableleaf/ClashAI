@@ -307,8 +307,7 @@ def create_app(cfg) -> Flask:
     @app.get("/api/models")
     def models_view():
         """The two networks told apart -- see ckpt.models()."""
-        return jsonify(ckpt_models(root, metrics.runs(),
-                                   pinned=C().get("detect", "weights", default=None)))
+        return jsonify(ckpt_models(root, metrics.runs()))
 
     # -- vision AI: previews and which run is the operating one ------------
     @app.get("/api/vision/preview/<run>/<name>")
@@ -346,6 +345,36 @@ def create_app(cfg) -> Flask:
         n = max(1, min(12, int(request.args.get("n", 4))))
         return jsonify({"names": labeler.samples_with_boxes(C(), n),
                         "classes": labeler.classes(C())})
+
+    @app.get("/api/label/predict/<name>")
+    def label_predict(name: str):
+        """What the vision model PREDICTS on this frame, for showing next to your own boxes.
+
+        A single mAP number says a model is bad but not how: too few boxes, boxes in the wrong
+        place, right place and wrong name. Drawing the prediction over the ground truth shows
+        which, and it is the only view that stays useful once mAP stops being zero.
+        """
+        try:
+            p = labeler.find_image(C(), name)
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        if p is None:
+            return jsonify({"error": "no such frame"}), 404
+        try:
+            import cv2
+            from ..replay_mine import load_detector
+            det = load_detector(C(), None)
+            frame = cv2.imread(str(p))
+            if frame is None:
+                return jsonify({"error": "could not read the frame"}), 400
+            conf = float(request.args.get("conf", 0.10))
+            boxes = [{"cls": d.cls, "conf": round(float(d.conf), 3), "cx": float(d.cx),
+                      "cy": float(d.cy), "w": float(d.w), "h": float(d.h)}
+                     for d in det.detect(frame, conf=conf)]
+            return jsonify({"name": name, "boxes": boxes, "conf": conf,
+                            "trained": bool(getattr(det, "_model", None))})
+        except Exception as exc:                       # noqa: BLE001
+            return jsonify({"error": str(exc)}), 500
 
     @app.get("/api/label/read/<name>")
     def label_read(name: str):
