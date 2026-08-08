@@ -194,8 +194,15 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
+    # BUILDING LIFETIME. Precedence: a curated override, then the wiki's own `life` vardefine
+    # (imported as `lifetime_s`), then a generic building default. The imported key was NEVER being
+    # read -- build_spec looked for `lifetime` while card_import writes `lifetime_s` -- so every
+    # building silently took the 40s default: Goblin Drill ran 40s instead of 10, Tesla 40 vs 25,
+    # Goblin Cage 40 vs 20. Buildings lived up to 4x too long.
     lifetime = 40.0 if kind == "building" else None
-    if c.get("lifetime"):                                     # curated per-card lifetime (Elixir Collector 70s)
+    if c.get("lifetime_s"):
+        lifetime = float(c["lifetime_s"])
+    if c.get("lifetime"):                                     # curated override wins (Elixir Collector)
         lifetime = float(c["lifetime"])
     gen_every = float(c.get("gen_every_s") or 0.0)            # pump economy: +1 owner elixir every this many s
     p_dmg = p_r = p_stun = p_int = 0.0
@@ -823,6 +830,15 @@ class SimEngine:
                 if n > u.gen_count:
                     self.elixir[u.team] = min(10.0, self.elixir[u.team] + (n - u.gen_count))
                     u.gen_count = n
+        # BUILDING DECAY. A building bleeds hitpoints continuously across its lifetime -- it does not
+        # sit at full HP and then blink out. The rate is exactly max_hp / lifetime, which reproduces
+        # the wiki's published "Hitpoints lost per second" for every building (goblin_hut 1228/30 =
+        # 40.9, inferno_tower 1748/30 = 58.3, goblin_drill 1313/10 = 131.3), so no extra data is
+        # needed. This is what makes chip damage finish a building EARLY, and it is why the decay --
+        # not a separate age check -- is what ends a building's life.
+        for u in self.units:
+            if u.spec.lifetime and u.deploy_left <= 0.0:
+                u.hp -= (u.spec.hp / u.spec.lifetime) * dt
         self._tick_spawners(dt)
         # spells land
         landed = []
@@ -894,9 +910,6 @@ class SimEngine:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
-                continue
-            if u.spec.lifetime is not None and u.age >= u.spec.lifetime:
-                self._spawn_from(u, u.spec.spawner_death)    # expiring counts as destroyed, as in CR
                 continue
             alive.append(u)
         self.units = alive

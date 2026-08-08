@@ -946,7 +946,9 @@ cards:
   # card, so it has no KB entry to point at -- left alone rather than approximated with a Goblin.
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
-  furnace: {kind: building, range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
+  # Furnace lifetime 40s comes from its attribute table -- its page has no `life` vardefine for the
+  # importer to read, so this is the one building lifetime that has to be curated.
+  furnace: {kind: building, range: long, flags: [spawner], lifetime: 40, spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
   goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
