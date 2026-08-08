@@ -466,7 +466,18 @@ def _port_in_use(host: str, port: int) -> bool:
         return s.connect_ex((host, port)) == 0
 
 
-def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
+def _stop_jobs(app) -> None:
+    pm = getattr(app, "proc_manager", None)
+    if pm is not None and pm.active():
+        print(f"[ui] stopping {len(pm.active())} running job(s) ...")
+        pm.stop_all(grace=30.0)
+        for _ in range(120):
+            if not pm.active():
+                break
+            time.sleep(0.5)
+
+
+def serve(cfg, port: int = 8765, open_browser: bool = True, native_window: bool = True) -> None:
     host = "127.0.0.1"                                        # localhost ONLY -- never 0.0.0.0
     # Windows lets a second server bind a port that is already listening (SO_REUSEADDR is
     # not exclusive there), and requests then land on either process at random -- which
@@ -480,6 +491,30 @@ def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
     url = f"http://{host}:{port}/"
     print(f"[ui] {TOS_WARNING}")
     print(f"[ui] panel running at {url}  (local only; Ctrl+C stops it)")
+
+    webview = None
+    if native_window:
+        try:
+            import webview                                  # noqa: F811 -- optional dependency
+        except ImportError:
+            print("[ui] pywebview is not installed; falling back to the browser. "
+                  "Install it with:  .\\.venv\\Scripts\\python.exe -m pip install pywebview")
+
+    if webview is not None:
+        # pywebview owns the main thread's event loop on Windows, so Flask runs in the
+        # background here instead of the other way around (the browser branch below).
+        import threading
+        server = threading.Thread(
+            target=lambda: app.run(host=host, port=port, threaded=True, debug=False,
+                                   use_reloader=False),
+            daemon=True)
+        server.start()
+        webview.create_window("ClashAI Launcher", url, width=1300, height=880, min_size=(900, 600))
+        webview.start()                                     # blocks until the window is closed
+        _stop_jobs(app)
+        print("[ui] stopped.")
+        return
+
     if open_browser:
         import threading
         import webbrowser
@@ -489,12 +524,5 @@ def serve(cfg, port: int = 8765, open_browser: bool = True) -> None:
     except KeyboardInterrupt:
         pass
     finally:
-        pm = getattr(app, "proc_manager", None)
-        if pm is not None and pm.active():
-            print(f"[ui] stopping {len(pm.active())} running job(s) ...")
-            pm.stop_all(grace=30.0)
-            for _ in range(120):
-                if not pm.active():
-                    break
-                time.sleep(0.5)
+        _stop_jobs(app)
         print("[ui] stopped.")

@@ -7,6 +7,8 @@ pygetwindow>=0.0.9   # locate the game window
 pyautogui>=0.9.54    # bot input (used when the trained agent plays)
 pynput>=1.7          # logs YOUR mouse while you play, to label imitation actions
 Flask>=3.0           # local launcher UI (`run.py ui`) -- localhost only, no external calls
+pywebview>=5.0        # opens the launcher as its own window instead of a browser tab (optional:
+                      # falls back to a browser tab automatically if this isn't installed)
 
 # PyTorch is required for the CNN policy (behaviour cloning + DQN), but install the
 # build that matches your GPU/CUDA from https://pytorch.org/get-started/locally/

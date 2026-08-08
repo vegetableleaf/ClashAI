@@ -208,7 +208,8 @@ def _cmd_ui(args) -> None:
               "Install it with:\n"
               "  .\\.venv\\Scripts\\python.exe -m pip install flask")
         return
-    serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser)
+    serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser,
+          native_window=not (args.no_browser or args.no_window))
 
 
 def _cmd_import_from(args) -> None:
@@ -679,11 +680,14 @@ def main() -> None:
     mrp.set_defaults(func=_cmd_mine_replays)
 
     uip = sub.add_parser("ui",
-                         help="local control panel in the browser (start/stop, live log, progress, "
-                              "deck and config editor); binds to 127.0.0.1 only")
+                         help="local control panel (start/stop, live log, progress, deck and config "
+                              "editor); opens as its own window if pywebview is installed, otherwise "
+                              "a browser tab; binds to 127.0.0.1 only")
     uip.add_argument("--port", type=int, default=8765, help="port (default 8765)")
+    uip.add_argument("--no-window", action="store_true", dest="no_window",
+                     help="use a browser tab instead of the native window, even if pywebview is installed")
     uip.add_argument("--no-browser", action="store_true", dest="no_browser",
-                     help="do not open the browser automatically")
+                     help="do not open anything automatically (server only); implies --no-window")
     uip.set_defaults(func=_cmd_ui)
 
     imp = sub.add_parser("import-from",

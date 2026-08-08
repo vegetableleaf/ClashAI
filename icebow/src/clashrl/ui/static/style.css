@@ -3,7 +3,7 @@
    it should look like one. */
 :root{
   --bg:#0b0e14; --bg2:#11151d; --bg3:#171c26; --fg:#d8dee9; --dim:#7a8497;
-  --line:#2a3140; --acc:#5fd787; --ok:#8fb6d8; --warn:#c3cbd8; --bad:#e08080;
+  --line:#2a3140; --acc:#6f9b7c; --ok:#8fb6d8; --warn:#c3cbd8; --bad:#c07272;
   --mono:Consolas,"Cascadia Mono","Courier New",monospace;
   --logh:34px;
 }
