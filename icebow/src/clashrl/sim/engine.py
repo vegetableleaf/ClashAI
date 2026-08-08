@@ -114,6 +114,18 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
+    # PER-CARD crowd control. These were single global constants, so a Freeze (4s) and an Ice Spirit
+    # (1.1s) stunned for the same time and every slow was the same strength -- when the published
+    # values run from -15% (Evo Firecracker) to -70% (Ram Rider). 0 = fall back to the global.
+    stun_dur: float = 0.0
+    freeze_dur: float = 0.0
+    slow_dur: float = 0.0
+    slow_mult: float = 0.0    # movement/attack multiplier while slowed (-30% -> 0.70)
+    # CHARGE: a unit that covers `charge_range` tiles unobstructed lands `charge_dmg` on its next
+    # hit instead of its normal one, then resets. A Prince connecting for 783 rather than his base
+    # hit is effectively a different card, and it is the entire reason a charge is worth blocking.
+    charge_dmg: float = 0.0
+    charge_range: float = 0.0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.64      # collision radius, TILES (soft body-block)
@@ -269,7 +281,11 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
         stage_time=float(c.get("stage_time_s") or 2.0),
-        slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
+        # A card counts as slowing if it publishes EITHER a duration or a strength -- Ram Rider gives
+        # a -70% snare with no duration column, so keying only on the duration missed it entirely.
+        slows=("slow" in flags or bool(c.get("slow_duration_s")) or bool(c.get("slow_pct"))),
+        stuns=("stun" in flags or bool(c.get("stun_duration_s"))),
+        freezes=("freeze" in flags or bool(c.get("freeze_duration_s"))),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
         spawner_spec=spawner_spec,
@@ -286,6 +302,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
         death_radius=float(c.get("death_radius_tiles")
                            or (2.0 if c.get("death_damage") else 0.0)),
+        stun_dur=float(c.get("stun_duration_s") or 0.0),
+        freeze_dur=float(c.get("freeze_duration_s") or 0.0),
+        slow_dur=float(c.get("slow_duration_s") or 0.0),
+        slow_mult=(1.0 - abs(float(c["slow_pct"])) / 100.0) if c.get("slow_pct") else 0.0,
+        charge_dmg=float(c.get("charge_damage") or 0.0) * sc,
+        charge_range=float(c.get("charge_range") or 0.0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -323,6 +345,8 @@ class Unit:
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
+    slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
+    charge_dist: float = 0.0     # tiles walked without attacking -- arms the charge bonus
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -772,6 +796,7 @@ class SimEngine:
         if d < 1e-6:
             return
         step = min(u.spec.speed * spd_mult * dt, d)
+        u.charge_dist += step                                # tiles covered without swinging -> arms a charge
         u.x += (dxt / d) * step / _TILES_X
         u.y += (dyt / d) * step / _TILES_Y
 
@@ -905,7 +930,7 @@ class SimEngine:
                 if u.pulse_cd <= 0:
                     self._pulse(u)
                     u.pulse_cd = u.spec.pulse_interval
-            spd = self.slow_factor if u.slow_left > 0 else 1.0
+            spd = u.slow_mult if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
             prev_target = u.target
@@ -925,6 +950,7 @@ class SimEngine:
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
+                    u.charge_dist = 0.0                      # the charge is SPENT (and stopping cancels a run-up)
                     u.cooldown = u.spec.hit_speed / spd
                     if u.spec.kamikaze:
                         u.hp = 0.0
@@ -1039,6 +1065,13 @@ class SimEngine:
         mult = self._ramp_mult(u)
         dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        # CHARGE: a completed run-up REPLACES this hit's damage (Prince 783 vs a ~200 base hit). It
+        # is a flat published value, not a multiplier, so it overrides rather than scales -- and it
+        # applies to towers too, which is what makes an unblocked Prince so punishing.
+        if u.spec.charge_dmg > 0.0 and u.spec.charge_range > 0.0 \
+                and u.charge_dist >= u.spec.charge_range:
+            dmg = u.spec.charge_dmg * u.dmg_mult
+            tower_dmg = dmg
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
@@ -1145,15 +1178,21 @@ class SimEngine:
             self._land_hit(p.team, "unit", ref, p.spec, p.dmg, p.tower_dmg)
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
-        """Apply a hitter's/spell's crowd-control to a struck ground/air unit."""
+        """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
+
+        Durations and slow strength are PER CARD where the wiki publishes them, falling back to the
+        global config value. That difference is not cosmetic: a Freeze holds for 4s and an Ice Spirit
+        for 1.1s, and a Ram Rider's snare (-70%) is more than twice a Giant Snowball's (-30%).
+        """
         if spec.freezes:
-            e.stun_left = max(e.stun_left, self.freeze_dur)
+            e.stun_left = max(e.stun_left, spec.freeze_dur or self.freeze_dur)
             e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
         elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
-            e.stun_left = max(e.stun_left, self.stun_dur)
+            e.stun_left = max(e.stun_left, spec.stun_dur or self.stun_dur)
             e.aggro_reset = True
         if spec.slows:
-            e.slow_left = max(e.slow_left, self.slow_dur)
+            e.slow_left = max(e.slow_left, spec.slow_dur or self.slow_dur)
+            e.slow_mult = spec.slow_mult or self.slow_factor
 
     def _pulse(self, u: Unit) -> None:
         """Evo Tesla area-shock: damage + STUN every enemy within pulse_r of the tower."""
