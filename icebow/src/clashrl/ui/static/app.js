@@ -504,9 +504,39 @@ function chartBox(title, sub, series, opts) {
 }
 
 /* ---------------- overview ---------------- */
+function setupChecklist(setup) {
+  const box = el("div");
+  box.appendChild(el("h2", null, "Setup"));
+  box.appendChild(el("p", "hint",
+    "The fixed order this project needs, once: each step's own output unlocks the next. "
+    + "Already-done steps stay listed so you can re-run them (e.g. after a deck change)."));
+  const list = el("div", "steps");
+  const nextIx = setup.findIndex(s => !s.done);
+  setup.forEach((s, i) => {
+    const row = el("div", "step");
+    if (i === nextIx) row.style.borderLeft = "2px solid var(--acc)";
+    const mark = el("span", "pill" + (s.done ? " run" : ""), s.done ? "done" : "open");
+    row.appendChild(mark);
+    const txt = el("div", "txt");
+    txt.appendChild(el("div", "t", `${i + 1}. ${s.title}`));
+    txt.appendChild(el("div", "w", s.detail));
+    row.appendChild(txt);
+    const btn = el("button", "btn" + (i === nextIx ? " primary" : " small"), s.done ? "run again" : "run");
+    const argsByStep = { "deck-detect": { "write-templates": true }, "label": { all: true } };
+    btn.onclick = () => startJob(s.step, argsByStep[s.step] || {}, null, btn)
+      .then(j => { if (j) showTab("run"); });
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+  box.appendChild(list);
+  return box;
+}
+
 async function loadOverview() {
   const d = await api("/api/overview");
   const b = $("#homebody"); b.innerHTML = "";
+
+  if (d.setup) b.appendChild(setupChecklist(d.setup));
 
   b.appendChild(el("h2", null, "status"));
   const g = el("div", "statgrid");

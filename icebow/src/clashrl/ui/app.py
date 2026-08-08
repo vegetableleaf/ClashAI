@@ -400,10 +400,41 @@ def create_app(cfg) -> Flask:
             return jsonify({"error": f"could not write: {exc}"}), 500
 
     # -- overview ----------------------------------------------------------
+    def _setup_status(db, cks) -> List[Dict[str, Any]]:
+        """The FIXED pipeline order (record -> calibrate -> detect the deck -> label ->
+        train), each step's completion read off what is actually on disk -- not a guess or
+        generic advice, just whether that step's known output file exists yet."""
+        sess = sessions()
+        tdir = root / "templates" / "cards"
+        hand_templates = len(list(tdir.glob("*.png"))) if tdir.exists() else 0
+        in_match = C().get("states", "in_match", default={}) or {}
+        entries = (in_match.get("templates") or [])
+        calibrated = any(("local" in (e if isinstance(e, str) else e.get("template", "")))
+                         for e in entries)
+        sess_root = root / "data" / "sessions"
+        labelled = len(list(sess_root.glob("*/dataset.npz"))) if sess_root.exists() else 0
+        return [
+            {"step": "record", "title": "Record a session", "done": len(sess) > 0,
+             "detail": f"{len(sess)} recording(s)" if sess else "needed once, to calibrate and detect the deck from"},
+            {"step": "calibrate", "title": "Calibrate screen detection", "done": calibrated,
+             "detail": "re-cut from your own recording" if calibrated
+                       else "shipped templates may not fit your client -- calibrate re-cuts them"},
+            {"step": "deck-detect", "title": "Detect the deck / hand templates", "done": hand_templates > 0,
+             "detail": f"{hand_templates} hand template(s)" if hand_templates
+                       else "needed for play/label to recognise your hand"},
+            {"step": "label", "title": "Label a recording", "done": labelled > 0,
+             "detail": f"{labelled} labelled dataset(s)" if labelled
+                       else "turns a recording into training data for train-bc"},
+            {"step": "train-sim", "title": "Train in the simulator", "done": len(cks) > 0,
+             "detail": f"{len(cks)} checkpoint(s)" if cks
+                       else "does not need the game; produces a usable policy on its own"},
+        ]
+
     @app.get("/api/overview")
     def overview():
         """Plain status. No generic advice: what is worth doing next depends on the
-        project, not on what a panel can infer from a few file names."""
+        project, not on what a panel can infer from a few file names -- except the fixed
+        setup pipeline itself, which is the same five steps for everyone."""
         db = card_db()
         cks = list_checkpoints(root / "data", metrics.runs())
         return jsonify({
@@ -414,6 +445,7 @@ def create_app(cfg) -> Flask:
             "towers": {"mine": C().get("sim", "my_tower_troop", default="princess"),
                        "level": C().get("sim", "my_tower_level", default=15),
                        "opponents": list((C().get("sim", "opponent_tower_weights", default={}) or {}))},
+            "setup": _setup_status(db, cks),
         })
 
     @app.get("/api/logfile/<jid>")
