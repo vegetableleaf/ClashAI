@@ -192,7 +192,8 @@ def _cmd_deck_detect(args) -> None:
     detect_deck(Config.load(args.config), session_arg=args.session, samples=args.samples,
                 per_face=args.per_face, player_tag=args.player_tag, out=args.out,
                 write_templates=args.write_templates,
-                overwrite_templates=args.overwrite_templates)
+                overwrite_templates=args.overwrite_templates,
+                deck_only=args.deck_only)
 
 
 def _cmd_calibrate(args) -> None:
@@ -502,6 +503,10 @@ def main() -> None:
                           "templates/cards/<card>.png, which removes the renaming step")
     ddt.add_argument("--overwrite-templates", action="store_true", dest="overwrite_templates",
                      help="also replace templates that already exist")
+    ddt.add_argument("--deck-only", action="store_true", dest="deck_only",
+                     help="identify each tray card against only the deck already in cards.yaml "
+                          "instead of every card in the game. Far more reliable once the deck is "
+                          "correct -- use it to fill in missing hand templates.")
     ddt.set_defaults(func=_cmd_deck_detect)
 
     cal = sub.add_parser("calibrate",

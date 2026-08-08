@@ -198,8 +198,11 @@
 
   <!-- checkpoints ---------------- -->
   <section id="tab-ckpt" class="panel">
-    <p class="lead">Trained networks under <code>data/</code>. Use as --init enters the file as
-      the starting point in the command tiles.</p>
+    <p class="lead">Trained networks under <code>data/</code>. There are only ever a handful:
+      each trainer writes to its own fixed file and overwrites it as it goes, so training again
+      does <b>not</b> pile up new ones. <code>_best</code> keeps the best benchmark score ever
+      reached, <code>_prev</code> is the automatic backup from before the last live run. Use as
+      --init enters the file as the starting point in the command tiles.</p>
     <div class="row"><button id="ckptreload" class="btn small">Refresh</button></div>
     <div id="ckptbody"></div>
   </section>

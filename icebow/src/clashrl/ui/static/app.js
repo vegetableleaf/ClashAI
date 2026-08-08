@@ -1303,13 +1303,15 @@ async function loadCheckpoints() {
   if (!list.length) { body.innerHTML = "<p class='hint'>No .pt files under data/ yet.</p>"; return; }
   const deckIds = (S.deck && S.deck.identities) || null;
   const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th>File</th><th>Date</th><th>Matches</th><th>Best benchmark</th>
-    <th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;
+  tbl.innerHTML = `<thead><tr><th>What it is</th><th>File</th><th>Date</th><th>Matches</th>
+    <th>Best benchmark</th><th>Grid</th><th>Deck</th><th>Size</th><th></th></tr></thead>`;
   const tb = el("tbody");
   list.forEach(c => {
     const tr = el("tr");
     const deckOk = (!deckIds || !c.deck) ? null : JSON.stringify(c.deck) === JSON.stringify(deckIds);
-    tr.innerHTML = `<td><code>${c.rel}</code></td><td>${fmtTime(c.mtime)}</td>
+    tr.innerHTML = `<td${c.role_help ? ` title="${c.role_help.replace(/"/g, "&quot;")}"` : ""}>
+        ${c.role || "-"}</td>
+      <td><code>${c.rel}</code></td><td>${fmtTime(c.mtime)}</td>
       <td>${c.matches != null ? int(c.matches) + (c.matches_estimated ? " *" : "") : "-"}</td>
       <td>${c.best_wr != null && c.best_wr >= 0 ? c.best_wr.toFixed(0) + " %" : "-"}</td>
       <td>${c.grid ? c.grid.join("x") : "-"}</td>

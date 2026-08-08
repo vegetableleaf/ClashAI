@@ -12,6 +12,36 @@ from typing import Any, Dict, List, Optional
 
 _CACHE: Dict[str, Dict[str, Any]] = {}          # path -> meta, keyed by (path, mtime, size)
 
+# What each file in data/ IS. The names are the trainers' own fixed output paths, so the
+# set is small and known -- but "policy.pt vs policy_sim.pt vs policy_sim_best.pt vs
+# policy_rl.pt" says nothing on its own about which one to play or which is newer/better.
+_ROLES = {
+    "policy.pt": ("Imitation", "Learned from YOUR recordings (train-bc). Starting point, not "
+                               "usually the one you play."),
+    "policy_sim.pt": ("Simulator, latest", "Newest state of simulator training (train-sim). "
+                                           "Overwritten as it trains -- not necessarily the best."),
+    "policy_sim_best.pt": ("Simulator, best", "The best benchmark score simulator training ever "
+                                              "reached. Usually the one to play."),
+    "policy_sim_ppo.pt": ("Simulator PPO, latest", "Same idea as policy_sim.pt but from the PPO "
+                                                   "trainer (train-sim-ppo), kept separate."),
+    "policy_rl.pt": ("Live, latest", "Fine-tuned on real matches (train-rl). play uses this by "
+                                     "default when it exists."),
+    "policy_rl_prev.pt": ("Live, backup", "Automatic copy of policy_rl.pt from before the last "
+                                          "train-rl run -- restore it if that run made things worse."),
+}
+
+
+def describe(name: str) -> Dict[str, Optional[str]]:
+    """The role of a checkpoint file, or a best guess for an unknown name."""
+    hit = _ROLES.get(name)
+    if hit:
+        return {"role": hit[0], "role_help": hit[1]}
+    if name.startswith("policy_bench"):
+        return {"role": "Benchmark scratch",
+                "role_help": "Throwaway file written by sim-bench while measuring throughput. "
+                             "Safe to delete; not something to play."}
+    return {"role": None, "role_help": None}
+
 
 def _read_meta(p: Path) -> Dict[str, Any]:
     key = f"{p}|{p.stat().st_mtime_ns}|{p.stat().st_size}"
@@ -64,6 +94,7 @@ def list_checkpoints(data_dir: Path, metrics_runs: Optional[List[Dict[str, Any]]
             "rel": f"data/{p.name}",
             "size": st.st_size,
             "mtime": st.st_mtime,
+            **describe(p.name),
             "best_wr": meta.get("best_wr"),
             "matches": matches,
             "matches_estimated": meta.get("matches") is None and matches is not None,

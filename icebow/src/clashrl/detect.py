@@ -365,6 +365,21 @@ class OverlayReplayRecorder:
 
     def __init__(self, cfg):
         self.enabled = bool(cfg.get("overlay_replay", "enabled", default=False))
+        # The whole point of these clips is the detector's boxes burned into them. With no
+        # trained detector there is nothing to draw, so what lands on disk is a plain screen
+        # recording -- measured at ~27 MB per 60s match, five per session by default. Refuse
+        # to spend that on an empty overlay and say why, instead of silently filling the disk.
+        if self.enabled:
+            try:
+                wpath, runs = _resolve_weights(cfg, None)
+            except Exception:                             # noqa: BLE001
+                wpath, runs = None, None
+            if wpath is None or not Path(wpath).exists():
+                print("[overlay-replay] no trained detector -- clips would be plain screen "
+                      f"recordings with no boxes, so recording is OFF. Train one (detect-* "
+                      f"commands, output under {runs or 'runs/detect'}) or set "
+                      "overlay_replay.enabled: false to silence this.")
+                self.enabled = False
         self.seconds = float(cfg.get("overlay_replay", "seconds", default=60.0))
         self.fps = min(60.0, max(1.0, float(cfg.get("overlay_replay", "fps", default=30.0))))
         self.scale = float(cfg.get("overlay_replay", "scale", default=0.5))

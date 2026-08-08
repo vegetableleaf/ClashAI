@@ -139,32 +139,46 @@ def _latest_session(root: Path):
 
 
 def _write_templates(cfg, faces, detections, min_score: float, min_margin: float,
-                     overwrite: bool) -> None:
+                     overwrite: bool, max_per_card: int = 12) -> None:
     """Save the confidently identified faces as hand templates under their real name.
 
     This is the step that used to be manual: `hand-templates` dumps `_cand_*.png` and you
     rename them. Once a face has been identified there is nothing left to rename, so the
-    crop is written straight to `<key>.png`. Only confident faces are written -- a wrong
+    crop is written straight to `<key>_<n>.png`. Only confident faces are written -- a wrong
     name here would silently poison hand recognition for every later run.
+
+    SEVERAL views per card, not one. A card's tray art is not one fixed image: it changes
+    with the elixir-affordability grey-out, the deploy animation, and the cycle highlight,
+    and `Vision.match_card` takes the best score over ALL templates it has for a card.
+    Decks that recognise reliably here carry 14-21 templates per card; writing a single
+    view per card left recognition at 39% on a real recording, with the misses being
+    frames where that one view didn't happen to be the one on screen.
     """
     out_dir = cfg.path(cfg.get("hand", "templates_dir", default="templates/cards"))
     out_dir.mkdir(parents=True, exist_ok=True)
     written, skipped, existing = [], [], []
+    per_card: Dict[str, int] = {}
     for face, det in zip(faces, detections):
         best = det["candidates"][0]
         if best["score"] < min_score or det["margin"] < min_margin:
             skipped.append(f"{best['display']} ({best['score']:.2f}/{det['margin']:.2f})")
             continue
-        dst = out_dir / f"{best['key']}.png"
-        if dst.name in written:
-            continue                      # several views of the same card: one template is enough
+        key = best["key"]
+        have = per_card.get(key, 0)
+        if have >= max_per_card:
+            continue
+        # keep the plain <key>.png name for the first view so existing template sets stay valid
+        dst = out_dir / (f"{key}.png" if have == 0 else f"{key}_{have}.png")
         if dst.exists() and not overwrite:
             existing.append(dst.name)
+            per_card[key] = have + 1      # still counts as a view this card already has
             continue
         cv2.imwrite(str(dst), face["key"])
         written.append(dst.name)
+        per_card[key] = have + 1
     if written:
-        print(f"[deck-detect] {len(written)} hand templates written: {', '.join(sorted(set(written)))}")
+        counts = ", ".join(f"{k} x{v}" for k, v in sorted(per_card.items()) if v)
+        print(f"[deck-detect] {len(written)} hand templates written ({counts})")
     if existing:
         print(f"[deck-detect] left alone because they already exist: {', '.join(sorted(set(existing)))}. "
               "Use --overwrite-templates to replace them.")
@@ -176,7 +190,8 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
                 distinct: float = 0.8, per_face: int = 6, top: int = 5,
                 player_tag: Optional[str] = None, out: Optional[str] = None,
                 write_templates: bool = False, overwrite_templates: bool = False,
-                tpl_min_score: float = 0.65, tpl_min_margin: float = 0.08) -> None:
+                tpl_min_score: float = 0.65, tpl_min_margin: float = 0.08,
+                deck_only: bool = False) -> None:
     from .cards import CardDB
     from .vision import Vision
 
@@ -185,6 +200,25 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
         print("[deck-detect] no reference pictures found. Run `run.py cards-art` once.")
         return
     db = CardDB(cfg)
+
+    # DECK-ONLY: once cards.yaml already names the deck, identifying a tray face is an 8-way
+    # choice, not a 181-way one. Searching the whole bank anyway is what leaves half the deck
+    # at a coin-flip margin -- there are simply many cards in the game whose art scores close
+    # on a 40px grayscale crop. Restricting the bank to the configured deck is the difference
+    # between "is this Spear Goblins or Zappies" and "which of MY eight is this".
+    if deck_only:
+        want = set()
+        for k in db.deck_identities():
+            want.add(k)
+            want.add(k[:-4] if k.endswith("_evo") else k)
+        sub = {k: v for k, v in bank.items() if k in want}
+        if len(sub) < 2:
+            print(f"[deck-detect] --deck-only: only {len(sub)} of the configured deck's cards have "
+                  "a reference picture; falling back to the full bank. Run `run.py cards-art`.")
+        else:
+            bank = sub
+            print(f"[deck-detect] --deck-only: matching against the {len(bank)} configured deck "
+                  "cards instead of the whole bank.")
 
     root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
     from .label import _resolve_session
@@ -314,7 +348,14 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
               "instead of accepting the result unchecked.")
 
     if write_templates:
-        _write_templates(cfg, faces, detections, tpl_min_score, tpl_min_margin, overwrite_templates)
+        # The absolute-score gate is calibrated for a 181-way search, where a mediocre score
+        # really does mean "not sure which card this is". Under --deck-only the same face is
+        # only ever compared against the eight cards you actually hold, so a correct read can
+        # sit well below that (measured: Knight 0.578, Goblins 0.611) and the MARGIN carries
+        # the confidence instead. Keeping the strict gate there wrote one template per card
+        # and skipped 51 usable views.
+        lo_score = min(tpl_min_score, 0.45) if deck_only else tpl_min_score
+        _write_templates(cfg, faces, detections, lo_score, tpl_min_margin, overwrite_templates)
 
     payload = {
         "generated": time.time(),
