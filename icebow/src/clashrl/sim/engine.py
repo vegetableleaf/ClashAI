@@ -1190,9 +1190,7 @@ class SimEngine:
                 self.projectiles.remove(p)
 
     def _impact(self, p: Projectile) -> None:
-        if p.spec.multi_kind == "spark" and p.label.endswith("_projectile"):
-            self._spark_burst(p)                  # the rocket itself does nothing; its SPARKS do
-            return
+        spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
         if p.radius > 0.0:                            # AREA shot: explodes where it landed, hit or miss
             for e in self.units:
                 if e.team == p.team or e.hp <= 0:
@@ -1205,6 +1203,8 @@ class SimEngine:
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
                     self._damage_tower(tw, p.tower_dmg, p.team)
+            if spark:
+                self._spark_burst(p)              # ...and THEN it splits into shrapnel
             return
         ref = p.target
         if ref is None:
@@ -1271,11 +1271,15 @@ class SimEngine:
                     self._hurt(ref, dmg)
 
     def _spark_burst(self, p: Projectile) -> None:
-        """Firecracker: the rocket lands, THEN sparks spray outward from the landing point.
+        """Firecracker: the rocket hits its target, THEN splits into shrapnel.
 
-        The sparks are what actually deal the damage and they scatter around the impact, so the
-        card punishes clumps rather than the single body it aimed at -- modelling it as one hit on
-        the target missed both the spread and four fifths of the damage.
+        Per the wiki: "once it hits its target, splits into 5 ADDITIONAL shrapnel, which continue to
+        travel, while piercing through enemies". Three things that matters for:
+          * the rocket deals its OWN area damage on impact (projectile radius 0.4) -- the sparks are
+            extra, not a replacement for it;
+          * the sparks PIERCE rather than explode, so each one damages everything along its path;
+          * they radiate from the LANDING POINT, which is why the card punishes a clump behind the
+            body it aimed at rather than just that body.
         """
         s = p.spec
         n = s.multi_hits
@@ -1288,9 +1292,9 @@ class SimEngine:
             ex, ey = _clamp_xy(ex, ey, 0.0)
             self.projectiles.append(Projectile(
                 label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y, tx=ex, ty=ey, target=None,
-                spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=max(s.proj_radius, 0.6),
+                spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=s.proj_radius,
                 speed=max(s.proj_speed, 8.0), left=_SPARK_TILES,
-                ground_only=not s.attacks_air))
+                ground_only=not s.attacks_air, pierce=True, ox=p.x, oy=p.y))
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
         """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
