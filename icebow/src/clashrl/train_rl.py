@@ -92,7 +92,7 @@ def train_rl(cfg, init: str | None = None) -> None:
               f"policy_rl.pt, so restore the backup if this session makes things worse)")
 
     device = _pick_device(cfg)
-    ckpt = torch.load(init_path, map_location="cpu")
+    ckpt = torch.load(init_path, map_location="cpu", weights_only=False)
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))

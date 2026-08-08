@@ -122,7 +122,7 @@ def play(cfg, init: str | None = None) -> None:
             print("[play] nothing trained yet. `train-sim` produces one without needing the game.")
         return
 
-    ckpt = torch.load(ckpt_path, map_location="cpu")
+    ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))

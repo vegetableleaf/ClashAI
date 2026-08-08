@@ -107,7 +107,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
     resumed_best_wr = -1.0
     if resume and ppo_path.exists():
-        ck = torch.load(ppo_path, map_location="cpu")
+        ck = torch.load(ppo_path, map_location="cpu", weights_only=False)
         net.policy.load_state_dict(ck["model"])
         net.gate.load_state_dict(ck["gate"])
         if "value" in ck:
@@ -122,7 +122,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         # it calibrates -- advantage normalization keeps that survivable.
         p = cfg.path(init)
         if p.exists():
-            ck = torch.load(p, map_location="cpu")
+            ck = torch.load(p, map_location="cpu", weights_only=False)
             ok = (int(ck.get("n_cards", -1)) == n_cards and int(ck.get("n_cells", -1)) == n_cells
                   and int(ck.get("threat_dim", -1)) == threat_dim)
             if ok:

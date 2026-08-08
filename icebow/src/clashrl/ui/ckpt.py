@@ -24,7 +24,7 @@ def _read_meta(p: Path) -> Dict[str, Any]:
         try:
             ck = torch.load(p, map_location="cpu", weights_only=True)
         except Exception:                        # noqa: BLE001 -- older/plain pickles
-            ck = torch.load(p, map_location="cpu")
+            ck = torch.load(p, map_location="cpu", weights_only=False)
         if isinstance(ck, dict):
             for k in ("grid", "n_cards", "n_cells", "threat_dim", "deck", "best_wr",
                       "matches", "arena_size"):

@@ -63,7 +63,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     try:
         state = torch.load(ck_path, map_location="cpu", weights_only=True)
     except Exception:                           # noqa: BLE001 -- older checkpoints are plain pickles
-        state = torch.load(ck_path, map_location="cpu")
+        state = torch.load(ck_path, map_location="cpu", weights_only=False)
     ck_cards = int(state.get("n_cards", n_cards))
     ck_cells = int(state.get("n_cells", n_cells))
     if ck_cards != n_cards or ck_cells != n_cells:
