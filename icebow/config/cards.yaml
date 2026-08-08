@@ -929,6 +929,18 @@ cards:
   spear_goblins: {range: long, verified: false}
   witch: {range: long, flags: [splash, spawner], spawns: {unit: skeletons, count: 4, delay: 1.0}, verified: true}   # 5e AREA support: "a group of four Skeletons" every 7s, first wave 1s after deploy
   zappies: {range: long, verified: false}
+  # -- MULTI-HIT MECHANICS. The wiki gives `hits_per_attack` as one number but it covers four
+  # unrelated behaviours, so only the KIND is curated (the count stays imported). Damage is PER HIT
+  # and the published dps counts only one, so before this these cards were 2-10x too weak.
+  #   chain     the bolt arcs on to further targets, carrying the stun
+  #   boomerang the axe flies out AND back, damaging on both passes
+  #   spark     sparks spray outward from where the rocket lands, not from the firer
+  #   shotgun   a cone of pellets: nearly all connect point-blank, few at max range
+  electro_dragon: {multi: chain, verified: true}
+  electro_wizard: {multi: chain, verified: true}
+  executioner: {multi: boomerang, verified: true}
+  firecracker: {multi: spark, verified: true}
+  hunter: {multi: shotgun, verified: true}
   # -- SPAWNERS. The wiki's attribute table gives the TIMINGS (spawn_interval_s / spawn_delay_s /
   # spawn_range_tiles, imported into cards_stats.json) but never names the card being summoned nor
   # HOW MANY appear per tick -- both of those live in the page's intro prose, so they are curated

@@ -66,6 +66,10 @@ _PRINCESS_HALF = 1.5
 _KING_HALF = 2.0
 _TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
+# MULTI-HIT geometry, in TILES. Neither is published by the wiki, so both are estimates: how far a
+# chain bolt will arc to its next target, and how far Firecracker's sparks spray from the impact.
+_CHAIN_TILES = 3.0
+_SPARK_TILES = 2.5
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
 _LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
@@ -126,6 +130,16 @@ class CardSpec:
     # hit is effectively a different card, and it is the entire reason a charge is worth blocking.
     charge_dmg: float = 0.0
     charge_range: float = 0.0
+    # MULTI-HIT. `hits_per_attack` is ONE number covering four different mechanics, so the KIND is
+    # curated per card and each is modelled (and labelled for sim-view) separately:
+    #   chain     -- the bolt arcs to further targets      (electro_dragon 3, electro_wizard 2)
+    #   boomerang -- the axe flies out AND back, hitting both ways   (executioner 2)
+    #   spark     -- sparks spray outward from the impact point      (firecracker 5)
+    #   shotgun   -- a cone of pellets; more connect the closer you are (hunter 10)
+    # The wiki's `damage` is PER HIT and its `dps` counts only ONE (verified: dps == damage/hit_speed
+    # for all of them), so these cards were 2-10x too weak -- a point-blank Hunter should land 10 x 84.
+    multi_kind: str = ""
+    multi_hits: int = 0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.64      # collision radius, TILES (soft body-block)
@@ -308,6 +322,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         slow_mult=(1.0 - abs(float(c["slow_pct"])) / 100.0) if c.get("slow_pct") else 0.0,
         charge_dmg=float(c.get("charge_damage") or 0.0) * sc,
         charge_range=float(c.get("charge_range") or 0.0),
+        multi_kind=str((db.get(base) or {}).get("multi") or ""),
+        multi_hits=int(c.get("hits_per_attack") or 0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -433,6 +449,9 @@ class Projectile:
     ground_only: bool = False     # some shots cannot touch air (the KB's `attacks` list says so)
     pierce: bool = False
     hit: set = field(default_factory=set)   # ids already damaged by a piercing shot
+    ox: float = 0.0            # where it was fired from -- the BOOMERANG flies back to here
+    oy: float = 0.0
+    returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -1076,6 +1095,7 @@ class SimEngine:
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+        self._multi_hit(u.spec, u.team, u.x, u.y, ref, dmg)   # chain arcs / shotgun pellets
 
     @staticmethod
     def _ramp_mult(u: Unit) -> float:
@@ -1118,7 +1138,10 @@ class SimEngine:
             label=label, team=team, x=x, y=y, tx=ref.x, ty=ref.y, target=ref, spec=spec,
             dmg=dmg, tower_dmg=tower_dmg, radius=radius, speed=spec.proj_speed,
             left=max(rng, _dist(x, y, ref.x, ref.y)),
-            ground_only=not spec.attacks_air, pierce=spec.proj_pierce))
+            ground_only=not spec.attacks_air,
+            # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
+            # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
+            pierce=spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun"), ox=x, oy=y))
 
     def _tick_projectiles(self, dt: float) -> None:
         for p in list(self.projectiles):
@@ -1147,6 +1170,19 @@ class SimEngine:
                         self._hurt(e, p.dmg)
                         self._apply_status(p.spec, e)
                 if p.left <= 0.0:
+                    # BOOMERANG: the axe does not stop at max range, it turns around and hits
+                    # everything again on the way back. Clearing `hit` is what lets it re-damage the
+                    # same bodies -- that return leg is the whole reason Executioner trades so well
+                    # into a line of troops.
+                    if (p.spec.multi_kind == "boomerang" and not p.returning
+                            and p.spec.multi_hits >= 2):
+                        p.returning = True
+                        p.label = f"{p.spec.base}_axe_return"
+                        p.target = None
+                        p.tx, p.ty = p.ox, p.oy
+                        p.left = _dist(p.x, p.y, p.ox, p.oy)
+                        p.hit.clear()
+                        continue
                     self.projectiles.remove(p)
                 continue
             if d <= step or p.left <= 0.0:            # ARRIVED
@@ -1154,6 +1190,9 @@ class SimEngine:
                 self.projectiles.remove(p)
 
     def _impact(self, p: Projectile) -> None:
+        if p.spec.multi_kind == "spark" and p.label.endswith("_projectile"):
+            self._spark_burst(p)                  # the rocket itself does nothing; its SPARKS do
+            return
         if p.radius > 0.0:                            # AREA shot: explodes where it landed, hit or miss
             for e in self.units:
                 if e.team == p.team or e.hp <= 0:
@@ -1170,12 +1209,88 @@ class SimEngine:
         ref = p.target
         if ref is None:
             return
+        # Only the card's PRIMARY shot spawns extra hits. Without this guard a chain arc's own
+        # impact called _multi_hit again and spawned further arcs, which grows exponentially and
+        # hangs the match -- the derived projectiles are consequences of an attack, not attacks.
+        primary = p.label.endswith("_projectile")
         if isinstance(ref, Tower):
             if ref.alive:
                 self._damage_tower(ref, p.tower_dmg, p.team)
+                if primary:
+                    self._multi_hit(p.spec, p.team, p.ox, p.oy, ref, p.tower_dmg)
             return
         if ref.hp > 0:
             self._land_hit(p.team, "unit", ref, p.spec, p.dmg, p.tower_dmg)
+            if primary:
+                self._multi_hit(p.spec, p.team, p.ox, p.oy, ref, p.dmg)
+
+    def _multi_hit(self, spec: CardSpec, team: int, fx: float, fy: float, ref, dmg: float) -> None:
+        """The extra hits of a multi-hit attack, one branch per mechanic.
+
+        `hits_per_attack` is a single wiki number covering four unrelated behaviours, so a blanket
+        multiplier would be wrong for at least three of them. Each emits a distinctly LABELLED
+        projectile so sim-view can draw them apart. Called from BOTH the instant-hit path and the
+        projectile IMPACT path -- every one of these cards actually shoots, so wiring it only into
+        the instant path left all of them landing a single hit.
+        """
+        s = spec
+        n = s.multi_hits
+        if n < 2 or not s.multi_kind:
+            return
+        if s.multi_kind == "chain":
+            # The bolt arcs from the struck body to the next nearest enemies (Electro Dragon 3,
+            # Electro Wizard 2). Each arc carries the card's stun, which is why a chain resets a
+            # whole line of attackers rather than just the one it hit.
+            if not isinstance(ref, Unit):
+                return
+            near = sorted((e for e in self.units
+                           if e.team != team and e.hp > 0 and e is not ref
+                           and _dist(ref.x, ref.y, e.x, e.y) <= _CHAIN_TILES
+                           and not (not s.attacks_air and e.spec.flying)),
+                          key=lambda e: _dist(ref.x, ref.y, e.x, e.y))
+            for e in near[:n - 1]:
+                self._hurt(e, dmg)
+                self._apply_status(s, e)
+                self.projectiles.append(Projectile(
+                    label=f"{s.base}_chain", team=team, x=ref.x, y=ref.y, tx=e.x, ty=e.y,
+                    target=e, spec=s, dmg=0.0, tower_dmg=0.0, radius=0.0,
+                    speed=max(s.proj_speed, 20.0), left=_dist(ref.x, ref.y, e.x, e.y),
+                    ground_only=not s.attacks_air))
+        elif s.multi_kind == "shotgun":
+            # A CONE of pellets: they all converge at point-blank and spread out with distance, so
+            # the same attack is devastating up close and weak at range. That distance falloff is
+            # the entire identity of the Hunter -- one flat hit made him a mediocre single-target.
+            rng = s.proj_range or (s.reach + _REACH_SLOP)
+            gap = _gap(fx, fy, ref)
+            extra = max(0, int(round(n * max(0.0, 1.0 - gap / max(rng, 1e-6)))) - 1)
+            for _ in range(extra):
+                if isinstance(ref, Tower):
+                    if ref.alive:
+                        self._damage_tower(ref, dmg, team)
+                elif ref.hp > 0:
+                    self._hurt(ref, dmg)
+
+    def _spark_burst(self, p: Projectile) -> None:
+        """Firecracker: the rocket lands, THEN sparks spray outward from the landing point.
+
+        The sparks are what actually deal the damage and they scatter around the impact, so the
+        card punishes clumps rather than the single body it aimed at -- modelling it as one hit on
+        the target missed both the spread and four fifths of the damage.
+        """
+        s = p.spec
+        n = s.multi_hits
+        if s.multi_kind != "spark" or n < 2:
+            return
+        for i in range(n):
+            ang = 2.0 * math.pi * i / n
+            ex = p.x + math.cos(ang) * _SPARK_TILES / _TILES_X
+            ey = p.y + math.sin(ang) * _SPARK_TILES / _TILES_Y
+            ex, ey = _clamp_xy(ex, ey, 0.0)
+            self.projectiles.append(Projectile(
+                label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y, tx=ex, ty=ey, target=None,
+                spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=max(s.proj_radius, 0.6),
+                speed=max(s.proj_speed, 8.0), left=_SPARK_TILES,
+                ground_only=not s.attacks_air))
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
         """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
