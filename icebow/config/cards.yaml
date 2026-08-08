@@ -55,6 +55,12 @@ deck:
 #                knockback, pull, shield, splash_air, building_targeting, swarm,
 #                siege, tank, mini_tank, splash, jump]   (siege => X-Bow/Mortar)
 #   evolution   {available, cycles, effect, gains:[...]}   (null if none)
+#               `cycles` = how many times the BASE card must be PLAYED before the Evo is
+#               available, so cycles:2 => base, base, EVO (every 3rd play is evolved). The sim
+#               enforces this (sim/env.py evo charges), so a wrong value directly changes play.
+#               VERIFIED in-game: tesla 2, knight 2. UNVERIFIED (musketeer / skeletons / archers /
+#               valkyrie all sit at 1) -- none are in the current deck and opponent decks use BASE
+#               keys only, so those four are inert today; verify before ever slotting one.
 #   hitpoints/damage/hit_speed/dps   @ meta.level (null => import)
 #   crown_tower_damage   spells' reduced damage to crown towers @ meta.level
 #                        (null => import; troops/un-reduced spells hit towers for full damage)
@@ -112,7 +118,7 @@ cards:
     flags: [ranged, hides]
     evolution:
       available: true
-      cycles: 1
+      cycles: 2            # VERIFIED in-game 2026-08-08: 2-cycle -> every 3rd Tesla played is the Evo
       effect: "periodic electric pulse that damages and briefly stuns nearby enemies"
       gains: [stun, area_shock]
       # Evo Tesla combat stats @ LEVEL-11 BASE (the in-game L14 card / 1.1^3; HP + damage scale by level).
