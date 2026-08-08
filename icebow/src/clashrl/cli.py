@@ -221,7 +221,8 @@ def _cmd_preannotate(args) -> None:
         print(f"[pre-annotate] ultralytics is required ({exc}).")
         return
     preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
-                device=args.device, limit=args.limit, out=args.out, classes=args.classes)
+                device=args.device, limit=args.limit, out=args.out, classes=args.classes,
+                subdir=args.subdir, model_version=args.model_version)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -521,9 +522,10 @@ def main() -> None:
     atl.set_defaults(func=_cmd_autolabel)
 
     pan = sub.add_parser("pre-annotate",
-                         help="run the CURRENT detector over the unlabelled queue and ship its boxes as "
-                              "PRE-ANNOTATIONS, so hand-labelling becomes CORRECTING boxes instead of "
-                              "drawing them (autolabel can only box your OWN troops; this covers the enemy)")
+                         help="run the CURRENT detector over the unlabelled queue and write a Label "
+                              "Studio TASKS file with its boxes as PRE-ANNOTATIONS, so hand-labelling "
+                              "becomes CORRECTING boxes instead of drawing them. Copies no images -- "
+                              "the tasks point at images/<queue> where the frames already live")
     pan.add_argument("--conf", type=float, default=0.20,
                      help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
                           "deleting a wrong box is one keypress, drawing a missed one takes seconds")
@@ -533,7 +535,15 @@ def main() -> None:
     pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
     pan.add_argument("--classes", default=None,
                      help="comma list to pre-draw only these classes (default: all)")
-    pan.add_argument("--out", default=None, help="output folder (default: <dataset_dir>/preannot)")
+    pan.add_argument("--subdir", default=None,
+                     help="queue folder under images/ (default: detect.label_queue_subdir). Also the "
+                          "path written into the task's ?d= reference, so it must match what Label "
+                          "Studio serves")
+    pan.add_argument("--model-version", dest="model_version", default=None,
+                     help="label the predictions with this (default: the run folder, e.g. board-16) "
+                          "so you can tell WHICH detector guessed when reviewing")
+    pan.add_argument("--out", default=None,
+                     help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
     pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
