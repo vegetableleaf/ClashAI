@@ -37,7 +37,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from .sim.engine import _BRIDGES, _RIVER, _ROCKET_RADIUS, _TORNADO_RADIUS
+from .sim.engine import _RIVER, _ROCKET_RADIUS, _TILES_X, _TILES_Y, _TORNADO_RADIUS
 from .sim.env import SimMatchEnv
 
 WINDOW = "clashrl sim-view"
@@ -60,10 +60,11 @@ _STUN = (60, 220, 240)
 _SLOW = (240, 200, 120)
 _GRID = (58, 118, 64)          # faint cell lines
 _GRID_EDGE = (80, 150, 88)     # arena_box border + the deploy line
+_TILE_G = (46, 104, 52)        # the board's REAL 18x32 tile lattice (under the action grid)
 
 _HUD_TOP = 54
 _HUD_BOT = 58
-_ASPECT = 0.56          # board width / height (CR portrait arena is ~18 x 32 tiles)
+_ASPECT = _TILES_X / _TILES_Y   # the board's true aspect, so N tiles reads the same on both axes
 
 
 def _short(key: str) -> str:
@@ -86,10 +87,10 @@ def _hp_bar(img, cx: int, top: int, w: int, frac: float, h: int = 3) -> None:
 def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray:
     """Draw the engine's CURRENT state. Team 0 (you) is at the BOTTOM, matching the live screen.
 
-    ``acts`` (an ActionSpace) overlays the PLACEMENT GRID -- the discrete cells the policy actually
-    chooses among, drawn over `action.arena_box`, with the deploy line (`action.deploy_top`) marked.
-    Placement in this engine is otherwise CONTINUOUS: the grid is what discretises the agent, but the
-    scripted opponents deploy at raw continuous coordinates, and nothing snaps a deploy to a tile.
+    The canvas is the board's true 18:32 aspect, so a range that is N tiles in the engine is N tiles
+    on both axes here. ``acts`` (an ActionSpace) overlays the PLACEMENT GRID -- the discrete cells the
+    policy chooses among -- on top of the faint TILE grid; when `action.grid` is 18x32 the two
+    coincide, when it is 18x24 each action cell is one tile wide and 1.33 tiles tall.
     """
     W = int(width)
     BH = int(W / _ASPECT)
@@ -99,13 +100,26 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
     def px(nx: float, ny: float):
         return int(nx * W), _HUD_TOP + int(ny * BH)
 
+    def rad_px(tiles: float):
+        """A radius in TILES -> (x, y) pixel semi-axes (the two axes have different tile scales)."""
+        return int(tiles / _TILES_X * W), int(tiles / _TILES_Y * BH)
+
     # --- board -------------------------------------------------------------------------------
     cv2.rectangle(img, (0, _HUD_TOP), (W, _HUD_TOP + BH), _GRASS, -1)
-    ry0, ry1 = px(0, _RIVER - 0.012)[1], px(0, _RIVER + 0.012)[1]
+    half = 0.5 / _TILES_Y                                 # the river is one tile deep
+    ry0, ry1 = px(0, _RIVER - half)[1], px(0, _RIVER + half)[1]
     cv2.rectangle(img, (0, ry0), (W, ry1), _RIVER_C, -1)
-    for bx in _BRIDGES:                                   # the two crossings
-        x0, x1 = int((bx - 0.045) * W), int((bx + 0.045) * W)
-        cv2.rectangle(img, (x0, ry0), (x1, ry1), _BRIDGE, -1)
+    bw = 1.5 / _TILES_X                                   # bridges are ~3 tiles wide
+    for bx in eng.lanes:                                  # the two crossings (tile-derived)
+        cv2.rectangle(img, (int((bx - bw) * W), ry0), (int((bx + bw) * W), ry1), _BRIDGE, -1)
+
+    # --- tile grid (the board's REAL lattice) --------------------------------------------------
+    for tx in range(int(_TILES_X) + 1):
+        x = int(tx / _TILES_X * W)
+        cv2.line(img, (x, _HUD_TOP), (x, _HUD_TOP + BH), _TILE_G, 1)
+    for ty in range(int(_TILES_Y) + 1):
+        y = _HUD_TOP + int(ty / _TILES_Y * BH)
+        cv2.line(img, (0, y), (W, y), _TILE_G, 1)
 
     # --- placement grid ------------------------------------------------------------------------
     if acts is not None:
@@ -119,28 +133,25 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.rectangle(img, px(bx0, by0), px(bx1, by1), _GRID_EDGE, 1)
         dy = float(acts.deploy_top)                       # troops can't be placed above this
         cv2.line(img, px(bx0, dy), px(bx1, dy), _GRID_EDGE, 1)
-        cv2.putText(img, f"grid {acts.gw}x{acts.gh}", (px(bx0, by1)[0] + 3, px(bx0, by1)[1] - 4),
+        cv2.putText(img, f"grid {acts.gw}x{acts.gh} / tiles {int(_TILES_X)}x{int(_TILES_Y)}",
+                    (px(bx0, by1)[0] + 3, px(bx0, by1)[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _GRID_EDGE, 1)
     cv2.line(img, (int(0.5 * W), _HUD_TOP), (int(0.5 * W), _HUD_TOP + BH), _LINE, 1)
 
     # --- vortices (under everything: they are a ground effect) ---------------------------------
-    # NB radii are drawn as ELLIPSES, not circles. The engine measures distance isotropically in
-    # NORMALIZED space (hypot on x,y in 0..1), but this canvas is ~0.56 as wide as it is tall, so a
-    # circle here would claim a pull/blast area the engine never uses. The ellipse is what the engine
-    # actually tests against. (That the engine's normalized space is isotropic AT ALL while the real
-    # arena is 18x32 tiles is a separate fidelity question -- see the note in the docstring.)
     for v in getattr(eng, "vortices", []):
         c = px(v.x, v.y)
-        cv2.ellipse(img, c, (int(_TORNADO_RADIUS * W), int(_TORNADO_RADIUS * BH)),
-                    0, 0, 360, _VORTEX, 1)
+        semi = rad_px(_TORNADO_RADIUS)
+        cv2.ellipse(img, c, semi, 0, 0, 360, _VORTEX, 1)
         cv2.circle(img, c, 3, _VORTEX, -1)
-        cv2.putText(img, f"pull {v.left:.1f}s", (c[0] - 22, c[1] - int(_TORNADO_RADIUS * BH) - 4),
+        cv2.putText(img, f"pull {v.left:.1f}s", (c[0] - 22, c[1] - semi[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _VORTEX, 1)
 
     # --- towers ------------------------------------------------------------------------------
     for team in (1, 0):
         for tw in eng.towers[team]:
-            hw, hh = (0.055, 0.040) if tw.king else (0.040, 0.033)
+            ht = 2.0 if tw.king else 1.5                  # king is 4x4 tiles, a princess 3x3
+            hw, hh = ht / _TILES_X, ht / _TILES_Y
             x0, y0 = px(tw.x - hw, tw.y - hh)
             x1, y1 = px(tw.x + hw, tw.y + hh)
             if not tw.alive:
@@ -164,8 +175,7 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         c = px(s.x, s.y)
         cv2.drawMarker(img, c, _SPELL, cv2.MARKER_CROSS, 13, 1)
         if "rocket" in s.spec.key:                        # show the blast it WILL make
-            cv2.ellipse(img, c, (int(_ROCKET_RADIUS * W), int(_ROCKET_RADIUS * BH)),
-                        0, 0, 360, _SPELL, 1)
+            cv2.ellipse(img, c, rad_px(_ROCKET_RADIUS), 0, 0, 360, _SPELL, 1)
         cv2.putText(img, f"{_short(s.spec.key)} {s.t:.1f}s", (c[0] + 8, c[1] - 6),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _SPELL, 1)
 
@@ -174,7 +184,7 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         if u.hp <= 0:
             continue
         c = px(u.x, u.y)
-        r = max(4, int(u.spec.radius * W * 1.7))
+        r = max(3, rad_px(u.spec.radius)[0])          # true collision size (tiles), not a fudge factor
         col = _TEAM[u.team]
         if u.deploy_left > 0:                             # still spawning -> cannot act
             cv2.circle(img, c, r, col, 1)
@@ -331,7 +341,7 @@ def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int =
                 break
             env.reset()
             env.on_tick = lambda e, _m=m: sink(e, f"match {_m}/{matches}")
-            sink(env, f"match {_m}/{matches}")
+            sink(env, f"match {m}/{matches}")
             steps = 0
             while not state["quit"]:
                 out_t = env.step(agent(env))
@@ -341,7 +351,7 @@ def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int =
             for _ in range(int(fps)):       # hold the final frame ~1s so the result is readable
                 if state["quit"]:
                     break
-                sink(env, f"match {_m}/{matches}")
+                sink(env, f"match {m}/{matches}")
             print(f"[sim-view] match {m}: {env.eng.outcome} in {env.eng.t:.0f}s "
                   f"({steps} decisions, crowns {env.eng.crowns(0)}-{env.eng.crowns(1)})")
             env.on_tick = None

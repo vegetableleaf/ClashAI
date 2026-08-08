@@ -9,9 +9,24 @@ champions, evolutions, and card-specific quirks (charge / ramp-up) are still out
 is enough fidelity that a policy trained here transfers as a PRIOR to the real game (then fine-tuned
 live). See icebow/DECK_SWITCH.md (Stage: simulator) and log.txt.
 
-Coordinates are NORMALISED [0,1] to match the rest of the pipeline: enemy side is the TOP (y<0.5),
-your side the BOTTOM (y>0.5), the river at y=0.5, bridges at x in {0.25, 0.75}. team 0 = you
-(bottom/blue), team 1 = opponent (top/red).
+Coordinates are NORMALISED [0,1] on each axis (so the obs render, ActionSpace cells and reward
+geometry are unchanged), but the BOARD IS A TILE GRID -- 18 tiles wide x 32 tall in real Clash
+Royale -- and every DISTANCE here (reach, sight, splash, blast, pull, speed) is measured in TILES.
+Those two facts together mean the axes have DIFFERENT scales: one normalised unit spans 18 tiles
+across and 32 tiles up, so :func:`_dist` converts to tiles before measuring. A plain hypot on
+normalised coordinates -- what this engine used to do -- silently made every range ~1.78x shorter
+HORIZONTALLY than vertically. (The old constants were all calibrated on the y axis: medium speed
+0.031 normalised/s x 32 tiles = 0.99 tiles/s, i.e. vertical behaviour was right and only x was
+compressed. Converting by x32 therefore preserves the tuned vertical behaviour exactly.)
+
+The tower anchors are DERIVED FROM TILES and symmetric about the river, rather than borrowed from
+`env.my_towers` / `env.enemy_towers`. Those are LIVE SCREEN coordinates carrying the real game's
+perspective foreshortening (the far end is compressed on screen); importing them into a flat
+top-down sim put your towers 0.115 from the river and the enemy's 0.295 -- and broke the self-play
+mirror, which reflects about y=0.5.
+
+enemy side is the TOP (y<0.5), your side the BOTTOM (y>0.5), the river at y=0.5.
+team 0 = you (bottom/blue), team 1 = opponent (top/red).
 """
 from __future__ import annotations
 
@@ -19,17 +34,34 @@ import math
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-# speed word -> normalized units/second (CR tiles/min over a ~32-tile-tall arena)
-_SPEED = {"slow": 0.023, "medium": 0.031, "fast": 0.047, "very_fast": 0.063, None: 0.031}
-# attack reach word -> normalized distance (melee ~0.3 tile, short ~2.5, long ~5.5)
-_REACH = {"melee": 0.03, "short": 0.09, "long": 0.16, None: 0.03}
-_RIVER = 0.5
-_BRIDGES = (0.25, 0.75)
-_SPLASH_R = 0.06
+# --- BOARD GEOMETRY (tiles) -------------------------------------------------------------------
+# Set once per process from `sim.board` by SimEngine.__init__ (every env in a process shares one
+# config, so module-level is safe and keeps `_dist` / `build_spec` free of an engine reference).
+_TILES_X = 18.0
+_TILES_Y = 32.0
+_BRIDGES = (3.5 / 18.0, 14.5 / 18.0)     # bridge centres, normalised x (tile-derived; set below)
+
+
+def configure_board(tiles_x: float, tiles_y: float, bridge_tiles) -> None:
+    """Set the tile grid + bridge lanes. Called by SimEngine.__init__ from `sim.board`."""
+    global _TILES_X, _TILES_Y, _BRIDGES
+    _TILES_X, _TILES_Y = float(tiles_x), float(tiles_y)
+    _BRIDGES = tuple(float(b) / _TILES_X for b in bridge_tiles)
+
+
+# speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
+_SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, None: 1.0}
+# attack reach word -> TILES (melee ~1, short ~3, long 5.5)
+_REACH = {"melee": 1.0, "short": 3.0, "long": 5.5, None: 1.0}
+_REACH_SLOP = 0.6         # tiles of tolerance on "target is in reach"
+_TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit counts as a heavy tank
+_RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
+_SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
-_LOG_ROLL_LEN = 0.30      # how far forward it rolls (normalized)
-_LOG_ROLL_HALFW = 0.07    # corridor half-width (~a lane)
-_LOG_KNOCKBACK = 0.05     # pushes ground troops this far in the roll direction
+_LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
+_LOG_ROLL_HALFW = 2.2     # corridor half-width (tiles, ~a lane)
+_LOG_KNOCKBACK = 1.6      # pushes ground troops this far in the roll direction (tiles)
+_LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corridor
 
 
 @dataclass
@@ -57,23 +89,23 @@ class CardSpec:
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
-    roll_len: float = 0.0     # forward length of the roll corridor (normalized)
+    roll_len: float = 0.0     # forward length of the roll corridor (tiles)
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
     tower_hit_dmg: float = 0.0  # damage per hit vs CROWN TOWERS -- reduced when the KB carries a
                               # crown_tower_damage (Miner's signature nerf); else = hit_dmg. Without
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
-    radius: float = 0.02      # collision radius (soft body-block)
+    radius: float = 0.64      # collision radius, TILES (soft body-block)
     deploy_anywhere: bool = False   # KB flag: tunnels/drills to ANY tile (Miner, Goblin Drill) -- it does not
                                     # walk the lane, so it is placed straight onto the defender's tower
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
     level: int = 11           # card level (HP + damage scaled by 1.1^(level-11))
-    sight: float = 0.16       # AGGRO/SIGHT radius (normalized; from the KB per-card table, 5.5 tiles default)
+    sight: float = 5.5        # AGGRO/SIGHT radius, TILES (from the KB per-card table, 5.5 default)
     pulse_dmg: float = 0.0    # Evo Tesla area-shock: damage per pulse
-    pulse_r: float = 0.0      # pulse radius (normalized)
+    pulse_r: float = 0.0      # pulse radius (tiles)
     pulse_stun: float = 0.0   # STUN seconds applied by each pulse
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
@@ -93,11 +125,10 @@ _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-sc
 # The pull is VIOLENT in real CR (edge-to-centre well inside the duration) -- that clumping is what turns
 # Ice Wizard's splash into an everything-hitter and makes centre-Rocket hit a whole push. Heavy tanks
 # (collision radius 0.03 = the 'tank' flag) resist at half speed.
-_TORNADO_RADIUS = 5.5 * (0.16 / 5.5)    # tiles -> normalized (= _REACH['long'] scale)
+_TORNADO_RADIUS = 5.5                   # tiles
 _TORNADO_DURATION = 1.05
-_TORNADO_PULL = 0.35                    # normalized/s (~12 tiles/s: edge reaches centre in ~0.5s)
-_ROCKET_RADIUS = 2.0 * (0.16 / 5.5)     # rocket's REAL 2-tile blast (the flat 0.09 ~= 3 tiles over-rewarded
-                                        # it -- and would over-pay the tornado->rocket combo beyond the real game)
+_TORNADO_PULL = 11.2                    # tiles/s (edge reaches centre in ~0.5s)
+_ROCKET_RADIUS = 2.0                    # rocket's REAL 2-tile blast
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
@@ -112,12 +143,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     hit = float(c.get("hit_speed") or 1.0)
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
     tower_dmg = float(db.tower_damage(base) or dmg)
-    reach = _REACH.get(db.attack_range(base), 0.03)
-    speed = _SPEED.get(c.get("speed"), 0.031)
+    reach = _REACH.get(db.attack_range(base), _REACH["melee"])     # TILES
+    speed = _SPEED.get(c.get("speed"), _SPEED["medium"])           # TILES/s
     count = int(c.get("count") or 1)
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     siege = "siege" in flags
-    spell_radius = 0.11 if base == "royal_delivery" else 0.09
+    spell_radius = 3.5 if base == "royal_delivery" else 2.9   # tiles
     if base == "rocket":
         spell_radius = _ROCKET_RADIUS                         # honest 2-tile blast
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
@@ -145,18 +176,18 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         if evo.get("lifetime"):
             lifetime = float(evo["lifetime"])
         p_dmg = float(evo.get("pulse_damage", 0.0))
-        p_r = float(evo.get("pulse_radius", 0.0)) * (_REACH["long"] / 5.5)   # tiles -> normalized
+        p_r = float(evo.get("pulse_radius", 0.0))            # already in TILES in the KB
         p_stun = float(evo.get("pulse_stun", 0.0))
         p_int = float(evo.get("pulse_interval", 0.0))
         dmg_reduc = float(evo.get("damage_reduction", 0.0))  # Evo Knight: takes this fraction LESS damage while not attacking
     sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
     hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
-    sight = float(db.sight_range_tiles(base)) * (_REACH["long"] / 5.5)   # per-troop aggro radius (tiles -> normalized)
+    sight = float(db.sight_range_tiles(base))                  # per-troop aggro radius, TILES (from the KB)
     deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
     ct = db.crown_tower_damage(base)                           # troops with a reduced crown value (Miner) hit towers softer
     tower_hit_dmg = float(ct) * sc if ct is not None else hit_dmg
-    radius = 0.03 if "tank" in flags else (0.014 if count >= 3 else 0.02)
+    radius = 0.96 if "tank" in flags else (0.45 if count >= 3 else 0.64)   # collision radius, TILES
     spawn_spec, spawn_count = None, 0
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
@@ -256,7 +287,11 @@ class _Vortex:
 
 
 def _dist(ax, ay, bx, by) -> float:
-    return math.hypot(ax - bx, ay - by)
+    """Distance in TILES between two normalised points (the axes have different tile scales)."""
+    return math.hypot((ax - bx) * _TILES_X, (ay - by) * _TILES_Y)
+
+
+tile_dist = _dist          # public alias: reward geometry must measure in tiles too
 
 
 # Tower-troop stat fallback (Clash Royale Fandom wiki, LEVEL 15) if config omits `tower_troops`/`king_tower`.
@@ -288,20 +323,35 @@ class SimEngine:
         self.king_profile = dict(cfg.get("sim", "king_tower", default=None) or _DEFAULT_KING_TOWER)
         self.opp_tower_weights = dict(cfg.get("sim", "opponent_tower_weights", default=None)
                                       or _DEFAULT_OPP_TOWER_WEIGHTS)
-        self.tower_range = float(cfg.get("sim", "tower_range", default=0.20))
-        self.king_range = float(cfg.get("sim", "king_range", default=0.187))
+        self.tower_range = float(cfg.get("sim", "tower_range", default=7.5))   # tiles
+        self.king_range = float(cfg.get("sim", "king_range", default=7.0))     # tiles
         self.regulation = float(cfg.get("sim", "regulation_s", default=180.0))
         self.overtime = float(cfg.get("sim", "overtime_s", default=60.0))
-        self.siege_sight = float(cfg.get("sim", "siege_sight", default=0.42))  # X-Bow ~11.5 tiles
-        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))  # troop aggro radius (notice enemy UNITS)
+        self.siege_sight = float(cfg.get("sim", "siege_sight", default=11.5))  # X-Bow, tiles
+        self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # troop aggro radius, tiles
         self.slow_factor = float(cfg.get("sim", "slow_factor", default=0.5))   # SLOW -> this x move + attack speed
         self.slow_dur = float(cfg.get("sim", "slow_duration", default=2.0))
         self.stun_dur = float(cfg.get("sim", "stun_duration", default=0.5))
         self.freeze_dur = float(cfg.get("sim", "freeze_duration", default=1.0))
         self.collide = bool(cfg.get("sim", "collision", default=True))         # soft body-block separation
-        my = cfg.get("env", "my_towers", default=[[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]])
-        en = cfg.get("env", "enemy_towers", default=[[0.25, 0.21], [0.72, 0.21], [0.48, 0.12]])
-        self._anchors = {0: my, 1: en}
+        # BOARD: a tile grid, and the towers are placed FROM IT -- so the two halves are exactly
+        # symmetric about the river and the self-play mirror (reflect about y=0.5) is exact. Do NOT
+        # reuse `env.my_towers`/`env.enemy_towers` here: those are live SCREEN coordinates and carry
+        # the real game's perspective foreshortening.
+        board = dict(cfg.get("sim", "board", default=None) or {})
+        self.tiles_x = float(board.get("tiles_x", 18.0))
+        self.tiles_y = float(board.get("tiles_y", 32.0))
+        self.bridge_tiles = list(board.get("bridge_tiles", [3.5, 14.5]))
+        pt = list(board.get("princess_tile", [3.5, 6.5]))      # [x from the side wall, y from the back wall]
+        kt = list(board.get("king_tile", [9.0, 3.0]))
+        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles)
+        px_l, px_r = pt[0] / self.tiles_x, (self.tiles_x - pt[0]) / self.tiles_x
+        py, kx, ky = pt[1] / self.tiles_y, kt[0] / self.tiles_x, kt[1] / self.tiles_y
+        self._anchors = {                                      # [L princess, R princess, king]
+            1: [[px_l, py], [px_r, py], [kx, ky]],                          # enemy: TOP
+            0: [[px_l, 1.0 - py], [px_r, 1.0 - py], [kx, 1.0 - ky]],        # you: BOTTOM (mirrored)
+        }
+        self.lanes = tuple(float(b) / self.tiles_x for b in self.bridge_tiles)   # bridge lane centres, normalised x
         self.reset()
 
     # -- lifecycle ---------------------------------------------------------
@@ -387,10 +437,14 @@ class SimEngine:
             delay = spec.spell_delay
             if spec.base == "rocket":                      # rocket FLIGHT TIME grows with distance from its
                 oy = 1.0 if team == 0 else 0.0             # launcher -> the policy must LEAD a marching target
-                delay = 0.4 + 1.0 * (((x - 0.5) ** 2 + (y - oy) ** 2) ** 0.5)   # (live-parity physics)
+                delay = 0.4 + _dist(x, y, 0.5, oy) / _TILES_Y   # (live-parity physics; ~1.4s at max range)
             self.spells.append(_Spell(team, x, y, spec, delay))
             return True
         n = max(1, spec.count)
+        # TILE SNAP: troops/buildings land on a tile centre, as in the real game (spells stay
+        # continuous -- they are aimed, not placed).
+        x = (math.floor(x * _TILES_X) + 0.5) / _TILES_X
+        y = (math.floor(y * _TILES_Y) + 0.5) / _TILES_Y
         # SWARM FORMATION. A multi-unit card spawns its members in a compact cluster CENTRED on the
         # drop point, spread by unit size -- so each body is separately killable, blockable and
         # splash-able, which is the whole point of a swarm.
@@ -400,11 +454,17 @@ class SimEngine:
         #  Skeletons, and the opponents' Archers / Barbarians / Minions / Minion Horde / Skeleton
         #  Army -- and for team 1 the doubling threw their swarms across the river into YOUR half.)
         cols = int(math.ceil(math.sqrt(n)))
-        rows = int(math.ceil(n / cols))
-        step = max(0.012, spec.radius * 2.2)          # touching-but-not-overlapping bodies
-        for i in range(n):
-            dx = ((i % cols) - (cols - 1) / 2.0) * step
-            dy = ((i // cols) - (rows - 1) / 2.0) * step
+        step = max(0.4, spec.radius * 2.2)            # touching-but-not-overlapping bodies (TILES)
+        # Lay the members out row by row (each row centred), then subtract the cluster's mean so the
+        # formation is centred on the drop point EXACTLY -- a partly-filled last row (3 bodies in a
+        # 2x2, the Skeletons case) would otherwise bias the whole squad up and to one side.
+        offs = [((i % cols) - (min(cols, n - (i // cols) * cols) - 1) / 2.0, float(i // cols))
+                for i in range(n)]
+        mx = sum(o[0] for o in offs) / n
+        my = sum(o[1] for o in offs) / n
+        for ox, oy in offs:
+            dx = (ox - mx) * step / _TILES_X             # tiles -> normalised, per axis
+            dy = (oy - my) * step / _TILES_Y
             u = Unit(spec, team, min(max(x + dx, 0.03), 0.97), min(max(y + dy, 0.03), 0.97), spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
@@ -451,16 +511,18 @@ class SimEngine:
         # ground units cross the river only at a bridge
         if not u.spec.flying and (u.y - _RIVER) * (ty - _RIVER) < 0:
             bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
-            if abs(u.x - bx) > 0.02:
+            if abs(u.x - bx) * _TILES_X > 0.4:               # not yet in the bridge lane (tiles)
                 tx, ty = bx, _RIVER
             else:
                 tx, ty = bx, ty                              # aligned with the bridge -> cross straight
-        d = _dist(u.x, u.y, tx, ty)
+        # step in TILES, then convert back per axis (one normalised unit != one tile on both axes)
+        dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
         if d < 1e-6:
             return
         step = min(u.spec.speed * spd_mult * dt, d)
-        u.x += (tx - u.x) / d * step
-        u.y += (ty - u.y) / d * step
+        u.x += (dxt / d) * step / _TILES_X
+        u.y += (dyt / d) * step / _TILES_Y
 
     def _separate(self) -> None:
         """Soft collision so units can't stack -- approximate body-blocking: a wall of troops physically
@@ -473,7 +535,7 @@ class SimEngine:
                 b = us[j]
                 if a.spec.flying != b.spec.flying:
                     continue
-                dx, dy = a.x - b.x, a.y - b.y
+                dx, dy = (a.x - b.x) * _TILES_X, (a.y - b.y) * _TILES_Y   # TILES
                 d = math.hypot(dx, dy)
                 mind = a.spec.radius + b.spec.radius
                 if d >= mind or d <= 1e-6:
@@ -485,10 +547,11 @@ class SimEngine:
                 s = am + bm
                 if s <= 0:
                     continue
-                a.x = min(max(a.x + ux * overlap * (am / s), 0.03), 0.97)
-                a.y = min(max(a.y + uy * overlap * (am / s), 0.03), 0.97)
-                b.x = min(max(b.x - ux * overlap * (bm / s), 0.03), 0.97)
-                b.y = min(max(b.y - uy * overlap * (bm / s), 0.03), 0.97)
+                px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
+                a.x = min(max(a.x + px * (am / s), 0.03), 0.97)
+                a.y = min(max(a.y + py * (am / s), 0.03), 0.97)
+                b.x = min(max(b.x - px * (bm / s), 0.03), 0.97)
+                b.y = min(max(b.y - py * (bm / s), 0.03), 0.97)
 
     def advance(self, dt: float) -> None:
         if self.done:
@@ -550,7 +613,7 @@ class SimEngine:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            if _dist(u.x, u.y, rx, ry) <= reach + 0.02:
+            if _dist(u.x, u.y, rx, ry) <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
@@ -684,7 +747,7 @@ class SimEngine:
             # duration). Tiny crown chip only if the cast point itself overlaps a tower.
             self.vortices.append(_Vortex(s.team, s.x, s.y, s.spec, s.spec.pull_duration))
             for tw in self._enemy_towers(s.team):
-                if _dist(tw.x, tw.y, s.x, s.y) <= 0.05:
+                if _dist(tw.x, tw.y, s.x, s.y) <= 1.6:        # tiles: the cast point overlaps the tower
                     self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
             return
         for e in self.units:
@@ -696,7 +759,7 @@ class SimEngine:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
         sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
         for i in range(s.spec.spawn_count if sp is not None else 0):
-            ox = 0.02 * ((i % 3) - 1) if s.spec.spawn_count > 1 else 0.0
+            ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0   # tiles -> normalised
             u = Unit(sp, s.team, min(max(s.x + ox, 0.03), 0.97), min(max(s.y, 0.03), 0.97), sp.hp)
             u.deploy_left = sp.deploy_time
             u.pulse_cd = sp.pulse_interval
@@ -708,21 +771,22 @@ class SimEngine:
         heavy tanks ('tank' collision radius) resist at half pull speed. Pulled units are the
         CLUMP the deck's synergies feed on -- Ice Wizard splash and a centre Rocket hit them all."""
         frac = min(dt, max(v.left, 0.0)) / max(v.spec.pull_duration, 1e-6)   # last tick pro-rated -> total == spell_dmg
-        step = _TORNADO_PULL * dt
+        step = _TORNADO_PULL * dt                             # tiles this tick
         for e in self.units:
             if e.team == v.team or e.hp <= 0:
                 continue
-            d = _dist(e.x, e.y, v.x, v.y)
+            dxt, dyt = (v.x - e.x) * _TILES_X, (v.y - e.y) * _TILES_Y
+            d = math.hypot(dxt, dyt)                          # tiles
             if d > v.spec.pull_radius:
                 continue
             self._hurt(e, v.spec.spell_dmg * frac)            # DoT slice of the total damage
             if d > 1e-6:
-                pull = step * (0.5 if e.spec.radius >= 0.03 else 1.0)   # tanks resist
+                pull = step * (0.5 if e.spec.radius >= _TANK_RADIUS else 1.0)   # tanks resist
                 if pull >= d:
                     e.x, e.y = v.x, v.y                       # reached the centre (clumped)
                 else:
-                    e.x += (v.x - e.x) / d * pull
-                    e.y += (v.y - e.y) / d * pull
+                    e.x += (dxt / d) * pull / _TILES_X        # tiles -> normalised, per axis
+                    e.y += (dyt / d) * pull / _TILES_Y
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
@@ -730,17 +794,17 @@ class SimEngine:
         so a defensive Log shoves the enemy push back UP the arena, away from your tower (buying time). A
         Log whose corridor reaches an enemy tower chips it (poor crown damage) -- the bridge cycle-chip."""
         fdir = -1.0 if s.team == 0 else 1.0
-        halfw = s.spec.spell_radius
+        halfw = s.spec.spell_radius                           # tiles
         for e in self.units:
             if e.team == s.team or (s.spec.ground_only and e.spec.flying):
                 continue
-            dy = (e.y - s.y) * fdir                           # forward distance along the roll
-            if -0.03 <= dy <= s.spec.roll_len and abs(e.x - s.x) <= halfw:
+            dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
+            if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
                 self._hurt(e, s.spec.spell_dmg)
-                e.y += fdir * s.spec.knockback                # knock back in the roll direction
+                e.y += fdir * s.spec.knockback / _TILES_Y     # knock back in the roll direction
         for tw in self._enemy_towers(s.team):
-            dy = (tw.y - s.y) * fdir
-            if -0.03 <= dy <= s.spec.roll_len and abs(tw.x - s.x) <= halfw:
+            dy = (tw.y - s.y) * fdir * _TILES_Y
+            if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:

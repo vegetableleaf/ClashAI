@@ -136,7 +136,7 @@ class ScriptedBot:
         if tot < 8.0:
             return False
         mean_x = sum(x for _, _, x in recent) / len(recent)
-        lane = 0.75 if mean_x < 0.5 else 0.25                    # punish the OPPOSITE lane
+        lane = eng.lanes[1] if mean_x < 0.5 else eng.lanes[0]    # punish the OPPOSITE lane
         offense = [s for s in affordable if s.kind != "spell"]
         if not offense:
             return False
@@ -182,7 +182,7 @@ class ScriptedBot:
                         and 4 <= s.elixir <= 6 and not s.flying]
             if supports:
                 self._backline_done = True
-                eng.deploy(team, self.rng.choice(supports), self.rng.choice([0.25, 0.75]), 0.10)
+                eng.deploy(team, self.rng.choice(supports), self.rng.choice(eng.lanes), 0.10)
                 return
         # PUMP OPENING: an Elixir Collector in the deck is placed like a real player -- at spare elixir,
         # under no pressure, at most one on the field. Placement VARIETY is deliberate: behind the KING
@@ -192,8 +192,8 @@ class ScriptedBot:
         if (pump is not None and not threats and elix >= pump.elixir + 2
                 and not any(u.team == team and u.spec.gen_every > 0 for u in eng.units)
                 and self.rng.random() < 0.35):
-            spot = self.rng.choice(((0.48 + self.rng.choice([-0.06, 0.06]), 0.06),   # hugging the king
-                                    (self.rng.choice([0.25, 0.75]), 0.13),           # princess pocket
+            spot = self.rng.choice(((0.5 + self.rng.choice([-0.06, 0.06]), 0.06),    # hugging the king
+                                    (self.rng.choice(eng.lanes), 0.13),              # princess pocket
                                     (self.rng.choice([0.35, 0.62]), 0.10)))          # mid-back
             eng.deploy(team, pump, spot[0], spot[1])
             return
@@ -217,9 +217,9 @@ class ScriptedBot:
         splitting = self.adaptive and self.split_know and self._nado_seen
         if splitting:
             self._flip = not self._flip                          # tornado seen -> stop stacking one lane
-            lane = 0.25 if self._flip else 0.75
+            lane = eng.lanes[0] if self._flip else eng.lanes[1]
         else:
-            lane = self.rng.choice([0.25, 0.75])
+            lane = self.rng.choice(eng.lanes)
         if self.style == "beatdown":
             tank = max(offense, key=lambda s: s.hp)               # heaviest unit BEHIND the king (deep back)
             eng.deploy(team, tank, lane, 0.10)

@@ -20,7 +20,7 @@ from ..cards import shared as shared_db
 from .. import card_threat
 from .. import interactions
 from ..cycle import cycle_vector
-from .engine import SimEngine, build_spec, _ROCKET_RADIUS
+from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
 from . import view
@@ -29,12 +29,41 @@ Action = Tuple[int, int, int]
 _THREAT_DIM = 16
 
 
+class _BoardCfg:
+    """Read-only config view that re-anchors the ActionSpace to the SIM BOARD.
+
+    ``ActionSpace`` maps grid cells through ``action.arena_box`` into FRAME-normalised SCREEN
+    coordinates -- right for live play, wrong for the sim, whose board is the full [0,1] square
+    with the river at y=0.5. Feeding screen cells (and screen tower anchors) to the engine is what
+    made the simulated arena vertically asymmetric. Cell IDs and ``action.grid`` are untouched, so
+    a checkpoint's action head still lines up."""
+
+    def __init__(self, cfg, over):
+        self._cfg, self._over = cfg, over
+
+    def get(self, *keys, default=None):
+        return self._over[keys] if keys in self._over else self._cfg.get(*keys, default=default)
+
+
+def _board_action_space(cfg) -> ActionSpace:
+    b = dict(cfg.get("sim", "board", default=None) or {})
+    tx, ty = float(b.get("tiles_x", 18.0)), float(b.get("tiles_y", 32.0))
+    pt = list(b.get("princess_tile", [3.5, 6.5]))
+    kt = list(b.get("king_tile", [9.0, 3.0]))
+    py, ky = 1.0 - pt[1] / ty, 1.0 - kt[1] / ty                 # YOUR side (bottom)
+    return ActionSpace(_BoardCfg(cfg, {
+        ("action", "arena_box"): [0.0, 0.0, 1.0, 1.0],
+        ("action", "deploy_top"): float(b.get("deploy_top", 0.5)),   # the river
+        ("env", "my_towers"): [[pt[0] / tx, py], [(tx - pt[0]) / tx, py], [kt[0] / tx, ky]],
+    }))
+
+
 class SimMatchEnv:
     def __init__(self, cfg, seed: int = 0):
         self.cfg = cfg
         self.rng = random.Random(seed)
         self.db = shared_db(cfg)          # read-only + shared: building one per env cost ~0.4 s each
-        self.actions = ActionSpace(cfg)
+        self.actions = _board_action_space(cfg)
         self.gw, self.gh = int(self.actions.gw), int(self.actions.gh)
         self.n_cells = int(self.actions.n_cells)
         self.deck_keys = self.db.deck_identities()
@@ -58,7 +87,7 @@ class SimMatchEnv:
         self.det_recall_by_card = dict(cfg.get("observation", "sim_detector_recall_by_card", default=None) or {})
         # Stage-3b gate: the troop-INTERACTION block (who is predicted to be moving at which tower)
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
-        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
+        self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # tiles
         self.threat_dim = (_THREAT_DIM
                            + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                               if self.use_detector else 0)
@@ -100,22 +129,24 @@ class SimMatchEnv:
         self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
-        self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
-        self.xbow_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
-        self.xbow_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
+        # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
+        # those are screen-space normalised distances on a foreshortened phone frame.
+        self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
+        self.xbow_front = float(cfg.get("sim", "xbow_defense_front", default=0.56))     # normalised y band
+        self.xbow_back = float(cfg.get("sim", "xbow_defense_back", default=0.66))
         self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
-        self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))   # support near the aimed tower
+        self.rocket_combo_radius = float(cfg.get("sim", "rocket_combo_tiles", default=3.5))   # support near the aimed tower
         self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))  # rocket the pump within this of its deploy
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
-        self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+        self.spell_aim_radius = float(cfg.get("sim", "spell_tower_aim_tiles", default=3.8))
         # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
         self.damage_spell_ids = {i for i in range(self.n_cards)
                                  if self.specs[i].kind == "spell" and self.specs[i].spell_dmg > 0.0}
         self.w_spell_waste = r("spell_waste", -0.3)
-        self.spell_waste_radius = float(cfg.get("env", "spell_waste_radius", default=0.14))
+        self.spell_waste_radius = float(cfg.get("sim", "spell_waste_tiles", default=4.5))
         # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
         # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
         # tower), which plain outcome terms barely see -- so a WELL-EXECUTED pull is credited by its
@@ -294,12 +325,12 @@ class SimMatchEnv:
         rocket-cycle chip or the rocket 2-for-1. + when executed correctly, - when the win condition is
         thrown away. Non-win-condition cards return 0 (they're scored by threat_response / the trade term)."""
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
-        d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
+        d = min((tile_dist(nx, ny, t.x, t.y) for t in princesses), default=99.0)   # tiles
         if card_id in self.xbow_ids:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
             # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.48) <= 0.18
+            central = abs(nx - 0.5) <= 0.18
             in_band = central and self.xbow_front <= ny <= self.xbow_back
             behind = central and ny > self.xbow_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
@@ -319,9 +350,9 @@ class SimMatchEnv:
             return 0.0
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
-            if king.alive and np.hypot(nx - king.x, ny - king.y) <= 0.09:
+            if king.alive and tile_dist(nx, ny, king.x, king.y) <= 2.9:
                 return self.w_wincon_mis                      # Miner on the enemy KING wakes it early -> bad trade
-            if d <= 0.09:
+            if d <= 2.9:                                      # tiles
                 return self.w_wincon                          # Miner chipping the princess
         return 0.0
 
@@ -340,17 +371,17 @@ class SimMatchEnv:
         MISPLACE penalty when the blast would clip the enemy KING (activating it costs more than any
         pump). A STALE pump earns nothing (the elixir already flowed). 0.0 = no pump in the blast ->
         the ordinary rocket logic applies."""
-        R = _ROCKET_RADIUS
+        R = _ROCKET_RADIUS                                   # tiles
         pump = next((u for u in self.eng.units
                      if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
-                     and np.hypot(nx - u.x, ny - u.y) <= R + 0.01), None)
+                     and tile_dist(nx, ny, u.x, u.y) <= R + 0.3), None)
         if pump is None:
             return 0.0
         king = self.eng.towers[1][2]
-        if king.alive and np.hypot(nx - king.x, ny - king.y) <= R + 0.02:
+        if king.alive and tile_dist(nx, ny, king.x, king.y) <= R + 0.6:
             return self.w_wincon_mis                         # never wake the king for a pump
         if pump.age <= self.pump_window:
-            both = any(t.alive and np.hypot(nx - t.x, ny - t.y) <= R + 0.01
+            both = any(t.alive and tile_dist(nx, ny, t.x, t.y) <= R + 0.3
                        for t in self.eng.towers[1][:2])
             return self.w_wincon * (self.combo_mult if both else 1.0)
         return 0.0
@@ -363,14 +394,14 @@ class SimMatchEnv:
         if self._rocket_dmg <= 0.0:
             return False
         tgt = next((t for t in self.eng.towers[1][:2]
-                    if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius), None)
+                    if t.alive and tile_dist(nx, ny, t.x, t.y) <= self.spell_aim_radius), None)
         if tgt is None:
             return False
         for u in self.eng.units:
             if (u.team == 1 and u.spec.kind == "troop" and not u.spec.building_only
                     and 4 <= u.spec.elixir <= 6
                     and u.spec.hp <= self._rocket_dmg * self.rocket_combo_hp_frac
-                    and np.hypot(u.x - tgt.x, u.y - tgt.y) <= self.rocket_combo_radius):
+                    and tile_dist(u.x, u.y, tgt.x, tgt.y) <= self.rocket_combo_radius):
                 return True
         return False
 
@@ -448,10 +479,10 @@ class SimMatchEnv:
         reach is the wide pull radius, so 'has a target' uses that."""
         if not spec.pulls:
             for t in self.eng.towers[1][:2]:
-                if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius:
+                if t.alive and tile_dist(nx, ny, t.x, t.y) <= self.spell_aim_radius:
                     return False                         # aimed at an enemy princess tower = a valid chip target
         rad = max(self.spell_waste_radius, spec.pull_radius) if spec.pulls else self.spell_waste_radius
-        return not any(u.team == 1 and u.hp > 0 and np.hypot(nx - u.x, ny - u.y) <= rad
+        return not any(u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad
                        for u in self.eng.units)
 
     def _chip_progress(self, towers) -> float:
@@ -472,14 +503,14 @@ class SimMatchEnv:
         enemy building-targeters were tower-locked at cast time (retarget candidates)."""
         pulled = [u for u in self.eng.units
                   if u.team == 1 and u.hp > 0
-                  and np.hypot(u.x - nx, u.y - ny) <= spec.pull_radius]
+                  and tile_dist(u.x, u.y, nx, ny) <= spec.pull_radius]
         targeters = []
         for u in pulled:
             if not u.spec.building_only:
                 continue
             for tw in self.eng.towers[0]:
-                if tw.alive and np.hypot(u.x - tw.x, u.y - tw.y) <= u.spec.reach + 0.03:
-                    targeters.append((u, tw, float(np.hypot(u.x - tw.x, u.y - tw.y))))
+                if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
+                    targeters.append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
                     break
         self._nado_watch.append({
             "t0": self.eng.t, "cx": nx, "cy": ny,
@@ -501,11 +532,11 @@ class SimMatchEnv:
             if age >= 2.0 and not w["early_done"]:
                 w["early_done"] = True
                 alive_close = [u for u in w["pulled"]
-                               if u.hp > 0 and np.hypot(u.x - w["cx"], u.y - w["cy"]) <= 0.07]
+                               if u.hp > 0 and tile_dist(u.x, u.y, w["cx"], w["cy"]) <= 2.2]
                 if len(alive_close) >= 2:
                     credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
                 for u, tw, d0 in w["targeters"]:
-                    if u.hp > 0 and np.hypot(u.x - tw.x, u.y - tw.y) >= d0 + 0.05:
+                    if u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6:
                         credit += self.w_nado_retarget
                         break                                    # one retarget credit per cast
             if age >= 3.5:
@@ -514,8 +545,8 @@ class SimMatchEnv:
                     credit += self.w_nado_combo
                 if (w["king_was_asleep"] and not self._nado_king_credited
                         and self.eng.towers[0][2].active
-                        and any(np.hypot(u.x - self.eng.towers[0][2].x,
-                                         u.y - self.eng.towers[0][2].y) <= self.eng.king_range + 0.03
+                        and any(tile_dist(u.x, u.y, self.eng.towers[0][2].x,
+                                          self.eng.towers[0][2].y) <= self.eng.king_range + 1.0
                                 for u in w["pulled"])):
                     credit += self.w_nado_king
                     self._nado_king_credited = True

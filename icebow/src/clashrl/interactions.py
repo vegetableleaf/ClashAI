@@ -26,9 +26,18 @@ from . import card_threat
 
 INTERACTION_DIM = 12          # (value, urgency) x my 3 towers + (value, urgency) x enemy 3 towers
 
-# speed word -> normalized units/second (matches sim/engine._SPEED)
-_SPEED = {"slow": 0.023, "medium": 0.031, "fast": 0.047, "very_fast": 0.063}
-_TILE = 0.16 / 5.5            # one tile in normalized units (the engine's reach convention)
+# speed word -> TILES/second (matches sim/engine._SPEED)
+_SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0}
+# The board is 18 tiles wide x 32 tall, so a normalised unit spans a DIFFERENT number of tiles on
+# each axis -- a plain hypot on normalised coords under-measures horizontal distance by ~1.78x.
+# (A phone frame is 9:16 = 0.5625 and the board is 18/32 = 0.5625, so this holds for the live
+# frame too, not just the sim board.)
+_TILES_X, _TILES_Y = 18.0, 32.0
+
+
+def _tdist(ax: float, ay: float, bx: float, by: float) -> float:
+    """Distance in TILES between two normalised points."""
+    return math.hypot((ax - bx) * _TILES_X, (ay - by) * _TILES_Y)
 
 Unit = Tuple[str, str, float, float]          # (team 'mine'|'enemy', base_card, x, y) normalized
 Tower = Tuple[float, float, bool]             # (x, y, alive)
@@ -55,18 +64,18 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
             for j, (ft, fb, fx, fy) in enumerate(units):
                 if ft != foe_team or card_threat.profile(db, fb).kind != "building":
                     continue
-                d = math.hypot(x - fx, y - fy)
+                d = _tdist(x, y, fx, fy)
                 if best is None or d < best[2]:
                     best = ("unit", j, d)
         else:                                         # nearest ATTACKABLE foe inside ITS OWN sight range
-            sight = float(db.sight_range_tiles(base)) * _TILE
+            sight = float(db.sight_range_tiles(base))          # TILES
             for j, (ft, fb, fx, fy) in enumerate(units):
                 if ft != foe_team:
                     continue
                 fp = card_threat.profile(db, fb)
                 if fp.spell or (fp.flying and not p.attacks_air):
                     continue
-                d = math.hypot(x - fx, y - fy)
+                d = _tdist(x, y, fx, fy)
                 if d <= sight and (best is None or d < best[2]):
                     best = ("unit", j, d)
         # nearest alive enemy tower = the march target
@@ -74,7 +83,7 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
         for k, (tx, ty, alive) in enumerate(towers):
             if not alive:
                 continue
-            d = math.hypot(x - tx, y - ty)
+            d = _tdist(x, y, tx, ty)
             if tbest is None or d < tbest[2]:
                 tbest = ("tower", k, d)
         if p.building_targeting:                      # building-targeter: nearest of {building unit, tower}
@@ -102,7 +111,7 @@ def interaction_vector(units: Sequence[Unit], my_towers: Sequence[Tower],
         if card_threat.profile(db, base).kind == "building":
             continue                                   # buildings don't march (siege shows elsewhere)
         value = float(c.get("elixir") or 4) / max(1, int(c.get("count") or 1))
-        eta = dist / max(1e-6, _SPEED.get(c.get("speed"), 0.031))
+        eta = dist / max(1e-6, _SPEED.get(c.get("speed"), 1.0))   # tiles / (tiles/s) = seconds
         off = 0 if team == "enemy" else 6              # enemy -> pressure ON MY towers; mine -> on theirs
         v[off + 2 * k] = min(1.0, v[off + 2 * k] + value / value_norm)
         v[off + 2 * k + 1] = max(v[off + 2 * k + 1], max(0.0, 1.0 - eta / eta_norm))
