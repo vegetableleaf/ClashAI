@@ -16,6 +16,7 @@ from flask import Flask, Response, jsonify, render_template, request, send_file
 from . import jobs as jobcat
 from .. import config_edit as editor
 from .ckpt import list_checkpoints, models as ckpt_models
+from . import labeler
 from ..hardware import probe, suggest
 from .metrics import MetricsStore, to_csv
 from .procs import ProcManager
@@ -307,6 +308,40 @@ def create_app(cfg) -> Flask:
     def models_view():
         """The two networks told apart -- see ckpt.models()."""
         return jsonify(ckpt_models(root, metrics.runs()))
+
+    # -- box labelling (vision AI training data) ---------------------------
+    @app.get("/api/label/status")
+    def label_status():
+        return jsonify(labeler.status(C()))
+
+    @app.get("/api/label/image/<name>")
+    def label_image(name: str):
+        try:
+            p = labeler.find_image(C(), name)
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        if p is None:
+            return jsonify({"error": "no such frame"}), 404
+        return send_file(p)
+
+    @app.get("/api/label/boxes/<name>")
+    def label_boxes(name: str):
+        try:
+            return jsonify({"name": name, "boxes": labeler.read_boxes(C(), name)})
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+
+    @app.post("/api/label/save")
+    def label_save():
+        body = request.get_json(force=True, silent=True) or {}
+        try:
+            res = labeler.save(C(), str(body.get("name", "")), body.get("boxes") or [],
+                               split=body.get("split"))
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        except OSError as exc:
+            return jsonify({"error": f"could not write: {exc}"}), 500
+        return jsonify(res)
 
     # -- live view ---------------------------------------------------------
     @app.get("/api/live")

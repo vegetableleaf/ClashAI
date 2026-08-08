@@ -25,6 +25,7 @@
   <button class="tab" data-tab="towers">Towers</button>
   <button class="tab" data-tab="speed">Tempo</button>
   <button class="tab" data-tab="config">Settings</button>
+  <button class="tab" data-tab="labeling">Labelling</button>
   <button class="tab" data-tab="ckpt">Models</button>
 </nav>
 
@@ -194,6 +195,30 @@
       <span id="cfgmsg" class="msg"></span>
     </div>
     <div id="cfgbody"></div>
+  </section>
+
+  <!-- labelling ---------------- -->
+  <section id="tab-labeling" class="panel">
+    <p class="lead">Training data for the <b>vision AI</b>. Drag a box around each unit on the
+      board, pick what it is, save. That is the whole job -- the detector learns to predict the
+      boxes you drew. Frames are collected automatically while <code>train-rl</code> runs.</p>
+    <div id="labstats" class="row"></div>
+    <div class="row">
+      <button id="labprev" class="btn small">Previous</button>
+      <button id="labnext" class="btn small">Next frame</button>
+      <label>Class <select id="labclass"></select></label>
+      <button id="labsave" class="btn primary">Save and continue</button>
+      <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
+      <button id="labundo" class="btn small">Undo box</button>
+      <span id="labmsg" class="msg"></span>
+    </div>
+    <div id="labwrap" class="heatwrap">
+      <div id="labcanvaswrap" style="position:relative;display:inline-block">
+        <img id="labimg" alt="frame to label" style="display:block;max-width:100%">
+        <canvas id="labcanvas" style="position:absolute;left:0;top:0;cursor:crosshair"></canvas>
+      </div>
+      <div id="lablist" class="heatlegend"></div>
+    </div>
   </section>
 
   <!-- models ---------------- -->

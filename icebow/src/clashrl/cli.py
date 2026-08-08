@@ -196,6 +196,32 @@ def _cmd_deck_detect(args) -> None:
                 deck_only=args.deck_only)
 
 
+def _cmd_detect_train(args) -> None:
+    """Train the VISION network (the board detector).
+
+    Thin wrapper around tools/detect/train.py, which stays the single implementation --
+    this exists so the detector is startable the same way every other job is (and so the
+    launcher can run it), rather than being the one model you had to train by hand.
+    """
+    import subprocess
+    import sys
+    root = Config.load(args.config).root
+    script = root / "tools" / "detect" / "train.py"
+    if not script.exists():
+        print(f"[detect-train] missing {script}")
+        return
+    argv = [sys.executable, str(script)]
+    if args.resume:
+        argv += ["--resume"] + ([args.resume] if args.resume != "auto" else [])
+    else:
+        argv += ["--model", args.model, "--epochs", str(args.epochs), "--imgsz", str(args.imgsz)]
+        if args.batch:
+            argv += ["--batch", str(args.batch)]
+        if args.status_aug:
+            argv.append("--status-aug")
+    raise SystemExit(subprocess.run(argv, cwd=str(root)).returncode)
+
+
 def _cmd_calibrate(args) -> None:
     from .calibrate import calibrate
     calibrate(Config.load(args.config), session_arg=args.session, dry_run=args.dry_run)
@@ -508,6 +534,20 @@ def main() -> None:
                           "instead of every card in the game. Far more reliable once the deck is "
                           "correct -- use it to fill in missing hand templates.")
     ddt.set_defaults(func=_cmd_deck_detect)
+
+    dtr = sub.add_parser("detect-train",
+                         help="train the VISION network (board detector) on your labelled frames")
+    dtr.add_argument("--model", default="yolo11s.pt",
+                     help="base weights: yolo11n/s/m/l/x.pt (bigger = better but needs more VRAM)")
+    dtr.add_argument("--epochs", type=int, default=120, help="training epochs (early-stops on its own)")
+    dtr.add_argument("--imgsz", type=int, default=960, help="training image size")
+    dtr.add_argument("--batch", type=int, default=None,
+                     help="images per batch; empty auto-sizes to your GPU")
+    dtr.add_argument("--status-aug", action="store_true", dest="status_aug",
+                     help="extra augmentation for status effects (slow/rage tint, spell haze)")
+    dtr.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
+                     help="continue an interrupted run instead of starting a new one")
+    dtr.set_defaults(func=_cmd_detect_train)
 
     cal = sub.add_parser("calibrate",
                          help="re-cut the match detection from YOUR recording (needed for a different "

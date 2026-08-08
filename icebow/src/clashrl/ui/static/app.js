@@ -43,7 +43,8 @@ function toast(msg, seconds) {
 /* ---------------- tabs ---------------- */
 const LOADERS = { home: () => loadOverview(), live: () => loadLive(), dash: () => loadRuns(), strategy: () => loadStrategy(),
                   deck: () => loadDeck(), towers: () => loadTowers(), speed: () => loadSpeed(),
-                  config: () => loadConfig(), ckpt: () => loadCheckpoints() };
+                  config: () => loadConfig(), ckpt: () => loadCheckpoints(),
+                  labeling: () => loadLabeling() };
 function showTab(name) {
   $$(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
   $$(".panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + name));
@@ -1294,6 +1295,143 @@ $("#cfgsave").onclick = async () => {
 };
 $("#cfgreset").onclick = () => loadConfig();
 
+/* ---------------- Labelling (training data for the vision AI) ----------------
+   Boxes are stored the way YOLO wants them: normalised CENTRE + size, not corners.
+   The canvas works in pixels, so every conversion happens at the boundary here --
+   getting it wrong trains a detector that aims half a box off, silently. */
+const LAB = { queue: [], ix: 0, boxes: [], classes: [], drag: null, natural: [0, 0] };
+
+function labToNorm(x, y, w, h, cw, ch) {
+  return { cx: (x + w / 2) / cw, cy: (y + h / 2) / ch, w: w / cw, h: h / ch };
+}
+function labToPx(b, cw, ch) {
+  return { x: (b.cx - b.w / 2) * cw, y: (b.cy - b.h / 2) * ch, w: b.w * cw, h: b.h * ch };
+}
+
+function labDraw() {
+  const img = $("#labimg"), cv = $("#labcanvas");
+  if (!img.clientWidth) return;
+  cv.width = img.clientWidth; cv.height = img.clientHeight;
+  const g = cv.getContext("2d");
+  g.clearRect(0, 0, cv.width, cv.height);
+  LAB.boxes.forEach((b, i) => {
+    const p = labToPx(b, cv.width, cv.height);
+    g.strokeStyle = "#6f9b7c"; g.lineWidth = 2;
+    g.strokeRect(p.x, p.y, p.w, p.h);
+    const name = LAB.classes[b.cls] || String(b.cls);
+    g.font = "12px Consolas, monospace";
+    const tw = g.measureText(name).width + 6;
+    g.fillStyle = "rgba(11,14,20,.85)";
+    g.fillRect(p.x, Math.max(0, p.y - 15), tw, 15);
+    g.fillStyle = "#6f9b7c";
+    g.fillText(name, p.x + 3, Math.max(11, p.y - 4));
+  });
+  if (LAB.drag) {
+    const d = LAB.drag;
+    g.strokeStyle = "#c3cbd8"; g.setLineDash([4, 3]); g.lineWidth = 1.5;
+    g.strokeRect(Math.min(d.x0, d.x1), Math.min(d.y0, d.y1),
+                 Math.abs(d.x1 - d.x0), Math.abs(d.y1 - d.y0));
+    g.setLineDash([]);
+  }
+  const list = $("#lablist");
+  list.innerHTML = LAB.boxes.length
+    ? "<b>Boxes on this frame</b><br>" + LAB.boxes.map((b, i) =>
+        `${i + 1}. ${LAB.classes[b.cls] || b.cls}`).join("<br>")
+    : "No boxes yet. Drag around a unit on the board.";
+}
+
+async function labLoad(i) {
+  if (!LAB.queue.length) return;
+  LAB.ix = Math.max(0, Math.min(i, LAB.queue.length - 1));
+  const name = LAB.queue[LAB.ix];
+  LAB.boxes = [];
+  const img = $("#labimg");
+  img.onload = async () => {
+    LAB.natural = [img.naturalWidth, img.naturalHeight];
+    try {
+      const r = await api(`/api/label/boxes/${encodeURIComponent(name)}`);
+      LAB.boxes = r.boxes || [];
+    } catch (e) { /* unlabelled frame: start empty */ }
+    labDraw();
+  };
+  img.src = `/api/label/image/${encodeURIComponent(name)}?t=${Date.now()}`;
+  $("#labmsg").className = "msg";
+  $("#labmsg").textContent = `frame ${LAB.ix + 1} of ${LAB.queue.length}: ${name}`;
+}
+
+async function loadLabeling() {
+  const st = await api("/api/label/status");
+  LAB.classes = st.classes || [];
+  LAB.queue = st.queue || [];
+  const sel = $("#labclass");
+  if (sel.options.length !== LAB.classes.length) {
+    sel.innerHTML = "";
+    LAB.classes.forEach((c, i) => { const o = el("option", null, c); o.value = String(i); sel.appendChild(o); });
+  }
+  const s = $("#labstats"); s.innerHTML = "";
+  const pill = (t, cls) => s.appendChild(el("span", "pill" + (cls ? " " + cls : ""), t));
+  pill(`${st.queue_count} waiting to label`, st.queue_count ? "run" : "");
+  pill(`${st.train} train / ${st.val} validation`);
+  pill(`${st.boxes} boxes drawn`, st.boxes < 50 ? "warn" : "");
+  if (st.empty) pill(`${st.empty} frame(s) saved with NO boxes`, "warn");
+  if (st.boxes < 50) {
+    s.appendChild(el("span", "hint",
+      " A detector needs hundreds of boxes across many frames before it predicts anything "
+      + "useful; this many will train but will not detect much."));
+  }
+  if (!LAB.queue.length) {
+    $("#labmsg").textContent = "Queue empty -- frames are harvested automatically while train-rl runs.";
+    return;
+  }
+  await labLoad(0);
+}
+
+(function labWire() {
+  const cv = $("#labcanvas");
+  if (!cv) return;
+  const pos = ev => { const r = cv.getBoundingClientRect();
+    return [ev.clientX - r.left, ev.clientY - r.top]; };
+  cv.onmousedown = ev => { const [x, y] = pos(ev); LAB.drag = { x0: x, y0: y, x1: x, y1: y }; };
+  cv.onmousemove = ev => { if (!LAB.drag) return; const [x, y] = pos(ev);
+    LAB.drag.x1 = x; LAB.drag.y1 = y; labDraw(); };
+  cv.onmouseup = () => {
+    const d = LAB.drag; LAB.drag = null;
+    if (!d) return;
+    const w = Math.abs(d.x1 - d.x0), h = Math.abs(d.y1 - d.y0);
+    if (w < 6 || h < 6) { labDraw(); return; }       // a click, not a box
+    const b = labToNorm(Math.min(d.x0, d.x1), Math.min(d.y0, d.y1), w, h, cv.width, cv.height);
+    b.cls = +$("#labclass").value || 0;
+    LAB.boxes.push(b);
+    labDraw();
+  };
+  $("#labundo").onclick = () => { LAB.boxes.pop(); labDraw(); };
+  $("#labnext").onclick = () => labLoad(LAB.ix + 1);
+  $("#labprev").onclick = () => labLoad(LAB.ix - 1);
+  $("#labsave").onclick = () => labSave(false);
+  $("#labempty").onclick = () => labSave(true);
+  window.addEventListener("resize", () => { if ($(".tab.active").dataset.tab === "labeling") labDraw(); });
+})();
+
+async function labSave(empty) {
+  if (!LAB.queue.length) return;
+  const name = LAB.queue[LAB.ix];
+  const m = $("#labmsg");
+  if (!empty && !LAB.boxes.length) {
+    m.className = "msg err";
+    m.textContent = "No boxes drawn. Use \"No units here\" if the frame really has none.";
+    return;
+  }
+  try {
+    const r = await post("/api/label/save", { name, boxes: empty ? [] : LAB.boxes });
+    m.className = "msg ok";
+    m.textContent = `saved ${r.boxes} box(es) to ${r.split}`;
+    LAB.queue.splice(LAB.ix, 1);                    // it left the queue
+    if (!LAB.queue.length) { await loadLabeling(); return; }
+    await labLoad(Math.min(LAB.ix, LAB.queue.length - 1));
+    loadLabeling().catch(() => {});                 // refresh the counters
+  } catch (e) { m.className = "msg err"; m.textContent = e.message; }
+}
+
 /* ---------------- Models (the two networks, told apart) ---------------- */
 function headlineCard(title, subtitle, rows, extra) {
   const box = el("div", "cfggroup");
@@ -1340,9 +1478,15 @@ async function loadCheckpoints() {
 
   /* --- 2. the vision AI --- */
   const v = m.vision || {};
+  const mt = v.metrics || {};
+  const pct = x => x == null ? "-" : (100 * x).toFixed(1) + " %";
   const vRows = [
     ["trained", v.trained ? "yes" : "NO"],
-    ["weights", v.weights || "none"],
+    ["quality (mAP50)", pct(mt.mAP50),
+     "Share of units it both finds and names correctly. 0 means it detects nothing usable."],
+    ["precision / recall", `${pct(mt.precision)} / ${pct(mt.recall)}`,
+     "Of what it reports, how much is right / of what is there, how much it finds."],
+    ["training data", `${v.boxes} boxes on ${v.frames_with_boxes} frame(s)`],
     ["labelled frames", `${v.labelled_train} train / ${v.labelled_val} validation`],
     ["waiting to be labelled", v.to_label],
     ["classes it can name", v.classes],
@@ -1352,11 +1496,22 @@ async function loadCheckpoints() {
     "Finds and names the units on the board in a screenshot. Separate network, separate "
     + "training data: hand-labelled frames, not self-play. Without it the playing AI cannot "
     + "tell WHAT the opponent has on the field, and the overlay clips have nothing to draw."));
-  if (!v.trained) {
+  // The honest reading: weights existing is not the same as a detector that works, and a
+  // useless one is worse than none (it feeds the policy confident nonsense).
+  if (v.trained && (mt.mAP50 == null || mt.mAP50 < 0.05)) {
+    const w = el("div", "cfggroup");
+    w.innerHTML = "<h3>Trained, but it detects nothing yet</h3>"
+      + `<p class='hint'>Quality is ${pct(mt.mAP50)}. That is what ${v.boxes} boxes buys -- the `
+      + "file exists, the pipeline works, the model is not useful. It needs hundreds of boxes "
+      + "across many frames.</p>"
+      + "<p class='hint'>Draw them in the <b>Labelling</b> tab, then run <b>Train the vision AI</b> "
+      + "in the Control tab.</p>";
+    vExtra.appendChild(w);
+  } else if (!v.trained) {
     vExtra.appendChild(el("p", "hint",
       `No weights under ${v.runs_dir}. Frames are collected automatically while train-rl runs `
-      + `(${v.to_label} waiting in ${v.to_label_dir}); they have to be labelled, then trained with `
-      + "tools/detect/train.py. This is the piece that is not wired into this panel yet."));
+      + `(${v.to_label} waiting). Label them in the Labelling tab, then run "Train the vision AI" `
+      + "in the Control tab."));
   }
   body.appendChild(headlineCard("2. Vision AI (the detector)",
     "One network, trained from your labelled frames.", vRows, vExtra));

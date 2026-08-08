@@ -117,21 +117,58 @@ def list_checkpoints(data_dir: Path, metrics_runs: Optional[List[Dict[str, Any]]
 #                  hand-labelled frames; without it the playing AI is blind to what the
 #                  opponent has on the field.
 
+def _last_metrics(run_dir: Path) -> Dict[str, Any]:
+    """Final-epoch quality from Ultralytics' own results.csv.
+
+    mAP50 is the headline: the share of units it finds AND names correctly at a loose
+    overlap. 0 means it detects nothing usable -- which is the honest reading after
+    training on a handful of boxes, and the number that has to be visible so a useless
+    detector isn't mistaken for a working one just because the file exists.
+    """
+    csv = run_dir / "results.csv"
+    if not csv.is_file():
+        return {}
+    try:
+        lines = [ln for ln in csv.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        head, last = [c.strip() for c in lines[0].split(",")], lines[-1].split(",")
+        row = dict(zip(head, last))
+        pick = lambda k: (float(row[k]) if k in row and row[k] not in ("", "nan") else None)  # noqa: E731
+        return {"epochs": pick("epoch"), "mAP50": pick("metrics/mAP50(B)"),
+                "mAP50_95": pick("metrics/mAP50-95(B)"),
+                "precision": pick("metrics/precision(B)"), "recall": pick("metrics/recall(B)")}
+    except (OSError, ValueError, IndexError):
+        return {}
+
+
 def _detector_status(root: Path) -> Dict[str, Any]:
-    """Trained weights, labelled data, and what is still waiting to be labelled."""
+    """Trained weights, measured quality, labelled data, and what is still unlabelled."""
     det = root / "data" / "detect"
     runs = root / "runs" / "detect"
     weights = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime,
                      reverse=True) if runs.exists() else []
     n = lambda p, pat="*": len(list(p.glob(pat))) if p.exists() else 0    # noqa: E731
     classes = det / "classes.txt"
+    # boxes actually drawn -- an empty label file is legal YOLO ("nothing here") but a set
+    # that is empty by accident trains the detector to predict nothing at all.
+    boxes = with_boxes = 0
+    for split in ("train", "val"):
+        d = det / "labels" / split
+        if not d.is_dir():
+            continue
+        for p in d.glob("*.txt"):
+            k = len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
+            boxes += k
+            with_boxes += bool(k)
     return {
         "trained": bool(weights),
         "weights": str(weights[0]) if weights else None,
         "runs": [p.parent.parent.name for p in weights],
+        "metrics": _last_metrics(weights[0].parent.parent) if weights else {},
         "labelled_train": n(det / "images" / "train"),
         "labelled_val": n(det / "images" / "val"),
         "to_label": n(det / "images" / "to_label"),
+        "boxes": boxes,
+        "frames_with_boxes": with_boxes,
         "classes": len(classes.read_text(encoding="utf-8").split()) if classes.exists() else 0,
         "runs_dir": str(runs),
         "to_label_dir": str(det / "images" / "to_label"),

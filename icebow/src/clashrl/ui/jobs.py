@@ -184,6 +184,28 @@ COMMANDS: List[Dict[str, Any]] = [
         ],
     },
     {
+        "cmd": "detect-train",
+        "group": "Learn from recordings",
+        "title": "Train the vision AI",
+        "desc": "Trains the board detector on the frames you labelled in the Labelling tab. "
+                "This is the SECOND network -- it names the units on the board; it does not "
+                "play. Needs labelled frames with boxes in them.",
+        "gpu": True,
+        "metrics": False,
+        "args": [
+            {"name": "model", "type": "choice",
+             "choices": ["yolo11n.pt", "yolo11s.pt", "yolo11m.pt", "yolo11l.pt", "yolo11x.pt"],
+             "default": "yolo11s.pt", "label": "Model size",
+             "help": "Bigger is more accurate but needs more VRAM and trains slower. Start small."},
+            {"name": "epochs", "type": "int", "default": 120, "label": "Epochs",
+             "help": "Upper bound; it early-stops on its own when it stops improving."},
+            {"name": "imgsz", "type": "int", "default": 960, "label": "Image size",
+             "help": "Units are small on the board, so a high value matters here."},
+            {"name": "resume", "type": "bool", "default": False, "label": "Continue (--resume)",
+             "help": "Carry on from the newest interrupted run instead of starting over."},
+        ],
+    },
+    {
         "cmd": "label",
         "group": "Learn from recordings",
         "title": "Label",
