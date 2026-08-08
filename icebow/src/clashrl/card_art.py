@@ -69,10 +69,11 @@ def import_card_art(cfg, only_missing: bool = True, limit: Optional[int] = None)
     if limit:
         titles = dict(list(titles.items())[:limit])
     if not titles:
-        print(f"[cards-art] alle Bilder liegen schon in {out_dir}. "
-              "Mit --refresh werden sie neu geladen.")
+        print(f"[cards-art] all pictures are already in {out_dir}. "
+              "--refresh re-downloads them.")
         return
-    print(f"[cards-art] hole {len(titles)} Kartenbilder vom Fandom-Wiki nach {out_dir}", flush=True)
+    print(f"[cards-art] fetching {len(titles)} card pictures from the Fandom wiki into {out_dir}",
+          flush=True)
 
     by_title = {t: k for k, t in titles.items()}
     items: List[str] = list(titles.values())
@@ -83,7 +84,7 @@ def import_card_art(cfg, only_missing: bool = True, limit: Optional[int] = None)
             d = _api({"action": "query", "titles": "|".join(chunk), "prop": "pageimages",
                       "piprop": "thumbnail|name", "pithumbsize": THUMB, "redirects": 1})
         except Exception as exc:                            # noqa: BLE001
-            print(f"[cards-art] Abfrage fehlgeschlagen: {exc!r}")
+            print(f"[cards-art] request failed: {exc!r}")
             break
         # a redirect changes the title, so map the answer back through the redirect table
         redirects = {r["to"]: r["from"] for r in d.get("query", {}).get("redirects", [])}
@@ -106,11 +107,11 @@ def import_card_art(cfg, only_missing: bool = True, limit: Optional[int] = None)
                 continue
             (out_dir / f"{key}.png").write_bytes(data)
             got += 1
-        print(f"[cards-art] {min(i + BATCH, len(items))}/{len(items)} angefragt, {got} geladen",
+        print(f"[cards-art] {min(i + BATCH, len(items))}/{len(items)} requested, {got} downloaded",
               flush=True)
         time.sleep(0.2)                                     # be gentle on the wiki
 
-    print(f"[cards-art] fertig: {got} Bilder geladen, {missing} Seiten ohne Bild, "
-          f"{failed} Downloads fehlgeschlagen. Ordner: {out_dir}")
+    print(f"[cards-art] done: {got} pictures downloaded, {missing} pages without a picture, "
+          f"{failed} downloads failed. Folder: {out_dir}")
     if missing:
         print("[cards-art] cards without a wiki picture are skipped during deck recognition.")

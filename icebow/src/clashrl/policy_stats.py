@@ -102,8 +102,8 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     elx = [e.elixir_vec.copy() for e in pool]
     thr = [e.threat_vec.copy() for e in pool]
 
-    print(f"[policy-stats] {ck_path.name} auf {device}: {matches} greedy matches, {K} envs, "
-          f"Deck {', '.join(e0.deck_keys)}", flush=True)
+    print(f"[policy-stats] {ck_path.name} on {device}: {matches} greedy matches, {K} envs, "
+          f"deck {', '.join(e0.deck_keys)}", flush=True)
     t0 = time.time()
     played = 0
     next_report = max(1, matches // 10)

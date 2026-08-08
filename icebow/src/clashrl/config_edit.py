@@ -162,7 +162,7 @@ FIELDS: List[Dict[str, Any]] = [
     {"path": ["rewards", "correctness_cap"], "type": "float", "min": 0, "max": 1000,
      "group": "Rewards", "label": "Cap on shaping rewards",
      "help": "Limits how much the correctness rewards weigh against the match outcome."},
-    # -- Wahrnehmung / Aktionen
+    # -- perception / actions
     {"path": ["action", "grid"], "type": "intlist", "group": "Perception",
      "label": "Placement grid [columns, rows]",
      "help": "[18,32] fine or [18,24] coarse. Has to match both the dataset and the checkpoint."},

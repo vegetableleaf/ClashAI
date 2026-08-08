@@ -143,7 +143,7 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
 
     out["states"] = state_report(cfg, vision, frame)
 
-    # Handkarten + Elixier, wie der Bot sie liest
+    # hand cards + elixir, as the bot reads them
     try:
         hand = []
         for i, (cx, cy) in enumerate(vision.hand_slots):

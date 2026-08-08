@@ -186,7 +186,7 @@ def create_app(cfg) -> Flask:
     def metric_csv():
         run = request.args.get("run") or None
         csv = to_csv(metrics.read(run=run, limit=10 ** 9))
-        name = f"metrics_{run or 'alle'}.csv"
+        name = f"metrics_{run or 'all'}.csv"
         return Response(csv, mimetype="text/csv",
                         headers={"Content-Disposition": f'attachment; filename="{name}"'})
 

@@ -9,15 +9,15 @@ const $ = (sel, el) => (el || document).querySelector(sel);
 const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
 const el = (tag, cls, txt) => { const e = document.createElement(tag);
   if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
-const fmtTime = t => t ? new Date(t * 1000).toLocaleString("de-DE") : "-";
+const fmtTime = t => t ? new Date(t * 1000).toLocaleString("en-US") : "-";
 const fmtDur = s => { s = Math.max(0, Math.round(s));
   const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60);
   return h ? `${h} h ${m} min` : (m ? `${m} min ${s % 60} s` : `${s} s`); };
 const fmtSize = b => b == null ? "-" : (b >= 1e9 ? (b / 1073741824).toFixed(1) + " GB"
   : (b >= 1e6 ? (b / 1048576).toFixed(0) + " MB" : (b / 1024).toFixed(0) + " KB"));
-const num = (v, d = 2) => v == null ? "-" : Number(v).toLocaleString("de-DE",
+const num = (v, d = 2) => v == null ? "-" : Number(v).toLocaleString("en-US",
   { minimumFractionDigits: d, maximumFractionDigits: d });
-const int = v => v == null ? "-" : Math.round(v).toLocaleString("de-DE");
+const int = v => v == null ? "-" : Math.round(v).toLocaleString("en-US");
 
 async function api(path, opts) {
   const r = await fetch(path, opts);
@@ -137,7 +137,7 @@ async function tourShowInner(i, dir) {
   tourIx = i;
   const step = TOUR[i];
   target.scrollIntoView({ behavior: "smooth", block: "center" });
-  await sleep(320);                             // Ende des sanften Scrollens abwarten
+  await sleep(320);                             // wait for the smooth scroll to finish
   tourPlace(target, step);
   await sleep(220);                             // re-place once more after a late reflow
   if (tourOn && tourIx === i) tourPlace(target, step);
@@ -154,7 +154,7 @@ function tourPlace(target, step) {
 
   $("#tourtitle").textContent = step.title;
   $("#tourtext").innerHTML = step.text;
-  $("#tourcount").textContent = `${tourIx + 1} von ${TOUR.length}`;
+  $("#tourcount").textContent = `${tourIx + 1} of ${TOUR.length}`;
   $("#tourback").style.display = tourIx ? "" : "none";
   $("#tournext").textContent = tourIx === TOUR.length - 1 ? "Done" : "Next";
 
@@ -235,7 +235,7 @@ $("#modalx").onclick = () => closeModal();
 $("#helpbtn").onclick = () => openModal("welcome");
 $("#tosbtn").onclick = () => openModal("tos");
 
-/* ---------------- Steuerung ---------------- */
+/* ---------------- control ---------------- */
 function argInput(cmd, a) {
   const id = `arg-${cmd}-${a.name}`;
   let inp;
@@ -247,7 +247,7 @@ function argInput(cmd, a) {
     inp.value = a.default ?? "";
   } else if (a.type === "session") {
     inp = el("select");
-    const o0 = el("option", null, "(neueste)"); o0.value = ""; inp.appendChild(o0);
+    const o0 = el("option", null, "(newest)"); o0.value = ""; inp.appendChild(o0);
     S.sessions.forEach(s => { const o = el("option", null, s); o.value = s; inp.appendChild(o); });
   } else if (a.type === "ckpt") {
     inp = el("select"); inp.dataset.ckpt = "1"; fillCkptSelect(inp, a.default ?? "");
@@ -256,7 +256,7 @@ function argInput(cmd, a) {
     inp.type = (a.type === "int" || a.type === "float") ? "number" : "text";
     if (a.type === "float") inp.step = "any";
     if (a.default !== null && a.default !== undefined) inp.value = a.default;
-    else inp.placeholder = "(Standard aus den Einstellungen)";
+    else inp.placeholder = "(default from settings)";
   }
   inp.id = id; inp.dataset.arg = a.name; inp.dataset.type = a.type;
   const wrap = el("div", "arg");
@@ -314,7 +314,7 @@ function renderCommands() {
   g.innerHTML = "";
   const groups = [];
   S.commands.forEach(c => {
-    const name = c.group || "Weitere";
+    const name = c.group || "Other";
     let grp = groups.find(x => x.name === name);
     if (!grp) groups.push(grp = { name, items: [] });
     grp.items.push(c);
@@ -370,7 +370,7 @@ function commandCard(c) {
 
 async function startJob(cmd, args, statusEl, btn) {
   if (btn) btn.disabled = true;
-  if (statusEl) { statusEl.className = "msg"; statusEl.textContent = "starte ..."; }
+  if (statusEl) { statusEl.className = "msg"; statusEl.textContent = "starting ..."; }
   try {
     const j = await post("/api/jobs/start", { cmd, args: args || {} });
     attachLog(j.id);
@@ -397,8 +397,8 @@ $("#logtoggle").onclick = () => setLogOpen($("#logpanel").classList.contains("co
 function logLine(line) {
   const pre = $("#log");
   const cls = (line.startsWith("[ui]") || line.startsWith("$ ")) ? "ui"
-    : (/EVAL @|new BEST|SCHNELLSTE/.test(line) ? "ev"
-    : (/Traceback|Error|error|FEHLER|fehlgeschlagen/.test(line) ? "err" : ""));
+    : (/EVAL @|new BEST/.test(line) ? "ev"
+    : (/Traceback|Error|error|failed/.test(line) ? "err" : ""));
   pre.appendChild(el("div", cls, line));
   while (pre.childNodes.length > 3000) pre.removeChild(pre.firstChild);
   if ($("#autoscroll").checked) pre.scrollTop = pre.scrollHeight;
@@ -437,8 +437,8 @@ function renderLogSelect() {
   sel.dataset.sig = sig;
   sel.innerHTML = "";
   S.jobs.forEach(j => {
-    const o = el("option", null, `${j.cmd} um ${new Date(j.started * 1000)
-      .toLocaleTimeString("de-DE")}${j.running ? " (running)" : ""}`);
+    const o = el("option", null, `${j.cmd} at ${new Date(j.started * 1000)
+      .toLocaleTimeString("en-US")}${j.running ? " (running)" : ""}`);
     o.value = j.id; sel.appendChild(o);
   });
   if (cur) sel.value = cur;
@@ -465,7 +465,7 @@ function svgLine(series, opts) {
   opts = opts || {};
   const W = 600, H = 180, pad = { l: 46, r: 10, t: 10, b: 22 };
   const pts = series.flatMap(s => s.points);
-  if (!pts.length) return `<svg viewBox="0 0 ${W} ${H}"><text x="12" y="24" fill="#98a2b3" font-size="12">keine Daten</text></svg>`;
+  if (!pts.length) return `<svg viewBox="0 0 ${W} ${H}"><text x="12" y="24" fill="#98a2b3" font-size="12">no data</text></svg>`;
   let x0 = Math.min(...pts.map(p => p[0])), x1 = Math.max(...pts.map(p => p[0]));
   let y0 = opts.y0 != null ? opts.y0 : Math.min(...pts.map(p => p[1]));
   let y1 = opts.y1 != null ? opts.y1 : Math.max(...pts.map(p => p[1]));
@@ -577,7 +577,7 @@ async function loadSpeed() {
     ["free", fmtSize(hw.ram_available)],
   ]));
   g.appendChild(card("Graphics card", [
-    ["GPU", hw.gpu || "keine CUDA-GPU gefunden"],
+    ["GPU", hw.gpu || "no CUDA GPU found"],
     ["VRAM", fmtSize(hw.gpu_vram)],
     ["PyTorch", hw.torch || "-"],
     ["CUDA", hw.cuda || "-"],
@@ -660,8 +660,8 @@ async function loadSpeed() {
   const res = (bench.results || []).slice().sort((a, b2) => a.envs - b2.envs);
   const maxMps = Math.max(...res.map(r => r.mps), 0.0001);
   const t2 = el("table", "tbl"); t2.id = "benchtable";
-  t2.innerHTML = `<thead><tr><th>gleichzeitige Matches</th><th>Matches/s</th><th></th>
-    <th>Matches/Stunde</th><th>Lernschritte/s</th><th>Lernschritte je Match</th>
+  t2.innerHTML = `<thead><tr><th>parallel matches</th><th>matches/s</th><th></th>
+    <th>matches/hour</th><th>learning steps/s</th><th>learning steps per match</th>
     <th>vs current</th></tr></thead>`;
   const tb = el("tbody");
   const curRes = res.find(r => r.envs === bench.current_envs);
@@ -682,12 +682,12 @@ async function loadSpeed() {
   t2.appendChild(tb); b.appendChild(t2);
 
   const lines = [
-    `Gemessen am ${fmtTime(bench.generated)}, ${bench.seconds_per_run} s je Stufe, Seed ${bench.seed}`
-      + (bench.auto ? ", automatische Suche" : "") + ".",
+    `Measured ${fmtTime(bench.generated)}, ${bench.seconds_per_run}s per step, seed ${bench.seed}`
+      + (bench.auto ? ", automatic search" : "") + ".",
   ];
   if (bench.stop_reason) lines.push("The search stopped because: " + bench.stop_reason + ".");
   if (bench.peak_envs && bench.best_envs !== bench.peak_envs)
-    lines.push(`Am schnellsten war ${bench.peak_envs}, empfohlen sind ${bench.best_envs}: `
+    lines.push(`Fastest was ${bench.peak_envs}, recommended is ${bench.best_envs}: `
       + "both are within three per cent and therefore effectively the same speed, "
       + "but the smaller value uses every match for learning more often.");
   lines.push("The numbers describe early training. Once games against earlier copies of "
@@ -711,19 +711,19 @@ async function loadSpeed() {
 async function applyBench(withSuggestion) {
   try {
     const r = await post("/api/hardware/apply", { with_suggestion: !!withSuggestion });
-    toast("Applied: " + r.changed.map(c => `${c.key} von ${c.old} auf ${c.new}`).join(", ")
+    toast("Applied: " + r.changed.map(c => `${c.key} from ${c.old} to ${c.new}`).join(", ")
       + ". Backup: " + String(r.backup).split(/[\\/]/).pop());
     loadSpeed(); loadOverview();
   } catch (e) { toast(e.message); }
 }
 
-/* ---------------- Fortschritt ---------------- */
+/* ---------------- progress ---------------- */
 async function loadRuns() {
   const runs = await api("/api/metrics/runs");
   const sel = $("#runselect"); const cur = S.runId || (runs[0] && runs[0].run);
   sel.innerHTML = "";
   runs.forEach(r => {
-    const o = el("option", null, `${r.cmd || "?"} vom ${fmtTime(r.start)} (${int(r.matches)} Matches)`);
+    const o = el("option", null, `${r.cmd || "?"} from ${fmtTime(r.start)} (${int(r.matches)} matches)`);
     o.value = r.run; sel.appendChild(o);
   });
   if (cur) sel.value = cur;
@@ -827,7 +827,7 @@ async function loadDash() {
   if (!ch.children.length) ch.innerHTML = "<div class='hint'>No numbers were recognised for this run.</div>";
 }
 
-/* ---------------- Strategie ---------------- */
+/* ---------------- strategy ---------------- */
 $("#stratreload").onclick = () => loadStrategy();
 $("#stratrun").onclick = () => startJob("policy-stats", { matches: 60, envs: 8 }, null, null);
 
@@ -854,14 +854,14 @@ async function loadStrategy() {
   S.strat = d;
   body.innerHTML = "";
   if (!d.available) {
-    body.innerHTML = `<p class="hint">No analysis yet. „Start analysis“ plays
+    body.innerHTML = `<p class="hint">No analysis yet. "Start analysis" plays
       60 matches in the simulator and counts every decision (about half a minute).</p>`;
     return;
   }
   const [gw, gh] = d.grid;
   const head = el("div", "row");
-  [`${d.ckpt}`, `${d.matches} Matches`, `Winrate ${d.winrate.toFixed(0)} %`,
-   `erzeugt ${fmtTime(d.generated)}`].forEach(x => head.appendChild(el("span", "pill", x)));
+  [`${d.ckpt}`, `${d.matches} matches`, `win rate ${d.winrate.toFixed(0)} %`,
+   `generated ${fmtTime(d.generated)}`].forEach(x => head.appendChild(el("span", "pill", x)));
   body.appendChild(head);
 
   const k = el("div", "kpis");
@@ -885,8 +885,8 @@ async function loadStrategy() {
   }
 
   const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th>Karte</th><th>Elixier</th><th>Level</th><th>gelegt</th>
-    <th>Anteil</th><th></th><th>avg row</th></tr></thead>`;
+  tbl.innerHTML = `<thead><tr><th>Card</th><th>Elixir</th><th>Level</th><th>plays</th>
+    <th>share</th><th></th><th>avg row</th></tr></thead>`;
   const tb = el("tbody");
   d.cards.slice().sort((a, b) => b.plays - a.plays).forEach(c => {
     const tr = el("tr");
@@ -899,7 +899,7 @@ async function loadStrategy() {
   tbl.appendChild(tb); body.appendChild(tbl);
   body.appendChild(el("p", "hint",
     "The average row is the mean placement row: 0 is the top (opponent side), "
-    + `${gh - 1} = ganz unten (deine Seite).`));
+    + `${gh - 1} is the very bottom (your side).`));
 
   body.appendChild(el("h2", null, "Where it places"));
   const sel = el("select");
@@ -973,7 +973,7 @@ async function loadDeck() {
   await loadDetect().catch(() => {});
 }
 
-/* --- automatische Deckerkennung --- */
+/* --- automatic deck detection --- */
 $("#detectrun").onclick = () => startJob("deck-detect", {}, $("#detectmsg"), null);
 $("#artrun").onclick = () => startJob("cards-art", {}, $("#detectmsg"), null);
 $("#detectreload").onclick = () => loadDetect();
@@ -988,14 +988,14 @@ async function loadDetect() {
     return;
   }
   const head = el("div", "row");
-  [`Aufnahme ${d.session}`, `${d.frames} Matchbilder`, `${d.faces} Kartenbilder`,
-   `${d.reference_cards} Referenzkarten`, `erkannt ${fmtTime(d.generated)}`]
+  [`recording ${d.session}`, `${d.frames} match frames`, `${d.faces} card faces`,
+   `${d.reference_cards} reference cards`, `detected ${fmtTime(d.generated)}`]
     .forEach(x => head.appendChild(el("span", "pill", x)));
   body.appendChild(head);
 
   const tbl = el("table", "tbl");
-  tbl.innerHTML = `<thead><tr><th>erkannt als</th><th>Sicherheit</th><th>Abstand zum zweiten</th>
-    <th>Evo</th><th>Level</th><th>Alternativen</th></tr></thead>`;
+  tbl.innerHTML = `<thead><tr><th>recognized as</th><th>confidence</th><th>margin to runner-up</th>
+    <th>Evo</th><th>Level</th><th>alternatives</th></tr></thead>`;
   const tb = el("tbody");
   (d.deck || []).forEach((s, i) => {
     const tr = el("tr");
@@ -1081,12 +1081,12 @@ $("#decksave").onclick = async () => {
     evolved: $("[data-role=evolved]", tr).checked,
   }));
   const m = $("#deckmsg");
-  if (!confirm("Deck in config/cards.yaml schreiben?\n\nEin Deckwechsel macht Vorlagen, gelabelte "
-    + "datasets and existing checkpoints invalid.")) return;
+  if (!confirm("Write this deck to config/cards.yaml?\n\nA deck change invalidates templates, "
+    + "labelled datasets and existing checkpoints.")) return;
   try {
     const r = await post("/api/deck", { name: $("#deckname").value, cards });
     m.className = "msg ok";
-    m.textContent = `gespeichert (Backup: ${String(r.backup).split(/[\\/]/).pop()})`;
+    m.textContent = `saved (backup: ${String(r.backup).split(/[\\/]/).pop()})`;
     loadDeck();
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
 };
@@ -1142,7 +1142,7 @@ function towerRow(name, spec, weight) {
   });
   tdX.appendChild(extras);
   const tdDel = el("td");
-  const del = el("button", "btn small danger", "entfernen");
+  const del = el("button", "btn small danger", "remove");
   del.onclick = () => { tr.remove(); syncMyTowerSelect(); };
   tdDel.appendChild(del);
   [tdName, tdHp, tdDps, tdHs, tdW, tdX, tdDel].forEach(x => tr.appendChild(x));
@@ -1170,7 +1170,7 @@ function syncMyTowerSelect() {
 }
 
 $("#toweradd").onclick = () => {
-  $("#towertbl tbody").appendChild(towerRow("neuer_turm", { hp: 4000, dps: 200, hit_speed: 0.8 }, 1));
+  $("#towertbl tbody").appendChild(towerRow("new_tower", { hp: 4000, dps: 200, hit_speed: 0.8 }, 1));
   syncMyTowerSelect();
 };
 $("#towerreload").onclick = () => loadTowers();
@@ -1190,14 +1190,14 @@ $("#towersave").onclick = async () => {
   try {
     const r = await post("/api/towers", payload);
     m.className = "msg ok";
-    m.textContent = `gespeichert: ${r.troops.join(", ")} | Gegner-Pool: `
+    m.textContent = `saved: ${r.troops.join(", ")} | opponent pool: `
       + Object.entries(r.weights).map(([k, v]) => `${k} x ${v}`).join(", ")
-      + ` (Backup: ${String(r.backup).split(/[\\/]/).pop()})`;
+      + ` (backup: ${String(r.backup).split(/[\\/]/).pop()})`;
     loadTowers();
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
 };
 
-/* ---------------- Einstellungen ---------------- */
+/* ---------------- settings ---------------- */
 async function loadConfig() {
   const d = await api("/api/config");
   S.cfgFields = d.fields; S.cfgDirty = {};
@@ -1257,7 +1257,7 @@ $("#cfgsave").onclick = async () => {
     const r = await post("/api/config", { changes: S.cfgDirty });
     m.className = "msg ok";
     m.textContent = r.changed.length
-      ? `${r.changed.length} Wert(e) gespeichert (Backup: ${String(r.backup).split(/[\\/]/).pop()})`
+      ? `${r.changed.length} value(s) saved (backup: ${String(r.backup).split(/[\\/]/).pop()})`
       : "no change";
     loadConfig();
   } catch (e) { m.className = "msg err"; m.textContent = e.message; }
@@ -1284,7 +1284,7 @@ async function loadCheckpoints() {
       <td>${c.best_wr != null && c.best_wr >= 0 ? c.best_wr.toFixed(0) + " %" : "-"}</td>
       <td>${c.grid ? c.grid.join("x") : "-"}</td>
       <td>${c.deck ? (deckOk === false ? "<span class='pill warn'>different deck</span>"
-        : (deckOk ? "matches" : c.deck.length + " Karten")) : "-"}</td>
+        : (deckOk ? "matches" : c.deck.length + " cards")) : "-"}</td>
       <td>${fmtSize(c.size)}</td><td></td>`;
     const btn = el("button", "btn small", "Use as --init");
     btn.onclick = () => { $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, c.rel)); showTab("run"); };
@@ -1300,8 +1300,8 @@ $("#ckptreload").onclick = () => loadCheckpoints();
 
 /* ---------------- boot ---------------- */
 (async function boot() {
-  try { S.checkpoints = await api("/api/checkpoints"); } catch (e) { /* noch kein data/ */ }
-  try { S.deck = await api("/api/deck"); } catch (e) { /* egal */ }
+  try { S.checkpoints = await api("/api/checkpoints"); } catch (e) { /* no data/ yet */ }
+  try { S.deck = await api("/api/deck"); } catch (e) { /* fine either way */ }
   await refresh();
   await loadOverview().catch(e => console.error(e));
   setInterval(refresh, 3000);
@@ -1320,7 +1320,7 @@ function liveSchedule() {
   clearInterval(liveTimer); liveTimer = null;
   if (!$("#livego").checked) return;
   liveTimer = setInterval(() => {
-    if ($(".tab.active").dataset.tab !== "live") return;   // im Hintergrund nichts abfragen
+    if ($(".tab.active").dataset.tab !== "live") return;   // don't poll while in the background
     liveOnce();
   }, +$("#liverate").value);
 }
@@ -1362,7 +1362,7 @@ async function liveOnce() {
       + "the Calibrate match detection command in the Control tab fixes that."));
   }
   const t1 = el("table", "tbl");
-  t1.innerHTML = "<thead><tr><th>Hand slot</th><th>erkannt als</th><th>Sicherheit</th></tr></thead>";
+  t1.innerHTML = "<thead><tr><th>Hand slot</th><th>recognized as</th><th>confidence</th></tr></thead>";
   const tb1 = el("tbody");
   (d.hand || []).forEach(h => { const tr = el("tr");
     tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "not recognised"}</td><td>${h.score}</td>`;

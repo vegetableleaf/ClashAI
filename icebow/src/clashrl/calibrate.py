@@ -136,7 +136,7 @@ def calibrate(cfg, session_arg: Optional[str] = None, dry_run: bool = False,
     print(f"[calibrate] {session.name}: {len(ins)} frames from the match (near your clicks), "
           f"{len(outs)} outside it. Working size {ins[0].shape[1]}x{ins[0].shape[0]}.", flush=True)
 
-    # Wie gut schlagen sich die mitgelieferten Templates? Das ist die Diagnose.
+    # how well do the bundled templates do? that is the diagnosis.
     before = sum(1 for f in ins if vision.detect_state(_upscale(f)).name == "IN_MATCH")
     best_shipped = 0.0
     for name in ("in_match.png", "in_match_v2.png"):

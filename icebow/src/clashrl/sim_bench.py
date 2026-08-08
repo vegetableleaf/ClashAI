@@ -92,9 +92,9 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
     sug = suggest(info, cur_envs)
     (cfg.path("data") / "bench").mkdir(parents=True, exist_ok=True)
 
-    print(f"[sim-bench] {info['os']} | {info['cpu_logical']} CPU-Threads | "
+    print(f"[sim-bench] {info['os']} | {info['cpu_logical']} CPU threads | "
           f"{(info['ram_total'] or 0) / 1024 ** 3:.0f} GB RAM | "
-          f"{info.get('gpu') or 'keine CUDA-GPU'} | torch {info.get('torch')}", flush=True)
+          f"{info.get('gpu') or 'no CUDA GPU'} | torch {info.get('torch')}", flush=True)
 
     if warmup > 0:
         print(f"[sim-bench] warm-up ({warmup:.0f}s, discarded) ...", flush=True)
@@ -140,7 +140,7 @@ def sim_bench(cfg, envs: Optional[str] = None, seconds: float = 30.0, seed: int 
             try:
                 cand = sorted({int(x) for x in str(envs).replace(";", ",").split(",") if x.strip()})
             except ValueError:
-                print(f"[sim-bench] --envs '{envs}' ist keine Liste von Zahlen (z.B. 8,16,32).")
+                print(f"[sim-bench] --envs '{envs}' is not a list of numbers (e.g. 8,16,32).")
                 return
         else:
             cand = sorted(set(sug["bench_candidates"]) | {cur_envs})

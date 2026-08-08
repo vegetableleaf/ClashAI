@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,8 +68,8 @@
       random moves and self-play and settles around 50 per cent on its own.</p>
     <div class="row">
       <label>Run: <select id="runselect"></select></label>
-      <button id="dashreload" class="btn small">Aktualisieren</button>
-      <a id="csvlink" class="btn small" href="/api/metrics.csv">CSV-Export</a>
+      <button id="dashreload" class="btn small">Refresh</button>
+      <a id="csvlink" class="btn small" href="/api/metrics.csv">Export CSV</a>
       <span class="hint">stored in <code>data/metrics.jsonl</code></span>
     </div>
     <div id="kpis" class="kpis"></div>
@@ -83,7 +83,7 @@
       is not doing anything.</p>
     <div class="row">
       <button id="stratrun" class="btn primary">Start analysis</button>
-      <button id="stratreload" class="btn small">Aktualisieren</button>
+      <button id="stratreload" class="btn small">Refresh</button>
       <span class="hint">command <code>policy-stats</code>, result in <code>data/policy_stats.json</code></span>
     </div>
     <div id="stratbody"></div>
@@ -200,7 +200,7 @@
   <section id="tab-ckpt" class="panel">
     <p class="lead">Trained networks under <code>data/</code>. Use as --init enters the file as
       the starting point in the command tiles.</p>
-    <div class="row"><button id="ckptreload" class="btn small">Aktualisieren</button></div>
+    <div class="row"><button id="ckptreload" class="btn small">Refresh</button></div>
     <div id="ckptbody"></div>
   </section>
 </main>
