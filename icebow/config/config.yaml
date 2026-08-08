@@ -728,6 +728,11 @@ sim:
     princess_tile: [3.5, 6.5]   # princess tower centre: tiles from the SIDE wall, tiles from the BACK wall
     king_tile: [9.0, 3.0]       # king tower centre: tiles from the side wall, tiles from the back wall
     bridge_tiles: [3.5, 14.5]   # bridge lane centres in tile-x (aligned with the princess lanes)
+    bridge_width_tiles: 3.0     # DECK WIDTH. Units cross anywhere on the deck, not single-file down
+                                # the centre line: routing everything to the exact centre made a swarm
+                                # converge on ONE point at the river, where collision (two 0.5-radius
+                                # bodies sit 1.0 tile apart) shoved them back out again -- goblins
+                                # pinned at y=0.5000 forever, oscillating between x 3.00 and 4.00.
     deploy_top: 0.5             # troops deploy on your half only: normalized y of the river
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)

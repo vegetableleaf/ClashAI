@@ -20,6 +20,22 @@ def _key(name: str) -> str:
             .replace(" ", "_").replace("-", "_").replace(".", "").replace("'", ""))
 
 
+def _table(tbl: Dict[str, float], name: str):
+    """Look a card up in a geometry table, falling back to its BASE card for an Evolution.
+
+    An Evolution shares its base card's body and reach -- only the stats and special effect differ --
+    but the tables are keyed on base names, so `minion_horde_evo` / `princess_evo` / `goblin_drill_evo`
+    missed entirely and dropped to the 'melee' 1.2-tile default. Evolved Princess is a 9-tile sniper;
+    resolving her to 1.2 would have had her walk into the arena to shoot.
+    """
+    k = _key(name)
+    if k in tbl:
+        return tbl[k]
+    if k.endswith("_evo") and k[:-4] in tbl:
+        return tbl[k[:-4]]
+    return None
+
+
 # ---------------------------------------------------------------------------------------------
 # PROVENANCE WARNING for the three tables below. They were baked from RoyaleAPI's cr-api-data,
 # which is ABANDONED: its last commit is 2023-10-18, so it predates every balance change and card
@@ -82,17 +98,17 @@ _RANGE_TILES: Dict[str, float] = {
     "archer_queen": 5.0, "archers": 5.0, "baby_dragon": 3.5, "balloon": 0.1, "barbarians": 0.7,
     "bats": 1.2, "battle_healer": 1.6, "battle_ram": 0.5, "bomber": 4.5, "bowler": 4.0,
     "dark_prince": 1.2, "dart_goblin": 6.5, "electro_dragon": 3.5, "electro_giant": 1.2,
-    "electro_spirit": 2.5, "electro_wizard": 5.0, "fire_spirit": 2.0, "firecracker": 6.0,
+    "electro_spirit": 2.5, "electro_wizard": 5.0, "firecracker": 6.0,
     "fisherman": 1.2, "giant": 1.2, "giant_skeleton": 0.8, "goblin_barrel": 0.5,
     "goblin_cage": 0.8, "goblin_gang": 0.5, "goblin_giant": 1.2, "goblins": 0.5,
     "golden_knight": 1.2, "golem": 0.75, "heal_spirit": 2.5, "hog_rider": 0.8, "hunter": 4.0,
     "ice_spirit": 2.5, "ice_wizard": 5.5, "inferno_dragon": 3.5, "knight": 1.2,
     "lava_hound": 3.5, "mega_knight": 1.2, "mega_minion": 1.6, "mighty_miner": 1.6,
-    "miner": 1.2, "mini_pekka": 0.8, "minion_horde": 1.6, "minions": 1.6, "monk": 1.2,
+    "miner": 1.2, "mini_pekka": 0.8, "monk": 1.2,
     "musketeer": 6.0, "pekka": 1.2, "phoenix": 1.6, "prince": 1.6, "princess": 9.0,
-    "ram_rider": 5.5, "rascals": 0.8, "royal_ghost": 1.2, "royal_giant": 5.0,
-    "royal_hogs": 0.75, "skeleton_army": 0.5, "skeleton_barrel": 0.35, "skeleton_dragons": 3.5,
-    "skeleton_king": 1.2, "skeletons": 0.5, "spear_goblins": 5.5, "three_musketeers": 6.0,
+    "rascals": 0.8, "royal_ghost": 1.2, "royal_giant": 5.0,
+    "skeleton_army": 0.5, "skeleton_barrel": 0.35, "skeleton_dragons": 3.5,
+    "skeleton_king": 1.2, "skeletons": 0.5, "three_musketeers": 6.0,
     "valkyrie": 1.2, "wall_breakers": 0.5, "witch": 5.5, "wizard": 5.5,
     # DEFENSIVE BUILDINGS normally get `range_tiles` from the wiki import, so they are absent here
     # -- but a building the import MISSES falls through to _RANGE_BUCKET, whose default is "melee"
@@ -101,6 +117,12 @@ _RANGE_TILES: Dict[str, float] = {
     # Wiki (May 2016 "range bug" fix): Inferno Tower range is 6 tiles.
     "inferno_tower": 6.0,
 }
+# REMOVED from the table above because the LIVE wiki import supersedes them and they had drifted:
+#   fire_spirit 2.0 -> 2.5, minions/minion_horde 1.6 -> 2.5, ram_rider 5.5 -> 0.8 (it is a MELEE
+#   rider; 5.5 was badly wrong), royal_hogs 0.75 -> 0.7, spear_goblins 5.5 -> 5.0.
+# The import already won at runtime, so behaviour does not change -- but leaving stale numbers here
+# means they silently take over for any card the import ever misses. Anything the wiki publishes
+# belongs in cards_stats.json, not in this table.
 
 # Fallback attack range (tiles) per CATEGORICAL bucket, for cards missing from _RANGE_TILES.
 _RANGE_BUCKET: Dict[str, float] = {"melee": 1.2, "short": 3.5, "long": 5.5}
@@ -153,6 +175,16 @@ class CardDB:
         c = self.get(name)
         return c.get("range") if c else None
 
+    def _base_card(self, name: str) -> dict:
+        """An Evolution's BASE card record, or {} when `name` is not an Evolution.
+
+        An Evolution shares the base card's body and reach, so it must inherit the base's LIVE
+        imported geometry BEFORE any hardcoded fallback -- `minion_horde_evo` otherwise picked up the
+        2023 table's 1.6 tiles while the base card had been re-imported at the wiki's current 2.5.
+        """
+        k = _key(name)
+        return (self.get(k[:-4]) or {}) if k.endswith("_evo") else {}
+
     def sight_range_tiles(self, name: str) -> float:
         """AGGRO/SIGHT radius in TILES -- how far this troop notices enemy units before defaulting to a
         march at the nearest tower (why opposite-lane pushes ignore each other: lanes are ~9 tiles apart).
@@ -164,7 +196,11 @@ class CardDB:
         c = self.get(name)
         if c and c.get("sight") is not None:
             return float(c["sight"])
-        return _SIGHT_TILES.get(_key(name), 5.5)
+        b = self._base_card(name)
+        if b.get("sight") is not None:
+            return float(b["sight"])
+        v = _table(_SIGHT_TILES, name)
+        return v if v is not None else 5.5
 
     def flags(self, name: str) -> List[str]:
         c = self.get(name)
@@ -178,10 +214,13 @@ class CardDB:
         c = self.get(name) or {}
         if c.get("collision") is not None:
             return float(c["collision"])
-        k = _key(name)
-        if k in _COLLISION_TILES:
-            return _COLLISION_TILES[k]
-        fl = set(c.get("flags") or [])
+        b = self._base_card(name)
+        if b.get("collision") is not None:
+            return float(b["collision"])
+        v = _table(_COLLISION_TILES, name)
+        if v is not None:
+            return v
+        fl = set(c.get("flags") or []) or set(b.get("flags") or [])
         if "tank" in fl:
             return 0.75
         if "swarm" in fl or int(c.get("count") or 1) >= 3:
@@ -196,10 +235,13 @@ class CardDB:
         c = self.get(name) or {}
         if c.get("range_tiles") is not None:
             return float(c["range_tiles"])
-        k = _key(name)
-        if k in _RANGE_TILES:
-            return _RANGE_TILES[k]
-        return _RANGE_BUCKET.get(c.get("range") or "melee", 1.2)
+        b = self._base_card(name)
+        if b.get("range_tiles") is not None:
+            return float(b["range_tiles"])       # Evolution inherits the base card's LIVE range
+        v = _table(_RANGE_TILES, name)
+        if v is not None:
+            return v
+        return _RANGE_BUCKET.get(c.get("range") or b.get("range") or "melee", 1.2)
 
     def evo_cycles(self, name: str) -> int:
         """How many times the BASE card must be PLAYED before its Evolution is available.

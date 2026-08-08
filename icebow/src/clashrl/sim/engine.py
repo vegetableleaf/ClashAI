@@ -40,13 +40,15 @@ from typing import List, Optional
 _TILES_X = 18.0
 _TILES_Y = 32.0
 _BRIDGES = (3.5 / 18.0, 14.5 / 18.0)     # bridge centres, normalised x (tile-derived; set below)
+_BRIDGE_HALF = 1.5                       # bridge deck HALF-width in TILES (set by configure_board)
 
 
-def configure_board(tiles_x: float, tiles_y: float, bridge_tiles) -> None:
+def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0) -> None:
     """Set the tile grid + bridge lanes. Called by SimEngine.__init__ from `sim.board`."""
-    global _TILES_X, _TILES_Y, _BRIDGES
+    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF
     _TILES_X, _TILES_Y = float(tiles_x), float(tiles_y)
     _BRIDGES = tuple(float(b) / _TILES_X for b in bridge_tiles)
+    _BRIDGE_HALF = float(bridge_width) / 2.0
 
 
 # speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
@@ -476,9 +478,10 @@ class SimEngine:
         self.tiles_x = float(board.get("tiles_x", 18.0))
         self.tiles_y = float(board.get("tiles_y", 32.0))
         self.bridge_tiles = list(board.get("bridge_tiles", [3.5, 14.5]))
+        self.bridge_width = float(board.get("bridge_width_tiles", 3.0))
         pt = list(board.get("princess_tile", [3.5, 6.5]))      # [x from the side wall, y from the back wall]
         kt = list(board.get("king_tile", [9.0, 3.0]))
-        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles)
+        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width)
         px_l, px_r = pt[0] / self.tiles_x, (self.tiles_x - pt[0]) / self.tiles_x
         py, kx, ky = pt[1] / self.tiles_y, kt[0] / self.tiles_x, kt[1] / self.tiles_y
         self._anchors = {                                      # [L princess, R princess, king]
@@ -729,10 +732,19 @@ class SimEngine:
         # first. Air ignores the river entirely.
         if not u.spec.flying and not u.spec.river_jump and (u.y - _RIVER) * (ty - _RIVER) < 0:
             bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
-            if abs(u.x - bx) * _TILES_X > 0.4:               # not yet in the bridge lane (tiles)
-                tx, ty = bx, _RIVER
+            # Aim at the nearest point on the bridge DECK, not at its centre line. Funnelling every
+            # body to `bx` made a swarm converge on ONE coordinate at the river mouth, and since
+            # collision holds two 0.5-radius bodies 1.0 tile apart while the old release tolerance was
+            # 0.4 tiles, they could never all be "aligned" at once: they shoved each other sideways
+            # forever with y pinned at exactly 0.5000. Measured on 4 goblins -- stuck from t=6s to the
+            # end of the match, x oscillating 3.00..4.00. Clamping into the deck band instead lets
+            # them cross abreast, and a unit already on the deck keeps its own x.
+            half = max(0.0, _BRIDGE_HALF - u.spec.radius) / _TILES_X
+            lane_x = min(max(u.x, bx - half), bx + half)
+            if abs(u.x - lane_x) * _TILES_X > 1e-3:
+                tx, ty = lane_x, _RIVER                      # off the deck -> walk to its near edge
             else:
-                tx, ty = bx, ty                              # aligned with the bridge -> cross straight
+                tx, ty = u.x, ty                             # on the deck -> straight across
         tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
         # step in TILES, then convert back per axis (one normalised unit != one tile on both axes)
         dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
