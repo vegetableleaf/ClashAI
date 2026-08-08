@@ -40,13 +40,15 @@ from typing import List, Optional
 _TILES_X = 18.0
 _TILES_Y = 32.0
 _BRIDGES = (3.5 / 18.0, 14.5 / 18.0)     # bridge centres, normalised x (tile-derived; set below)
+_BRIDGE_HALF = 1.5                       # bridge deck HALF-width in TILES (set by configure_board)
 
 
-def configure_board(tiles_x: float, tiles_y: float, bridge_tiles) -> None:
+def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0) -> None:
     """Set the tile grid + bridge lanes. Called by SimEngine.__init__ from `sim.board`."""
-    global _TILES_X, _TILES_Y, _BRIDGES
+    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF
     _TILES_X, _TILES_Y = float(tiles_x), float(tiles_y)
     _BRIDGES = tuple(float(b) / _TILES_X for b in bridge_tiles)
+    _BRIDGE_HALF = float(bridge_width) / 2.0
 
 
 # speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
@@ -102,6 +104,16 @@ class CardSpec:
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
     tower_hit_dmg: float = 0.0  # damage per hit vs CROWN TOWERS -- reduced when the KB carries a
                               # crown_tower_damage (Miner's signature nerf); else = hit_dmg. Without
+    # RAMP-UP: per-hit damage for stages 1..3 while locked on ONE target (Inferno Tower / Inferno
+    # Dragon / Mighty Miner). Empty = flat damage. The ramp resets whenever the target changes.
+    dmg_stages: tuple = ()
+    stage_time: float = 2.0   # seconds on one target before stepping up a stage
+    # DEATH DAMAGE: an area hit centred on the body when it dies (Balloon 240 in 3 tiles, Giant
+    # Skeleton 688 in 3, Bomb Tower 222, Ice Golem 84). Published per level by the wiki; the engine
+    # previously had the `death_damage` role FLAG but never the number, so these cards died silently
+    # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
+    death_dmg: float = 0.0
+    death_radius: float = 0.0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.64      # collision radius, TILES (soft body-block)
@@ -118,6 +130,15 @@ class CardSpec:
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
+    # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
+    # the units it summons, which is why a Goblin Drill modelled as a plain attacker was hitting the
+    # tower directly. Timings are imported from the wiki; the summoned card's identity is curated.
+    spawner_spec: Optional["CardSpec"] = None  # the troop this keeps producing
+    spawner_count: int = 0        # units per production tick
+    spawner_interval: float = 0.0  # seconds between ticks (0 = not a spawner)
+    spawner_delay: float = 0.0    # extra wait before the FIRST tick, on top of deploy_time
+    spawner_range: Optional[float] = None  # PROXIMITY GATE in tiles: only tick while an enemy is inside
+    spawner_death: int = 0        # burst summoned when the spawner dies or its lifetime expires
     shield_hp: float = 0.0    # SHIELD pool (Royal Recruits / Guards / Dark Prince): absorbs damage before hp
     damage_reduction: float = 0.0  # fraction of incoming damage negated WHILE NOT ATTACKING (Evo Knight = 0.60)
     pulls: bool = False       # TORNADO: an active VORTEX, not an instant blast -- pulls enemies to its centre
@@ -185,8 +206,15 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
+    # BUILDING LIFETIME. Precedence: a curated override, then the wiki's own `life` vardefine
+    # (imported as `lifetime_s`), then a generic building default. The imported key was NEVER being
+    # read -- build_spec looked for `lifetime` while card_import writes `lifetime_s` -- so every
+    # building silently took the 40s default: Goblin Drill ran 40s instead of 10, Tesla 40 vs 25,
+    # Goblin Cage 40 vs 20. Buildings lived up to 4x too long.
     lifetime = 40.0 if kind == "building" else None
-    if c.get("lifetime"):                                     # curated per-card lifetime (Elixir Collector 70s)
+    if c.get("lifetime_s"):
+        lifetime = float(c["lifetime_s"])
+    if c.get("lifetime"):                                     # curated override wins (Elixir Collector)
         lifetime = float(c["lifetime"])
     gen_every = float(c.get("gen_every_s") or 0.0)            # pump economy: +1 owner elixir every this many s
     p_dmg = p_r = p_stun = p_int = 0.0
@@ -218,6 +246,16 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
         spawn_count = 1
+    # TROOP PRODUCTION. `db.spawner()` merges the wiki timings with the curated unit identity. The
+    # guard on `unit != base` stops a self-referential curation from recursing forever, and a
+    # missing/unknown unit key degrades to "not a spawner" rather than raising during a match.
+    spw = db.spawner(base) or {}
+    spawner_spec = None
+    if spw and spw.get("unit") and spw["unit"] != base:
+        try:
+            spawner_spec = build_spec(db, spw["unit"], level)
+        except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
+            spawner_spec = None
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
@@ -229,10 +267,25 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         rolls=rolls, ground_only=ground_only,
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
+        dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
+        stage_time=float(c.get("stage_time_s") or 2.0),
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
-        shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0),
+        spawner_spec=spawner_spec,
+        spawner_count=(int(spw.get("count") or 1) if spawner_spec is not None else 0),
+        spawner_interval=(float(spw.get("interval") or 0.0) if spawner_spec is not None else 0.0),
+        spawner_delay=(float(spw.get("delay") or 0.0) if spawner_spec is not None else 0.0),
+        spawner_range=(spw.get("range") if spawner_spec is not None else None),
+        spawner_death=(int(spw.get("on_death") or 0) if spawner_spec is not None else 0),
+        shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
+                   else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
+        death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
+        # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
+        # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
+        death_radius=float(c.get("death_radius_tiles")
+                           or (2.0 if c.get("death_damage") else 0.0)),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -268,6 +321,8 @@ class Unit:
     aggro_reset: bool = False    # set by a stun/freeze, a Log knockback, or being SHOVED out of reach of what
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
+    spawn_cd: float = 0.0        # time until this spawner's next production tick
+    focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -443,9 +498,10 @@ class SimEngine:
         self.tiles_x = float(board.get("tiles_x", 18.0))
         self.tiles_y = float(board.get("tiles_y", 32.0))
         self.bridge_tiles = list(board.get("bridge_tiles", [3.5, 14.5]))
+        self.bridge_width = float(board.get("bridge_width_tiles", 3.0))
         pt = list(board.get("princess_tile", [3.5, 6.5]))      # [x from the side wall, y from the back wall]
         kt = list(board.get("king_tile", [9.0, 3.0]))
-        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles)
+        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width)
         px_l, px_r = pt[0] / self.tiles_x, (self.tiles_x - pt[0]) / self.tiles_x
         py, kx, ky = pt[1] / self.tiles_y, kt[0] / self.tiles_x, kt[1] / self.tiles_y
         self._anchors = {                                      # [L princess, R princess, king]
@@ -572,6 +628,9 @@ class SimEngine:
             u = Unit(spec, team, cx, cy, spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+            # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
+            # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
+            u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
             if spec.siege:
                 u.reach_extra = self.siege_sight - spec.reach
             self.units.append(u)
@@ -693,10 +752,19 @@ class SimEngine:
         # first. Air ignores the river entirely.
         if not u.spec.flying and not u.spec.river_jump and (u.y - _RIVER) * (ty - _RIVER) < 0:
             bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
-            if abs(u.x - bx) * _TILES_X > 0.4:               # not yet in the bridge lane (tiles)
-                tx, ty = bx, _RIVER
+            # Aim at the nearest point on the bridge DECK, not at its centre line. Funnelling every
+            # body to `bx` made a swarm converge on ONE coordinate at the river mouth, and since
+            # collision holds two 0.5-radius bodies 1.0 tile apart while the old release tolerance was
+            # 0.4 tiles, they could never all be "aligned" at once: they shoved each other sideways
+            # forever with y pinned at exactly 0.5000. Measured on 4 goblins -- stuck from t=6s to the
+            # end of the match, x oscillating 3.00..4.00. Clamping into the deck band instead lets
+            # them cross abreast, and a unit already on the deck keeps its own x.
+            half = max(0.0, _BRIDGE_HALF - u.spec.radius) / _TILES_X
+            lane_x = min(max(u.x, bx - half), bx + half)
+            if abs(u.x - lane_x) * _TILES_X > 1e-3:
+                tx, ty = lane_x, _RIVER                      # off the deck -> walk to its near edge
             else:
-                tx, ty = bx, ty                              # aligned with the bridge -> cross straight
+                tx, ty = u.x, ty                             # on the deck -> straight across
         tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
         # step in TILES, then convert back per axis (one normalised unit != one tile on both axes)
         dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
@@ -794,6 +862,16 @@ class SimEngine:
                 if n > u.gen_count:
                     self.elixir[u.team] = min(10.0, self.elixir[u.team] + (n - u.gen_count))
                     u.gen_count = n
+        # BUILDING DECAY. A building bleeds hitpoints continuously across its lifetime -- it does not
+        # sit at full HP and then blink out. The rate is exactly max_hp / lifetime, which reproduces
+        # the wiki's published "Hitpoints lost per second" for every building (goblin_hut 1228/30 =
+        # 40.9, inferno_tower 1748/30 = 58.3, goblin_drill 1313/10 = 131.3), so no extra data is
+        # needed. This is what makes chip damage finish a building EARLY, and it is why the decay --
+        # not a separate age check -- is what ends a building's life.
+        for u in self.units:
+            if u.spec.lifetime and u.deploy_left <= 0.0:
+                u.hp -= (u.spec.hp / u.spec.lifetime) * dt
+        self._tick_spawners(dt)
         # spells land
         landed = []
         for s in self.spells:
@@ -830,7 +908,13 @@ class SimEngine:
             spd = self.slow_factor if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            prev_target = u.target
             kind, ref = self._acquire(u)
+            # RAMP-UP bookkeeping: the damage stages climb only while this unit stays on ONE target,
+            # and drop straight back to stage 1 the instant the target changes -- which is why a stun,
+            # a knockback or simply feeding a fresh body resets an Inferno.
+            if u.target is not prev_target:
+                u.focus_time = 0.0
             if ref is None:
                 continue
             rx, ry = (ref.x, ref.y)
@@ -838,6 +922,7 @@ class SimEngine:
             if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
+                u.focus_time += dt                          # ...and the beam charges while it is actually firing
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.cooldown = u.spec.hit_speed / spd
@@ -863,12 +948,78 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
-                continue
-            if u.spec.lifetime is not None and u.age >= u.spec.lifetime:
+                self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
+                self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
                 continue
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _death_blast(self, u: "Unit") -> None:
+        """Area damage centred on a body that has just died.
+
+        This is the whole point of a Balloon (240 over 3 tiles) or a Giant Skeleton (688 over 3):
+        killing them is not free, and dropping them ON something is the play. It hits enemy UNITS and
+        also a crown tower in radius, so a Balloon that dies at the tower still delivers. Ground-only
+        death damage cannot touch flyers, matching the normal splash rule.
+        """
+        s = u.spec
+        if s.death_dmg <= 0.0 or s.death_radius <= 0.0:
+            return
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0:
+                continue
+            if s.ground_only and e.spec.flying:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= s.death_radius + e.spec.radius:
+                self._hurt(e, s.death_dmg)
+        for tw in self._enemy_towers(u.team):
+            if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
+                self._damage_tower(tw, s.death_dmg, u.team)
+
+    def _tick_spawners(self, dt: float) -> None:
+        """Produce troops from spawners (Goblin Hut, Tombstone, Barbarian Hut, Goblin Drill, Furnace,
+        Witch, Night Witch...). A spawner's damage comes from its UNITS, not from the building -- a
+        Goblin Drill has no attack of its own, so modelling it as a plain attacker had it hitting the
+        crown tower directly.
+
+        `spawner_range` is a PROXIMITY GATE: Goblin Hut only summons while an enemy is within 6 tiles
+        (it stopped spawning automatically in the May 2025 update). Spawners without one produce
+        unconditionally. The first tick waits deploy_time + spawner_delay, set on deploy.
+        """
+        for u in list(self.units):
+            s = u.spec
+            if s.spawner_spec is None or s.spawner_interval <= 0.0 or u.hp <= 0:
+                continue
+            if u.deploy_left > 0.0 or u.stun_left > 0.0:
+                continue
+            if s.spawner_range is not None and not self._enemy_within(u, s.spawner_range):
+                continue                                     # gate shut: bank nothing, just wait
+            u.spawn_cd -= dt
+            if u.spawn_cd <= 0.0:
+                u.spawn_cd += s.spawner_interval
+                self._spawn_from(u, s.spawner_count)
+
+    def _enemy_within(self, u: "Unit", tiles: float) -> bool:
+        """Any live enemy body inside `tiles` of this unit (the spawner proximity gate)."""
+        return any(e.team != u.team and e.hp > 0 and e.deploy_left <= 0.0
+                   and _dist(u.x, u.y, e.x, e.y) <= tiles
+                   for e in self.units)
+
+    def _spawn_from(self, u: "Unit", n: int) -> None:
+        """Drop `n` of this spawner's troop around it, on the side it is pushing toward."""
+        sp = u.spec.spawner_spec
+        if sp is None or n <= 0:
+            return
+        fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks up the board
+        step = (u.spec.radius + sp.radius + 0.1)
+        for i in range(n):
+            ox = ((i % 3) - 1) * step / _TILES_X
+            oy = (fwd * (u.spec.radius + sp.radius) - (i // 3) * step * fwd) / _TILES_Y
+            x, y = _clamp_xy(u.x + ox, u.y + oy, sp.radius)
+            nu = Unit(spec=sp, team=u.team, x=x, y=y, hp=sp.hp)
+            nu.deploy_left = sp.deploy_time
+            self.units.append(nu)
 
     def _hurt(self, u: "Unit", dmg: float) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
@@ -885,12 +1036,30 @@ class SimEngine:
         u.hp -= dmg
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
-        dmg = u.spec.hit_dmg * u.dmg_mult                    # one discrete hit (DPS x hit_speed; x Royal Chef buff)
-        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult
+        mult = self._ramp_mult(u)
+        dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
+        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+
+    @staticmethod
+    def _ramp_mult(u: Unit) -> float:
+        """Ramp-up multiplier on this unit's per-hit damage.
+
+        Inferno Tower, Inferno Dragon and Mighty Miner climb through three damage stages while they
+        stay locked on ONE target -- 2 seconds per stage -- and drop back to stage 1 the moment the
+        target changes. That is what makes a stun/reset or a fresh body such a strong answer to them,
+        and why they melt tanks but barely scratch a swarm. The KB stores the stage damage per level
+        (e.g. Inferno Tower 43 / 158 / 847), so this returns stage_damage / stage_1_damage and lets
+        the normal hit_dmg path carry level scaling and the Royal Chef buff.
+        """
+        st = u.spec.dmg_stages
+        if len(st) < 2 or not st[0]:
+            return 1.0
+        idx = min(int(u.focus_time // max(0.1, u.spec.stage_time)), len(st) - 1)
+        return float(st[idx]) / float(st[0])
 
     def _land_hit(self, team: int, kind: str, ref, spec: CardSpec, dmg: float,
                   tower_dmg: float) -> None:

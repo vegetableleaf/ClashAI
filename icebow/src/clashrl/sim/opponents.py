@@ -20,6 +20,8 @@ from .. import interactions
 from ..cycle import cycle_vector
 from . import view
 
+_NEG = -1e9   # finite mask value (matches train_sim_ppo; -inf can NaN through a softmax)
+
 
 class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
@@ -325,6 +327,13 @@ class SelfPlayOpponent:
         lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
         levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in self.deck_keys]
         self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, levels)]
+        # The snapshot must choose actions under the SAME mask the trainer applies (see
+        # train_sim_ppo.masked_logits): card = in-hand AND affordable, cell = the deployable set.
+        # Kept as plain lists here and cached as tensors on first act() (torch is imported lazily).
+        self._costs = [float(s.elixir) for s in self.specs]
+        self._yourhalf = self.actions.deployable_mask(False)
+        self._mask_cache: dict = {}
+        self._gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
         # exposed so the env's matchup doctrine (reads opponent .style / .cards) still works
         from .meta_decks import classify_style
         self.cards = list(self.deck_keys)
@@ -406,16 +415,31 @@ class SelfPlayOpponent:
         thr_t = torch.from_numpy(thr).unsqueeze(0).to(dev)
         with torch.no_grad():
             cq, ceq, gq = self.net(obs_t, hand_t, nxt_t, elx_t, thr_t)
-        cq = cq.masked_fill(hand_t < 0.5, float("-inf"))
-        # PPO snapshots (net._ppo) carry LOGITS: greedy gate = direct logit compare. DQN snapshots
-        # keep the additive Q rule (wait_q vs play_q + best card + best cell).
+        cache = self._mask_cache
+        if not cache:
+            cache["cost"] = torch.tensor(self._costs, dtype=torch.float32, device=dev)
+            cache["half"] = torch.tensor(self._yourhalf, dtype=torch.bool, device=dev)
+        # AFFORDABILITY, not just in-hand. Without the cost term the snapshot argmaxes onto a card it
+        # cannot pay for, eng.deploy() returns False and the tick is silently wasted -- that made the
+        # frozen self far weaker than the agent it is meant to mirror (inflating training winrate).
+        playable = (hand_t[0] >= 0.5) & (cache["cost"] <= float(eng.elixir[1]) + 1e-6)
+        if not bool(playable.any()):
+            return                                   # nothing playable: the trainer masks the play gate
+        cq = cq.masked_fill(~playable.unsqueeze(0), _NEG)
+        # PPO snapshots (net._ppo) carry LOGITS: the gate is a PROBABILITY thresholded at
+        # sim.ppo_gate_threshold (a raw logit compare is tau=0.5, which under-deploys badly).
+        # DQN snapshots keep the additive Q rule (wait_q vs play_q + best card + best cell).
         if getattr(self.net, "_ppo", False):
-            wait = bool(gq[0, 0] >= gq[0, 1])
+            wait = bool(torch.sigmoid(gq[0, 1] - gq[0, 0]) <= self._gate_tau)
         else:
             wait = bool(gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0].max())
         if wait:
             return                                               # gate says WAIT
         card = int(cq[0].argmax())
+        # Mask cells to the legal set BEFORE the argmax (what the trainer does). Clamping afterwards
+        # folds many illegal cells onto one boundary cell and distorts the placement the policy chose.
+        if card not in self.anywhere_ids:
+            ceq = ceq.masked_fill(~cache["half"].unsqueeze(0), _NEG)
         cell = int(ceq[0].argmax())
 
         cell = self.actions.deploy_clamp(card in self.anywhere_ids, cell)

@@ -261,6 +261,17 @@ def _cmd_autolabel(args) -> None:
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
 
 
+def _cmd_preannotate(args) -> None:
+    try:
+        from .preannotate import preannotate
+    except ImportError as exc:
+        print(f"[pre-annotate] ultralytics is required ({exc}).")
+        return
+    preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
+                device=args.device, limit=args.limit, out=args.out, classes=args.classes,
+                subdir=args.subdir, model_version=args.model_version)
+
+
 def _cmd_detect_merge(args) -> None:
     from .detect import detect_merge
     detect_merge(Config.load(args.config), sources=args.sources, out=args.out, dry_run=args.dry_run)
@@ -584,6 +595,31 @@ def main() -> None:
     atl.add_argument("--preview", action="store_true",
                      help="save overlays of the auto (own-troop) boxes to sanity-check them")
     atl.set_defaults(func=_cmd_autolabel)
+
+    pan = sub.add_parser("pre-annotate",
+                         help="run the CURRENT detector over the unlabelled queue and write a Label "
+                              "Studio TASKS file with its boxes as PRE-ANNOTATIONS, so hand-labelling "
+                              "becomes CORRECTING boxes instead of drawing them. Copies no images -- "
+                              "the tasks point at images/<queue> where the frames already live")
+    pan.add_argument("--conf", type=float, default=0.20,
+                     help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
+                          "deleting a wrong box is one keypress, drawing a missed one takes seconds")
+    pan.add_argument("--weights", default=None, help="best.pt (default: the pinned detect.weights)")
+    pan.add_argument("--device", default=None,
+                     help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
+    pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
+    pan.add_argument("--classes", default=None,
+                     help="comma list to pre-draw only these classes (default: all)")
+    pan.add_argument("--subdir", default=None,
+                     help="queue folder under images/ (default: detect.label_queue_subdir). Also the "
+                          "path written into the task's ?d= reference, so it must match what Label "
+                          "Studio serves")
+    pan.add_argument("--model-version", dest="model_version", default=None,
+                     help="label the predictions with this (default: the run folder, e.g. board-16) "
+                          "so you can tell WHICH detector guessed when reviewing")
+    pan.add_argument("--out", default=None,
+                     help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
+    pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
                          help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")

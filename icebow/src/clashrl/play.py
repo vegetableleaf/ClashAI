@@ -138,9 +138,14 @@ def play(cfg, init: str | None = None) -> None:
         gate = torch.nn.Linear(net.embed_dim, 2).to(device)
         gate.load_state_dict(ckpt["gate"])
         gate.eval()
-    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the greedy gate compares them directly
+    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the gate is a thresholded probability
+    # Deploy gate threshold, shared with the sim benchmark and the self-play snapshots so live play
+    # deploys at the SAME rate it was trained/benchmarked at. A raw logit compare is tau=0.5, which
+    # a calibrated gate rarely clears -> the bot hoards elixir and under-deploys. See config.yaml.
+    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
     print(f"[play] policy {ckpt_path.name} loaded "
-          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'}).")
+          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'})"
+          + (f", gate tau {gate_tau:g}" if (gate is not None and is_ppo) else "") + ".")
 
     capture = WindowCapture(cfg.get("window", "title_contains", default=None),
                             cfg.get("window", "region", default=None))
@@ -397,7 +402,7 @@ def play(cfg, init: str | None = None) -> None:
             # LOGITS, so its greedy gate compares the two gate logits directly (no Q sums).
             if gate_logits is not None:
                 if is_ppo:
-                    wait = bool(gate_logits[0, 0] >= gate_logits[0, 1])
+                    wait = bool(torch.sigmoid(gate_logits[0, 1] - gate_logits[0, 0]) <= gate_tau)
                 else:
                     play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
                     wait = bool(gate_logits[0, 0] >= play_val)

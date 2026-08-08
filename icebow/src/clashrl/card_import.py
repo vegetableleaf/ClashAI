@@ -109,10 +109,17 @@ def _attr_rows(wt: str) -> list:
 
 def _parse_attr_tables(wt: str) -> dict:
     rows = _attr_rows(wt)
-    # A real row is one that describes a BODY or an AREA: troops carry Transport, buildings carry a
-    # Range, spells carry a Radius. Requiring Transport (or Count) silently dropped every building,
-    # every spell, and the spirits -- whose single-unit pages omit the Count column entirely.
-    units = [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
+    # THE CARD'S OWN table is the one carrying Cost -- every card page leads with it. A SPAWNER page
+    # then has a SECOND table for the unit it summons, which has no Cost. Keying on Cost is what
+    # separates them. The old filter (Transport OR Range OR Radius) skipped a spawner's own table
+    # entirely, because it lists "Spawn Range" rather than "Range" and never carries Transport -- so
+    # units[0] became the SPAWNED troop and its stats were written as the card's. goblin_hut ended up
+    # with a Spear Goblin's 133 hp / 5.0 range / 2.0 speed; a `kind: building` with a MOVEMENT SPEED
+    # is the tell. Same for tombstone (a Skeleton), barbarian_hut (a Barbarian), goblin_drill and
+    # goblin_cage.
+    owns = [r for r in rows if r.get("Cost")]
+    spawned = [r for r in rows if not r.get("Cost") and r.get("Transport")]
+    units = owns or [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
     if not units:
         return {}
 
@@ -151,7 +158,50 @@ def _parse_attr_tables(wt: str) -> dict:
         "projectile_range": _tiles(main.get("Projectile Range")),
         "splash_radius": _tiles(main.get("Splash Radius")),
         "radius_tiles": _tiles(main.get("Radius")),          # spells: the blast footprint
+        # SPAWNER parameters, straight off the card's own table. Goblin Hut only summons "when an
+        # enemy is within range" (Spawn Range 6) -- it stopped spawning automatically in the May 2025
+        # update, so the gate is real and not cosmetic. Buildings that spawn unconditionally simply
+        # have no Spawn Range column.
+        "spawn_interval_s": _tiles(main.get("Spawn Speed")),
+        "spawn_delay_s": _tiles(main.get("Spawn Delay")),
+        "spawn_range_tiles": _tiles(main.get("Spawn Range")),
     }
+    if spawned:                      # the summoned troop's own row (never has Cost)
+        sp = spawned[0]
+        sp_speed = _tiles(sp.get("Speed"))
+        out["spawn_unit_stats"] = {k: v for k, v in {
+            "range_tiles": _tiles(sp.get("Range")),
+            "speed_tiles": round(sp_speed / _SPEED_UNITS_PER_TILE, 3) if sp_speed else None,
+            "hit_speed": _tiles(sp.get("Hit Speed")),
+            "flying": (sp.get("Transport") or "").lower() == "air" or None,
+        }.items() if v is not None}
+    def _any(col):
+        """First non-empty value of `col` across ANY table on the page.
+
+        These columns do not live on the card's own Cost row -- `Cycles` sits on an Evolution's
+        separate table, `Death Damage Splash Radius` on a death-effect table -- so they must be
+        searched page-wide rather than read off `main`.
+        """
+        for r in rows:
+            if r.get(col):
+                return r[col]
+        return None
+
+    cyc = _ANYNUM.search(_any("Cycles") or "")
+    pct = _ANYNUM.search(_any("Slowdown") or "")
+    out.update({
+        # EVOLUTION CYCLES: how many base plays charge the Evolution. Four cards were sitting on an
+        # UNVERIFIED guess of 1; the wiki publishes 2 for Musketeer / Valkyrie / Archers / Skeletons.
+        "evo_cycles": int(cyc.group()) if cyc else None,
+        "death_radius_tiles": _tiles(_any("Death Damage Splash Radius")),
+        "stun_duration_s": _tiles(_any("Stun Duration")),
+        "freeze_duration_s": _tiles(_any("Freeze Duration")),
+        "slow_duration_s": _tiles(_any("Slow Duration")),
+        "slow_pct": float(pct.group()) if pct else None,
+        "jump_time_s": _tiles(_any("Jump Time")),
+        "dash_time_s": _tiles(_any("Dash Time")),
+        "projectile_width_tiles": _tiles(_any("Projectile Width")),
+    })
     if _KAMIKAZE.search(intro):
         out["kamikaze"] = True       # spirits: leap at the target, hit once, die on impact
     charge = next((r for r in rows if r.get("Charge Range")), None)
@@ -216,18 +266,45 @@ def _parse_card(page: str, wt: str) -> dict:
 
     hp, dmg, atk = _pick(vd, "hp"), _pick(vd, "dmg"), _lit(vd.get("atk_speed"))
     crown = _pick(vd, "crown_dmg")
-    if hp is None:                       # multi-unit pages prefix vars, e.g. golem_hp_11
-        prefixed = {}
-        for k, v in vd.items():
-            m = re.fullmatch(r"([a-z0-9]+)_hp_(?:11|base)", k)
-            lv = _lit(v)
-            if m and lv is not None:
-                prefixed[m.group(1)] = lv
-        if prefixed:
-            main = max(prefixed, key=lambda k: prefixed[k])     # main unit = highest HP
-            hp = prefixed[main]
-            dmg = dmg or _lit(vd.get(f"{main}_dmg_11")) or _lit(vd.get(f"{main}_dmg_base"))
-            atk = atk or _lit(vd.get(f"{main}_atk_speed"))
+    # A SPAWNER page defines HP for BOTH the card and the unit it summons, and which one gets the
+    # bare `hp_11` is NOT consistent: goblin_hut/tombstone/barbarian_hut/goblin_drill put the
+    # BUILDING behind a prefix (hut_/tomb_/drill_) and the SPAWNED unit on bare hp_11, while
+    # goblin_cage does the reverse. Taking bare hp_11 therefore gave four buildings their spawned
+    # troop's hitpoints. The one rule that holds on every page today is that the card's OWN body is
+    # the tankier of the two -- which is also the rule the old prefixed-only fallback already used,
+    # it just never applied when a bare hp_11 happened to exist.
+    hp_vars = {}
+    for k, v in vd.items():
+        m = re.fullmatch(r"(?:([a-z0-9]+)_)?hp_(?:11|base)", k)
+        lv = _lit(v)
+        if m and lv is not None:
+            hp_vars.setdefault(m.group(1) or "", lv)
+    if hp_vars:
+        pref = max(hp_vars, key=lambda k: hp_vars[k])
+        hp = hp_vars[pref]
+        if pref:                     # damage/attack MUST come from the same unit as the hitpoints,
+            p = f"{pref}_"           # with no fallback to the bare vars (those are the spawned unit)
+            dmg = _lit(vd.get(f"{p}dmg_11")) or _lit(vd.get(f"{p}dmg_base"))
+            atk = _lit(vd.get(f"{p}atk_speed"))
+    # RAMP-UP DAMAGE (Inferno Tower / Inferno Dragon / Mighty Miner). These cards publish NO plain
+    # `dmg_11`; their damage is staged as `1_dmg_11` / `2_dmg_11` / `3_dmg_11`, climbing while they
+    # stay locked on one target. The importer only ever looked for the bare key, so all three came
+    # out with damage None -> dps 0 and dealt NO DAMAGE AT ALL in the sim, to towers or to troops.
+    stages = {}
+    for k, v in vd.items():
+        m = re.fullmatch(r"([123])_dmg_(?:11|base)", k)
+        lv = _lit(v)
+        if m and lv is not None:
+            stages.setdefault(int(m.group(1)), lv)
+    damage_stages = [stages[i] for i in sorted(stages)] if stages else None
+    # A RAMP CLIMBS. Void uses the same `N_dmg_11` naming for something else entirely -- damage
+    # against 1 troop vs 2 troops, which DESCENDS (696 -> 294) -- so requiring a strictly increasing
+    # series is what separates a real ramp from a same-shaped key that means the opposite.
+    if damage_stages and (len(damage_stages) < 2
+                          or any(b <= a for a, b in zip(damage_stages, damage_stages[1:]))):
+        damage_stages = None
+    if damage_stages and dmg is None:
+        dmg = damage_stages[0]       # stage 1 is the opening damage, before any ramp
 
     cost = info.get("Cost", "")
     entry = {
@@ -241,6 +318,19 @@ def _parse_card(page: str, wt: str) -> dict:
         "dps": round(dmg / atk) if (dmg and atk) else None,
         "crown_tower_damage": int(crown) if crown is not None else None,
         "lifetime_s": _lit(vd.get("life")),
+        "damage_stages": damage_stages,
+        # SECONDARY DAMAGE + SHIELD, all level-scaled vardefines the importer never read. The engine
+        # was guessing a shield as a fraction of hitpoints and had no death damage at all, so a
+        # Balloon or Giant Skeleton dying was silent -- which is most of what those cards are for.
+        # `Shield_11` is capitalised on Royal Recruits, hence the case-insensitive lookup.
+        "shield_hp": _pick(vd, "shield") or _pick({k.lower(): v for k, v in vd.items()}, "shield"),
+        "death_damage": _pick(vd, "death"),
+        "charge_damage": _pick(vd, "charge"),      # Prince 783 / Dark Prince 532 on a completed charge
+        "dash_damage": _pick(vd, "dash"),          # Bandit 389
+        "jump_damage": _pick(vd, "jump"),          # Mega Knight 537 on landing
+        "spawn_damage": _pick(vd, "spawn"),        # Mega Knight 430 / Goblin Drill 84 on surfacing
+        "spawn_crown_damage": _pick(vd, "spawn_crown"),
+        "hits_per_attack": _lit(vd.get("dmg_hits")),   # Electro Dragon chains to 3
     }
     entry.update(_parse_attr_tables(wt))
     if re.search(r"\b(?:jump|hop|leap)\w*\s+(?:over|across)\s+(?:the\s+)?river",
