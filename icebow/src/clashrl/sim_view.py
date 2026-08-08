@@ -150,7 +150,7 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
     # --- towers ------------------------------------------------------------------------------
     for team in (1, 0):
         for tw in eng.towers[team]:
-            ht = 2.0 if tw.king else 1.5                  # king is 4x4 tiles, a princess 3x3
+            ht = float(getattr(tw, "radius", 1.5))        # real footprint: princess 3x3, king 4x4 tiles
             hw, hh = ht / _TILES_X, ht / _TILES_Y
             x0, y0 = px(tw.x - hw, tw.y - hh)
             x1, y1 = px(tw.x + hw, tw.y + hh)

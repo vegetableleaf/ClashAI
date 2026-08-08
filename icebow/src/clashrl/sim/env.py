@@ -70,6 +70,22 @@ class SimMatchEnv:
         self.deck_card_levels = self.db.deck_levels()
         self.n_cards = max(1, len(self.deck_keys))
         self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, self.deck_card_levels)]
+        # PHYSICAL CARD SLOTS. The cycle runs over the deck's 8 CARDS, not the 10 policy identities:
+        # an Evolution is not its own card, it IS the base card shown evolved once that slot has been
+        # played `cycles` times. Cycling identities instead let base and Evo sit in hand together and
+        # let the Evo be replayed every lap -- neither happens in a real match.
+        self.slots = self.db.deck_slots()
+        self.n_slots = max(1, len(self.slots))
+        self.slot_base_id = [self.deck_keys.index(s["base"]) for s in self.slots]
+        self.slot_evo_id = [self.deck_keys.index(s["evo"]) if s["evo"] in self.deck_keys else -1
+                            for s in self.slots]
+        self.slot_cycles = [int(s["cycles"]) for s in self.slots]
+        self.slot_of = {}                                # identity id -> slot index
+        for si in range(self.n_slots):
+            self.slot_of[self.slot_base_id[si]] = si
+            if self.slot_evo_id[si] >= 0:
+                self.slot_of[self.slot_evo_id[si]] = si
+        self.evo_charge = [0] * self.n_slots             # base plays banked toward this slot's Evolution
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         self.obs_shape = (int(oh), int(ow), 3)
@@ -188,8 +204,33 @@ class SimMatchEnv:
         self._opp_mem.reset()
 
     # -- hand cycle --------------------------------------------------------
+    def _slot_card_id(self, slot: int) -> int:
+        """The identity this slot currently presents: the Evolution once it has banked its cycles,
+        otherwise the base card."""
+        evo = self.slot_evo_id[slot]
+        if evo >= 0 and self.evo_charge[slot] >= self.slot_cycles[slot]:
+            return evo
+        return self.slot_base_id[slot]
+
+    def _queue_ids(self):
+        """The whole cycle as the identities it will present, in order (hand first)."""
+        return [self._slot_card_id(s) for s in self.cycle]
+
     def _hand_ids(self):
-        return self.cycle[:4]
+        return [self._slot_card_id(s) for s in self.cycle[:4]]
+
+    def _play_slot(self, card_id: int) -> None:
+        """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to
+        the back of the cycle."""
+        slot = self.slot_of.get(card_id)
+        if slot is None:
+            return
+        if card_id == self.slot_evo_id[slot]:
+            self.evo_charge[slot] = 0                    # the Evolution was spent -> recharge from scratch
+        elif self.slot_evo_id[slot] >= 0:
+            self.evo_charge[slot] += 1                   # a base play banks one cycle toward the Evolution
+        self.cycle.remove(slot)
+        self.cycle.append(slot)
 
     def _update_vectors(self):
         self.hand_vec[:] = 0.0
@@ -197,7 +238,7 @@ class SimMatchEnv:
             self.hand_vec[i] = 1.0
         # graded UPCOMING-order vector (Next=1.0 grading down for the hidden cards) from the true
         # ordered queue -- lets the policy plan which cards to cycle toward. Superset of a next one-hot.
-        self.next_vec[:] = cycle_vector(self.cycle, self.n_cards)
+        self.next_vec[:] = cycle_vector(self._queue_ids(), self.n_cards)
         self.elixir = int(self.eng.elixir[0])
         self.elixir_vec[0] = self.eng.elixir[0] / 10.0
         self.threat_vec[:] = self._threat_vector()
@@ -239,8 +280,9 @@ class SimMatchEnv:
         self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
-        self.cycle = list(range(self.n_cards))
+        self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
+        self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
         self._match_bonus = 0.0
         self._prev_evalue = 0.0
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
@@ -463,7 +505,7 @@ class SimMatchEnv:
         my_elix = self.specs[card_id].elixir
         avail = set(self._hand_ids())
         if len(self.cycle) > 4:
-            avail.add(self.cycle[4])                     # the NEXT (preview) card counts as immediately available
+            avail.add(self._slot_card_id(self.cycle[4]))  # the NEXT (preview) card counts as immediately available
         for c in avail:
             if (c != card_id and self.specs[c].elixir < my_elix
                     and card_threat.counters(self._deck_profiles[c], tid)):
@@ -576,8 +618,7 @@ class SimMatchEnv:
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
-                idx = self.cycle.index(card_id)                                 # cycle the played card to the back
-                self.cycle.append(self.cycle.pop(idx))
+                self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
             reward += self._threat_miss_idle()                 # (1) ignored an ANSWERABLE threat (uncapped penalty)
         # opponent acts, then advance the match by agent_dt in sub-ticks

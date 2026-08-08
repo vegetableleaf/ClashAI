@@ -52,9 +52,16 @@ def configure_board(tiles_x: float, tiles_y: float, bridge_tiles) -> None:
 # speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
 _SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, None: 1.0}
 # attack reach word -> TILES (melee ~1, short ~3, long 5.5)
-_REACH = {"melee": 1.0, "short": 3.0, "long": 5.5, None: 1.0}
+# Attack reach is now PER CARD (cards.CardDB.attack_range_tiles, from cr-api-data `range`) rather
+# than one constant per melee/short/long bucket -- real melee spans 0.5-1.6 tiles.
 _REACH_SLOP = 0.6         # tiles of tolerance on "target is in reach"
 _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit counts as a heavy tank
+# TOWER FOOTPRINTS (half-size, tiles). Towers are BUILDINGS with real bodies -- a princess is 3x3
+# tiles and the king 4x4 -- so an attacker must stop OUTSIDE that box. Measuring reach to the tower
+# CENTRE (what this engine used to do) let a melee unit walk its whole body inside the tower before
+# it would swing.
+_PRINCESS_HALF = 1.5
+_KING_HALF = 2.0
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
@@ -143,7 +150,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     hit = float(c.get("hit_speed") or 1.0)
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
     tower_dmg = float(db.tower_damage(base) or dmg)
-    reach = _REACH.get(db.attack_range(base), _REACH["melee"])     # TILES
+    reach = float(db.attack_range_tiles(base))                 # TILES, attacker centre -> target EDGE
     speed = _SPEED.get(c.get("speed"), _SPEED["medium"])           # TILES/s
     count = int(c.get("count") or 1)
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
@@ -187,7 +194,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
     ct = db.crown_tower_damage(base)                           # troops with a reduced crown value (Miner) hit towers softer
     tower_hit_dmg = float(ct) * sc if ct is not None else hit_dmg
-    radius = 0.96 if "tank" in flags else (0.45 if count >= 3 else 0.64)   # collision radius, TILES
+    radius = float(db.collision_radius_tiles(base))             # body radius, TILES (cr-api-data)
     spawn_spec, spawn_count = None, 0
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
@@ -247,6 +254,7 @@ class Tower:
     king: bool = False
     active: bool = True
     alive: bool = True
+    radius: float = _PRINCESS_HALF   # footprint half-size in TILES (princess 3x3, king 4x4)
     # --- tower-troop combat model (discrete single-target hits; stats from the CR wiki) ---
     troop: str = "princess"
     hit_dmg: float = 158.0        # damage per shot (= dps * hit_speed, level-scaled)
@@ -292,6 +300,22 @@ def _dist(ax, ay, bx, by) -> float:
 
 
 tile_dist = _dist          # public alias: reward geometry must measure in tiles too
+
+
+def _body_radius(ref) -> float:
+    """Hitbox radius (tiles) of a Unit or a Tower."""
+    spec = getattr(ref, "spec", None)
+    return float(spec.radius) if spec is not None else float(getattr(ref, "radius", 0.0))
+
+
+def _gap(ax: float, ay: float, ref) -> float:
+    """Distance in TILES from (ax, ay) to ``ref``'s hitbox EDGE.
+
+    CR measures attack + aggro range from the attacker's CENTRE to the TARGET'S HITBOX EDGE, so a
+    bigger target is engaged from further out and a melee unit stops clear of a tower instead of
+    standing inside it. Clamped at 0 for a point already inside the body.
+    """
+    return max(0.0, _dist(ax, ay, ref.x, ref.y) - _body_radius(ref))
 
 
 # Tower-troop stat fallback (Clash Royale Fandom wiki, LEVEL 15) if config omits `tower_troops`/`king_tower`.
@@ -388,6 +412,7 @@ class SimEngine:
         hit_speed = float(prof.get("hit_speed", 0.8))
         dps = float(prof.get("dps", 197.0))
         tw = Tower(x, y, hp, hp, king=king, active=(not king),
+                   radius=(_KING_HALF if king else _PRINCESS_HALF),
                    troop=("king" if king else troop),
                    hit_dmg=dps * hit_speed * sc, hit_speed=hit_speed,
                    first_hit=min(hit_speed, self.tower_first_hit))
@@ -483,25 +508,31 @@ class SimEngine:
     def _acquire(self, u: Unit):
         """(kind, ref) this unit heads for -- with target COMMITMENT + an aggro/sight range: real CR units
         lock onto a target and only notice enemy UNITS within sight, otherwise they march at the tower.
-        Building-only troops (Miner / Hog) ignore troops and always go for the tower."""
+        Building-only troops (Miner / Hog) ignore troops and always go for the tower.
+
+        All ranges are measured to the target's hitbox EDGE (:func:`_gap`), so a big body is noticed
+        and engaged from further out than a skeleton standing in the same spot."""
         towers = self._enemy_towers(u.team)
         if u.spec.building_only:
-            tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y)) if towers else None
+            tw = min(towers, key=lambda t: _gap(u.x, u.y, t)) if towers else None
             u.target = tw
             return ("tower", tw) if tw else (None, None)
         sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
         t = u.target                                          # stay COMMITTED to a live unit target (with a leash)
         if isinstance(t, Unit) and t.hp > 0 and self._valid_foe(u, t) \
-                and _dist(u.x, u.y, t.x, t.y) <= sight * 1.8:
+                and _gap(u.x, u.y, t) <= sight * 1.8:
             return ("unit", t)
         foes = [e for e in self.units if e.team != u.team and self._valid_foe(u, e)
-                and _dist(u.x, u.y, e.x, e.y) <= sight]
+                and _gap(u.x, u.y, e) <= sight]
         if foes:                                              # an enemy unit is within aggro range -> engage nearest
-            e = min(foes, key=lambda e: _dist(u.x, u.y, e.x, e.y))
+            e = min(foes, key=lambda e: _gap(u.x, u.y, e))
             u.target = e
             return ("unit", e)
-        if towers:                                            # nothing in sight -> march at the nearest tower
-            tw = min(towers, key=lambda t: _dist(u.x, u.y, t.x, t.y))
+        if towers:                                            # nothing in sight -> march at a tower
+            if isinstance(t, Tower) and t.alive and t in towers:
+                return ("tower", t)                           # COMMIT: don't re-pick every tick (that oscillates
+                                                              # between two near-equidistant towers mid-walk)
+            tw = min(towers, key=lambda t: _gap(u.x, u.y, t))
             u.target = tw
             return ("tower", tw)
         u.target = None
@@ -613,7 +644,7 @@ class SimEngine:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            if _dist(u.x, u.y, rx, ry) <= reach + _REACH_SLOP:
+            if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
@@ -698,7 +729,7 @@ class SimEngine:
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
-                and _dist(tw.x, tw.y, e.x, e.y) <= rng]
+                and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
@@ -710,7 +741,7 @@ class SimEngine:
         tw.reload_left -= dt
         if tw.reload_left > 0.0:
             return
-        tgt = min(foes, key=lambda e: _dist(tw.x, tw.y, e.x, e.y))
+        tgt = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
         self._hurt(tgt, tw.hit_dmg)                             # towers are single-target (no splash)
         # accumulate (+=) rather than reset (=) the cooldown so the fractional remainder carries and the
         # AVERAGE cadence stays exact on the 0.1s physics grid (a reset would round every shot up a tick).
