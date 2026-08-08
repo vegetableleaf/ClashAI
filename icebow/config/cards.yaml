@@ -946,9 +946,12 @@ cards:
   # card, so it has no KB entry to point at -- left alone rather than approximated with a Goblin.
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
-  # Furnace lifetime 40s comes from its attribute table -- its page has no `life` vardefine for the
-  # importer to read, so this is the one building lifetime that has to be curated.
-  furnace: {kind: building, range: long, flags: [spawner], lifetime: 40, spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
+  # FURNACE IS A TROOP, not a building: the 4/8/2025 update "changed the Furnace into a troop that
+  # can walk and deal damage". Its wiki table reads Type: Troop, Speed Medium (60), Range 6, and it
+  # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
+  # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
+  # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
   goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun

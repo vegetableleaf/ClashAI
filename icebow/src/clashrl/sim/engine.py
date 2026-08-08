@@ -104,6 +104,10 @@ class CardSpec:
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
     tower_hit_dmg: float = 0.0  # damage per hit vs CROWN TOWERS -- reduced when the KB carries a
                               # crown_tower_damage (Miner's signature nerf); else = hit_dmg. Without
+    # RAMP-UP: per-hit damage for stages 1..3 while locked on ONE target (Inferno Tower / Inferno
+    # Dragon / Mighty Miner). Empty = flat damage. The ramp resets whenever the target changes.
+    dmg_stages: tuple = ()
+    stage_time: float = 2.0   # seconds on one target before stepping up a stage
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     radius: float = 0.64      # collision radius, TILES (soft body-block)
@@ -257,6 +261,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         rolls=rolls, ground_only=ground_only,
         knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
+        dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
+        stage_time=float(c.get("stage_time_s") or 2.0),
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
@@ -303,6 +309,7 @@ class Unit:
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     spawn_cd: float = 0.0        # time until this spawner's next production tick
+    focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -888,7 +895,13 @@ class SimEngine:
             spd = self.slow_factor if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            prev_target = u.target
             kind, ref = self._acquire(u)
+            # RAMP-UP bookkeeping: the damage stages climb only while this unit stays on ONE target,
+            # and drop straight back to stage 1 the instant the target changes -- which is why a stun,
+            # a knockback or simply feeding a fresh body resets an Inferno.
+            if u.target is not prev_target:
+                u.focus_time = 0.0
             if ref is None:
                 continue
             rx, ry = (ref.x, ref.y)
@@ -896,6 +909,7 @@ class SimEngine:
             if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
+                u.focus_time += dt                          # ...and the beam charges while it is actually firing
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.cooldown = u.spec.hit_speed / spd
@@ -986,12 +1000,30 @@ class SimEngine:
         u.hp -= dmg
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
-        dmg = u.spec.hit_dmg * u.dmg_mult                    # one discrete hit (DPS x hit_speed; x Royal Chef buff)
-        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult
+        mult = self._ramp_mult(u)
+        dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
+        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+
+    @staticmethod
+    def _ramp_mult(u: Unit) -> float:
+        """Ramp-up multiplier on this unit's per-hit damage.
+
+        Inferno Tower, Inferno Dragon and Mighty Miner climb through three damage stages while they
+        stay locked on ONE target -- 2 seconds per stage -- and drop back to stage 1 the moment the
+        target changes. That is what makes a stun/reset or a fresh body such a strong answer to them,
+        and why they melt tanks but barely scratch a swarm. The KB stores the stage damage per level
+        (e.g. Inferno Tower 43 / 158 / 847), so this returns stage_damage / stage_1_damage and lets
+        the normal hit_dmg path carry level scaling and the Royal Chef buff.
+        """
+        st = u.spec.dmg_stages
+        if len(st) < 2 or not st[0]:
+            return 1.0
+        idx = min(int(u.focus_time // max(0.1, u.spec.stage_time)), len(st) - 1)
+        return float(st[idx]) / float(st[0])
 
     def _land_hit(self, team: int, kind: str, ref, spec: CardSpec, dmg: float,
                   tower_dmg: float) -> None:

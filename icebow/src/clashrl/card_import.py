@@ -259,6 +259,25 @@ def _parse_card(page: str, wt: str) -> dict:
             p = f"{pref}_"           # with no fallback to the bare vars (those are the spawned unit)
             dmg = _lit(vd.get(f"{p}dmg_11")) or _lit(vd.get(f"{p}dmg_base"))
             atk = _lit(vd.get(f"{p}atk_speed"))
+    # RAMP-UP DAMAGE (Inferno Tower / Inferno Dragon / Mighty Miner). These cards publish NO plain
+    # `dmg_11`; their damage is staged as `1_dmg_11` / `2_dmg_11` / `3_dmg_11`, climbing while they
+    # stay locked on one target. The importer only ever looked for the bare key, so all three came
+    # out with damage None -> dps 0 and dealt NO DAMAGE AT ALL in the sim, to towers or to troops.
+    stages = {}
+    for k, v in vd.items():
+        m = re.fullmatch(r"([123])_dmg_(?:11|base)", k)
+        lv = _lit(v)
+        if m and lv is not None:
+            stages.setdefault(int(m.group(1)), lv)
+    damage_stages = [stages[i] for i in sorted(stages)] if stages else None
+    # A RAMP CLIMBS. Void uses the same `N_dmg_11` naming for something else entirely -- damage
+    # against 1 troop vs 2 troops, which DESCENDS (696 -> 294) -- so requiring a strictly increasing
+    # series is what separates a real ramp from a same-shaped key that means the opposite.
+    if damage_stages and (len(damage_stages) < 2
+                          or any(b <= a for a, b in zip(damage_stages, damage_stages[1:]))):
+        damage_stages = None
+    if damage_stages and dmg is None:
+        dmg = damage_stages[0]       # stage 1 is the opening damage, before any ramp
 
     cost = info.get("Cost", "")
     entry = {
@@ -272,6 +291,7 @@ def _parse_card(page: str, wt: str) -> dict:
         "dps": round(dmg / atk) if (dmg and atk) else None,
         "crown_tower_damage": int(crown) if crown is not None else None,
         "lifetime_s": _lit(vd.get("life")),
+        "damage_stages": damage_stages,
     }
     entry.update(_parse_attr_tables(wt))
     if re.search(r"\b(?:jump|hop|leap)\w*\s+(?:over|across)\s+(?:the\s+)?river",
