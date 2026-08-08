@@ -72,8 +72,20 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
     (dst / "classes.txt").write_text("\n".join(names) + "\n", encoding="utf-8")
 
     from ultralytics import YOLO
+    from .detect import model_class_names
     model = YOLO(str(wpath))
+    # A checkpoint's class INDICES are frozen at training time. `classes.txt` (and the YOLO label
+    # files that index into it) must be in the CURRENT taxonomy, because that is what you will be
+    # labelling in and what detect-import re-reads. So decode each prediction with the WEIGHTS'
+    # names, then re-index BY NAME into the current list -- never index one taxonomy with the other.
+    pred_names = model_class_names(model)
+    idx_of = {n: i for i, n in enumerate(names)}
+    dropped = [n for n in pred_names if n not in idx_of]
     print(f"[pre-annotate] weights {wpath}")
+    if dropped:
+        print(f"[pre-annotate] weights carry {len(pred_names)} classes vs {len(names)} current; "
+              f"{len(dropped)} no longer exist and are skipped: {', '.join(sorted(dropped)[:6])}"
+              + (" ..." if len(dropped) > 6 else ""))
     print(f"[pre-annotate] {len(pend)} unlabelled frame(s) @ conf {conf} "
           f"(live gate is {cfg.get('observation', 'detector_conf', default=0.40)} -- lower on purpose)")
 
@@ -82,7 +94,7 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
         kw["device"] = device
 
     hist: dict = {}
-    n_box = n_img = 0
+    n_box = n_img = n_skip = 0
     for i, p in enumerate(pend):
         try:
             r = model.predict(str(p), **kw)[0]
@@ -91,12 +103,16 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
             continue
         lines = []
         for b in r.boxes:
-            cls = int(b.cls[0])
-            if keep is not None and names[cls] not in keep:
+            nm = pred_names[int(b.cls[0])]
+            cls = idx_of.get(nm)
+            if cls is None:                       # class removed from the taxonomy since training
+                n_skip += 1
+                continue
+            if keep is not None and nm not in keep:
                 continue
             x, y, w, h = (float(v) for v in b.xywhn[0].tolist())
             lines.append(f"{cls} {x:.6f} {y:.6f} {w:.6f} {h:.6f}")
-            hist[names[cls]] = hist.get(names[cls], 0) + 1
+            hist[nm] = hist.get(nm, 0) + 1
         shutil.copy2(p, dst / "images" / p.name)
         # An EMPTY .txt is meaningful: it says "detector found nothing here", which is a frame
         # worth a human eye rather than one to skip.
@@ -110,6 +126,8 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
     empty = n_img - sum(1 for f in (dst / "labels").glob("*.txt") if f.stat().st_size > 0)
     print(f"\n[pre-annotate] {n_img} frame(s), {n_box} pre-drawn box(es) "
           f"({n_box / max(1, n_img):.1f}/frame; {empty} frame(s) got nothing)")
+    if n_skip:
+        print(f"[pre-annotate] {n_skip} detection(s) dropped as retired classes")
     if hist:
         top = sorted(hist.items(), key=lambda kv: -kv[1])[:12]
         print("[pre-annotate] most-drawn: " + ", ".join(f"{k} {v}" for k, v in top))
