@@ -433,6 +433,13 @@ env:
   # still lets them answer, so the gap alone would mis-fire.
   punish_opp_elixir: 4.0
   punish_elixir_gap: 4.0
+  # A card only BLOCKS a forward X-Bow if it can body one -- the pool splits cleanly on hitpoints:
+  # ice_golem 1315 / knight 1766 / elixir_golem 1569 / berserker 896 / ice_wizard 688 can trade with a
+  # siege, while spirits 215 / bomber 304 / minions 230 / bats 81 / guards 81 just get shredded. The
+  # gap between ~330 and ~690 is where this sits. Without it the "cheapest blocker" was a 1-elixir
+  # spirit in most decks, which made the punish window require the opponent to be under 1 elixir.
+  # Hitpoints are the KB's reference level; opponents play at L13-16, but the ORDERING is unchanged.
+  punish_blocker_min_hp: 600
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
   tower_chip_power: 2.0          # convexity of the tower-chip reward: >1 -> PARTIAL chip worth sub-proportionally little

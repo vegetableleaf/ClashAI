@@ -154,6 +154,7 @@ class SimMatchEnv:
         self.quiet_board_free_elixir = float(cfg.get("env", "quiet_board_free_elixir", default=8.0))
         self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
+        self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
         self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
@@ -310,15 +311,32 @@ class SimMatchEnv:
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
-        # MATCHUP-aware doctrine: vs a fast CYCLE or heavy BEATDOWN deck -- or a SPLIT-LANE deck built on
-        # Royal Recruits / Royal Hogs (they hard-counter X-Bow: a wide two-lane push a single X-Bow can't
-        # cover) -- play EXCLUSIVELY defensive X-Bow + rocket-cycle for the WHOLE match. vs control/siege
-        # it's offensive-first (transition per the 2x/tower rule).
+        # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
+        # "turtle" half is the my_c >= 1 flip in step(), so the matchup lock here only needs to cover
+        # decks that STRUCTURALLY blank a siege. A SPLIT-LANE deck (Royal Recruits / Royal Hogs) does:
+        # a wide two-lane push is something one X-Bow cannot cover, whatever the elixir count.
+        # Fast CYCLE and heavy BEATDOWN used to lock defensive here too, which was wrong -- those are
+        # an ELIXIR-TIMING problem, not a structural one. A beatdown deck blanks a forward X-Bow only
+        # while it can AFFORD a mini-tank, which is exactly what _punish_window now tests. Locking the
+        # whole match defensive meant MEASURED 93.5% of steps in defensive phase and 0 of 143 X-Bow
+        # plays ever placed forward: the deck's siege win condition trained into a defensive building.
         self._matchup = getattr(self.opponent, "style", "control")
         opp_cards = set(getattr(self.opponent, "cards", ()) or ())
         self._split_lane_counter = bool(opp_cards & self.split_lane_counters)
-        if self._matchup in ("cycle", "beatdown") or self._split_lane_counter:
+        if self._split_lane_counter:
             self._defensive = True
+        # Cheapest card in the OPPONENT's deck that can actually BODY a forward X-Bow. A 3-5 elixir
+        # mini-tank blanks a 6-elixir siege commitment, so the siege is only SAFE while they cannot
+        # afford even this. Swarms are excluded (the rule is about tanks / mini-tanks) and so is
+        # anything too flimsy to trade with a siege -- without the HP floor the "cheapest blocker" came
+        # out as a 1-elixir SPIRIT in most decks (median 1e), which made the window near-unreachable.
+        # Air is NOT excluded: the X-Bow cannot shoot back at it.
+        self._opp_block_cost = min(
+            (float(p.elixir) for p in
+             (card_threat.profile(self.db, k[:-4] if k.endswith("_evo") else k) for k in opp_cards)
+             if p.kind == "troop" and not p.swarm and p.elixir
+             and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)),
+            default=self.punish_opp_elixir)
         self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
         self._nado_king_credited = False
         self._reset_vectors()
@@ -407,12 +425,27 @@ class SimMatchEnv:
         return 0.0
 
     def _punish_window(self, spend: float = 0.0) -> bool:
-        """The opponent has overcommitted and is now BROKE relative to you, so a siege goes up before
-        they can afford an answer. This is what turns an offensive X-Bow from a gamble into a punish.
-        Reward-side only: it reads the opponent's TRUE elixir, which the policy cannot observe (see the
-        observability note on _leaking_first). ``spend`` is added back for the same pre-spend reason:
-        an X-Bow costs 6, so measured POST-spend this needed a 10-elixir lead and fired EXACTLY ZERO
-        times in 162 X-Bow plays, despite the window being open on 28% of steps."""
+        """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
+        X-Bow is a 6-elixir bet that is simply BLANKED by any 3-5 elixir tank or mini-tank, so the bar
+        is not a flat number: it is whether they can still afford their own CHEAPEST BLOCKER
+        (_opp_block_cost, from their actual deck). Reward-side only -- it reads the opponent's TRUE
+        elixir, which the policy cannot observe (see the observability note on _leaking_first).
+        ``spend`` is added back for the same pre-spend reason: an X-Bow costs 6, so measured POST-spend
+        this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays."""
+        mine = self.eng.elixir[0] + spend
+        return (self.eng.elixir[1] < self._opp_block_cost
+                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
+
+    def _wincon_spend_waived(self, card_id: int, spec) -> bool:
+        """A win-condition play damages TOWERS, not troops, so the trade term -- which measures enemy
+        TROOP value eliminated -- cannot credit it, and billing its elixir there charges the deck's own
+        game plan as waste. EXCEPT a forward X-Bow the opponent CAN still answer: that 6-elixir
+        commitment is genuinely at risk of being blocked by a mini-tank, and making it pay is what
+        teaches the caution the playstyle needs. A safe (punish-window) siege is waived; a gamble is
+        not, so the two differ by the full 6 elixir in the ledger."""
+        if card_id in self.xbow_ids:
+            return self._punish_window(float(spec.elixir))
+        return True
         mine = self.eng.elixir[0] + spend
         return (self.eng.elixir[1] <= self.punish_opp_elixir
                 and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
@@ -686,7 +719,7 @@ class SimMatchEnv:
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
                 wincon = self._wincon_exec(card_id, nx, ny)                     # (3) win-condition executed right
                 reward += self._bonus(wincon)
-                if wincon > 0.0:
+                if wincon > 0.0 and self._wincon_spend_waived(card_id, spec):
                     # ONE play, ONE grade. The trade term measures enemy TROOP value eliminated, but a
                     # correctly-executed win condition (X-Bow in range / Miner chipping the princess /
                     # rocket-cycle chip) kills no troops BY DESIGN -- it damages TOWERS, which is already
