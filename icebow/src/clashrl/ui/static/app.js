@@ -288,8 +288,9 @@ function collectArgs(cmd) {
 }
 
 const GROUP_HINT = {
-  "Setup: screen and deck": "Teaches the bot to READ your screen. No AI is trained here, but "
-    + "nothing below works until this is right.",
+  "Setup: screen and deck": "Plain template matching, no neural network: which screen is showing, "
+    + "and which cards are in hand. Separate from BOTH AIs, and nothing below works until it fits "
+    + "your client.",
   "Playing AI: training": "Trains the network that decides which card to play where.",
   "Playing AI: run and measure": "Uses that same network, or measures it.",
   "Vision AI: training": "Trains the SECOND network: the one that names the units on the board. "

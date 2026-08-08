@@ -48,6 +48,24 @@
     <p class="lead">What the bot sees right now and what it reads from it. Read-only, nothing is
       clicked. Mostly useful to check whether the window is captured at all and whether a match is
       recognised as one.</p>
+    <details style="margin:0 0 12px">
+      <summary style="cursor:pointer;color:var(--dim);font-size:12px">The whole path, screenshot to click</summary>
+      <p class="hint" style="max-width:96ch">
+        <b>1. Capture</b> &mdash; a plain program finds the game window and grabs the pixels
+        (<code>pygetwindow</code> + <code>mss</code>). No AI.<br>
+        <b>2. Reading</b> &mdash; two things happen to that image. Template matching (plain pixel
+        comparison) decides <i>which screen is this</i> and <i>which cards are in hand</i>; the
+        <b>vision AI</b> finds and names the units on the board. Both write into the SAME numeric
+        form the simulator produces.<br>
+        <b>3. Deciding</b> &mdash; the <b>playing AI</b> receives exactly that: numbers. It cannot
+        tell a real match from a simulated one, and it answers the same way in both &mdash;
+        <code>(card, cell)</code>.<br>
+        <b>4. Acting</b> &mdash; also no AI. <code>ActionSpace.decode</code> turns
+        <code>(card, cell)</code> into four coordinates in 0..1, <code>WindowCapture.to_screen</code>
+        maps those onto real pixels using the window position, and <code>Controller.play_card</code>
+        clicks twice: the card in the tray, then the spot on the board.
+      </p>
+    </details>
     <div class="row">
       <label class="chk"><input type="checkbox" id="livego"> Follow live</label>
       <label>Rate <select id="liverate">
