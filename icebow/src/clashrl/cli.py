@@ -155,6 +155,16 @@ def _cmd_sim_bench(args) -> None:
               out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
 
 
+def _cmd_sim_view(args) -> None:
+    try:
+        from .sim_view import sim_view
+    except ImportError as exc:
+        print(f"[sim-view] OpenCV is required ({exc}).")
+        return
+    sim_view(_sized_config(args), matches=args.matches, width=args.width, fps=args.fps,
+             seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window)
+
+
 def _cmd_policy_stats(args) -> None:
     try:
         from .policy_stats import policy_stats
@@ -393,6 +403,25 @@ def main() -> None:
     sbn.add_argument("--seed", type=int, default=0, help="RNG seed, the same for every measurement")
     sbn.add_argument("--out", default=None, help="output JSON (default: data/sim_bench.json)")
     sbn.set_defaults(func=_cmd_sim_bench)
+
+    svw = sub.add_parser("sim-view",
+                         help="VISUAL DEBUGGER: watch a sim match rendered from ENGINE state at physics "
+                              "resolution (units, HP, status, spell flight, tornado pull, tower fire). "
+                              "Read-only -- never writes a checkpoint. SPACE pause, '.' step, Q quit.")
+    svw.add_argument("--matches", type=int, default=1, help="how many matches to play out")
+    svw.add_argument("--policy", default=None,
+                     help="checkpoint to drive YOUR side greedily (e.g. data/policy_sim_ppo_best.pt); "
+                          "default = random legal actions, which still exercises every mechanic")
+    svw.add_argument("--fps", type=int, default=20,
+                     help="playback rate; the sim ticks at sim.sub_dt (0.1s) so 10 = real time, 20 = 2x")
+    svw.add_argument("--width", type=int, default=460, help="render width in pixels")
+    svw.add_argument("--seed", type=int, default=0, help="RNG seed (same seed = same match)")
+    svw.add_argument("--out", default=None, help="also write an mp4 here (e.g. data/sim_debug.mp4)")
+    svw.add_argument("--no-window", action="store_true",
+                     help="headless: only write --out (for a machine with no display)")
+    svw.add_argument("--size", choices=sorted(_GRID_SIZES), default=None,
+                     help="override action.grid (must match the --policy checkpoint's n_cells)")
+    svw.set_defaults(func=_cmd_sim_view)
 
     pst = sub.add_parser("policy-stats",
                          help="measures WHAT the policy plays in the simulator: card frequency, "

@@ -138,6 +138,11 @@ class SimMatchEnv:
         # Optional hook: train_sim sets this to inject SELF-PLAY opponents (a frozen past policy) mixed
         # with the scripted meta bots. Called with `self` in reset(); default None = always scripted.
         self.opponent_provider = None
+        # Optional hook: called with `self` after EVERY physics sub-tick inside step(). `sim-view` uses it
+        # to render the engine at sub_dt resolution (the agent only decides every agent_dt, so rendering
+        # per step would hide everything that happens between decisions -- projectile flight, the tornado
+        # pull, aggro switches). None = no-op, so training pays nothing for it.
+        self.on_tick = None
         self._reset_vectors()
 
     def _reset_vectors(self):
@@ -552,6 +557,8 @@ class SimMatchEnv:
             self.eng.advance(self.sub_dt)
             chip0 += self.eng.chip[0]
             chip1 += self.eng.chip[1]
+            if self.on_tick is not None:
+                self.on_tick(self)
             if self.eng.done:
                 break
         # (2) ELIXIR-TRADE correctness: signed potential-based enemy-value change (telescopes, anti-farm)
