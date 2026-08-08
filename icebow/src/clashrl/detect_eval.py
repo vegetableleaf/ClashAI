@@ -108,12 +108,16 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     deck = [d for d in deck if not (d in seen or seen.add(d))]
 
     if weights is None:
-        runs = sorted(glob.glob(str(root.parent.parent / "runs" / "detect" / "*" / "weights" / "best.pt")),
-                      key=os.path.getmtime)
-        if not runs:
-            print("[detect-eval] no trained weights under runs/detect/*/weights/best.pt")
-            return
-        weights = runs[-1]
+        pinned = cfg.get("detect", "weights", default=None)
+        if pinned and Path(cfg.path(pinned)).exists():
+            weights = str(cfg.path(pinned))          # evaluate the OPERATING detector by default
+        else:
+            runs = sorted(glob.glob(str(root.parent.parent / "runs" / "detect" / "*" / "weights" / "best.pt")),
+                          key=os.path.getmtime)
+            if not runs:
+                print("[detect-eval] no trained weights under runs/detect/*/weights/best.pt")
+                return
+            weights = runs[-1]
     imgs = sorted(glob.glob(str(root / "images" / "val" / "*.jpg")))
     if not imgs:
         print(f"[detect-eval] no val images under {root/'images'/'val'}")
@@ -140,6 +144,15 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     print(f"[detect-eval] val {len(imgs)} images (REAL only -- synth is never validated on)")
 
     model = YOLO(weights)
+    # GROUND TRUTH is indexed in the DATASET's taxonomy (data.yaml); PREDICTIONS are indexed in the
+    # taxonomy the WEIGHTS were trained with. Those are not the same list once classes are added or
+    # removed -- board-16 carries 236 names against today's 225 -- so decoding both through `names`
+    # renamed every predicted class from index 16 up and made this gate score garbage.
+    from .detect import model_class_names
+    pred_names = model_class_names(model)
+    if pred_names and pred_names != list(names):
+        print(f"[detect-eval] NOTE weights carry {len(pred_names)} classes, dataset has {len(names)}"
+              " -- predictions decoded with the WEIGHTS' names and matched to GT by name")
     frames = []
     gt_total = 0
     for ip in imgs:
@@ -155,7 +168,7 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
         if device:
             kw["device"] = device
         r = model.predict(ip, **kw)[0]
-        frames.append((gt, [(float(b.conf[0]), base_key(names[int(b.cls[0])]),
+        frames.append((gt, [(float(b.conf[0]), base_key(pred_names[int(b.cls[0])]),
                              tuple(float(v) for v in b.xywhn[0].tolist())) for b in r.boxes]))
     print(f"[detect-eval] {gt_total} ground-truth boxes\n")
 

@@ -50,6 +50,24 @@ def _load_classes(cfg) -> list[str]:
     return names
 
 
+def model_class_names(model) -> list[str]:
+    """The class names the WEIGHTS were trained with -- the ONLY correct way to decode a prediction.
+
+    A checkpoint's class indices are frozen at training time, so they must NOT be decoded through
+    `config/detect_classes.yaml` (or `data.yaml`): those describe the CURRENT taxonomy, which drifts
+    as classes are added or removed. Removing the 11 event-only cards took the taxonomy 236 -> 225
+    while `board-16` still carries 236, and the two lists diverge from index 16 onward
+    (`barbarian_launcher` vs `barbarians`). Decoding board-16 through the new list therefore renamed
+    every class from 16 up and blew up past 224 -- silently wrong for 209 classes, which is far worse
+    than the crash that exposed it. Ultralytics stores the names in the .pt; read them from there and
+    map to the current taxonomy BY NAME.
+    """
+    n = getattr(model, "names", None) or {}
+    if isinstance(n, dict):
+        return [str(n[i]) for i in sorted(n)]
+    return [str(x) for x in n]
+
+
 def _read_at(cap, frame_times, t, total):
     """Read the recorded frame nearest capture time ``t``; returns (frame|None, frame_index)."""
     fi = bisect.bisect_left(frame_times, t)
@@ -1309,11 +1327,24 @@ class TrainFrameCollector:
 
 
 def _resolve_weights(cfg, weights):
-    """Return the detector weights path: the given --weights, else the most recently trained
-    runs/detect/*/weights/best.pt."""
+    """Detector weights: an explicit --weights, else the PINNED ``detect.weights``, else the most
+    recently trained runs/detect/*/weights/best.pt.
+
+    THE PIN EXISTS BECAUSE NEWEST != BEST. Measured 2026-08-07 on the frozen val subset: board-17
+    trained last but scored whitelist identity recall 0.675 vs board-16's 0.724 and FAILED the 0.70
+    gate, so an mtime default silently promoted a regressed detector into live play, replay mining
+    and the label queue. A generation is only the operating detector once `detect-eval` says so.
+    """
     runs = Path(cfg.path("runs/detect"))
     if weights:
         return Path(weights), runs
+    pinned = cfg.get("detect", "weights", default=None)
+    if pinned:
+        p = Path(cfg.path(pinned))
+        if p.exists():
+            return p, runs
+        print(f"[detect] WARNING: detect.weights points at {p}, which does not exist -- "
+              "falling back to the newest run")
     cands = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime)
     return (cands[-1] if cands else None), runs
 

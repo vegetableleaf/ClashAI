@@ -487,8 +487,8 @@ def read_towers(cfg_path: Path) -> Dict[str, Any]:
     return {
         "my_tower_troop": sim.get("my_tower_troop", "princess"),
         "my_tower_level": sim.get("my_tower_level", 15),
-        "tower_range": sim.get("tower_range", 0.20),
-        "king_range": sim.get("king_range", 0.187),
+        "tower_range": sim.get("tower_range", 8.0),
+        "king_range": sim.get("king_range", 7.5),
         "tower_first_hit": sim.get("tower_first_hit", 0.8),
         "king_tower": dict(sim.get("king_tower") or {}),
         "tower_troops": {k: dict(v) for k, v in (sim.get("tower_troops") or {}).items()},
@@ -565,8 +565,11 @@ def save_towers(cfg_path: Path, payload: Dict[str, Any], backup_dir: Path) -> Di
         ("sim", "my_tower_troop"): my,
         ("sim", "my_tower_level"): int(_num("tower level", payload.get("my_tower_level", 15),
                                             1, 20, integer=True)),
-        ("sim", "tower_range"): _num("tower range", payload.get("tower_range", 0.2), 0.01, 1.0),
-        ("sim", "king_range"): _num("king tower range", payload.get("king_range", 0.187), 0.01, 1.0),
+        # TILES since the 18x32 board rebuild. These bounds used to be (0.01, 1.0) from the old
+        # SCREEN-NORMALISED era, which silently CLAMPED a saved 8.0-tile range down to 1.0 -- i.e.
+        # opening and saving this editor would have quietly disarmed every crown tower.
+        ("sim", "tower_range"): _num("tower range (tiles)", payload.get("tower_range", 8.0), 0.5, 32.0),
+        ("sim", "king_range"): _num("king tower range (tiles)", payload.get("king_range", 7.5), 0.5, 32.0),
         ("sim", "tower_first_hit"): _num("first shot delay",
                                          payload.get("tower_first_hit", 0.8), 0.0, 10.0),
     }

@@ -10,9 +10,10 @@ card's ``<Card>/Evolution`` subpage (evolutions live there and are keyed
 `config/cards_stats.json` (level 11). Curated `config/cards.yaml` overlays it
 (flags, abilities, deck). Re-run after balance updates: `run.py cards-import`.
 
-Behavioural attributes (air/ground targeting, splash, etc.) live in page prose,
-not structured fields, so those stay curated; this importer fills the reliable
-numeric stats + elixir/rarity/type.
+Behavioural attributes that live only in page prose (splash shape, abilities) stay
+curated; this importer fills the reliable numeric stats + elixir/rarity/type, plus
+the per-unit ATTRIBUTES TABLE (count / transport / speed / range / targets /
+projectile geometry / charge) -- see ``_parse_attr_tables``.
 """
 from __future__ import annotations
 
@@ -40,6 +41,125 @@ _EVO = "/Evolution"
 _NUM = re.compile(r"^-?\d+(?:\.\d+)?$")
 _VARDEF = re.compile(r"\{\{#vardefine:\s*([A-Za-z0-9_]+)\s*\|\s*([^}|]+?)\s*\}\}")
 _INFOBOX = re.compile(r"\|\s*(Cost|Rarity|Type)\s*=\s*([^\n|}]+)")
+
+# --- the per-unit ATTRIBUTES TABLE -----------------------------------------------------------
+# Every card page carries a wikitable id="unit-attributes-table" holding the fields that are NOT
+# vardefines: Count, Transport (air/ground), Speed, Range, Target, Deploy Time, and -- for anything
+# that shoots -- Projectile Speed/Radius/Range, Splash Radius and Charge Range. These were
+# previously taken from RoyaleAPI's cr-api-data, which has been DEAD SINCE 2023-10-18 (last commit),
+# so it predates every card and balance change since and misses the newer cards entirely.
+_ATTR_TABLE = re.compile(r"\{\|[^\n]*unit-attributes-table.*?\n\|\}", re.S)
+_ICON = re.compile(r"\{\{Icon\|[^}]*\}\}")
+_PAREN = re.compile(r"\(([\d.]+)\)")
+_ANYNUM = re.compile(r"-?\d+(?:\.\d+)?")
+# A card whose extra table rows are things it spawns WHEN IT DIES (Golem -> Golemites, Lava Hound
+# -> Pups, Battle Ram -> Barbarians, Skeleton Barrel -> Skeletons, Goblin Giant -> Spear Goblins)
+# must NOT add those to its DEPLOY count; a card that fields several unit types AT ONCE (Goblin
+# Gang 3+3, Rascals 1+2, Goblinstein 1+1) must. The wiki states the trigger in prose, and the
+# phrasings vary enough that this has to be generous -- "When he is defeated", "Once it reaches a
+# building or it is destroyed", "When defeated ... splits into", "reveal the two Barbarians".
+_DEATH_SPAWN = re.compile(
+    r"(?:when|once|after|if)\b[^.]{0,70}\b(?:destroyed|defeated|dies|die)"
+    r"|upon death|splits? into|reveals? the|drops?,[^.]*spawning", re.I)
+# Spirits: "It launches itself at its target when attacking, destroying itself on impact."
+_KAMIKAZE = re.compile(r"destroying itself on impact|launches itself at its target", re.I)
+# CR speed ratings are quoted as "Very Fast (120)"; 60 of these units = 1 tile/second.
+_SPEED_UNITS_PER_TILE = 60.0
+
+
+def _cell(s: str) -> str:
+    s = _ICON.sub("", s)
+    s = re.sub(r"<br\s*/?>", " ", s)
+    s = re.sub(r'scope\s*=\s*"[^"]*"\s*\|?', "", s)
+    s = re.sub(r"\{\{Rarity\|([^}]*)\}\}", r"\1", s)
+    s = re.sub(r"\[\[([^\]|]*\|)?([^\]]*)\]\]", r"\2", s)
+    return " ".join(s.split()).strip(" |")
+
+
+def _tiles(v):
+    """'Melee: Short (0.5)' -> 0.5; '6' -> 6.0; 'Very Fast (120)' -> 120.0."""
+    if not v:
+        return None
+    m = _PAREN.search(v)
+    if m:
+        return float(m.group(1))
+    m = _ANYNUM.search(v)
+    return float(m.group(0)) if m else None
+
+
+def _attr_rows(wt: str) -> list:
+    """Every row of every unit-attributes table on the page, as header->value dicts."""
+    rows_out = []
+    for tb in _ATTR_TABLE.findall(wt):
+        heads, rows = [], []
+        for line in tb.splitlines():
+            ls = line.strip()
+            if ls.startswith("!"):
+                heads += [_cell(c) for c in ls.lstrip("!").split("!!")]
+            elif ls.startswith("|") and not ls.startswith(("|-", "|}", "|+", "{|")):
+                cells = [_cell(c) for c in ls.lstrip("|").split("||")]
+                # a row's trailing cells are often on their own continuation lines
+                if rows and len(rows[-1]) < len(heads):
+                    rows[-1] += cells
+                else:
+                    rows.append(cells)
+        rows_out += [dict(zip(heads, r)) for r in rows]
+    return rows_out
+
+
+def _parse_attr_tables(wt: str) -> dict:
+    rows = _attr_rows(wt)
+    # A real row is one that describes a BODY or an AREA: troops carry Transport, buildings carry a
+    # Range, spells carry a Radius. Requiring Transport (or Count) silently dropped every building,
+    # every spell, and the spirits -- whose single-unit pages omit the Count column entirely.
+    units = [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
+    if not units:
+        return {}
+
+    def _n(r):
+        m = _ANYNUM.search(r.get("Count") or "")
+        return int(m.group()) if m else 1
+
+    main = units[0]
+    intro = wt.split("==Strategy==")[0]
+    bodies = [r for r in units if r.get("Transport")]
+    count = sum(_n(r) for r in bodies) if (len(bodies) > 1 and not _DEATH_SPAWN.search(intro)) \
+        else _n(main)
+
+    target = (main.get("Target") or "").lower()
+    attacks = None
+    if "building" in target:
+        attacks = ["buildings"]
+    elif "air" in target and "ground" in target:
+        attacks = ["air", "ground"]
+    elif "ground" in target:
+        attacks = ["ground"]
+    elif "air" in target:
+        attacks = ["air"]
+
+    speed = _tiles(main.get("Speed"))
+    out = {
+        "count": count,
+        "movement": ("air" if (main.get("Transport") or "").lower() == "air" else "ground")
+                    if main.get("Transport") else None,
+        "speed_tiles": round(speed / _SPEED_UNITS_PER_TILE, 3) if speed else None,
+        "range_tiles": _tiles(main.get("Range")),
+        "attacks": attacks,
+        "deploy_time": _tiles(main.get("Deploy Time")),
+        "projectile_speed": _tiles(main.get("Projectile Speed")),
+        "projectile_radius": _tiles(main.get("Projectile Radius")),
+        "projectile_range": _tiles(main.get("Projectile Range")),
+        "splash_radius": _tiles(main.get("Splash Radius")),
+        "radius_tiles": _tiles(main.get("Radius")),          # spells: the blast footprint
+    }
+    if _KAMIKAZE.search(intro):
+        out["kamikaze"] = True       # spirits: leap at the target, hit once, die on impact
+    charge = next((r for r in rows if r.get("Charge Range")), None)
+    if charge:
+        out["charge_range"] = _tiles(charge.get("Charge Range"))
+        cs = _tiles(charge.get("Speed"))
+        out["charge_speed_tiles"] = round(cs / _SPEED_UNITS_PER_TILE, 3) if cs else None
+    return {k: v for k, v in out.items() if v is not None}
 
 
 def _key(name: str) -> str:
@@ -122,6 +242,10 @@ def _parse_card(page: str, wt: str) -> dict:
         "crown_tower_damage": int(crown) if crown is not None else None,
         "lifetime_s": _lit(vd.get("life")),
     }
+    entry.update(_parse_attr_tables(wt))
+    if re.search(r"\b(?:jump|hop|leap)\w*\s+(?:over|across)\s+(?:the\s+)?river",
+                 wt.split("==Strategy==")[0], re.I):
+        entry["river_jump"] = True          # crosses the river without using a bridge
     return {k: v for k, v in entry.items() if v is not None}
 
 
@@ -193,8 +317,17 @@ def import_cards(cfg) -> None:
 
     hp = sum(1 for v in out.values() if "hitpoints" in v)
     dmg = sum(1 for v in out.values() if "damage" in v)
+    cnt = sum(1 for v in out.values() if "count" in v)
+    air = sum(1 for v in out.values() if v.get("movement") == "air")
+    proj = sum(1 for v in out.values() if "projectile_speed" in v)
+    jump = sorted(k for k, v in out.items() if v.get("river_jump"))
+    kami = sorted(k for k, v in out.items() if v.get("kamikaze"))
     print(f"[cards-import] wrote {len(out)} cards to {path} ({hp} with hitpoints, {dmg} with "
           f"damage; {n_champ} champions, {n_evo} evolutions).")
+    print(f"[cards-import]   attributes table: {cnt} counts, {air} air units, "
+          f"{proj} with projectiles")
+    print(f"[cards-import]   river-jumpers: {', '.join(jump) or 'none'}")
+    print(f"[cards-import]   kamikaze: {', '.join(kami) or 'none'}")
     if fails:
         print(f"[cards-import] {len(fails)} pages could not be parsed: {', '.join(fails[:12])}"
               + (" ..." if len(fails) > 12 else ""))

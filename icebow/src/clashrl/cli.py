@@ -142,7 +142,7 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
-                  seed=args.seed, envs=args.envs, init=args.init)
+                  seed=args.seed, envs=args.envs, init=args.init, device=args.device)
 
 
 def _cmd_sim_bench(args) -> None:
@@ -153,6 +153,17 @@ def _cmd_sim_bench(args) -> None:
         return
     sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
               out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
+
+
+def _cmd_sim_view(args) -> None:
+    try:
+        from .sim_view import sim_view
+    except ImportError as exc:
+        print(f"[sim-view] OpenCV is required ({exc}).")
+        return
+    sim_view(_sized_config(args), matches=args.matches, width=args.width, fps=args.fps,
+             seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window,
+             grid=not args.no_grid)
 
 
 def _cmd_policy_stats(args) -> None:
@@ -201,6 +212,16 @@ def _cmd_analyze(args) -> None:
 def _cmd_autolabel(args) -> None:
     from .detect import autolabel
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
+
+
+def _cmd_preannotate(args) -> None:
+    try:
+        from .preannotate import preannotate
+    except ImportError as exc:
+        print(f"[pre-annotate] ultralytics is required ({exc}).")
+        return
+    preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
+                device=args.device, limit=args.limit, out=args.out, classes=args.classes)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -375,6 +396,10 @@ def main() -> None:
                      help="parallel (vectorized) match instances (default: sim.envs)")
     tsp.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
+    tsp.add_argument("--device", choices=["cpu", "cuda"], default=None,
+                     help="override train.device. CPU is MEASURED FASTER for this trainer (1.0 vs 0.2 "
+                          "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
+                          "the GPU entirely, so PPO can run alongside a detector train")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     sbn = sub.add_parser("sim-bench",
@@ -393,6 +418,27 @@ def main() -> None:
     sbn.add_argument("--seed", type=int, default=0, help="RNG seed, the same for every measurement")
     sbn.add_argument("--out", default=None, help="output JSON (default: data/sim_bench.json)")
     sbn.set_defaults(func=_cmd_sim_bench)
+
+    svw = sub.add_parser("sim-view",
+                         help="VISUAL DEBUGGER: watch a sim match rendered from ENGINE state at physics "
+                              "resolution (units, HP, status, spell flight, tornado pull, tower fire). "
+                              "Read-only -- never writes a checkpoint. SPACE pause, '.' step, Q quit.")
+    svw.add_argument("--matches", type=int, default=1, help="how many matches to play out")
+    svw.add_argument("--policy", default=None,
+                     help="checkpoint to drive YOUR side greedily (e.g. data/policy_sim_ppo_best.pt); "
+                          "default = random legal actions, which still exercises every mechanic")
+    svw.add_argument("--fps", type=int, default=20,
+                     help="playback rate; the sim ticks at sim.sub_dt (0.1s) so 10 = real time, 20 = 2x")
+    svw.add_argument("--width", type=int, default=460, help="render width in pixels")
+    svw.add_argument("--seed", type=int, default=0, help="RNG seed (same seed = same match)")
+    svw.add_argument("--out", default=None, help="also write an mp4 here (e.g. data/sim_debug.mp4)")
+    svw.add_argument("--no-window", action="store_true",
+                     help="headless: only write --out (for a machine with no display)")
+    svw.add_argument("--no-grid", action="store_true",
+                     help="hide the placement-grid overlay (action.grid over action.arena_box)")
+    svw.add_argument("--size", choices=sorted(_GRID_SIZES), default=None,
+                     help="override action.grid (must match the --policy checkpoint's n_cells)")
+    svw.set_defaults(func=_cmd_sim_view)
 
     pst = sub.add_parser("policy-stats",
                          help="measures WHAT the policy plays in the simulator: card frequency, "
@@ -473,6 +519,22 @@ def main() -> None:
     atl.add_argument("--preview", action="store_true",
                      help="save overlays of the auto (own-troop) boxes to sanity-check them")
     atl.set_defaults(func=_cmd_autolabel)
+
+    pan = sub.add_parser("pre-annotate",
+                         help="run the CURRENT detector over the unlabelled queue and ship its boxes as "
+                              "PRE-ANNOTATIONS, so hand-labelling becomes CORRECTING boxes instead of "
+                              "drawing them (autolabel can only box your OWN troops; this covers the enemy)")
+    pan.add_argument("--conf", type=float, default=0.20,
+                     help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
+                          "deleting a wrong box is one keypress, drawing a missed one takes seconds")
+    pan.add_argument("--weights", default=None, help="best.pt (default: the pinned detect.weights)")
+    pan.add_argument("--device", default=None,
+                     help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
+    pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
+    pan.add_argument("--classes", default=None,
+                     help="comma list to pre-draw only these classes (default: all)")
+    pan.add_argument("--out", default=None, help="output folder (default: <dataset_dir>/preannot)")
+    pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
                          help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")

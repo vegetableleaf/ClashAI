@@ -622,6 +622,16 @@ monitor:
 # else the detector learns to treat them as background.
 detect:
   classes_file: config/detect_classes.yaml
+  # THE OPERATING DETECTOR, pinned. null = use whichever run was trained MOST RECENTLY, which is a
+  # trap: newest is not best. Measured 2026-08-07 on the frozen val subset (identical 241 images /
+  # 817 boxes for every generation), board-17 trained last but REGRESSED -- whitelist identity
+  # recall 0.675 / precision 0.882, failing the 0.70 gate, vs board-16's 0.724 / 0.911 which passes.
+  # Its ultralytics mAP50 looked best (0.7144) only because it validated on a larger val set. With
+  # no pin, `play` / `train-rl` / `mine-replays` / `label-queue` would all have silently adopted the
+  # worse detector. Promote a new generation ONLY after
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt` beats the incumbent, and
+  # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
+  weights: runs/detect/board-16/weights/best.pt
   dataset_dir: data/detect
   spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
   spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
@@ -680,10 +690,33 @@ sim:
   # against your in-game cards). Your two princess towers use `my_tower_troop` at `my_tower_level`; the
   # OPPONENT rolls a troop from `opponent_tower_weights` (princess most common on ladder) at a level drawn
   # from `enemy_levels`. hit_dmg is derived as dps*hit_speed; HP + damage scale by 1.1^(level - my_tower_level).
+  # BOARD GEOMETRY. The simulated arena is a TILE GRID and every sim distance below is in TILES.
+  # Positions stay normalized [0,1] per axis, so ONE normalized unit = 18 tiles across but 32 tiles
+  # up: the engine converts to tiles before measuring (a plain hypot made every range ~1.78x shorter
+  # horizontally than vertically). The towers are derived FROM these tiles, so the two halves are
+  # exactly symmetric about the river at y=0.5 -- previously the sim borrowed env.my_towers /
+  # env.enemy_towers, which are LIVE SCREEN coordinates carrying the game's perspective
+  # foreshortening, putting your towers 0.115 from the river and the enemy's 0.295 (and breaking the
+  # self-play mirror, which reflects about y=0.5).
+  board:
+    tiles_x: 18                 # arena width in tiles
+    tiles_y: 32                 # arena height in tiles
+    princess_tile: [3.5, 6.5]   # princess tower centre: tiles from the SIDE wall, tiles from the BACK wall
+    king_tile: [9.0, 3.0]       # king tower centre: tiles from the side wall, tiles from the back wall
+    bridge_tiles: [3.5, 14.5]   # bridge lane centres in tile-x (aligned with the princess lanes)
+    deploy_top: 0.5             # troops deploy on your half only: normalized y of the river
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
-  tower_range: 0.20             # normalized princess-class reach (all tower troops share a 7.5-tile range)
-  king_range: 0.187             # king-tower reach (7 tiles = 0.5 shorter than a princess tower)
+  # CROWN TOWER REACH, in tiles, measured from the tower's CENTRE to the target's body EDGE
+  # (engine._gap). DERIVED FROM THE BOARD, not a nominal figure: the defender's end of the bridge
+  # sits 8.50 tiles from a princess tower's centre (tower 6.5 tiles off the back wall, the river's
+  # near bank 15.0), so a standard 0.5-radius troop reads a gap of 8.00 the instant it steps off the
+  # brown. At the old 7.5 the tower stayed silent for another half-tile of walking; 8.0 makes it open
+  # fire exactly as the troop clears the bridge, and a wider body (Giant 0.75) is caught a shade
+  # earlier, which is correct -- more of it is already inside the radius.
+  tower_range: 8.0              # TILES: princess-class reach (all tower troops share it)
+  king_range: 7.5               # TILES: king-tower reach -- still 0.5 shorter than a princess tower
+                                # (the +0.5 is a measurement correction, so it applies to both)
   tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
   opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
     princess: 6
@@ -696,11 +729,20 @@ sim:
     cannoneer:      {hp: 3792, dps: 211, hit_speed: 2.2}                                            # slow, heavy single hits
     royal_chef:     {hp: 3918, dps: 158, hit_speed: 1.0, cook_period_s: 30, cook_delay_s: 7, buff_mult: 1.1, buff_min_frac: 0.33}  # ~every 30s feeds the ally troop with most HP (+1 level)
   king_tower:       {hp: 7032, dps: 158, hit_speed: 1.0}                                            # L15 King's Tower (wakes when first hit)
-  siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
-  sight_range: 0.12             # FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
+  siege_sight: 11.5             # TILES: X-Bow engage range; locks the tower past this only when no troops are closer
+  sight_tiles: 5.5              # TILES: FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
                                 # (cards.py _SIGHT_TILES, cr-api-data characters.sight_range): most 5.5 tiles, PEKKA/
                                 # Giant Skeleton 5.0 (kite-able), building-seekers 7.0-7.7, Hog/Royal Hogs/Princess 9.5.
                                 # Opposite lanes are ~9-10 tiles apart -> troops march past each other (real CR behaviour).
+  sight_range: 0.12             # LIVE-only twin of sight_tiles: the same fallback as a SCREEN-normalized radius
+                                # (clashrl/env.py + play.py read this; the sim reads sight_tiles).
+  # --- sim REWARD geometry, in TILES (the env.* twins below are LIVE screen-space and stay separate) ---
+  xbow_range_tiles: 11.5        # max distance from the X-Bow to an enemy princess for it to REACH the tower
+  xbow_defense_front: 0.56      # DEFENSIVE "back-centre" band (normalized y): ~2 tiles behind the river...
+  xbow_defense_back: 0.66       # ...to ~5 tiles behind it. Deeper than this is rarely useful -> xbow_deep_frac.
+  spell_tower_aim_tiles: 3.8    # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  spell_waste_tiles: 4.5        # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness
+  rocket_combo_tiles: 3.5       # ROCKET COMBO: the support must be within this of the aimed princess tower
   slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed
   slow_duration: 2.0            # seconds a SLOW lasts
   stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)

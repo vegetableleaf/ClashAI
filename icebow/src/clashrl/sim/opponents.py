@@ -69,6 +69,27 @@ class ScriptedBot:
         self._seen_deploy_t = -1.0
         self._punish_cd = 0.0
         self._flip = rng.random() < 0.5  # split-push lane alternator
+        # HAND + CYCLE. A real opponent holds 4 of its 8 cards and must cycle the rest before it can
+        # repeat one. Without this the bot chose from the WHOLE deck every step, so it could open the
+        # same card twice in a row (and never ran out of its best answer) -- the agent was training
+        # against a deck with no cycle cost at all.
+        self.cycle = list(range(len(self.specs)))
+        rng.shuffle(self.cycle)
+
+    def _hand_specs(self):
+        """The 4 cards currently in hand (the rest are cycling)."""
+        return [self.specs[i] for i in self.cycle[:4]]
+
+    def _play(self, eng, spec, x: float, y: float) -> bool:
+        """Deploy + send that card to the back of the cycle. EVERY deploy goes through here, so no
+        branch can bypass the cycle."""
+        if not eng.deploy(1, spec, x, y):
+            return False
+        idx = next((i for i, s in enumerate(self.specs) if s is spec), -1)
+        if idx >= 0 and idx in self.cycle:
+            self.cycle.remove(idx)
+            self.cycle.append(idx)
+        return True
 
     # ---- observation (what a human sees: the agent's deploys) -----------------
     def _observe(self, eng) -> None:
@@ -117,13 +138,13 @@ class ScriptedBot:
         spells = [s for s in affordable if s.kind == "spell" and s.spell_dmg >= 300]
         if support >= 2 and spells:
             s = max(spells, key=lambda sp: sp.spell_dmg)
-            eng.deploy(team, s, xb.x, xb.y)
+            self._play(eng, s, xb.x, xb.y)
             self._siege_seen_t = None                            # re-arm (reacts again if the bow survives)
             return True
         troops = [s for s in affordable if s.kind == "troop" and not s.building_only and not s.flying]
         if troops:
             tank = max(troops, key=lambda s: s.hp)
-            eng.deploy(team, tank, xb.x, max(0.08, xb.y - 0.05))
+            self._play(eng, tank, xb.x, max(0.08, xb.y - 0.05))
             self._siege_seen_t = None
             return True
         return False
@@ -136,13 +157,13 @@ class ScriptedBot:
         if tot < 8.0:
             return False
         mean_x = sum(x for _, _, x in recent) / len(recent)
-        lane = 0.75 if mean_x < 0.5 else 0.25                    # punish the OPPOSITE lane
+        lane = eng.lanes[1] if mean_x < 0.5 else eng.lanes[0]    # punish the OPPOSITE lane
         offense = [s for s in affordable if s.kind != "spell"]
         if not offense:
             return False
         wc = [s for s in offense if s.building_only] or offense
         s = max(wc, key=lambda sp: sp.elixir)                    # commit the punish, don't poke
-        eng.deploy(1, s, lane, 0.46)
+        self._play(eng, s, lane, 0.46)
         self._punish_cd = eng.t + 15.0
         return True
 
@@ -151,7 +172,7 @@ class ScriptedBot:
         if self.adaptive:
             self._observe(eng)
         elix = eng.elixir[team]
-        affordable = [s for s in self.specs if s.elixir <= elix]
+        affordable = [s for s in self._hand_specs() if s.elixir <= elix]
         if not affordable:
             return
         if self.adaptive and self._try_anti_siege(eng, affordable, elix):
@@ -164,12 +185,12 @@ class ScriptedBot:
             troops = [s for s in usable if s.kind == "troop" and not s.building_only]
             if troops:
                 s = min(troops, key=lambda s: s.elixir)
-                eng.deploy(team, s, deepest.x, max(0.12, deepest.y - 0.06))
+                self._play(eng, s, deepest.x, max(0.12, deepest.y - 0.06))
                 return
             spells = [s for s in usable if s.kind == "spell"]
             if spells and len(threats) >= 3:
                 s = min(spells, key=lambda s: s.elixir)
-                eng.deploy(team, s, deepest.x, deepest.y)
+                self._play(eng, s, deepest.x, deepest.y)
                 return
         if self.adaptive and self._try_punish(eng, affordable):
             return
@@ -182,7 +203,7 @@ class ScriptedBot:
                         and 4 <= s.elixir <= 6 and not s.flying]
             if supports:
                 self._backline_done = True
-                eng.deploy(team, self.rng.choice(supports), self.rng.choice([0.25, 0.75]), 0.10)
+                self._play(eng, self.rng.choice(supports), self.rng.choice(eng.lanes), 0.10)
                 return
         # PUMP OPENING: an Elixir Collector in the deck is placed like a real player -- at spare elixir,
         # under no pressure, at most one on the field. Placement VARIETY is deliberate: behind the KING
@@ -192,12 +213,11 @@ class ScriptedBot:
         if (pump is not None and not threats and elix >= pump.elixir + 2
                 and not any(u.team == team and u.spec.gen_every > 0 for u in eng.units)
                 and self.rng.random() < 0.35):
-            spot = self.rng.choice(((0.48 + self.rng.choice([-0.06, 0.06]), 0.06),   # hugging the king
-                                    (self.rng.choice([0.25, 0.75]), 0.13),           # princess pocket
+            spot = self.rng.choice(((0.5 + self.rng.choice([-0.06, 0.06]), 0.06),    # hugging the king
+                                    (self.rng.choice(eng.lanes), 0.13),              # princess pocket
                                     (self.rng.choice([0.35, 0.62]), 0.10)))          # mid-back
-            eng.deploy(team, pump, spot[0], spot[1])
-            return
-        # ATTACK
+            self._play(eng, pump, spot[0], spot[1])
+            return        # ATTACK
         if self.style == "beatdown" and elix < 9.5:
             return                                                # save up for a big push
         offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0]
@@ -212,32 +232,32 @@ class ScriptedBot:
             tw = [t for t in eng.towers[1 - team][:2] if t.alive]
             if tw:
                 target = self.rng.choice(tw)
-                if eng.deploy(team, self.rng.choice(anywhere), target.x, target.y):
+                if self._play(eng, self.rng.choice(anywhere), target.x, target.y):
                     return
         splitting = self.adaptive and self.split_know and self._nado_seen
         if splitting:
             self._flip = not self._flip                          # tornado seen -> stop stacking one lane
-            lane = 0.25 if self._flip else 0.75
+            lane = eng.lanes[0] if self._flip else eng.lanes[1]
         else:
-            lane = self.rng.choice([0.25, 0.75])
+            lane = self.rng.choice(eng.lanes)
         if self.style == "beatdown":
             tank = max(offense, key=lambda s: s.hp)               # heaviest unit BEHIND the king (deep back)
-            eng.deploy(team, tank, lane, 0.10)
+            self._play(eng, tank, lane, 0.10)
             if splitting:                                         # split the support into the OTHER lane
                 cheap = [s for s in offense if s is not tank and s.elixir <= 4]
                 if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
-                    eng.deploy(team, self.rng.choice(cheap), 1.0 - lane, 0.14)
+                    self._play(eng, self.rng.choice(cheap), 1.0 - lane, 0.14)
         elif self.style == "siege":
             sieges = [s for s in offense if s.siege] or offense
-            eng.deploy(team, self.rng.choice(sieges), lane, 0.42)
+            self._play(eng, self.rng.choice(sieges), lane, 0.42)
         else:                                                     # cycle / control: chip at the bridge
             wc = [s for s in offense if s.building_only] or offense
             pick = self.rng.choice(wc)
-            eng.deploy(team, pick, lane, 0.46)
+            self._play(eng, pick, lane, 0.46)
             if splitting:                                         # two-lane chip so one tornado can't catch all
                 cheap = [s for s in offense if s is not pick and s.elixir <= 3]
                 if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
-                    eng.deploy(team, self.rng.choice(cheap), 1.0 - lane, 0.46)
+                    self._play(eng, self.rng.choice(cheap), 1.0 - lane, 0.46)
 
 
 def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
@@ -309,11 +329,42 @@ class SelfPlayOpponent:
         from .meta_decks import classify_style
         self.cards = list(self.deck_keys)
         self.style = classify_style(self.db, self.deck_keys)
-        self.cycle = list(range(self.n_cards))
+        # PHYSICAL card slots (8), not the 10 policy identities -- an Evolution shares its base
+        # card's cycle position and only appears once that slot has banked `cycles` plays.
+        self.slots = self.db.deck_slots()
+        self.n_slots = max(1, len(self.slots))
+        self.slot_base_id = [self.deck_keys.index(s["base"]) for s in self.slots]
+        self.slot_evo_id = [self.deck_keys.index(s["evo"]) if s["evo"] in self.deck_keys else -1
+                            for s in self.slots]
+        self.slot_cycles = [int(s["cycles"]) for s in self.slots]
+        self.slot_of = {}
+        for si in range(self.n_slots):
+            self.slot_of[self.slot_base_id[si]] = si
+            if self.slot_evo_id[si] >= 0:
+                self.slot_of[self.slot_evo_id[si]] = si
+        self.evo_charge = [0] * self.n_slots
+        self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
 
+    def _slot_card_id(self, slot: int) -> int:
+        evo = self.slot_evo_id[slot]
+        if evo >= 0 and self.evo_charge[slot] >= self.slot_cycles[slot]:
+            return evo
+        return self.slot_base_id[slot]
+
     def _hand_ids(self):
-        return self.cycle[:4]
+        return [self._slot_card_id(s) for s in self.cycle[:4]]
+
+    def _play_slot(self, card_id: int) -> None:
+        slot = self.slot_of.get(card_id)
+        if slot is None:
+            return
+        if card_id == self.slot_evo_id[slot]:
+            self.evo_charge[slot] = 0
+        elif self.slot_evo_id[slot] >= 0:
+            self.evo_charge[slot] += 1
+        self.cycle.remove(slot)
+        self.cycle.append(slot)
 
     def act(self, eng) -> None:
         import torch
@@ -323,7 +374,7 @@ class SelfPlayOpponent:
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0
-        nxt = cycle_vector(self.cycle, self.n_cards)   # graded upcoming-order (matches the trained policy input)
+        nxt = cycle_vector([self._slot_card_id(s) for s in self.cycle], self.n_cards)   # graded upcoming-order
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
         base_dim = self.threat_dim \
             - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0) \
@@ -371,6 +422,5 @@ class SelfPlayOpponent:
         lnx, lny = self.actions.cell_center(cell % self.gw, cell // self.gw)
         ex, ey = 1.0 - lnx, 1.0 - lny                            # mirror the local cell back to engine coords
         if eng.deploy(1, self.specs[card], ex, ey):
-            idx = self.cycle.index(card)
-            self.cycle.append(self.cycle.pop(idx))
+            self._play_slot(card)
 

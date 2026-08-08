@@ -90,7 +90,13 @@ def label_queue(cfg, classes=None, n=150, weights=None, lo=0.15, hi=0.60,
         return
     from ultralytics import YOLO
     model = YOLO(str(wpath))
+    # Decode with the WEIGHTS' own class list, not the current taxonomy -- see detect.model_class_names.
+    from .detect import model_class_names
+    pred_names = model_class_names(model) or names
     print(f"[label-queue] weights {wpath}")
+    if pred_names != names:
+        print(f"[label-queue] NOTE weights carry {len(pred_names)} classes vs {len(names)} in the"
+              " current taxonomy -- decoded with the weights' names")
 
     # frames already in train/val are ANNOTATED; the rest of the queue is the real backlog
     done = {p.stem for s in ("train", "val") for p in (root / "images" / s).glob("*")
@@ -114,7 +120,7 @@ def label_queue(cfg, classes=None, n=150, weights=None, lo=0.15, hi=0.60,
             r = model.predict(str(p), **kw)[0]
         except Exception:
             continue
-        dets = [(float(b.conf[0]), base_key(names[int(b.cls[0])]),
+        dets = [(float(b.conf[0]), base_key(pred_names[int(b.cls[0])]),
                  tuple(float(v) for v in b.xywhn[0].tolist())) for b in r.boxes]
         amb, unc, notes = _score_frame(dets, targets, lo, hi)
         if amb > 0 or unc > 0:
