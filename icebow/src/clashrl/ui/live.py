@@ -12,6 +12,7 @@ from __future__ import annotations
 import base64
 import threading
 import time
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 import cv2
@@ -46,7 +47,7 @@ def reset() -> None:
 # bot does between matches hangs off this, which is why the panel shows the whole chain and
 # not just the winner.
 STATE_ORDER = [
-    ("MATCH_END", "match_end", "Ergebnisbildschirm",
+    ("MATCH_END", "match_end", "Result screen",
      "Taps 'Play again'. If nothing moves after a few seconds it taps OK "
      "instead and ends up back on the home screen."),
     ("IN_MATCH", "in_match", "In a match",
@@ -100,6 +101,29 @@ def state_report(cfg, vision, frame) -> Dict[str, Any]:
         rows.append({"state": name, "label": label, "action": action,
                      "matched": matched, "templates": tpls})
     return {"order": rows, "unknown_means": UNKNOWN_MEANS}
+
+
+def _detector_report(cfg) -> Dict[str, Any]:
+    """Whether a trained object detector exists, and how the overlay-replay clip recorder is set
+    up -- a cheap filesystem check, never loads the model itself (that costs real seconds)."""
+    from ..detect import _resolve_weights
+    try:
+        wpath, runs_dir = _resolve_weights(cfg, None)
+    except Exception:                                         # noqa: BLE001
+        wpath, runs_dir = None, None
+    out_dir = cfg.path(cfg.get("overlay_replay", "out_dir", default="data/overlayed_replays"))
+    clips = sorted(out_dir.glob("*.mp4"), key=lambda p: p.stat().st_mtime, reverse=True) \
+        if out_dir.exists() else []
+    return {
+        "available": bool(wpath and Path(wpath).exists()),
+        "weights": str(wpath) if wpath else None,
+        "runs_dir": str(runs_dir) if runs_dir else None,
+        "preview_enabled": bool(cfg.get("preview", "enabled", default=False)),
+        "overlay_replay_enabled": bool(cfg.get("overlay_replay", "enabled", default=False)),
+        "clip_count": len(clips),
+        "clip_dir": str(out_dir),
+        "latest_clips": [p.name for p in clips[:5]],
+    }
 
 
 def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
@@ -158,6 +182,8 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
         out["elixir"] = vision.read_elixir(frame)
     except Exception:                                         # noqa: BLE001
         out["elixir"] = None
+
+    out["detector"] = _detector_report(cfg)
 
     scale = width / float(w)
     small = cv2.resize(frame, (width, max(1, int(round(h * scale)))), interpolation=cv2.INTER_AREA)

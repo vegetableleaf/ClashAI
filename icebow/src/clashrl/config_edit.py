@@ -32,7 +32,7 @@ class EditError(ValueError):
 # Only scalars and single-line lists: those are the ones a line patch can handle
 # safely, and they are the knobs that actually get turned between runs.
 FIELDS: List[Dict[str, Any]] = [
-    # -- Simulator / Trainingslauf
+    # -- simulator / training run
     {"path": ["sim", "envs"], "type": "int", "min": 1, "max": 256, "group": "Simulator",
      "label": "Parallel matches (sim.envs)",
      "help": "How many matches run at the same time feeding one learner. More means a more "
@@ -74,7 +74,7 @@ FIELDS: List[Dict[str, Any]] = [
     {"path": ["train", "min_play_elixir"], "type": "int", "min": 0, "max": 10,
      "group": "Exploration", "label": "Minimum elixir for a random play",
      "help": "Below this the exploration branch always waits."},
-    # -- Lernen
+    # -- learning
     {"path": ["train", "device"], "type": "choice", "choices": ["cuda", "cpu"], "group": "Learning",
      "label": "Device", "help": "cuda uses the GPU and falls back to the CPU when none is usable."},
     {"path": ["train", "lr"], "type": "float", "min": 1e-7, "max": 1e-1, "group": "Learning",
@@ -98,7 +98,7 @@ FIELDS: List[Dict[str, Any]] = [
      "label": "Gradient clipping", "help": "Upper bound on the gradient norm."},
     {"path": ["train", "bc_epochs"], "type": "int", "min": 1, "max": 500, "group": "Learning",
      "label": "BC epochs", "help": "Epochs per behaviour cloning pass."},
-    # -- Self-Play & Benchmark
+    # -- self-play & benchmark
     {"path": ["sim", "selfplay_prob"], "type": "float", "min": 0.0, "max": 1.0, "group": "Self-Play",
      "label": "Self-play share", "help": "Chance of playing a frozen copy of itself instead of a "
                                           "scripted bot. 0 turns it off."},
@@ -128,7 +128,7 @@ FIELDS: List[Dict[str, Any]] = [
      "group": "Benchmark", "label": "Log line every N matches"},
     {"path": ["sim", "save_every_matches"], "type": "int", "min": 1, "max": 10000,
      "group": "Benchmark", "label": "Checkpoint every N matches"},
-    # -- Belohnungen
+    # -- rewards
     {"path": ["rewards", "win"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
      "label": "Win", "help": "Final reward for winning a match."},
     {"path": ["rewards", "loss"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
@@ -180,6 +180,36 @@ FIELDS: List[Dict[str, Any]] = [
      "label": "Action interval when playing (s)"},
     {"path": ["play", "epsilon"], "type": "float", "min": 0.0, "max": 1.0, "group": "Live",
      "label": "Epsilon when playing", "help": "0 makes the policy purely greedy."},
+    # -- live detector preview + overlay replay clips (both need a trained detector to draw anything)
+    {"path": ["preview", "enabled"], "type": "bool", "group": "Detector preview & clips",
+     "label": "Live preview window",
+     "help": "Pops a small window beside the game during train-rl showing each captured frame "
+             "with the detector's boxes -- exactly what the policy's perception sees. Native "
+             "window, not shown in this browser panel."},
+    {"path": ["preview", "scale"], "type": "float", "min": 0.1, "max": 1.0,
+     "group": "Detector preview & clips", "label": "Preview window size",
+     "help": "Fraction of the captured frame."},
+    {"path": ["preview", "fps"], "type": "int", "min": 1, "max": 60,
+     "group": "Detector preview & clips", "label": "Preview refresh rate (fps)"},
+    {"path": ["overlay_replay", "enabled"], "type": "bool", "group": "Detector preview & clips",
+     "label": "Record opening clips",
+     "help": "Saves the first part of each match to a video with the detector's boxes burned "
+             "in, under overlay_replay.out_dir. Off by default; needs a trained detector to "
+             "show anything."},
+    {"path": ["overlay_replay", "seconds"], "type": "float", "min": 1.0, "max": 600.0,
+     "group": "Detector preview & clips", "label": "Clip length (s)",
+     "help": "How much of each match's opening is recorded, from the moment IN_MATCH is detected."},
+    {"path": ["overlay_replay", "fps"], "type": "int", "min": 1, "max": 60,
+     "group": "Detector preview & clips", "label": "Clip frame rate (fps)"},
+    {"path": ["overlay_replay", "scale"], "type": "float", "min": 0.1, "max": 1.0,
+     "group": "Detector preview & clips", "label": "Clip size",
+     "help": "Downscale before encoding. 0.5 = half size, roughly 25 MB per 60s clip at 30fps."},
+    {"path": ["overlay_replay", "max_clips"], "type": "int", "min": 0, "max": 1000,
+     "group": "Detector preview & clips", "label": "Clip cap per session",
+     "help": "Hard cap on clips per run (a long unattended train-rl would otherwise fill the "
+             "disk). 0 removes the cap."},
+    {"path": ["overlay_replay", "out_dir"], "type": "str",
+     "group": "Detector preview & clips", "label": "Clip folder"},
 ]
 
 FIELD_BY_KEY: Dict[str, Dict[str, Any]] = {".".join(f["path"]): f for f in FIELDS}

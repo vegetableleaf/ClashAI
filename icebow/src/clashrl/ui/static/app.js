@@ -1396,6 +1396,30 @@ async function liveOnce() {
   t2.appendChild(tb2); right.appendChild(t2);
   if (st.unknown_means) right.appendChild(el("p", "hint", "No match: " + st.unknown_means));
 
+  const det = d.detector;
+  if (det) {
+    right.appendChild(el("h3", null, "Object detector (enemy recognition)"));
+    const row = el("div", "row");
+    row.appendChild(el("span", "pill" + (det.available ? " run" : " warn"),
+      det.available ? "detector loaded" : "no trained detector"));
+    row.appendChild(el("span", "pill", "live preview: " + (det.preview_enabled ? "on" : "off")));
+    row.appendChild(el("span", "pill", "opening clips: " + (det.overlay_replay_enabled ? "on" : "off")
+      + (det.clip_count ? ` (${det.clip_count} saved)` : "")));
+    right.appendChild(row);
+    if (!det.available) {
+      right.appendChild(el("p", "hint",
+        `No weights under ${det.runs_dir || "runs/detect"}. This only affects enemy identity/`
+        + "interaction features and the boxes in the preview window and clips -- card and state "
+        + "recognition above work without it. Train one with the detect-* commands."));
+    } else if (det.weights) {
+      right.appendChild(el("p", "hint", `Using ${det.weights}.`));
+    }
+    if (det.overlay_replay_enabled && det.clip_count) {
+      right.appendChild(el("p", "hint",
+        `Latest: ${det.latest_clips.join(", ")} -- in ${det.clip_dir}.`));
+    }
+  }
+
   wrap.appendChild(right);
   body.innerHTML = ""; body.appendChild(wrap);
 }
