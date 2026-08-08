@@ -147,6 +147,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
     gae_lambda = float(cfg.get("sim", "ppo_gae_lambda", default=0.95))
     max_grad = float(cfg.get("sim", "ppo_max_grad_norm", default=0.5))
+    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
     log_every = int(cfg.get("sim", "log_every_matches", default=25))
     save_every = int(cfg.get("sim", "save_every_matches", default=50))
     opt = torch.optim.Adam(net.parameters(), lr=lr, eps=1e-5)
@@ -214,7 +215,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
         acts = []
         for i in range(len(obs_b)):
-            if not bool(playable[i].any()) or gq_m[i, 0] >= gq_m[i, 1]:
+            # Threshold the gate PROBABILITY, not a raw logit compare. `gq[0] >= gq[1]` is tau=0.5,
+            # which a calibrated gate almost never clears (a play is rare per tick), so the greedy
+            # benchmark under-deployed badly vs the sampling the policy actually trained under.
+            if not bool(playable[i].any()) or \
+                    float(torch.sigmoid(gq_m[i, 1] - gq_m[i, 0])) <= gate_tau:
                 acts.append((0, 0, 0)); continue
             ci = int(cq_m[i].argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask

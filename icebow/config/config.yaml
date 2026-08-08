@@ -821,6 +821,22 @@ sim:
   ppo_vf_coef: 0.5              # value-loss weight
   ppo_gae_lambda: 0.95          # GAE lambda (bias/variance of the advantage estimates)
   ppo_max_grad_norm: 0.5        # gradient clip
+  # DEPLOY GATE THRESHOLD. The gate head is [wait, play]; the deterministic rule plays when
+  # P(play) = sigmoid(play - wait) > this. The old rule was a raw logit compare, i.e. tau 0.5 -- but a
+  # card play is RARE per tick, so a well-calibrated gate sits far below 0.5 (measured: median P(play)
+  # 0.049, above 0.5 on only 11.1% of decisions). Exactly the imbalanced-classifier threshold problem.
+  # tau 0.5 therefore refused about a third of the plays the policy was trained to make, sat on elixir
+  # and lost. MEASURED 2026-08-08 on the frozen ladder benchmark, 150 matches per rule (n=60 in
+  # brackets -- tau 0.25 is stable across both):
+  #   sampled (what TRAINING does)  69% [62]   34.9 plays/match  5.3 mean elixir
+  #   tau 0.50 (old)                39% [43]   23.9              6.2   <- benchmark AND play.py ran here
+  #   tau 0.35                      63% [60]   28.4              6.2
+  #   tau 0.25                      72% [73]   36.0              5.5   <- chosen
+  #   tau 0.15                      69% [68]   36.7              4.9
+  # +33pp over the old rule (SE of the difference 5.8pp at n=150). The elixir column is the tell: the
+  # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
+  # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
+  ppo_gate_threshold: 0.25
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
