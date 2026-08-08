@@ -94,6 +94,12 @@ _RANGE_TILES: Dict[str, float] = {
     "royal_hogs": 0.75, "skeleton_army": 0.5, "skeleton_barrel": 0.35, "skeleton_dragons": 3.5,
     "skeleton_king": 1.2, "skeletons": 0.5, "spear_goblins": 5.5, "three_musketeers": 6.0,
     "valkyrie": 1.2, "wall_breakers": 0.5, "witch": 5.5, "wizard": 5.5,
+    # DEFENSIVE BUILDINGS normally get `range_tiles` from the wiki import, so they are absent here
+    # -- but a building the import MISSES falls through to _RANGE_BUCKET, whose default is "melee"
+    # (1.2 tiles). That is silent and severe: Inferno Tower parsed no attribute row at all, so it
+    # was resolving to 1.2 and was OUT-RANGED BY EVERYTHING, including a 5.5-tile Ice Wizard.
+    # Wiki (May 2016 "range bug" fix): Inferno Tower range is 6 tiles.
+    "inferno_tower": 6.0,
 }
 
 # Fallback attack range (tiles) per CATEGORICAL bucket, for cards missing from _RANGE_TILES.
