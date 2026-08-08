@@ -1392,12 +1392,29 @@ async function liveOnce() {
       + "the Calibrate match detection command in the Control tab fixes that."));
   }
   const t1 = el("table", "tbl");
-  t1.innerHTML = "<thead><tr><th>Hand slot</th><th>recognized as</th><th>confidence</th></tr></thead>";
+  t1.innerHTML = `<thead><tr><th>Hand slot</th><th>recognized as</th>
+    <th>confidence${d.hand_threshold != null ? ` (needs ${d.hand_threshold})` : ""}</th></tr></thead>`;
   const tb1 = el("tbody");
   (d.hand || []).forEach(h => { const tr = el("tr");
-    tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "not recognised"}</td><td>${h.score}</td>`;
+    tr.innerHTML = `<td>${h.slot}</td><td>${h.card || "not recognised"}</td>
+      <td>${h.score}${h.greyed ? " <span class='hint'>(card greyed out: not affordable)</span>" : ""}</td>`;
     tb1.appendChild(tr); });
   t1.appendChild(tb1); right.appendChild(t1);
+
+  // Every card identity the policy can name comes from the deck in cards.yaml. If nothing in
+  // hand matches while a match is running, the deck on screen is almost certainly not that
+  // deck -- the single most common reason play/train-rl sit there doing nothing.
+  const known = (d.hand || []).filter(h => h.card).length;
+  if (inMatch && d.hand && d.hand.length && known === 0) {
+    const w = el("div", "cfggroup");
+    w.innerHTML = "<h3>No hand card recognised</h3>"
+      + "<p class='hint'>The bot can only name cards from the deck in <code>config/cards.yaml</code>:<br>"
+      + `<code>${(d.deck || []).join(", ")}</code></p>`
+      + "<p class='hint'>If that is not the deck you are actually playing, <b>nothing</b> will ever be "
+      + "recognised and both <code>play</code> and <code>train-rl</code> will just wait out every match. "
+      + "Fix it in the <b>Deck</b> tab: run the detection, apply the proposal, then train for that deck.</p>";
+    right.appendChild(w);
+  }
 
   const st = (d.states || {});
   right.appendChild(el("h3", null, "How the bot classifies the screen"));

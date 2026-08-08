@@ -521,11 +521,21 @@ def play(cfg, init: str | None = None) -> None:
                 if prev == GameState.IN_MATCH and _match_stats["ticks"]:
                     # blind = the hand wasn't recognised at all, so nothing could be played that
                     # tick regardless of what the policy wanted. A run of these means the hand
-                    # templates don't match this session (recalibrate), not "the policy passed".
+                    # templates don't match this session, not "the policy passed".
                     t, b = _match_stats["ticks"], _match_stats["blind"]
                     if b:
                         log(f"[play] hand recognised on {t - b}/{t} decision ticks this match "
                             f"({b} blind -- templates found no card at all).")
+                    # Mostly blind means the deck on screen almost certainly isn't the deck in
+                    # cards.yaml: every card identity the policy can even name comes from that
+                    # list, so a deck it was never told about reads as an empty hand forever and
+                    # the bot just waits out the match. Say so instead of leaving it to be guessed.
+                    if b >= max(3, int(0.6 * t)):
+                        log("[play] MOST TICKS BLIND -- the deck being played is probably not the "
+                            "deck in config/cards.yaml.")
+                        log(f"[play] configured deck: {', '.join(vision.deck_keys)}")
+                        log("[play] fix: run `run.py deck-detect --write-templates` (or the Deck tab), "
+                            "apply the proposal, then retrain for that deck.")
                     _match_stats["ticks"] = _match_stats["blind"] = 0
                 if state == GameState.IN_MATCH:   # new match -> reset the tower trackers
                     hp_tracker.reset()

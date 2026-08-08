@@ -174,8 +174,14 @@ def snapshot(cfg, width: int = 420, quality: int = 65) -> Dict[str, Any]:
             crop = vision.hand_crop(frame, cx, cy)
             cid, score = vision.match_card(crop) if crop.size else (-1, 0.0)
             key = vision.deck_keys[cid] if 0 <= cid < len(vision.deck_keys) else None
-            hand.append({"slot": i + 1, "card": key, "score": round(float(score), 3)})
+            # The game desaturates a card you can't afford; a greyed-out crop still has to be
+            # identified, so report it rather than silently scoring it as a miss.
+            sat = float(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)[..., 1].mean()) if crop.size else 0.0
+            hand.append({"slot": i + 1, "card": key, "score": round(float(score), 3),
+                         "greyed": sat < 45.0})
         out["hand"] = hand
+        out["deck"] = list(vision.deck_keys)
+        out["hand_threshold"] = float(vision.match_threshold)
     except Exception as exc:                                  # noqa: BLE001
         out["hand_error"] = str(exc)
     try:

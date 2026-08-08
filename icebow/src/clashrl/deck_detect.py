@@ -41,6 +41,7 @@ import numpy as np
 _STD = (64, 80)                     # normalised crop size (w, h), same as hand_templates
 _SCALES = [56, 72, 90, 112, 140]    # reference widths the crop is searched in
 _CLAHE = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+_MIN_SAT = 45.0                     # mean HSV saturation below this = card greyed out (unaffordable)
 
 
 # --- image helpers ----------------------------------------------------------------
@@ -211,6 +212,14 @@ def detect_deck(cfg, session_arg: Optional[str] = None, samples: int = 400,
         for cx, cy in vision.hand_slots:
             crop = vision.hand_crop(frame, cx, cy)
             if crop.size == 0:
+                continue
+            # The game DESATURATES a card you can't currently afford. Measured on a real
+            # recording: mean HSV saturation ~100-155 while affordable, ~18-25 while greyed
+            # out. Both versions of the SAME card then cluster as two different faces (117
+            # "distinct" faces for an 8-card deck), and the grey one has to be identified
+            # against colour reference art, which is what left half the deck at a
+            # coin-flip margin. Keep only the affordable, full-colour views.
+            if float(cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)[..., 1].mean()) < _MIN_SAT:
                 continue
             std = cv2.resize(crop, _STD, interpolation=cv2.INTER_AREA)
             hit = None

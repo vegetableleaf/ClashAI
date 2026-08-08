@@ -448,6 +448,17 @@ def train_rl(cfg, init: str | None = None) -> None:
                     print(f"[train-rl] match {match}: {outcome}{cs}{dbg} reward={ep_reward:+.1f} "
                           f"plays={plays}{bl} eps={eps:.2f} replay={len(replay)}{ls}  "
                           f"record {wins}W-{losses}L")
+                    # Mostly blind means the deck on screen almost certainly isn't the deck in
+                    # cards.yaml: the policy can only ever name card identities from that list,
+                    # so a deck it was never told about reads as an empty hand for the whole
+                    # match and every transition it learns from is a forced wait -- worse than
+                    # useless as training data. Say so rather than banking the run.
+                    if blind >= max(3, int(0.6 * mstep)):
+                        print("[train-rl] MOST STEPS BLIND -- the deck being played is probably "
+                              "not the deck in config/cards.yaml.")
+                        print(f"[train-rl] configured deck: {', '.join(env.vision.deck_keys)}")
+                        print("[train-rl] fix: run `run.py deck-detect --write-templates` (or the "
+                              "Deck tab), apply the proposal, then retrain for that deck.")
                     break
             if match % save_every == 0:
                 save()
