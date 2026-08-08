@@ -109,10 +109,17 @@ def _attr_rows(wt: str) -> list:
 
 def _parse_attr_tables(wt: str) -> dict:
     rows = _attr_rows(wt)
-    # A real row is one that describes a BODY or an AREA: troops carry Transport, buildings carry a
-    # Range, spells carry a Radius. Requiring Transport (or Count) silently dropped every building,
-    # every spell, and the spirits -- whose single-unit pages omit the Count column entirely.
-    units = [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
+    # THE CARD'S OWN table is the one carrying Cost -- every card page leads with it. A SPAWNER page
+    # then has a SECOND table for the unit it summons, which has no Cost. Keying on Cost is what
+    # separates them. The old filter (Transport OR Range OR Radius) skipped a spawner's own table
+    # entirely, because it lists "Spawn Range" rather than "Range" and never carries Transport -- so
+    # units[0] became the SPAWNED troop and its stats were written as the card's. goblin_hut ended up
+    # with a Spear Goblin's 133 hp / 5.0 range / 2.0 speed; a `kind: building` with a MOVEMENT SPEED
+    # is the tell. Same for tombstone (a Skeleton), barbarian_hut (a Barbarian), goblin_drill and
+    # goblin_cage.
+    owns = [r for r in rows if r.get("Cost")]
+    spawned = [r for r in rows if not r.get("Cost") and r.get("Transport")]
+    units = owns or [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
     if not units:
         return {}
 
@@ -151,7 +158,23 @@ def _parse_attr_tables(wt: str) -> dict:
         "projectile_range": _tiles(main.get("Projectile Range")),
         "splash_radius": _tiles(main.get("Splash Radius")),
         "radius_tiles": _tiles(main.get("Radius")),          # spells: the blast footprint
+        # SPAWNER parameters, straight off the card's own table. Goblin Hut only summons "when an
+        # enemy is within range" (Spawn Range 6) -- it stopped spawning automatically in the May 2025
+        # update, so the gate is real and not cosmetic. Buildings that spawn unconditionally simply
+        # have no Spawn Range column.
+        "spawn_interval_s": _tiles(main.get("Spawn Speed")),
+        "spawn_delay_s": _tiles(main.get("Spawn Delay")),
+        "spawn_range_tiles": _tiles(main.get("Spawn Range")),
     }
+    if spawned:                      # the summoned troop's own row (never has Cost)
+        sp = spawned[0]
+        sp_speed = _tiles(sp.get("Speed"))
+        out["spawn_unit_stats"] = {k: v for k, v in {
+            "range_tiles": _tiles(sp.get("Range")),
+            "speed_tiles": round(sp_speed / _SPEED_UNITS_PER_TILE, 3) if sp_speed else None,
+            "hit_speed": _tiles(sp.get("Hit Speed")),
+            "flying": (sp.get("Transport") or "").lower() == "air" or None,
+        }.items() if v is not None}
     if _KAMIKAZE.search(intro):
         out["kamikaze"] = True       # spirits: leap at the target, hit once, die on impact
     charge = next((r for r in rows if r.get("Charge Range")), None)
@@ -216,18 +239,26 @@ def _parse_card(page: str, wt: str) -> dict:
 
     hp, dmg, atk = _pick(vd, "hp"), _pick(vd, "dmg"), _lit(vd.get("atk_speed"))
     crown = _pick(vd, "crown_dmg")
-    if hp is None:                       # multi-unit pages prefix vars, e.g. golem_hp_11
-        prefixed = {}
-        for k, v in vd.items():
-            m = re.fullmatch(r"([a-z0-9]+)_hp_(?:11|base)", k)
-            lv = _lit(v)
-            if m and lv is not None:
-                prefixed[m.group(1)] = lv
-        if prefixed:
-            main = max(prefixed, key=lambda k: prefixed[k])     # main unit = highest HP
-            hp = prefixed[main]
-            dmg = dmg or _lit(vd.get(f"{main}_dmg_11")) or _lit(vd.get(f"{main}_dmg_base"))
-            atk = atk or _lit(vd.get(f"{main}_atk_speed"))
+    # A SPAWNER page defines HP for BOTH the card and the unit it summons, and which one gets the
+    # bare `hp_11` is NOT consistent: goblin_hut/tombstone/barbarian_hut/goblin_drill put the
+    # BUILDING behind a prefix (hut_/tomb_/drill_) and the SPAWNED unit on bare hp_11, while
+    # goblin_cage does the reverse. Taking bare hp_11 therefore gave four buildings their spawned
+    # troop's hitpoints. The one rule that holds on every page today is that the card's OWN body is
+    # the tankier of the two -- which is also the rule the old prefixed-only fallback already used,
+    # it just never applied when a bare hp_11 happened to exist.
+    hp_vars = {}
+    for k, v in vd.items():
+        m = re.fullmatch(r"(?:([a-z0-9]+)_)?hp_(?:11|base)", k)
+        lv = _lit(v)
+        if m and lv is not None:
+            hp_vars.setdefault(m.group(1) or "", lv)
+    if hp_vars:
+        pref = max(hp_vars, key=lambda k: hp_vars[k])
+        hp = hp_vars[pref]
+        if pref:                     # damage/attack MUST come from the same unit as the hitpoints,
+            p = f"{pref}_"           # with no fallback to the bare vars (those are the spawned unit)
+            dmg = _lit(vd.get(f"{p}dmg_11")) or _lit(vd.get(f"{p}dmg_base"))
+            atk = _lit(vd.get(f"{p}atk_speed"))
 
     cost = info.get("Cost", "")
     entry = {

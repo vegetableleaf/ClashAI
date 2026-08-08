@@ -118,6 +118,15 @@ class CardSpec:
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
+    # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
+    # the units it summons, which is why a Goblin Drill modelled as a plain attacker was hitting the
+    # tower directly. Timings are imported from the wiki; the summoned card's identity is curated.
+    spawner_spec: Optional["CardSpec"] = None  # the troop this keeps producing
+    spawner_count: int = 0        # units per production tick
+    spawner_interval: float = 0.0  # seconds between ticks (0 = not a spawner)
+    spawner_delay: float = 0.0    # extra wait before the FIRST tick, on top of deploy_time
+    spawner_range: Optional[float] = None  # PROXIMITY GATE in tiles: only tick while an enemy is inside
+    spawner_death: int = 0        # burst summoned when the spawner dies or its lifetime expires
     shield_hp: float = 0.0    # SHIELD pool (Royal Recruits / Guards / Dark Prince): absorbs damage before hp
     damage_reduction: float = 0.0  # fraction of incoming damage negated WHILE NOT ATTACKING (Evo Knight = 0.60)
     pulls: bool = False       # TORNADO: an active VORTEX, not an instant blast -- pulls enemies to its centre
@@ -218,6 +227,16 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
         spawn_count = 1
+    # TROOP PRODUCTION. `db.spawner()` merges the wiki timings with the curated unit identity. The
+    # guard on `unit != base` stops a self-referential curation from recursing forever, and a
+    # missing/unknown unit key degrades to "not a spawner" rather than raising during a match.
+    spw = db.spawner(base) or {}
+    spawner_spec = None
+    if spw and spw.get("unit") and spw["unit"] != base:
+        try:
+            spawner_spec = build_spec(db, spw["unit"], level)
+        except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
+            spawner_spec = None
     return CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
@@ -232,6 +251,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         slows=("slow" in flags), stuns=("stun" in flags), freezes=("freeze" in flags),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
+        spawner_spec=spawner_spec,
+        spawner_count=(int(spw.get("count") or 1) if spawner_spec is not None else 0),
+        spawner_interval=(float(spw.get("interval") or 0.0) if spawner_spec is not None else 0.0),
+        spawner_delay=(float(spw.get("delay") or 0.0) if spawner_spec is not None else 0.0),
+        spawner_range=(spw.get("range") if spawner_spec is not None else None),
+        spawner_death=(int(spw.get("on_death") or 0) if spawner_spec is not None else 0),
         shield_hp=(hp * _SHIELD_FRAC if "shield" in flags else 0.0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
@@ -268,6 +293,7 @@ class Unit:
     aggro_reset: bool = False    # set by a stun/freeze, a Log knockback, or being SHOVED out of reach of what
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
+    spawn_cd: float = 0.0        # time until this spawner's next production tick
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -572,6 +598,9 @@ class SimEngine:
             u = Unit(spec, team, cx, cy, spec.hp)
             u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
             u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+            # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
+            # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
+            u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
             if spec.siege:
                 u.reach_extra = self.siege_sight - spec.reach
             self.units.append(u)
@@ -794,6 +823,7 @@ class SimEngine:
                 if n > u.gen_count:
                     self.elixir[u.team] = min(10.0, self.elixir[u.team] + (n - u.gen_count))
                     u.gen_count = n
+        self._tick_spawners(dt)
         # spells land
         landed = []
         for s in self.spells:
@@ -863,12 +893,58 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
+                self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
                 continue
             if u.spec.lifetime is not None and u.age >= u.spec.lifetime:
+                self._spawn_from(u, u.spec.spawner_death)    # expiring counts as destroyed, as in CR
                 continue
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _tick_spawners(self, dt: float) -> None:
+        """Produce troops from spawners (Goblin Hut, Tombstone, Barbarian Hut, Goblin Drill, Furnace,
+        Witch, Night Witch...). A spawner's damage comes from its UNITS, not from the building -- a
+        Goblin Drill has no attack of its own, so modelling it as a plain attacker had it hitting the
+        crown tower directly.
+
+        `spawner_range` is a PROXIMITY GATE: Goblin Hut only summons while an enemy is within 6 tiles
+        (it stopped spawning automatically in the May 2025 update). Spawners without one produce
+        unconditionally. The first tick waits deploy_time + spawner_delay, set on deploy.
+        """
+        for u in list(self.units):
+            s = u.spec
+            if s.spawner_spec is None or s.spawner_interval <= 0.0 or u.hp <= 0:
+                continue
+            if u.deploy_left > 0.0 or u.stun_left > 0.0:
+                continue
+            if s.spawner_range is not None and not self._enemy_within(u, s.spawner_range):
+                continue                                     # gate shut: bank nothing, just wait
+            u.spawn_cd -= dt
+            if u.spawn_cd <= 0.0:
+                u.spawn_cd += s.spawner_interval
+                self._spawn_from(u, s.spawner_count)
+
+    def _enemy_within(self, u: "Unit", tiles: float) -> bool:
+        """Any live enemy body inside `tiles` of this unit (the spawner proximity gate)."""
+        return any(e.team != u.team and e.hp > 0 and e.deploy_left <= 0.0
+                   and _dist(u.x, u.y, e.x, e.y) <= tiles
+                   for e in self.units)
+
+    def _spawn_from(self, u: "Unit", n: int) -> None:
+        """Drop `n` of this spawner's troop around it, on the side it is pushing toward."""
+        sp = u.spec.spawner_spec
+        if sp is None or n <= 0:
+            return
+        fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks up the board
+        step = (u.spec.radius + sp.radius + 0.1)
+        for i in range(n):
+            ox = ((i % 3) - 1) * step / _TILES_X
+            oy = (fwd * (u.spec.radius + sp.radius) - (i // 3) * step * fwd) / _TILES_Y
+            x, y = _clamp_xy(u.x + ox, u.y + oy, sp.radius)
+            nu = Unit(spec=sp, team=u.team, x=x, y=y, hp=sp.hp)
+            nu.deploy_left = sp.deploy_time
+            self.units.append(nu)
 
     def _hurt(self, u: "Unit", dmg: float) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:

@@ -239,6 +239,32 @@ class CardDB:
         v = c.get("speed_tiles") if c else None
         return float(v) if v is not None else None
 
+    def spawner(self, name: str) -> Optional[dict]:
+        """This card's troop-production, or None when it summons nothing.
+
+        Returns ``{unit, count, on_death, interval, delay, range}`` -- ``unit`` is a KB key to
+        build the summoned troop from, ``interval``/``delay`` are seconds and ``range`` is in
+        TILES. Timings come from the wiki attribute table (they move with balance changes); only
+        the ``unit`` identity is curated, since the table never names the card being summoned.
+
+        ``range`` is the PROXIMITY GATE: when set, the spawner only ticks while an enemy is inside
+        it. Goblin Hut works this way (Spawn Range 6) -- it stopped spawning automatically in the
+        May 2025 update. When ``range`` is None the spawner produces unconditionally.
+        """
+        c = self.get(name) or {}
+        sp = c.get("spawns") or {}
+        unit = sp.get("unit")
+        if not unit:
+            return None
+        return {
+            "unit": str(unit),
+            "count": int(sp.get("count") or 1),
+            "on_death": int(sp.get("on_death") or 0),
+            "interval": float(c.get("spawn_interval_s") or 0.0),
+            "delay": float(c.get("spawn_delay_s") or 0.0),
+            "range": float(c["spawn_range_tiles"]) if c.get("spawn_range_tiles") else None,
+        }
+
     def projectile(self, name: str) -> Optional[dict]:
         """This card's shot, or None when it hits instantly / has no attack.
 

@@ -701,6 +701,7 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [spawner, building_targeting, deploy_anywhere]   # drills up anywhere, same as the Miner
+    spawns: {unit: goblins, count: 1, on_death: 2}
     verified: false
 
   graveyard:
@@ -891,7 +892,7 @@ cards:
   mega_knight: {range: melee, attacks: [ground], flags: [tank, splash], verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it
   mighty_miner: {range: melee, verified: false}
   monk: {range: melee, verified: false}
-  night_witch: {range: melee, verified: false}
+  night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 1, on_death: 3}, verified: false}
   pekka: {range: melee, attacks: [ground], flags: [tank], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, verified: false}
   rascals: {range: melee, verified: false}
@@ -923,11 +924,23 @@ cards:
   princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
   sparky: {range: long, attacks: [ground], flags: [splash], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
   spear_goblins: {range: long, verified: false}
-  witch: {range: long, flags: [splash, spawner], verified: false}              # 5e AREA support that keeps spawning skeletons -> spell it or it out-values you
+  witch: {range: long, flags: [splash, spawner], spawns: {unit: skeletons, count: 3}, verified: false}   # 5e AREA support that keeps spawning skeletons -> spell it or it out-values you
   zappies: {range: long, verified: false}
+  # -- SPAWNERS. The wiki's attribute table gives the TIMINGS (spawn_interval_s / spawn_delay_s /
+  # spawn_range_tiles, imported into cards_stats.json) but never names the card being summoned, so
+  # only the IDENTITY is curated here -- that mapping is stable across balance changes while the
+  # intervals are not, so nothing sourceable is pinned. `unit` must be a real KB key; `count` is how
+  # many appear per spawn tick; `on_death` is the burst when the spawner dies (0 = none).
+  # `spawn_range_tiles` present => the spawner only ticks while an enemy is inside it (Goblin Hut
+  # stopped spawning automatically in the May 2025 update); absent => it spawns unconditionally.
+  goblin_hut: {kind: building, flags: [spawner], spawns: {unit: spear_goblins, count: 1, on_death: 1}, verified: false}
+  tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 1, on_death: 4}, verified: false}
+  barbarian_hut: {kind: building, flags: [spawner], spawns: {unit: barbarians, count: 1, on_death: 2}, verified: false}
+  # NB goblin_cage is a spawner too, but it summons a Goblin Brawler on death and that unit is not a
+  # card, so it has no KB entry to point at -- left alone rather than approximated with a Goblin.
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
-  furnace: {range: long, verified: false}                                       # long-range single target
+  furnace: {kind: building, range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 2}, verified: false}   # long-range single target
   goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
   goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
