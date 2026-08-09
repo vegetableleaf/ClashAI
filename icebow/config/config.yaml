@@ -337,9 +337,16 @@ rewards:
   # quantity to match against its neighbours is its per-match STANDARD DEVIATION. MEASURED over 40
   # matches on the 4096-match checkpoint at weight 1.0: per-match total mean -0.015, SD 0.089, with
   # 1.0 settlements/match (17 positive / 22 negative). Its neighbours are _trade_reward 4.88/match and
-  # (now deleted) _cycle_plan 1.10. Weight 10 puts its SD at ~0.9/match -- a real vote, deliberately
-  # NOT loud enough to dominate the trade term while it is still only ~1 settlement per match.
-  counterfactual: 10.0
+  # (now deleted) _cycle_plan 1.10. Weight 10 put its SD at ~0.9/match.
+  # RE-CALIBRATED after the position scalar became TOTAL RESOURCES: forks carrying signal went 33% ->
+  # ~100%, so at weight 10 the per-match SD jumped to 2.14 with mean -2.15 -- bigger than everything
+  # except _trade_reward. Weight 5 puts SD at ~1.07, comparable to its neighbours.
+  # HONEST CAVEAT: the mean is NOT ~0 any more (33 positive vs 95 negative settlements). That is a
+  # TRUE statement about a weak policy -- its plays really are worse than holding on average -- but
+  # it does mean the term is mildly action-discouraging, because a policy that never plays opens no
+  # forks and scores 0. Unlike the deleted taxing terms the way to improve it is to PLAY BETTER (a
+  # play that beats holding scores positive), but keep it off the dominant slot until the mean moves.
+  counterfactual: 5.0
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -910,6 +917,13 @@ sim:
     budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
     min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
     cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
+    # How much a full elixir bar's worth of board value counts against one princess tower in the
+    # position scalar. Tower HP alone left 2 of 3 forks settling at EXACTLY zero (nothing reaches a
+    # tower in 6 s), so the term only carried signal on ~1 play in 3. Board value + elixir together
+    # move continuously -- and elixir MUST be included, or playing a card would score positive by
+    # construction (you gain board value the held-card branch does not) and the term would become an
+    # action BONUS, the same asymmetry that cost two runs, inverted.
+    board_weight: 1.0
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

@@ -165,6 +165,7 @@ class SimMatchEnv:
         self.cf_budget = int(cfg.get("sim", "counterfactual", "budget_per_match", default=12))
         self.cf_min_units = int(cfg.get("sim", "counterfactual", "min_units", default=1))
         self.cf_cap = float(cfg.get("sim", "counterfactual", "cap", default=1.0))
+        self.cf_board_weight = float(cfg.get("sim", "counterfactual", "board_weight", default=1.0))
         self.w_counterfactual = r("counterfactual", 1.0)   # weight on (real - held-the-card) position
         self._cf_used = 0
         self._cf_watch: list = []
@@ -609,13 +610,44 @@ class SimMatchEnv:
         """
         return copy.deepcopy(self.eng), copy.deepcopy(self.opponent)
 
+    def _side_value(self, eng, team: int) -> float:
+        """Effective elixir value a side has ON THE BOARD: each body's deck cost split across its
+        count, scaled by remaining HP fraction. Same accounting as `_enemy_value`, but for either
+        side and on ANY engine (the fork has its own)."""
+        v = 0.0
+        for u in eng.units:
+            if u.team == team and u.spec.kind in ("troop", "building"):
+                frac = max(0.0, min(1.0, u.hp / u.spec.hp)) if u.spec.hp > 0 else 1.0
+                v += (u.spec.elixir / max(1, u.spec.count)) * frac
+        return v
+
     def _position(self, eng) -> float:
-        """'How good is my position', in units of one princess tower's max HP: my remaining tower HP
-        minus theirs. Ground truth, and the quantity the counterfactual compares."""
+        """'How good is my position' = TOTAL RESOURCES, not just tower HP: crown-tower differential
+        plus the board-value and elixir differentials.
+
+        WHY NOT TOWER HP ALONE. That was the first version, and MEASURED it left 2 of every 3 forks
+        settling at EXACTLY zero -- over 6 s of lookahead nothing reaches a tower, so both branches
+        read identical and the fork cost ~29 ms to learn nothing. Only ~1.0 of 3 forks per match
+        carried any signal, which meant the weight was amplifying something present on one play in
+        three.
+
+        WHY ELIXIR HAS TO BE IN IT. Adding board value alone would have been a trap in the opposite
+        direction: playing a card RAISES your own unit value against the branch that held it, so
+        every play would score positive -- an action BONUS, the same asymmetry that cost two runs,
+        merely inverted. Counting elixir cancels it exactly: at the moment of the play the real
+        branch is -cost elixir and +cost board value while the fork is unchanged, so the difference
+        is ZERO and the term only starts to move as the unit actually does something (or dies).
+        That is the whole point -- it should measure the CONSEQUENCE, not the act.
+
+        Units are elixir; tower HP is normalised by one princess tower and `cf_board_weight` sets
+        how many princess-towers a full elixir bar is worth.
+        """
         ref = max(1.0, float(eng.towers[0][0].max_hp))
-        mine = sum(max(0.0, float(t.hp)) for t in eng.towers[0])
-        theirs = sum(max(0.0, float(t.hp)) for t in eng.towers[1])
-        return (mine - theirs) / ref
+        towers = (sum(max(0.0, float(t.hp)) for t in eng.towers[0])
+                  - sum(max(0.0, float(t.hp)) for t in eng.towers[1])) / ref
+        board = (self._side_value(eng, 0) - self._side_value(eng, 1)
+                 + float(eng.elixir[0]) - float(eng.elixir[1])) / self.value_norm
+        return towers + self.cf_board_weight * board
 
     def _roll_fork(self, eng, opp, horizon_s: float) -> float:
         """Advance an isolated branch `horizon_s` seconds with the AGENT DOING NOTHING -- the
