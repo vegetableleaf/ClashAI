@@ -1,8 +1,10 @@
 @echo off
-rem Builds ClashAI.exe from launcher.py -- run this again after changing launcher.py.
-rem The .exe itself is not tracked in git (see .gitignore); rebuild it locally whenever needed.
+rem Builds ClashAI.exe from launcher_exe.py, into the repo root next to ClashAI.bat.
+rem You do NOT need this to use ClashAI -- ClashAI.bat already works. The .exe is only a
+rem prettier double-click with its own icon. Not tracked in git; rebuild it locally
+rem after changing launcher_exe.py.
 setlocal
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 if not exist "icebow\.venv\Scripts\python.exe" (
   echo [build_exe] No virtual environment found: icebow\.venv
@@ -18,8 +20,8 @@ if errorlevel 1 (
 )
 
 icebow\.venv\Scripts\python.exe -m PyInstaller --onefile --console --name ClashAI ^
-  --icon icebow\ui_icon.ico launcher.py --distpath . --workpath build_tmp --specpath build_tmp -y
+  --icon icebow\ui_icon.ico tools\launcher_exe.py --distpath . --workpath build_tmp --specpath build_tmp -y
 
 echo.
-echo [build_exe] Done: ClashAI.exe is in this folder.
+echo [build_exe] Done: ClashAI.exe is in the repo root, next to ClashAI.bat.
 pause

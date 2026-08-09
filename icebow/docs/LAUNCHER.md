@@ -4,7 +4,7 @@ A localhost control panel for the existing CLI. It starts the same commands you 
 type, streams their output, records the numbers, and edits the two config files. It does
 not reimplement any command, and the CLI keeps working on its own.
 
-Start it with `start_ui.bat` in the repo root, or:
+Start it by double-clicking `ClashAI.bat` in the repo root, or:
 
 ```powershell
 .\.venv\Scripts\python.exe run.py ui          # http://127.0.0.1:8765, localhost only

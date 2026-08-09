@@ -15,9 +15,12 @@ There are two very different agents in this repo:
 > Terms of Service. This project only exists as a learning exercise. If you run
 > it, use a throwaway account. I am not responsible for any lost accounts due to breaking of ToS.
 
-> 🚀 **New here? Read [icebow/Instructions.txt](icebow/Instructions.txt) first.** A complete,
-> plain-English, from-scratch walkthrough — prerequisites, install, screen calibration,
-> recording, training (simulator + imitation + live RL), and playing. No coding experience needed.
+> 🚀 **New here?** Two ways in, same project:
+> * **[SETUP.md](SETUP.md)** — one page, click-based. Double-click `ClashAI.bat`, everything
+>   else is a button in the control panel it opens.
+> * **[icebow/Instructions.txt](icebow/Instructions.txt)** — the full typed walkthrough:
+>   prerequisites, install, screen calibration, recording, training (simulator + imitation
+>   + live RL), and playing. No coding experience needed.
 
 ---
 

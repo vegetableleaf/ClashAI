@@ -46,8 +46,9 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 
 ## Launcher: `run.py ui`
 
-Instead of typing every command in the terminal: **double-click `ClashAI.exe`** (or
-`start_ui.bat`, or `.\.venv\Scripts\python.exe run.py ui`). It opens a native window, not
+Instead of typing every command in the terminal: **double-click `ClashAI.bat`** in the repo
+root (or `ClashAI.exe`, which is the same thing with an icon, or
+`.\.venv\Scripts\python.exe run.py ui`). It opens a native window, not
 a browser tab. Under it is a local server on `127.0.0.1:8765` — localhost only, no
 sign-in, no outbound calls.
 
