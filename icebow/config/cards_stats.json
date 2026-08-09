@@ -2,9 +2,9 @@
  "meta": {
   "level": 11,
   "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
-  "generated": "2026-08-03",
-  "count": 180,
-  "champions": 9,
+  "generated": "2026-08-08",
+  "count": 163,
+  "champions": 8,
   "evolutions": 41
  },
  "cards": {
@@ -17,6 +17,16 @@
    "damage": 225,
    "hit_speed": 1.2,
    "dps": 188,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 800.0,
    "champion": true
   },
   "archers": {
@@ -27,7 +37,17 @@
    "hitpoints": 304,
    "damage": 112,
    "hit_speed": 0.9,
-   "dps": 124
+   "dps": 124,
+   "count": 2,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0
   },
   "archers_evo": {
    "display": "Evo Archers",
@@ -38,6 +58,17 @@
    "damage": 112,
    "hit_speed": 0.9,
    "dps": 124,
+   "count": 2,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "archers"
   },
@@ -47,7 +78,15 @@
    "rarity": "common",
    "kind": "spell",
    "damage": 122,
-   "crown_tower_damage": 31
+   "crown_tower_damage": 31,
+   "hits_per_attack": 3.0,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "projectile_speed": 1100.0,
+   "radius_tiles": 3.5
   },
   "baby_dragon": {
    "display": "Baby Dragon",
@@ -57,7 +96,18 @@
    "hitpoints": 1152,
    "damage": 168,
    "hit_speed": 1.5,
-   "dps": 112
+   "dps": 112,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 500.0,
+   "splash_radius": 1.5
   },
   "baby_dragon_evo": {
    "display": "Evo Baby Dragon",
@@ -68,6 +118,18 @@
    "damage": 168,
    "hit_speed": 1.5,
    "dps": 112,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 500.0,
+   "splash_radius": 1.5,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "baby_dragon"
   },
@@ -79,7 +141,17 @@
    "hitpoints": 1679,
    "damage": 640,
    "hit_speed": 2.0,
-   "dps": 320
+   "dps": 320,
+   "death_damage": 240.0,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.1,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "death_radius_tiles": 3.0
   },
   "bandit": {
    "display": "Bandit",
@@ -89,7 +161,18 @@
    "hitpoints": 906,
    "damage": 194,
    "hit_speed": 1.0,
-   "dps": 194
+   "dps": 194,
+   "dash_damage": 389.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.75,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {},
+   "dash_time_s": 0.8
   },
   "barbarian_barrel": {
    "display": "Barbarian Barrel",
@@ -99,18 +182,34 @@
    "hitpoints": 670,
    "damage": 191,
    "hit_speed": 1.3,
-   "dps": 147
+   "dps": 147,
+   "spawn_damage": 230.0,
+   "count": 1,
+   "range_tiles": 4.5,
+   "attacks": [
+    "ground"
+   ],
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.3
+   }
   },
   "barbarian_hut": {
    "display": "Barbarian Hut",
    "elixir": 6,
    "rarity": "rare",
    "kind": "building",
-   "hitpoints": 670,
-   "damage": 192,
-   "hit_speed": 1.3,
-   "dps": 148,
-   "lifetime_s": 30.0
+   "hitpoints": 1164,
+   "lifetime_s": 30.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_interval_s": 15.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.7,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.3
+   }
   },
   "barbarians": {
    "display": "Barbarians",
@@ -119,18 +218,35 @@
    "kind": "troop",
    "hitpoints": 691,
    "damage": 191,
-   "hit_speed": 1.3,
-   "dps": 147
+   "hit_speed": 1.4,
+   "dps": 136,
+   "count": 5,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "barbarians_evo": {
    "display": "Evo Barbarians",
    "elixir": 5,
    "rarity": "common",
    "kind": "troop",
-   "hitpoints": 737,
+   "hitpoints": 716,
    "damage": 192,
-   "hit_speed": 1.3,
-   "dps": 148,
+   "hit_speed": 1.4,
+   "dps": 137,
+   "count": 5,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 1,
    "evolution": true,
    "base": "barbarians"
   },
@@ -142,7 +258,16 @@
    "hitpoints": 81,
    "damage": 81,
    "hit_speed": 1.3,
-   "dps": 62
+   "dps": 62,
+   "count": 5,
+   "movement": "air",
+   "speed_tiles": 2.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "bats_evo": {
    "display": "Evo Bats",
@@ -153,6 +278,16 @@
    "damage": 81,
    "hit_speed": 1.3,
    "dps": 62,
+   "count": 5,
+   "movement": "air",
+   "speed_tiles": 2.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "bats"
   },
@@ -161,30 +296,62 @@
    "elixir": 4,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 1717,
-   "damage": 148,
-   "hit_speed": 1.5,
-   "dps": 99
+   "hitpoints": 1920,
+   "damage": 268,
+   "hit_speed": 2.0,
+   "dps": 134,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "battle_ram": {
    "display": "Battle Ram",
    "elixir": 4,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 670,
-   "damage": 191,
-   "hit_speed": 1.3,
-   "dps": 147
+   "hitpoints": 967,
+   "damage": 286,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "speed_tiles": 2.0
+   },
+   "charge_range": 3.5,
+   "charge_speed_tiles": 2.0
   },
   "battle_ram_evo": {
    "display": "Evo Battle Ram",
    "elixir": 4,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 737,
-   "damage": 192,
-   "hit_speed": 1.3,
-   "dps": 148,
+   "hitpoints": 967,
+   "damage": 286,
+   "charge_damage": 573.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "speed_tiles": 2.0
+   },
+   "evo_cycles": 2,
+   "charge_range": 3.5,
+   "charge_speed_tiles": 2.0,
    "evolution": true,
    "base": "battle_ram"
   },
@@ -196,7 +363,15 @@
    "hitpoints": 896,
    "damage": 102,
    "hit_speed": 0.6,
-   "dps": 170
+   "dps": 170,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.8,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "bomb_tower": {
    "display": "Bomb Tower",
@@ -207,7 +382,17 @@
    "damage": 222,
    "hit_speed": 1.8,
    "dps": 123,
-   "lifetime_s": 30.0
+   "lifetime_s": 30.0,
+   "death_damage": 222.0,
+   "count": 1,
+   "range_tiles": 6.0,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 500.0,
+   "splash_radius": 1.5,
+   "death_radius_tiles": 3.0
   },
   "bomber": {
    "display": "Bomber",
@@ -217,7 +402,17 @@
    "hitpoints": 304,
    "damage": 225,
    "hit_speed": 1.8,
-   "dps": 125
+   "dps": 125,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 400.0,
+   "splash_radius": 1.5
   },
   "bomber_evo": {
    "display": "Evo Bomber",
@@ -228,6 +423,17 @@
    "damage": 225,
    "hit_speed": 1.8,
    "dps": 125,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 400.0,
+   "splash_radius": 1.5,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "bomber"
   },
@@ -237,9 +443,20 @@
    "rarity": "champion",
    "kind": "troop",
    "hitpoints": 2624,
-   "damage": 268,
-   "hit_speed": 1.2,
-   "dps": 223,
+   "damage": 244,
+   "hit_speed": 1.1,
+   "dps": 222,
+   "dash_damage": 489.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.8,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {},
+   "dash_time_s": 0.8,
    "champion": true
   },
   "bowler": {
@@ -250,7 +467,18 @@
    "hitpoints": 2081,
    "damage": 289,
    "hit_speed": 2.5,
-   "dps": 116
+   "dps": 116,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 4.0,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 170.0,
+   "projectile_range": 7.5,
+   "projectile_width_tiles": 3.6
   },
   "cannon": {
    "display": "Cannon",
@@ -261,7 +489,14 @@
    "damage": 212,
    "hit_speed": 1.0,
    "dps": 212,
-   "lifetime_s": 30.0
+   "lifetime_s": 30.0,
+   "count": 1,
+   "range_tiles": 5.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "cannon_cart": {
    "display": "Cannon Cart",
@@ -272,7 +507,16 @@
    "damage": 212,
    "hit_speed": 0.9,
    "dps": 236,
-   "lifetime_s": 15.0
+   "lifetime_s": 15.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "cannon_evo": {
    "display": "Evo Cannon",
@@ -284,6 +528,14 @@
    "hit_speed": 1.0,
    "dps": 212,
    "lifetime_s": 30.0,
+   "count": 1,
+   "range_tiles": 5.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "cannon"
   },
@@ -291,7 +543,9 @@
    "display": "Clone",
    "elixir": 3,
    "rarity": "epic",
-   "kind": "spell"
+   "kind": "spell",
+   "count": 1,
+   "radius_tiles": 3.0
   },
   "dark_prince": {
    "display": "Dark Prince",
@@ -301,7 +555,24 @@
    "hitpoints": 1200,
    "damage": 266,
    "hit_speed": 1.3,
-   "dps": 205
+   "dps": 205,
+   "shield_hp": 240.0,
+   "charge_damage": 532.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.1,
+   "spawn_unit_stats": {
+    "speed_tiles": 2.0
+   },
+   "charge_range": 3.0,
+   "charge_speed_tiles": 2.0,
+   "river_jump": true
   },
   "dart_goblin": {
    "display": "Dart Goblin",
@@ -311,7 +582,17 @@
    "hitpoints": 261,
    "damage": 156,
    "hit_speed": 0.8,
-   "dps": 195
+   "dps": 195,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 6.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 800.0
   },
   "dart_goblin_evo": {
    "display": "Evo Dart Goblin",
@@ -322,6 +603,17 @@
    "damage": 156,
    "hit_speed": 0.8,
    "dps": 195,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 6.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 800.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "dart_goblin"
   },
@@ -331,27 +623,57 @@
    "rarity": "rare",
    "kind": "spell",
    "damage": 84,
-   "crown_tower_damage": 53
+   "crown_tower_damage": 53,
+   "hits_per_attack": 3.0,
+   "count": 1,
+   "attacks": [
+    "ground"
+   ],
+   "radius_tiles": 3.5,
+   "slow_pct": -50.0
   },
   "electro_dragon": {
    "display": "Electro Dragon",
    "elixir": 5,
    "rarity": "epic",
    "kind": "troop",
-   "hitpoints": 949,
-   "damage": 192,
-   "hit_speed": 2.1,
-   "dps": 91
+   "hitpoints": 1451,
+   "damage": 308,
+   "hit_speed": 2.4,
+   "dps": 128,
+   "hits_per_attack": 3.0,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "stun_duration_s": 0.5
   },
   "electro_dragon_evo": {
    "display": "Evo Electro Dragon",
    "elixir": 5,
    "rarity": "epic",
    "kind": "troop",
-   "hitpoints": 998,
-   "damage": 192,
-   "hit_speed": 2.1,
-   "dps": 91,
+   "hitpoints": 1451,
+   "damage": 308,
+   "hit_speed": 2.4,
+   "dps": 128,
+   "hits_per_attack": 3.0,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 1,
+   "stun_duration_s": 0.5,
    "evolution": true,
    "base": "electro_dragon"
   },
@@ -363,15 +685,35 @@
    "hitpoints": 3952,
    "damage": 163,
    "hit_speed": 2.1,
-   "dps": 78
+   "dps": 78,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 1.2,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "stun_duration_s": 0.5
   },
   "electro_spirit": {
    "display": "Electro Spirit",
    "elixir": 1,
    "rarity": "common",
    "kind": "troop",
-   "hitpoints": 230,
-   "damage": 99
+   "hitpoints": 215,
+   "damage": 99,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "stun_duration_s": 0.5,
+   "kamikaze": true
   },
   "electro_wizard": {
    "display": "Electro Wizard",
@@ -381,7 +723,18 @@
    "hitpoints": 714,
    "damage": 115,
    "hit_speed": 1.8,
-   "dps": 64
+   "dps": 64,
+   "hits_per_attack": 2.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 5.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "stun_duration_s": 0.5
   },
   "elite_barbarians": {
    "display": "Elite Barbarians",
@@ -391,7 +744,15 @@
    "hitpoints": 1341,
    "damage": 384,
    "hit_speed": 1.4,
-   "dps": 274
+   "dps": 274,
+   "count": 2,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "elixir_collector": {
    "display": "Elixir Collector",
@@ -399,7 +760,9 @@
    "rarity": "rare",
    "kind": "building",
    "hitpoints": 1070,
-   "lifetime_s": 93.0
+   "lifetime_s": 93.0,
+   "count": 1,
+   "deploy_time": 1.0
   },
   "elixir_golem": {
    "display": "Elixir Golem",
@@ -409,7 +772,20 @@
    "hitpoints": 1569,
    "damage": 253,
    "hit_speed": 1.1,
-   "dps": 230
+   "dps": 230,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 0.8,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.8,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.1
+   }
   },
   "executioner": {
    "display": "Executioner",
@@ -419,7 +795,20 @@
    "hitpoints": 1280,
    "damage": 168,
    "hit_speed": 2.4,
-   "dps": 70
+   "dps": 70,
+   "hits_per_attack": 2.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_range": 7.5,
+   "projectile_width_tiles": 2.0
   },
   "executioner_evo": {
    "display": "Evo Executioner",
@@ -430,6 +819,20 @@
    "damage": 168,
    "hit_speed": 2.4,
    "dps": 70,
+   "hits_per_attack": 2.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_range": 7.5,
+   "evo_cycles": 1,
+   "projectile_width_tiles": 2.0,
    "evolution": true,
    "base": "executioner"
   },
@@ -438,8 +841,19 @@
    "elixir": 1,
    "rarity": "common",
    "kind": "troop",
-   "hitpoints": 230,
-   "damage": 207
+   "hitpoints": 215,
+   "damage": 207,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 2.3,
+   "kamikaze": true
   },
   "fireball": {
    "display": "Fireball",
@@ -447,7 +861,14 @@
    "rarity": "rare",
    "kind": "spell",
    "damage": 688,
-   "crown_tower_damage": 207
+   "crown_tower_damage": 207,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "projectile_speed": 600.0,
+   "radius_tiles": 2.5
   },
   "firecracker": {
    "display": "Firecracker",
@@ -457,7 +878,20 @@
    "hitpoints": 304,
    "damage": 64,
    "hit_speed": 3.0,
-   "dps": 21
+   "dps": 21,
+   "hits_per_attack": 5.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_radius": 0.4,
+   "projectile_range": 11.0
   },
   "firecracker_evo": {
    "display": "Evo Firecracker",
@@ -466,6 +900,21 @@
    "kind": "troop",
    "hitpoints": 304,
    "damage": 64,
+   "hits_per_attack": 5.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_radius": 0.4,
+   "projectile_range": 11.0,
+   "evo_cycles": 2,
+   "slow_pct": -15.0,
    "evolution": true,
    "base": "firecracker"
   },
@@ -477,7 +926,16 @@
    "hitpoints": 870,
    "damage": 194,
    "hit_speed": 1.3,
-   "dps": 149
+   "dps": 149,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {}
   },
   "flying_machine": {
    "display": "Flying Machine",
@@ -487,7 +945,17 @@
    "hitpoints": 614,
    "damage": 171,
    "hit_speed": 1.1,
-   "dps": 155
+   "dps": 155,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 800.0
   },
   "freeze": {
    "display": "Freeze",
@@ -495,7 +963,14 @@
    "rarity": "epic",
    "kind": "spell",
    "damage": 115,
-   "crown_tower_damage": 35
+   "crown_tower_damage": 35,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 3.0,
+   "freeze_duration_s": 4.0
   },
   "furnace": {
    "display": "Furnace",
@@ -505,7 +980,21 @@
    "hitpoints": 727,
    "damage": 179,
    "hit_speed": 1.8,
-   "dps": 99
+   "dps": 99,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_interval_s": 7.0,
+   "spawn_unit_stats": {
+    "range_tiles": 2.5,
+    "speed_tiles": 2.0
+   }
   },
   "furnace_evo": {
    "display": "Evo Furnace",
@@ -516,6 +1005,21 @@
    "damage": 179,
    "hit_speed": 1.8,
    "dps": 99,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_interval_s": 7.0,
+   "spawn_unit_stats": {
+    "range_tiles": 2.5,
+    "speed_tiles": 2.0
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "furnace"
   },
@@ -524,10 +1028,18 @@
    "elixir": 5,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 4090,
+   "hitpoints": 3968,
    "damage": 253,
    "hit_speed": 1.5,
-   "dps": 169
+   "dps": 169,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 1.2,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0
   },
   "giant_skeleton": {
    "display": "Giant Skeleton",
@@ -537,7 +1049,17 @@
    "hitpoints": 3361,
    "damage": 276,
    "hit_speed": 1.4,
-   "dps": 197
+   "dps": 197,
+   "death_damage": 688.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.8,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "death_radius_tiles": 3.0
   },
   "giant_snowball": {
    "display": "Giant Snowball",
@@ -545,7 +1067,15 @@
    "rarity": "common",
    "kind": "spell",
    "damage": 179,
-   "crown_tower_damage": 54
+   "crown_tower_damage": 54,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 2.5,
+   "slow_duration_s": 3.0,
+   "slow_pct": -30.0
   },
   "giant_snowball_evo": {
    "display": "Evo Giant Snowball",
@@ -554,6 +1084,15 @@
    "kind": "spell",
    "damage": 179,
    "crown_tower_damage": 54,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 2.5,
+   "evo_cycles": 2,
+   "slow_duration_s": 4.0,
+   "slow_pct": -30.0,
    "evolution": true,
    "base": "giant_snowball"
   },
@@ -565,7 +1104,14 @@
    "hitpoints": 202,
    "damage": 120,
    "hit_speed": 1.1,
-   "dps": 109
+   "dps": 109,
+   "count": 1,
+   "radius_tiles": 1.5,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   }
   },
   "goblin_barrel_evo": {
    "display": "Evo Goblin Barrel",
@@ -576,6 +1122,14 @@
    "damage": 120,
    "hit_speed": 1.1,
    "dps": 109,
+   "count": 1,
+   "radius_tiles": 1.5,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "goblin_barrel"
   },
@@ -588,7 +1142,14 @@
    "damage": 337,
    "hit_speed": 1.1,
    "dps": 306,
-   "lifetime_s": 20.0
+   "lifetime_s": 20.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.8,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   }
   },
   "goblin_cage_evo": {
    "display": "Evo Goblin Cage",
@@ -600,6 +1161,14 @@
    "hit_speed": 1.1,
    "dps": 306,
    "lifetime_s": 20.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.8,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 1,
    "evolution": true,
    "base": "goblin_cage"
   },
@@ -612,7 +1181,19 @@
    "damage": 120,
    "hit_speed": 1.1,
    "dps": 109,
-   "crown_tower_damage": 10
+   "crown_tower_damage": 10,
+   "hits_per_attack": 6.0,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 3.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   }
   },
   "goblin_demolisher": {
    "display": "Goblin Demolisher",
@@ -623,29 +1204,60 @@
    "damage": 186,
    "hit_speed": 1.2,
    "dps": 155,
-   "lifetime_s": 10.0
+   "lifetime_s": 10.0,
+   "death_damage": 404.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.0,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 400.0,
+   "splash_radius": 1.5,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0
+   },
+   "death_radius_tiles": 2.5
   },
   "goblin_drill": {
    "display": "Goblin Drill",
    "elixir": 4,
    "rarity": "epic",
    "kind": "building",
-   "hitpoints": 202,
-   "damage": 120,
-   "hit_speed": 1.1,
-   "dps": 109,
-   "lifetime_s": 10.0
+   "hitpoints": 1313,
+   "lifetime_s": 10.0,
+   "spawn_damage": 84.0,
+   "spawn_crown_damage": 26.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_interval_s": 3.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   }
   },
   "goblin_drill_evo": {
    "display": "Evo Goblin Drill",
    "elixir": 4,
    "rarity": "epic",
    "kind": "building",
-   "hitpoints": 202,
-   "damage": 120,
-   "hit_speed": 1.1,
-   "dps": 109,
+   "hitpoints": 1313,
    "lifetime_s": 10.0,
+   "spawn_damage": 84.0,
+   "spawn_crown_damage": 26.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_interval_s": 3.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "goblin_drill"
   },
@@ -657,7 +1269,19 @@
    "hitpoints": 202,
    "damage": 120,
    "hit_speed": 1.1,
-   "dps": 109
+   "dps": 109,
+   "count": 6,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   }
   },
   "goblin_giant": {
    "display": "Goblin Giant",
@@ -667,7 +1291,20 @@
    "hitpoints": 3022,
    "damage": 176,
    "hit_speed": 1.5,
-   "dps": 117
+   "dps": 117,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 5.0,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.7
+   }
   },
   "goblin_giant_evo": {
    "display": "Evo Goblin Giant",
@@ -678,6 +1315,20 @@
    "damage": 176,
    "hit_speed": 1.5,
    "dps": 117,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 1,
    "evolution": true,
    "base": "goblin_giant"
   },
@@ -686,11 +1337,18 @@
    "elixir": 4,
    "rarity": "rare",
    "kind": "building",
-   "hitpoints": 133,
-   "damage": 81,
-   "hit_speed": 1.7,
-   "dps": 48,
-   "lifetime_s": 30.0
+   "hitpoints": 1228,
+   "lifetime_s": 30.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_interval_s": 2.2,
+   "spawn_delay_s": 0.5,
+   "spawn_range_tiles": 6.0,
+   "spawn_unit_stats": {
+    "range_tiles": 5.0,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.7
+   }
   },
   "goblin_machine": {
    "display": "Goblin Machine",
@@ -700,7 +1358,15 @@
    "hitpoints": 2150,
    "damage": 212,
    "hit_speed": 1.2,
-   "dps": 177
+   "dps": 177,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "goblins": {
    "display": "Goblins",
@@ -708,19 +1374,41 @@
    "rarity": "common",
    "kind": "troop",
    "hitpoints": 202,
-   "damage": 120,
+   "damage": 125,
    "hit_speed": 1.1,
-   "dps": 109
+   "dps": 114,
+   "count": 4,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "goblinstein": {
    "display": "Goblinstein",
    "elixir": 5,
    "rarity": "champion",
    "kind": "troop",
-   "hitpoints": 721,
-   "damage": 92,
-   "hit_speed": 1.8,
-   "dps": 51,
+   "hitpoints": 2393,
+   "damage": 128,
+   "hit_speed": 1.5,
+   "dps": 85,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "spawn_unit_stats": {
+    "range_tiles": 5.5,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.8
+   },
+   "stun_duration_s": 0.5,
    "champion": true
   },
   "golden_knight": {
@@ -732,6 +1420,15 @@
    "damage": 161,
    "hit_speed": 0.9,
    "dps": 179,
+   "dash_damage": 335.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
    "champion": true
   },
   "golem": {
@@ -742,7 +1439,21 @@
    "hitpoints": 5120,
    "damage": 312,
    "hit_speed": 2.5,
-   "dps": 125
+   "dps": 125,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 0.75,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 3.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.25,
+    "speed_tiles": 0.75,
+    "hit_speed": 2.5
+   },
+   "death_radius_tiles": 2.0
   },
   "graveyard": {
    "display": "Graveyard",
@@ -752,7 +1463,15 @@
    "hitpoints": 81,
    "damage": 81,
    "hit_speed": 1.1,
-   "dps": 74
+   "dps": 74,
+   "count": 1,
+   "radius_tiles": 4.0,
+   "spawn_interval_s": 0.5,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   }
   },
   "guards": {
    "display": "Guards",
@@ -762,15 +1481,35 @@
    "hitpoints": 81,
    "damage": 117,
    "hit_speed": 1.0,
-   "dps": 117
+   "dps": 117,
+   "shield_hp": 256.0,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "heal_spirit": {
    "display": "Heal Spirit",
    "elixir": 1,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 230,
-   "damage": 110
+   "hitpoints": 215,
+   "damage": 110,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.5,
+   "kamikaze": true
   },
   "hog_rider": {
    "display": "Hog Rider",
@@ -780,7 +1519,16 @@
    "hitpoints": 1697,
    "damage": 317,
    "hit_speed": 1.6,
-   "dps": 198
+   "dps": 198,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.8,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "river_jump": true
   },
   "hunter": {
    "display": "Hunter",
@@ -790,7 +1538,19 @@
    "hitpoints": 885,
    "damage": 84,
    "hit_speed": 2.2,
-   "dps": 38
+   "dps": 38,
+   "hits_per_attack": 10.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_range": 6.5
   },
   "hunter_evo": {
    "display": "Evo Hunter",
@@ -801,6 +1561,19 @@
    "damage": 84,
    "hit_speed": 2.2,
    "dps": 38,
+   "hits_per_attack": 10.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 550.0,
+   "projectile_range": 6.5,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "hunter"
   },
@@ -812,23 +1585,58 @@
    "hitpoints": 1315,
    "damage": 84,
    "hit_speed": 2.5,
-   "dps": 34
+   "dps": 34,
+   "death_damage": 84.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 0.75,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "slow_duration_s": 2.0,
+   "slow_pct": -30.0
   },
   "ice_spirit": {
    "display": "Ice Spirit",
    "elixir": 1,
    "rarity": "common",
    "kind": "troop",
-   "hitpoints": 230,
-   "damage": 110
+   "hitpoints": 215,
+   "damage": 110,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.5,
+   "freeze_duration_s": 1.1,
+   "kamikaze": true
   },
   "ice_spirit_evo": {
    "display": "Evo Ice Spirit",
    "elixir": 1,
    "rarity": "common",
    "kind": "troop",
-   "hitpoints": 230,
+   "hitpoints": 215,
    "damage": 110,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 2.0,
+   "evo_cycles": 2,
+   "freeze_duration_s": 1.1,
    "evolution": true,
    "base": "ice_spirit"
   },
@@ -840,7 +1648,21 @@
    "hitpoints": 688,
    "damage": 89,
    "hit_speed": 1.7,
-   "dps": 52
+   "dps": 52,
+   "spawn_damage": 84.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 700.0,
+   "splash_radius": 1.5,
+   "slow_duration_s": 2.5,
+   "slow_pct": -30.0
   },
   "inferno_dragon": {
    "display": "Inferno Dragon",
@@ -848,7 +1670,23 @@
    "rarity": "legendary",
    "kind": "troop",
    "hitpoints": 1295,
-   "hit_speed": 0.4
+   "damage": 35,
+   "hit_speed": 0.4,
+   "dps": 88,
+   "damage_stages": [
+    35.0,
+    120.0,
+    422.0
+   ],
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "inferno_dragon_evo": {
    "display": "Evo Inferno Dragon",
@@ -856,7 +1694,24 @@
    "rarity": "legendary",
    "kind": "troop",
    "hitpoints": 1295,
+   "damage": 35,
    "hit_speed": 0.4,
+   "dps": 88,
+   "damage_stages": [
+    35.0,
+    120.0,
+    422.0
+   ],
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "inferno_dragon"
   },
@@ -866,8 +1721,15 @@
    "rarity": "rare",
    "kind": "building",
    "hitpoints": 1748,
+   "damage": 43,
    "hit_speed": 0.4,
-   "lifetime_s": 30.0
+   "dps": 108,
+   "lifetime_s": 30.0,
+   "damage_stages": [
+    43.0,
+    158.0,
+    847.0
+   ]
   },
   "knight": {
    "display": "Knight",
@@ -877,7 +1739,15 @@
    "hitpoints": 1766,
    "damage": 202,
    "hit_speed": 1.2,
-   "dps": 168
+   "dps": 168,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "knight_evo": {
    "display": "Evo Knight",
@@ -888,6 +1758,15 @@
    "damage": 202,
    "hit_speed": 1.2,
    "dps": 168,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "knight"
   },
@@ -899,7 +1778,22 @@
    "hitpoints": 3581,
    "damage": 53,
    "hit_speed": 1.3,
-   "dps": 41
+   "dps": 41,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 0.75,
+   "range_tiles": 3.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 400.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.6,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.7,
+    "flying": true
+   }
   },
   "lightning": {
    "display": "Lightning",
@@ -914,8 +1808,26 @@
    "elixir": 3,
    "rarity": "champion",
    "kind": "troop",
-   "hitpoints": 698,
-   "damage": 104,
+   "hitpoints": 1600,
+   "damage": 217,
+   "hit_speed": 1.2,
+   "dps": 181,
+   "charge_damage": 256.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 800.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.2,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.2
+   },
    "champion": true
   },
   "lumberjack": {
@@ -926,7 +1838,15 @@
    "hitpoints": 1282,
    "damage": 256,
    "hit_speed": 0.8,
-   "dps": 320
+   "dps": 320,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "lumberjack_evo": {
    "display": "Evo Lumberjack",
@@ -937,6 +1857,20 @@
    "damage": 256,
    "hit_speed": 0.8,
    "dps": 320,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.7,
+    "speed_tiles": 2.0,
+    "hit_speed": 0.8
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "lumberjack"
   },
@@ -948,7 +1882,19 @@
    "hitpoints": 529,
    "damage": 133,
    "hit_speed": 1.1,
-   "dps": 121
+   "dps": 121,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 7.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0,
+   "projectile_range": 11.0,
+   "projectile_width_tiles": 0.5
   },
   "mega_knight": {
    "display": "Mega Knight",
@@ -958,7 +1904,22 @@
    "hitpoints": 3993,
    "damage": 268,
    "hit_speed": 1.7,
-   "dps": 158
+   "dps": 158,
+   "jump_damage": 537.0,
+   "spawn_damage": 430.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.3,
+   "spawn_unit_stats": {
+    "flying": true
+   },
+   "jump_time_s": 0.9
   },
   "mega_knight_evo": {
    "display": "Evo Mega Knight",
@@ -969,6 +1930,22 @@
    "damage": 268,
    "hit_speed": 1.7,
    "dps": 158,
+   "jump_damage": 537.0,
+   "spawn_damage": 430.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.3,
+   "spawn_unit_stats": {
+    "flying": true
+   },
+   "evo_cycles": 1,
+   "jump_time_s": 0.9,
    "evolution": true,
    "base": "mega_knight"
   },
@@ -980,7 +1957,17 @@
    "hitpoints": 837,
    "damage": 312,
    "hit_speed": 1.5,
-   "dps": 208
+   "dps": 208,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "mighty_miner": {
    "display": "Mighty Miner",
@@ -988,7 +1975,22 @@
    "rarity": "champion",
    "kind": "troop",
    "hitpoints": 2250,
+   "damage": 40,
    "hit_speed": 0.4,
+   "dps": 100,
+   "damage_stages": [
+    40.0,
+    204.0,
+    409.0
+   ],
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
    "champion": true
   },
   "miner": {
@@ -999,7 +2001,15 @@
    "hitpoints": 1210,
    "damage": 194,
    "hit_speed": 1.3,
-   "dps": 149
+   "dps": 149,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "mini_pekka": {
    "display": "Mini P.E.K.K.A.",
@@ -1009,7 +2019,15 @@
    "hitpoints": 1433,
    "damage": 755,
    "hit_speed": 1.6,
-   "dps": 472
+   "dps": 472,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.8,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "minion_horde": {
    "display": "Minion Horde",
@@ -1019,7 +2037,17 @@
    "hitpoints": 230,
    "damage": 107,
    "hit_speed": 1.2,
-   "dps": 89
+   "dps": 89,
+   "count": 6,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "minion_horde_evo": {
    "display": "Evo Minion Horde",
@@ -1037,12 +2065,23 @@
    "hitpoints": 230,
    "damage": 107,
    "hit_speed": 1.2,
-   "dps": 89
+   "dps": 89,
+   "count": 3,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 2.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "mirror": {
    "display": "Mirror",
    "rarity": "epic",
-   "kind": "spell"
+   "kind": "spell",
+   "count": 1
   },
   "monk": {
    "display": "Monk",
@@ -1053,6 +2092,14 @@
    "damage": 140,
    "hit_speed": 0.8,
    "dps": 175,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
    "champion": true
   },
   "mortar": {
@@ -1064,7 +2111,15 @@
    "damage": 266,
    "hit_speed": 5.0,
    "dps": 53,
-   "lifetime_s": 30.0
+   "lifetime_s": 30.0,
+   "count": 1,
+   "range_tiles": 3.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 3.5,
+   "projectile_speed": 300.0,
+   "splash_radius": 2.0
   },
   "mortar_evo": {
    "display": "Evo Mortar",
@@ -1076,6 +2131,20 @@
    "hit_speed": 4.0,
    "dps": 66,
    "lifetime_s": 30.0,
+   "count": 1,
+   "range_tiles": 3.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 3.5,
+   "projectile_speed": 300.0,
+   "splash_radius": 2.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "mortar"
   },
@@ -1084,10 +2153,25 @@
    "elixir": 4,
    "rarity": "legendary",
    "kind": "troop",
-   "hitpoints": 529,
-   "damage": 133,
-   "hit_speed": 1.0,
-   "dps": 133
+   "hitpoints": 629,
+   "damage": 53,
+   "hit_speed": 1.2,
+   "dps": 44,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.75,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.2
+   }
   },
   "musketeer": {
    "display": "Musketeer",
@@ -1097,7 +2181,17 @@
    "hitpoints": 721,
    "damage": 217,
    "hit_speed": 1.0,
-   "dps": 217
+   "dps": 217,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "musketeer_evo": {
    "display": "Evo Musketeer",
@@ -1108,6 +2202,17 @@
    "damage": 217,
    "hit_speed": 1.0,
    "dps": 217,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 6.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "musketeer"
   },
@@ -1119,7 +2224,22 @@
    "hitpoints": 906,
    "damage": 314,
    "hit_speed": 1.3,
-   "dps": 242
+   "dps": 242,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_interval_s": 5.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.2,
+    "speed_tiles": 2.0,
+    "hit_speed": 1.3,
+    "flying": true
+   }
   },
   "pekka": {
    "display": "P.E.K.K.A.",
@@ -1129,17 +2249,31 @@
    "hitpoints": 3760,
    "damage": 842,
    "hit_speed": 1.8,
-   "dps": 468
+   "dps": 468,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "pekka_evo": {
    "display": "Evo P.E.K.K.A.",
    "elixir": 7,
    "rarity": "epic",
    "kind": "troop",
-   "hitpoints": 3760,
-   "damage": 842,
-   "hit_speed": 1.8,
-   "dps": 468,
+   "hitpoints": 5640,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 1,
    "evolution": true,
    "base": "pekka"
   },
@@ -1151,7 +2285,19 @@
    "hitpoints": 1052,
    "damage": 217,
    "hit_speed": 1.0,
-   "dps": 217
+   "dps": 217,
+   "death_damage": 163.0,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_interval_s": 3.8,
+   "death_radius_tiles": 1.5
   },
   "poison": {
    "display": "Poison",
@@ -1159,7 +2305,8 @@
    "rarity": "epic",
    "kind": "spell",
    "damage": 92,
-   "crown_tower_damage": 23
+   "crown_tower_damage": 23,
+   "hits_per_attack": 8.0
   },
   "prince": {
    "display": "Prince",
@@ -1169,7 +2316,22 @@
    "hitpoints": 1920,
    "damage": 391,
    "hit_speed": 1.4,
-   "dps": 279
+   "dps": 279,
+   "charge_damage": 783.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "speed_tiles": 2.0
+   },
+   "charge_range": 2.5,
+   "charge_speed_tiles": 2.0,
+   "river_jump": true
   },
   "princess": {
    "display": "Princess",
@@ -1179,7 +2341,18 @@
    "hitpoints": 261,
    "damage": 168,
    "hit_speed": 3.0,
-   "dps": 56
+   "dps": 56,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 9.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.2,
+   "projectile_speed": 600.0,
+   "splash_radius": 2.0
   },
   "princess_evo": {
    "display": "Evo Princess",
@@ -1195,7 +2368,13 @@
    "rarity": "epic",
    "kind": "spell",
    "damage": 179,
-   "crown_tower_damage": 54
+   "crown_tower_damage": 54,
+   "count": 1,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 0.5,
+   "radius_tiles": 3.0
   },
   "ram_rider": {
    "display": "Ram Rider",
@@ -1205,7 +2384,23 @@
    "hitpoints": 1697,
    "damage": 250,
    "hit_speed": 1.8,
-   "dps": 139
+   "dps": 139,
+   "charge_damage": 501.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.8,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "speed_tiles": 2.0
+   },
+   "slow_pct": -70.0,
+   "charge_range": 2.5,
+   "charge_speed_tiles": 2.0,
+   "river_jump": true
   },
   "rascals": {
    "display": "Rascals",
@@ -1215,7 +2410,19 @@
    "hitpoints": 1940,
    "damage": 204,
    "hit_speed": 1.5,
-   "dps": 136
+   "dps": 136,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.8,
+   "attacks": [
+    "ground"
+   ],
+   "spawn_unit_stats": {
+    "range_tiles": 0.8,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.5
+   }
   },
   "rocket": {
    "display": "Rocket",
@@ -1223,13 +2430,28 @@
    "rarity": "rare",
    "kind": "spell",
    "damage": 1484,
-   "crown_tower_damage": 371
+   "crown_tower_damage": 371,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "projectile_speed": 350.0,
+   "radius_tiles": 2.0
   },
   "ronin": {
    "display": "Ronin",
    "elixir": 5,
    "rarity": "legendary",
-   "kind": "troop"
+   "kind": "troop",
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "royal_delivery": {
    "display": "Royal Delivery",
@@ -1239,7 +2461,20 @@
    "hitpoints": 547,
    "damage": 133,
    "hit_speed": 1.3,
-   "dps": 102
+   "dps": 102,
+   "shield_hp": 240.0,
+   "spawn_damage": 437.0,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 3.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.6,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.3
+   }
   },
   "royal_ghost": {
    "display": "Royal Ghost",
@@ -1249,7 +2484,15 @@
    "hitpoints": 1210,
    "damage": 261,
    "hit_speed": 1.8,
-   "dps": 145
+   "dps": 145,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "royal_ghost_evo": {
    "display": "Evo Royal Ghost",
@@ -1260,6 +2503,21 @@
    "damage": 261,
    "hit_speed": 1.8,
    "dps": 145,
+   "spawn_damage": 81.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.2,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.8
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "royal_ghost"
   },
@@ -1271,7 +2529,16 @@
    "hitpoints": 3164,
    "damage": 307,
    "hit_speed": 1.7,
-   "dps": 181
+   "dps": 181,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 5.0,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0
   },
   "royal_giant_evo": {
    "display": "Evo Royal Giant",
@@ -1282,6 +2549,16 @@
    "damage": 307,
    "hit_speed": 1.7,
    "dps": 181,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 5.0,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1000.0,
+   "evo_cycles": 1,
    "evolution": true,
    "base": "royal_giant"
   },
@@ -1293,7 +2570,16 @@
    "hitpoints": 837,
    "damage": 74,
    "hit_speed": 1.2,
-   "dps": 62
+   "dps": 62,
+   "count": 4,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "river_jump": true
   },
   "royal_hogs_evo": {
    "display": "Evo Royal Hogs",
@@ -1304,6 +2590,15 @@
    "damage": 74,
    "hit_speed": 1.2,
    "dps": 62,
+   "count": 4,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.7,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "royal_hogs"
   },
@@ -1315,7 +2610,16 @@
    "hitpoints": 547,
    "damage": 133,
    "hit_speed": 1.3,
-   "dps": 102
+   "dps": 102,
+   "shield_hp": 240.0,
+   "count": 6,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "royal_recruits_evo": {
    "display": "Evo Royal Recruits",
@@ -1326,6 +2630,17 @@
    "damage": 133,
    "hit_speed": 1.3,
    "dps": 102,
+   "shield_hp": 240.0,
+   "count": 6,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.6,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 1,
+   "charge_range": 2.5,
    "evolution": true,
    "base": "royal_recruits"
   },
@@ -1337,7 +2652,15 @@
    "hitpoints": 2662,
    "damage": 120,
    "hit_speed": 1.5,
-   "dps": 80
+   "dps": 80,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0
   },
   "skeleton_army": {
    "display": "Skeleton Army",
@@ -1347,7 +2670,15 @@
    "hitpoints": 81,
    "damage": 81,
    "hit_speed": 1.1,
-   "dps": 74
+   "dps": 74,
+   "count": 15,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "skeleton_army_evo": {
    "display": "Evo Skeleton Army",
@@ -1358,6 +2689,20 @@
    "damage": 81,
    "hit_speed": 1.1,
    "dps": 74,
+   "count": 15,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 1.6,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.0
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "skeleton_army"
   },
@@ -1369,7 +2714,22 @@
    "hitpoints": 532,
    "damage": 81,
    "hit_speed": 1.1,
-   "dps": 74
+   "dps": 74,
+   "death_damage": 145.0,
+   "count": 1,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.35,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   },
+   "death_radius_tiles": 2.0
   },
   "skeleton_barrel_evo": {
    "display": "Evo Skeleton Barrel",
@@ -1380,6 +2740,22 @@
    "damage": 81,
    "hit_speed": 1.1,
    "dps": 74,
+   "death_damage": 238.0,
+   "count": 2,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.35,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 2,
+   "death_radius_tiles": 2.0,
    "evolution": true,
    "base": "skeleton_barrel"
   },
@@ -1391,7 +2767,18 @@
    "hitpoints": 560,
    "damage": 161,
    "hit_speed": 2.0,
-   "dps": 80
+   "dps": 80,
+   "count": 2,
+   "movement": "air",
+   "speed_tiles": 1.5,
+   "range_tiles": 3.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 500.0,
+   "splash_radius": 1.5
   },
   "skeleton_king": {
    "display": "Skeleton King",
@@ -1402,6 +2789,20 @@
    "damage": 204,
    "hit_speed": 1.6,
    "dps": 128,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.3,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   },
    "champion": true
   },
   "skeletons": {
@@ -1412,7 +2813,15 @@
    "hitpoints": 81,
    "damage": 81,
    "hit_speed": 1.1,
-   "dps": 74
+   "dps": 74,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "skeletons_evo": {
    "display": "Evo Skeletons",
@@ -1423,6 +2832,15 @@
    "damage": 81,
    "hit_speed": 1.1,
    "dps": 74,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.5,
+   "range_tiles": 0.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "skeletons"
   },
@@ -1434,7 +2852,17 @@
    "hitpoints": 1451,
    "damage": 1331,
    "hit_speed": 4.0,
-   "dps": 333
+   "dps": 333,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 0.75,
+   "range_tiles": 5.0,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 1400.0,
+   "splash_radius": 1.8
   },
   "spear_goblins": {
    "display": "Spear Goblins",
@@ -1444,14 +2872,32 @@
    "hitpoints": 133,
    "damage": 81,
    "hit_speed": 1.7,
-   "dps": 48
+   "dps": 48,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 5.0,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 500.0
   },
   "spirit_empress": {
    "display": "Spirit Empress",
    "rarity": "legendary",
    "kind": "troop",
    "hitpoints": 1121,
-   "damage": 309
+   "damage": 309,
+   "count": 2,
+   "movement": "air",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.0,
+   "attacks": [
+    "air",
+    "ground"
+   ]
   },
   "suspicious_bush": {
    "display": "Suspicious Bush",
@@ -1461,7 +2907,20 @@
    "hitpoints": 304,
    "damage": 256,
    "hit_speed": 1.4,
-   "dps": 183
+   "dps": 183,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.8,
+    "speed_tiles": 1.0,
+    "hit_speed": 1.4
+   }
   },
   "tesla": {
    "display": "Tesla",
@@ -1472,7 +2931,14 @@
    "damage": 220,
    "hit_speed": 1.1,
    "dps": 200,
-   "lifetime_s": 25.0
+   "lifetime_s": 25.0,
+   "count": 1,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0
   },
   "tesla_evo": {
    "display": "Evo Tesla",
@@ -1484,6 +2950,14 @@
    "hit_speed": 1.1,
    "dps": 200,
    "lifetime_s": 25.0,
+   "count": 1,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "tesla"
   },
@@ -1493,7 +2967,12 @@
    "rarity": "legendary",
    "kind": "spell",
    "damage": 266,
-   "crown_tower_damage": 40
+   "crown_tower_damage": 40,
+   "count": 1,
+   "range_tiles": 10.1,
+   "attacks": [
+    "ground"
+   ]
   },
   "three_musketeers": {
    "display": "Three Musketeers",
@@ -1501,18 +2980,27 @@
    "rarity": "rare",
    "kind": "troop",
    "hitpoints": 883,
-   "hit_speed": 1.3
+   "hit_speed": 1.3,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "deploy_time": 1.0
   },
   "tombstone": {
    "display": "Tombstone",
    "elixir": 3,
    "rarity": "rare",
    "kind": "building",
-   "hitpoints": 81,
-   "damage": 81,
-   "hit_speed": 1.1,
-   "dps": 74,
-   "lifetime_s": 30.0
+   "hitpoints": 529,
+   "lifetime_s": 30.0,
+   "count": 1,
+   "deploy_time": 1.0,
+   "spawn_interval_s": 4.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   }
   },
   "tornado": {
    "display": "Tornado",
@@ -1520,7 +3008,13 @@
    "rarity": "epic",
    "kind": "spell",
    "damage": 84,
-   "crown_tower_damage": 29
+   "crown_tower_damage": 29,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 5.5
   },
   "valkyrie": {
    "display": "Valkyrie",
@@ -1530,7 +3024,16 @@
    "hitpoints": 1907,
    "damage": 266,
    "hit_speed": 1.5,
-   "dps": 177
+   "dps": 177,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 2.0
   },
   "valkyrie_evo": {
    "display": "Evo Valkyrie",
@@ -1541,6 +3044,16 @@
    "damage": 266,
    "hit_speed": 1.5,
    "dps": 177,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 1.2,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 2.0,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "valkyrie"
   },
@@ -1550,13 +3063,28 @@
    "rarity": "epic",
    "kind": "spell",
    "damage": 153,
-   "crown_tower_damage": 39
+   "crown_tower_damage": 39,
+   "hits_per_attack": 2.0,
+   "count": 3,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 0.9,
+   "radius_tiles": 2.5
   },
   "void": {
    "display": "Void",
-   "elixir": 3,
+   "elixir": 5,
    "rarity": "epic",
-   "kind": "spell"
+   "kind": "spell",
+   "hits_per_attack": 3.0,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 2.5
   },
   "wall_breakers": {
    "display": "Wall Breakers",
@@ -1564,7 +3092,16 @@
    "rarity": "epic",
    "kind": "troop",
    "hitpoints": 330,
-   "damage": 391
+   "damage": 391,
+   "count": 2,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.5
   },
   "wall_breakers_evo": {
    "display": "Evo Wall Breakers",
@@ -1573,6 +3110,21 @@
    "kind": "troop",
    "hitpoints": 330,
    "damage": 391,
+   "death_damage": 291.0,
+   "count": 2,
+   "movement": "ground",
+   "speed_tiles": 2.0,
+   "range_tiles": 0.5,
+   "attacks": [
+    "buildings"
+   ],
+   "deploy_time": 1.0,
+   "splash_radius": 1.5,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 2.0
+   },
+   "evo_cycles": 2,
    "evolution": true,
    "base": "wall_breakers"
   },
@@ -1584,17 +3136,48 @@
    "hitpoints": 839,
    "damage": 135,
    "hit_speed": 1.1,
-   "dps": 123
+   "dps": 123,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "splash_radius": 1.5,
+   "spawn_interval_s": 7.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   }
   },
   "witch_evo": {
    "display": "Evo Witch",
    "elixir": 5,
    "rarity": "epic",
    "kind": "troop",
-   "hitpoints": 839,
-   "damage": 135,
-   "hit_speed": 1.1,
-   "dps": 123,
+   "hitpoints": 1039,
+   "count": 1,
+   "movement": "ground",
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "splash_radius": 1.5,
+   "spawn_interval_s": 7.0,
+   "spawn_unit_stats": {
+    "range_tiles": 0.5,
+    "speed_tiles": 1.5,
+    "hit_speed": 1.1
+   },
+   "evo_cycles": 1,
    "evolution": true,
    "base": "witch"
   },
@@ -1603,20 +3186,45 @@
    "elixir": 5,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 755,
+   "hitpoints": 832,
    "damage": 281,
    "hit_speed": 1.4,
-   "dps": 201
+   "dps": 201,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "splash_radius": 1.5
   },
   "wizard_evo": {
    "display": "Evo Wizard",
    "elixir": 5,
    "rarity": "rare",
    "kind": "troop",
-   "hitpoints": 755,
+   "hitpoints": 832,
    "damage": 281,
    "hit_speed": 1.4,
    "dps": 201,
+   "shield_hp": 192.0,
+   "death_damage": 281.0,
+   "count": 1,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 5.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "projectile_speed": 600.0,
+   "splash_radius": 1.5,
+   "evo_cycles": 1,
    "evolution": true,
    "base": "wizard"
   },
@@ -1629,7 +3237,13 @@
    "damage": 43,
    "hit_speed": 0.3,
    "dps": 143,
-   "lifetime_s": 30.0
+   "lifetime_s": 30.0,
+   "count": 1,
+   "range_tiles": 11.5,
+   "attacks": [
+    "ground"
+   ],
+   "deploy_time": 3.5
   },
   "zap": {
    "display": "Zap",
@@ -1637,7 +3251,14 @@
    "rarity": "common",
    "kind": "spell",
    "damage": 192,
-   "crown_tower_damage": 58
+   "crown_tower_damage": 58,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 2.5,
+   "stun_duration_s": 0.5
   },
   "zap_evo": {
    "display": "Evo Zap",
@@ -1646,6 +3267,15 @@
    "kind": "spell",
    "damage": 192,
    "crown_tower_damage": 58,
+   "hits_per_attack": 2.0,
+   "count": 1,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "radius_tiles": 2.5,
+   "evo_cycles": 2,
+   "stun_duration_s": 0.5,
    "evolution": true,
    "base": "zap"
   },
@@ -1657,7 +3287,17 @@
    "hitpoints": 529,
    "damage": 117,
    "hit_speed": 2.1,
-   "dps": 56
+   "dps": 56,
+   "count": 3,
+   "movement": "ground",
+   "speed_tiles": 1.0,
+   "range_tiles": 4.5,
+   "attacks": [
+    "air",
+    "ground"
+   ],
+   "deploy_time": 1.0,
+   "stun_duration_s": 0.5
   }
  }
 }
