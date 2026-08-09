@@ -226,9 +226,12 @@
 
   <!-- labelling ---------------- -->
   <section id="tab-labeling" class="panel">
-    <p class="lead">Training data for the <b>vision AI</b>. Drag a box around each unit on the
-      board, pick what it is, save. That is the whole job -- the detector learns to predict the
-      boxes you drew. Frames are collected automatically while <code>train-rl</code> runs.</p>
+    <p class="lead">The <b>only</b> place boxes are drawn. This is the vision AI's training data:
+      the model already suggests boxes (dashed orange), you correct them and save. Deleting a
+      wrong box is one click, so the suggestions are deliberately generous.</p>
+    <p class="hint">Click a box to select it &middot; pick a class to rename it &middot;
+      <kbd>Del</kbd> removes it &middot; drag to add one &middot; <kbd>Enter</kbd> saves and moves on.
+      Need frames? Control tab &rarr; Vision AI &rarr; <i>1. Get frames to label</i>.</p>
     <div id="labstats" class="row"></div>
     <div class="row">
       <button id="labprev" class="btn small">Previous</button>
@@ -241,8 +244,13 @@
       <span id="labclassmsg" class="msg"></span>
       <button id="labsave" class="btn primary">Save and continue</button>
       <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
-      <button id="labundo" class="btn small">Undo box</button>
+      <button id="labundo" class="btn small" title="Removes the selected box, or the last one drawn">Delete box</button>
       <span id="labmsg" class="msg"></span>
+    </div>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="labprefill" checked>
+        Pre-fill boxes from the model</label>
+      <span id="labprefillmsg" class="msg"></span>
     </div>
     <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
          state) always ran silently, so this frame looked like it was only "units or

@@ -190,10 +190,10 @@ COMMANDS: List[Dict[str, Any]] = [
         # offered. It is the vision AI's exact counterpart to "Prepare imitation data".
         "cmd": "detect-frames",
         "group": "Vision AI", "stage": "data",
-        "title": "Get frames to label",
-        "desc": "Pulls in-match frames out of one of your recordings into the labelling queue, "
-                "sampled around your own plays so they are guaranteed to show a real board. "
-                "Draw the boxes in the Labelling tab afterwards.",
+        "title": "1. Get frames to label",
+        "desc": "Pulls in-match frames out of one of your recordings into the queue, sampled "
+                "around your own plays so they are guaranteed to show a real board. "
+                "STEP 2 is the Labelling tab -- there is no second place where boxes get drawn.",
         "gpu": False,
         "metrics": False,
         "args": [
@@ -205,9 +205,31 @@ COMMANDS: List[Dict[str, Any]] = [
         ],
     },
     {
+        # Between labelling and training: multiply what you drew. Cutting the annotated units
+        # out and pasting them onto other frames is what stops the detector learning the LAWN
+        # instead of the unit -- and it is the only step that scales without more of your time.
+        "cmd": "sprites",
+        "group": "Vision AI", "stage": "data",
+        "title": "3. Multiply your labels",
+        "desc": "Cuts every box you drew out of its background into a sprite bank, then pastes "
+                "those sprites onto other frames to synthesise extra labelled images. It can "
+                "only multiply classes you have already labelled -- it invents nothing.",
+        "gpu": False,
+        "metrics": False,
+        "args": [
+            {"name": "synth", "type": "int", "default": 300, "label": "Images to synthesise",
+             "help": "Written to data/detect/synth/ and added to training automatically. "
+                     "Validation stays real-only."},
+            {"name": "paste", "type": "int", "default": 4, "label": "Sprites per image"},
+            {"name": "verify", "type": "bool", "default": False, "label": "Check cutout quality only",
+             "help": "Writes side-by-side panels instead of building the bank, so you can see "
+                     "whether the cutouts are clean before trusting them."},
+        ],
+    },
+    {
         "cmd": "detect-train",
         "group": "Vision AI", "stage": "train",
-        "title": "Train the vision AI",
+        "title": "4. Train the vision AI",
         "desc": "Trains the board detector on the frames you labelled in the Labelling tab. "
                 "This is the SECOND network -- it names the units on the board; it does not "
                 "play. Needs labelled frames with boxes in them.",
@@ -231,8 +253,8 @@ COMMANDS: List[Dict[str, Any]] = [
         "group": "Playing AI", "stage": "data",
         "title": "Prepare imitation data",
         "desc": "Turns recordings into the (observation, action) dataset behaviour cloning learns "
-                "from. NOT the box labelling in the Labelling tab -- that one is the vision AI's "
-                "training data and is drawn by hand.",
+                "from -- what YOU played, and where. Nothing is drawn by hand here; it reads your "
+                "recorded clicks.",
         "gpu": True,
         "metrics": False,
         "args": [

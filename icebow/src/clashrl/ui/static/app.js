@@ -297,8 +297,9 @@ const GROUP_HINT = {
     + "works until this fits your client.",
   "Playing AI": "MODEL 1 of 2. Decides which card to play where. One network -- the tiles below "
     + "are its data, its three training routes and running it; they do not create more models.",
-  "Vision AI": "MODEL 2 of 2. Names the units on the board in a screenshot. It never plays. Its "
-    + "training data is what you draw in the Labelling tab.",
+  "Vision AI": "MODEL 2 of 2. Names the units on the board in a screenshot. It never plays. "
+    + "Four steps in order: get frames -> draw boxes in the LABELLING TAB (step 2, the only "
+    + "place that happens) -> multiply them -> train.",
   "Check the setup": "Looking and measuring only, nothing is trained.",
 };
 
@@ -354,12 +355,40 @@ function renderCommands() {
     box.appendChild(h);
     const grid = el("div", "grid");
     grp.items.sort((a, b) => srank(a.stage) - srank(b.stage));
-    grp.items.forEach(c => grid.appendChild(commandCard(c)));
+    grp.items.forEach(c => {
+      grid.appendChild(commandCard(c));
+      // Step 2 of the vision pipeline is a TAB, not a command. Leaving a hole in a numbered
+      // sequence reads as a bug, and "where do I actually label?" was the whole confusion.
+      if (c.cmd === "detect-frames") grid.appendChild(linkCard(
+        "2. Draw the boxes", "labeling",
+        "Opens the Labelling tab. The model pre-fills what it already recognises; you correct "
+        + "and save. This is the ONLY place boxes are drawn -- nothing else in this panel "
+        + "takes hand-drawn labels."));
+    });
     box.appendChild(grid);
     g.appendChild(box);
   });
   Object.keys(keep).forEach(id => { const i = document.getElementById(id);
     if (i) { if (i.dataset.type === "bool") i.checked = keep[id]; else i.value = keep[id]; } });
+}
+
+/* A step in a group that is a TAB rather than a job -- same card shape so the sequence reads
+   as one list, but it opens a tab instead of starting a process. */
+function linkCard(title, tab, desc) {
+  const card = el("div", "card");
+  const head = el("div", "row"); head.style.margin = "0 0 2px";
+  head.appendChild(el("h3", null, title));
+  const p = el("span", "pill stage", "by hand");
+  p.title = "You do this one yourself; nothing runs in the background.";
+  head.appendChild(p);
+  card.appendChild(head);
+  card.appendChild(el("div", "desc", desc));
+  const row = el("div", "row foot");
+  const btn = el("button", "btn primary", "Open");
+  btn.onclick = () => showTab(tab);
+  row.appendChild(btn);
+  card.appendChild(row);
+  return card;
 }
 
 function commandCard(c) {
@@ -1363,7 +1392,8 @@ $("#cfgreset").onclick = () => loadConfig();
    getting it wrong trains a detector that aims half a box off, silently. */
 const LAB = { queue: [], ix: 0, boxes: [], classes: [], drag: null, natural: [0, 0],
               recent: [],        // class ids, most recently used first
-              read: null };      // full-frame reader result, see labReadFrame()
+              read: null,        // full-frame reader result, see labReadFrame()
+              sel: -1 };         // index of the selected box, -1 = none
 
 /* The class list is the taxonomy's own file order (236 entries, unsorted), which is
    unusable: you scroll forever looking for "minions". Sorted alphabetically, with the
@@ -1402,6 +1432,25 @@ function labRecent(id) {
   labFillClasses($("#labsearch").value);
 }
 
+/* Click a box to select it: the correction loop is pick -> fix class, or pick -> delete.
+   Smallest box wins, so a unit inside a big spell area is still reachable. */
+function labPick(px, py) {
+  const cv = $("#labcanvas");
+  let best = -1, bestArea = Infinity;
+  LAB.boxes.forEach((b, i) => {
+    const p = labToPx(b, cv.width, cv.height);
+    if (px < p.x || px > p.x + p.w || py < p.y || py > p.y + p.h) return;
+    if (p.w * p.h < bestArea) { best = i; bestArea = p.w * p.h; }
+  });
+  LAB.sel = best;
+  if (best >= 0) {
+    const sel = $("#labclass");
+    if ([...sel.options].some(o => +o.value === LAB.boxes[best].cls)) {
+      sel.value = String(LAB.boxes[best].cls);
+    }
+  }
+}
+
 function labToNorm(x, y, w, h, cw, ch) {
   return { cx: (x + w / 2) / cw, cy: (y + h / 2) / ch, w: w / cw, h: h / ch };
 }
@@ -1417,14 +1466,18 @@ function labDraw() {
   g.clearRect(0, 0, cv.width, cv.height);
   LAB.boxes.forEach((b, i) => {
     const p = labToPx(b, cv.width, cv.height);
-    g.strokeStyle = "#6f9b7c"; g.lineWidth = 2;
+    // green = yours, orange = the model's suggestion until you accept it, thick = selected
+    const col = b.suggested ? "#d8a24a" : "#6f9b7c";
+    g.strokeStyle = col; g.lineWidth = i === LAB.sel ? 3 : 2;
+    if (b.suggested) g.setLineDash([5, 3]);
     g.strokeRect(p.x, p.y, p.w, p.h);
-    const name = LAB.classes[b.cls] || String(b.cls);
+    g.setLineDash([]);
+    const name = (LAB.classes[b.cls] || String(b.cls)) + (b.suggested ? "?" : "");
     g.font = "12px Consolas, monospace";
     const tw = g.measureText(name).width + 6;
-    g.fillStyle = "rgba(11,14,20,.85)";
+    g.fillStyle = i === LAB.sel ? "rgba(111,155,124,.35)" : "rgba(11,14,20,.85)";
     g.fillRect(p.x, Math.max(0, p.y - 15), tw, 15);
-    g.fillStyle = "#6f9b7c";
+    g.fillStyle = col;
     g.fillText(name, p.x + 3, Math.max(11, p.y - 4));
   });
   if (LAB.read) labDrawRead(g, cv);
@@ -1580,11 +1633,30 @@ async function labLoad(i) {
       const r = await api(`/api/label/boxes/${encodeURIComponent(name)}`);
       LAB.boxes = r.boxes || [];
     } catch (e) { /* unlabelled frame: start empty */ }
+    // PRE-FILL: on a frame with nothing on it yet, start from what the model already sees.
+    // Deleting a wrong box is one click, drawing a missed one takes seconds -- so the floor
+    // is deliberately low and suggestions are marked until you touch them.
+    if (!LAB.boxes.length && $("#labprefill").checked) {
+      const m = $("#labprefillmsg");
+      m.className = "msg"; m.textContent = "asking the model ...";
+      try {
+        const p = await api(`/api/label/predict/${encodeURIComponent(name)}?conf=0.15`);
+        const byName = new Map(LAB.classes.map((c, i) => [c, i]));
+        LAB.boxes = (p.boxes || []).map(b => ({
+          cls: byName.has(b.cls) ? byName.get(b.cls) : 0,
+          cx: b.cx, cy: b.cy, w: b.w, h: b.h, suggested: true, conf: b.conf,
+        })).filter(b => byName.has(LAB.classes[b.cls]));
+        m.textContent = p.trained
+          ? `${LAB.boxes.length} suggested -- fix or delete, then save`
+          : "no trained model yet, drawing from scratch";
+      } catch (e) { m.className = "msg err"; m.textContent = e.message; }
+    }
     labDraw();
   };
   img.src = `/api/label/image/${encodeURIComponent(name)}?t=${Date.now()}`;
   $("#labmsg").className = "msg";
   $("#labmsg").textContent = `frame ${LAB.ix + 1} of ${LAB.queue.length}: ${name}`;
+  LAB.sel = -1;
   LAB.read = null; labReadout();
   labReadFrame().catch(() => {});          // no-op unless the checkbox is on
 }
@@ -1628,14 +1700,34 @@ async function loadLabeling() {
     const d = LAB.drag; LAB.drag = null;
     if (!d) return;
     const w = Math.abs(d.x1 - d.x0), h = Math.abs(d.y1 - d.y0);
-    if (w < 6 || h < 6) { labDraw(); return; }       // a click, not a box
+    if (w < 6 || h < 6) { labPick(d.x0, d.y0); labDraw(); return; }   // a click: select a box
     const b = labToNorm(Math.min(d.x0, d.x1), Math.min(d.y0, d.y1), w, h, cv.width, cv.height);
     b.cls = +$("#labclass").value || 0;
     LAB.boxes.push(b);
+    LAB.sel = LAB.boxes.length - 1;
     labRecent(b.cls);
     labDraw();
   };
-  $("#labundo").onclick = () => { LAB.boxes.pop(); labDraw(); };
+  $("#labundo").onclick = () => {
+    if (LAB.sel >= 0) LAB.boxes.splice(LAB.sel, 1); else LAB.boxes.pop();
+    LAB.sel = -1; labDraw();
+  };
+  $("#labprefill").onchange = () => labLoad(LAB.ix);
+  // Picking a class while a box is selected RELABELS it -- that is the common correction:
+  // the model found the unit and named it wrong.
+  $("#labclass").onchange = () => {
+    if (LAB.sel < 0) return;
+    LAB.boxes[LAB.sel].cls = +$("#labclass").value || 0;
+    delete LAB.boxes[LAB.sel].suggested;
+    labRecent(LAB.boxes[LAB.sel].cls);
+    labDraw();
+  };
+  document.addEventListener("keydown", ev => {
+    if ($(".tab.active").dataset.tab !== "labeling") return;
+    if (ev.target && /INPUT|SELECT|TEXTAREA/.test(ev.target.tagName)) return;
+    if (ev.key === "Delete" || ev.key === "Backspace") { ev.preventDefault(); $("#labundo").click(); }
+    else if (ev.key === "Enter") { ev.preventDefault(); $("#labsave").click(); }
+  });
   $("#labnext").onclick = () => labLoad(LAB.ix + 1);
   $("#labprev").onclick = () => labLoad(LAB.ix - 1);
   $("#labsave").onclick = () => labSave(false);
@@ -1665,7 +1757,8 @@ async function labSave(empty) {
     return;
   }
   try {
-    const r = await post("/api/label/save", { name, boxes: empty ? [] : LAB.boxes });
+    const clean = LAB.boxes.map(b => ({ cls: b.cls, cx: b.cx, cy: b.cy, w: b.w, h: b.h }));
+    const r = await post("/api/label/save", { name, boxes: empty ? [] : clean });
     m.className = "msg ok";
     m.textContent = `saved ${r.boxes} box(es) to ${r.split}`;
     LAB.queue.splice(LAB.ix, 1);                    // it left the queue
