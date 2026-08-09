@@ -37,10 +37,33 @@ def _root(cfg) -> Path:
 
 
 def classes(cfg) -> List[str]:
+    """The class list TRAINING uses -- config/detect_classes.yaml, same source as data.yaml.
+
+    This used to read data/detect/classes.txt, and the two had drifted: removing the 11
+    event-only cards took the taxonomy 236 -> 225, but classes.txt still held the old order.
+    Everything from index 16 up was off by one or two, so a box drawn as `mini_pekka` (86 in
+    the old list) was stored as 86 and trained as `minions` (86 in the new one). Measured on
+    this dataset: 36 of 63 boxes carried a class the trainer read as a different card.
+
+    The picker and the trainer must therefore read the SAME list, and the trainer's is the
+    authority -- classes.txt is regenerated from it rather than trusted.
+    """
+    from ..detect import _load_classes
+    try:
+        names = _load_classes(cfg)
+    except (OSError, ValueError):
+        p = _root(cfg) / "classes.txt"
+        return ([ln.strip() for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
+                if p.exists() else [])
+    # keep the on-disk copy in step, so anything reading it sees the same order
     p = _root(cfg) / "classes.txt"
-    if not p.exists():
-        return []
-    return [ln.strip() for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    try:
+        if not p.exists() or p.read_text(encoding="utf-8").split() != names:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text("\n".join(names) + "\n", encoding="utf-8")
+    except OSError:
+        pass
+    return names
 
 
 def _safe_name(name: str) -> str:

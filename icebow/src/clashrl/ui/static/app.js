@@ -292,11 +292,10 @@ function collectArgs(cmd) {
 // on the page three times and made it impossible to count the models. The stage now rides
 // on the card instead (STAGE_TAG below), so the headings answer only "whose is this".
 const GROUP_HINT = {
-  "Setup (no AI)": "No network at all. Plain template matching plus the recorder: which screen is "
-    + "showing, which cards are in hand, and the raw frames both AIs learn from. Nothing below "
-    + "works until this fits your client.",
-  "Playing AI": "MODEL 1 of 2. Decides which card to play where. One network -- the tiles below "
-    + "are its data, its three training routes and running it; they do not create more models.",
+  "Setup (no AI)": "No network at all -- template matching plus the recorder. Do these in order "
+    + "ONCE, and again after a deck change: everything else reads the screen through them.",
+  "Playing AI": "MODEL 1 of 2. Decides which card to play where. ONE network with three ways in: the simulator (main route, no game needed), your own recordings, or live matches. The tiles are "
+    + "stages of that one model, not separate AIs.",
   "Vision AI": "MODEL 2 of 2. Names the units on the board in a screenshot. It never plays. "
     + "Four steps in order: get frames -> draw boxes in the LABELLING TAB (step 2, the only "
     + "place that happens) -> multiply them -> train.",
@@ -354,7 +353,10 @@ function renderCommands() {
     if (GROUP_HINT[grp.name]) h.appendChild(el("small", null, GROUP_HINT[grp.name]));
     box.appendChild(h);
     const grid = el("div", "grid");
-    grp.items.sort((a, b) => srank(a.stage) - srank(b.stage));
+    // an explicit `order` wins over the stage grouping: where a fixed sequence exists, the
+    // tiles are numbered and must appear in that order, not in catalog order
+    grp.items.sort((a, b) => (a.order || 99) - (b.order || 99)
+                          || srank(a.stage) - srank(b.stage));
     grp.items.forEach(c => {
       grid.appendChild(commandCard(c));
       // Step 2 of the vision pipeline is a TAB, not a command. Leaving a hole in a numbered
@@ -2054,7 +2056,6 @@ $("#ckptreload").onclick = () => loadCheckpoints();
   await refresh();
   await loadOverview().catch(e => console.error(e));
   setInterval(refresh, 3000);
-  if (!localStorage.getItem("clashai.onboarded")) openModal("welcome");
 })();
 
 

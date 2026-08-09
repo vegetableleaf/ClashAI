@@ -97,8 +97,8 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "record",
-        "group": "Setup (no AI)", "stage": "data",
-        "title": "Record",
+        "group": "Setup (no AI)", "stage": "data", "order": 2,
+        "title": "2. Record yourself playing",
         "desc": "Records your own play (screen and mouse clicks). The raw material for BOTH "
                 "networks: your moves for the playing AI, the frames themselves for the vision "
                 "AI. Occupies the screen and the mouse hook.",
@@ -108,8 +108,8 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "calibrate",
-        "group": "Setup (no AI)", "stage": "setup",
-        "title": "Calibrate match detection",
+        "group": "Setup (no AI)", "stage": "setup", "order": 4,
+        "title": "4. Calibrate match detection",
         "desc": "Re-cuts the 'I am in a match' detection from YOUR recording. Needed when your "
                 "window has a different size, or the game runs in a different language than the "
                 "shipped templates.",
@@ -124,8 +124,8 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "cards-art",
-        "group": "Setup (no AI)", "stage": "setup",
-        "title": "Fetch card pictures",
+        "group": "Setup (no AI)", "stage": "setup", "order": 1,
+        "title": "1. Fetch card pictures",
         "desc": "Downloads one reference picture per card from the Clash Royale wiki into "
                 "templates/cardart/. The basis for automatic deck recognition; needed once.",
         "gpu": False,
@@ -136,8 +136,8 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "deck-detect",
-        "group": "Setup (no AI)", "stage": "setup",
-        "title": "Detect the deck",
+        "group": "Setup (no AI)", "stage": "setup", "order": 3,
+        "title": "3. Detect the deck",
         "desc": "Reads the deck out of a recording instead of having you rename image crops. "
                 "The proposal is shown in the Deck tab for confirmation.",
         "gpu": False,
@@ -163,7 +163,7 @@ COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "cmd": "import-from",
-        "group": "Setup (no AI)", "stage": "setup",
+        "group": "Setup (no AI)", "stage": "setup", "order": 9,
         "title": "Import an older installation",
         "desc": "Copies checkpoints, recordings and templates out of an older copy of this "
                 "project. Nothing is deleted and nothing here is overwritten unless you say so.",
