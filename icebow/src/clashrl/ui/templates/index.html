@@ -286,12 +286,14 @@
     <!-- Labelling is the expensive part and the part that combines across people, so the
          vision model has to be movable in one file: no git, no server, no typed paths. -->
     <div class="cfggroup">
-      <h3>Move the vision AI to another PC</h3>
+      <h3>Move a model to another PC</h3>
       <p class="hint" id="visioniodesc">One .zip in, one .zip out. Nothing is uploaded anywhere &mdash;
         it writes a file and you move it however you like.</p>
       <div class="row">
-        <button id="vioexportmodel" class="btn small">Download model only</button>
-        <button id="vioexportfull" class="btn small">Download model + labelled frames</button>
+        <button id="vioexportmodel" class="btn small" data-kind="model">Vision AI</button>
+        <button id="vioexportfull" class="btn small" data-kind="full">Vision AI + labelled frames</button>
+        <button id="vioexportpolicy" class="btn small" data-kind="policy">Playing AI</button>
+        <button id="vioexportall" class="btn small" data-kind="all">Everything</button>
         <span id="vioexportmsg" class="msg"></span>
       </div>
       <div class="row">

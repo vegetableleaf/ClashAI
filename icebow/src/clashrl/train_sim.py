@@ -48,7 +48,7 @@ def pfsp_weights(snaps, power: float, floor: float = 0.05, min_games: int = 5):
 
 
 def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
-              time_limit_s=None, quiet: bool = False):
+              time_limit_s=None, quiet: bool = False, resume_from: str = "best"):
     """Train in the simulator. Returns a {matches, seconds, mps} summary.
 
     `time_limit_s` stops the run after N wall-clock seconds (the same save path as
@@ -93,15 +93,25 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     play_counts = [1.0] * n_cards
 
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
+    # WHICH state does "continue" continue from? policy_sim.pt is the LATEST, which is not
+    # the same thing as the best: benchmark scores wander, so the newest weights can easily
+    # be worse than the peak already reached and stored in policy_sim_best.pt. Default to
+    # the best; `resume_from="latest"` keeps the old behaviour for a run you deliberately
+    # want to carry on exactly where it stopped.
+    best_path = sim_path.with_name(sim_path.stem + "_best" + sim_path.suffix)
+    load_path = sim_path
+    if resume and resume_from == "best" and best_path.exists():
+        load_path = best_path
     resumed_best_wr = -1.0                                    # prior peak benchmark (so --resume won't clobber a better best.pt)
-    if resume and sim_path.exists():
-        ck = torch.load(sim_path, map_location="cpu", weights_only=False)
+    if resume and load_path.exists():
+        sim_path_shown = load_path
+        ck = torch.load(load_path, map_location="cpu", weights_only=False)
         net.policy.load_state_dict(ck["model"])
         if "gate" in ck:
             net.gate.load_state_dict(ck["gate"])
         resumed_best_wr = float(ck.get("best_wr", -1.0))
         if not quiet:
-            print(f"[train-sim] resumed {sim_path.name}"
+            print(f"[train-sim] resumed {sim_path_shown.name}"
                   + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0
                      else " (no stored best -- back up policy_sim_best.pt once before relying on it)"))
     elif not quiet:

@@ -29,8 +29,13 @@ COMMANDS: List[Dict[str, Any]] = [
              "help": "How many matches run at once feeding one learner. Empty uses sim.envs."},
             {"name": "seed", "type": "int", "default": 0, "label": "Seed",
              "help": "RNG seed of the simulator. Same seed makes two runs comparable."},
-            {"name": "resume", "type": "bool", "default": False, "label": "Continue (--resume)",
-             "help": "Carries on from data/policy_sim.pt instead of starting from scratch."},
+            {"name": "resume", "type": "bool", "default": False, "label": "Continue",
+             "help": "Carries on from an existing checkpoint instead of starting from scratch."},
+            {"name": "resume-from", "type": "choice", "choices": ["best", "latest"],
+             "default": "best", "label": "Continue from",
+             "help": "BEST = the highest benchmark ever reached (policy_sim_best.pt). LATEST = "
+                     "exactly where the last run stopped (policy_sim.pt), which can be worse, "
+                     "because the score wanders as it trains. Only used with Continue."},
             {"name": "size", "type": "choice", "choices": ["", "576", "432"], "default": "",
              "label": "Board resolution",
              "help": "576=[18,32] fine / 432=[18,24] coarse. Empty uses action.grid. Do NOT "
@@ -236,10 +241,17 @@ COMMANDS: List[Dict[str, Any]] = [
         "gpu": True,
         "metrics": False,
         "args": [
+            # NOT a model picker. yolo11 n/s/m/l/x are one architecture at five sizes and
+            # training collapses any of them into the single detector at runs/detect/vision.
+            # As a dropdown it read as five competing models, so the default measures the GPU
+            # and decides; the override stays for people who know why they want it.
             {"name": "model", "type": "choice",
-             "choices": ["yolo11n.pt", "yolo11s.pt", "yolo11m.pt", "yolo11l.pt", "yolo11x.pt"],
-             "default": "yolo11s.pt", "label": "Model size",
-             "help": "Bigger is more accurate but needs more VRAM and trains slower. Start small."},
+             "choices": ["auto", "yolo11n.pt", "yolo11s.pt", "yolo11m.pt", "yolo11l.pt",
+                         "yolo11x.pt"],
+             "default": "auto", "label": "Starting size (advanced)",
+             "help": "Not a second model -- the same detector at a different size. `auto` picks "
+                     "the largest that fits your GPU and prints which. Only change it if a "
+                     "training runs out of memory."},
             {"name": "epochs", "type": "int", "default": 120, "label": "Epochs",
              "help": "Upper bound; it early-stops on its own when it stops improving."},
             {"name": "imgsz", "type": "int", "default": 960, "label": "Image size",

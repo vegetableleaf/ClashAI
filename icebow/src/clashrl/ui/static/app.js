@@ -2087,28 +2087,33 @@ async function loadVisionIO() {
   const d = await api("/api/vision/bundle").catch(() => null);
   const box = $("#visioniodesc");
   if (!box) return;
-  if (!d || !d.trained) {
-    box.textContent = "Nothing to export yet -- train the vision AI first.";
-    $("#vioexportmodel").disabled = $("#vioexportfull").disabled = true;
-    return;
-  }
-  const m = d.metrics || {};
+  if (!d) return;
+  const m = d.metrics || {}, pol = d.policy_files || [];
+  $("#vioexportmodel").disabled = $("#vioexportfull").disabled = !d.trained;
+  $("#vioexportpolicy").disabled = !pol.length;
+  $("#vioexportall").disabled = !d.trained && !pol.length;
   box.innerHTML = "One .zip in, one .zip out. Nothing is uploaded anywhere &mdash; it writes a "
     + "file and you move it however you like."
-    + `<br><b>Model only</b>: ${fmtSize(d.weights_size)}, measured mAP50 ${pct1(m.mAP50)}, `
-    + `recall ${pct1(m.recall)}, trained on ${m.trained_on_boxes} boxes.`
-    + `<br><b>Model + frames</b>: adds ${d.images} labelled images with ${d.boxes} boxes. `
-    + "Take this one if the other machine should keep TRAINING; the frames are the expensive part.";
+    + `<br><b>Vision AI</b>: ${d.trained ? fmtSize(d.weights_size) + ", mAP50 " + pct1(m.mAP50)
+        + ", recall " + pct1(m.recall) + ", trained on " + m.trained_on_boxes + " boxes"
+        : "not trained yet"}.`
+    + `<br><b>+ labelled frames</b>: adds ${d.images} images with ${d.boxes} boxes &mdash; take `
+    + "this one if the other machine should keep TRAINING; the frames are the expensive part."
+    + `<br><b>Playing AI</b>: ${pol.length ? fmtSize(d.policy_size) + ", " + pol.length
+        + " checkpoint(s), trained for the deck " + (d.deck || []).join(", ")
+        : "no checkpoint yet"}.`
+    + (pol.length ? "<br>Its card indices ARE deck slots, so it only means the same thing on a "
+        + "machine running that deck." : "");
 }
 
 (function visionIOWire() {
   const file = $("#vioimportfile");
   if (!file) return;
   const msg = $("#vioimportmsg"), info = $("#vioimportinfo"), apply = $("#vioimportapply");
-  const dl = kind => { window.location = `/api/vision/export?kind=${kind}`;
-    $("#vioexportmsg").textContent = "packing ... the download starts on its own"; };
-  $("#vioexportmodel").onclick = () => dl("model");
-  $("#vioexportfull").onclick = () => dl("full");
+  $$("[data-kind]").forEach(b => b.onclick = () => {
+    window.location = `/api/vision/export?kind=${b.dataset.kind}`;
+    $("#vioexportmsg").textContent = "packing ... the download starts on its own";
+  });
 
   // Always inspect before installing: an import replaces the model and merges frames, and
   // a manifest costs nothing to read. The Install button stays disabled until it is checked.
@@ -2125,18 +2130,26 @@ async function loadVisionIO() {
     if (d.dry_run) {
       const m = d.manifest;
       info.innerHTML = `<p class="hint">Bundle <b>${m.kind}</b> from ${m.created} &middot; `
-        + `${m.classes.length} classes &middot; model ${m.model && m.model.mAP50 != null
-            ? "mAP50 " + pct1(m.model.mAP50) : "(none)"} &middot; `
-        + `${m.dataset_files} dataset file(s), ${m.counts ? m.counts.boxes : "?"} boxes.<br>`
-        + "Installing REPLACES your vision model (the old one is saved to data/exports/ first) "
-        + "and MERGES the frames &mdash; a frame you already have is kept, never overwritten.</p>";
+        + `${m.classes.length} classes &middot; `
+        + `vision ${m.has_model ? (m.model && m.model.mAP50 != null
+            ? "mAP50 " + pct1(m.model.mAP50) : "yes") : "none"} &middot; `
+        + `playing AI ${m.has_policy ? (m.policy_files || []).length + " file(s)" : "none"} &middot; `
+        + `${m.dataset_files} dataset file(s).`
+        + (m.deck && m.deck.length ? `<br>Trained for the deck: ${m.deck.join(", ")}.` : "")
+        + "<br>Installing REPLACES the models it contains (the old ones are copied to "
+        + "data/exports/ first) and MERGES the frames &mdash; a frame you already have is kept, "
+        + "never overwritten.</p>";
       msg.textContent = "checked";
       apply.disabled = false;
       return;
     }
     info.innerHTML = `<p class="hint">Installed: ${d.added} file(s) written, `
       + `${d.skipped_existing} already here and left alone.`
-      + (d.previous_model_saved_to ? `<br>Your previous model: ${d.previous_model_saved_to}` : "")
+      + (d.previous_model_saved_to ? `<br>Your previous vision model: ${d.previous_model_saved_to}` : "")
+      + (d.deck_mismatch ? "<br><b>Note:</b> that playing AI was trained for a different deck ("
+          + (d.their_deck || []).join(", ") + ") than the one configured here ("
+          + (d.our_deck || []).join(", ") + "). It loads, but its card slots mean other cards."
+        : "")
       + "</p>";
     msg.className = "msg ok"; msg.textContent = "done";
     apply.disabled = true;

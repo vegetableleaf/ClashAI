@@ -41,6 +41,36 @@ from pathlib import Path
 RUN_NAME = "vision"
 
 
+def _auto_model(imgsz: int) -> str:
+    """Largest yolo11 backbone that fits this GPU at `imgsz`.
+
+    yolo11 n/s/m/l/x are the SAME architecture at five sizes -- a starting point, not five
+    models, and training collapses whichever you pick into the one detector at
+    runs/detect/vision. Offering the list as a dropdown made it read as five competing
+    models, so the choice is made here from measured VRAM and merely printed.
+
+    Thresholds are for imgsz 960 with ultralytics' auto-batch, which is where this project
+    trains; anything smaller leaves headroom, so the bound scales with the area.
+    """
+    need = {"yolo11x.pt": 22.0, "yolo11l.pt": 14.0, "yolo11m.pt": 10.0, "yolo11s.pt": 6.0}
+    try:
+        import torch
+        if not torch.cuda.is_available():
+            print("[train] no CUDA -> yolo11n.pt (CPU training is slow; expect hours)")
+            return "yolo11n.pt"
+        gb = torch.cuda.get_device_properties(0).total_memory / 1024 ** 3
+    except Exception:                                    # noqa: BLE001 -- torch missing/odd driver
+        return "yolo11s.pt"
+    scale = max(0.35, (imgsz / 960.0) ** 2)              # VRAM tracks pixel count
+    for name, want in need.items():
+        if gb >= want * scale:
+            print(f"[train] {gb:.0f} GB VRAM at imgsz {imgsz} -> {name} "
+                  "(size only; the result is still ONE detector)")
+            return name
+    print(f"[train] {gb:.0f} GB VRAM at imgsz {imgsz} -> yolo11n.pt (smallest that fits)")
+    return "yolo11n.pt"
+
+
 def _install_status_aug() -> str:
     """Monkeypatch Ultralytics' Albumentations pipeline to SIMULATE Clash Royale STATUS EFFECTS that
     distort a troop's appearance: slow/rage COLOUR TINTS (blue/purple), spell/effect HAZE + partial-
@@ -84,8 +114,11 @@ def _install_status_aug() -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
-    ap.add_argument("--model", default="yolo11x.pt",
-                    help="base weights: yolo11n/s/m/l/x.pt (YOLO, default x) or rtdetr-l/x.pt (RT-DETR)")
+    ap.add_argument("--model", default="auto",
+                    help="STARTING WEIGHTS, not a second model: yolo11 n/s/m/l/x differ only in "
+                         "size, and training produces one detector either way. `auto` (default) "
+                         "picks the largest that fits this GPU's VRAM at imgsz 960. Pass "
+                         "yolo11s.pt etc. to override, or rtdetr-l/x.pt for RT-DETR.")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
     ap.add_argument("--batch", type=int, default=-1,
@@ -107,6 +140,8 @@ def main() -> None:
                          "folder/epoch count/best.pt, so resuming loses nothing. All other flags are IGNORED -- "
                          "ultralytics restores them from the checkpoint's own args.")
     args = ap.parse_args()
+    if args.model == "auto":
+        args.model = _auto_model(args.imgsz)
 
     is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
     try:

@@ -131,7 +131,7 @@ def _cmd_train_sim(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim(_sized_config(args), matches=args.matches, resume=args.resume,
-              seed=args.seed, envs=args.envs)
+              seed=args.seed, envs=args.envs, resume_from=args.resume_from)
 
 
 def _cmd_train_sim_ppo(args) -> None:
@@ -439,7 +439,11 @@ def main() -> None:
     tsi = sub.add_parser("train-sim",
                          help="train the policy in the headless SIMULATOR (thousands of matches, from scratch, no vision)")
     tsi.add_argument("--matches", type=int, default=2000, help="max matches to play before stopping")
-    tsi.add_argument("--resume", action="store_true", help="continue data/policy_sim.pt instead of training from scratch")
+    tsi.add_argument("--resume", action="store_true", help="continue an existing checkpoint instead of training from scratch")
+    tsi.add_argument("--resume-from", choices=["best", "latest"], default="best",
+                     help="WHICH checkpoint --resume continues: 'best' = policy_sim_best.pt, the "
+                          "highest benchmark ever reached (default); 'latest' = policy_sim.pt, "
+                          "exactly where the last run stopped, which can be worse")
     tsi.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsi.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances feeding one learner (default: sim.envs)")

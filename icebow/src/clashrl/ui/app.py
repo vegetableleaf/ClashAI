@@ -419,10 +419,10 @@ def create_app(cfg) -> Flask:
 
     @app.get("/api/vision/export")
     def vision_export():
-        """Download the vision model as one .zip. `kind=model` or `kind=full` (with labels)."""
+        """Download a model as one .zip. kind = model | full | policy | all."""
         from . import vision_io
         kind = request.args.get("kind", "model")
-        out = root / "data" / "exports" / f"clashai-vision-{kind}-{time.strftime('%Y%m%d-%H%M%S')}.zip"
+        out = root / "data" / "exports" / f"clashai-{kind}-{time.strftime('%Y%m%d-%H%M%S')}.zip"
         try:
             res = vision_io.export(root, out, kind)
         except (ValueError, FileNotFoundError) as exc:
@@ -448,6 +448,7 @@ def create_app(cfg) -> Flask:
                 root, tmp,
                 take_model=request.form.get("model", "1") == "1",
                 take_dataset=request.form.get("dataset", "1") == "1",
+                take_policy=request.form.get("policy", "1") == "1",
                 backup_dir=root / "data" / "exports")
             return jsonify(res)
         except (ValueError, BadZipFile) as exc:
