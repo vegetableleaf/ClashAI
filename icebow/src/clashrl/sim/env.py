@@ -384,16 +384,25 @@ class SimMatchEnv:
         tid = self._threat_id_true
         prof = self._deck_profiles[card_id]
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
-                # QUIET BOARD. Holding is right by default, but not when you are about to leak FIRST.
-                # Without this the reward CONTRADICTED the leak term: at >= 9.99 elixir, playing a cheap
-                # defender scored -0.4 (premature) while simply waiting scored -0.2 (leak), so the policy
-                # was taught to overflow its bar rather than spend. MEASURED: real threats exist on only
-                # 14.8% of steps, so the board is usually quiet and this branch was firing on ~12.5
-                # plays/match at -0.4 -- the single biggest negative in the reward.
-                if self._leaking_first(self.specs[card_id].elixir):
-                    return 0.0
-                return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
+            # QUIET BOARD -> NOT GRADED. This branch used to charge w_threat_miss * 0.4 for playing a
+            # defender with no threat on the board ("premature"). It was the single largest remaining
+            # one-sided penalty: MEASURED over 40 matches, 257 fires and ZERO bonuses (-2.57/match),
+            # while the DEFENSIVE half of this same term was healthy and balanced at +63 / -66.
+            #
+            # It is deleted rather than narrowed because the question it asks CANNOT BE ANSWERED AT
+            # PLAY TIME. Whether cycling a cheap defender on a quiet board was right depends entirely
+            # on what happens next: it can rotate you back to the Tesla that stops a bridge wincon, or
+            # it can leave you holding nothing when the push lands in the other lane. Same board, same
+            # card, opposite verdicts. An instantaneous classifier has to guess, and a guess that can
+            # only ever subtract is an action tax -- it made "play less" strictly better regardless of
+            # whether playing helped, and the policy found that twice (plays/match 50.1 -> 30.9 with
+            # winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1).
+            #
+            # The consequence it was guessing at is ALREADY MEASURED. agent_dt is 1.0 s and GAE runs at
+            # gamma 0.99 / lambda 0.95 = a 17-SECOND credit window, which comfortably spans the few
+            # seconds to a preventable tower hit or the ~5-10 s for a bridge wincon to connect. If a
+            # cycle play really did cost a tower, the chip and crown terms bill it -- with the actual
+            # damage, at the actual time, instead of a prior. Keeping both charged it twice, once wrong.
             return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
