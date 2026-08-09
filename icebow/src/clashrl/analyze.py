@@ -187,8 +187,8 @@ def analyze(cfg, session_arg=None, do_all=False, window=12, debug=False) -> None
     if do_all:
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
     else:
-        from .label import _latest_session
-        one = Path(session_arg) if session_arg else _latest_session(root)
+        from .label import _latest_session, _resolve_session
+        one = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
         sessions = [one] if one else []
     if not sessions:
         print(f"[analyze] no sessions under {root}")

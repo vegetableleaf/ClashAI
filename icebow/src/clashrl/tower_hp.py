@@ -27,7 +27,7 @@ on win/loss + destruction rewards alone.
 from __future__ import annotations
 
 import pathlib
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -171,6 +171,158 @@ class DigitReader:
             if conf > best[1]:
                 best = (val, conf)
         return best
+
+
+# --- alive / destroyed, and the king -------------------------------------------------
+# A princess tower's HP number disappears for TWO different reasons and they mean opposite
+# things: something is briefly covering it (the value is unknown, keep the last one) or the
+# tower is GONE (the value is 0 forever). The bar itself tells them apart -- it is a solid
+# block of the team's colour and it vanishes with the tower. Measured on a live frame:
+# enemy boxes 6.4% pink / 0.0% blue, own boxes 7-12% blue / 0.0% pink, so a 2% floor
+# separates them with a wide margin.
+_BAR_MIN_COVER = 0.02
+_PINK = ((150, 110, 110), (180, 255, 255))      # enemy bar; red wraps, so a second range below
+_PINK2 = ((0, 110, 110), (8, 255, 255))
+_BLUE = ((92, 110, 110), (118, 255, 255))       # your bar
+
+
+def _widen(box: List[float], fx: float = 0.6, fy: float = 0.4) -> List[float]:
+    """The digit box grown to take in the bar around it (the digit box is deliberately tight)."""
+    cx, cy = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+    hw, hh = (box[2] - box[0]) / 2, (box[3] - box[1]) / 2
+    return [cx - hw * (1 + fx), cy - hh * (1 + fy), cx + hw * (1 + fx), cy + hh * (1 + fy)]
+
+
+def bar_cover(frame: np.ndarray, box: List[float], mine: bool, widen: bool = True) -> float:
+    """Share of the box painted in that team's HP-bar colour. ~0 = no bar there = destroyed.
+
+    ``widen`` grows the tight DIGIT box to take in the bar around it; pass False for a region
+    that already spans the bar (the king band), where growing it would reach the player name
+    and the match timer.
+    """
+    c = _crop(frame, _widen(box) if widen else box)
+    if c.size == 0:
+        return 0.0
+    hsv = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
+    if mine:
+        mask = cv2.inRange(hsv, *_BLUE)
+    else:
+        mask = cv2.bitwise_or(cv2.inRange(hsv, *_PINK), cv2.inRange(hsv, *_PINK2))
+    return float((mask > 0).sum()) / max(1, c.shape[0] * c.shape[1])
+
+
+# The KING tower's number is only drawn once the king is activated (or damaged), so it is
+# absent most of the match -- absent means FULL, not unknown, and definitely not zero. Its
+# bar also sits at a different height per client, so instead of a hand-calibrated box this
+# SEARCHES a generous central band for the digit strip. The band deliberately excludes the
+# left (player name) and right (match timer) thirds, which are the only other white text up
+# there and would otherwise be read as an HP value.
+_KING_BANDS = {"enemy": [0.40, 0.000, 0.66, 0.060], "mine": [0.40, 0.700, 0.66, 0.760]}
+
+
+# The king's NUMBER is drawn in a different style from the princesses' -- bigger, outlined,
+# pink-tinted -- and the digit CNN (trained on princess crops) misreads it: on a frame that
+# plainly shows 1376 it returns 7976 / 1628 / 312 depending on the crop, across every white-
+# mask threshold tried. So the number is not the signal here; the BAR is. Its filled share is
+# a direct, OCR-free reading of remaining HP and needs no per-glyph training at all.
+_KING_BARS = {"enemy": [0.444, 0.019, 0.601, 0.032], "mine": [0.444, 0.716, 0.601, 0.729]}
+
+
+def bar_fraction(frame: np.ndarray, band: List[float], mine: bool) -> Optional[float]:
+    """Filled share (0..1) of an HP bar, by column. None when there is no bar there.
+
+    A column counts as filled if any pixel in it carries the team's colour; the empty part of
+    the bar is dark brown and the frame is a gold outline, so the split is unambiguous.
+    """
+    c = _crop(frame, band)
+    if c.size == 0 or c.shape[1] < 8:
+        return None
+    hsv = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
+    if mine:
+        fill = cv2.inRange(hsv, *_BLUE)
+    else:
+        fill = cv2.bitwise_or(cv2.inRange(hsv, *_PINK), cv2.inRange(hsv, *_PINK2))
+    # Anchor on the FILLED part: a bar that is drawn always has some of it (an empty one means
+    # the tower is gone and the match is over). Any-dark-pixel is not an anchor -- grass shadow
+    # is dark too, which made a bar-less frame look like a bar at 0 %.
+    rows = (fill > 0).sum(1) > c.shape[1] * 0.10
+    if not rows.any():
+        return None                                   # no bar drawn -> king not activated yet
+    strip = slice(int(np.argmax(rows)), int(len(rows) - np.argmax(rows[::-1])))
+    f = (fill[strip] > 0).sum(0) > 0
+    # the empty remainder is the bar's dark brown, not shadow: bounded hue and mid-low value
+    empty = cv2.inRange(hsv[strip], (5, 60, 25), (30, 255, 110))
+    e = (empty > 0).sum(0) > 0
+    lo = int(np.argmax(f))
+    hi = int(len(f) - np.argmax((f | e)[::-1]))        # bar ends where neither fill nor empty
+    if hi - lo < 8:
+        return None
+    return float(f[lo:hi].sum()) / float(hi - lo)
+
+
+def read_king_hp(frame: np.ndarray, cfg=None, reader: Optional["DigitReader"] = None
+                 ) -> Dict[str, Tuple[Optional[int], float]]:
+    """{'K_enemy': (hp, conf), 'K_mine': (hp, conf)} -- (None, 0.0) when no number is shown."""
+    reader = reader or DigitReader()
+    out: Dict[str, Tuple[Optional[int], float]] = {}
+    for side in ("enemy", "mine"):
+        key = "enemy_king_hp_band" if side == "enemy" else "my_king_hp_band"
+        band = (cfg.get("env", key, default=_KING_BANDS[side]) if cfg else _KING_BANDS[side])
+        crop = _crop(frame, band)
+        # Two gates, because white text alone is not an HP bar: the band must actually
+        # CONTAIN a bar in the team's colour, and the read must be confident. Without the
+        # colour gate this fired on 5 of 121 bar-less frames with values like 6311.
+        if crop.size == 0 or bar_cover(frame, band, mine=(side == "mine"), widen=False) < _BAR_MIN_COVER:
+            out[f"K_{side}"] = (None, 0.0)
+            continue
+        hp, conf = reader.read(crop)
+        out[f"K_{side}"] = (hp, conf) if (hp is not None and conf >= 0.60) else (None, 0.0)
+    return out
+
+
+def read_towers(frame: np.ndarray, cfg=None, reader: Optional["DigitReader"] = None
+                ) -> List[Dict[str, Any]]:
+    """All six towers as {name, side, hp, fill, state, box, bar}, for display and diagnosis.
+
+    Two independent readings per tower, which is the point: the NUMBER (digit CNN, exact but
+    it fails whenever a unit or a spell covers the text) and the BAR FILL (a colour ratio,
+    always available while the bar is drawn, and the only reading the king has at all).
+
+    ``state`` is the thing the old code could not express. A missing number used to be a bare
+    "?", which conflated two opposite situations -- measured on session 20260808_152522, the
+    enemy right princess reads nothing from frame 724 on, because it is DESTROYED (0 forever),
+    while the enemy left princess reads nothing at frame 934 with its bar at 61 %, because a
+    unit is standing in front of the digits. Absence of the BAR, not of the number, is what
+    separates them.
+    """
+    reader = reader or DigitReader()
+    enemy, mine = _boxes(cfg)
+    out: List[Dict[str, Any]] = []
+    spec = [(f"E{i+1}", b, False, f"opponent princess {i+1}") for i, b in enumerate(enemy)]
+    spec += [(f"M{i+1}", b, True, f"your princess {i+1}") for i, b in enumerate(mine)]
+    for name, box, is_mine, label in spec:
+        bar = _widen(box)
+        fill = bar_fraction(frame, bar, is_mine)
+        hp, conf = reader.read(_crop(frame, box))
+        if fill is None:
+            state, hp, conf = "destroyed", 0, 1.0
+        elif hp is None:
+            state = "covered"
+        else:
+            state = "alive"
+        out.append({"name": name, "label": label, "side": "enemy" if not is_mine else "mine",
+                    "hp": hp, "conf": round(float(conf), 3), "fill": fill,
+                    "state": state, "box": box, "bar": bar, "kind": "princess"})
+    for side, is_mine, label in (("enemy", False, "opponent king"), ("mine", True, "your king")):
+        key = "enemy_king_bar" if not is_mine else "my_king_bar"
+        band = (cfg.get("env", key, default=_KING_BARS[side]) if cfg else _KING_BARS[side])
+        fill = bar_fraction(frame, band, is_mine)
+        # The king's number is NOT read: the digit CNN misreads that glyph style (see above).
+        out.append({"name": f"K_{side}", "label": label, "side": side, "hp": None, "conf": None,
+                    "fill": fill, "state": ("no_bar" if fill is None else
+                                            ("destroyed" if fill <= 0.001 else "alive")),
+                    "box": None, "bar": band, "kind": "king"})
+    return out
 
 
 def _boxes(cfg) -> Tuple[List[List[float]], List[List[float]]]:

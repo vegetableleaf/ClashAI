@@ -42,3 +42,9 @@ desktop.ini
 icebow/templates/cardart/
 
 # Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png
+
+# --- ClashAI.exe build output (rebuild from launcher.py, see its own docstring) ---
+/dist/
+/build_tmp/
+/ClashAI.exe
+*.spec

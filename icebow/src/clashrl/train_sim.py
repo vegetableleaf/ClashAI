@@ -95,7 +95,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
     resumed_best_wr = -1.0                                    # prior peak benchmark (so --resume won't clobber a better best.pt)
     if resume and sim_path.exists():
-        ck = torch.load(sim_path, map_location="cpu")
+        ck = torch.load(sim_path, map_location="cpu", weights_only=False)
         net.policy.load_state_dict(ck["model"])
         if "gate" in ck:
             net.gate.load_state_dict(ck["gate"])

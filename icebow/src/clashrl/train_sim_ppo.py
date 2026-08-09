@@ -54,7 +54,7 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float):
 
 
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
-                  init: str | None = None) -> None:
+                  init: str | None = None, device: str | None = None) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -74,7 +74,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
     gw, gh = e0.gw, e0.gh
-    device = _pick_device(cfg)
+    # MEASURED 2026-08-08: this trainer is FASTER ON CPU -- 1.0 match/s vs 0.2 on the GPU while a
+    # detector run shared it. The match engine is pure Python (CPU-bound whatever the net does) and
+    # the policy is ~2 MB, so every tiny forward pass pays more in kernel-launch + transfer overhead
+    # than it saves, and it also competes for VRAM. `--device cpu` therefore both speeds this up and
+    # lets it run alongside a detector train without an OOM risk.
+    device = torch.device(device) if device else _pick_device(cfg)
 
     class PPONet(nn.Module):
         """Actor-critic over the SAME PolicyNet trunk/heads the DQN uses (logits, not Q) + a value head."""
@@ -102,7 +107,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
     resumed_best_wr = -1.0
     if resume and ppo_path.exists():
-        ck = torch.load(ppo_path, map_location="cpu")
+        ck = torch.load(ppo_path, map_location="cpu", weights_only=False)
         net.policy.load_state_dict(ck["model"])
         net.gate.load_state_dict(ck["gate"])
         if "value" in ck:
@@ -117,7 +122,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         # it calibrates -- advantage normalization keeps that survivable.
         p = cfg.path(init)
         if p.exists():
-            ck = torch.load(p, map_location="cpu")
+            ck = torch.load(p, map_location="cpu", weights_only=False)
             ok = (int(ck.get("n_cards", -1)) == n_cards and int(ck.get("n_cells", -1)) == n_cells
                   and int(ck.get("threat_dim", -1)) == threat_dim)
             if ok:
@@ -142,6 +147,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
     gae_lambda = float(cfg.get("sim", "ppo_gae_lambda", default=0.95))
     max_grad = float(cfg.get("sim", "ppo_max_grad_norm", default=0.5))
+    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
     log_every = int(cfg.get("sim", "log_every_matches", default=25))
     save_every = int(cfg.get("sim", "save_every_matches", default=50))
     opt = torch.optim.Adam(net.parameters(), lr=lr, eps=1e-5)
@@ -209,7 +215,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
         acts = []
         for i in range(len(obs_b)):
-            if not bool(playable[i].any()) or gq_m[i, 0] >= gq_m[i, 1]:
+            # Threshold the gate PROBABILITY, not a raw logit compare. `gq[0] >= gq[1]` is tau=0.5,
+            # which a calibrated gate almost never clears (a play is rare per tick), so the greedy
+            # benchmark under-deployed badly vs the sampling the policy actually trained under.
+            if not bool(playable[i].any()) or \
+                    float(torch.sigmoid(gq_m[i, 1] - gq_m[i, 0])) <= gate_tau:
                 acts.append((0, 0, 0)); continue
             ci = int(cq_m[i].argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask

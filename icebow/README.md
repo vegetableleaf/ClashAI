@@ -44,6 +44,69 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 `+` for keeping your towers alive (defense), `+win`; `−` for the opposite (see
 `config/config.yaml`).
 
+## Launcher: `run.py ui`
+
+Instead of typing every command in the terminal: **double-click `ClashAI.bat`** in the repo
+root (or `ClashAI.exe`, which is the same thing with an icon, or
+`.\.venv\Scripts\python.exe run.py ui`). It opens a native window, not
+a browser tab. Under it is a local server on `127.0.0.1:8765` — localhost only, no
+sign-in, no outbound calls.
+
+Full description in [docs/LAUNCHER.md](docs/LAUNCHER.md); the order that gets you to
+usable data is in [docs/PIPELINE.md](docs/PIPELINE.md).
+
+**The panel is built around the fact that this project trains TWO networks.** They share
+nothing — different inputs, different training data, different files:
+
+| | Playing AI | Vision AI |
+|---|---|---|
+| decides | which card, which cell | what each unit on the board is |
+| trains on | the simulator, your recordings, live matches | frames you labelled by hand |
+| lives in | `data/policy*.pt` | `runs/detect/vision/weights/best.pt` |
+| needs the game running | only for `play` / `train-rl` | never |
+
+There is exactly ONE vision model. Training replaces it; nothing selects between
+generations. The Control tab is grouped the same way, so the count of models is readable
+off the page.
+
+The tabs:
+
+* **Overview** — the setup checklist, in the order the project needs, read off what is
+  actually on disk rather than a fixed list.
+* **Control** — starts and stops every command, grouped by which network it belongs to
+  (`Setup (no AI)` / `Playing AI` / `Vision AI` / `Check the setup`). Steps are numbered
+  where a real order exists. Stop shuts down cleanly and saves on the way; two GPU jobs
+  never run at once.
+* **Live** — the current frame and what the bot reads from it. "Mark what the bot sees"
+  draws every reader's region straight onto the picture: tray slots, elixir pips, tower
+  bars, detector boxes.
+* **Labelling** — the ONLY place boxes are drawn. The model pre-fills what it already
+  recognises; you correct and save. Click to select, pick a class to rename, `Del` to
+  remove, drag to add, `Enter` to save and move on.
+* **Models** — one card per network with its measured quality, variants folded away, and
+  the vision model's predictions drawn over your own labelled frames.
+* **Progress** — benchmark, reward, loss, throughput for the playing AI, plus the vision
+  model's mAP curve. Written to `data/metrics.jsonl`, survives a restart.
+* **Strategy** — which cards the policy actually plays, and where (`policy-stats`).
+* **Deck** — recognises the deck from a recording and, on request, writes the hand
+  templates with it (`deck-detect`, `cards-art`).
+* **Towers / Tempo / Settings** — tower HP crops, matches per second on this PC
+  (`sim-bench`), and line-by-line `config.yaml` edits with a backup, preserving every
+  comment in the file.
+
+The panel only shows the commands your checkout actually has (`run.py --help`), so it
+degrades gracefully. The introduction opens from the button, never on its own.
+
+> The same rule applies here: automated play violates the Supercell ToS. The notice sits
+> in the launcher under "Notes".
+
+### If the panel's Live tab shows no data
+
+The bundled screen templates come from an English client at a particular window size. At
+a different size or language, `detect_state` finds no match, and everything downstream
+finds nothing without failing outright. `run.py calibrate` re-cuts the detection from
+your own recording; see [docs/PIPELINE.md](docs/PIPELINE.md) for details.
+
 ## Setup
 
 ```powershell
@@ -77,11 +140,32 @@ Each run saves a session under `data/sessions/<timestamp>/`:
 - `events.jsonl` — every mouse click `{t, x, y, button, pressed}`.
 - `meta.json` — fps, region, and per-frame timestamps (to align clicks to frames).
 
-## Config
+## Config — which file is which
 
-All tunables in [config/config.yaml](config/config.yaml): `window.region`,
-`record.*`, `observation.arena_size`, `action.grid`, `rewards.*`, `outcome.*`,
-`env.*` (live RL + tower anchors), `train.*`.
+Five files in `config/`, and they are easy to confuse because three of them are about
+cards. What each one is FOR:
+
+| file | what it is | who writes it |
+|---|---|---|
+| `config.yaml` | every tunable: `window.region`, `record.*`, `observation.arena_size`, `action.grid`, `rewards.*`, `env.*` (live RL + tower HP crops), `train.*`, `sim.*`, `detect.*` | you, or the Settings tab (line patches, comments preserved) |
+| `cards.yaml` | **your deck** (top of file) plus hand-curated card behaviour the wiki does not state in numbers: spawners, multi-hit kinds, targeting quirks | you, for the deck; curated by hand for the rest |
+| `cards_stats.json` | the imported stat block per card — hitpoints, damage, hit speed, range, movement. 163 cards, level 11, straight from the Fandom wiki | `cards-import`, never by hand |
+| `detect_classes.yaml` | the vision AI's class list, 225 entries. **The authority** — `data/detect/data.yaml` and `data/detect/classes.txt` are both generated from it | regenerated, not edited by hand |
+| `meta_decks.yaml` | the opponent deck pool the simulator benchmark plays against | `decks-import` |
+
+Rules that are easy to get wrong:
+
+* **The deck lives in `cards.yaml`, nowhere else.** Everything downstream — hand
+  templates, the policy's card indices, the threat vector — reads it from there. A deck
+  in the config that is not the deck on screen is the most expensive mistake in this
+  project: measured, hand recognition sat at 17% and the bot acted blind on nearly every
+  tick.
+* **Class indices are only ever appended to `detect_classes.yaml`, never reordered.**
+  Every label file on disk stores a number, not a name, so reordering silently relabels
+  the whole dataset. That has already happened here: the picker read a stale 236-entry
+  list while training read the 225-entry one, so boxes drawn as `mini_pekka` (86) trained
+  as `minions` (86 in the other list).
+* `cards_stats.json` is generated. Edits belong in `cards.yaml`, which overrides it.
 
 ### Watching it play
 

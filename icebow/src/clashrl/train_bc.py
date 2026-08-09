@@ -115,7 +115,7 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
         if not ip.exists():
             print(f"[train-bc] --init checkpoint not found: {ip} -- training from scratch instead.")
         else:
-            ck = torch.load(ip, map_location="cpu")
+            ck = torch.load(ip, map_location="cpu", weights_only=False)
             ck_deck = ck.get("deck")
             decks_match = ck_deck is not None and [str(c) for c in ck_deck] == [str(c) for c in deck]
             if (ck.get("n_cards") == n_cards and ck.get("n_cells") == n_cells

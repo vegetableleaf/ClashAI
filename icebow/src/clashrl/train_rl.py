@@ -92,7 +92,7 @@ def train_rl(cfg, init: str | None = None) -> None:
               f"policy_rl.pt, so restore the backup if this session makes things worse)")
 
     device = _pick_device(cfg)
-    ckpt = torch.load(init_path, map_location="cpu")
+    ckpt = torch.load(init_path, map_location="cpu", weights_only=False)
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))
@@ -398,12 +398,17 @@ def train_rl(cfg, init: str | None = None) -> None:
             nstep.buf.clear()                    # never bridge transitions across matches
             ep_reward = 0.0
             plays = 0
+            blind = 0            # steps with NO card recognised in hand at all -- can only ever wait
+            mstep = 0
             hand = env.hand_vec.copy()
             nxt = env.next_vec.copy()
             elx = env.elixir_vec.copy()
             thr = env.threat_vec.copy()
             while running["v"]:
                 eps = epsilon(step)
+                mstep += 1
+                if hand.sum() < 0.5:
+                    blind += 1
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir)
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
@@ -436,9 +441,24 @@ def train_rl(cfg, init: str | None = None) -> None:
                     cs = f" crowns={bc}-{rc}" if bc is not None else ""
                     dbg = "" if not sb or sb == tw else f" (sb={sb[0]}-{sb[1]} tw={tw[0]}-{tw[1]})"
                     ls = f" loss={loss:.3f}" if loss is not None else ""
+                    # blind = steps with no card recognised in hand at all -- can only ever wait
+                    # there, so a run of plays=0 alongside a high blind share means "the hand
+                    # templates don't match this session", not "the policy chose not to play".
+                    bl = f" blind={blind}/{mstep}" if blind else ""
                     print(f"[train-rl] match {match}: {outcome}{cs}{dbg} reward={ep_reward:+.1f} "
-                          f"plays={plays} eps={eps:.2f} replay={len(replay)}{ls}  "
+                          f"plays={plays}{bl} eps={eps:.2f} replay={len(replay)}{ls}  "
                           f"record {wins}W-{losses}L")
+                    # Mostly blind means the deck on screen almost certainly isn't the deck in
+                    # cards.yaml: the policy can only ever name card identities from that list,
+                    # so a deck it was never told about reads as an empty hand for the whole
+                    # match and every transition it learns from is a forced wait -- worse than
+                    # useless as training data. Say so rather than banking the run.
+                    if blind >= max(3, int(0.6 * mstep)):
+                        print("[train-rl] MOST STEPS BLIND -- the deck being played is probably "
+                              "not the deck in config/cards.yaml.")
+                        print(f"[train-rl] configured deck: {', '.join(env.vision.deck_keys)}")
+                        print("[train-rl] fix: run `run.py deck-detect --write-templates` (or the "
+                              "Deck tab), apply the proposal, then retrain for that deck.")
                     break
             if match % save_every == 0:
                 save()

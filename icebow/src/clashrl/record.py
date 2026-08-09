@@ -67,8 +67,16 @@ def record(cfg) -> None:
 
     start = time.time()
     events: list[dict] = []
+    r_left, r_top, r_right, r_bottom = (region.left, region.top,
+                                         region.left + region.width, region.top + region.height)
 
     def on_click(x, y, button, pressed):
+        # pynput's hook is GLOBAL: without this, a click on the launcher's Stop button, the
+        # terminal, or any other window gets logged as a game click. calibrate uses click
+        # TIMESTAMPS ALONE to tell a match from a menu, so one stray off-window click at either
+        # end of the recording can eat the entire menu buffer it needs.
+        if not (r_left <= x < r_right and r_top <= y < r_bottom):
+            return
         events.append({"t": round(time.time() - start, 4), "type": "click",
                        "x": int(x), "y": int(y), "button": str(button), "pressed": bool(pressed)})
 

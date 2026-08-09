@@ -27,16 +27,16 @@ meta:
 # clears big pushes or cycle-chips in 2x/3x). `evolved: true` uses the Evolution variant.
 # Classic 1v1 -> card levels are the player's real account levels.
 deck:
-  name: "Icebow X-Bow Control (Classic 1v1)"
+  name: New DEck
   cards:
-    - {card: tornado, level: 13}      # swapped in for royal_delivery 2026-08-04 (real account level, confirmed)
-    - {card: tesla,     evolved: true, level: 14}
-    - {card: ice_wizard, level: 12}
-    - {card: x_bow, level: 16}
-    - {card: rocket, level: 14}
-    - {card: knight, evolved: true, level: 16}   # EVO Knight (2-cycle evolution: gains a shield + damage-reduction dash); swapped in for miner 2026-08-04
-    - {card: the_log, level: 14}
-    - {card: skeletons, level: 13}
+    - {card: fireball, level: 11}
+    - {card: minions, level: 11}
+    - {card: giant, level: 11}
+    - {card: arrows, level: 11}
+    - {card: knight, level: 11}
+    - {card: goblins, level: 11}
+    - {card: mini_pekka, level: 11}
+    - {card: musketeer, level: 11}
 
 # ---------------------------------------------------------------------
 # card fields:
@@ -55,6 +55,12 @@ deck:
 #                knockback, pull, shield, splash_air, building_targeting, swarm,
 #                siege, tank, mini_tank, splash, jump]   (siege => X-Bow/Mortar)
 #   evolution   {available, cycles, effect, gains:[...]}   (null if none)
+#               `cycles` = how many times the BASE card must be PLAYED before the Evo is
+#               available, so cycles:2 => base, base, EVO (every 3rd play is evolved). The sim
+#               enforces this (sim/env.py evo charges), so a wrong value directly changes play.
+#               VERIFIED in-game: tesla 2, knight 2. UNVERIFIED (musketeer / skeletons / archers /
+#               valkyrie all sit at 1) -- none are in the current deck and opponent decks use BASE
+#               keys only, so those four are inert today; verify before ever slotting one.
 #   hitpoints/damage/hit_speed/dps   @ meta.level (null => import)
 #   crown_tower_damage   spells' reduced damage to crown towers @ meta.level
 #                        (null => import; troops/un-reduced spells hit towers for full damage)
@@ -90,7 +96,7 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged]
-    evolution: {available: true, cycles: 1, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
+    evolution: {available: true, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
     verified: true
     hitpoints: null
     damage: null
@@ -112,7 +118,7 @@ cards:
     flags: [ranged, hides]
     evolution:
       available: true
-      cycles: 1
+      cycles: 2            # VERIFIED in-game 2026-08-08: 2-cycle -> every 3rd Tesla played is the Evo
       effect: "periodic electric pulse that damages and briefly stuns nearby enemies"
       gains: [stun, area_shock]
       # Evo Tesla combat stats @ LEVEL-11 BASE (the in-game L14 card / 1.1^3; HP + damage scale by level).
@@ -272,7 +278,7 @@ cards:
     win_condition: false
     targets: any
     flags: [swarm]
-    evolution: {available: true, cycles: 1, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
+    evolution: {available: true, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
     verified: true
     hitpoints: null
     damage: null
@@ -313,7 +319,7 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged]
-    evolution: {available: true, cycles: 1, effect: "extra range / speed", gains: [extra_range]}
+    evolution: {available: true, effect: "extra range / speed", gains: [extra_range]}
     verified: true
     hitpoints: null
     damage: null
@@ -393,7 +399,7 @@ cards:
     win_condition: false
     targets: any
     flags: [splash, mini_tank]
-    evolution: {available: true, cycles: 1, effect: "spin knockback / lifesteal", gains: [knockback]}
+    evolution: {available: true, effect: "spin knockback / lifesteal", gains: [knockback]}
     verified: true
     hitpoints: null
     damage: null
@@ -695,7 +701,11 @@ cards:
     win_condition: true
     targets: buildings_only
     flags: [spawner, building_targeting, deploy_anywhere]   # drills up anywhere, same as the Miner
-    verified: false
+    # "Every 3 seconds... summon a Goblin"; "when defeated, it will also spawn two Goblins". The
+    # intro prose still says the first wave is 0.8s, but the 6/10/2025 balance change raised it to
+    # 1s -- the History section is newer than the prose, so the delay is overridden here.
+    spawns: {unit: goblins, count: 1, on_death: 2, delay: 1.0}
+    verified: true
 
   graveyard:
     display: "Graveyard"
@@ -885,7 +895,7 @@ cards:
   mega_knight: {range: melee, attacks: [ground], flags: [tank, splash], verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it
   mighty_miner: {range: melee, verified: false}
   monk: {range: melee, verified: false}
-  night_witch: {range: melee, verified: false}
+  night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
   pekka: {range: melee, attacks: [ground], flags: [tank], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, verified: false}
   rascals: {range: melee, verified: false}
@@ -917,11 +927,43 @@ cards:
   princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
   sparky: {range: long, attacks: [ground], flags: [splash], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
   spear_goblins: {range: long, verified: false}
-  witch: {range: long, flags: [splash, spawner], verified: false}              # 5e AREA support that keeps spawning skeletons -> spell it or it out-values you
+  witch: {range: long, flags: [splash, spawner], spawns: {unit: skeletons, count: 4, delay: 1.0}, verified: true}   # 5e AREA support: "a group of four Skeletons" every 7s, first wave 1s after deploy
   zappies: {range: long, verified: false}
+  # -- MULTI-HIT MECHANICS. The wiki gives `hits_per_attack` as one number but it covers four
+  # unrelated behaviours, so only the KIND is curated (the count stays imported). Damage is PER HIT
+  # and the published dps counts only one, so before this these cards were 2-10x too weak.
+  #   chain     the bolt arcs on to further targets, carrying the stun
+  #   boomerang the axe flies out AND back, damaging on both passes
+  #   spark     sparks spray outward from where the rocket lands, not from the firer
+  #   shotgun   a cone of pellets: nearly all connect point-blank, few at max range
+  electro_dragon: {multi: chain, verified: true}
+  electro_wizard: {multi: chain, verified: true}
+  executioner: {multi: boomerang, verified: true}
+  firecracker: {multi: spark, verified: true}
+  hunter: {multi: shotgun, verified: true}
+  # -- SPAWNERS. The wiki's attribute table gives the TIMINGS (spawn_interval_s / spawn_delay_s /
+  # spawn_range_tiles, imported into cards_stats.json) but never names the card being summoned nor
+  # HOW MANY appear per tick -- both of those live in the page's intro prose, so they are curated
+  # here and quoted alongside. `unit` must be a real KB key; `count` is units per spawn tick;
+  # `on_death` is the burst when the spawner dies. `interval`/`delay` are OVERRIDES, used only where
+  # the attribute table is provably stale (see tombstone).
+  # `spawn_range_tiles` present => the spawner only ticks while an enemy is inside it (Goblin Hut
+  # stopped spawning automatically in the May 2025 update); absent => it spawns unconditionally.
+  goblin_hut: {kind: building, flags: [spawner], spawns: {unit: spear_goblins, count: 1, on_death: 1}, verified: true}   # "summon a Spear Goblin" every 2.2s when an enemy is in range; death spawn cut to 1 (from 3) on 6/6/2023
+  # Tombstone: the attribute table says 4s but the prose says 3.5s AND the Common modifier says
+  # "spawn speed is doubled, for a total of 1.75 seconds" -- 3.5/2 = 1.75, so the TABLE is stale.
+  tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 2, on_death: 4, interval: 3.5}, verified: true}   # "a group of two Skeletons, with a 0.5 seconds delay from each other"
+  barbarian_hut: {kind: building, flags: [spawner], spawns: {unit: barbarians, count: 3, on_death: 1}, verified: true}   # "a group of three Barbarians" every 15s; "when defeated, it will also spawn a Barbarian"
+  # NB goblin_cage is a spawner too, but it summons a Goblin Brawler on death and that unit is not a
+  # card, so it has no KB entry to point at -- left alone rather than approximated with a Goblin.
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
-  furnace: {range: long, verified: false}                                       # long-range single target
+  # FURNACE IS A TROOP, not a building: the 4/8/2025 update "changed the Furnace into a troop that
+  # can walk and deal damage". Its wiki table reads Type: Troop, Speed Medium (60), Range 6, and it
+  # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
+  # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
+  # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
   goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun

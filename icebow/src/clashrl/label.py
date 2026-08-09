@@ -30,6 +30,13 @@ def _latest_session(root: Path):
     return max(found, key=lambda p: p.name) if found else None
 
 
+def _resolve_session(root: Path, session_arg: str) -> Path:
+    """--session takes a bare recording name (data/sessions/<name>), same as the launcher's
+    dropdown sends. A literal existing path is honoured too, so a full path still works."""
+    p = Path(session_arg)
+    return p if p.exists() else root / session_arg
+
+
 def _load(session: Path):
     meta = json.loads((session / "meta.json").read_text(encoding="utf-8"))
     events = [json.loads(ln) for ln in
@@ -244,7 +251,7 @@ def label(cfg, session_arg=None, do_all=False, debug=False) -> None:
     if do_all:
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
     else:
-        one = Path(session_arg) if session_arg else _latest_session(root)
+        one = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
         sessions = [one] if one else []
     if not sessions:
         print(f"[label] no sessions under {root}")

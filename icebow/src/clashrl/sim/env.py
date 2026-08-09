@@ -10,6 +10,7 @@ range, Miner on the enemy tower). Medium fidelity -> a sim-trained policy is a P
 """
 from __future__ import annotations
 
+import copy
 import random
 from typing import Tuple
 
@@ -20,7 +21,7 @@ from ..cards import shared as shared_db
 from .. import card_threat
 from .. import interactions
 from ..cycle import cycle_vector
-from .engine import SimEngine, build_spec, _ROCKET_RADIUS
+from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
 from . import view
@@ -29,18 +30,63 @@ Action = Tuple[int, int, int]
 _THREAT_DIM = 16
 
 
+class _BoardCfg:
+    """Read-only config view that re-anchors the ActionSpace to the SIM BOARD.
+
+    ``ActionSpace`` maps grid cells through ``action.arena_box`` into FRAME-normalised SCREEN
+    coordinates -- right for live play, wrong for the sim, whose board is the full [0,1] square
+    with the river at y=0.5. Feeding screen cells (and screen tower anchors) to the engine is what
+    made the simulated arena vertically asymmetric. Cell IDs and ``action.grid`` are untouched, so
+    a checkpoint's action head still lines up."""
+
+    def __init__(self, cfg, over):
+        self._cfg, self._over = cfg, over
+
+    def get(self, *keys, default=None):
+        return self._over[keys] if keys in self._over else self._cfg.get(*keys, default=default)
+
+
+def _board_action_space(cfg) -> ActionSpace:
+    b = dict(cfg.get("sim", "board", default=None) or {})
+    tx, ty = float(b.get("tiles_x", 18.0)), float(b.get("tiles_y", 32.0))
+    pt = list(b.get("princess_tile", [3.5, 6.5]))
+    kt = list(b.get("king_tile", [9.0, 3.0]))
+    py, ky = 1.0 - pt[1] / ty, 1.0 - kt[1] / ty                 # YOUR side (bottom)
+    return ActionSpace(_BoardCfg(cfg, {
+        ("action", "arena_box"): [0.0, 0.0, 1.0, 1.0],
+        ("action", "deploy_top"): float(b.get("deploy_top", 0.5)),   # the river
+        ("env", "my_towers"): [[pt[0] / tx, py], [(tx - pt[0]) / tx, py], [kt[0] / tx, ky]],
+    }))
+
+
 class SimMatchEnv:
     def __init__(self, cfg, seed: int = 0):
         self.cfg = cfg
         self.rng = random.Random(seed)
         self.db = shared_db(cfg)          # read-only + shared: building one per env cost ~0.4 s each
-        self.actions = ActionSpace(cfg)
+        self.actions = _board_action_space(cfg)
         self.gw, self.gh = int(self.actions.gw), int(self.actions.gh)
         self.n_cells = int(self.actions.n_cells)
         self.deck_keys = self.db.deck_identities()
         self.deck_card_levels = self.db.deck_levels()
         self.n_cards = max(1, len(self.deck_keys))
         self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, self.deck_card_levels)]
+        # PHYSICAL CARD SLOTS. The cycle runs over the deck's 8 CARDS, not the 10 policy identities:
+        # an Evolution is not its own card, it IS the base card shown evolved once that slot has been
+        # played `cycles` times. Cycling identities instead let base and Evo sit in hand together and
+        # let the Evo be replayed every lap -- neither happens in a real match.
+        self.slots = self.db.deck_slots()
+        self.n_slots = max(1, len(self.slots))
+        self.slot_base_id = [self.deck_keys.index(s["base"]) for s in self.slots]
+        self.slot_evo_id = [self.deck_keys.index(s["evo"]) if s["evo"] in self.deck_keys else -1
+                            for s in self.slots]
+        self.slot_cycles = [int(s["cycles"]) for s in self.slots]
+        self.slot_of = {}                                # identity id -> slot index
+        for si in range(self.n_slots):
+            self.slot_of[self.slot_base_id[si]] = si
+            if self.slot_evo_id[si] >= 0:
+                self.slot_of[self.slot_evo_id[si]] = si
+        self.evo_charge = [0] * self.n_slots             # base plays banked toward this slot's Evolution
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         self.obs_shape = (int(oh), int(ow), 3)
@@ -58,7 +104,7 @@ class SimMatchEnv:
         self.det_recall_by_card = dict(cfg.get("observation", "sim_detector_recall_by_card", default=None) or {})
         # Stage-3b gate: the troop-INTERACTION block (who is predicted to be moving at which tower)
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
-        self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
+        self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # tiles
         self.threat_dim = (_THREAT_DIM
                            + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                               if self.use_detector else 0)
@@ -74,6 +120,14 @@ class SimMatchEnv:
         self._deck_profiles = [card_threat.profile(self.db, _base(k)) for k in self.deck_keys]
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)
         self._prev_ident_depth = 0.0     # deepest recognised-threat depth last step (for approach velocity)
+        # REWARD-side twin of the above, built WITHOUT detector noise. The observation must stay noisy
+        # (that is the perception the policy has to cope with) but GRADING must not be: with
+        # sim_detector_recall 0.72, ~28% of real threats are invisible to the noisy vector, so a
+        # correctly pre-placed defender was scored as a "premature defender on a quiet board" (-0.4)
+        # whenever the referee happened not to see the push it answered. This file's own contract at the
+        # top says rewards are computed from GROUND TRUTH; these three terms were the exception.
+        self._threat_id_true = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self._prev_ident_depth_true = 0.0
         self._opp_mem = card_threat.OpponentMemory(self.db)   # per-match opponent short-term memory (Stage 3)
 
         r = lambda k, d: float(cfg.get("rewards", k, default=d))  # noqa: E731
@@ -98,24 +152,40 @@ class SimMatchEnv:
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))     # same-lane tolerance for an intercept
         self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))        # <= this elixir counts as a 'cycle' card
         self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
+        self.quiet_board_free_elixir = float(cfg.get("env", "quiet_board_free_elixir", default=8.0))
+        self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
+        self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
+        self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
+        self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
-        self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
-        self.xbow_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
-        self.xbow_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
+        # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
+        self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
+        self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
+        self.cf_budget = int(cfg.get("sim", "counterfactual", "budget_per_match", default=12))
+        self.cf_min_units = int(cfg.get("sim", "counterfactual", "min_units", default=1))
+        self.cf_cap = float(cfg.get("sim", "counterfactual", "cap", default=1.0))
+        self.w_counterfactual = r("counterfactual", 1.0)   # weight on (real - held-the-card) position
+        self._cf_used = 0
+        self._cf_watch: list = []
+        # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
+        # those are screen-space normalised distances on a foreshortened phone frame.
+        self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
+        self.xbow_front = float(cfg.get("sim", "xbow_defense_front", default=0.56))     # normalised y band
+        self.xbow_back = float(cfg.get("sim", "xbow_defense_back", default=0.66))
         self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
-        self.rocket_combo_radius = float(cfg.get("env", "rocket_combo_radius", default=0.11))   # support near the aimed tower
+        self.rocket_combo_radius = float(cfg.get("sim", "rocket_combo_tiles", default=3.5))   # support near the aimed tower
         self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))  # rocket the pump within this of its deploy
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
-        self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+        self.spell_aim_radius = float(cfg.get("sim", "spell_tower_aim_tiles", default=3.8))
         # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
         self.damage_spell_ids = {i for i in range(self.n_cards)
                                  if self.specs[i].kind == "spell" and self.specs[i].spell_dmg > 0.0}
         self.w_spell_waste = r("spell_waste", -0.3)
-        self.spell_waste_radius = float(cfg.get("env", "spell_waste_radius", default=0.14))
+        self.spell_waste_radius = float(cfg.get("sim", "spell_waste_tiles", default=4.5))
         # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
         # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
         # tower), which plain outcome terms barely see -- so a WELL-EXECUTED pull is credited by its
@@ -138,6 +208,11 @@ class SimMatchEnv:
         # Optional hook: train_sim sets this to inject SELF-PLAY opponents (a frozen past policy) mixed
         # with the scripted meta bots. Called with `self` in reset(); default None = always scripted.
         self.opponent_provider = None
+        # Optional hook: called with `self` after EVERY physics sub-tick inside step(). `sim-view` uses it
+        # to render the engine at sub_dt resolution (the agent only decides every agent_dt, so rendering
+        # per step would hide everything that happens between decisions -- projectile flight, the tornado
+        # pull, aggro switches). None = no-op, so training pays nothing for it.
+        self.on_tick = None
         self._reset_vectors()
 
     def _reset_vectors(self):
@@ -149,11 +224,37 @@ class SimMatchEnv:
         self.elixir = 0
         self._last_frame = self._last_obs
         self._prev_ident_depth = 0.0
+        self._prev_ident_depth_true = 0.0
         self._opp_mem.reset()
 
     # -- hand cycle --------------------------------------------------------
+    def _slot_card_id(self, slot: int) -> int:
+        """The identity this slot currently presents: the Evolution once it has banked its cycles,
+        otherwise the base card."""
+        evo = self.slot_evo_id[slot]
+        if evo >= 0 and self.evo_charge[slot] >= self.slot_cycles[slot]:
+            return evo
+        return self.slot_base_id[slot]
+
+    def _queue_ids(self):
+        """The whole cycle as the identities it will present, in order (hand first)."""
+        return [self._slot_card_id(s) for s in self.cycle]
+
     def _hand_ids(self):
-        return self.cycle[:4]
+        return [self._slot_card_id(s) for s in self.cycle[:4]]
+
+    def _play_slot(self, card_id: int) -> None:
+        """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to
+        the back of the cycle."""
+        slot = self.slot_of.get(card_id)
+        if slot is None:
+            return
+        if card_id == self.slot_evo_id[slot]:
+            self.evo_charge[slot] = 0                    # the Evolution was spent -> recharge from scratch
+        elif self.slot_evo_id[slot] >= 0:
+            self.evo_charge[slot] += 1                   # a base play banks one cycle toward the Evolution
+        self.cycle.remove(slot)
+        self.cycle.append(slot)
 
     def _update_vectors(self):
         self.hand_vec[:] = 0.0
@@ -161,7 +262,7 @@ class SimMatchEnv:
             self.hand_vec[i] = 1.0
         # graded UPCOMING-order vector (Next=1.0 grading down for the hidden cards) from the true
         # ordered queue -- lets the policy plan which cards to cycle toward. Superset of a next one-hot.
-        self.next_vec[:] = cycle_vector(self.cycle, self.n_cards)
+        self.next_vec[:] = cycle_vector(self._queue_ids(), self.n_cards)
         self.elixir = int(self.eng.elixir[0])
         self.elixir_vec[0] = self.eng.elixir[0] / 10.0
         self.threat_vec[:] = self._threat_vector()
@@ -182,6 +283,12 @@ class SimMatchEnv:
                                       self.det_recall_by_card),
             self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
+        # ...and the un-noised twin the REWARD grades against (never enters the observation).
+        self._threat_id_true = card_threat.identity_threat_vector(
+            view.identity_items(self.eng, 0, self.detector_cards),
+            self.db, prev_depth=self._prev_ident_depth_true, dt=self.agent_dt,
+            horizon=self.predict_horizon)
+        self._prev_ident_depth_true = float(self._threat_id_true[7])
         mem = self._opp_mem.update(
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
@@ -203,9 +310,12 @@ class SimMatchEnv:
         self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
-        self.cycle = list(range(self.n_cards))
+        self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
+        self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
         self._match_bonus = 0.0
+        self._cf_used = 0                # counterfactual fork budget is PER MATCH
+        self._cf_watch = []              # ...and no fork may outlive the match that opened it
         self._prev_evalue = 0.0
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
@@ -213,15 +323,32 @@ class SimMatchEnv:
         self._prev_op_crowns = 0
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
-        # MATCHUP-aware doctrine: vs a fast CYCLE or heavy BEATDOWN deck -- or a SPLIT-LANE deck built on
-        # Royal Recruits / Royal Hogs (they hard-counter X-Bow: a wide two-lane push a single X-Bow can't
-        # cover) -- play EXCLUSIVELY defensive X-Bow + rocket-cycle for the WHOLE match. vs control/siege
-        # it's offensive-first (transition per the 2x/tower rule).
+        # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
+        # "turtle" half is the my_c >= 1 flip in step(), so the matchup lock here only needs to cover
+        # decks that STRUCTURALLY blank a siege. A SPLIT-LANE deck (Royal Recruits / Royal Hogs) does:
+        # a wide two-lane push is something one X-Bow cannot cover, whatever the elixir count.
+        # Fast CYCLE and heavy BEATDOWN used to lock defensive here too, which was wrong -- those are
+        # an ELIXIR-TIMING problem, not a structural one. A beatdown deck blanks a forward X-Bow only
+        # while it can AFFORD a mini-tank, which is exactly what _punish_window now tests. Locking the
+        # whole match defensive meant MEASURED 93.5% of steps in defensive phase and 0 of 143 X-Bow
+        # plays ever placed forward: the deck's siege win condition trained into a defensive building.
         self._matchup = getattr(self.opponent, "style", "control")
         opp_cards = set(getattr(self.opponent, "cards", ()) or ())
         self._split_lane_counter = bool(opp_cards & self.split_lane_counters)
-        if self._matchup in ("cycle", "beatdown") or self._split_lane_counter:
+        if self._split_lane_counter:
             self._defensive = True
+        # Cheapest card in the OPPONENT's deck that can actually BODY a forward X-Bow. A 3-5 elixir
+        # mini-tank blanks a 6-elixir siege commitment, so the siege is only SAFE while they cannot
+        # afford even this. Swarms are excluded (the rule is about tanks / mini-tanks) and so is
+        # anything too flimsy to trade with a siege -- without the HP floor the "cheapest blocker" came
+        # out as a 1-elixir SPIRIT in most decks (median 1e), which made the window near-unreachable.
+        # Air is NOT excluded: the X-Bow cannot shoot back at it.
+        self._opp_block_cost = min(
+            (float(p.elixir) for p in
+             (card_threat.profile(self.db, k[:-4] if k.endswith("_evo") else k) for k in opp_cards)
+             if p.kind == "troop" and not p.swarm and p.elixir
+             and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)),
+            default=self.punish_opp_elixir)
         self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
         self._nado_king_credited = False
         self._reset_vectors()
@@ -244,16 +371,50 @@ class SimMatchEnv:
         u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
         return float(u.x), float(u.y)
 
+    def _leaking_first(self, spend: float = 0.0) -> bool:
+        """True when waiting costs more than committing. On a QUIET board the safe default is to hold --
+        a defender dropped in one lane cannot answer a push in the other, so it can simply be played
+        around. The exception is the elixir race: if you are near the cap AND hold more than the
+        opponent, YOUR bar overflows first, so the elixir wasted by waiting exceeds what the lane
+        commitment risks. Reward-side only (uses the opponent's true elixir, which the policy cannot
+        see -- see the observability note in _threat_response).
+
+        ``spend`` is ADDED BACK because the caller runs inside step()'s `if eng.deploy(...)` block,
+        where the engine has ALREADY deducted the card. This grades the DECISION, which was taken
+        before paying. Reading the engine raw asked "are you still near the cap AFTER paying?" -- for a
+        3-cost card that needs 11 elixir, so it only ever fired for 1-cost cards. The opponent has not
+        acted yet at this point, so eng.elixir[1] is correctly their elixir at decision time."""
+        mine = self.eng.elixir[0] + spend
+        return mine >= self.quiet_board_free_elixir and mine > self.eng.elixir[1]
+
     def _threat_response(self, card_id: int, nx: float, ny: float) -> float:
         """(1) THREAT-RESPONSE correctness: did you play the KB-correct counter to the ASSESSED threat,
         placed to intercept it? Right counter in the threat's lane -> +; the WRONG role dropped as a
         defence, or a pure defender played with no threat (premature) -> -. Offensive placements are
-        judged by wincon_exec / the trade term, not here."""
-        tid = self._threat_id
+        judged by wincon_exec / the trade term, not here. Grades on the GROUND-TRUTH threat identity,
+        not the detector-noised one the policy observes."""
+        tid = self._threat_id_true
         prof = self._deck_profiles[card_id]
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
-                return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
+            # QUIET BOARD -> NOT GRADED. This branch used to charge w_threat_miss * 0.4 for playing a
+            # defender with no threat on the board ("premature"). It was the single largest remaining
+            # one-sided penalty: MEASURED over 40 matches, 257 fires and ZERO bonuses (-2.57/match),
+            # while the DEFENSIVE half of this same term was healthy and balanced at +63 / -66.
+            #
+            # It is deleted rather than narrowed because the question it asks CANNOT BE ANSWERED AT
+            # PLAY TIME. Whether cycling a cheap defender on a quiet board was right depends entirely
+            # on what happens next: it can rotate you back to the Tesla that stops a bridge wincon, or
+            # it can leave you holding nothing when the push lands in the other lane. Same board, same
+            # card, opposite verdicts. An instantaneous classifier has to guess, and a guess that can
+            # only ever subtract is an action tax -- it made "play less" strictly better regardless of
+            # whether playing helped, and the policy found that twice (plays/match 50.1 -> 30.9 with
+            # winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1).
+            #
+            # The consequence it was guessing at is ALREADY MEASURED. agent_dt is 1.0 s and GAE runs at
+            # gamma 0.99 / lambda 0.95 = a 17-SECOND credit window, which comfortably spans the few
+            # seconds to a preventable tower hit or the ~5-10 s for a bridge wincon to connect. If a
+            # cycle play really did cost a tower, the chip and crown terms bill it -- with the actual
+            # damage, at the actual time, instead of a prior. Keeping both charged it twice, once wrong.
             return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
@@ -273,8 +434,9 @@ class SimMatchEnv:
 
     def _threat_miss_idle(self) -> float:
         """No play while an ANSWERABLE threat is present (a counter is in hand AND affordable) = a missed
-        defence. Uncapped penalty (this is the 'ignored the push' case the old idle_penalty covered)."""
-        tid = self._threat_id
+        defence. Uncapped penalty (this is the 'ignored the push' case the old idle_penalty covered).
+        Ground-truth threat: the objective is defined by the real board, not by what the detector saw."""
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return 0.0
         for cid in self._hand_ids():
@@ -283,24 +445,58 @@ class SimMatchEnv:
                 return self.w_threat_miss
         return 0.0
 
+    def _punish_window(self, spend: float = 0.0) -> bool:
+        """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
+        X-Bow is a 6-elixir bet that is simply BLANKED by any 3-5 elixir tank or mini-tank, so the bar
+        is not a flat number: it is whether they can still afford their own CHEAPEST BLOCKER
+        (_opp_block_cost, from their actual deck). Reward-side only -- it reads the opponent's TRUE
+        elixir, which the policy cannot observe (see the observability note on _leaking_first).
+        ``spend`` is added back for the same pre-spend reason: an X-Bow costs 6, so measured POST-spend
+        this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays."""
+        mine = self.eng.elixir[0] + spend
+        return (self.eng.elixir[1] < self._opp_block_cost
+                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
+
+    def _wincon_spend_waived(self, card_id: int, spec) -> bool:
+        """A win-condition play damages TOWERS, not troops, so the trade term -- which measures enemy
+        TROOP value eliminated -- cannot credit it, and billing its elixir there charges the deck's own
+        game plan as waste. EXCEPT a forward X-Bow the opponent CAN still answer: that 6-elixir
+        commitment is genuinely at risk of being blocked by a mini-tank, and making it pay is what
+        teaches the caution the playstyle needs. A safe (punish-window) siege is waived; a gamble is
+        not, so the two differ by the full 6 elixir in the ledger."""
+        if card_id in self.xbow_ids:
+            return self._punish_window(float(spec.elixir))
+        return True
+        mine = self.eng.elixir[0] + spend
+        return (self.eng.elixir[1] <= self.punish_opp_elixir
+                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
+
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
         forward-in-range (offensive) / back-centre (defensive), Miner chipping the princess (not the king),
         rocket-cycle chip or the rocket 2-for-1. + when executed correctly, - when the win condition is
         thrown away. Non-win-condition cards return 0 (they're scored by threat_response / the trade term)."""
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
-        d = min((np.hypot(nx - t.x, ny - t.y) for t in princesses), default=1.0)
+        d = min((tile_dist(nx, ny, t.x, t.y) for t in princesses), default=99.0)   # tiles
         if card_id in self.xbow_ids:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
             # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.48) <= 0.18
+            central = abs(nx - 0.5) <= 0.18
             in_band = central and self.xbow_front <= ny <= self.xbow_back
             behind = central and ny > self.xbow_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
+            # PUNISH OVERRIDE, checked BEFORE the phase gate. An opponent who has just overcommitted
+            # cannot answer a siege before it starts firing, and that is worth breaking defensive
+            # posture for -- "immediately punish" is conditional on the ELIXIR RACE, not on the matchup
+            # doctrine. Without this the clause was unreachable: _defensive is set on sight of a cycle
+            # or beatdown deck (most of the meta pool), so MEASURED 145 of 152 X-Bow plays took the
+            # defensive branch and only 5 were ever offensive AND in a punish window.
+            if d <= self.xbow_range and self._punish_window(self.specs[card_id].elixir):
+                return self.w_wincon * self.xbow_punish_mult
             if self._defensive:                              # DEFENSIVE phase: centre-band only; forward is wrong now
                 return self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
-            if d <= self.xbow_range:                         # OFFENSIVE: forward, in tower range = win condition set
+            if d <= self.xbow_range:                          # OFFENSIVE: forward, in tower range = win condition set
                 return self.w_wincon
             return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
         if card_id in self.rocket_ids:
@@ -314,9 +510,9 @@ class SimMatchEnv:
             return 0.0
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
-            if king.alive and np.hypot(nx - king.x, ny - king.y) <= 0.09:
+            if king.alive and tile_dist(nx, ny, king.x, king.y) <= 2.9:
                 return self.w_wincon_mis                      # Miner on the enemy KING wakes it early -> bad trade
-            if d <= 0.09:
+            if d <= 2.9:                                      # tiles
                 return self.w_wincon                          # Miner chipping the princess
         return 0.0
 
@@ -335,17 +531,17 @@ class SimMatchEnv:
         MISPLACE penalty when the blast would clip the enemy KING (activating it costs more than any
         pump). A STALE pump earns nothing (the elixir already flowed). 0.0 = no pump in the blast ->
         the ordinary rocket logic applies."""
-        R = _ROCKET_RADIUS
+        R = _ROCKET_RADIUS                                   # tiles
         pump = next((u for u in self.eng.units
                      if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
-                     and np.hypot(nx - u.x, ny - u.y) <= R + 0.01), None)
+                     and tile_dist(nx, ny, u.x, u.y) <= R + 0.3), None)
         if pump is None:
             return 0.0
         king = self.eng.towers[1][2]
-        if king.alive and np.hypot(nx - king.x, ny - king.y) <= R + 0.02:
+        if king.alive and tile_dist(nx, ny, king.x, king.y) <= R + 0.6:
             return self.w_wincon_mis                         # never wake the king for a pump
         if pump.age <= self.pump_window:
-            both = any(t.alive and np.hypot(nx - t.x, ny - t.y) <= R + 0.01
+            both = any(t.alive and tile_dist(nx, ny, t.x, t.y) <= R + 0.3
                        for t in self.eng.towers[1][:2])
             return self.w_wincon * (self.combo_mult if both else 1.0)
         return 0.0
@@ -358,24 +554,25 @@ class SimMatchEnv:
         if self._rocket_dmg <= 0.0:
             return False
         tgt = next((t for t in self.eng.towers[1][:2]
-                    if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius), None)
+                    if t.alive and tile_dist(nx, ny, t.x, t.y) <= self.spell_aim_radius), None)
         if tgt is None:
             return False
         for u in self.eng.units:
             if (u.team == 1 and u.spec.kind == "troop" and not u.spec.building_only
                     and 4 <= u.spec.elixir <= 6
                     and u.spec.hp <= self._rocket_dmg * self.rocket_combo_hp_frac
-                    and np.hypot(u.x - tgt.x, u.y - tgt.y) <= self.rocket_combo_radius):
+                    and tile_dist(u.x, u.y, tgt.x, tgt.y) <= self.rocket_combo_radius):
                 return True
         return False
 
     def _needed_counter_coming(self, hand) -> bool:
         """True when the current hand has NO KB counter to the assessed threat but the deck DOES (an
-        upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile."""
+        upcoming card) -- i.e. deliberately cycling toward that counter is worthwhile. Ground-truth
+        threat (this feeds cycle_plan, a reward term)."""
         if (self._fresh_pump() is not None and not (set(hand) & self.rocket_ids)
                 and any(r not in hand for r in self.rocket_ids)):
             return True                                      # a fresh enemy PUMP is a rocket job: cycle to it
-        tid = self._threat_id
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return False
         if any(card_threat.counters(self._deck_profiles[c], tid) for c in hand):
@@ -383,16 +580,121 @@ class SimMatchEnv:
         return any(card_threat.counters(self._deck_profiles[c], tid)
                    for c in range(self.n_cards) if c not in hand)
 
+    def _defending_now(self) -> bool:
+        """True when an enemy TROOP has crossed onto OUR half, i.e. there is something a defensive
+        card is actually answering. Ground truth, reward-side only."""
+        return any(u.team == 1 and u.spec.kind == "troop" and u.y > 0.5 for u in self.eng.units)
+
+    # -- counterfactual fork ------------------------------------------------
+    def _fork_ready(self) -> bool:
+        """Guardrail gate. MEASURED end-to-end with the opponent acting inside the branch, on a
+        39-unit board against a 99 ms baseline match: a fork costs a ~6.5 ms floor (deepcopy + setup)
+        plus ~3.5 ms per second of horizon -- 35.0 ms at 8 s, 24.0 at 4 s, 16.1 at 2 s. So only ~3
+        forks per match fit inside a 2x slowdown, and forking every play would be far worse. Bounded
+        by a hard PER-MATCH BUDGET rather than a sampling probability, so the worst case is
+        deterministic and a busy match cannot quietly cost ten times a quiet one."""
+        return (self.cf_enabled and self._cf_used < self.cf_budget and not self.eng.done
+                and len(self.eng.units) >= self.cf_min_units)
+
+    def _fork(self):
+        """An ISOLATED branch of the match: engine and opponent deep-copied, each with its OWN RNG.
+
+        RNG ISOLATION IS THE ENTIRE POINT OF THIS FUNCTION. `make_opponent` is handed `env.rng`, so
+        `ScriptedBot.act` draws from the SHARED generator (rng.random / rng.choice throughout its
+        placement logic, plus the detector-noise draws inside SelfPlayOpponent). Rolling a fork with
+        that same object would consume draws from the REAL match's stream: the real opponent's later
+        behaviour would depend on HOW MANY forks had been run, seeded runs would stop reproducing,
+        and nothing would ever flag it. deepcopy gives the clone a Random with the same state but an
+        independent future, so a branch is a faithful continuation that cannot write back.
+        """
+        return copy.deepcopy(self.eng), copy.deepcopy(self.opponent)
+
+    def _position(self, eng) -> float:
+        """'How good is my position', in units of one princess tower's max HP: my remaining tower HP
+        minus theirs. Ground truth, and the quantity the counterfactual compares."""
+        ref = max(1.0, float(eng.towers[0][0].max_hp))
+        mine = sum(max(0.0, float(t.hp)) for t in eng.towers[0])
+        theirs = sum(max(0.0, float(t.hp)) for t in eng.towers[1])
+        return (mine - theirs) / ref
+
+    def _roll_fork(self, eng, opp, horizon_s: float) -> float:
+        """Advance an isolated branch `horizon_s` seconds with the AGENT DOING NOTHING -- the
+        counterfactual is "what if I had held this card" -- while the opponent keeps playing.
+        Returns the position scalar at the end of the branch."""
+        steps = max(1, int(round(horizon_s / self.agent_dt)))
+        sub = max(1, int(round(self.agent_dt / self.sub_dt)))
+        for _ in range(steps):
+            if eng.done:
+                break
+            opp.act(eng)
+            for _ in range(sub):
+                eng.advance(self.sub_dt)
+                if eng.done:
+                    break
+        return self._position(eng)
+
+    def _cf_open(self) -> None:
+        """On a play: fork the match, roll the branch where we DID NOTHING, and remember its outcome
+        so the real branch can be compared against it once the same horizon has actually elapsed."""
+        if not self._fork_ready():
+            return
+        eng, opp = self._fork()
+        self._cf_watch.append((self.eng.t + self.cf_horizon,
+                               self._roll_fork(eng, opp, self.cf_horizon)))
+        self._cf_used += 1
+
+    def _cf_shaping(self) -> float:
+        """(6) COUNTERFACTUAL correctness: settle any fork whose horizon has now elapsed in the REAL
+        match, scoring `position(real) - position(held-the-card)`.
+
+        This is the term the hand-written per-play rules kept failing to be. It is ZERO-MEAN BY
+        CONSTRUCTION -- a play that improved the tower differential over doing nothing scores +, one
+        that made it worse scores -, and a play that changed nothing scores 0. Every instantaneous
+        classifier written so far could only subtract (cycle_plan fired 0 bonuses against 305
+        penalties; threat_response's quiet branch 0 against 257), which is an action tax and taught
+        the policy to stop playing rather than to play well.
+
+        It also answers the question the user posed, which genuinely cannot be answered at play time:
+        "does cycling this card now cost me tower damage that holding it would have prevented, or does
+        it rotate me back to the Tesla before their wincon reaches the bridge?" Same board, same card,
+        opposite verdicts depending on what follows -- so it is measured after the fact instead of
+        guessed. Settled early if the match ends inside the horizon, so a decisive play still scores.
+        """
+        if not self._cf_watch:
+            return 0.0
+        now, out, keep = self.eng.t, 0.0, []
+        for due, base in self._cf_watch:
+            if now < due and not self.eng.done:
+                keep.append((due, base))
+                continue
+            out += float(np.clip(self._position(self.eng) - base, -self.cf_cap, self.cf_cap))
+        self._cf_watch = keep
+        return out * self.w_counterfactual
+
     def _cycle_plan(self, card_id: int) -> float:
-        """(4) CYCLE-PLAN correctness: reward a CHEAP play that advances toward a NEEDED counter you don't
-        hold (but the deck does) when you have SPARE elixir -- deliberate cycling. Penalise cheap spam with
-        no such plan and no spare elixir. Neutral otherwise. ``card_id`` = the card just played, or -1."""
-        if card_id < 0 or self.specs[card_id].elixir > self.cycle_cheap_max:
-            return 0.0                                       # only cheap 'cycle' cards qualify
-        elx = self.eng.elixir[0]
-        if self._needed_counter_coming(set(self._hand_ids())):
-            return self.w_cycle_plan if elx >= self.cycle_spare_elixir else 0.0
-        return self.w_cycle_waste if elx < self.cycle_spare_elixir else 0.0
+        """DELETED -- kept as a stub only to document why, because this term cost two training runs.
+
+        It graded whether a cheap play was 'deliberate cycling' or 'purposeless spam'. It failed
+        THREE times, each time by being a penalty with no reachable bonus:
+          1. read POST-spend elixir against a PRE-spend threshold -> 1 bonus vs 495 penalties
+          2. arithmetic fixed, still fired on 99.9% of cheap plays incl. 645 correct defensive ones
+          3. made discriminative (post-spend reserve + 'nothing to defend') -> STILL 0 bonuses,
+             MEASURED 110 fires / 0 positive / -1.10 per match on the 4096-match checkpoint
+
+        The bonus branch needs a recognised threat, no counter in hand, a counter in the deck AND a
+        post-spend reserve at once; post-spend elixir is p50 0.29, so it is unreachable in practice.
+        A term that can only subtract is not teaching correctness, it is charging rent on acting --
+        and the policy twice responded exactly as it should have, by playing less: plays/match
+        50.1 -> 30.9 with winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1.
+
+        The user's own framing is why no instantaneous rule can work here: cycling a cheap card can
+        rotate you back to the Tesla that stops a bridge wincon, or leave you empty when the push
+        lands in the other lane -- same board, same card, opposite verdicts depending on what
+        follows. That question is now answered after the fact by `_cf_shaping`, which forks the
+        branch where the card was HELD and compares. Nothing measurable was lost: zero bonuses in
+        110 fires means the behaviour this was written to reward was never once rewarded.
+        """
+        return 0.0
 
     def _trade_reward(self, value_eliminated: float, spent: float) -> float:
         """(2) ELIXIR-TRADE correctness: potential-based (enemy effective value eliminated this step minus
@@ -427,7 +729,7 @@ class SimMatchEnv:
         my_elix = self.specs[card_id].elixir
         avail = set(self._hand_ids())
         if len(self.cycle) > 4:
-            avail.add(self.cycle[4])                     # the NEXT (preview) card counts as immediately available
+            avail.add(self._slot_card_id(self.cycle[4]))  # the NEXT (preview) card counts as immediately available
         for c in avail:
             if (c != card_id and self.specs[c].elixir < my_elix
                     and card_threat.counters(self._deck_profiles[c], tid)):
@@ -443,10 +745,10 @@ class SimMatchEnv:
         reach is the wide pull radius, so 'has a target' uses that."""
         if not spec.pulls:
             for t in self.eng.towers[1][:2]:
-                if t.alive and np.hypot(nx - t.x, ny - t.y) <= self.spell_aim_radius:
+                if t.alive and tile_dist(nx, ny, t.x, t.y) <= self.spell_aim_radius:
                     return False                         # aimed at an enemy princess tower = a valid chip target
         rad = max(self.spell_waste_radius, spec.pull_radius) if spec.pulls else self.spell_waste_radius
-        return not any(u.team == 1 and u.hp > 0 and np.hypot(nx - u.x, ny - u.y) <= rad
+        return not any(u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad
                        for u in self.eng.units)
 
     def _chip_progress(self, towers) -> float:
@@ -467,14 +769,14 @@ class SimMatchEnv:
         enemy building-targeters were tower-locked at cast time (retarget candidates)."""
         pulled = [u for u in self.eng.units
                   if u.team == 1 and u.hp > 0
-                  and np.hypot(u.x - nx, u.y - ny) <= spec.pull_radius]
+                  and tile_dist(u.x, u.y, nx, ny) <= spec.pull_radius]
         targeters = []
         for u in pulled:
             if not u.spec.building_only:
                 continue
             for tw in self.eng.towers[0]:
-                if tw.alive and np.hypot(u.x - tw.x, u.y - tw.y) <= u.spec.reach + 0.03:
-                    targeters.append((u, tw, float(np.hypot(u.x - tw.x, u.y - tw.y))))
+                if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
+                    targeters.append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
                     break
         self._nado_watch.append({
             "t0": self.eng.t, "cx": nx, "cy": ny,
@@ -496,11 +798,11 @@ class SimMatchEnv:
             if age >= 2.0 and not w["early_done"]:
                 w["early_done"] = True
                 alive_close = [u for u in w["pulled"]
-                               if u.hp > 0 and np.hypot(u.x - w["cx"], u.y - w["cy"]) <= 0.07]
+                               if u.hp > 0 and tile_dist(u.x, u.y, w["cx"], w["cy"]) <= 2.2]
                 if len(alive_close) >= 2:
                     credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
                 for u, tw, d0 in w["targeters"]:
-                    if u.hp > 0 and np.hypot(u.x - tw.x, u.y - tw.y) >= d0 + 0.05:
+                    if u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6:
                         credit += self.w_nado_retarget
                         break                                    # one retarget credit per cast
             if age >= 3.5:
@@ -509,8 +811,8 @@ class SimMatchEnv:
                     credit += self.w_nado_combo
                 if (w["king_was_asleep"] and not self._nado_king_credited
                         and self.eng.towers[0][2].active
-                        and any(np.hypot(u.x - self.eng.towers[0][2].x,
-                                         u.y - self.eng.towers[0][2].y) <= self.eng.king_range + 0.03
+                        and any(tile_dist(u.x, u.y, self.eng.towers[0][2].x,
+                                          self.eng.towers[0][2].y) <= self.eng.king_range + 1.0
                                 for u in w["pulled"])):
                     credit += self.w_nado_king
                     self._nado_king_credited = True
@@ -534,14 +836,25 @@ class SimMatchEnv:
                 if self._forced_expensive_spend(card_id, ny):
                     spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
-                reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
-                reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
+                wincon = self._wincon_exec(card_id, nx, ny)                     # (3) win-condition executed right
+                reward += self._bonus(wincon)
+                if wincon > 0.0 and self._wincon_spend_waived(card_id, spec):
+                    # ONE play, ONE grade. The trade term measures enemy TROOP value eliminated, but a
+                    # correctly-executed win condition (X-Bow in range / Miner chipping the princess /
+                    # rocket-cycle chip) kills no troops BY DESIGN -- it damages TOWERS, which is already
+                    # credited by the convex tower-chip term and the crown jump. Billing its elixir here
+                    # as well charged the deck's own game plan as pure waste: MEASURED -9.32/match on the
+                    # trade term, the single largest negative in the whole reward. Same rule the pull
+                    # spells already follow -- a play graded by its OWN correctness term is not graded
+                    # again here. A MISPLACED win condition (wincon < 0) still pays its spend, so
+                    # throwing the X-Bow away is still a mistake.
+                    spent = 0.0
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
-                idx = self.cycle.index(card_id)                                 # cycle the played card to the back
-                self.cycle.append(self.cycle.pop(idx))
+                self._cf_open()             # ...and fork the alternative branch where we HELD this card
+                self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
             reward += self._threat_miss_idle()                 # (1) ignored an ANSWERABLE threat (uncapped penalty)
         # opponent acts, then advance the match by agent_dt in sub-ticks
@@ -552,6 +865,8 @@ class SimMatchEnv:
             self.eng.advance(self.sub_dt)
             chip0 += self.eng.chip[0]
             chip1 += self.eng.chip[1]
+            if self.on_tick is not None:
+                self.on_tick(self)
             if self.eng.done:
                 break
         # (2) ELIXIR-TRADE correctness: signed potential-based enemy-value change (telescopes, anti-farm)
@@ -561,6 +876,7 @@ class SimMatchEnv:
         self._prev_evalue = evalue
         reward += self._trade_reward(edelta, spent)
         reward += self._bonus(self._nado_shaping())    # delayed tornado-execution credit (clump/combo/king/retarget)
+        reward += self._cf_shaping()   # delayed counterfactual: did playing beat holding? (uncapped: zero-mean)
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.w_leak

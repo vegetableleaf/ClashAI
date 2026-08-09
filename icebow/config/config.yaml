@@ -88,11 +88,12 @@ states:
   # rounded plate; the old crop flatlined at ~0.49 on new footage). The OLD in_match.png stays
   # listed so pre-update recordings (verify / label / outcome mining) still read correctly.
   in_match:
-    threshold: 0.80
+    threshold: 0.8
     templates:
+      - {template: "in_match_local.png", threshold: 0.91}
       - "in_match.png"
       - "in_match_v2.png"
-      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
+      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.0, 1.0, 0.12]}
   match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
 
 nav:
@@ -321,9 +322,25 @@ rewards:
   xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
                            #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
+  # PUNISH WINDOW: an offensive X-Bow is a gamble when the opponent can still answer it, but a PUNISH
+  # once they have overcommitted and cannot -- the siege starts firing before their answer is affordable.
+  # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
+  xbow_punish_mult: 1.5
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
-  cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
-  cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
+  cycle_plan: 0.4          # LIVE env only -- the SIM's cycle_plan was DELETED (110 fires, 0 positive)
+  cycle_waste: -0.4        # LIVE env only; `env.py:_cycle_plan_live` has the same one-sided shape
+  # Weight on the COUNTERFACTUAL term (sim.counterfactual gates whether it runs at all): the tower
+  # differential the real branch reached minus the branch where this card was HELD. Zero-mean by
+  # construction -- the property every hand-written per-play term has lacked -- so it cannot become an
+  # action tax however large it is. NOT routed through correctness_cap for that reason: capping only
+  # the positive side of a signed term would reintroduce exactly the asymmetry it exists to avoid.
+  # CALIBRATED, not guessed. Because the term is zero-mean its MEAN per match is ~0 by design, so the
+  # quantity to match against its neighbours is its per-match STANDARD DEVIATION. MEASURED over 40
+  # matches on the 4096-match checkpoint at weight 1.0: per-match total mean -0.015, SD 0.089, with
+  # 1.0 settlements/match (17 positive / 22 negative). Its neighbours are _trade_reward 4.88/match and
+  # (now deleted) _cycle_plan 1.10. Weight 10 puts its SD at ~0.9/match -- a real vote, deliberately
+  # NOT loud enough to dominate the trade term while it is still only ~1 settlement per match.
+  counterfactual: 10.0
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -415,7 +432,32 @@ env:
   # -- CORRECTNESS-reward geometry (used by the threat_response / elixir_trade / cycle_plan terms) --
   intercept_lane: 0.15           # same-lane tolerance: a counter within this |x| of the threat counts as placed to intercept
   cycle_cheap_max: 3             # a played card at/below this elixir counts as a CYCLE card (cycle_plan / cycle_waste)
-  cycle_spare_elixir: 7.0        # 'spare elixir' threshold: cycling toward a needed counter is rewarded only at/above this
+  # RESERVE, measured on the elixir LEFT AFTER the play (was 7.0 graded on PRE-spend elixir).
+  # MEASURED 2026-08-08 on the 5500-match checkpoint: 96% of this deck's plays are cheap (8 of 10
+  # identities cost <= 3), pre-spend elixir at a cheap play was p90 3.60, so 'pre-spend < 7' was TRUE
+  # on 100% of them -- a flat tax on every action rather than a shaping signal, and the policy's
+  # answer was to stop playing (plays/match 46.8 -> 26.0, winrate 8.3% -> 2.8%).
+  cycle_spare_elixir: 3.0        # a discretionary cheap play should leave at least this much in the bar
+  # QUIET-BOARD exception to the premature-defender penalty. On a quiet board WAITING is the safe
+  # default -- a Knight/Ice Wizard committed to one lane can be punished by a push in the OTHER lane,
+  # so the defender is spent and the far lane is open. The exception is LEAKING FIRST: if you hold
+  # more elixir than the opponent AND you are near the cap, your bar fills before theirs, so waiting
+  # wastes more than the lane commitment costs -- then a cycle card or a back Knight/Ice Wiz is right.
+  # Below this, or without the elixir lead, the penalty still applies.
+  quiet_board_free_elixir: 8.0
+  # PUNISH WINDOW for the offensive X-Bow (rewards.xbow_punish_mult). BOTH must hold: the opponent is
+  # broke in ABSOLUTE terms (below this they cannot afford a typical 3-5 elixir X-Bow answer) and you
+  # are ahead by this GAP. The absolute term matters on its own -- a 4-elixir lead while they sit on 6
+  # still lets them answer, so the gap alone would mis-fire.
+  punish_opp_elixir: 4.0
+  punish_elixir_gap: 4.0
+  # A card only BLOCKS a forward X-Bow if it can body one -- the pool splits cleanly on hitpoints:
+  # ice_golem 1315 / knight 1766 / elixir_golem 1569 / berserker 896 / ice_wizard 688 can trade with a
+  # siege, while spirits 215 / bomber 304 / minions 230 / bats 81 / guards 81 just get shredded. The
+  # gap between ~330 and ~690 is where this sits. Without it the "cheapest blocker" was a 1-elixir
+  # spirit in most decks, which made the punish window require the opponent to be under 1 elixir.
+  # Hitpoints are the KB's reference level; opponents play at L13-16, but the ORDERING is unchanged.
+  punish_blocker_min_hp: 600
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
   tower_chip_power: 2.0          # convexity of the tower-chip reward: >1 -> PARTIAL chip worth sub-proportionally little
@@ -444,8 +486,16 @@ env:
   hp_consensus: 2                # consecutive equal reads before a new HP is confirmed
   hp_min_conf: 0.55              # min mean per-digit CNN confidence to use a read
   hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
-  enemy_tower_hp_boxes: [[0.147, 0.110, 0.278, 0.157], [0.645, 0.110, 0.797, 0.157]]
-  my_tower_hp_boxes:    [[0.185, 0.612, 0.298, 0.657], [0.685, 0.612, 0.798, 0.657]]
+  # RE-MEASURED for this window (758x1334) on 40 frames of session 20260808_152522. The
+  # previous boxes included the crown badge, whose white pixels the digit slicer counts as a
+  # digit: three of the four towers read CONFIDENTLY WRONG -- E1 1522, E2 jumping between
+  # 377/3417/4767 frame to frame, M1 a constant 7151 -- against a true 1512 verified by eye
+  # on the crop. Boxes were then grid-searched on reading STABILITY (a correct crop repeats
+  # its value across consecutive frames, a wrong one jitters); all four now read 1512.
+  # If your window differs, re-measure rather than nudging: the Labelling tab's
+  # "show everything the bot reads" draws these boxes on the frame.
+  enemy_tower_hp_boxes: [[0.133, 0.100, 0.258, 0.147], [0.653, 0.100, 0.783, 0.147]]
+  my_tower_hp_boxes:    [[0.208, 0.610, 0.272, 0.648], [0.685, 0.612, 0.798, 0.657]]
   # KING HP-number boxes -- read by `verify --towers` for the E-king / M-king alignment check.
   enemy_king_hp_box: [0.41, 0.015, 0.55, 0.08]
   my_king_hp_box:    [0.41, 0.690, 0.55, 0.77]
@@ -622,6 +672,22 @@ monitor:
 # else the detector learns to treat them as background.
 detect:
   classes_file: config/detect_classes.yaml
+  # ONE VISION MODEL, deliberately not selectable. Training writes runs/detect/vision and
+  # REPLACES it; _resolve_weights reads that path and nothing else.
+  #
+  # This REVERSES the pin below, and the reason it existed is real -- measured 2026-08-07,
+  # board-17 trained last but REGRESSED (whitelist identity recall 0.675 vs board-16's 0.724),
+  # so a newest-wins default silently promoted a worse detector. The pin solved that by making
+  # the operating model a config value, which produced its own failure: a pin carried between
+  # machines points at a run that is not there, and everything falls back to newest-wins ANYWAY,
+  # silently. Seen here: this key read board-16, board-16 did not exist, and play / train-rl /
+  # the overlay clips all ran board-2 without a word.
+  #
+  # The risk is NOT gone, it moved: a bad retrain now overwrites a good model instead of sitting
+  # beside it. What guards it is that the panel shows the model's measured quality
+  # (model_card.json, written on completion) and draws its predictions against your own labelled
+  # frames, so a regression is visible rather than inferred. Archive a run by copying the folder
+  # and compare with `detect-eval --weights <path>`.
   dataset_dir: data/detect
   spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
   spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
@@ -680,10 +746,38 @@ sim:
   # against your in-game cards). Your two princess towers use `my_tower_troop` at `my_tower_level`; the
   # OPPONENT rolls a troop from `opponent_tower_weights` (princess most common on ladder) at a level drawn
   # from `enemy_levels`. hit_dmg is derived as dps*hit_speed; HP + damage scale by 1.1^(level - my_tower_level).
+  # BOARD GEOMETRY. The simulated arena is a TILE GRID and every sim distance below is in TILES.
+  # Positions stay normalized [0,1] per axis, so ONE normalized unit = 18 tiles across but 32 tiles
+  # up: the engine converts to tiles before measuring (a plain hypot made every range ~1.78x shorter
+  # horizontally than vertically). The towers are derived FROM these tiles, so the two halves are
+  # exactly symmetric about the river at y=0.5 -- previously the sim borrowed env.my_towers /
+  # env.enemy_towers, which are LIVE SCREEN coordinates carrying the game's perspective
+  # foreshortening, putting your towers 0.115 from the river and the enemy's 0.295 (and breaking the
+  # self-play mirror, which reflects about y=0.5).
+  board:
+    tiles_x: 18                 # arena width in tiles
+    tiles_y: 32                 # arena height in tiles
+    princess_tile: [3.5, 6.5]   # princess tower centre: tiles from the SIDE wall, tiles from the BACK wall
+    king_tile: [9.0, 3.0]       # king tower centre: tiles from the side wall, tiles from the back wall
+    bridge_tiles: [3.5, 14.5]   # bridge lane centres in tile-x (aligned with the princess lanes)
+    bridge_width_tiles: 3.0     # DECK WIDTH. Units cross anywhere on the deck, not single-file down
+                                # the centre line: routing everything to the exact centre made a swarm
+                                # converge on ONE point at the river, where collision (two 0.5-radius
+                                # bodies sit 1.0 tile apart) shoved them back out again -- goblins
+                                # pinned at y=0.5000 forever, oscillating between x 3.00 and 4.00.
+    deploy_top: 0.5             # troops deploy on your half only: normalized y of the river
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
-  tower_range: 0.20             # normalized princess-class reach (all tower troops share a 7.5-tile range)
-  king_range: 0.187             # king-tower reach (7 tiles = 0.5 shorter than a princess tower)
+  # CROWN TOWER REACH, in tiles, measured from the tower's CENTRE to the target's body EDGE
+  # (engine._gap). DERIVED FROM THE BOARD, not a nominal figure: the defender's end of the bridge
+  # sits 8.50 tiles from a princess tower's centre (tower 6.5 tiles off the back wall, the river's
+  # near bank 15.0), so a standard 0.5-radius troop reads a gap of 8.00 the instant it steps off the
+  # brown. At the old 7.5 the tower stayed silent for another half-tile of walking; 8.0 makes it open
+  # fire exactly as the troop clears the bridge, and a wider body (Giant 0.75) is caught a shade
+  # earlier, which is correct -- more of it is already inside the radius.
+  tower_range: 8.0              # TILES: princess-class reach (all tower troops share it)
+  king_range: 7.5               # TILES: king-tower reach -- still 0.5 shorter than a princess tower
+                                # (the +0.5 is a measurement correction, so it applies to both)
   tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
   opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
     princess: 6
@@ -696,11 +790,20 @@ sim:
     cannoneer:      {hp: 3792, dps: 211, hit_speed: 2.2}                                            # slow, heavy single hits
     royal_chef:     {hp: 3918, dps: 158, hit_speed: 1.0, cook_period_s: 30, cook_delay_s: 7, buff_mult: 1.1, buff_min_frac: 0.33}  # ~every 30s feeds the ally troop with most HP (+1 level)
   king_tower:       {hp: 7032, dps: 158, hit_speed: 1.0}                                            # L15 King's Tower (wakes when first hit)
-  siege_sight: 0.42             # X-Bow engage range (~11.5 tiles); locks the tower past this only when no troops are closer
-  sight_range: 0.12             # FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
+  siege_sight: 11.5             # TILES: X-Bow engage range; locks the tower past this only when no troops are closer
+  sight_tiles: 5.5              # TILES: FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
                                 # (cards.py _SIGHT_TILES, cr-api-data characters.sight_range): most 5.5 tiles, PEKKA/
                                 # Giant Skeleton 5.0 (kite-able), building-seekers 7.0-7.7, Hog/Royal Hogs/Princess 9.5.
                                 # Opposite lanes are ~9-10 tiles apart -> troops march past each other (real CR behaviour).
+  sight_range: 0.12             # LIVE-only twin of sight_tiles: the same fallback as a SCREEN-normalized radius
+                                # (clashrl/env.py + play.py read this; the sim reads sight_tiles).
+  # --- sim REWARD geometry, in TILES (the env.* twins below are LIVE screen-space and stay separate) ---
+  xbow_range_tiles: 11.5        # max distance from the X-Bow to an enemy princess for it to REACH the tower
+  xbow_defense_front: 0.56      # DEFENSIVE "back-centre" band (normalized y): ~2 tiles behind the river...
+  xbow_defense_back: 0.66       # ...to ~5 tiles behind it. Deeper than this is rarely useful -> xbow_deep_frac.
+  spell_tower_aim_tiles: 3.8    # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  spell_waste_tiles: 4.5        # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness
+  rocket_combo_tiles: 3.5       # ROCKET COMBO: the support must be within this of the aimed princess tower
   slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed
   slow_duration: 2.0            # seconds a SLOW lasts
   stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)
@@ -779,6 +882,49 @@ sim:
   ppo_vf_coef: 0.5              # value-loss weight
   ppo_gae_lambda: 0.95          # GAE lambda (bias/variance of the advantage estimates)
   ppo_max_grad_norm: 0.5        # gradient clip
+  # DEPLOY GATE THRESHOLD. The gate head is [wait, play]; the deterministic rule plays when
+  # P(play) = sigmoid(play - wait) > this. The old rule was a raw logit compare, i.e. tau 0.5 -- but a
+  # card play is RARE per tick, so a well-calibrated gate sits far below 0.5 (measured: median P(play)
+  # 0.049, above 0.5 on only 11.1% of decisions). Exactly the imbalanced-classifier threshold problem.
+  # tau 0.5 therefore refused about a third of the plays the policy was trained to make, sat on elixir
+  # and lost. MEASURED 2026-08-08 on the frozen ladder benchmark, 150 matches per rule (n=60 in
+  # brackets -- tau 0.25 is stable across both):
+  #   sampled (what TRAINING does)  69% [62]   34.9 plays/match  5.3 mean elixir
+  #   tau 0.50 (old)                39% [43]   23.9              6.2   <- benchmark AND play.py ran here
+  #   tau 0.35                      63% [60]   28.4              6.2
+  #   tau 0.25                      72% [73]   36.0              5.5   <- chosen
+  #   tau 0.15                      69% [68]   36.7              4.9
+  # +33pp over the old rule (SE of the difference 5.8pp at n=150). The elixir column is the tell: the
+  # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
+  # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
+  ppo_gate_threshold: 0.25
+  # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
+  # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,
+  # rolls that branch `horizon_s` with the AGENT DOING NOTHING, and later compares the real branch's
+  # tower differential against it -- "did playing this beat holding it?" That difference is zero-mean
+  # by construction (helped -> +, hurt -> -), which is the property every hand-written per-play term
+  # has failed to have: cycle_plan fired 0 bonuses against 305 penalties and threat_response's
+  # quiet-board branch 0 against 257, and both taught the policy to stop playing.
+  # COST, MEASURED end-to-end with the opponent acting inside the branch (a 39-unit board, against a
+  # 99 ms baseline match = 125 decisions x 0.79 ms). NB my first estimate of 14 ms was 3x too low
+  # because it rolled a QUIET fork: the opponent keeps deploying inside the branch, so the board grows
+  # and the ticks get dearer. Real cost is a ~6.5 ms floor (deepcopy + setup) plus ~3.5 ms per second
+  # of horizon:
+  #   horizon   ms/fork   forks for a 2x slowdown
+  #      8 s     35.0        2.8
+  #      4 s     24.0        4.1
+  #      2 s     16.1        6.1
+  #      1 s     10.5        9.4
+  # The budget is a HARD PER-MATCH CAP, not a probability, so the worst case is deterministic and a
+  # busy match cannot cost ten times a quiet one. Raise budget_per_match to buy signal with wall clock.
+  counterfactual:
+    enabled: true            # ON: it now REPLACES cycle_plan, which was deleted for being one-sided
+    horizon_s: 6.0           # lookahead per fork. A preventable tower hit lands in a few seconds and a
+                             # bridge wincon connects in ~5-10 s, so this must not be cut much further;
+                             # the GAE window is 17 s, so 6 s sits comfortably inside it.
+    budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
+    min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
+    cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

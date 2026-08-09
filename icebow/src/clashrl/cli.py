@@ -12,6 +12,7 @@ Subcommands (built incrementally):
 from __future__ import annotations
 
 import argparse
+import os
 
 from .config import Config
 
@@ -118,7 +119,7 @@ def _cmd_train_rl(args) -> None:
 
 def _cmd_play(args) -> None:
     from .play import play
-    play(_sized_config(args))
+    play(_sized_config(args), init=args.init)
 
 
 def _cmd_train_sim(args) -> None:
@@ -142,7 +143,7 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
-                  seed=args.seed, envs=args.envs, init=args.init)
+                  seed=args.seed, envs=args.envs, init=args.init, device=args.device)
 
 
 def _cmd_sim_bench(args) -> None:
@@ -153,6 +154,17 @@ def _cmd_sim_bench(args) -> None:
         return
     sim_bench(Config.load(args.config), envs=args.envs, seconds=args.seconds, seed=args.seed,
               out=args.out, warmup=args.warmup, auto=args.auto, apply=args.apply)
+
+
+def _cmd_sim_view(args) -> None:
+    try:
+        from .sim_view import sim_view
+    except ImportError as exc:
+        print(f"[sim-view] OpenCV is required ({exc}).")
+        return
+    sim_view(_sized_config(args), matches=args.matches, width=args.width, fps=args.fps,
+             seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window,
+             grid=not args.no_grid)
 
 
 def _cmd_policy_stats(args) -> None:
@@ -180,12 +192,58 @@ def _cmd_deck_detect(args) -> None:
     detect_deck(Config.load(args.config), session_arg=args.session, samples=args.samples,
                 per_face=args.per_face, player_tag=args.player_tag, out=args.out,
                 write_templates=args.write_templates,
-                overwrite_templates=args.overwrite_templates)
+                overwrite_templates=args.overwrite_templates,
+                deck_only=args.deck_only)
+
+
+def _cmd_detect_train(args) -> None:
+    """Train the VISION network (the board detector).
+
+    Thin wrapper around tools/detect/train.py, which stays the single implementation --
+    this exists so the detector is startable the same way every other job is (and so the
+    launcher can run it), rather than being the one model you had to train by hand.
+    """
+    import subprocess
+    import sys
+    root = Config.load(args.config).root
+    script = root / "tools" / "detect" / "train.py"
+    if not script.exists():
+        print(f"[detect-train] missing {script}")
+        return
+    argv = [sys.executable, str(script)]
+    if args.resume:
+        argv += ["--resume"] + ([args.resume] if args.resume != "auto" else [])
+    else:
+        argv += ["--model", args.model, "--epochs", str(args.epochs), "--imgsz", str(args.imgsz)]
+        if args.batch:
+            argv += ["--batch", str(args.batch)]
+        if args.status_aug:
+            argv.append("--status-aug")
+    raise SystemExit(subprocess.run(argv, cwd=str(root)).returncode)
 
 
 def _cmd_calibrate(args) -> None:
     from .calibrate import calibrate
     calibrate(Config.load(args.config), session_arg=args.session, dry_run=args.dry_run)
+
+
+def _cmd_ui(args) -> None:
+    try:
+        from .ui.app import serve
+    except ImportError as exc:
+        print(f"[ui] Flask is required ({exc}).\n"
+              "Install it with:\n"
+              "  .\\.venv\\Scripts\\python.exe -m pip install flask")
+        return
+    serve(Config.load(args.config), port=args.port, open_browser=not args.no_browser,
+          native_window=not (args.no_browser or args.no_window))
+
+
+def _cmd_import_from(args) -> None:
+    from .migrate import import_from
+    import_from(Config.load(args.config), args.old, dry_run=args.dry_run,
+                overwrite=args.overwrite, with_sessions=not args.no_sessions,
+                with_config=args.with_config)
 
 
 def _cmd_diag(args) -> None:
@@ -201,6 +259,17 @@ def _cmd_analyze(args) -> None:
 def _cmd_autolabel(args) -> None:
     from .detect import autolabel
     autolabel(Config.load(args.config), args.session, args.all, args.preview)
+
+
+def _cmd_preannotate(args) -> None:
+    try:
+        from .preannotate import preannotate
+    except ImportError as exc:
+        print(f"[pre-annotate] ultralytics is required ({exc}).")
+        return
+    preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
+                device=args.device, limit=args.limit, out=args.out, classes=args.classes,
+                subdir=args.subdir, model_version=args.model_version)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -276,6 +345,13 @@ def _cmd_mine_replays(args) -> None:
 
 
 def main() -> None:
+    # The UI launches us in our own process group, where Windows can only deliver
+    # Ctrl+Break -- whose default action kills us before any `finally: save()` runs.
+    # Map it onto the normal Ctrl+C path. Env-gated, so a plain CLI run is unchanged.
+    if os.environ.get("CLASHRL_UI_CHILD"):
+        from .ui.child import install_stop_signal
+        install_stop_signal()
+
     parser = argparse.ArgumentParser(
         prog="clashrl",
         description="Learning Clash Royale bot (imitation learning -> RL).",
@@ -375,6 +451,10 @@ def main() -> None:
                      help="parallel (vectorized) match instances (default: sim.envs)")
     tsp.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
+    tsp.add_argument("--device", choices=["cpu", "cuda"], default=None,
+                     help="override train.device. CPU is MEASURED FASTER for this trainer (1.0 vs 0.2 "
+                          "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
+                          "the GPU entirely, so PPO can run alongside a detector train")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     sbn = sub.add_parser("sim-bench",
@@ -393,6 +473,27 @@ def main() -> None:
     sbn.add_argument("--seed", type=int, default=0, help="RNG seed, the same for every measurement")
     sbn.add_argument("--out", default=None, help="output JSON (default: data/sim_bench.json)")
     sbn.set_defaults(func=_cmd_sim_bench)
+
+    svw = sub.add_parser("sim-view",
+                         help="VISUAL DEBUGGER: watch a sim match rendered from ENGINE state at physics "
+                              "resolution (units, HP, status, spell flight, tornado pull, tower fire). "
+                              "Read-only -- never writes a checkpoint. SPACE pause, '.' step, Q quit.")
+    svw.add_argument("--matches", type=int, default=1, help="how many matches to play out")
+    svw.add_argument("--policy", default=None,
+                     help="checkpoint to drive YOUR side greedily (e.g. data/policy_sim_ppo_best.pt); "
+                          "default = random legal actions, which still exercises every mechanic")
+    svw.add_argument("--fps", type=int, default=20,
+                     help="playback rate; the sim ticks at sim.sub_dt (0.1s) so 10 = real time, 20 = 2x")
+    svw.add_argument("--width", type=int, default=460, help="render width in pixels")
+    svw.add_argument("--seed", type=int, default=0, help="RNG seed (same seed = same match)")
+    svw.add_argument("--out", default=None, help="also write an mp4 here (e.g. data/sim_debug.mp4)")
+    svw.add_argument("--no-window", action="store_true",
+                     help="headless: only write --out (for a machine with no display)")
+    svw.add_argument("--no-grid", action="store_true",
+                     help="hide the placement-grid overlay (action.grid over action.arena_box)")
+    svw.add_argument("--size", choices=sorted(_GRID_SIZES), default=None,
+                     help="override action.grid (must match the --policy checkpoint's n_cells)")
+    svw.set_defaults(func=_cmd_sim_view)
 
     pst = sub.add_parser("policy-stats",
                          help="measures WHAT the policy plays in the simulator: card frequency, "
@@ -439,7 +540,25 @@ def main() -> None:
                           "templates/cards/<card>.png, which removes the renaming step")
     ddt.add_argument("--overwrite-templates", action="store_true", dest="overwrite_templates",
                      help="also replace templates that already exist")
+    ddt.add_argument("--deck-only", action="store_true", dest="deck_only",
+                     help="identify each tray card against only the deck already in cards.yaml "
+                          "instead of every card in the game. Far more reliable once the deck is "
+                          "correct -- use it to fill in missing hand templates.")
     ddt.set_defaults(func=_cmd_deck_detect)
+
+    dtr = sub.add_parser("detect-train",
+                         help="train the VISION network (board detector) on your labelled frames")
+    dtr.add_argument("--model", default="yolo11s.pt",
+                     help="base weights: yolo11n/s/m/l/x.pt (bigger = better but needs more VRAM)")
+    dtr.add_argument("--epochs", type=int, default=120, help="training epochs (early-stops on its own)")
+    dtr.add_argument("--imgsz", type=int, default=960, help="training image size")
+    dtr.add_argument("--batch", type=int, default=None,
+                     help="images per batch; empty auto-sizes to your GPU")
+    dtr.add_argument("--status-aug", action="store_true", dest="status_aug",
+                     help="extra augmentation for status effects (slow/rage tint, spell haze)")
+    dtr.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
+                     help="continue an interrupted run instead of starting a new one")
+    dtr.set_defaults(func=_cmd_detect_train)
 
     cal = sub.add_parser("calibrate",
                          help="re-cut the match detection from YOUR recording (needed for a different "
@@ -450,6 +569,9 @@ def main() -> None:
     cal.set_defaults(func=_cmd_calibrate)
 
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
+    ply.add_argument("--init", default=None, metavar="CKPT",
+                     help="which checkpoint to play, e.g. data/policy_sim_best.pt. "
+                          "Default: data/policy_rl.pt if present, else data/policy.pt")
     ply.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
     ply.set_defaults(func=_cmd_play)
@@ -473,6 +595,31 @@ def main() -> None:
     atl.add_argument("--preview", action="store_true",
                      help="save overlays of the auto (own-troop) boxes to sanity-check them")
     atl.set_defaults(func=_cmd_autolabel)
+
+    pan = sub.add_parser("pre-annotate",
+                         help="run the CURRENT detector over the unlabelled queue and write a Label "
+                              "Studio TASKS file with its boxes as PRE-ANNOTATIONS, so hand-labelling "
+                              "becomes CORRECTING boxes instead of drawing them. Copies no images -- "
+                              "the tasks point at images/<queue> where the frames already live")
+    pan.add_argument("--conf", type=float, default=0.20,
+                     help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
+                          "deleting a wrong box is one keypress, drawing a missed one takes seconds")
+    pan.add_argument("--weights", default=None, help="best.pt (default: the pinned detect.weights)")
+    pan.add_argument("--device", default=None,
+                     help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
+    pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
+    pan.add_argument("--classes", default=None,
+                     help="comma list to pre-draw only these classes (default: all)")
+    pan.add_argument("--subdir", default=None,
+                     help="queue folder under images/ (default: detect.label_queue_subdir). Also the "
+                          "path written into the task's ?d= reference, so it must match what Label "
+                          "Studio serves")
+    pan.add_argument("--model-version", dest="model_version", default=None,
+                     help="label the predictions with this (default: the run folder, e.g. board-16) "
+                          "so you can tell WHICH detector guessed when reviewing")
+    pan.add_argument("--out", default=None,
+                     help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
+    pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
                          help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")
@@ -613,8 +760,42 @@ def main() -> None:
     mrp.add_argument("--stride", type=int, default=None, help="sample every Nth frame (default: replay_mine.frame_stride)")
     mrp.set_defaults(func=_cmd_mine_replays)
 
+    uip = sub.add_parser("ui",
+                         help="local control panel (start/stop, live log, progress, deck and config "
+                              "editor); opens as its own window if pywebview is installed, otherwise "
+                              "a browser tab; binds to 127.0.0.1 only")
+    uip.add_argument("--port", type=int, default=8765, help="port (default 8765)")
+    uip.add_argument("--no-window", action="store_true", dest="no_window",
+                     help="use a browser tab instead of the native window, even if pywebview is installed")
+    uip.add_argument("--no-browser", action="store_true", dest="no_browser",
+                     help="do not open anything automatically (server only); implies --no-window")
+    uip.set_defaults(func=_cmd_ui)
+
+    imp = sub.add_parser("import-from",
+                         help="take checkpoints, recordings and templates from an older "
+                              "installation of this project")
+    imp.add_argument("old", help="path to the old folder (repository root or the icebow folder)")
+    imp.add_argument("--dry-run", action="store_true", dest="dry_run",
+                     help="only list what would be copied")
+    imp.add_argument("--overwrite", action="store_true",
+                     help="also replace files that already exist here")
+    imp.add_argument("--no-sessions", action="store_true", dest="no_sessions",
+                     help="skip the recordings (they are the large part)")
+    imp.add_argument("--with-config", action="store_true", dest="with_config",
+                     help="also take cards.yaml and config.yaml, which decide the deck and the "
+                          "screen calibration")
+    imp.set_defaults(func=_cmd_import_from)
+
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except KeyboardInterrupt:
+        # Ctrl+C (or the launcher's stop button) during a phase the command does not guard
+        # itself -- most visibly while the env pool is still being built. Nothing has been
+        # trained yet, so there is nothing to save; exit quietly instead of dumping a
+        # traceback and a Windows control-C exit code that looks like a crash.
+        print("\n[clashrl] aborted.", flush=True)
+        raise SystemExit(130)
 
 
 if __name__ == "__main__":

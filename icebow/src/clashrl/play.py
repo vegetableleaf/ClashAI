@@ -89,7 +89,7 @@ class InMatchGrace:
         return state
 
 
-def play(cfg) -> None:
+def play(cfg, init: str | None = None) -> None:
     try:
         import torch
         from .model import PolicyNet
@@ -100,13 +100,29 @@ def play(cfg) -> None:
 
     ckpt_path = cfg.path(cfg.get("train", "checkpoint", default="data/policy.pt"))
     rl_path = cfg.path(cfg.get("train", "rl_checkpoint", default="data/policy_rl.pt"))
-    if rl_path.exists():
+    if init:                                  # explicit pick, e.g. the simulator prior
+        p = Path(init)
+        ckpt_path = p if p.is_absolute() else cfg.path(init)
+        if not ckpt_path.exists():
+            print(f"[play] --init checkpoint not found: {ckpt_path}")
+            return
+    elif rl_path.exists():
         ckpt_path = rl_path   # prefer the RL-fine-tuned policy when available
     if not ckpt_path.exists():
-        print(f"[play] no policy at {ckpt_path}. Train one first with `train-bc`.")
+        # A simulator run produces a perfectly usable policy; only the imitation path
+        # writes data/policy.pt, so pointing at what IS there beats "train one first".
+        found = sorted(p.name for p in cfg.path("data").glob("*.pt")) if cfg.path("data").exists() else []
+        print(f"[play] no policy at {ckpt_path}.")
+        if found:
+            pick = "policy_sim_best.pt" if "policy_sim_best.pt" in found else found[0]
+            print(f"[play] available under data/: {', '.join(found)}")
+            print(f"[play] use one of them directly, e.g.:  run.py play --init data/{pick}")
+            print("[play] (in the launcher: the 'Checkpoint' field of the Play tile)")
+        else:
+            print("[play] nothing trained yet. `train-sim` produces one without needing the game.")
         return
 
-    ckpt = torch.load(ckpt_path, map_location="cpu")
+    ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))
@@ -122,9 +138,14 @@ def play(cfg) -> None:
         gate = torch.nn.Linear(net.embed_dim, 2).to(device)
         gate.load_state_dict(ckpt["gate"])
         gate.eval()
-    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the greedy gate compares them directly
+    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the gate is a thresholded probability
+    # Deploy gate threshold, shared with the sim benchmark and the self-play snapshots so live play
+    # deploys at the SAME rate it was trained/benchmarked at. A raw logit compare is tau=0.5, which
+    # a calibrated gate rarely clears -> the bot hoards elixir and under-deploys. See config.yaml.
+    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
     print(f"[play] policy {ckpt_path.name} loaded "
-          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'}).")
+          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'})"
+          + (f", gate tau {gate_tau:g}" if (gate is not None and is_ppo) else "") + ".")
 
     capture = WindowCapture(cfg.get("window", "title_contains", default=None),
                             cfg.get("window", "region", default=None))
@@ -325,13 +346,17 @@ def play(cfg) -> None:
     _home = cfg.get("states", "home_menu", default={}) or {}
     home_tpl, home_thr = _home.get("template", "home_menu.png"), float(_home.get("threshold", 0.8))
 
+    _match_stats = {"ticks": 0, "blind": 0}
+
     def act_in_match(frame) -> None:
         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
         tower_tracker.step(frame)
         obs = vision.observe(frame)
         hand_ids = vision.recognize_hand(frame)
         hand_vec = vision.hand_multihot(hand_ids)
+        _match_stats["ticks"] += 1
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
+            _match_stats["blind"] += 1
             return
         next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
@@ -377,7 +402,7 @@ def play(cfg) -> None:
             # LOGITS, so its greedy gate compares the two gate logits directly (no Q sums).
             if gate_logits is not None:
                 if is_ppo:
-                    wait = bool(gate_logits[0, 0] >= gate_logits[0, 1])
+                    wait = bool(torch.sigmoid(gate_logits[0, 1] - gate_logits[0, 0]) <= gate_tau)
                 else:
                     play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
                     wait = bool(gate_logits[0, 0] >= play_val)
@@ -482,6 +507,29 @@ def play(cfg) -> None:
         "for the failsafe. It navigates menus and plays in-match on its own.")
     log(f"[play] logging to {log_path}")
 
+    def _report_hand_reads() -> None:
+        """How much of the last match the hand was actually readable.
+
+        blind = the hand came back empty, so nothing could be played that tick regardless of
+        what the policy wanted. Reported when a match ends AND when the loop exits, since
+        stopping mid-match is the common case and used to report nothing at all.
+        """
+        t, b = _match_stats["ticks"], _match_stats["blind"]
+        _match_stats["ticks"] = _match_stats["blind"] = 0
+        if not t or not b:
+            return
+        log(f"[play] hand recognised on {t - b}/{t} decision ticks this match "
+            f"({b} blind -- templates found no card at all).")
+        # Mostly blind means the deck on screen almost certainly isn't the deck in cards.yaml:
+        # every card identity the policy can even name comes from that list, so a deck it was
+        # never told about reads as an empty hand forever and the bot just waits out the match.
+        if b >= max(3, int(0.6 * t)):
+            log("[play] MOST TICKS BLIND -- the deck being played is probably not the "
+                "deck in config/cards.yaml.")
+            log(f"[play] configured deck: {', '.join(vision.deck_keys)}")
+            log("[play] fix: run `run.py deck-detect --write-templates` (or the Deck tab), "
+                "apply the proposal, then retrain for that deck.")
+
     from .nav import MenuNavigator
     nav = MenuNavigator(cfg, controller, vision, label="play", log=log)
     grace = InMatchGrace(float(cfg.get("play", "in_match_grace_s", default=150)), log)
@@ -498,6 +546,7 @@ def play(cfg) -> None:
             state = grace.update(vision.detect_state(frame), time.time())
             if state != prev:
                 log(f"[play] state: {state.name}")
+                _report_hand_reads()
                 if state == GameState.IN_MATCH:   # new match -> reset the tower trackers
                     hp_tracker.reset()
                     tower_tracker.reset()
@@ -541,4 +590,5 @@ def play(cfg) -> None:
                 break
             time.sleep(poll_dt)
 
+    _report_hand_reads()          # stopping mid-match is normal -- still say what was readable
     log("[play] stopped.")

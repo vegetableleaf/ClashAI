@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClashAI Launcher</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>ClashAI <span class="sub">Launcher</span></h1>
+  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span></div>
+  <div class="spacer"></div>
+  <button id="helpbtn" class="btn small" title="Open the introduction again">Introduction</button>
+  <button id="tosbtn" class="btn small" title="Note on the terms of service">Notes</button>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="home">Overview</button>
+  <button class="tab" data-tab="run">Control</button>
+  <button class="tab" data-tab="live">Live</button>
+  <button class="tab" data-tab="dash">Progress</button>
+  <button class="tab" data-tab="strategy">Strategy</button>
+  <button class="tab" data-tab="deck">Deck</button>
+  <button class="tab" data-tab="towers">Towers</button>
+  <button class="tab" data-tab="speed">Tempo</button>
+  <button class="tab" data-tab="config">Settings</button>
+  <button class="tab" data-tab="labeling">Labelling</button>
+  <button class="tab" data-tab="ckpt">Models</button>
+</nav>
+
+<main>
+  <!-- Overview ---------------- -->
+  <section id="tab-home" class="panel active">
+    <div id="homebody"></div>
+  </section>
+
+  <!-- Control ---------------- -->
+  <section id="tab-run" class="panel">
+    <p class="lead">Each tile starts exactly one command line command, the same ones you would
+      type yourself. <b>Stop</b> sends the interrupt the trainings answer by saving a checkpoint,
+      so nothing is lost.</p>
+    <div id="cmdgrid"></div>
+  </section>
+
+  <!-- live ---------------- -->
+  <section id="tab-live" class="panel">
+    <p class="lead">What the bot sees right now and what it reads from it. Read-only, nothing is
+      clicked. Mostly useful to check whether the window is captured at all and whether a match is
+      recognised as one.</p>
+    <details style="margin:0 0 12px">
+      <summary style="cursor:pointer;color:var(--dim);font-size:12px">The whole path, screenshot to click</summary>
+      <p class="hint" style="max-width:96ch">
+        <b>1. Capture</b> &mdash; a plain program finds the game window and grabs the pixels
+        (<code>pygetwindow</code> + <code>mss</code>). No AI.<br>
+        <b>2. Reading</b> &mdash; two things happen to that image. Template matching (plain pixel
+        comparison) decides <i>which screen is this</i> and <i>which cards are in hand</i>; the
+        <b>vision AI</b> finds and names the units on the board. Both write into the SAME numeric
+        form the simulator produces.<br>
+        <b>3. Deciding</b> &mdash; the <b>playing AI</b> receives exactly that: numbers. It cannot
+        tell a real match from a simulated one, and it answers the same way in both &mdash;
+        <code>(card, cell)</code>.<br>
+        <b>4. Acting</b> &mdash; also no AI. <code>ActionSpace.decode</code> turns
+        <code>(card, cell)</code> into four coordinates in 0..1, <code>WindowCapture.to_screen</code>
+        maps those onto real pixels using the window position, and <code>Controller.play_card</code>
+        clicks twice: the card in the tray, then the spot on the board.
+      </p>
+    </details>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="livego"> Follow live</label>
+      <!-- The same overlay the Labelling tab draws, on the live window: every reader's
+           region and value, plus the detector's boxes. Off by default -- it loads the
+           detector, which costs a second on the first frame. -->
+      <label class="chk"><input type="checkbox" id="livemark"> Mark what the bot sees</label>
+      <label>Rate <select id="liverate">
+        <option value="700">fast</option>
+        <option value="1500" selected>normal</option>
+        <option value="4000">easy on the CPU</option>
+      </select></label>
+      <button id="liveonce" class="btn small">Refresh once</button>
+      <button id="livereset" class="btn small" title="Look the window up again, e.g. after moving it">Find the window again</button>
+      <span id="livemsg" class="msg"></span>
+    </div>
+    <div id="livebody"></div>
+  </section>
+
+  <!-- Progress ---------------- -->
+  <section id="tab-dash" class="panel">
+    <p class="lead">Numbers from the current and past trainings of the <b>playing AI</b>. The
+      <b>benchmark curve</b> (greedy against fixed meta decks) is the honest measure; the
+      training win rate contains random moves and self-play and settles around 50 per cent on
+      its own.</p>
+    <!-- The other network trains on a completely different scale (epochs, mAP) and writes to
+         a different file, so it gets its own strip here rather than being forced into the
+         same charts. -->
+    <div id="visionprog"></div>
+    <div class="row">
+      <label>Run: <select id="runselect"></select></label>
+      <button id="dashreload" class="btn small">Refresh</button>
+      <a id="csvlink" class="btn small" href="/api/metrics.csv">Export CSV</a>
+      <span class="hint">stored in <code>data/metrics.jsonl</code></span>
+    </div>
+    <div id="kpis" class="kpis"></div>
+    <div id="charts" class="charts"></div>
+  </section>
+
+  <!-- Strategy ---------------- -->
+  <section id="tab-strategy" class="panel">
+    <p class="lead">What the policy <b>actually</b> does: which cards it plays, where, and how
+      often it deliberately waits. A card that never appears is the clearest sign of a reward that
+      is not doing anything.</p>
+    <div class="row">
+      <button id="stratrun" class="btn primary">Start analysis</button>
+      <button id="stratreload" class="btn small">Refresh</button>
+      <span class="hint">command <code>policy-stats</code>, result in <code>data/policy_stats.json</code></span>
+    </div>
+    <div id="stratbody"></div>
+  </section>
+
+  <!-- deck ---------------- -->
+  <section id="tab-deck" class="panel">
+    <p class="lead">The deck defines the policy's action space: every card is its own action and
+      an evolution counts separately. Change the deck and old checkpoints and datasets no longer
+      fit.</p>
+    <div class="cfggroup">
+      <h3>Detect the deck automatically</h3>
+      <p class="hint">Recognises the cards from a recording instead of having you name image crops
+        by hand. Needs <b>Fetch card pictures</b> once; after that the recognition runs offline. The
+        result is shown here for confirmation and only goes into the list below when you press the
+        button.</p>
+      <div class="row">
+        <button id="detectrun" class="btn primary">Detect the deck from a recording</button>
+        <button id="artrun" class="btn small">Fetch card pictures</button>
+        <button id="detectreload" class="btn small">Refresh the result</button>
+        <span id="detectmsg" class="msg"></span>
+      </div>
+      <div id="detectbody"></div>
+    </div>
+    <div id="deckwarn"></div>
+    <div class="row">
+      <label>Deck name: <input id="deckname" type="text" size="40"></label>
+      <span id="deckavg" class="pill"></span>
+    </div>
+    <table class="tbl" id="decktbl">
+      <thead><tr><th>#</th><th>Card</th><th>Elixir</th><th>Role</th><th>Level</th><th>Evo</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="row">
+      <button id="decksave" class="btn primary">Save deck</button>
+      <span id="deckmsg" class="msg"></span>
+    </div>
+    <p class="hint">Before writing, <code>config/cards.yaml</code> is backed up to
+      <code>data/config_backups/</code>. Only the <code>deck:</code> block is replaced.</p>
+  </section>
+
+  <!-- Towers ---------------- -->
+  <section id="tab-towers" class="panel">
+    <p class="lead">Tower troops of the simulator. <b>Your</b> tower is the same every
+      match; the opponent rolls one from the weights, so the more types carry a weight the
+      more variety the policy has to cope with. New towers take effect immediately, with
+      no code change.</p>
+      <h3>Your tower</h3>
+      <div class="row">
+        <label>Tower troop <select id="mytower"></select></label>
+        <label>Level <input id="mytowerlevel" type="number" min="1" max="20" style="width:70px"></label>
+        <span class="hint">Only <b>ratios</b> matter in the simulator: this level is the reference
+          against which opponent levels and card levels are measured.</span>
+      </div>
+      <div class="row">
+        <label>Tower range <input id="towerrange" type="number" step="0.001" style="width:90px"></label>
+        <label>King tower range <input id="kingrange" type="number" step="0.001" style="width:90px"></label>
+        <label>First shot delay (s)
+          <input id="towerfirsthit" type="number" step="0.05" style="width:80px"></label>
+      </div>
+    </div>
+    <div class="cfggroup">
+      <h3>Tower troops</h3>
+      <p class="hint">Hitpoints and damage apply at the reference level above and scale with
+        1.1^(level - reference). <code>damage per shot = DPS x shot interval</code>. The extra fields
+        are optional and model special abilities (Dagger Duchess: clip; Royal Chef: buff).</p>
+      <table class="tbl" id="towertbl">
+        <thead><tr><th>Name</th><th>HP</th><th>DPS</th><th>Shot interval (s)</th>
+          <th>Opponent weight</th><th>Extra fields</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="row">
+        <button id="toweradd" class="btn small">Add a tower troop</button>
+        <span class="hint">Weight 0 means the opponent never gets it.</span>
+      </div>
+    </div>
+    <div class="cfggroup">
+      <h3>King tower</h3>
+      <div class="row">
+        <label>HP <input id="kinghp" type="number" style="width:100px"></label>
+        <label>DPS <input id="kingdps" type="number" style="width:90px"></label>
+        <label>Shot interval <input id="kinghs" type="number" step="0.05" style="width:80px"></label>
+      </div>
+    </div>
+    <div class="row">
+      <button id="towersave" class="btn primary">Save towers</button>
+      <button id="towerreload" class="btn small">Discard</button>
+      <span id="towermsg" class="msg"></span>
+    </div>
+  </section>
+
+  <!-- speed ---------------- -->
+  <section id="tab-speed" class="panel">
+    <p class="lead">How fast this machine can practise, measured rather than guessed. The benchmark
+      plays for the same amount of time at different numbers of parallel matches and counts the
+      finished ones. It does <b>not</b> touch your real checkpoint.</p>
+    <div id="speedbody"></div>
+  </section>
+
+  <!-- Settings ---------------- -->
+  <section id="tab-config" class="panel">
+    <p class="lead">The settings that matter from <code>config/config.yaml</code>. Only the line in
+      question is replaced, every comment stays; a backup is taken first and the result is checked
+      afterwards. Invalid YAML is never written.</p>
+    <div class="row sticky">
+      <button id="cfgsave" class="btn primary">Save changes</button>
+      <button id="cfgreset" class="btn small">Discard</button>
+      <span id="cfgmsg" class="msg"></span>
+    </div>
+    <div id="cfgbody"></div>
+  </section>
+
+  <!-- labelling ---------------- -->
+  <section id="tab-labeling" class="panel">
+    <p class="lead">The <b>only</b> place boxes are drawn. This is the vision AI's training data:
+      the model already suggests boxes (dashed orange), you correct them and save. Deleting a
+      wrong box is one click, so the suggestions are deliberately generous.</p>
+    <p class="hint">Click a box to select it &middot; pick a class to rename it &middot;
+      <kbd>Del</kbd> removes it &middot; drag to add one &middot; <kbd>Enter</kbd> saves and moves on.
+      Need frames? Control tab &rarr; Vision AI &rarr; <i>1. Get frames to label</i>.</p>
+    <div id="labstats" class="row"></div>
+    <div class="row">
+      <button id="labprev" class="btn small">Previous</button>
+      <button id="labnext" class="btn small">Next frame</button>
+      <!-- 236 classes in the taxonomy's own order is unusable without a filter: type a few
+           letters, the list narrows, the class ids underneath stay untouched. -->
+      <label>Class <input id="labsearch" type="text" placeholder="search ..." size="12"
+             title="Filters the list below. Enter picks the first match."></label>
+      <select id="labclass" title="Recently used first, then alphabetical."></select>
+      <span id="labclassmsg" class="msg"></span>
+      <button id="labsave" class="btn primary">Save and continue</button>
+      <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
+      <button id="labundo" class="btn small" title="Removes the selected box, or the last one drawn">Delete box</button>
+      <span id="labmsg" class="msg"></span>
+    </div>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="labprefill" checked>
+        Pre-fill boxes from the model</label>
+      <span id="labprefillmsg" class="msg"></span>
+    </div>
+    <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
+         state) always ran silently, so this frame looked like it was only "units or
+         nothing". Show every reading on the same picture instead. -->
+    <div class="row">
+      <label><input type="checkbox" id="labread"> Show everything the bot reads off this frame</label>
+      <span id="labreadmsg" class="msg"></span>
+    </div>
+    <div id="labreadout"></div>
+    <div id="labwrap" class="heatwrap">
+      <div id="labcanvaswrap" style="position:relative;display:inline-block">
+        <img id="labimg" alt="frame to label" style="display:block;max-width:100%">
+        <canvas id="labcanvas" style="position:absolute;left:0;top:0;cursor:crosshair"></canvas>
+      </div>
+      <div id="lablist" class="heatlegend"></div>
+    </div>
+  </section>
+
+  <!-- models ---------------- -->
+  <section id="tab-ckpt" class="panel">
+    <p class="lead">This project trains <b>two separate networks</b>. They have different jobs,
+      different training commands and different files, and the playing AI is half blind without
+      the vision one. Each has <b>one</b> model you actually use; the extra files below it are
+      that same model at different stages, not competing AIs.</p>
+    <div class="row"><button id="ckptreload" class="btn small">Refresh</button></div>
+    <div id="ckptbody"></div>
+  </section>
+</main>
+
+<!-- log ---------------- -->
+<section id="logpanel" class="collapsed">
+  <div class="loghead">
+    <button id="logtoggle" class="btn small" title="Show or hide the log">Show log</button>
+    <select id="logselect"></select>
+    <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-scroll</label>
+    <button id="logclear" class="btn small">Clear view</button>
+    <a id="logdl" class="btn small" href="#">Log file</a>
+    <span id="logstatus" class="hint"></span>
+  </div>
+  <pre id="log"></pre>
+</section>
+
+<!-- Modal (Notes) ---------------- -->
+<div id="modal" class="modal hidden">
+  <div class="modalbox">
+    <div class="modalhead"><span id="modaltitle"></span>
+      <button id="modalx" class="btn small">Close</button></div>
+    <div id="modalbody" class="modalbody"></div>
+    <div class="modalfoot">
+      <span id="modalsteps" class="hint"></span>
+      <div class="spacer"></div>
+      <button id="modalback" class="btn small">Back</button>
+      <button id="modalnext" class="btn primary">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- guided tour ---------------- -->
+<div id="tour" class="hidden">
+  <div id="tourblock"></div>
+  <div id="tourhole"></div>
+  <div id="tourcard">
+    <div class="th"><span id="tourtitle"></span></div>
+    <div id="tourtext"></div>
+    <div class="tf">
+      <span id="tourcount" class="hint"></span>
+      <div class="spacer"></div>
+      <button id="tourend" class="btn small">End tour</button>
+      <button id="tourback" class="btn small">Back</button>
+      <button id="tournext" class="btn primary">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>window.__TOS__ = {{ tos|tojson }};</script>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -32,7 +32,7 @@ class EditError(ValueError):
 # Only scalars and single-line lists: those are the ones a line patch can handle
 # safely, and they are the knobs that actually get turned between runs.
 FIELDS: List[Dict[str, Any]] = [
-    # -- Simulator / Trainingslauf
+    # -- simulator / training run
     {"path": ["sim", "envs"], "type": "int", "min": 1, "max": 256, "group": "Simulator",
      "label": "Parallel matches (sim.envs)",
      "help": "How many matches run at the same time feeding one learner. More means a more "
@@ -74,7 +74,7 @@ FIELDS: List[Dict[str, Any]] = [
     {"path": ["train", "min_play_elixir"], "type": "int", "min": 0, "max": 10,
      "group": "Exploration", "label": "Minimum elixir for a random play",
      "help": "Below this the exploration branch always waits."},
-    # -- Lernen
+    # -- learning
     {"path": ["train", "device"], "type": "choice", "choices": ["cuda", "cpu"], "group": "Learning",
      "label": "Device", "help": "cuda uses the GPU and falls back to the CPU when none is usable."},
     {"path": ["train", "lr"], "type": "float", "min": 1e-7, "max": 1e-1, "group": "Learning",
@@ -98,7 +98,7 @@ FIELDS: List[Dict[str, Any]] = [
      "label": "Gradient clipping", "help": "Upper bound on the gradient norm."},
     {"path": ["train", "bc_epochs"], "type": "int", "min": 1, "max": 500, "group": "Learning",
      "label": "BC epochs", "help": "Epochs per behaviour cloning pass."},
-    # -- Self-Play & Benchmark
+    # -- self-play & benchmark
     {"path": ["sim", "selfplay_prob"], "type": "float", "min": 0.0, "max": 1.0, "group": "Self-Play",
      "label": "Self-play share", "help": "Chance of playing a frozen copy of itself instead of a "
                                           "scripted bot. 0 turns it off."},
@@ -128,7 +128,7 @@ FIELDS: List[Dict[str, Any]] = [
      "group": "Benchmark", "label": "Log line every N matches"},
     {"path": ["sim", "save_every_matches"], "type": "int", "min": 1, "max": 10000,
      "group": "Benchmark", "label": "Checkpoint every N matches"},
-    # -- Belohnungen
+    # -- rewards
     {"path": ["rewards", "win"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
      "label": "Win", "help": "Final reward for winning a match."},
     {"path": ["rewards", "loss"], "type": "float", "min": -100, "max": 100, "group": "Rewards",
@@ -162,7 +162,7 @@ FIELDS: List[Dict[str, Any]] = [
     {"path": ["rewards", "correctness_cap"], "type": "float", "min": 0, "max": 1000,
      "group": "Rewards", "label": "Cap on shaping rewards",
      "help": "Limits how much the correctness rewards weigh against the match outcome."},
-    # -- Wahrnehmung / Aktionen
+    # -- perception / actions
     {"path": ["action", "grid"], "type": "intlist", "group": "Perception",
      "label": "Placement grid [columns, rows]",
      "help": "[18,32] fine or [18,24] coarse. Has to match both the dataset and the checkpoint."},
@@ -180,6 +180,36 @@ FIELDS: List[Dict[str, Any]] = [
      "label": "Action interval when playing (s)"},
     {"path": ["play", "epsilon"], "type": "float", "min": 0.0, "max": 1.0, "group": "Live",
      "label": "Epsilon when playing", "help": "0 makes the policy purely greedy."},
+    # -- live detector preview + overlay replay clips (both need a trained detector to draw anything)
+    {"path": ["preview", "enabled"], "type": "bool", "group": "Detector preview & clips",
+     "label": "Live preview window",
+     "help": "Pops a small window beside the game during train-rl showing each captured frame "
+             "with the detector's boxes -- exactly what the policy's perception sees. Native "
+             "window, not shown in this browser panel."},
+    {"path": ["preview", "scale"], "type": "float", "min": 0.1, "max": 1.0,
+     "group": "Detector preview & clips", "label": "Preview window size",
+     "help": "Fraction of the captured frame."},
+    {"path": ["preview", "fps"], "type": "int", "min": 1, "max": 60,
+     "group": "Detector preview & clips", "label": "Preview refresh rate (fps)"},
+    {"path": ["overlay_replay", "enabled"], "type": "bool", "group": "Detector preview & clips",
+     "label": "Record opening clips",
+     "help": "Saves the first part of each match to a video with the detector's boxes burned "
+             "in, under overlay_replay.out_dir. Off by default; needs a trained detector to "
+             "show anything."},
+    {"path": ["overlay_replay", "seconds"], "type": "float", "min": 1.0, "max": 600.0,
+     "group": "Detector preview & clips", "label": "Clip length (s)",
+     "help": "How much of each match's opening is recorded, from the moment IN_MATCH is detected."},
+    {"path": ["overlay_replay", "fps"], "type": "int", "min": 1, "max": 60,
+     "group": "Detector preview & clips", "label": "Clip frame rate (fps)"},
+    {"path": ["overlay_replay", "scale"], "type": "float", "min": 0.1, "max": 1.0,
+     "group": "Detector preview & clips", "label": "Clip size",
+     "help": "Downscale before encoding. 0.5 = half size, roughly 25 MB per 60s clip at 30fps."},
+    {"path": ["overlay_replay", "max_clips"], "type": "int", "min": 0, "max": 1000,
+     "group": "Detector preview & clips", "label": "Clip cap per session",
+     "help": "Hard cap on clips per run (a long unattended train-rl would otherwise fill the "
+             "disk). 0 removes the cap."},
+    {"path": ["overlay_replay", "out_dir"], "type": "str",
+     "group": "Detector preview & clips", "label": "Clip folder"},
 ]
 
 FIELD_BY_KEY: Dict[str, Dict[str, Any]] = {".".join(f["path"]): f for f in FIELDS}
@@ -487,8 +517,8 @@ def read_towers(cfg_path: Path) -> Dict[str, Any]:
     return {
         "my_tower_troop": sim.get("my_tower_troop", "princess"),
         "my_tower_level": sim.get("my_tower_level", 15),
-        "tower_range": sim.get("tower_range", 0.20),
-        "king_range": sim.get("king_range", 0.187),
+        "tower_range": sim.get("tower_range", 8.0),
+        "king_range": sim.get("king_range", 7.5),
         "tower_first_hit": sim.get("tower_first_hit", 0.8),
         "king_tower": dict(sim.get("king_tower") or {}),
         "tower_troops": {k: dict(v) for k, v in (sim.get("tower_troops") or {}).items()},
@@ -565,8 +595,11 @@ def save_towers(cfg_path: Path, payload: Dict[str, Any], backup_dir: Path) -> Di
         ("sim", "my_tower_troop"): my,
         ("sim", "my_tower_level"): int(_num("tower level", payload.get("my_tower_level", 15),
                                             1, 20, integer=True)),
-        ("sim", "tower_range"): _num("tower range", payload.get("tower_range", 0.2), 0.01, 1.0),
-        ("sim", "king_range"): _num("king tower range", payload.get("king_range", 0.187), 0.01, 1.0),
+        # TILES since the 18x32 board rebuild. These bounds used to be (0.01, 1.0) from the old
+        # SCREEN-NORMALISED era, which silently CLAMPED a saved 8.0-tile range down to 1.0 -- i.e.
+        # opening and saving this editor would have quietly disarmed every crown tower.
+        ("sim", "tower_range"): _num("tower range (tiles)", payload.get("tower_range", 8.0), 0.5, 32.0),
+        ("sim", "king_range"): _num("king tower range (tiles)", payload.get("king_range", 7.5), 0.5, 32.0),
         ("sim", "tower_first_hit"): _num("first shot delay",
                                          payload.get("tower_first_hit", 0.8), 0.0, 10.0),
     }

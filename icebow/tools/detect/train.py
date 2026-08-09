@@ -21,7 +21,8 @@ Then, from the `icebow/` folder:
     icebow\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model yolo11s.pt    # lightest good option (tight VRAM)
     icebow\\.venv\\Scripts\\python.exe tools\\detect\\train.py --model rtdetr-l.pt   # RT-DETR instead
 
-Weights land in runs/detect/board/weights/best.pt. Once you're happy with the mAP, wire the
+Weights land in runs/detect/vision/weights/best.pt -- ALWAYS that path. There is exactly one
+vision model in this project and a retrain replaces it. Once you're happy with the mAP, wire the
 detector into the observation (Stage 3): render its detections into semantic map channels fed
 to PolicyNet alongside the arena image, then re-derive the dataset + retrain BC and RL.
 
@@ -34,6 +35,10 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+
+# The ONE vision model's folder. Everything that loads a detector resolves to
+# runs/detect/<RUN_NAME>/weights/best.pt; see detect._resolve_weights.
+RUN_NAME = "vision"
 
 
 def _install_status_aug() -> str:
@@ -97,7 +102,7 @@ def main() -> None:
                          "Albumentations if installed. Default OFF (leaves training unchanged).")
     ap.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
                     help="CONTINUE an interrupted run instead of starting a new one. Bare --resume picks the "
-                         "newest runs/detect/*/weights/last.pt; pass a run name (e.g. board-17) to pick one. "
+                         "runs/detect/vision/weights/last.pt; pass a folder name to pick a different one. "
                          "Training dies quietly whenever its terminal is closed, and the run keeps its own "
                          "folder/epoch count/best.pt, so resuming loses nothing. All other flags are IGNORED -- "
                          "ultralytics restores them from the checkpoint's own args.")
@@ -119,10 +124,9 @@ def main() -> None:
     if args.resume:
         runs = root / "runs" / "detect"
         if args.resume == "auto":
-            ckpts = sorted(runs.glob("*/weights/last.pt"), key=lambda p: p.stat().st_mtime)
-            if not ckpts:
-                raise SystemExit(f"no runs/detect/*/weights/last.pt to resume under {runs}")
-            ckpt = ckpts[-1]
+            ckpt = runs / RUN_NAME / "weights" / "last.pt"
+            if not ckpt.exists():
+                raise SystemExit(f"nothing to resume: no {ckpt}")
         else:
             ckpt = runs / args.resume / "weights" / "last.pt"
             if not ckpt.exists():
@@ -141,11 +145,55 @@ def main() -> None:
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
         patience=args.patience, seed=args.seed,
-        project=str(root / "runs" / "detect"), name="board",
+        # ONE vision model, always the same folder. Ultralytics' default (exist_ok=False)
+        # auto-increments to board, board-2, board-3 ... which turns one network into a pile
+        # of identically named directories, silently loads "whichever was newest", and makes
+        # the count of models in this project unreadable. There is exactly one detector; a
+        # retrain replaces it.
+        project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
         # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
         hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
     )
-    print("done -> runs/detect/board/weights/best.pt")
+    print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
+    write_model_card(root / "runs" / "detect" / RUN_NAME, args)
+
+
+def write_model_card(run_dir: Path, args) -> None:
+    """Record what the weights on disk ARE, once a training finishes.
+
+    Reusing one folder means a new run truncates results.csv the moment it starts -- so an
+    aborted training leaves the previous (still installed) weights with no record of their
+    quality at all. Measured that the hard way. The card is written only on COMPLETION, so it
+    always describes best.pt as it currently stands, while results.csv stays free to show
+    whatever is training right now.
+    """
+    import json
+    csv = run_dir / "results.csv"
+    card = {"model": args.model, "imgsz": args.imgsz, "epochs_requested": args.epochs}
+    try:
+        lines = [ln for ln in csv.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        head, last = [c.strip() for c in lines[0].split(",")], lines[-1].split(",")
+        row = dict(zip(head, last))
+        for key, col in (("epochs", "epoch"), ("mAP50", "metrics/mAP50(B)"),
+                         ("mAP50_95", "metrics/mAP50-95(B)"),
+                         ("precision", "metrics/precision(B)"), ("recall", "metrics/recall(B)")):
+            if row.get(col) not in (None, "", "nan"):
+                card[key] = float(row[col])
+    except (OSError, ValueError, IndexError):
+        pass
+    try:
+        det = run_dir.parents[2] / "data" / "detect"   # runs/detect/<run> -> icebow/
+        boxes = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
+                    for split in ("train", "val")
+                    for p in (det / "labels" / split).glob("*.txt"))
+        card["trained_on_boxes"] = boxes
+    except OSError:
+        pass
+    try:
+        (run_dir / "model_card.json").write_text(json.dumps(card, indent=2), encoding="utf-8")
+        print(f"[train] model card -> {run_dir / 'model_card.json'}")
+    except OSError as exc:
+        print(f"[train] could not write the model card: {exc}")
 
 
 if __name__ == "__main__":

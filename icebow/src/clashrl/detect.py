@@ -37,7 +37,7 @@ import cv2
 import numpy as np
 import yaml
 
-from .label import _extract_plays, _latest_session
+from .label import _extract_plays, _latest_session, _resolve_session
 from .vision import Vision
 
 
@@ -48,6 +48,24 @@ def _load_classes(cfg) -> list[str]:
     if not names:
         raise ValueError(f"no classes listed in {f}")
     return names
+
+
+def model_class_names(model) -> list[str]:
+    """The class names the WEIGHTS were trained with -- the ONLY correct way to decode a prediction.
+
+    A checkpoint's class indices are frozen at training time, so they must NOT be decoded through
+    `config/detect_classes.yaml` (or `data.yaml`): those describe the CURRENT taxonomy, which drifts
+    as classes are added or removed. Removing the 11 event-only cards took the taxonomy 236 -> 225
+    while `board-16` still carries 236, and the two lists diverge from index 16 onward
+    (`barbarian_launcher` vs `barbarians`). Decoding board-16 through the new list therefore renamed
+    every class from 16 up and blew up past 224 -- silently wrong for 209 classes, which is far worse
+    than the crash that exposed it. Ultralytics stores the names in the .pt; read them from there and
+    map to the current taxonomy BY NAME.
+    """
+    n = getattr(model, "names", None) or {}
+    if isinstance(n, dict):
+        return [str(n[i]) for i in sorted(n)]
+    return [str(x) for x in n]
 
 
 def _read_at(cap, frame_times, t, total):
@@ -365,6 +383,21 @@ class OverlayReplayRecorder:
 
     def __init__(self, cfg):
         self.enabled = bool(cfg.get("overlay_replay", "enabled", default=False))
+        # The whole point of these clips is the detector's boxes burned into them. With no
+        # trained detector there is nothing to draw, so what lands on disk is a plain screen
+        # recording -- measured at ~27 MB per 60s match, five per session by default. Refuse
+        # to spend that on an empty overlay and say why, instead of silently filling the disk.
+        if self.enabled:
+            try:
+                wpath, runs = _resolve_weights(cfg, None)
+            except Exception:                             # noqa: BLE001
+                wpath, runs = None, None
+            if wpath is None or not Path(wpath).exists():
+                print("[overlay-replay] no trained detector -- clips would be plain screen "
+                      f"recordings with no boxes, so recording is OFF. Train one (detect-* "
+                      f"commands, output under {runs or 'runs/detect'}) or set "
+                      "overlay_replay.enabled: false to silence this.")
+                self.enabled = False
         self.seconds = float(cfg.get("overlay_replay", "seconds", default=60.0))
         self.fps = min(60.0, max(1.0, float(cfg.get("overlay_replay", "fps", default=30.0))))
         self.scale = float(cfg.get("overlay_replay", "scale", default=0.5))
@@ -512,7 +545,7 @@ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:
     if do_all:
         sessions = sorted(p for p in root.glob("*") if (p / "meta.json").exists())
     else:
-        one = Path(session_arg) if session_arg else _latest_session(root)
+        one = _resolve_session(root, session_arg) if session_arg else _latest_session(root)
         sessions = [one] if one else []
     if not sessions:
         print(f"[autolabel] no sessions under {root}")
@@ -1308,14 +1341,28 @@ class TrainFrameCollector:
         return True
 
 
+VISION_RUN = "vision"           # the ONE detector's folder; tools/detect/train.py writes here
+
+
 def _resolve_weights(cfg, weights):
-    """Return the detector weights path: the given --weights, else the most recently trained
-    runs/detect/*/weights/best.pt."""
+    """THE vision model: runs/detect/vision/weights/best.pt. There is no second one.
+
+    History, because this used to be three different answers: it globbed
+    runs/detect/*/weights/best.pt and took the newest (so the operating detector silently
+    changed every time anything trained), then a ``detect.weights`` pin was added to stop
+    that (so the operating detector depended on a config value that could point at a run
+    from another machine). Both were ways of choosing between models that should never have
+    existed as separate models in the first place. Training writes one folder and replaces
+    it; this reads that folder; nothing selects.
+
+    ``weights`` (the --weights flag) still works for the offline tools that legitimately
+    compare two checkpoint files, e.g. detect-eval.
+    """
     runs = Path(cfg.path("runs/detect"))
     if weights:
         return Path(weights), runs
-    cands = sorted(runs.glob("*/weights/best.pt"), key=lambda p: p.stat().st_mtime)
-    return (cands[-1] if cands else None), runs
+    p = runs / VISION_RUN / "weights" / "best.pt"
+    return (p if p.exists() else None), runs
 
 
 def detect_preview(cfg, session_arg=None, count=24, weights=None, conf=0.25) -> None:
