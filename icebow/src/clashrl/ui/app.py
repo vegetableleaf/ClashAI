@@ -11,6 +11,8 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List
 
+from zipfile import BadZipFile
+
 from flask import Flask, Response, jsonify, render_template, request, send_file
 
 from . import jobs as jobcat
@@ -407,6 +409,72 @@ def create_app(cfg) -> Flask:
         except OSError as exc:
             return jsonify({"error": f"could not write: {exc}"}), 500
         return jsonify(res)
+
+    # -- vision model in / out ---------------------------------------------
+    @app.get("/api/vision/bundle")
+    def vision_bundle_info():
+        """What an export would contain, so the size and contents are visible first."""
+        from . import vision_io
+        return jsonify(vision_io.describe(root))
+
+    @app.get("/api/vision/export")
+    def vision_export():
+        """Download the vision model as one .zip. `kind=model` or `kind=full` (with labels)."""
+        from . import vision_io
+        kind = request.args.get("kind", "model")
+        out = root / "data" / "exports" / f"clashai-vision-{kind}-{time.strftime('%Y%m%d-%H%M%S')}.zip"
+        try:
+            res = vision_io.export(root, out, kind)
+        except (ValueError, FileNotFoundError) as exc:
+            return jsonify({"error": str(exc)}), 400
+        except OSError as exc:
+            return jsonify({"error": f"could not write: {exc}"}), 500
+        return send_file(res["path"], as_attachment=True, download_name=out.name)
+
+    @app.post("/api/vision/import")
+    def vision_import():
+        """Install an uploaded bundle. Dry-run first unless `apply=1`, so nothing is a surprise."""
+        from . import vision_io
+        f = request.files.get("bundle")
+        if f is None:
+            return jsonify({"error": "no file uploaded"}), 400
+        tmp = root / "data" / "exports" / "_incoming.zip"
+        tmp.parent.mkdir(parents=True, exist_ok=True)
+        f.save(tmp)
+        try:
+            if request.form.get("apply") != "1":
+                return jsonify({"dry_run": True, "manifest": vision_io.inspect(tmp)})
+            res = vision_io.import_(
+                root, tmp,
+                take_model=request.form.get("model", "1") == "1",
+                take_dataset=request.form.get("dataset", "1") == "1",
+                backup_dir=root / "data" / "exports")
+            return jsonify(res)
+        except (ValueError, BadZipFile) as exc:
+            return jsonify({"error": str(exc)}), 400
+        except OSError as exc:
+            return jsonify({"error": f"could not read the bundle: {exc}"}), 500
+
+    # -- simulator replay --------------------------------------------------
+    _SIM_CLIP = "data/sim_view.mp4"
+
+    @app.get("/api/simview")
+    def simview_info():
+        """Whether a recorded simulator match exists, and how fresh it is."""
+        p = root / _SIM_CLIP
+        if not p.is_file():
+            return jsonify({"available": False, "rel": _SIM_CLIP})
+        st = p.stat()
+        return jsonify({"available": True, "rel": _SIM_CLIP, "size": st.st_size,
+                        "mtime": st.st_mtime})
+
+    @app.get("/api/simview/video")
+    def simview_video():
+        """Serve the clip itself. Fixed path, so nothing here takes a name from the client."""
+        p = root / _SIM_CLIP
+        if not p.is_file():
+            return jsonify({"error": "no clip yet"}), 404
+        return send_file(p, mimetype="video/mp4", conditional=True)
 
     # -- live view ---------------------------------------------------------
     @app.get("/api/live")
