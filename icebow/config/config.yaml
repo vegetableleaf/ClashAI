@@ -326,8 +326,8 @@ rewards:
   # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
   xbow_punish_mult: 1.5
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
-  cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
-  cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
+  cycle_plan: 0.4          # a CHEAP play that advances toward a NEEDED counter and still leaves cycle_spare_elixir behind
+  cycle_waste: -0.4        # cheap play that spends you down below the reserve with NOTHING to defend against
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -419,7 +419,12 @@ env:
   # -- CORRECTNESS-reward geometry (used by the threat_response / elixir_trade / cycle_plan terms) --
   intercept_lane: 0.15           # same-lane tolerance: a counter within this |x| of the threat counts as placed to intercept
   cycle_cheap_max: 3             # a played card at/below this elixir counts as a CYCLE card (cycle_plan / cycle_waste)
-  cycle_spare_elixir: 7.0        # 'spare elixir' threshold: cycling toward a needed counter is rewarded only at/above this
+  # RESERVE, measured on the elixir LEFT AFTER the play (was 7.0 graded on PRE-spend elixir).
+  # MEASURED 2026-08-08 on the 5500-match checkpoint: 96% of this deck's plays are cheap (8 of 10
+  # identities cost <= 3), pre-spend elixir at a cheap play was p90 3.60, so 'pre-spend < 7' was TRUE
+  # on 100% of them -- a flat tax on every action rather than a shaping signal, and the policy's
+  # answer was to stop playing (plays/match 46.8 -> 26.0, winrate 8.3% -> 2.8%).
+  cycle_spare_elixir: 3.0        # a discretionary cheap play should leave at least this much in the bar
   # QUIET-BOARD exception to the premature-defender penalty. On a quiet board WAITING is the safe
   # default -- a Knight/Ice Wizard committed to one lane can be punished by a push in the OTHER lane,
   # so the defender is spent and the far lane is open. The exception is LEAKING FIRST: if you hold
