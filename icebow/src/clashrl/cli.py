@@ -257,6 +257,12 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_katacr_segments(args) -> None:
+    from .katacr_segments import katacr_segments
+    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+                    dry_run=args.dry_run)
+
+
 def _cmd_models(args) -> None:
     from .models import models
     models(Config.load(args.config))
@@ -606,6 +612,17 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    kseg = sub.add_parser("katacr-segments",
+                          help="import KataCR's MIT-licensed segment library into the sprite bank "
+                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
+                               "to our arena -- synth pastes at native size)")
+    kseg.add_argument("--src", required=True,
+                      help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
+    kseg.add_argument("--scale", default="auto",
+                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
+    kseg.set_defaults(func=_cmd_katacr_segments)
 
     mdl = sub.add_parser("models",
                          help="which NETWORKS exist and which one each path actually uses -- there "
