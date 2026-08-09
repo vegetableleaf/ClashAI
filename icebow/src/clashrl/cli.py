@@ -257,6 +257,11 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_models(args) -> None:
+    from .models import models
+    models(Config.load(args.config))
+
+
 def _cmd_sprites(args) -> None:
     from .sprites import extract_sprites, synth_images, verify_sprites
     cfg = Config.load(args.config)
@@ -601,6 +606,12 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    mdl = sub.add_parser("models",
+                         help="which NETWORKS exist and which one each path actually uses -- there "
+                              "are two (the VISION detector and the PLAYING policy) and they share "
+                              "nothing; also checks the pin resolves and inference imgsz matches training")
+    mdl.set_defaults(func=_cmd_models)
 
     spr = sub.add_parser("sprites",
                          help="cut annotated units out of their arena background (GrabCut) into a per-class RGBA "
