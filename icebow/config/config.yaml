@@ -327,8 +327,20 @@ rewards:
   # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
   xbow_punish_mult: 1.5
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
-  cycle_plan: 0.4          # a CHEAP play at spare elixir that advances toward a NEEDED counter you don't hold but the deck does
-  cycle_waste: -0.4        # purposeless cheap spam (no cycling plan and no spare elixir)
+  cycle_plan: 0.4          # LIVE env only -- the SIM's cycle_plan was DELETED (110 fires, 0 positive)
+  cycle_waste: -0.4        # LIVE env only; `env.py:_cycle_plan_live` has the same one-sided shape
+  # Weight on the COUNTERFACTUAL term (sim.counterfactual gates whether it runs at all): the tower
+  # differential the real branch reached minus the branch where this card was HELD. Zero-mean by
+  # construction -- the property every hand-written per-play term has lacked -- so it cannot become an
+  # action tax however large it is. NOT routed through correctness_cap for that reason: capping only
+  # the positive side of a signed term would reintroduce exactly the asymmetry it exists to avoid.
+  # CALIBRATED, not guessed. Because the term is zero-mean its MEAN per match is ~0 by design, so the
+  # quantity to match against its neighbours is its per-match STANDARD DEVIATION. MEASURED over 40
+  # matches on the 4096-match checkpoint at weight 1.0: per-match total mean -0.015, SD 0.089, with
+  # 1.0 settlements/match (17 positive / 22 negative). Its neighbours are _trade_reward 4.88/match and
+  # (now deleted) _cycle_plan 1.10. Weight 10 puts its SD at ~0.9/match -- a real vote, deliberately
+  # NOT loud enough to dominate the trade term while it is still only ~1 settlement per match.
+  counterfactual: 10.0
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -420,7 +432,12 @@ env:
   # -- CORRECTNESS-reward geometry (used by the threat_response / elixir_trade / cycle_plan terms) --
   intercept_lane: 0.15           # same-lane tolerance: a counter within this |x| of the threat counts as placed to intercept
   cycle_cheap_max: 3             # a played card at/below this elixir counts as a CYCLE card (cycle_plan / cycle_waste)
-  cycle_spare_elixir: 7.0        # 'spare elixir' threshold: cycling toward a needed counter is rewarded only at/above this
+  # RESERVE, measured on the elixir LEFT AFTER the play (was 7.0 graded on PRE-spend elixir).
+  # MEASURED 2026-08-08 on the 5500-match checkpoint: 96% of this deck's plays are cheap (8 of 10
+  # identities cost <= 3), pre-spend elixir at a cheap play was p90 3.60, so 'pre-spend < 7' was TRUE
+  # on 100% of them -- a flat tax on every action rather than a shaping signal, and the policy's
+  # answer was to stop playing (plays/match 46.8 -> 26.0, winrate 8.3% -> 2.8%).
+  cycle_spare_elixir: 3.0        # a discretionary cheap play should leave at least this much in the bar
   # QUIET-BOARD exception to the premature-defender penalty. On a quiet board WAITING is the safe
   # default -- a Knight/Ice Wizard committed to one lane can be punished by a push in the OTHER lane,
   # so the defender is spent and the far lane is open. The exception is LEAKING FIRST: if you hold
@@ -881,6 +898,33 @@ sim:
   # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
   # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
   ppo_gate_threshold: 0.25
+  # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
+  # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,
+  # rolls that branch `horizon_s` with the AGENT DOING NOTHING, and later compares the real branch's
+  # tower differential against it -- "did playing this beat holding it?" That difference is zero-mean
+  # by construction (helped -> +, hurt -> -), which is the property every hand-written per-play term
+  # has failed to have: cycle_plan fired 0 bonuses against 305 penalties and threat_response's
+  # quiet-board branch 0 against 257, and both taught the policy to stop playing.
+  # COST, MEASURED end-to-end with the opponent acting inside the branch (a 39-unit board, against a
+  # 99 ms baseline match = 125 decisions x 0.79 ms). NB my first estimate of 14 ms was 3x too low
+  # because it rolled a QUIET fork: the opponent keeps deploying inside the branch, so the board grows
+  # and the ticks get dearer. Real cost is a ~6.5 ms floor (deepcopy + setup) plus ~3.5 ms per second
+  # of horizon:
+  #   horizon   ms/fork   forks for a 2x slowdown
+  #      8 s     35.0        2.8
+  #      4 s     24.0        4.1
+  #      2 s     16.1        6.1
+  #      1 s     10.5        9.4
+  # The budget is a HARD PER-MATCH CAP, not a probability, so the worst case is deterministic and a
+  # busy match cannot cost ten times a quiet one. Raise budget_per_match to buy signal with wall clock.
+  counterfactual:
+    enabled: true            # ON: it now REPLACES cycle_plan, which was deleted for being one-sided
+    horizon_s: 6.0           # lookahead per fork. A preventable tower hit lands in a few seconds and a
+                             # bridge wincon connects in ~5-10 s, so this must not be cut much further;
+                             # the GAE window is 17 s, so 6 s sits comfortably inside it.
+    budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
+    min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
+    cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

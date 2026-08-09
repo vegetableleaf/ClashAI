@@ -10,6 +10,7 @@ range, Miner on the enemy tower). Medium fidelity -> a sim-trained policy is a P
 """
 from __future__ import annotations
 
+import copy
 import random
 from typing import Tuple
 
@@ -158,6 +159,15 @@ class SimMatchEnv:
         self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
+        # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
+        self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
+        self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
+        self.cf_budget = int(cfg.get("sim", "counterfactual", "budget_per_match", default=12))
+        self.cf_min_units = int(cfg.get("sim", "counterfactual", "min_units", default=1))
+        self.cf_cap = float(cfg.get("sim", "counterfactual", "cap", default=1.0))
+        self.w_counterfactual = r("counterfactual", 1.0)   # weight on (real - held-the-card) position
+        self._cf_used = 0
+        self._cf_watch: list = []
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
         # those are screen-space normalised distances on a foreshortened phone frame.
         self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
@@ -304,6 +314,8 @@ class SimMatchEnv:
         self.rng.shuffle(self.cycle)
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
         self._match_bonus = 0.0
+        self._cf_used = 0                # counterfactual fork budget is PER MATCH
+        self._cf_watch = []              # ...and no fork may outlive the match that opened it
         self._prev_evalue = 0.0
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
@@ -384,16 +396,25 @@ class SimMatchEnv:
         tid = self._threat_id_true
         prof = self._deck_profiles[card_id]
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            if ny >= 0.5 and not prof.win_condition and not prof.spell and card_id not in self.miner_ids:
-                # QUIET BOARD. Holding is right by default, but not when you are about to leak FIRST.
-                # Without this the reward CONTRADICTED the leak term: at >= 9.99 elixir, playing a cheap
-                # defender scored -0.4 (premature) while simply waiting scored -0.2 (leak), so the policy
-                # was taught to overflow its bar rather than spend. MEASURED: real threats exist on only
-                # 14.8% of steps, so the board is usually quiet and this branch was firing on ~12.5
-                # plays/match at -0.4 -- the single biggest negative in the reward.
-                if self._leaking_first(self.specs[card_id].elixir):
-                    return 0.0
-                return self.w_threat_miss * 0.4          # a defender played on a QUIET board = premature (small)
+            # QUIET BOARD -> NOT GRADED. This branch used to charge w_threat_miss * 0.4 for playing a
+            # defender with no threat on the board ("premature"). It was the single largest remaining
+            # one-sided penalty: MEASURED over 40 matches, 257 fires and ZERO bonuses (-2.57/match),
+            # while the DEFENSIVE half of this same term was healthy and balanced at +63 / -66.
+            #
+            # It is deleted rather than narrowed because the question it asks CANNOT BE ANSWERED AT
+            # PLAY TIME. Whether cycling a cheap defender on a quiet board was right depends entirely
+            # on what happens next: it can rotate you back to the Tesla that stops a bridge wincon, or
+            # it can leave you holding nothing when the push lands in the other lane. Same board, same
+            # card, opposite verdicts. An instantaneous classifier has to guess, and a guess that can
+            # only ever subtract is an action tax -- it made "play less" strictly better regardless of
+            # whether playing helped, and the policy found that twice (plays/match 50.1 -> 30.9 with
+            # winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1).
+            #
+            # The consequence it was guessing at is ALREADY MEASURED. agent_dt is 1.0 s and GAE runs at
+            # gamma 0.99 / lambda 0.95 = a 17-SECOND credit window, which comfortably spans the few
+            # seconds to a preventable tower hit or the ~5-10 s for a bridge wincon to connect. If a
+            # cycle play really did cost a tower, the chip and crown terms bill it -- with the actual
+            # damage, at the actual time, instead of a prior. Keeping both charged it twice, once wrong.
             return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
@@ -559,23 +580,121 @@ class SimMatchEnv:
         return any(card_threat.counters(self._deck_profiles[c], tid)
                    for c in range(self.n_cards) if c not in hand)
 
+    def _defending_now(self) -> bool:
+        """True when an enemy TROOP has crossed onto OUR half, i.e. there is something a defensive
+        card is actually answering. Ground truth, reward-side only."""
+        return any(u.team == 1 and u.spec.kind == "troop" and u.y > 0.5 for u in self.eng.units)
+
+    # -- counterfactual fork ------------------------------------------------
+    def _fork_ready(self) -> bool:
+        """Guardrail gate. MEASURED end-to-end with the opponent acting inside the branch, on a
+        39-unit board against a 99 ms baseline match: a fork costs a ~6.5 ms floor (deepcopy + setup)
+        plus ~3.5 ms per second of horizon -- 35.0 ms at 8 s, 24.0 at 4 s, 16.1 at 2 s. So only ~3
+        forks per match fit inside a 2x slowdown, and forking every play would be far worse. Bounded
+        by a hard PER-MATCH BUDGET rather than a sampling probability, so the worst case is
+        deterministic and a busy match cannot quietly cost ten times a quiet one."""
+        return (self.cf_enabled and self._cf_used < self.cf_budget and not self.eng.done
+                and len(self.eng.units) >= self.cf_min_units)
+
+    def _fork(self):
+        """An ISOLATED branch of the match: engine and opponent deep-copied, each with its OWN RNG.
+
+        RNG ISOLATION IS THE ENTIRE POINT OF THIS FUNCTION. `make_opponent` is handed `env.rng`, so
+        `ScriptedBot.act` draws from the SHARED generator (rng.random / rng.choice throughout its
+        placement logic, plus the detector-noise draws inside SelfPlayOpponent). Rolling a fork with
+        that same object would consume draws from the REAL match's stream: the real opponent's later
+        behaviour would depend on HOW MANY forks had been run, seeded runs would stop reproducing,
+        and nothing would ever flag it. deepcopy gives the clone a Random with the same state but an
+        independent future, so a branch is a faithful continuation that cannot write back.
+        """
+        return copy.deepcopy(self.eng), copy.deepcopy(self.opponent)
+
+    def _position(self, eng) -> float:
+        """'How good is my position', in units of one princess tower's max HP: my remaining tower HP
+        minus theirs. Ground truth, and the quantity the counterfactual compares."""
+        ref = max(1.0, float(eng.towers[0][0].max_hp))
+        mine = sum(max(0.0, float(t.hp)) for t in eng.towers[0])
+        theirs = sum(max(0.0, float(t.hp)) for t in eng.towers[1])
+        return (mine - theirs) / ref
+
+    def _roll_fork(self, eng, opp, horizon_s: float) -> float:
+        """Advance an isolated branch `horizon_s` seconds with the AGENT DOING NOTHING -- the
+        counterfactual is "what if I had held this card" -- while the opponent keeps playing.
+        Returns the position scalar at the end of the branch."""
+        steps = max(1, int(round(horizon_s / self.agent_dt)))
+        sub = max(1, int(round(self.agent_dt / self.sub_dt)))
+        for _ in range(steps):
+            if eng.done:
+                break
+            opp.act(eng)
+            for _ in range(sub):
+                eng.advance(self.sub_dt)
+                if eng.done:
+                    break
+        return self._position(eng)
+
+    def _cf_open(self) -> None:
+        """On a play: fork the match, roll the branch where we DID NOTHING, and remember its outcome
+        so the real branch can be compared against it once the same horizon has actually elapsed."""
+        if not self._fork_ready():
+            return
+        eng, opp = self._fork()
+        self._cf_watch.append((self.eng.t + self.cf_horizon,
+                               self._roll_fork(eng, opp, self.cf_horizon)))
+        self._cf_used += 1
+
+    def _cf_shaping(self) -> float:
+        """(6) COUNTERFACTUAL correctness: settle any fork whose horizon has now elapsed in the REAL
+        match, scoring `position(real) - position(held-the-card)`.
+
+        This is the term the hand-written per-play rules kept failing to be. It is ZERO-MEAN BY
+        CONSTRUCTION -- a play that improved the tower differential over doing nothing scores +, one
+        that made it worse scores -, and a play that changed nothing scores 0. Every instantaneous
+        classifier written so far could only subtract (cycle_plan fired 0 bonuses against 305
+        penalties; threat_response's quiet branch 0 against 257), which is an action tax and taught
+        the policy to stop playing rather than to play well.
+
+        It also answers the question the user posed, which genuinely cannot be answered at play time:
+        "does cycling this card now cost me tower damage that holding it would have prevented, or does
+        it rotate me back to the Tesla before their wincon reaches the bridge?" Same board, same card,
+        opposite verdicts depending on what follows -- so it is measured after the fact instead of
+        guessed. Settled early if the match ends inside the horizon, so a decisive play still scores.
+        """
+        if not self._cf_watch:
+            return 0.0
+        now, out, keep = self.eng.t, 0.0, []
+        for due, base in self._cf_watch:
+            if now < due and not self.eng.done:
+                keep.append((due, base))
+                continue
+            out += float(np.clip(self._position(self.eng) - base, -self.cf_cap, self.cf_cap))
+        self._cf_watch = keep
+        return out * self.w_counterfactual
+
     def _cycle_plan(self, card_id: int) -> float:
-        """(4) CYCLE-PLAN correctness: reward a CHEAP play that advances toward a NEEDED counter you don't
-        hold (but the deck does) when you have SPARE elixir -- deliberate cycling. Penalise cheap spam with
-        no such plan and no spare elixir. Neutral otherwise. ``card_id`` = the card just played, or -1."""
-        if card_id < 0 or self.specs[card_id].elixir > self.cycle_cheap_max:
-            return 0.0                                       # only cheap 'cycle' cards qualify
-        # PRE-spend elixir: this grades the DECISION, which was taken before the card was paid for.
-        # step() calls this AFTER eng.deploy() has already deducted the cost, so reading the engine
-        # directly asked "do you STILL hold 7 after paying?" -- with cheap_max 3 that needs 10 elixir
-        # (the cap), so the reward branch was all but unreachable while the penalty fired on nearly
-        # every cheap play. MEASURED over 20 matches before this fix: ~0.35 bonuses vs ~15.5 penalties
-        # per match (-6.04/match), i.e. a flat -0.4 tax on about half of all plays -- exactly backwards
-        # for a CYCLE deck, whose whole plan is cheap plays that rotate back to the win condition.
-        elx = self.eng.elixir[0] + self.specs[card_id].elixir
-        if self._needed_counter_coming(set(self._hand_ids())):
-            return self.w_cycle_plan if elx >= self.cycle_spare_elixir else 0.0
-        return self.w_cycle_waste if elx < self.cycle_spare_elixir else 0.0
+        """DELETED -- kept as a stub only to document why, because this term cost two training runs.
+
+        It graded whether a cheap play was 'deliberate cycling' or 'purposeless spam'. It failed
+        THREE times, each time by being a penalty with no reachable bonus:
+          1. read POST-spend elixir against a PRE-spend threshold -> 1 bonus vs 495 penalties
+          2. arithmetic fixed, still fired on 99.9% of cheap plays incl. 645 correct defensive ones
+          3. made discriminative (post-spend reserve + 'nothing to defend') -> STILL 0 bonuses,
+             MEASURED 110 fires / 0 positive / -1.10 per match on the 4096-match checkpoint
+
+        The bonus branch needs a recognised threat, no counter in hand, a counter in the deck AND a
+        post-spend reserve at once; post-spend elixir is p50 0.29, so it is unreachable in practice.
+        A term that can only subtract is not teaching correctness, it is charging rent on acting --
+        and the policy twice responded exactly as it should have, by playing less: plays/match
+        50.1 -> 30.9 with winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1.
+
+        The user's own framing is why no instantaneous rule can work here: cycling a cheap card can
+        rotate you back to the Tesla that stops a bridge wincon, or leave you empty when the push
+        lands in the other lane -- same board, same card, opposite verdicts depending on what
+        follows. That question is now answered after the fact by `_cf_shaping`, which forks the
+        branch where the card was HELD and compares. Nothing measurable was lost: zero bonuses in
+        110 fires means the behaviour this was written to reward was never once rewarded.
+        """
+        return 0.0
 
     def _trade_reward(self, value_eliminated: float, spent: float) -> float:
         """(2) ELIXIR-TRADE correctness: potential-based (enemy effective value eliminated this step minus
@@ -730,11 +849,11 @@ class SimMatchEnv:
                     # again here. A MISPLACED win condition (wincon < 0) still pays its spend, so
                     # throwing the X-Bow away is still a mistake.
                     spent = 0.0
-                reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
+                self._cf_open()             # ...and fork the alternative branch where we HELD this card
                 self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
             reward += self._threat_miss_idle()                 # (1) ignored an ANSWERABLE threat (uncapped penalty)
@@ -757,6 +876,7 @@ class SimMatchEnv:
         self._prev_evalue = evalue
         reward += self._trade_reward(edelta, spent)
         reward += self._bonus(self._nado_shaping())    # delayed tornado-execution credit (clump/combo/king/retarget)
+        reward += self._cf_shaping()   # delayed counterfactual: did playing beat holding? (uncapped: zero-mean)
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.w_leak
