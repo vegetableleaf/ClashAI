@@ -114,6 +114,12 @@
       <button id="stratreload" class="btn small">Refresh</button>
       <span class="hint">command <code>policy-stats</code>, result in <code>data/policy_stats.json</code></span>
     </div>
+    <!-- The counts above say WHAT it plays; the clip says whether it looks like play at
+         all. A policy that never defends scores the same as one that is merely unlucky. -->
+    <details id="simviewbox">
+      <summary>Watch a match</summary>
+      <div id="simviewbody"></div>
+    </details>
     <div id="stratbody"></div>
   </section>
 
@@ -277,6 +283,25 @@
       that same model at different stages, not competing AIs.</p>
     <div class="row"><button id="ckptreload" class="btn small">Refresh</button></div>
     <div id="ckptbody"></div>
+    <!-- Labelling is the expensive part and the part that combines across people, so the
+         vision model has to be movable in one file: no git, no server, no typed paths. -->
+    <div class="cfggroup">
+      <h3>Move the vision AI to another PC</h3>
+      <p class="hint" id="visioniodesc">One .zip in, one .zip out. Nothing is uploaded anywhere &mdash;
+        it writes a file and you move it however you like.</p>
+      <div class="row">
+        <button id="vioexportmodel" class="btn small">Download model only</button>
+        <button id="vioexportfull" class="btn small">Download model + labelled frames</button>
+        <span id="vioexportmsg" class="msg"></span>
+      </div>
+      <div class="row">
+        <label>Import a bundle <input type="file" id="vioimportfile" accept=".zip"></label>
+        <button id="vioimportcheck" class="btn small">Check it</button>
+        <button id="vioimportapply" class="btn primary" disabled>Install</button>
+        <span id="vioimportmsg" class="msg"></span>
+      </div>
+      <div id="vioimportinfo"></div>
+    </div>
   </section>
 </main>
 

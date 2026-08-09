@@ -972,7 +972,39 @@ function heatGrid(heat, gw, gh) {
   return wrap;
 }
 
+/* The clip the "Watch a simulated match" job records. Counts say WHAT it plays; the clip
+   says whether it looks like play at all -- a policy that never defends scores the same as
+   one that is merely unlucky. Loaded on demand: it is a video file. */
+async function loadSimView() {
+  const box = $("#simviewbody");
+  if (!box) return;
+  box.innerHTML = "";
+  let d;
+  try { d = await api("/api/simview"); } catch (e) { box.appendChild(el("p", "msg err", e.message)); return; }
+  if (!d.available) {
+    box.appendChild(el("p", "hint",
+      "No recording yet. Control tab → Playing AI → \"Watch a simulated match\". "
+      + "Without a checkpoint it plays random legal moves, which still shows whether the "
+      + "SIMULATOR itself behaves."));
+    return;
+  }
+  const v = document.createElement("video");
+  v.src = "/api/simview/video?t=" + Math.floor(d.mtime);
+  v.controls = true; v.loop = true; v.style.maxWidth = "100%";
+  v.style.border = "1px solid var(--line)";
+  box.appendChild(v);
+  box.appendChild(el("p", "hint",
+    `${d.rel} · ${fmtSize(d.size)} · recorded ${fmtTime(d.mtime)}. `
+    + "Re-run the job to replace it; the same seed replays the same match."));
+}
+
 async function loadStrategy() {
+  const box = $("#simviewbox");
+  if (box && !box.dataset.wired) {
+    box.dataset.wired = "1";
+    box.addEventListener("toggle", () => { if (box.open) loadSimView().catch(() => {}); });
+  }
+  if (box && box.open) loadSimView().catch(() => {});
   const body = $("#stratbody");
   const d = await api("/api/strategy");
   S.strat = d;
@@ -1790,6 +1822,7 @@ function headlineCard(title, subtitle, rows, extra) {
 let visionTimer = null;
 
 async function loadCheckpoints() {
+  loadVisionIO().catch(() => {});
   const m = await api("/api/models");
   const list = (m.policy && m.policy.all) || [];
   // While the detector trains, redraw on its own: results.csv gains a line per epoch, so
@@ -2048,6 +2081,71 @@ function sparkline(vals, title) {
 }
 
 $("#ckptreload").onclick = () => loadCheckpoints();
+
+/* ---------------- moving the vision AI between machines ---------------- */
+async function loadVisionIO() {
+  const d = await api("/api/vision/bundle").catch(() => null);
+  const box = $("#visioniodesc");
+  if (!box) return;
+  if (!d || !d.trained) {
+    box.textContent = "Nothing to export yet -- train the vision AI first.";
+    $("#vioexportmodel").disabled = $("#vioexportfull").disabled = true;
+    return;
+  }
+  const m = d.metrics || {};
+  box.innerHTML = "One .zip in, one .zip out. Nothing is uploaded anywhere &mdash; it writes a "
+    + "file and you move it however you like."
+    + `<br><b>Model only</b>: ${fmtSize(d.weights_size)}, measured mAP50 ${pct1(m.mAP50)}, `
+    + `recall ${pct1(m.recall)}, trained on ${m.trained_on_boxes} boxes.`
+    + `<br><b>Model + frames</b>: adds ${d.images} labelled images with ${d.boxes} boxes. `
+    + "Take this one if the other machine should keep TRAINING; the frames are the expensive part.";
+}
+
+(function visionIOWire() {
+  const file = $("#vioimportfile");
+  if (!file) return;
+  const msg = $("#vioimportmsg"), info = $("#vioimportinfo"), apply = $("#vioimportapply");
+  const dl = kind => { window.location = `/api/vision/export?kind=${kind}`;
+    $("#vioexportmsg").textContent = "packing ... the download starts on its own"; };
+  $("#vioexportmodel").onclick = () => dl("model");
+  $("#vioexportfull").onclick = () => dl("full");
+
+  // Always inspect before installing: an import replaces the model and merges frames, and
+  // a manifest costs nothing to read. The Install button stays disabled until it is checked.
+  const post_ = async (applyIt) => {
+    if (!file.files.length) { msg.className = "msg err"; msg.textContent = "pick a .zip first"; return; }
+    const fd = new FormData();
+    fd.append("bundle", file.files[0]);
+    if (applyIt) fd.append("apply", "1");
+    msg.className = "msg"; msg.textContent = applyIt ? "installing ..." : "reading ...";
+    const r = await fetch("/api/vision/import", { method: "POST", body: fd });
+    const d = await r.json();
+    if (!r.ok) { msg.className = "msg err"; msg.textContent = d.error || r.statusText;
+                 apply.disabled = true; return; }
+    if (d.dry_run) {
+      const m = d.manifest;
+      info.innerHTML = `<p class="hint">Bundle <b>${m.kind}</b> from ${m.created} &middot; `
+        + `${m.classes.length} classes &middot; model ${m.model && m.model.mAP50 != null
+            ? "mAP50 " + pct1(m.model.mAP50) : "(none)"} &middot; `
+        + `${m.dataset_files} dataset file(s), ${m.counts ? m.counts.boxes : "?"} boxes.<br>`
+        + "Installing REPLACES your vision model (the old one is saved to data/exports/ first) "
+        + "and MERGES the frames &mdash; a frame you already have is kept, never overwritten.</p>";
+      msg.textContent = "checked";
+      apply.disabled = false;
+      return;
+    }
+    info.innerHTML = `<p class="hint">Installed: ${d.added} file(s) written, `
+      + `${d.skipped_existing} already here and left alone.`
+      + (d.previous_model_saved_to ? `<br>Your previous model: ${d.previous_model_saved_to}` : "")
+      + "</p>";
+    msg.className = "msg ok"; msg.textContent = "done";
+    apply.disabled = true;
+    loadCheckpoints();
+  };
+  $("#vioimportcheck").onclick = () => post_(false).catch(e => { msg.className = "msg err"; msg.textContent = e.message; });
+  apply.onclick = () => post_(true).catch(e => { msg.className = "msg err"; msg.textContent = e.message; });
+  file.onchange = () => { apply.disabled = true; info.innerHTML = ""; msg.textContent = ""; };
+})();
 
 /* ---------------- boot ---------------- */
 (async function boot() {

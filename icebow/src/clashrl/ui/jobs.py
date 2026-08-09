@@ -338,6 +338,37 @@ COMMANDS: List[Dict[str, Any]] = [
         "args": [],
     },
     {
+        # Watching a match is the only way to catch the mistakes a win rate hides -- a policy
+        # that never defends, or dumps everything at the bridge, scores the same as one that
+        # is merely unlucky. Written to a file rather than an OpenCV window: a window opened
+        # by a subprocess cannot be reached from the panel, and a clip can be re-watched.
+        "cmd": "sim-view",
+        "group": "Playing AI", "stage": "run",
+        "title": "Watch a simulated match",
+        "desc": "Plays matches in the simulator and records them as a video you can watch in "
+                "the Strategy tab. Without a checkpoint it plays random legal moves, which "
+                "still exercises every mechanic -- useful for checking the SIMULATOR itself.",
+        "gpu": True,
+        "metrics": False,
+        "args": [
+            {"name": "policy", "type": "ckpt", "default": "", "label": "Checkpoint",
+             "help": "Which policy drives your side, greedily. Empty = random legal moves."},
+            {"name": "matches", "type": "int", "default": 1, "label": "Matches"},
+            {"name": "fps", "type": "int", "default": 20, "label": "Playback speed",
+             "help": "The sim ticks every 0.1 s, so 10 is real time and 20 is double speed."},
+            {"name": "width", "type": "int", "default": 460, "label": "Render width (px)"},
+            {"name": "seed", "type": "int", "default": 0, "label": "Seed",
+             "help": "Same seed replays the same match."},
+            {"name": "out", "type": "str", "default": "data/sim_view.mp4", "label": "Save to",
+             "help": "The Strategy tab plays whatever is at this path."},
+            {"name": "no-window", "type": "bool", "default": True, "label": "No extra window",
+             "help": "Record only. A window opened by the job cannot be shown in the panel."},
+            {"name": "no-grid", "type": "bool", "default": False, "label": "Hide the placement grid"},
+            {"name": "size", "type": "choice", "choices": ["", "576", "432"], "default": "",
+             "label": "Board resolution", "help": "Has to match the checkpoint."},
+        ],
+    },
+    {
         "cmd": "policy-stats",
         "group": "Playing AI", "stage": "run",
         "title": "Strategy analysis",

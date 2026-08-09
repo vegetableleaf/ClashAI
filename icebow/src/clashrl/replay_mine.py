@@ -326,7 +326,7 @@ class BoardDetector:
     weights are found, so the miner can report readiness instead of crashing."""
 
     def __init__(self, model=None, names: Optional[Dict[int, str]] = None, db=None, fly_offset: float = 0.0,
-                 conf_by_card: Optional[Dict[str, float]] = None):
+                 conf_by_card: Optional[Dict[str, float]] = None, imgsz: int = 960):
         self._model = model
         self._names = names or {}
         self._db = db                      # CardDB, for the flying-unit shadow correction (None -> skip)
@@ -338,6 +338,8 @@ class BoardDetector:
         # at the LOWEST gate in play and each box is then judged against its own class's threshold, so
         # lowering one card costs nothing anywhere else. Empty = the single global gate, as before.
         self._conf_by_card = {str(k): float(v) for k, v in (conf_by_card or {}).items()}
+        # Inference resolution. MUST match what the weights were trained at -- see detect().
+        self._imgsz = int(imgsz)
 
     @property
     def available(self) -> bool:
@@ -348,7 +350,18 @@ class BoardDetector:
             return []
         h, w = frame.shape[:2]
         floor = min([float(conf)] + list(self._conf_by_card.values())) if self._conf_by_card else float(conf)
-        res = self._model.predict(frame, conf=floor, verbose=False)[0]
+        # PASS imgsz EXPLICITLY. ultralytics' predict() defaults to 640 regardless of what the model
+        # was TRAINED at, and every board-* generation here trains at 960. This is the single choke
+        # point every live path goes through (env.py, play.py, perception.py, label.py, detect_obs.py),
+        # so the whole bot was reading the arena at two thirds of the resolution it was fitted for --
+        # while `detect_eval` passed imgsz=960 explicitly, so NO measurement in this project ever saw
+        # it. MEASURED on board-16 over the frozen 241-frame subset:
+        #     imgsz 640  presence R 0.660   whitelist R 0.657   612 dets
+        #     imgsz 960  presence R 0.709   whitelist R 0.730   656 dets
+        # i.e. the live detector was giving up 7.3pp of whitelist recall for nothing -- and since the
+        # obs-canvas flip gate is whitelist >= 0.70, the gate was being judged on a number the live
+        # system never actually achieved (0.730 measured vs 0.657 delivered).
+        res = self._model.predict(frame, conf=floor, imgsz=self._imgsz, verbose=False)[0]
         out: List[Detection] = []
         for b in res.boxes:
             x1, y1, x2, y2 = (float(v) for v in b.xyxy[0].tolist())
@@ -403,7 +416,8 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
     except Exception:
         db = None
     return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
-                         conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None))
+                         conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
+                         imgsz=int(cfg.get("detect", "imgsz", default=960)))
 
 
 # ---------------------------------------------------------------------------

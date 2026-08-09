@@ -84,10 +84,16 @@ The tabs:
   recognises; you correct and save. Click to select, pick a class to rename, `Del` to
   remove, drag to add, `Enter` to save and move on.
 * **Models** — one card per network with its measured quality, variants folded away, and
-  the vision model's predictions drawn over your own labelled frames.
+  the vision model's predictions drawn over your own labelled frames. Also packs the
+  vision AI into a single `.zip` and installs one back: `model` (weights, ~18 MB) or
+  `full` (weights + your labelled frames). An import replaces the model — saving the old
+  one first — and MERGES frames, never overwriting one you already have. A bundle whose
+  class list differs from yours is refused rather than silently relabelling every box.
 * **Progress** — benchmark, reward, loss, throughput for the playing AI, plus the vision
   model's mAP curve. Written to `data/metrics.jsonl`, survives a restart.
-* **Strategy** — which cards the policy actually plays, and where (`policy-stats`).
+* **Strategy** — which cards the policy actually plays, and where (`policy-stats`), plus
+  a recorded simulator match (`sim-view`). The counts say WHAT it plays; the clip says
+  whether it looks like play at all.
 * **Deck** — recognises the deck from a recording and, on request, writes the hand
   templates with it (`deck-detect`, `cards-art`).
 * **Towers / Tempo / Settings** — tower HP crops, matches per second on this PC
