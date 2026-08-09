@@ -80,7 +80,9 @@ hard-counter X-Bow.
   knowledge base) trains the same policy over thousands of matches against a pool of
   ~1000 real meta decks — including a **self-play league** — so you get a strong prior
   before ever opening the game. It models shields, tower troops, per-card sight and
-  targeting, spells, and the 2×/3× elixir phases.
+  targeting, spells, and the 2×/3× elixir phases:
+  <img width="576" height="1200" alt="ezgif-5c1a780120ff41a6" src="https://github.com/user-attachments/assets/a93f876c-bc57-435a-883f-3450c05ce2fa" />
+
 - **Optional object detector (Stage 3).** A YOLO detector trained on your own frames
   lets the bot perceive enemy units (identity + position + short-term memory) instead
   of guessing from raw pixels. Off by default; see the Instructions. The annotation
