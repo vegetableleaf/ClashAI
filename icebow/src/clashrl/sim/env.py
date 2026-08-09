@@ -317,7 +317,7 @@ class SimMatchEnv:
         self._match_bonus = 0.0
         self._cf_used = 0                # counterfactual fork budget is PER MATCH
         self._cf_watch = []              # ...and no fork may outlive the match that opened it
-        self._prev_evalue = 0.0
+        self._prev_trade_pot = self._trade_potential(self.eng)   # two-sided resource balance (starts level)
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
         self._prev_my_crowns = 0
@@ -456,20 +456,6 @@ class SimMatchEnv:
         this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays."""
         mine = self.eng.elixir[0] + spend
         return (self.eng.elixir[1] < self._opp_block_cost
-                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
-
-    def _wincon_spend_waived(self, card_id: int, spec) -> bool:
-        """A win-condition play damages TOWERS, not troops, so the trade term -- which measures enemy
-        TROOP value eliminated -- cannot credit it, and billing its elixir there charges the deck's own
-        game plan as waste. EXCEPT a forward X-Bow the opponent CAN still answer: that 6-elixir
-        commitment is genuinely at risk of being blocked by a mini-tank, and making it pay is what
-        teaches the caution the playstyle needs. A safe (punish-window) siege is waived; a gamble is
-        not, so the two differ by the full 6 elixir in the ledger."""
-        if card_id in self.xbow_ids:
-            return self._punish_window(float(spec.elixir))
-        return True
-        mine = self.eng.elixir[0] + spend
-        return (self.eng.elixir[1] <= self.punish_opp_elixir
                 and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
 
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
@@ -645,9 +631,18 @@ class SimMatchEnv:
         ref = max(1.0, float(eng.towers[0][0].max_hp))
         towers = (sum(max(0.0, float(t.hp)) for t in eng.towers[0])
                   - sum(max(0.0, float(t.hp)) for t in eng.towers[1])) / ref
-        board = (self._side_value(eng, 0) - self._side_value(eng, 1)
-                 + float(eng.elixir[0]) - float(eng.elixir[1])) / self.value_norm
-        return towers + self.cf_board_weight * board
+        return towers + self.cf_board_weight * self._trade_potential(eng)
+
+    def _trade_potential(self, eng) -> float:
+        """RESOURCE BALANCE in elixir: (our board value + our bar) - (theirs), normalised.
+
+        Committed value AND uncommitted elixir both count, so moving elixir from the bar onto the
+        board is worth exactly zero at the moment it happens and only the CONSEQUENCE scores. Towers
+        are deliberately excluded -- `_position` adds them separately, and tower damage is already
+        credited by the convex chip term.
+        """
+        return (self._side_value(eng, 0) - self._side_value(eng, 1)
+                + float(eng.elixir[0]) - float(eng.elixir[1])) / self.value_norm
 
     def _roll_fork(self, eng, opp, horizon_s: float) -> float:
         """Advance an isolated branch `horizon_s` seconds with the AGENT DOING NOTHING -- the
@@ -728,45 +723,40 @@ class SimMatchEnv:
         """
         return 0.0
 
-    def _trade_reward(self, value_eliminated: float, spent: float) -> float:
-        """(2) ELIXIR-TRADE correctness: potential-based (enemy effective value eliminated this step minus
-        the elixir you spent), normalised + clipped. Trading UP (kill more value than you spent) -> +;
-        overspending / whiffing -> -. Telescopes over the match so idling can't farm it."""
-        net = (value_eliminated - spent) / self.value_norm
-        return float(np.clip(net, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
+    def _trade_reward(self) -> float:
+        """(2) ELIXIR-TRADE correctness, as a TRUE POTENTIAL over BOTH sides' resources.
 
-    def _enemy_value(self) -> float:
-        """Total REMAINING effective elixir value of the enemy's (team-1) troops = sum of each unit's deck
-        elixir cost x its remaining-HP fraction (ground truth). Falls as you damage/kill units, so the
-        per-step DROP is the value you actually eliminated -- weighted by how healthy + valuable it was.
-        A card's elixir is split across its count (a Skeleton Army's 3 elixir spreads over ~15 skeletons)
-        so a whole card is worth its elixir at full HP -- swarms don't inflate the value."""
-        v = 0.0
-        for u in self.eng.units:
-            if u.team == 1 and u.spec.kind == "troop":
-                frac = max(0.0, min(1.0, u.hp / u.spec.hp)) if u.spec.hp > 0 else 1.0
-                v += (u.spec.elixir / max(1, u.spec.count)) * frac
-        return v
+        WHAT THIS REPLACES WAS A FLAT TAX ON PLAYING. It scored `(enemy troop value eliminated) -
+        (elixir you spent)`, which mixes two incompatible things. The first half TELESCOPES -- that
+        part was right, and it is why idling could not farm it -- but telescoping means that over a
+        whole match it collapses to `-(enemy value still alive at the end)` NO MATTER HOW WELL YOU
+        DEFEND, because killing more just means more gets deployed after. The second half does not
+        telescope at all: it accumulates at -0.1 reward per elixir, uncapped, forever.
 
-    def _forced_expensive_spend(self, card_id: int, ny: float) -> bool:
-        """A defensive spend is FORCED (waive its elixir-trade penalty) when a threat is recognised, the
-        play is on your defensive half, and NO CHEAPER card in hand or the NEXT slot could counter that
-        threat -- e.g. rocket the hogs/balloon, or centre X-Bow to pull a wincon, when Tesla is too deep in
-        the cycle. Overspending when a cheaper answer WAS immediately available is NOT waived."""
-        if ny < 0.5:
-            return False                                  # offensive placements pay their spend normally
-        tid = self._threat_id
-        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            return False
-        my_elix = self.specs[card_id].elixir
-        avail = set(self._hand_ids())
-        if len(self.cycle) > 4:
-            avail.add(self._slot_card_id(self.cycle[4]))  # the NEXT (preview) card counts as immediately available
-        for c in avail:
-            if (c != card_id and self.specs[c].elixir < my_elix
-                    and card_threat.counters(self._deck_profiles[c], tid)):
-                return False                             # a cheaper counter was in hand / next -> not forced
-        return True
+        MEASURED over 40 matches: value_eliminated summed to -8.53/match against 93.22 elixir spent
+        -> -10.17/match, with **0 of 40 matches positive** and play-steps scoring 52 up vs 1459 down
+        (3.4%). Against `rewards.win: 2.0` a match's spend was worth ~4.7 losses, so the only lever
+        the policy had was to play less. Same action-tax shape as `_cycle_plan` (0 bonuses / 305
+        penalties) and the quiet-board branch (0 / 257), but hidden inside a term whose first half
+        genuinely was potential-based. It did not collapse the run this time, it PLATEAUED it:
+        winrate flat from match 3000 to 9500 while the policy sat at the balance point between the
+        win signal and the spend tax.
+
+        SPENDING ELIXIR IS A TRANSFER, NOT A LOSS -- it leaves your bar and becomes value on the
+        board. Scoring the change in the two-sided resource balance makes a deploy exactly zero at
+        the moment it happens and lets the term move only as the unit does something, dies, or
+        trades, which is what "elixir trade" actually means. It also stops billing you for the
+        OPPONENT playing a card: their deploy is +board/-bar for them and nets to zero, where the
+        old term read their entire push as a penalty against you.
+
+        This is the same accounting `_position` uses for the counterfactual forks, so the two agree
+        instead of contradicting each other. The cap stays as a guard against a single freak step;
+        it bit 1 step in 7991 before and should be rarer now that deploys cancel.
+        """
+        pot = self._trade_potential(self.eng)
+        d = pot - self._prev_trade_pot
+        self._prev_trade_pot = pot
+        return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
         """True when a DAMAGE spell is cast with NOTHING to hit -- no enemy unit within its blast radius AND
@@ -856,31 +846,15 @@ class SimMatchEnv:
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0
-        spent = 0.0
         placed_id = -1
         if play and 0 <= card_id < self.n_cards and card_id in self._hand_ids():
             spec = self.specs[card_id]
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
             nx, ny = self.actions.cell_center(cell % self.gw, cell // self.gw)
             if self.eng.deploy(0, spec, nx, ny):               # affordable + placed
-                spent = float(spec.elixir)
                 placed_id = card_id
-                if self._forced_expensive_spend(card_id, ny):
-                    spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
                 reward += self._bonus(self._threat_response(card_id, nx, ny))   # (1) counter to the assessed threat
-                wincon = self._wincon_exec(card_id, nx, ny)                     # (3) win-condition executed right
-                reward += self._bonus(wincon)
-                if wincon > 0.0 and self._wincon_spend_waived(card_id, spec):
-                    # ONE play, ONE grade. The trade term measures enemy TROOP value eliminated, but a
-                    # correctly-executed win condition (X-Bow in range / Miner chipping the princess /
-                    # rocket-cycle chip) kills no troops BY DESIGN -- it damages TOWERS, which is already
-                    # credited by the convex tower-chip term and the crown jump. Billing its elixir here
-                    # as well charged the deck's own game plan as pure waste: MEASURED -9.32/match on the
-                    # trade term, the single largest negative in the whole reward. Same rule the pull
-                    # spells already follow -- a play graded by its OWN correctness term is not graded
-                    # again here. A MISPLACED win condition (wincon < 0) still pays its spend, so
-                    # throwing the X-Bow away is still a mistake.
-                    spent = 0.0
+                reward += self._bonus(self._wincon_exec(card_id, nx, ny))       # (3) win-condition executed right
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
@@ -901,12 +875,9 @@ class SimMatchEnv:
                 self.on_tick(self)
             if self.eng.done:
                 break
-        # (2) ELIXIR-TRADE correctness: signed potential-based enemy-value change (telescopes, anti-farm)
-        # minus the elixir committed this step -> nets to (value removed - elixir spent) over the match.
-        evalue = self._enemy_value()
-        edelta = self._prev_evalue - evalue
-        self._prev_evalue = evalue
-        reward += self._trade_reward(edelta, spent)
+        # (2) ELIXIR-TRADE correctness: the step's change in the two-sided RESOURCE BALANCE (both
+        # boards + both elixir bars), so committing elixir is neutral and only its consequence scores.
+        reward += self._trade_reward()
         reward += self._bonus(self._nado_shaping())    # delayed tornado-execution credit (clump/combo/king/retarget)
         reward += self._cf_shaping()   # delayed counterfactual: did playing beat holding? (uncapped: zero-mean)
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
