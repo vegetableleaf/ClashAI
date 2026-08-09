@@ -681,6 +681,17 @@ detect:
   # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
   weights: runs/detect/board-16/weights/best.pt
   dataset_dir: data/detect
+  # INFERENCE RESOLUTION for the live detector. MUST match what the weights were trained at.
+  # ultralytics' predict() defaults to 640 no matter what the model was fitted for, and every
+  # board-* generation here trains at 960 -- so `BoardDetector.detect()`, the single choke point
+  # every live path goes through, was reading the arena at two thirds resolution. `detect_eval`
+  # passed imgsz=960 explicitly, so no measurement in this project ever saw it. MEASURED on board-16
+  # over the frozen 241-frame subset:
+  #     imgsz 640   presence R 0.660   whitelist R 0.657   612 dets
+  #     imgsz 960   presence R 0.709   whitelist R 0.730   656 dets
+  # 7.3pp of whitelist recall, free. Note the obs-canvas flip gate is whitelist >= 0.70: the gate was
+  # being judged on 0.730 while the live bot delivered 0.657, so it had never actually been met.
+  imgsz: 960
   spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
   spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
   search_radius: 0.10            # look this far (normalized) around the tap for the new unit
