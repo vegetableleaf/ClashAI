@@ -164,7 +164,10 @@ class SimMatchEnv:
         self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
         self.cf_budget = int(cfg.get("sim", "counterfactual", "budget_per_match", default=12))
         self.cf_min_units = int(cfg.get("sim", "counterfactual", "min_units", default=1))
+        self.cf_cap = float(cfg.get("sim", "counterfactual", "cap", default=1.0))
+        self.w_counterfactual = r("counterfactual", 1.0)   # weight on (real - held-the-card) position
         self._cf_used = 0
+        self._cf_watch: list = []
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
         # those are screen-space normalised distances on a foreshortened phone frame.
         self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
@@ -312,6 +315,7 @@ class SimMatchEnv:
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
         self._match_bonus = 0.0
         self._cf_used = 0                # counterfactual fork budget is PER MATCH
+        self._cf_watch = []              # ...and no fork may outlive the match that opened it
         self._prev_evalue = 0.0
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
@@ -629,6 +633,44 @@ class SimMatchEnv:
                     break
         return self._position(eng)
 
+    def _cf_open(self) -> None:
+        """On a play: fork the match, roll the branch where we DID NOTHING, and remember its outcome
+        so the real branch can be compared against it once the same horizon has actually elapsed."""
+        if not self._fork_ready():
+            return
+        eng, opp = self._fork()
+        self._cf_watch.append((self.eng.t + self.cf_horizon,
+                               self._roll_fork(eng, opp, self.cf_horizon)))
+        self._cf_used += 1
+
+    def _cf_shaping(self) -> float:
+        """(6) COUNTERFACTUAL correctness: settle any fork whose horizon has now elapsed in the REAL
+        match, scoring `position(real) - position(held-the-card)`.
+
+        This is the term the hand-written per-play rules kept failing to be. It is ZERO-MEAN BY
+        CONSTRUCTION -- a play that improved the tower differential over doing nothing scores +, one
+        that made it worse scores -, and a play that changed nothing scores 0. Every instantaneous
+        classifier written so far could only subtract (cycle_plan fired 0 bonuses against 305
+        penalties; threat_response's quiet branch 0 against 257), which is an action tax and taught
+        the policy to stop playing rather than to play well.
+
+        It also answers the question the user posed, which genuinely cannot be answered at play time:
+        "does cycling this card now cost me tower damage that holding it would have prevented, or does
+        it rotate me back to the Tesla before their wincon reaches the bridge?" Same board, same card,
+        opposite verdicts depending on what follows -- so it is measured after the fact instead of
+        guessed. Settled early if the match ends inside the horizon, so a decisive play still scores.
+        """
+        if not self._cf_watch:
+            return 0.0
+        now, out, keep = self.eng.t, 0.0, []
+        for due, base in self._cf_watch:
+            if now < due and not self.eng.done:
+                keep.append((due, base))
+                continue
+            out += float(np.clip(self._position(self.eng) - base, -self.cf_cap, self.cf_cap))
+        self._cf_watch = keep
+        return out * self.w_counterfactual
+
     def _cycle_plan(self, card_id: int) -> float:
         """(4) CYCLE-PLAN correctness, graded on the elixir LEFT AFTER the play.
 
@@ -826,6 +868,7 @@ class SimMatchEnv:
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
+                self._cf_open()             # ...and fork the alternative branch where we HELD this card
                 self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
             reward += self._threat_miss_idle()                 # (1) ignored an ANSWERABLE threat (uncapped penalty)
@@ -848,6 +891,7 @@ class SimMatchEnv:
         self._prev_evalue = evalue
         reward += self._trade_reward(edelta, spent)
         reward += self._bonus(self._nado_shaping())    # delayed tornado-execution credit (clump/combo/king/retarget)
+        reward += self._cf_shaping()   # delayed counterfactual: did playing beat holding? (uncapped: zero-mean)
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.w_leak

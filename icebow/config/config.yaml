@@ -328,6 +328,12 @@ rewards:
   # -- (4) CYCLE-PLAN correctness (uses the deterministic upcoming-card order; see clashrl/cycle.py) --
   cycle_plan: 0.4          # a CHEAP play that advances toward a NEEDED counter and still leaves cycle_spare_elixir behind
   cycle_waste: -0.4        # cheap play that spends you down below the reserve with NOTHING to defend against
+  # Weight on the COUNTERFACTUAL term (sim.counterfactual gates whether it runs at all): the tower
+  # differential the real branch reached minus the branch where this card was HELD. Zero-mean by
+  # construction -- the property every hand-written per-play term has lacked -- so it cannot become an
+  # action tax however large it is. NOT routed through correctness_cap for that reason: capping only
+  # the positive side of a signed term would reintroduce exactly the asymmetry it exists to avoid.
+  counterfactual: 1.0
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -897,6 +903,7 @@ sim:
                              # the GAE window is 17 s, so 6 s sits comfortably inside it.
     budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
     min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
+    cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
