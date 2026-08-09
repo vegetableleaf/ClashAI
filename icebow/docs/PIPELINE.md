@@ -77,3 +77,30 @@ in `CLASHRL_CR_API_TOKEN` they are read from your account; otherwise the levels 
 
 The simulator (`train-sim`, `sim-bench`, `policy-stats`) needs none of this: it runs
 without the game.
+
+## The other pipeline: training the vision AI
+
+Separate network, separate data, four steps in a fixed order. Nothing above feeds it
+except the recordings the frames come from.
+
+1. `detect-frames` — pull in-match frames out of a recording into the labelling queue.
+   Sampled around your own plays, so every frame is guaranteed to show a real board.
+2. **Labelling tab** — draw the boxes. The model pre-fills what it already recognises at
+   a low confidence floor, so this is correcting rather than drawing. This is the only
+   place boxes are made; there is no second labelling path.
+3. `sprites` — cut every box out of its background (GrabCut) into a per-class sprite
+   bank, then `--synth N` pastes those onto other frames to generate extra labelled
+   images. This is also what stops the detector learning the ARENA instead of the unit.
+   It multiplies classes you have already labelled and invents nothing.
+4. `detect-train` — writes `runs/detect/vision/weights/best.pt`, replacing the previous
+   model, and a `model_card.json` with the measured mAP / precision / recall.
+
+Measured on this repo, 63 hand-drawn boxes multiplied to 371 training images:
+
+    mAP50       58.3 %   (best epoch 68.8 %)
+    precision   66.5 %
+    recall      55.6 %
+
+Two things dominate that number, in this order: whether the class indices are consistent
+(see the class-list note in the README — a mismatch there trained a Mini P.E.K.K.A as a
+Minion), and how many boxes exist. More epochs is not the lever.

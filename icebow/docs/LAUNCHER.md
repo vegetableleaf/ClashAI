@@ -23,8 +23,10 @@ offline.
 | `procs.py` | Starts, streams and stops CLI subprocesses. Enforces one GPU job at a time. |
 | `jobs.py` | Describes which commands and flags the panel may launch. Validates every value before spawning. |
 | `metrics.py` | Scrapes the trainers' own stdout into `data/metrics.jsonl`. |
-| `editor.py` | Surgical YAML editing of `config.yaml` / `cards.yaml`. |
-| `ckpt.py` | Checkpoint inventory. |
+| `editor.py` | Surgical YAML editing of `config.yaml` / `cards.yaml` (`src/clashrl/config_edit.py`). |
+| `ckpt.py` | Both models: the policy checkpoints, and THE vision model with its measured quality (`model_card.json`). |
+| `labeler.py` | The box-labelling store. Reads/writes the same YOLO layout the detect-* commands use. |
+| `frameread.py` | Runs ALL FIVE readers over one frame and returns the values plus the regions they came from. Shared by the Labelling and Live tabs. |
 | `hardware.py` | Reads CPU / RAM / GPU, proposes a starting point. |
 | `bench.py` | `sim-bench`: measures simulator throughput. |
 | `rollout.py` | `policy-stats`: measures what the policy plays. |
@@ -33,7 +35,7 @@ offline.
 
 | Frontend (`src/clashrl/ui/`) | what it does |
 |---|---|
-| `templates/index.html` | The page: tabs, forms, the log bar, the tour scaffolding. |
+| `templates/index.html` | The page: tabs, forms, the log bar. |
 | `static/app.js` | All behaviour. Plain JavaScript, no framework. |
 | `static/style.css` | One stylesheet, dark, no external fonts. |
 
@@ -60,6 +62,23 @@ its own.
 ---
 
 ## Design decisions worth knowing
+
+**One heading per network.** An earlier version grouped the Control tab by what a command
+does ("... : training" / "... : run and measure"), which put "Playing AI" on the page three
+times and made the number of models unreadable. The stage now rides on the card; the
+headings answer only "whose is this".
+
+**One vision model, and nothing selects it.** Training writes `runs/detect/vision` and
+replaces it. Ultralytics' default naming produced `board`, `board-2`, `board-3` ... and
+whatever trained last silently became the operating detector; a `detect.weights` pin fixed
+that by making the answer a config value, which broke differently (a pin from another
+machine points at nothing, and the fallback is silent). A `model_card.json` is written on
+completion, because reusing one folder means a new run truncates `results.csv` at start.
+
+**Boxes are drawn in exactly one screen.** The Labelling tab pre-fills the model's own
+predictions at a deliberately low confidence floor: deleting a wrong box is one click,
+drawing a missed one takes seconds. Suggestions render dashed until you touch them.
+
 
 **Stopping is graceful.** Windows cannot deliver Ctrl+C to another process group, and the
 default action for the signal that *does* get through kills the process before any
