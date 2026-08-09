@@ -185,18 +185,27 @@ observation:
   # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
   # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
   # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
-  # VALUES BELOW = the CURRENT detector (board-16: leak-free bank + SYNTH 1000, which beat board-15's
-  # synth 2000 on every gate metric on an IDENTICAL 241-image val subset -- whitelist R 0.704 -> 0.726
-  # AND P 0.906 -> 0.929, i.e. better on both axes at once). Measured BASE-FOLDED on the WHITELIST at
-  # the LIVE gate (detector_conf 0.40). Re-measure after each retrain: `run.py detect-eval --sweep
-  # --subset data/detect/val_board15.txt` (the subset keeps generations comparable as val grows).
-  sim_detector_recall: 0.72      # GLOBAL fallback (mid-tier + thin-val cards): matches the measured 0.726 mean
-  sim_detector_precision: 0.92   # ~8% of seen detections relabelled (measured folded 0.929 @0.40)
+  # VALUES BELOW = the CURRENT detector (board-21). It is the FIRST generation since board-16 to beat
+  # it: board-17/18/19 all failed while the dataset more than doubled. On the frozen 241-image subset
+  # board-21 does not merely trade recall for precision -- it STRICTLY DOMINATES. At matched precision
+  # it gives whitelist R 0.737 @ P 0.922 (conf 0.45) vs board-16's 0.723 @ P 0.920, and on presence
+  # UNITS at conf 0.50 it beats board-16's conf-0.40 numbers on BOTH axes (0.746/0.927 vs 0.733/0.911).
+  # Measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.40). Re-measure after each
+  # retrain: `run.py detect-eval --sweep --subset data/detect/val_board15.txt` (the subset keeps
+  # generations comparable as val grows).
+  sim_detector_recall: 0.75      # GLOBAL fallback (mid-tier + thin-val cards): measured whitelist 0.751 @0.40
+  sim_detector_precision: 0.90   # ~10% of seen detections relabelled (measured folded 0.900 @0.40)
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed.
   # Values are the MEAN across board-14/15/16, NOT the latest run: at n=48 val instances the binomial
   # SE is ~7pp, so knight reading 0.56 -> 0.67 -> 0.54 across three generations is NOISE around ~0.59,
   # and chasing the newest number would re-tune the sim every time. Only cards whose 3-generation mean
   # sits clearly off the global rate are listed; everything else stays on the global.
+  # DELIBERATELY NOT UPDATED FOR board-21, even though it moved knight 0.54 -> 0.77 (n=48, ~3.2 SE) and
+  # skeletons 0.73 -> 0.80. Those look real, but the rule this block was written under -- and the sparky
+  # lesson behind it -- is that a per-card override needs a STABLE reading across generations, and
+  # board-21 is ONE sample of a new dataset. board-22 (identical recipe, seed 1) is the second sample;
+  # revisit these after it lands. The GLOBAL scalars above were updated because they rest on ~450
+  # whitelist boxes, not on one card's n=48.
   sim_detector_recall_by_card:
     # reliable
     balloon: 0.90                # 1.00 / 1.00 / 1.00 (n=11) -- capped, a perfect thin-val score is not a real 1.0
@@ -679,7 +688,7 @@ detect:
   # worse detector. Promote a new generation ONLY after
   # `run.py detect-eval --sweep --subset data/detect/val_board15.txt` beats the incumbent, and
   # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
-  weights: runs/detect/board-16/weights/best.pt
+  weights: runs/detect/board-21/weights/best.pt
   dataset_dir: data/detect
   # INFERENCE RESOLUTION for the live detector. MUST match what the weights were trained at.
   # ultralytics' predict() defaults to 640 no matter what the model was fitted for, and every
