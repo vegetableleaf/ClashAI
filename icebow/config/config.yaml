@@ -871,6 +871,32 @@ sim:
   # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
   # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
   ppo_gate_threshold: 0.25
+  # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
+  # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,
+  # rolls that branch `horizon_s` with the AGENT DOING NOTHING, and later compares the real branch's
+  # tower differential against it -- "did playing this beat holding it?" That difference is zero-mean
+  # by construction (helped -> +, hurt -> -), which is the property every hand-written per-play term
+  # has failed to have: cycle_plan fired 0 bonuses against 305 penalties and threat_response's
+  # quiet-board branch 0 against 257, and both taught the policy to stop playing.
+  # COST, MEASURED end-to-end with the opponent acting inside the branch (a 39-unit board, against a
+  # 99 ms baseline match = 125 decisions x 0.79 ms). NB my first estimate of 14 ms was 3x too low
+  # because it rolled a QUIET fork: the opponent keeps deploying inside the branch, so the board grows
+  # and the ticks get dearer. Real cost is a ~6.5 ms floor (deepcopy + setup) plus ~3.5 ms per second
+  # of horizon:
+  #   horizon   ms/fork   forks for a 2x slowdown
+  #      8 s     35.0        2.8
+  #      4 s     24.0        4.1
+  #      2 s     16.1        6.1
+  #      1 s     10.5        9.4
+  # The budget is a HARD PER-MATCH CAP, not a probability, so the worst case is deterministic and a
+  # busy match cannot cost ten times a quiet one. Raise budget_per_match to buy signal with wall clock.
+  counterfactual:
+    enabled: false           # OFF until the delayed-credit reward that consumes it is validated
+    horizon_s: 6.0           # lookahead per fork. A preventable tower hit lands in a few seconds and a
+                             # bridge wincon connects in ~5-10 s, so this must not be cut much further;
+                             # the GAE window is 17 s, so 6 s sits comfortably inside it.
+    budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
+    min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)

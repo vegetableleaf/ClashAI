@@ -10,6 +10,7 @@ range, Miner on the enemy tower). Medium fidelity -> a sim-trained policy is a P
 """
 from __future__ import annotations
 
+import copy
 import random
 from typing import Tuple
 
@@ -158,6 +159,12 @@ class SimMatchEnv:
         self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
+        # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
+        self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
+        self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
+        self.cf_budget = int(cfg.get("sim", "counterfactual", "budget_per_match", default=12))
+        self.cf_min_units = int(cfg.get("sim", "counterfactual", "min_units", default=1))
+        self._cf_used = 0
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
         # those are screen-space normalised distances on a foreshortened phone frame.
         self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
@@ -304,6 +311,7 @@ class SimMatchEnv:
         self.rng.shuffle(self.cycle)
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
         self._match_bonus = 0.0
+        self._cf_used = 0                # counterfactual fork budget is PER MATCH
         self._prev_evalue = 0.0
         self._prev_chip_prog = 0.0       # convex enemy-tower chip progress (offense)
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
@@ -572,6 +580,54 @@ class SimMatchEnv:
         """True when an enemy TROOP has crossed onto OUR half, i.e. there is something a defensive
         card is actually answering. Ground truth, reward-side only."""
         return any(u.team == 1 and u.spec.kind == "troop" and u.y > 0.5 for u in self.eng.units)
+
+    # -- counterfactual fork ------------------------------------------------
+    def _fork_ready(self) -> bool:
+        """Guardrail gate. MEASURED end-to-end with the opponent acting inside the branch, on a
+        39-unit board against a 99 ms baseline match: a fork costs a ~6.5 ms floor (deepcopy + setup)
+        plus ~3.5 ms per second of horizon -- 35.0 ms at 8 s, 24.0 at 4 s, 16.1 at 2 s. So only ~3
+        forks per match fit inside a 2x slowdown, and forking every play would be far worse. Bounded
+        by a hard PER-MATCH BUDGET rather than a sampling probability, so the worst case is
+        deterministic and a busy match cannot quietly cost ten times a quiet one."""
+        return (self.cf_enabled and self._cf_used < self.cf_budget and not self.eng.done
+                and len(self.eng.units) >= self.cf_min_units)
+
+    def _fork(self):
+        """An ISOLATED branch of the match: engine and opponent deep-copied, each with its OWN RNG.
+
+        RNG ISOLATION IS THE ENTIRE POINT OF THIS FUNCTION. `make_opponent` is handed `env.rng`, so
+        `ScriptedBot.act` draws from the SHARED generator (rng.random / rng.choice throughout its
+        placement logic, plus the detector-noise draws inside SelfPlayOpponent). Rolling a fork with
+        that same object would consume draws from the REAL match's stream: the real opponent's later
+        behaviour would depend on HOW MANY forks had been run, seeded runs would stop reproducing,
+        and nothing would ever flag it. deepcopy gives the clone a Random with the same state but an
+        independent future, so a branch is a faithful continuation that cannot write back.
+        """
+        return copy.deepcopy(self.eng), copy.deepcopy(self.opponent)
+
+    def _position(self, eng) -> float:
+        """'How good is my position', in units of one princess tower's max HP: my remaining tower HP
+        minus theirs. Ground truth, and the quantity the counterfactual compares."""
+        ref = max(1.0, float(eng.towers[0][0].max_hp))
+        mine = sum(max(0.0, float(t.hp)) for t in eng.towers[0])
+        theirs = sum(max(0.0, float(t.hp)) for t in eng.towers[1])
+        return (mine - theirs) / ref
+
+    def _roll_fork(self, eng, opp, horizon_s: float) -> float:
+        """Advance an isolated branch `horizon_s` seconds with the AGENT DOING NOTHING -- the
+        counterfactual is "what if I had held this card" -- while the opponent keeps playing.
+        Returns the position scalar at the end of the branch."""
+        steps = max(1, int(round(horizon_s / self.agent_dt)))
+        sub = max(1, int(round(self.agent_dt / self.sub_dt)))
+        for _ in range(steps):
+            if eng.done:
+                break
+            opp.act(eng)
+            for _ in range(sub):
+                eng.advance(self.sub_dt)
+                if eng.done:
+                    break
+        return self._position(eng)
 
     def _cycle_plan(self, card_id: int) -> float:
         """(4) CYCLE-PLAN correctness, graded on the elixir LEFT AFTER the play.
