@@ -1355,6 +1355,16 @@ def _resolve_weights(cfg, weights):
     existed as separate models in the first place. Training writes one folder and replaces
     it; this reads that folder; nothing selects.
 
+    THE PIN'S FINDING STILL HOLDS AND STILL BITES: newest != best. Measured 2026-08-07 on the
+    frozen val subset, board-17 trained last but scored whitelist identity recall 0.675 against
+    board-16's 0.724 and FAILED the 0.70 gate. Collapsing to one folder removes the *choice*,
+    not the risk -- a worse retrain now overwrites the operating detector instead of quietly
+    outranking it. What guards against that here is downstream of this function: training
+    writes a model_card.json with the run's own numbers, and the panel shows them next to the
+    previous run's, so a regression is visible rather than inferred. `detect-eval` remains the
+    arbiter. If you are about to retrain on top of something good, export it first (the panel's
+    "Vision AI" button, or vision_io.export) -- that is the replacement for the pin.
+
     ``weights`` (the --weights flag) still works for the offline tools that legitimately
     compare two checkpoint files, e.g. detect-eval.
     """

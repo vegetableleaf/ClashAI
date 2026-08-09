@@ -304,6 +304,17 @@ def _cmd_detect_preview(args) -> None:
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
 
 
+def _cmd_katacr_segments(args) -> None:
+    from .katacr_segments import katacr_segments
+    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+                    dry_run=args.dry_run)
+
+
+def _cmd_models(args) -> None:
+    from .models import models
+    models(Config.load(args.config))
+
+
 def _cmd_sprites(args) -> None:
     from .sprites import extract_sprites, synth_images, verify_sprites
     cfg = Config.load(args.config)
@@ -604,7 +615,8 @@ def main() -> None:
     pan.add_argument("--conf", type=float, default=0.20,
                      help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
                           "deleting a wrong box is one keypress, drawing a missed one takes seconds")
-    pan.add_argument("--weights", default=None, help="best.pt (default: the pinned detect.weights)")
+    pan.add_argument("--weights", default=None,
+                     help="best.pt (default: THE vision model, runs/detect/vision/weights/best.pt)")
     pan.add_argument("--device", default=None,
                      help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
     pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
@@ -676,6 +688,23 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    kseg = sub.add_parser("katacr-segments",
+                          help="import KataCR's MIT-licensed segment library into the sprite bank "
+                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
+                               "to our arena -- synth pastes at native size)")
+    kseg.add_argument("--src", required=True,
+                      help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
+    kseg.add_argument("--scale", default="auto",
+                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
+    kseg.set_defaults(func=_cmd_katacr_segments)
+
+    mdl = sub.add_parser("models",
+                         help="which NETWORKS exist and which one each path actually uses -- there "
+                              "are two (the VISION detector and the PLAYING policy) and they share "
+                              "nothing; also checks the pin resolves and inference imgsz matches training")
+    mdl.set_defaults(func=_cmd_models)
 
     spr = sub.add_parser("sprites",
                          help="cut annotated units out of their arena background (GrabCut) into a per-class RGBA "
