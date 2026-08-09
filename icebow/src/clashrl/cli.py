@@ -259,7 +259,7 @@ def _cmd_detect_preview(args) -> None:
 
 def _cmd_katacr_segments(args) -> None:
     from .katacr_segments import katacr_segments
-    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+    katacr_segments(Config.load(args.config), src=args.src, src_width=args.src_width,
                     dry_run=args.dry_run)
 
 
@@ -615,12 +615,13 @@ def main() -> None:
 
     kseg = sub.add_parser("katacr-segments",
                           help="import KataCR's MIT-licensed segment library into the sprite bank "
-                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
-                               "to our arena -- synth pastes at native size)")
+                               "(maps their singular/hyphenated names onto our taxonomy and tags the "
+                               "segments with a measured source width so synth pastes them at size)")
     kseg.add_argument("--src", required=True,
                       help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
-    kseg.add_argument("--scale", default="auto",
-                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--src-width", default="auto",
+                      help="effective frame width their segments were cut from, in px; 'auto' "
+                           "measures it from the classes both banks share (needs a width-tagged bank)")
     kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
     kseg.set_defaults(func=_cmd_katacr_segments)
 

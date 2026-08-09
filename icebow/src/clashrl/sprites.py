@@ -24,6 +24,7 @@ Notes:
 from __future__ import annotations
 
 import random
+import re
 import shutil
 import time
 from pathlib import Path
@@ -36,6 +37,23 @@ from .detect import _load_classes
 _MIN_BOX_PX = 12          # boxes smaller than this per side are too thin to segment usefully
 _COV_MIN, _COV_MAX = 0.08, 0.97   # kept-pixel fraction of the box outside this range = failed cut
 _MAX_OCC = 0.35           # a box this far covered by OTHER annotations is too ambiguous to cut (see _cut_sprite)
+
+# PROVENANCE TAG: every cutout records the WIDTH of the frame it came from, as a `_w<px>` filename
+# suffix. A sprite's pixel size is meaningless on its own -- the dataset spans frames from 392 to
+# 669 px wide (two capture sources at different aspect ratios), so the same knight is legitimately
+# 30 px tall in one frame and 74 in another. Only `height / source_width` is comparable, and that is
+# what lets `synth_images` paste a body at the size its BASE frame implies. Parsed off the end of
+# the stem so a stem containing '_w123' mid-name cannot be misread.
+_SRC_W_RE = re.compile(r"_w(\d+)$")
+
+
+def _src_width(path: Path) -> int | None:
+    """Width of the frame this sprite was cut from, or None for an untagged (pre-tag) cutout."""
+    m = _SRC_W_RE.search(path.stem)
+    if not m:
+        return None
+    w = int(m.group(1))
+    return w if w > 0 else None
 
 
 def _boxes_of(label_path: Path):
@@ -237,7 +255,8 @@ def extract_sprites(cfg, split: str = "train", margin: float = 0.25, limit: int 
                 continue
             d = out_root / name
             d.mkdir(parents=True, exist_ok=True)
-            cv2.imwrite(str(d / f"{ip.stem}_b{bi}.png"), sprite)
+            # `_w{W}` = the source frame width, so --synth can restore the true relative size
+            cv2.imwrite(str(d / f"{ip.stem}_b{bi}_w{W}.png"), sprite)
             kept += 1
             per_class[name] = per_class.get(name, 0) + 1
             if limit and kept >= limit:
@@ -436,6 +455,7 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
             f.unlink()
 
     made = pasted = 0
+    n_fit = n_native = 0
     per_class: dict[str, int] = {}
     t0 = time.time()
     for k in range(count):
@@ -449,11 +469,26 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
                   for _cid, cx, cy, w, h in gt]
         for _ in range(rng.randint(1, max(1, paste_max))):
             name = rng.choices(names, weights=weights, k=1)[0]
-            sp = cv2.imread(str(bank[name][rng.randrange(len(bank[name]))]), cv2.IMREAD_UNCHANGED)
+            spath = bank[name][rng.randrange(len(bank[name]))]
+            sp = cv2.imread(str(spath), cv2.IMREAD_UNCHANGED)
             if sp is None or sp.ndim != 3 or sp.shape[2] != 4:
                 continue
-            s = rng.uniform(0.85, 1.15)                        # mild size jitter (native scale is real)
-            sp = cv2.resize(sp, (max(2, int(sp.shape[1] * s)), max(2, int(sp.shape[0] * s))))
+            # RESCALE TO THE BASE FRAME -- native size is NOT a shared unit. The bank mixes capture
+            # sources spanning 392..669 px wide, so pasting a cutout at its native pixel size lands
+            # a body from a small frame ~40% undersized on a large base (and vice versa). The label
+            # is written from the pasted box, so the frame is self-consistent and the damage is
+            # invisible in review: the detector simply learns wrong size priors. Scaling by
+            # base_width / source_width puts every body at the size THIS frame implies.
+            src_w = _src_width(spath)
+            if src_w:
+                fit = W / src_w
+                n_fit += 1
+            else:
+                fit = 1.0                                      # untagged legacy cutout: cannot know
+                n_native += 1
+            s = fit * rng.uniform(0.85, 1.15)                  # mild size jitter ON TOP of the fit
+            sp = cv2.resize(sp, (max(2, int(sp.shape[1] * s)), max(2, int(sp.shape[0] * s))),
+                            interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_LINEAR)
             if rng.random() < 0.5:                             # CR units face both ways -> hflip is realistic
                 sp = sp[:, ::-1].copy()
             b = rng.uniform(0.88, 1.12)                        # independent lighting jitter per sprite
@@ -495,6 +530,12 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
     top = sorted(per_class.items(), key=lambda kv: -kv[1])[:12]
     print(f"[sprites] synthesized {made} image(s), {pasted} sprite paste(s) "
           f"({time.time() - t0:.0f}s) -> {out_i.parent}")
+    if n_native:
+        print(f"[sprites] SCALE: {n_fit} paste(s) fitted to the base frame, {n_native} pasted at "
+              f"NATIVE size (untagged cutouts). Rebuild the bank with `run.py sprites` to tag them "
+              f"-- untagged sprites land at whatever size their unknown source frame implied.")
+    else:
+        print(f"[sprites] SCALE: all {n_fit} paste(s) fitted to their base frame width")
     if top:
         print("[sprites] pasted classes: " + ", ".join(f"{k} {v}" for k, v in top))
     print(f"[sprites] data.yaml train now includes synth/images; label-check copies in {dbg}")
