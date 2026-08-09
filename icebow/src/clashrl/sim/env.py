@@ -672,42 +672,28 @@ class SimMatchEnv:
         return out * self.w_counterfactual
 
     def _cycle_plan(self, card_id: int) -> float:
-        """(4) CYCLE-PLAN correctness, graded on the elixir LEFT AFTER the play.
+        """DELETED -- kept as a stub only to document why, because this term cost two training runs.
 
-        Rewards a cheap play that advances toward a NEEDED counter and still leaves a reserve;
-        penalises spending yourself down below that reserve when NOTHING needed answering. Neutral
-        otherwise. ``card_id`` = the card just played, or -1.
+        It graded whether a cheap play was 'deliberate cycling' or 'purposeless spam'. It failed
+        THREE times, each time by being a penalty with no reachable bonus:
+          1. read POST-spend elixir against a PRE-spend threshold -> 1 bonus vs 495 penalties
+          2. arithmetic fixed, still fired on 99.9% of cheap plays incl. 645 correct defensive ones
+          3. made discriminative (post-spend reserve + 'nothing to defend') -> STILL 0 bonuses,
+             MEASURED 110 fires / 0 positive / -1.10 per match on the 4096-match checkpoint
 
-        THIS TERM HAS NOW FAILED TWICE, both times by firing on essentially every play. First it read
-        the engine's POST-spend elixir while testing a PRE-spend threshold; adding the cost back fixed
-        that arithmetic but not the outcome. MEASURED 2026-08-08 on the 5500-match checkpoint over 30
-        matches: 96% of this deck's plays are cheap (8 of its 10 identities cost <= 3) and pre-spend
-        elixir at a cheap play was p50 3.07 / p90 3.60, so "pre-spend < 7" was true on 100% of them --
-        the bonus branch fired ONCE against 495 penalties. A term that fires on every action is not a
-        shaping signal, it is a flat per-play tax, and the policy's rational answer was to stop
-        playing: plays/match 46.8 -> 26.0 and winrate 8.3% -> 2.8% while episode reward IMPROVED
-        -36.7 -> -24.7.
+        The bonus branch needs a recognised threat, no counter in hand, a counter in the deck AND a
+        post-spend reserve at once; post-spend elixir is p50 0.29, so it is unreachable in practice.
+        A term that can only subtract is not teaching correctness, it is charging rent on acting --
+        and the policy twice responded exactly as it should have, by playing less: plays/match
+        50.1 -> 30.9 with winrate 4.4% -> 0.0% while episode reward IMPROVED -24.1 -> -18.1.
 
-        Two changes make it discriminative. (a) Grade the elixir LEFT, which is the quantity the
-        complaint is actually about -- dumping a card the instant it is affordable and having nothing
-        left for the next push. The old PRE-spend rule was also self-inconsistent: it penalised a
-        1-elixir play that left 5 in the bar while sparing a 3-elixir play that left 4. (b) Only
-        charge it when no enemy troop is on our half, because a defensive card played at low elixir
-        is CORRECT -- that is what defending is. MEASURED: 58.4% of cheap plays answered an enemy
-        troop already on our side, and the old rule billed every one of them. The new rule fires on
-        41% of cheap plays, of which 99.1% had no threat of any kind on the board.
-
-        NB the elixir threshold alone could not have fixed this: post-spend elixir is p50 0.29, so
-        every reserve between 1 and 4 selects the same ~41% of plays. The discriminating variable is
-        whether there was anything to defend against, not how much elixir was in the bar.
+        The user's own framing is why no instantaneous rule can work here: cycling a cheap card can
+        rotate you back to the Tesla that stops a bridge wincon, or leave you empty when the push
+        lands in the other lane -- same board, same card, opposite verdicts depending on what
+        follows. That question is now answered after the fact by `_cf_shaping`, which forks the
+        branch where the card was HELD and compares. Nothing measurable was lost: zero bonuses in
+        110 fires means the behaviour this was written to reward was never once rewarded.
         """
-        if card_id < 0 or self.specs[card_id].elixir > self.cycle_cheap_max:
-            return 0.0                                       # only cheap 'cycle' cards qualify
-        left = self.eng.elixir[0]        # POST-spend: step() calls this after eng.deploy() debited it
-        if self._needed_counter_coming(set(self._hand_ids())):
-            return self.w_cycle_plan if left >= self.cycle_spare_elixir else 0.0
-        if left < self.cycle_spare_elixir and not self._defending_now():
-            return self.w_cycle_waste
         return 0.0
 
     def _trade_reward(self, value_eliminated: float, spent: float) -> float:
@@ -863,7 +849,6 @@ class SimMatchEnv:
                     # again here. A MISPLACED win condition (wincon < 0) still pays its spend, so
                     # throwing the X-Bow away is still a mistake.
                     spent = 0.0
-                reward += self._bonus(self._cycle_plan(card_id))                # (4) deliberate cycling
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.w_spell_waste                                 # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
