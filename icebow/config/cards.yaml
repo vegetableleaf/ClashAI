@@ -1038,8 +1038,32 @@ cards:
   # "spawn speed is doubled, for a total of 1.75 seconds" -- 3.5/2 = 1.75, so the TABLE is stale.
   tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 2, on_death: 4, interval: 3.5}, verified: true}   # "a group of two Skeletons, with a 0.5 seconds delay from each other"
   barbarian_hut: {kind: building, flags: [spawner], spawns: {unit: barbarians, count: 3, on_death: 1}, verified: true}   # "a group of three Barbarians" every 15s; "when defeated, it will also spawn a Barbarian"
-  # NB goblin_cage is a spawner too, but it summons a Goblin Brawler on death and that unit is not a
-  # card, so it has no KB entry to point at -- left alone rather than approximated with a Goblin.
+  # GOBLIN CAGE. "When defeated, it will spawn a Goblin Brawler." The importer folded the BRAWLER's
+  # stats into the cage -- hitpoints 1080 / damage 337 are his, and a cage does not attack at all.
+  # The wiki keeps them apart as `cage_hp_11 = 780` and `hp_11 = 1080`, so the cage is the 780-hp
+  # body and the Brawler is curated below as a spawn-only unit. Its lifetime expiry releases him too,
+  # because a lifetime is modelled as hp decay and therefore runs through the same death path.
+  goblin_cage: {kind: building, hitpoints: 780, damage: 0, dps: 0, spawns: {unit: goblin_brawler, on_death: 1}, verified: true}
+  # Goblin Brawler: not a playable card, so there is no import to merge with -- every number here is
+  # from the Goblin Cage attribute table's second row. "He is also the same as that spawned by the
+  # Party Hut." Speed Fast (90) = 1.5 tiles/s at the wiki's 60 units = 1 tile/s.
+  goblin_brawler:
+    display: "Goblin Brawler"
+    kind: troop
+    rarity: rare
+    hitpoints: 1080
+    damage: 337
+    hit_speed: 1.1
+    range_tiles: 0.8        # "Melee: Short (0.8)"
+    speed_tiles: 1.5        # "Fast (90)"
+    attacks: [ground]
+    movement: ground
+    targets: any
+    count: 1
+    range: melee
+    splash: false
+    win_condition: false
+    verified: true
   # -- clarified dual / special-attack troops (user-provided) --
   cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
   # FURNACE IS A TROOP, not a building: the 4/8/2025 update "changed the Furnace into a troop that

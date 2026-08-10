@@ -1372,7 +1372,16 @@ class SimEngine:
                 # with a cheap body works.
                 u.leap_left = u.spec.leap_time
                 continue
-            if gap <= reach + _REACH_SLOP:
+            # NO SLOP AGAINST A CROWN TOWER. The tolerance exists so a body closing the last
+            # fraction of a tile on a MOVING target does not stall a tick short; a crown tower is
+            # stationary and 3 tiles wide, so there is nothing to absorb. Granting it anyway handed
+            # every attacker a free 0.6 tiles that the tower does not get back, and 0.6 is exactly
+            # the margin that decides whether a card can chip a tower from outside its return fire.
+            # MEASURED with the slop: Magic Archer (7.0 reach) opened fire at 7.55 while the tower
+            # could only answer out to 8.0 of its own -- he took ZERO damage and landed 25 hits.
+            # Dart Goblin (6.5) sieged untouched too. Neither can do that in game.
+            slop = 0.0 if isinstance(ref, Tower) else _REACH_SLOP
+            if gap <= reach + slop:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
