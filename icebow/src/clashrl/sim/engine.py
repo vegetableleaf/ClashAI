@@ -1473,16 +1473,32 @@ class SimEngine:
             self.outcome = self._score_outcome()
 
     def _score_outcome(self) -> str:
+        """Crowns first, then CR's overtime TIEBREAK on the least-healthy REMAINING Crown Tower.
+
+        Real rule: when overtime expires level, every tower still STANDING starts taking damage
+        together, and the side whose weakest one falls first loses. So the comparison is over ALIVE
+        towers only.
+
+        THE BUG THIS FIXES: the filter used to be `t.max_hp > 0`, which a DESTROYED tower also
+        passes (hp 0, max_hp unchanged) -- so it contributed a fraction of 0.0. The moment each side
+        had lost one princess (crowns 1-1, the most common way a close match stands), both minima
+        were 0.0, the equality band fired, and the match was declared a DRAW no matter how far ahead
+        one side was on the towers still standing. MEASURED: 7 of 40 matches ended
+        `TRUE DRAW (both weakest at 0.000)`, i.e. 17.5% of matches returned a terminal reward of 0
+        instead of +-w_win. It erased exactly the win the rocket-cycle plan is built to produce --
+        chip damage that never finishes a tower is precisely what the tiebreak is supposed to read.
+
+        Fractions rather than absolute HP, so asymmetric tower-troop/level max-HP between the two
+        sides stays comparable.
+        """
         my_crowns = self.crowns(0)
         op_crowns = self.crowns(1)
         if my_crowns != op_crowns:
             return "win" if my_crowns > op_crowns else "loss"
-        # Crowns tied -> CR tiebreak on the LEAST-healthy Crown Tower (lowest HP fraction loses). Fractions,
-        # not absolute HP, so asymmetric tower-troop/level max-HP between the two sides stays fair.
-        my_min = min((t.hp / t.max_hp for t in self.towers[0] if t.max_hp > 0), default=1.0)
-        op_min = min((t.hp / t.max_hp for t in self.towers[1] if t.max_hp > 0), default=1.0)
+        my_min = min((t.hp / t.max_hp for t in self.towers[0] if t.alive and t.max_hp > 0), default=1.0)
+        op_min = min((t.hp / t.max_hp for t in self.towers[1] if t.alive and t.max_hp > 0), default=1.0)
         if abs(my_min - op_min) < 1e-3:
-            return "draw"
+            return "draw"                                    # genuinely level on every standing tower
         return "win" if op_min < my_min else "loss"
 
     # -- reward / observation accessors ------------------------------------
