@@ -705,9 +705,44 @@ class SimEngine:
         and engaged from further out than a skeleton standing in the same spot."""
         towers = self._enemy_towers(u.team)
         if u.spec.building_only:
-            tw = min(towers, key=lambda t: _gap(u.x, u.y, t)) if towers else None
-            u.target = tw
-            return ("tower", tw) if tw else (None, None)
+            # BUILDING-TARGETERS (Hog Rider, Royal Hogs, Battle Ram, Ram Rider, Miner...) ignore
+            # TROOPS -- but they emphatically do not ignore BUILDINGS. The old code looked at crown
+            # towers ONLY, so a Tesla or Cannon dropped in the lane was invisible and the wincon
+            # walked straight past it into the tower. That deleted the most important defensive play
+            # in the game: you could not PULL a wincon with a building, which is the entire reason
+            # defensive buildings exist. `interactions.py` already predicted the real behaviour
+            # ("nearest of {building unit, tower}"), so the policy's OBSERVATION disagreed with the
+            # PHYSICS -- it was being shown a pull that never happened, which is a good way to never
+            # learn to answer a wincon with a building.
+            #
+            # Re-evaluated every tick WHILE TRAVELLING, so a building placed into its path steals it
+            # mid-run. Once it is actually swinging (u.locked) it commits, and only an aggro reset
+            # (stun / freeze) breaks that -- same rule as every other unit.
+            if u.aggro_reset:
+                u.aggro_reset = False
+                u.locked = False
+                u.target = None
+            t = u.target
+            if u.locked:
+                if isinstance(t, Unit) and t.hp > 0 and t.team != u.team \
+                        and t.spec.kind == "building":
+                    return ("unit", t)
+                if isinstance(t, Tower) and t.alive and t in towers:
+                    return ("tower", t)
+                u.locked = False                              # target died -> re-pick
+            best, best_gap, best_kind = None, float("inf"), None
+            for e in self.units:
+                if e.team != u.team and e.hp > 0 and e.spec.kind == "building" \
+                        and self._valid_foe(u, e):
+                    g = _gap(u.x, u.y, e)
+                    if g < best_gap:
+                        best, best_gap, best_kind = e, g, "unit"
+            for tw in towers:                                 # crown towers are buildings too
+                g = _gap(u.x, u.y, tw)
+                if g < best_gap:
+                    best, best_gap, best_kind = tw, g, "tower"
+            u.target = best
+            return (best_kind, best) if best is not None else (None, None)
         if u.spec.kind == "building":
             # STATIONARY BUILDINGS lock onto the first thing that enters range and STAY on it. They
             # cannot walk, so the generic fallback below (nothing in sight -> march at a tower) is a
