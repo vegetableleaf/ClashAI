@@ -139,7 +139,13 @@ class CardSpec:
     # cards punish a defender placed at mid range instead of touching them -- and the reason a
     # Bandit cannot be chip-damaged out of it.
     leap_dmg: float = 0.0     # published dash_damage / jump_damage (already ~2x the base hit)
-    leap_time: float = 0.0    # seconds of wind-up before it lands
+    leap_time: float = 0.0    # WIND-UP: seconds charging, stationary, before he leaves the ground.
+                              # The balance log is explicit that this is the charge, not the flight:
+                              # "decreased the time required for CHARGING his jump to 0.9 seconds".
+    leap_speed: float = 0.0   # TRAVEL speed in tiles/s, from the leap row's own Speed column
+                              # (Mega Knight 250 -> 4.17 t/s, Bandit 500 -> 8.33 t/s, at 60 = 1 t/s)
+    leap_splash: float = 0.0  # the LEAP's own splash radius -- Mega Knight's jump is 2.2 tiles vs
+                              # his 1.3 on a normal swing, so the jump covers a much wider group
     leap_min: float = 0.0     # closer than this and it just walks in and swings normally
     leap_max: float = 0.0     # further than this and it keeps walking
     leap_invuln: bool = False  # "She is immune to damage during her dash" (Bandit only)
@@ -416,6 +422,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # (Bandit 3.5-6, Mega Knight 3.5-5) and are curated because they are prose, not a table.
         leap_dmg=float(c.get("dash_damage") or c.get("jump_damage") or 0.0) * sc,
         leap_time=float(c.get("dash_time_s") or c.get("jump_time_s") or 0.0),
+        leap_speed=float(c.get("leap_speed_tiles") or 0.0),
+        leap_splash=float(c.get("leap_splash_tiles") or 0.0),
         leap_min=float(c.get("leap_min_tiles") or 0.0),
         leap_max=float(c.get("leap_max_tiles") or 0.0),
         leap_invuln=bool(c.get("leap_invulnerable")),
@@ -518,7 +526,8 @@ class Unit:
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
     hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
-    leap_left: float = 0.0       # seconds of dash/jump wind-up still to run (0 = not leaping)
+    leap_left: float = 0.0       # seconds of dash/jump WIND-UP still to run (stationary)
+    leap_go: bool = False        # airborne: past the wind-up, travelling at leap_speed
     invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
     ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
     ability_cd_left: float = 0.0  # seconds until the ability can be used again
@@ -1287,22 +1296,29 @@ class SimEngine:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            # LEAP (Bandit dash / Mega Knight jump). Mid-flight it is committed: it does not swing,
-            # and -- for the Bandit -- cannot be damaged. It TRAVELS across the gap over leap_time
-            # rather than teleporting: the dash has a real speed on screen, so a body that steps
-            # into the path, or a target that dies mid-dash, matters.
+            # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
+            #   WIND-UP  -- "he will STOP MOVING and begin charging"; stationary and committed. The
+            #               balance log calls this the CHARGE, not the flight.
+            #   TRAVEL   -- airborne at the leap row's own published Speed (Mega Knight 250 = 4.17
+            #               tiles/s, Bandit 500 = 8.33), so a longer leap takes longer to land.
+            # Splitting them matters: the wind-up is the window a defender has to react to, and the
+            # travel is what closes a gap that walking never would.
             if u.leap_left > 0.0:
+                u.leap_left -= dt
+                if u.leap_left <= 0.0:
+                    u.leap_go = True
+                continue
+            if u.leap_go:
                 dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
                 d = math.hypot(dxt, dyt)
                 stop = max(0.0, d - (_body_radius(ref) + u.spec.radius))
-                if stop > 1e-6:
-                    # cover the REMAINING distance over the REMAINING time -> constant dash speed
-                    step = stop * min(1.0, dt / max(u.leap_left, 1e-6))
+                step = (u.spec.leap_speed or u.spec.speed) * dt
+                if step >= stop or stop <= 1e-6 or d <= 1e-6:
+                    u.leap_go = False
+                    self._land_leap(u, ref)
+                else:
                     u.x, u.y = _clamp_xy(u.x + (dxt / d) * step / _TILES_X,
                                          u.y + (dyt / d) * step / _TILES_Y, u.spec.radius)
-                u.leap_left -= dt
-                if u.leap_left <= 0.0:
-                    self._land_leap(u, ref)
                 continue
             gap = _gap(u.x, u.y, ref)
             if u.spec.leap_dmg > 0.0 and u.spec.leap_max > 0.0 \
@@ -1376,9 +1392,10 @@ class SimEngine:
         self._apply_status(s, ref)
         self._knock(ref, s, u.x, u.y)
         if s.splash:                                          # Mega Knight lands ON a group
+            rad = s.leap_splash or _SPLASH_R                  # the JUMP has its own, wider radius
             for e in self.units:
                 if e.team != u.team and e is not ref and e.hp > 0 \
-                        and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
+                        and _dist(e.x, e.y, ref.x, ref.y) <= rad:
                     self._hurt(e, dmg)
                     self._apply_status(s, e)
                     self._knock(e, s, u.x, u.y)
@@ -1480,7 +1497,8 @@ class SimEngine:
         # DASH INVULNERABILITY: "She is immune to damage during her dash." This is most of what makes
         # the Bandit worth 3 elixir -- she trades through a Crown Tower volley, and chipping her out
         # of the wind-up is not an option the defender has.
-        if u.leap_left > 0.0 and u.spec.leap_invuln:
+        # "She is immune to damage during her dash" -- the WHOLE dash, charge and flight alike.
+        if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
             return
         if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
             return
