@@ -224,6 +224,8 @@ class CardSpec:
     pulse_r: float = 0.0      # pulse radius (tiles)
     pulse_stun: float = 0.0   # STUN seconds applied by each pulse
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
+    hides: bool = False       # HIDDEN TESLA: retracts underground whenever nothing is in range
+    hits_hidden: bool = False # this spell reaches a retracted building anyway (Earthquake)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
@@ -247,6 +249,10 @@ class CardSpec:
     proj_radius: float = 0.0  # blast radius of the shot in tiles (0 = single target)
     proj_range: float = 0.0   # how far the shot flies (> reach for the piercing shots)
     proj_pierce: bool = False # keeps going past its target (Firecracker rocket / Magic Archer / Bowler)
+    proj_width: float = 0.0   # HALF the published Projectile Width, in tiles: how wide the piercing
+                              # line actually is. The Executioner's axe is published at width 2, and
+                              # "the axe itself has a 1 tile radius, so his effective reach is 8.5"
+                              # (7.5 throw + 1) -- so half-width is the number that does the work.
     # MIXED SQUADS: one card that fields SEVERAL UNIT TYPES AT ONCE, each its own CardSpec carrying
     # its own count. Empty for the ~160 cards that field one body type (including swarms -- 15
     # identical Skeletons stay on the plain `count` path). Only Goblin Gang, Rascals and Goblinstein
@@ -455,6 +461,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         proj_speed=float(proj.get("speed") or 0.0),
         proj_radius=float(proj.get("radius") or 0.0),
         proj_range=float(proj.get("range") or 0.0),
+        proj_width=float(proj.get("width") or 0.0),
+        hides=("hides" in flags),
+        hits_hidden=("hits_hidden" in flags),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -525,6 +534,7 @@ class Unit:
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
+    hidden: bool = False         # HIDDEN TESLA: retracted underground -- untargetable and immune
     hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
     leap_left: float = 0.0       # seconds of dash/jump WIND-UP still to run (stationary)
     leap_go: bool = False        # airborne: past the wind-up, travelling at leap_speed
@@ -620,6 +630,10 @@ class Projectile:
     left: float                   # TILES of flight remaining (piercing shots fly their full range)
     ground_only: bool = False     # some shots cannot touch air (the KB's `attacks` list says so)
     pierce: bool = False
+    width: float = 0.0         # half-width of a piercing line, TILES (0 -> the 0.5 default)
+    dirx: float = 0.0          # FIXED heading for a piercing shot, normalised units per tile of
+    diry: float = 0.0          # travel. Steering at `tx,ty` every tick made the shot turn round
+                               # the instant it passed the aim point instead of flying on through.
     hit: set = field(default_factory=set)   # ids already damaged by a piercing shot
     ox: float = 0.0            # where it was fired from -- the BOOMERANG flies back to here
     oy: float = 0.0
@@ -906,8 +920,9 @@ class SimEngine:
         return [t for t in self.towers[1 - team] if t.alive]
 
     def _valid_foe(self, u: Unit, e: Unit) -> bool:
-        # INVISIBLE bodies cannot be acquired at all (Boss Bandit's Getaway Grenade).
-        return e.hp > 0 and e.invis_left <= 0.0 \
+        # INVISIBLE bodies cannot be acquired at all (Boss Bandit's Getaway Grenade), and neither
+        # can a RETRACTED Tesla -- "its underground mechanic prevents spell responses against it".
+        return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden \
             and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
     def _acquire(self, u: Unit):
@@ -1249,11 +1264,13 @@ class SimEngine:
                 if u.deploy_left <= 0.0 and not u.blast_done:
                     u.blast_done = True
                     self._deploy_blast(u)                    # Mega Knight lands / Goblin Drill surfaces
+                    if u.spec.pulse_dmg > 0.0:
+                        self._pulse(u)                       # "After surfacing AND DEPLOYMENT"
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
                 continue
-            if u.spec.pulse_interval > 0:                    # Evo Tesla area-shock: periodic AoE damage + stun
+            if u.spec.pulse_interval > 0:                    # periodic area-shock (none ship with this today)
                 u.pulse_cd -= dt
                 if u.pulse_cd <= 0:
                     self._pulse(u)
@@ -1290,6 +1307,22 @@ class SimEngine:
                     continue
             prev_target = u.target
             kind, ref = self._acquire(u)
+            # HIDDEN TESLA. "When there are no enemies within range, it retracts underground, making
+            # itself immune to all damage except for the Earthquake and the Freeze." So the retract
+            # is driven by exactly the same targeting test it uses to shoot -- nothing in range means
+            # nothing to come up for. While under it is untargetable (`_valid_foe`), which is what
+            # makes it survive the spell that would otherwise trade up on it, and what lets it eat a
+            # Hog's whole run: he cannot lock it until it surfaces in his face.
+            if u.spec.hides:
+                if ref is None:
+                    u.hidden = True
+                    continue
+                if u.hidden:
+                    u.hidden = False
+                    # EVO TESLA: a pulse on EVERY surfacing, not on a timer -- "the Tesla will close
+                    # and open again", which is how you get two pulses out of one building.
+                    if u.spec.pulse_dmg > 0.0:
+                        self._pulse(u)
             # RAMP-UP bookkeeping: the damage stages climb only while this unit stays on ONE target,
             # and drop straight back to stage 1 the instant the target changes -- which is why a stun,
             # a knockback or simply feeding a fresh body resets an Inferno.
@@ -1516,7 +1549,7 @@ class SimEngine:
             nu.deploy_left = sp.deploy_time
             self.units.append(nu)
 
-    def _hurt(self, u: "Unit", dmg: float) -> None:
+    def _hurt(self, u: "Unit", dmg: float, hits_hidden: bool = False) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
         - DAMAGE REDUCTION while NOT attacking (Evo Knight -- 60% less from ALL sources whenever it isn't
           engaged; it drops the moment it deals a hit, tracked by `u.attacking`). NOT a numerical HP pool.
@@ -1530,6 +1563,12 @@ class SimEngine:
         if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
             return
         if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
+            return
+        # RETRACTED TESLA: "immune to all damage except for the Earthquake". The exception is a
+        # PROPERTY OF THE SPELL, not of the Tesla -- Earthquake was given this specifically
+        # (3/3/2020, "allowed the Earthquake to affect the Tesla even if it is hidden"), so it is
+        # carried on the spell's own `hits_hidden` flag rather than special-cased by card name.
+        if u.hidden and not hits_hidden:
             return
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
@@ -1561,12 +1600,21 @@ class SimEngine:
         # NB this is NOT the Electro Dragon's `chain`, which "arcs and strikes up to 2 OTHER targets"
         # -- there each body takes the full hit, and that model stays as it is.
         if u.spec.multi_kind == "split" and u.spec.multi_hits > 1:
-            reach = u.spec.reach + u.reach_extra
+            reach = u.spec.reach + u.reach_extra + _REACH_SLOP
             extra = [(_gap(u.x, u.y, e), e, "unit") for e in self.units
                      if e.team != u.team and e.hp > 0 and e is not ref
                      and self._valid_foe(u, e) and _gap(u.x, u.y, e) <= reach]
-            extra += [(_gap(u.x, u.y, tw), tw, "tower") for tw in self._enemy_towers(u.team)
-                      if tw is not ref and _gap(u.x, u.y, tw) <= reach]
+            # AT MOST ONE CROWN TOWER among the halves. Towers cluster: MEASURED, 100 of the 18x32
+            # cells have two or more enemy towers inside a 5-tile reach (the whole area behind the
+            # bridge, and all three towers dead centre), so counting each tower separately made an
+            # Electro Wizard whose ONLY target is a crown tower deal half damage to it -- the other
+            # bolt quietly went into the King, which also woke him up. He splits between a troop and
+            # a tower, never between two towers.
+            if not any(k == "tower" for _, _, k in extra) and not isinstance(ref, Tower):
+                towers = [(_gap(u.x, u.y, tw), tw, "tower") for tw in self._enemy_towers(u.team)
+                          if tw is not ref and _gap(u.x, u.y, tw) <= reach]
+                if towers:
+                    extra.append(min(towers, key=lambda t: t[0]))
             extra.sort(key=lambda t: t[0])
             picks = [(ref, kind)] + [(e, k) for _, e, k in extra[:u.spec.multi_hits - 1]]
             share = 1.0 / len(picks)
@@ -1620,6 +1668,16 @@ class SimEngine:
                 dmg: float, tower_dmg: float) -> None:
         radius = spec.proj_radius
         rng = spec.proj_range or (spec.reach + _REACH_SLOP)
+        pierce = spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun")
+        dx, dy = 0.0, 0.0
+        if pierce:
+            # A piercing shot is fired ALONG A HEADING and keeps that heading for the whole leg.
+            # Re-aiming at `tx,ty` each tick made it turn round the moment it passed the target, so
+            # it hovered there instead of flying on -- which is most of the Executioner's reach
+            # (7.5-tile throw vs his own 4.5-tile range) and all of Magic Archer's.
+            d = _dist(x, y, ref.x, ref.y)
+            if d > 1e-9:
+                dx, dy = (ref.x - x) / d, (ref.y - y) / d
         self.projectiles.append(Projectile(
             label=label, team=team, x=x, y=y, tx=ref.x, ty=ref.y, target=ref, spec=spec,
             dmg=dmg, tower_dmg=tower_dmg, radius=radius, speed=spec.proj_speed,
@@ -1627,7 +1685,39 @@ class SimEngine:
             ground_only=not spec.attacks_air,
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
-            pierce=spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun"), ox=x, oy=y))
+            pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y))
+
+    def _pierce_pass(self, p: Projectile) -> None:
+        """One tick of a piercing shot's damage: everything it is currently overlapping, once each.
+
+        Crown towers are hit too. They were not before, and the omission was total rather than
+        partial: a piercing shot is removed at max range and never reaches ``_impact``, which is the
+        only place towers were ever checked -- so an Executioner, Bowler or Magic Archer left alone
+        against a tower did literally nothing to it. The wiki assumes the opposite ("Left alone, the
+        Executioner will deal the same damage to all tower troops, throwing his axe 3 times against
+        all of them").
+        """
+        reach = p.width or max(p.radius, 0.5)
+        for e in self.units:
+            if e.team == p.team or e.hp <= 0 or id(e) in p.hit or e.hidden:
+                continue
+            if p.ground_only and e.spec.flying:
+                continue
+            if _dist(p.x, p.y, e.x, e.y) <= reach + e.spec.radius:
+                p.hit.add(id(e))
+                self._hurt(e, p.dmg)
+                self._apply_status(p.spec, e)
+                # A PIERCING SHOT SHOVES ALONG ITS OWN LINE. The Bowler's boulder "inflicts
+                # knockback, while piercing through enemies" -- separating a tank from the
+                # support behind it is the card's entire job, and it was landing damage with
+                # no push at all because knockback only ever ran on the SPELL paths.
+                self._knock(e, p.spec, p.x, p.y, p.dirx * _TILES_X, p.diry * _TILES_Y)
+        for tw in self._enemy_towers(p.team):
+            if id(tw) in p.hit:
+                continue
+            if _gap(p.x, p.y, tw) <= reach:
+                p.hit.add(id(tw))
+                self._damage_tower(tw, p.tower_dmg, p.team)
 
     def _tick_projectiles(self, dt: float) -> None:
         for p in list(self.projectiles):
@@ -1638,44 +1728,40 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
-            d = math.hypot(dxt, dyt)
-            if d > 1e-9:
-                move = min(step, d) if not p.pierce else step
-                p.x += (dxt / d) * move / _TILES_X
-                p.y += (dyt / d) * move / _TILES_Y
-            p.left -= step
-            if p.pierce:                              # damages everything it passes through, once each
-                for e in self.units:
-                    if e.team == p.team or e.hp <= 0 or id(e) in p.hit:
-                        continue
-                    if p.ground_only and e.spec.flying:
-                        continue
-                    if _dist(p.x, p.y, e.x, e.y) <= max(p.radius, 0.5) + e.spec.radius:
-                        p.hit.add(id(e))
-                        self._hurt(e, p.dmg)
-                        self._apply_status(p.spec, e)
-                        # A PIERCING SHOT SHOVES ALONG ITS OWN LINE. The Bowler's boulder "inflicts
-                        # knockback, while piercing through enemies" -- separating a tank from the
-                        # support behind it is the card's entire job, and it was landing damage with
-                        # no push at all because knockback only ever ran on the SPELL paths.
-                        self._knock(e, p.spec, p.x, p.y, dxt, dyt)
+            if p.pierce:
+                p.x += p.dirx * step                 # straight on along the launch heading
+                p.y += p.diry * step
+                p.x, p.y = _clamp_xy(p.x, p.y, 0.0)
+                p.left -= step
+                self._pierce_pass(p)
                 if p.left <= 0.0:
                     # BOOMERANG: the axe does not stop at max range, it turns around and hits
-                    # everything again on the way back. Clearing `hit` is what lets it re-damage the
-                    # same bodies -- that return leg is the whole reason Executioner trades so well
-                    # into a line of troops.
+                    # everything again on the way back -- "striking all enemies on the way out AND
+                    # back", which is HALF this card's published damage (168 x2 per throw).
+                    # Clearing `hit` is what lets it re-damage the same bodies. It flies back to
+                    # where it was THROWN, not to the thrower: "if he is defeated while his axe is
+                    # not in his hand, the axe will still fly back to where he was defeated".
                     if (p.spec.multi_kind == "boomerang" and not p.returning
                             and p.spec.multi_hits >= 2):
+                        back = _dist(p.x, p.y, p.ox, p.oy)
                         p.returning = True
                         p.label = f"{p.spec.base}_axe_return"
                         p.target = None
                         p.tx, p.ty = p.ox, p.oy
-                        p.left = _dist(p.x, p.y, p.ox, p.oy)
+                        p.dirx = (p.ox - p.x) / back if back > 1e-9 else 0.0
+                        p.diry = (p.oy - p.y) / back if back > 1e-9 else 0.0
+                        p.left = back
                         p.hit.clear()
                         continue
                     self.projectiles.remove(p)
                 continue
+            dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
+            d = math.hypot(dxt, dyt)
+            if d > 1e-9:
+                move = min(step, d)
+                p.x += (dxt / d) * move / _TILES_X
+                p.y += (dyt / d) * move / _TILES_Y
+            p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
                 self._impact(p)
                 self.projectiles.remove(p)
@@ -1835,6 +1921,10 @@ class SimEngine:
         global config value. That difference is not cosmetic: a Freeze holds for 4s and an Ice Spirit
         for 1.1s, and a Ram Rider's snare (-70%) is more than twice a Giant Snowball's (-30%).
         """
+        # A retracted Tesla is "vulnerable to Earthquake and Freeze" and nothing else -- so a Zap or
+        # an Electro Wizard cannot stun it while it is under, but a Freeze still locks it down.
+        if e.hidden and not spec.freezes and not spec.hits_hidden:
+            return
         if spec.freezes:
             e.stun_left = max(e.stun_left, spec.freeze_dur or self.freeze_dur)
             e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
@@ -1861,7 +1951,7 @@ class SimEngine:
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
-                and e.invis_left <= 0.0
+                and e.invis_left <= 0.0 and not e.hidden
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
@@ -1926,7 +2016,7 @@ class SimEngine:
             return
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
-                self._hurt(e, s.spec.spell_dmg)
+                self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
                 self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
                 self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
