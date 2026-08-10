@@ -283,6 +283,12 @@ def _cmd_detect_adopt(args) -> None:
                  prefix=args.prefix, dry_run=args.dry_run)
 
 
+def _cmd_detect_check(args) -> None:
+    from .detect_check import detect_check
+    detect_check(Config.load(args.config), n=args.n, split=args.split, cls=args.cls,
+                 out=args.out, seed=args.seed, min_boxes=args.min_boxes, scale=args.scale)
+
+
 def _cmd_detect_import(args) -> None:
     from .detect import detect_import
     detect_import(Config.load(args.config), args.export, args.val_frac, dry_run=args.dry_run)
@@ -696,6 +702,23 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    # The counterpart to detect-preview: that one shows what the MODEL predicts, this one shows
+    # what the LABELS claim. A dataset can pass every count-based check with every box in the
+    # wrong place, and looking is the only way to find that.
+    dck = sub.add_parser("detect-check",
+                         help="draw the GROUND-TRUTH boxes onto frames and save a contact sheet "
+                              "-- verify a dataset (especially an imported one) with your eyes")
+    dck.add_argument("--class", dest="cls", default=None,
+                     help="only frames containing this class, and highlight it. The point of the "
+                          "tool: a class with 1 box is where a single mislabel is 100%% of it")
+    dck.add_argument("--n", type=int, default=6, help="how many frames to show")
+    dck.add_argument("--split", default="train", choices=("train", "val", "both"))
+    dck.add_argument("--min-boxes", type=int, default=1, help="skip frames with fewer boxes")
+    dck.add_argument("--scale", type=float, default=0.5, help="tile scale (1.0 = native size)")
+    dck.add_argument("--seed", type=int, default=None, help="repeat the same sample")
+    dck.add_argument("--out", default=None, help="output image (default: data/detect_check.jpg)")
+    dck.set_defaults(func=_cmd_detect_check)
 
     kseg = sub.add_parser("katacr-segments",
                           help="import KataCR's MIT-licensed segment library into the sprite bank "
