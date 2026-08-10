@@ -71,6 +71,7 @@ _SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, None: 1.0}
 # than one constant per melee/short/long bucket -- real melee spans 0.5-1.6 tiles.
 _REACH_SLOP = 0.6         # tiles of tolerance on "target is in reach"
 _PELLET_R = 0.1           # a shotgun pellet is a POINT, not a blast -- the target's own body does the work
+_PELLET_TOWER_R = 0.6     # tower crown body that can catch a pellet (smaller than the full 3x3 footprint)
 _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit counts as a heavy tank
 # TOWER FOOTPRINTS (half-size, tiles). Towers are BUILDINGS with real bodies -- a princess is 3x3
 # tiles and the king 4x4 -- so an attacker must stop OUTSIDE that box. Measuring reach to the tower
@@ -229,6 +230,7 @@ class CardSpec:
     hits_hidden: bool = False # this spell reaches a retracted building anyway (Earthquake)
     invis_time: float = 0.0   # ROYAL GHOST: seconds of NOT fighting before he fades out again
     spread: float = 0.0       # SHOTGUN half-angle in DEGREES that the pellets scatter within
+    curse_dur: float = 0.0    # Mother Witch curse duration on struck enemy troops (seconds)
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
@@ -469,6 +471,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hits_hidden=("hits_hidden" in flags),
         invis_time=float(c.get("invisibility_time_s") or 0.0),
         spread=float(c.get("spread_degrees") or 0.0),
+        curse_dur=float(c.get("curse_duration_s") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -552,6 +555,9 @@ class Unit:
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
     charge_dist: float = 0.0     # tiles walked without attacking -- arms the charge bonus
+    curse_left: float = 0.0      # active curse timer (seconds remaining)
+    cursed_by: int = -1          # team that cursed this unit (-1 = none)
+    curse_level: int = 11        # level to use for the spawned Mother Witch Hog
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -1277,6 +1283,10 @@ class SimEngine:
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
             u.attacking = False                             # default; set True only when engaged (target in reach)
+            if u.curse_left > 0.0:
+                u.curse_left = max(0.0, u.curse_left - dt)
+                if u.curse_left <= 0.0:
+                    u.cursed_by = -1
             if u.deploy_left > 0:                            # still spawning -> can't act yet (~1s)
                 u.deploy_left -= dt
                 if u.deploy_left <= 0.0 and not u.blast_done:
@@ -1443,6 +1453,7 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
+                self._spawn_cursed_hog(u)
                 self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
                 continue
@@ -1492,7 +1503,7 @@ class SimEngine:
         if ref.hp <= 0:
             return
         self._hurt(ref, dmg)
-        self._apply_status(s, ref)
+        self._apply_status(u.team, s, ref)
         self._knock(ref, s, u.x, u.y)
         if s.splash:                                          # Mega Knight lands ON a group
             rad = s.leap_splash or _SPLASH_R                  # the JUMP has its own, wider radius
@@ -1500,7 +1511,7 @@ class SimEngine:
                 if e.team != u.team and e is not ref and e.hp > 0 \
                         and _dist(e.x, e.y, ref.x, ref.y) <= rad:
                     self._hurt(e, dmg)
-                    self._apply_status(s, e)
+                    self._apply_status(u.team, s, e)
                     self._knock(e, s, u.x, u.y)
 
     def _deploy_blast(self, u: "Unit") -> None:
@@ -1589,6 +1600,20 @@ class SimEngine:
             nu = Unit(spec=sp, team=u.team, x=x, y=y, hp=sp.hp)
             nu.deploy_left = sp.deploy_time
             self.units.append(nu)
+
+    def _spawn_cursed_hog(self, u: "Unit") -> None:
+        """Mother Witch curse: a cursed enemy TROOP turns into a hog for the curser's team on death."""
+        if u.curse_left <= 0.0 or u.cursed_by not in (0, 1) or u.spec.kind != "troop":
+            return
+        if u.spec.base == "mother_witch_hog":
+            return
+        try:
+            sp = build_spec(self.db, "mother_witch_hog", max(1, int(u.curse_level)))
+        except Exception:
+            return
+        nu = Unit(spec=sp, team=u.cursed_by, x=u.x, y=u.y, hp=sp.hp)
+        nu.deploy_left = min(sp.deploy_time, 0.2)
+        self.units.append(nu)
 
     def _hurt(self, u: "Unit", dmg: float, hits_hidden: bool = False) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
@@ -1701,12 +1726,12 @@ class SimEngine:
             self._damage_tower(ref, tower_dmg, team)
             return
         self._hurt(ref, dmg)
-        self._apply_status(spec, ref)
+        self._apply_status(team, spec, ref)
         if spec.splash:
             for e in self.units:
                 if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
                     self._hurt(e, dmg)
-                    self._apply_status(spec, e)
+                    self._apply_status(team, spec, e)
 
     def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
                 dmg: float, tower_dmg: float) -> None:
@@ -1789,7 +1814,7 @@ class SimEngine:
             if _dist(p.x, p.y, e.x, e.y) <= reach + e.spec.radius:
                 p.hit.add(id(e))
                 self._hurt(e, p.dmg)
-                self._apply_status(p.spec, e)
+                self._apply_status(p.team, p.spec, e)
                 # A PIERCING SHOT SHOVES ALONG ITS OWN LINE. The Bowler's boulder "inflicts
                 # knockback, while piercing through enemies" -- separating a tank from the
                 # support behind it is the card's entire job, and it was landing damage with
@@ -1801,7 +1826,11 @@ class SimEngine:
         for tw in self._enemy_towers(p.team):
             if id(tw) in p.hit:
                 continue
-            if _gap(p.x, p.y, tw) <= reach:
+            # A pellet is tiny and clips the tower's crown/turret body, not the full 3x3 base used
+            # for melee stand-off and pathing. Keeping the full footprint here made Hunter land
+            # 8-9 pellets on a tower at range where live behavior is closer to 3-4.
+            tower_r = _PELLET_TOWER_R if p.stop_on_hit else tw.radius
+            if _dist(p.x, p.y, tw.x, tw.y) <= reach + tower_r:
                 p.hit.add(id(tw))
                 self._damage_tower(tw, p.tower_dmg, p.team)
                 if p.stop_on_hit:
@@ -1865,7 +1894,7 @@ class SimEngine:
                     continue
                 if _dist(p.x, p.y, e.x, e.y) <= p.radius + e.spec.radius:
                     self._hurt(e, p.dmg)
-                    self._apply_status(p.spec, e)
+                    self._apply_status(p.team, p.spec, e)
                     self._knock(e, p.spec, p.x, p.y)      # area shot: radial from where it landed
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
@@ -1905,24 +1934,31 @@ class SimEngine:
         if n < 2 or not s.multi_kind:
             return
         if s.multi_kind == "chain":
-            # The bolt arcs from the struck body to the next nearest enemies (Electro Dragon 3,
-            # Electro Wizard 2). Each arc carries the card's stun, which is why a chain resets a
-            # whole line of attackers rather than just the one it hit.
+            # The bolt hops BODY-TO-BODY, each hop picking the nearest new enemy in chain range
+            # from the CURRENT node. This enforces unique targets (Electro Spirit's cap is 9) and
+            # reproduces the published "up to N" behaviour instead of spraying from only the first
+            # target.
             if not isinstance(ref, Unit):
                 return
-            near = sorted((e for e in self.units
-                           if e.team != team and e.hp > 0 and e is not ref
-                           and _dist(ref.x, ref.y, e.x, e.y) <= _CHAIN_TILES
-                           and not (not s.attacks_air and e.spec.flying)),
-                          key=lambda e: _dist(ref.x, ref.y, e.x, e.y))
-            for e in near[:n - 1]:
+            seen = {id(ref)}
+            cur = ref
+            for _ in range(n - 1):
+                near = [e for e in self.units
+                        if e.team != team and e.hp > 0 and id(e) not in seen
+                        and _dist(cur.x, cur.y, e.x, e.y) <= _CHAIN_TILES
+                        and not (not s.attacks_air and e.spec.flying)]
+                if not near:
+                    break
+                e = min(near, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
                 self._hurt(e, dmg)
-                self._apply_status(s, e)
+                self._apply_status(team, s, e)
                 self.projectiles.append(Projectile(
-                    label=f"{s.base}_chain", team=team, x=ref.x, y=ref.y, tx=e.x, ty=e.y,
+                    label=f"{s.base}_chain", team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
                     target=e, spec=s, dmg=0.0, tower_dmg=0.0, radius=0.0,
-                    speed=max(s.proj_speed, 20.0), left=_dist(ref.x, ref.y, e.x, e.y),
+                    speed=max(s.proj_speed, 20.0), left=_dist(cur.x, cur.y, e.x, e.y),
                     ground_only=not s.attacks_air))
+                seen.add(id(e))
+                cur = e
         elif s.multi_kind == "shotgun":
             return          # fired as real pellets in _shotgun, not as extra hits on one target
 
@@ -1992,7 +2028,7 @@ class SimEngine:
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
 
-    def _apply_status(self, spec: CardSpec, e: Unit) -> None:
+    def _apply_status(self, team: int, spec: CardSpec, e: Unit) -> None:
         """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
 
         Durations and slow strength are PER CARD where the wiki publishes them, falling back to the
@@ -2012,6 +2048,10 @@ class SimEngine:
         if spec.slows:
             e.slow_left = max(e.slow_left, spec.slow_dur or self.slow_dur)
             e.slow_mult = spec.slow_mult or self.slow_factor
+        if spec.curse_dur > 0.0 and e.spec.kind == "troop":
+            e.curse_left = max(e.curse_left, spec.curse_dur)
+            e.cursed_by = team
+            e.curse_level = spec.level
 
     def _pulse(self, u: Unit) -> None:
         """Evo Tesla area-shock: damage + STUN every enemy within pulse_r of the tower."""
@@ -2095,7 +2135,7 @@ class SimEngine:
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
                 self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
-                self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
+                self._apply_status(s.team, s.spec, e)                 # Zap/Freeze stun; slow spells
                 self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:

@@ -833,13 +833,20 @@ cards:
     rarity: legendary
     attacks: [ground]
     movement: ground
-    speed: fast
+    speed: very_fast
     range: melee
     splash: false
     count: 1
     win_condition: false           # a spawned harasser, not a deployed win condition -- but it DOES go for the tower
     targets: buildings_only
     flags: [building_targeting]
+    hitpoints: 629
+    damage: 53
+    hit_speed: 1.2
+    dps: 44
+    range_tiles: 0.75
+    speed_tiles: 2.0
+    deploy_time: 0.2
     evolution: null
     verified: false
 
@@ -990,7 +997,7 @@ cards:
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, knockback_immune], verified: false}
   suspicious_bush: {range: melee, verified: false}
   # -- short --
-  electro_spirit: {range: short, verified: false}
+  electro_spirit: {range: short, multi: chain, hits_per_attack: 9, verified: false}
   # HUNTER: 10 pellets of 84 (published as "84 x10"), each an individual hit, scattered across a
   # cone -- the damage falloff is what the cone DOES to a target of fixed size, not a rule. The
   # half-angle is the one number the wiki never prints (24/1/2018 only says it "slightly decreased
@@ -1022,7 +1029,17 @@ cards:
   inferno_dragon: {range: long, targets: any, flags: [ranged, flying], verified: false}   # 4e FLYING tank-melter (ramping single-target) -> needs AIR defence; a swarm or a reset stops the ramp
   little_prince: {range: long, verified: false}
   magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
-  mother_witch: {range: long, verified: false}
+  # Mother Witch page carries two unit rows (witch + cursed hog). The importer currently binds the
+  # hog row's hp/dmg onto the card body, so the witch herself is corrected here from the page's
+  # level-11 vardefines (hp_11=529, dmg_11=133, atk_speed=1.0) and keeps her own 5 s curse timer.
+  mother_witch:
+    range: long
+    hitpoints: 529
+    damage: 133
+    hit_speed: 1.0
+    dps: 133
+    curse_duration_s: 5.0
+    verified: true
   princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
   sparky: {range: long, attacks: [ground], flags: [splash, knockback_immune], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
   spear_goblins: {range: long, verified: false}
