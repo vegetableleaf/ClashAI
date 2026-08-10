@@ -154,6 +154,7 @@ classes:
   - cannon_evo
   - dart_goblin_evo
   - electro_dragon_evo
+  - elite_barbarians_evo
   - executioner_evo
   - firecracker_evo
   - furnace_evo
@@ -190,6 +191,7 @@ classes:
   # --- hero variants (alphabetical) ---
   - balloon_hero
   - barbarian_barrel_hero
+  - berserker_hero
   - bowler_hero
   - dark_prince_hero
   - giant_hero
@@ -201,6 +203,7 @@ classes:
   - mini_pekka_hero
   - musketeer_hero
   - tombstone_hero
+  - valkyrie_hero
   - wizard_hero
 
   # --- champion ability activations (alphabetical) ---
@@ -216,6 +219,7 @@ classes:
   # --- hero troop ability activations (alphabetical) ---
   - balloon_hero_ability
   - barbarian_barrel_hero_ability
+  - berserker_hero_ability
   - bowler_hero_ability
   - dark_prince_hero_ability
   - giant_hero_ability
@@ -227,6 +231,7 @@ classes:
   - mini_pekka_hero_ability
   - musketeer_hero_ability
   - tombstone_hero_ability
+  - valkyrie_hero_ability
   - wizard_hero_ability
 
   # --- spell AoE / impact indicators (alphabetical) ---
