@@ -9,7 +9,11 @@
 <body>
 <header>
   <h1>ClashAI <span class="sub">Launcher</span></h1>
-  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span></div>
+  <!-- The training curve used to live only in the Models tab and only refreshed while that tab
+       was open -- but you start a training from Control and then watch nothing happen. This
+       strip follows you: it appears on every tab while the detector is training. -->
+  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span>
+    <span id="trainpill" class="pill run" hidden></span></div>
   <div class="spacer"></div>
   <button id="helpbtn" class="btn small" title="Open the introduction again">Introduction</button>
   <button id="tosbtn" class="btn small" title="Note on the terms of service">Notes</button>

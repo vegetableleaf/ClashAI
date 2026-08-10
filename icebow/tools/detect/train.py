@@ -114,11 +114,12 @@ def _install_status_aug() -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
-    ap.add_argument("--model", default="auto",
-                    help="STARTING WEIGHTS, not a second model: yolo11 n/s/m/l/x differ only in "
-                         "size, and training produces one detector either way. `auto` (default) "
-                         "picks the largest that fits this GPU's VRAM at imgsz 960. Pass "
-                         "yolo11s.pt etc. to override, or rtdetr-l/x.pt for RT-DETR.")
+    ap.add_argument("--model", default="auto", metavar="WEIGHTS",
+                    help="ADVANCED. Leave this alone. `auto` (default) CONTINUES the vision model "
+                         "you already have, and only if none exists picks a pretrained backbone "
+                         "sized to this GPU's VRAM. There is one detector either way -- yolo11 "
+                         "n/s/m/l/x are sizes of the same network, not rival models. Pass an "
+                         "explicit path only to start from some other file.")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
     ap.add_argument("--batch", type=int, default=-1,
@@ -133,6 +134,11 @@ def main() -> None:
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
                          "Albumentations if installed. Default OFF (leaves training unchanged).")
+    ap.add_argument("--fresh", action="store_true",
+                    help="THROW AWAY what the vision model learned and start from a pretrained "
+                         "backbone. Normally you do not want this: training already continues the "
+                         "model you have. Use it only when the existing model is worse than "
+                         "nothing -- e.g. it was fitted on labels that turned out to be wrong.")
     ap.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
                     help="CONTINUE an interrupted run instead of starting a new one. Bare --resume picks the "
                          "runs/detect/vision/weights/last.pt; pass a folder name to pick a different one. "
@@ -140,10 +146,6 @@ def main() -> None:
                          "folder/epoch count/best.pt, so resuming loses nothing. All other flags are IGNORED -- "
                          "ultralytics restores them from the checkpoint's own args.")
     args = ap.parse_args()
-    if args.model == "auto":
-        args.model = _auto_model(args.imgsz)
-
-    is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
     try:
         from ultralytics import RTDETR, YOLO
     except ImportError:
@@ -155,6 +157,27 @@ def main() -> None:
     if not data.exists():
         raise SystemExit(f"no dataset at {data}\n"
                          "Build it first:  run.py autolabel --all   (then hand-label the frames).")
+
+    # THE DEFAULT IS TO CARRY ON. There is one model; training it again on more pictures must
+    # continue THAT model, not quietly begin a different one. Only when no model exists yet does
+    # this fall back to a pretrained YOLO backbone -- and that is a starting point, not a choice
+    # between models: you never see it unless there is nothing to continue.
+    ours = root / "runs" / "detect" / RUN_NAME / "weights" / "best.pt"
+    if args.model == "auto":
+        if ours.exists() and not args.fresh:
+            args.model = str(ours)
+            print(f"[train] CONTINUING the vision model: {ours.relative_to(root)}")
+            print("[train] (it keeps what it already learned and now also sees the new pictures; "
+                  "--fresh starts over from a pretrained backbone instead)")
+        else:
+            args.model = _auto_model(args.imgsz)
+            why = "starting over on request" if args.fresh else "no vision model yet"
+            print(f"[train] {why} -> starting from {args.model}")
+    elif args.fresh:
+        raise SystemExit("--fresh and --model are contradictory: --fresh means 'ignore the model "
+                         "we have', --model names exactly what to start from. Pick one.")
+
+    is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
 
     if args.resume:
         runs = root / "runs" / "detect"

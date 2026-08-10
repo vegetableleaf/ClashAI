@@ -2324,7 +2324,36 @@ async function loadVisionIO() {
   await refresh();
   await loadOverview().catch(e => console.error(e));
   setInterval(refresh, 3000);
+  trainPulse();
+  setInterval(trainPulse, 8000);
 })();
+
+/* The vision AI's training, visible from ANY tab.
+
+   results.csv gains a line per epoch, so there is always something honest to show while a run
+   is going. It used to be shown only inside the Models tab and only polled while that tab was
+   open, which is exactly the wrong place: you start the training from Control and then stare at
+   a panel that says nothing is happening. */
+async function trainPulse() {
+  const pill = $("#trainpill");
+  if (!pill) return;
+  const m = await api("/api/models").catch(() => null);
+  const pr = m && m.vision && m.vision.progress;
+  if (!pr || !pr.running || !(pr.rows || []).length) { pill.hidden = true; return; }
+  const rows = pr.rows;
+  const last = rows[rows.length - 1];
+  const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
+  // Trend over the last five epochs: a number alone cannot tell you whether it is still climbing,
+  // and "is it still getting better" is the actual question while you wait.
+  const win = rows.slice(-5).map(r => r.mAP50).filter(v => v != null);
+  const trend = win.length > 1 ? (win[win.length - 1] - win[0]) : 0;
+  const arrow = Math.abs(trend) < 0.002 ? "flat" : (trend > 0 ? "↑" : "↓");
+  pill.hidden = false;
+  pill.textContent = `vision AI training: epoch ${last.epoch != null ? last.epoch : "?"}`
+    + (pr.epochs_total ? `/${pr.epochs_total}` : "")
+    + ` · best mAP50 ${pct1(best)} · ${arrow}`;
+  pill.title = "Updated from results.csv, one line per epoch. Full curve in the Models tab.";
+}
 
 
 /* ---------------- Live ---------------- */
