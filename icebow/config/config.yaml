@@ -486,8 +486,22 @@ env:
   punish_blocker_min_hp: 600
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
-  tower_chip_power: 2.0          # convexity of the tower-chip reward: >1 -> PARTIAL chip worth sub-proportionally little
-                                 #   (reward = sum over towers of damage_frac**this * tower_chip_scale). The crown is the jump.
+  tower_chip_power: 1.0          # LINEAR chip. Was 2.0 (convex: partial chip worth sub-proportionally
+                                 # little) on the reasoning that "a tower at 1-2 HP still fully works,
+                                 # so most of a tower's value is the CROWN". That is true when a crown
+                                 # is what decides the match -- and it stopped being true when the
+                                 # overtime tiebreak was fixed (c2fb89e). The tiebreak reads the
+                                 # least-healthy STANDING tower, so chip that never finishes a tower is
+                                 # exactly what wins those matches, and this deck's SECOND win condition
+                                 # (rocket cycling) produces nothing else.
+                                 #   at 2.0:  99% damage paid +0.294 vs a crown's +1.3 -- a 4.4x cliff
+                                 #            right where the tiebreak says the two are worth the same.
+                                 #   MEASURED consequence: over 20 matches the policy played x_bow 57
+                                 #            times and rocket ZERO, despite 6 elixir being affordable
+                                 #            on 20.7% of steps for both.
+                                 # Linear makes marginal chip worth the same everywhere, which is what
+                                 # the tiebreak actually pays. The crown is still a jump (w_take 1.0).
+                                 #   (reward = sum over towers of damage_frac**this * tower_chip_scale)
   tower_shaping: true
   tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
   tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed

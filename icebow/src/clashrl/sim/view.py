@@ -106,6 +106,28 @@ def render_obs(engine, oh: int, ow: int, team: int = 0, dr: "DomainRand | None" 
     return img if dr is None else dr.finish(img)
 
 
+TOWER_DIM = 6                 # (L princess, R princess, king) x (mine, theirs)
+
+
+def tower_vector(engine, team: int = 0) -> np.ndarray:
+    """HP FRACTION of every crown tower: (L, R, king) for ``team``, then the same for its OPPONENT.
+    0.0 means destroyed, so crown counts are implied and no separate alive flag is needed.
+
+    Mirrored by construction and used by BOTH the agent (team 0) and the self-play opponent (team 1)
+    -- the two used to build their observation blocks from separate code, and that is exactly how the
+    self-play mirror silently drifted out of sync before (b9ff324).
+
+    Not degraded by sim_detector_recall: a crown tower's HP is PRINTED on the HUD, so live this is a
+    READ (TowerHpTracker's digit CNN, already running in env.py for the reward terms) rather than a
+    detection.
+    """
+    v = np.zeros(TOWER_DIM, np.float32)
+    for side, off in ((team, 0), (1 - team, 3)):
+        for i, t in enumerate(engine.towers[side][:3]):
+            v[off + i] = (max(0.0, float(t.hp)) / t.max_hp) if t.max_hp > 0 else 0.0
+    return v
+
+
 def threat_vector(engine, threat_dim: int, team: int = 0) -> np.ndarray:
     """Compact enemy-threat approximation from ``team``'s perspective: the OTHER team's units that have
     crossed onto ``team``'s half (local y >= 0.5). For team 0 this matches the env's original vector."""

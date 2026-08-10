@@ -28,6 +28,7 @@ from . import view
 
 Action = Tuple[int, int, int]
 _THREAT_DIM = 16
+_TOWER_DIM = view.TOWER_DIM   # HP fraction of (L princess, R princess, king) x (mine, theirs)
 
 
 class _BoardCfg:
@@ -105,10 +106,28 @@ class SimMatchEnv:
         # Stage-3b gate: the troop-INTERACTION block (who is predicted to be moving at which tower)
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
         self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # tiles
+        # TOWER BLOCK: 6 dims = HP FRACTION of (L princess, R princess, king) for MINE then THEIRS,
+        # in the policy's own mirrored frame. Gated so an old checkpoint's schema still resolves.
+        #
+        # WHY IT EXISTS. Crown/tower state was observable ONLY as a 5x5 block vanishing from the 64x96
+        # canvas -- in the same colour as units, under per-match domain randomisation. Nothing in the
+        # 46-dim vector carried it. Consequences seen in live play: after taking a princess the policy
+        # kept placing X-Bows at the spot that used to reach it (the other tower is out of range from
+        # there, so they fired at nothing), and the `_defensive` turtle flag -- which silently changes
+        # what _wincon_exec pays for the moment my_c >= 1 -- was being graded on a state the policy
+        # could not see at all.
+        # It also became outcome-critical: since the overtime tiebreak was fixed (c2fb89e) the
+        # least-healthy STANDING tower decides level matches, and the policy was blind to it.
+        # HP FRACTION rather than an alive flag because it is strictly more information: 0.0 IS
+        # destroyed (so crowns are implied), and the non-zero values are exactly what the tiebreak
+        # compares. Readable LIVE with no new perception work -- env.py already runs TowerHpTracker
+        # (the hp_digits CNN) for rewards and simply never fed it to the observation.
+        self.use_tower_obs = bool(cfg.get("observation", "use_tower_hp", default=True))
         self.threat_dim = (_THREAT_DIM
                            + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                               if self.use_detector else 0)
-                           + (interactions.INTERACTION_DIM if self.use_interactions else 0))
+                           + (interactions.INTERACTION_DIM if self.use_interactions else 0)
+                           + (_TOWER_DIM if self.use_tower_obs else 0))
 
         def _base(k):
             return k[:-4] if k.endswith("_evo") else k
@@ -299,6 +318,8 @@ class SimMatchEnv:
             units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
                                                          self.det_recall, self.det_recall_by_card)
             parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db))
+        if self.use_tower_obs:
+            parts.append(view.tower_vector(self.eng, 0))
         return np.concatenate(parts).astype(np.float32)
 
     def _render(self) -> np.ndarray:
@@ -419,6 +440,20 @@ class SimMatchEnv:
             return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
+        if prof.kind == "building":
+            # A BUILDING DOES NOT INTERCEPT, IT ATTRACTS -- so the same-lane test is the wrong physics.
+            # The lane rule encodes "put a body in the path", which is how a TROOP defends. A defensive
+            # building works by being the nearest BUILDING to a building-targeter (see engine._acquire),
+            # which pulls the wincon toward IT, and the classic answer is a CENTRAL placement precisely
+            # because it drags the push off-lane into range of BOTH princess towers.
+            # With intercept_lane 0.15, a central Tesla against a hog in the x=0.25 lane is 0.25 away
+            # and scored ZERO, while dropping it directly on the hog scored full credit -- the reward
+            # paid for the WORSE placement. That mattered from the moment buildings could actually pull
+            # (5cac1bf); before then neither placement did anything, so the error was invisible.
+            # Graded on the counter role alone here; WHERE it went is settled by what follows -- the
+            # chip/crown terms bill the damage it failed to prevent, and the counterfactual fork
+            # compares against having held it. Same reasoning that retired the quiet-board branch.
+            return self.w_threat_response if card_threat.counters(prof, tid) else 0.0
         if prof.pull:
             # A PULL spell is not a role counter and must not be graded as one. Its payoff is the CLUMP --
             # ice-wizard splash landing on everything, a centre Rocket hitting the whole push, a wincon

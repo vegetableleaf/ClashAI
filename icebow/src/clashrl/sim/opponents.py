@@ -15,9 +15,9 @@ from typing import List
 import numpy as np
 
 from .engine import build_spec
+from ..cycle import cycle_vector
 from .. import card_threat
 from .. import interactions
-from ..cycle import cycle_vector
 from . import view
 
 _NEG = -1e9   # finite mask value (matches train_sim_ppo; -inf can NaN through a softmax)
@@ -315,6 +315,7 @@ class SelfPlayOpponent:
         self.det_precision = env.det_precision         # the same sparse/noisy identity signal it trained on
         self.det_recall_by_card = env.det_recall_by_card   # ...including the per-card recall override
         self.use_interactions = env.use_interactions   # mirror the troop-interaction block for team 1
+        self.use_tower_obs = getattr(env, "use_tower_obs", False)   # ...and the crown-tower HP block
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
@@ -387,7 +388,8 @@ class SelfPlayOpponent:
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
         base_dim = self.threat_dim \
             - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0) \
-            - (interactions.INTERACTION_DIM if self.use_interactions else 0)
+            - (interactions.INTERACTION_DIM if self.use_interactions else 0) \
+            - (view.TOWER_DIM if self.use_tower_obs else 0)
         thr = view.threat_vector(eng, base_dim, team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
@@ -406,6 +408,8 @@ class SelfPlayOpponent:
                                                          self.det_recall, self.det_recall_by_card)
             ivec = interactions.interaction_vector(units, mine_t, en_t, self.db)
             thr = np.concatenate([thr, ivec]).astype(np.float32)
+        if self.use_tower_obs:                         # ...same mirroring for the tower block
+            thr = np.concatenate([thr, view.tower_vector(eng, 1)]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
         obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0
