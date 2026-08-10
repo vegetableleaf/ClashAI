@@ -239,6 +239,37 @@
       <kbd>Del</kbd> removes it &middot; drag to add one &middot; <kbd>Enter</kbd> saves and moves on.
       Need frames? Control tab &rarr; Vision AI &rarr; <i>1. Get frames to label</i>.</p>
     <div id="labstats" class="row"></div>
+    <!-- "How many pictures do I have of which unit" -- the question that decides whether another
+         training run is worth starting. A total box count cannot answer it: 80 boxes spread over
+         3 cards and 80 boxes spread over 30 are completely different datasets. -->
+    <details id="labcovwrap" class="cfggroup">
+      <summary><b>Coverage &mdash; how many pictures of which unit</b>
+        <span id="labcovsum" class="hint"></span></summary>
+      <p class="hint">Two numbers per class, because they are not the same thing. <b>Boxes</b> is how
+        many examples the detector sees; <b>frames</b> is how many different pictures they came
+        from. Fifty boxes out of three frames is three backgrounds and three poses &mdash; it can be
+        memorised and still fail on the fourth.
+        <br><b>Deck</b> = your own eight cards. <b>Threat</b> = the cards the playing AI is actually
+        fed (<code>observation.detector_cards</code>). Everything else can stay at zero without
+        costing anything, which is why the raw count is not a to-do list.</p>
+      <div class="row">
+        <label>Find <input id="labcovsearch" type="text" placeholder="unit name ..." size="14"></label>
+        <label>Show
+          <select id="labcovfilter">
+            <option value="matters">Deck + threats (what counts)</option>
+            <option value="missing">Missing only (zero pictures)</option>
+            <option value="all">Every class</option>
+          </select></label>
+        <label>Sort
+          <select id="labcovsort">
+            <option value="need">Least covered first</option>
+            <option value="boxes">Most boxes first</option>
+            <option value="name">Name</option>
+          </select></label>
+        <button id="labcovreload" class="btn small">Refresh</button>
+      </div>
+      <div id="labcovbody"></div>
+    </details>
     <div class="row">
       <button id="labprev" class="btn small">Previous</button>
       <button id="labnext" class="btn small">Next frame</button>
@@ -296,8 +327,15 @@
         <button id="vioexportall" class="btn small" data-kind="all">Everything</button>
         <span id="vioexportmsg" class="msg"></span>
       </div>
+      <!-- Two ways in. The native window has no download manager and its file dialog is not
+           guaranteed, so a bundle already sitting in data/exports must be selectable directly. -->
       <div class="row">
-        <label>Import a bundle <input type="file" id="vioimportfile" accept=".zip"></label>
+        <label>Already on this PC
+          <select id="violocal" title="Bundles found in data/exports"></select></label>
+        <button id="violocalreload" class="btn small">Refresh</button>
+      </div>
+      <div class="row">
+        <label>&hellip; or browse for one <input type="file" id="vioimportfile" accept=".zip"></label>
         <button id="vioimportcheck" class="btn small">Check it</button>
         <button id="vioimportapply" class="btn primary" disabled>Install</button>
         <span id="vioimportmsg" class="msg"></span>

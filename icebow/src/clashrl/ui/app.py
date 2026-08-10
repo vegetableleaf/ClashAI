@@ -7,6 +7,9 @@ nothing here reimplements a command.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any, Dict, List
@@ -330,6 +333,11 @@ def create_app(cfg) -> Flask:
     def label_status():
         return jsonify(labeler.status(C()))
 
+    @app.get("/api/label/coverage")
+    def label_coverage():
+        """Boxes and frames per class -- what is still missing before a retrain is worth it."""
+        return jsonify(labeler.coverage(C()))
+
     @app.get("/api/label/image/<name>")
     def label_image(name: str):
         try:
@@ -417,30 +425,98 @@ def create_app(cfg) -> Flask:
         from . import vision_io
         return jsonify(vision_io.describe(root))
 
+    _EXPORTS = "data/exports"
+
     @app.get("/api/vision/export")
     def vision_export():
-        """Download a model as one .zip. kind = model | full | policy | all."""
+        """Write a bundle and SAY WHERE IT IS. kind = model | full | policy | all.
+
+        This used to reply with Content-Disposition: attachment and let the page navigate to it.
+        That works in a browser and does nothing in the native window -- pywebview's webview has
+        no download manager, so the click produced no file and no error, which is exactly what
+        "the export doesn't work" was. The zip was being written the whole time; only the
+        delivery was imaginary.
+
+        So: write it to data/exports/ (where it already went), return the path, and let the page
+        offer "open the folder". /api/vision/download/<name> still serves it as a real download
+        for anyone running the panel in a browser instead.
+        """
         from . import vision_io
         kind = request.args.get("kind", "model")
-        out = root / "data" / "exports" / f"clashai-{kind}-{time.strftime('%Y%m%d-%H%M%S')}.zip"
+        out = root / _EXPORTS / f"clashai-{kind}-{time.strftime('%Y%m%d-%H%M%S')}.zip"
         try:
             res = vision_io.export(root, out, kind)
         except (ValueError, FileNotFoundError) as exc:
             return jsonify({"error": str(exc)}), 400
         except OSError as exc:
             return jsonify({"error": f"could not write: {exc}"}), 500
-        return send_file(res["path"], as_attachment=True, download_name=out.name)
+        return jsonify({"name": out.name, "path": str(out), "folder": str(out.parent),
+                        "size": res["size"], "files": res["files"],
+                        "url": f"/api/vision/download/{out.name}"})
+
+    def _in_exports(name: str):
+        """Resolve a file name INSIDE data/exports, never outside it."""
+        p = (root / _EXPORTS / Path(name).name).resolve()
+        base = (root / _EXPORTS).resolve()
+        return p if (base in p.parents and p.is_file()) else None
+
+    @app.get("/api/vision/download/<name>")
+    def vision_download(name: str):
+        p = _in_exports(name)
+        if p is None:
+            return jsonify({"error": "no such bundle"}), 404
+        return send_file(p, as_attachment=True, download_name=p.name)
+
+    @app.get("/api/vision/local")
+    def vision_local():
+        """Bundles already on this machine, so importing never depends on a file dialog."""
+        d = root / _EXPORTS
+        out = []
+        if d.is_dir():
+            for p in sorted(d.glob("*.zip"), key=lambda p: p.stat().st_mtime, reverse=True):
+                out.append({"name": p.name, "size": p.stat().st_size,
+                            "when": time.strftime("%Y-%m-%d %H:%M",
+                                                  time.localtime(p.stat().st_mtime))})
+        return jsonify({"folder": str(d), "bundles": out[:40]})
+
+    @app.post("/api/reveal")
+    def reveal():
+        """Open a folder INSIDE this project in the file manager. Nothing else is reachable."""
+        rel = request.form.get("path") or _EXPORTS
+        target = (root / rel).resolve()
+        if root.resolve() not in target.parents and target != root.resolve():
+            return jsonify({"error": "outside the project"}), 400
+        target.mkdir(parents=True, exist_ok=True)
+        try:
+            if sys.platform == "win32":
+                os.startfile(target)                                    # noqa: S606
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", str(target)])
+            else:
+                subprocess.Popen(["xdg-open", str(target)])
+        except OSError as exc:
+            return jsonify({"error": f"could not open the folder: {exc}"}), 500
+        return jsonify({"opened": str(target)})
 
     @app.post("/api/vision/import")
     def vision_import():
         """Install an uploaded bundle. Dry-run first unless `apply=1`, so nothing is a surprise."""
         from . import vision_io
-        f = request.files.get("bundle")
-        if f is None:
-            return jsonify({"error": "no file uploaded"}), 400
-        tmp = root / "data" / "exports" / "_incoming.zip"
-        tmp.parent.mkdir(parents=True, exist_ok=True)
-        f.save(tmp)
+        # Two ways in, because a file dialog is not guaranteed in the native window: an upload,
+        # or the name of a .zip already sitting in data/exports.
+        local = request.form.get("local")
+        if local:
+            tmp = _in_exports(local)
+            if tmp is None:
+                return jsonify({"error": f"no bundle named {local} in data/exports"}), 404
+        else:
+            f = request.files.get("bundle")
+            if f is None:
+                return jsonify({"error": "pick a .zip -- upload one, or choose one already "
+                                         "in data/exports"}), 400
+            tmp = root / "data" / "exports" / "_incoming.zip"
+            tmp.parent.mkdir(parents=True, exist_ok=True)
+            f.save(tmp)
         try:
             if request.form.get("apply") != "1":
                 return jsonify({"dry_run": True, "manifest": vision_io.inspect(tmp)})

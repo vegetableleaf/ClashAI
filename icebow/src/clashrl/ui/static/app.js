@@ -1715,12 +1715,78 @@ async function loadLabeling() {
       " A detector needs hundreds of boxes across many frames before it predicts anything "
       + "useful; this many will train but will not detect much."));
   }
+  loadCoverage();
   if (!LAB.queue.length) {
     $("#labmsg").textContent = "Queue empty -- frames are harvested automatically while train-rl runs.";
     return;
   }
   await labLoad(0);
 }
+
+/* ---- coverage: how many pictures of which unit ------------------------------
+   The one number the labelling view was missing. "80 boxes" says nothing about whether the
+   detector can see a Musketeer; 80 boxes across 3 classes and 80 across 30 train completely
+   different things, and only the per-class view shows which it is. */
+let COV = null;
+async function loadCoverage() {
+  if (!$("#labcovbody")) return;
+  COV = await api("/api/label/coverage").catch(() => null);
+  if (!COV) return;
+  const t = COV.totals;
+  $("#labcovsum").textContent =
+    ` — ${t.matters_done} of ${t.matters} ready, ${t.matters_thin} thin, `
+    + `${t.matters_missing} with no pictures at all`;
+  drawCoverage();
+}
+
+function drawCoverage() {
+  const box = $("#labcovbody");
+  if (!box || !COV) return;
+  const q = ($("#labcovsearch").value || "").trim().toLowerCase();
+  const mode = $("#labcovfilter").value, sort = $("#labcovsort").value;
+  let rows = COV.classes.slice();
+  if (mode === "matters") rows = rows.filter(r => r.role !== "other");
+  else if (mode === "missing") rows = rows.filter(r => r.role !== "other" && r.boxes === 0);
+  if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+  // "least covered first" must put the ones that MATTER on top, not the 190 classes nobody
+  // needs -- otherwise the default view is a wall of irrelevant zeroes.
+  const rank = r => (r.role === "deck" ? 0 : r.role === "threat" ? 1 : 2);
+  if (sort === "need") rows.sort((a, b) => rank(a) - rank(b) || a.boxes - b.boxes
+    || a.name.localeCompare(b.name));
+  else if (sort === "boxes") rows.sort((a, b) => b.boxes - a.boxes || a.name.localeCompare(b.name));
+  else rows.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (!rows.length) { box.innerHTML = '<p class="hint">Nothing matches.</p>'; return; }
+  const want = COV.wanted;
+  const cell = r => {
+    const pctv = r.wanted ? Math.min(100, Math.round(100 * r.boxes / r.wanted)) : 0;
+    const state = r.boxes === 0 ? "err" : (r.wanted && r.boxes < r.wanted ? "warn" : "ok");
+    return `<tr class="cov-${state}">`
+      + `<td>${r.name}</td>`
+      + `<td><span class="pill ${r.role === "deck" ? "run" : r.role === "threat" ? "warn" : ""}">`
+      + `${r.role}</span></td>`
+      + `<td class="num">${r.boxes}</td>`
+      + `<td class="num">${r.images}</td>`
+      + `<td class="num">${r.train}/${r.val}</td>`
+      + `<td>${r.wanted ? `<span class="bar"><i style="width:${pctv}%"></i></span> ${pctv}%` : ""}</td>`
+      + "</tr>";
+  };
+  box.innerHTML = `<p class="hint">${rows.length} class(es) shown. The bar is progress towards `
+    + `roughly ${want} boxes &mdash; a rule of thumb for fine-tuning, not a measurement from this `
+    + `project.</p>`
+    + '<table class="tbl"><thead><tr><th>Unit</th><th>Role</th><th class="num">Boxes</th>'
+    + '<th class="num">Frames</th><th class="num">train/val</th><th>Towards ' + want + '</th>'
+    + "</tr></thead><tbody>" + rows.map(cell).join("") + "</tbody></table>";
+}
+
+(function covWire() {
+  const s = $("#labcovsearch");
+  if (!s) return;
+  s.oninput = () => drawCoverage();
+  $("#labcovfilter").onchange = () => drawCoverage();
+  $("#labcovsort").onchange = () => drawCoverage();
+  $("#labcovreload").onclick = () => loadCoverage();
+})();
 
 (function labWire() {
   const cv = $("#labcanvas");
@@ -2110,17 +2176,59 @@ async function loadVisionIO() {
   const file = $("#vioimportfile");
   if (!file) return;
   const msg = $("#vioimportmsg"), info = $("#vioimportinfo"), apply = $("#vioimportapply");
-  $$("[data-kind]").forEach(b => b.onclick = () => {
-    window.location = `/api/vision/export?kind=${b.dataset.kind}`;
-    $("#vioexportmsg").textContent = "packing ... the download starts on its own";
+  // Write the file, then SHOW it. Navigating to a Content-Disposition attachment does nothing
+  // in the native window (no download manager), which is why this silently produced no file.
+  $$("[data-kind]").forEach(b => b.onclick = async () => {
+    const out = $("#vioexportmsg");
+    out.className = "msg"; out.textContent = "packing ...";
+    $$("[data-kind]").forEach(x => x.disabled = true);
+    try {
+      const d = await api(`/api/vision/export?kind=${b.dataset.kind}`);
+      out.className = "msg ok";
+      out.innerHTML = `Written: <b>${d.name}</b> (${fmtSize(d.size)}, ${d.files} files)`
+        + `<br><span class="hint">${d.folder}</span> `
+        + `<button class="link" id="vioreveal">open the folder</button>`;
+      $("#vioreveal").onclick = async () => {
+        const fd = new FormData(); fd.append("path", "data/exports");
+        const r = await fetch("/api/reveal", { method: "POST", body: fd });
+        if (!r.ok) out.insertAdjacentHTML("beforeend", " &mdash; could not open it, "
+          + "copy the path above instead");
+      };
+      loadVisionLocal();
+    } catch (e) {
+      out.className = "msg err"; out.textContent = (e && e.message) || "export failed";
+    } finally {
+      $$("[data-kind]").forEach(x => x.disabled = false);
+      loadVisionIO();
+    }
   });
+
+  // Importing must not depend on a file dialog either: list what is already on this machine.
+  async function loadVisionLocal() {
+    const sel = $("#violocal");
+    if (!sel) return;
+    const d = await api("/api/vision/local").catch(() => null);
+    if (!d) return;
+    sel.innerHTML = `<option value="">-- pick a .zip from ${d.folder} --</option>`
+      + d.bundles.map(b => `<option value="${b.name}">${b.name} &middot; ${fmtSize(b.size)}`
+        + ` &middot; ${b.when}</option>`).join("");
+  }
+  loadVisionLocal();
+  const reload = $("#violocalreload");
+  if (reload) reload.onclick = () => loadVisionLocal();
 
   // Always inspect before installing: an import replaces the model and merges frames, and
   // a manifest costs nothing to read. The Install button stays disabled until it is checked.
   const post_ = async (applyIt) => {
-    if (!file.files.length) { msg.className = "msg err"; msg.textContent = "pick a .zip first"; return; }
+    const local = $("#violocal") ? $("#violocal").value : "";
+    if (!local && !file.files.length) {
+      msg.className = "msg err";
+      msg.textContent = "pick a .zip -- either choose one below, or browse for one";
+      return;
+    }
     const fd = new FormData();
-    fd.append("bundle", file.files[0]);
+    if (local) fd.append("local", local);
+    else fd.append("bundle", file.files[0]);
     if (applyIt) fd.append("apply", "1");
     msg.className = "msg"; msg.textContent = applyIt ? "installing ..." : "reading ...";
     const r = await fetch("/api/vision/import", { method: "POST", body: fd });

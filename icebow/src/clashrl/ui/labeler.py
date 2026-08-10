@@ -137,6 +137,97 @@ def labelled(cfg) -> Dict[str, Any]:
     return out
 
 
+# A rule-of-thumb floor for fine-tuning a YOLO detector, NOT a measurement from this project:
+# below roughly this many instances a class tends not to be learned at all. It is here to turn
+# "225 classes" into a short list of what to label next, not to promise a score.
+BOXES_WANTED = 50
+
+
+def coverage(cfg) -> Dict[str, Any]:
+    """How many boxes and how many FRAMES exist per class -- i.e. what is still missing.
+
+    Two counts, because they answer different questions. `boxes` is how many examples of a unit
+    the detector gets to see; `images` is how many DIFFERENT frames they came from. Fifty boxes
+    of Musketeer from three frames is three backgrounds, three lightings and three poses -- the
+    detector can memorise that and still fail on the fourth. A class is only really covered when
+    both numbers are up.
+
+    Ordering is by need, not alphabet: the cards this bot must actually recognise come first.
+    `deck` is what YOU play, `whitelist` is observation.detector_cards -- the threats the policy
+    is fed. A class outside both can be left at zero without it costing anything, which is why
+    the count alone is not a to-do list.
+    """
+    idx_to_name = classes(cfg)
+    n_boxes = {n: 0 for n in idx_to_name}
+    n_imgs = {n: 0 for n in idx_to_name}
+    per_split = {n: {"train": 0, "val": 0} for n in idx_to_name}
+    unknown = 0                       # class indices with no name -- a drifted classes.txt
+    for split in ("train", "val"):
+        _, lbl_dir = _split_dirs(cfg, split)
+        if not lbl_dir.is_dir():
+            continue
+        for p in lbl_dir.glob("*.txt"):
+            here = set()
+            for ln in p.read_text(encoding="utf-8").splitlines():
+                parts = ln.split()
+                if not parts:
+                    continue
+                try:
+                    i = int(parts[0])
+                except ValueError:
+                    continue
+                if not (0 <= i < len(idx_to_name)):
+                    unknown += 1
+                    continue
+                name = idx_to_name[i]
+                n_boxes[name] += 1
+                per_split[name][split] += 1
+                here.add(name)
+            for name in here:
+                n_imgs[name] += 1
+
+    deck, whitelist = _deck_keys(cfg), set(cfg.get("observation", "detector_cards", default=[]) or [])
+    rows = []
+    for i, name in enumerate(idx_to_name):
+        in_deck, in_wl = name in deck, name in whitelist
+        rows.append({
+            "idx": i, "name": name,
+            "boxes": n_boxes[name], "images": n_imgs[name],
+            "train": per_split[name]["train"], "val": per_split[name]["val"],
+            "deck": in_deck, "whitelist": in_wl,
+            # what this class is FOR: your own cards are needed to read your side of the board,
+            # whitelist cards are the threats the policy actually receives.
+            "role": "deck" if in_deck else ("threat" if in_wl else "other"),
+            "wanted": BOXES_WANTED if (in_deck or in_wl) else 0,
+        })
+    matters = [r for r in rows if r["role"] != "other"]
+    return {
+        "classes": rows,
+        "wanted": BOXES_WANTED,
+        "unknown_indices": unknown,
+        "totals": {
+            "classes": len(rows),
+            "matters": len(matters),
+            "matters_missing": sum(1 for r in matters if r["boxes"] == 0),
+            "matters_thin": sum(1 for r in matters if 0 < r["boxes"] < BOXES_WANTED),
+            "matters_done": sum(1 for r in matters if r["boxes"] >= BOXES_WANTED),
+            "seen": sum(1 for r in rows if r["boxes"] > 0),
+        },
+    }
+
+
+def _deck_keys(cfg) -> set:
+    """Your own eight cards, base names -- evolutions share the base card's appearance."""
+    try:
+        from ..cards import CardDB
+        out = set()
+        for k in CardDB(cfg).deck_identities():
+            out.add(k[:-4] if k.endswith("_evo") else k)
+        return out
+    except Exception:                 # a missing/!broken card DB must not break the labelling view
+        return set()
+
+
 def find_image(cfg, name: str) -> Optional[Path]:
     """Locate a frame by name in the queue or in either split."""
     name = _safe_name(name)
