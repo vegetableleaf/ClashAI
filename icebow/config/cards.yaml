@@ -119,18 +119,21 @@ cards:
     evolution:
       available: true
       cycles: 2            # VERIFIED in-game 2026-08-08: 2-cycle -> every 3rd Tesla played is the Evo
-      effect: "periodic electric pulse that damages and briefly stuns nearby enemies"
+      effect: "electric pulse on deploy and on every surfacing: damages and briefly stuns nearby enemies"
       gains: [stun, area_shock]
-      # Evo Tesla combat stats @ LEVEL-11 BASE (the in-game L14 card / 1.1^3; HP + damage scale by level).
-      hitpoints: 1177        # L14 = 1566
-      damage: 219            # L14 = 291
+      # "It spawns a Tesla with IDENTICAL STATS to the original" -- the Evo's hitpoint boost was
+      # REMOVED on 14/5/2024, so hp/damage are the base Tesla's published level-11 values (1152/220)
+      # rather than the boosted pair this file used to carry.
+      hitpoints: 1152
+      damage: 220
       hit_speed: 1.1
-      dps: 199               # 219 / 1.1
+      dps: 200               # 220 / 1.1
       lifetime: 25           # seconds (a normal building is ~40)
-      pulse_damage: 147      # L14 = 196 (periodic area shock)
-      pulse_radius: 6        # tiles (converted to normalized in the sim)
-      pulse_stun: 0.5        # STUN seconds per pulse ("Pulse Duration" in-game)
-      pulse_interval: 3.0    # seconds between pulses (ESTIMATE -- not shown in-game)
+      # PULSE. Not on a timer: "after surfacing and deployment". Its death pulse existed only
+      # between 14/5/2024 and 8/10/2024 and is gone, so deploy + every surfacing is the whole set.
+      pulse_damage: 174      # published level-11 Pulse Damage (147 here was the pre-9/4/2025 value)
+      pulse_radius: 6        # published Pulse Radius, tiles
+      pulse_stun: 0.5        # published Pulse Stun Duration
     verified: true
     hitpoints: null
     damage: null
@@ -761,6 +764,10 @@ cards:
   # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
   # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
   # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.
+  # Earthquake is the ONE spell that reaches a retracted Tesla: the 3/3/2020 Balance Update
+  # "allowed the Earthquake to affect the Tesla even if it is hidden". Carried as a property of the
+  # SPELL rather than of the Tesla, so nothing has to know a card name to get this right.
+  earthquake: {kind: spell, flags: [hits_hidden, slow], verified: true}
 
   miner:
     display: "Miner"
