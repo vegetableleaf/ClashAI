@@ -215,6 +215,10 @@ cards:
     win_condition: true          # this deck's tower-chip win condition
     targets: null
     flags: [splash, splash_air, knockback, building_targeting]
+    # Rocket's lead sentence says it "inflicts knockback" but the wiki publishes NO pushback range
+    # for it and has no balance entry changing one, so knockback_tiles is left unset and the engine
+    # falls back to Fireball's published 1 tile (its nearest documented sibling).
+    knockback_tiles: null
     evolution: null
     verified: true
     hitpoints: null
@@ -539,6 +543,7 @@ cards:
     win_condition: false
     targets: null
     flags: [splash, splash_air, knockback]
+    knockback_tiles: 1.0       # 2/8/2022 Balance Update: "decreased the Fireball's pushback range to 1 tile (from 1.8 tiles)"
     evolution: null
     verified: true
     hitpoints: null
@@ -723,9 +728,27 @@ cards:
     splash: true               # area damage along its roll path (a lane-wide LINE, not a circle)
     range: long                # rolls forward a long line from the cast point
     targets: any
-    flags: [knockback, splash] # knocks back / resets ground troops as it rolls
+    flags: [knockback, knockback_all, rolls, splash] # knocks back / resets ground troops as it rolls
+    # 7/2/2023 Balance Update: "decreased The Log's pushback range to 0.7 tiles (from 1 tile)".
+    # `knockback_all` because the 19/9/2016 update "allowed The Log to push back ALL ground troops.
+    # This allowed The Log to reset the charge attacks of the Prince and Dark Prince" -- the two
+    # units the Bowler page lists as immune to Fireball/Snowball/Rocket pushback.
+    knockback_tiles: 0.7
     verified: true
     # cast point is YOUR half only (it ROLLS to the enemy side); L11 stats: damage 266, crown_tower_damage 40 (poor tower chip)
+
+  # -- ROLLING / KNOCKBACK spells that were not otherwise curated --
+  # Barbarian Barrel still ROLLS but has NO pushback: the 3/9/2018 Balance Update "decreased its
+  # rolling distance to 5 tiles (from 7 tiles), decreased its damage by 9%, and REMOVED ITS PUSHBACK".
+  # It was previously modelled as a point blast, because `rolls` used to be derived from the
+  # knockback flag -- so removing the pushback also silently removed the corridor.
+  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 5.0, verified: true}
+  # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
+  # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
+  giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
+  # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
+  # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
+  # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.
 
   miner:
     display: "Miner"
@@ -880,11 +903,19 @@ cards:
   battle_healer: {range: melee, verified: false}
   berserker: {range: melee, verified: false}
   boss_bandit: {range: melee, verified: false}
-  dark_prince: {range: melee, verified: false}
+  # KNOCKBACK-IMMUNE HEAVIES. Sourced from the Bowler page, whose pushback "functions identically to
+  # a Fireball, Giant Snowball, or Rocket, pushing back small to medium sized ground troops, and
+  # minimally damaging heavy troops such as the Prince, Sparky, Dark Prince, Skeleton King, Giant
+  # Skeleton, Goblin Machine, P.E.K.K.A, Mega Knight, Cannon Cart, and the Mighty Miner".
+  # CURATED because CR's underlying mass is NOT a published field and NO KB property separates these
+  # from vulnerable troops -- measured: Sparky (immune, 1451 hp) sits below Knight (vulnerable, 1766),
+  # and goblin_machine / cannon_cart / mighty_miner share collision radius 0.50 with plain Goblins.
+  # The Log ignores this list entirely (see its knockback_all flag).
+  dark_prince: {range: melee, flags: [knockback_immune], verified: false}
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
   fisherman: {range: melee, verified: false}
-  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower
+  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
   golden_knight: {range: melee, verified: false}
@@ -892,17 +923,17 @@ cards:
   heal_spirit: {range: melee, verified: false}
   ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
   lumberjack: {range: melee, verified: false}
-  mega_knight: {range: melee, attacks: [ground], flags: [tank, splash], verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it
-  mighty_miner: {range: melee, verified: false}
+  mega_knight: {range: melee, attacks: [ground], flags: [tank, splash, knockback_immune], verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it
+  mighty_miner: {range: melee, flags: [knockback_immune], verified: false}
   monk: {range: melee, verified: false}
   night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
-  pekka: {range: melee, attacks: [ground], flags: [tank], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
-  prince: {range: melee, verified: false}
+  pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
+  prince: {range: melee, flags: [knockback_immune], verified: false}
   rascals: {range: melee, verified: false}
   royal_ghost: {range: melee, verified: false}
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
-  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank], verified: false}
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, knockback_immune], verified: false}
   suspicious_bush: {range: melee, verified: false}
   # -- short --
   electro_spirit: {range: short, verified: false}
@@ -913,7 +944,7 @@ cards:
   # -- long --
   archer_queen: {range: long, verified: false}
   bowler: {range: long, attacks: [ground], splash: true, flags: [splash], verified: false}
-  cannon_cart: {range: long, verified: false}
+  cannon_cart: {range: long, flags: [knockback_immune], verified: false}
   dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
   electro_dragon: {range: long, verified: false}
   electro_wizard: {range: long, verified: false}
@@ -925,7 +956,7 @@ cards:
   magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
   mother_witch: {range: long, verified: false}
   princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
-  sparky: {range: long, attacks: [ground], flags: [splash], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
+  sparky: {range: long, attacks: [ground], flags: [splash, knockback_immune], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
   spear_goblins: {range: long, verified: false}
   witch: {range: long, flags: [splash, spawner], spawns: {unit: skeletons, count: 4, delay: 1.0}, verified: true}   # 5e AREA support: "a group of four Skeletons" every 7s, first wave 1s after deploy
   zappies: {range: long, verified: false}
@@ -964,7 +995,7 @@ cards:
   # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
   # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
   furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
-  goblin_machine: {range: melee, flags: [splash], verified: false}              # melee body + a locking AOE missile
+  goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
   goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
   spirit_empress: {range: melee, verified: false}                               # GROUND form (3e single-target melee); air form is ranged flying

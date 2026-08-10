@@ -74,8 +74,12 @@ _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
 _LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
 _LOG_ROLL_HALFW = 2.2     # corridor half-width (tiles, ~a lane)
-_LOG_KNOCKBACK = 1.6      # pushes ground troops this far in the roll direction (tiles)
 _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corridor
+# KNOCKBACK fallback for a card the wiki says HAS pushback but publishes no range for (Rocket).
+# 1 tile is Fireball's CURRENT published value (2/8/2022 balance: "decreased the Fireball's pushback
+# range to 1 tile (from 1.8 tiles)"), so it is the measured value of the nearest documented sibling
+# rather than a guess. Per-card values live in the KB as `knockback_tiles`.
+_KNOCKBACK_DEFAULT = 1.0
 
 
 @dataclass
@@ -103,6 +107,14 @@ class CardSpec:
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
+    # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
+    # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
+    # Prince and Dark Prince" -- names the two units the Bowler page lists as knockback-IMMUNE, so
+    # vulnerability is per-SPELL, not purely a property of the target.
+    knockback_all: bool = False
+    # This BODY shrugs off the small-to-medium pushback (Fireball / Giant Snowball / Rocket / Bowler).
+    # Curated: CR's underlying mass is not published as a field, only named in prose. See cards.yaml.
+    knockback_immune: bool = False
     roll_len: float = 0.0     # forward length of the roll corridor (tiles)
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
@@ -237,11 +249,21 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
-    # a ROLLING spell (The Log / Barbarian Barrel) = knockback AND ground-only corridor. Knockback alone
-    # is NOT enough: Rocket/Snowball also knock back but are POINT blasts hitting air -- classifying
-    # Rocket as a roll gave it a forward CORRIDOR (and the Log's 0.07 half-width) instead of its blast.
-    rolls = kind == "spell" and "knockback" in flags and ground_only
+    # a ROLLING spell (The Log / Barbarian Barrel) = a forward ground-only CORRIDOR. This used to be
+    # derived as "has knockback AND ground_only", which COUPLED two independent facts: Barbarian
+    # Barrel still rolls but its pushback was REMOVED on 3/9/2018, so it was being modelled as a
+    # POINT BLAST, and adding/removing a knockback flag silently changed whether a spell rolled.
+    rolls = kind == "spell" and "rolls" in flags and ground_only
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
+    # PUSHBACK RANGE, sourced per card from the wiki's balance history rather than one constant:
+    # The Log 0.7 (7/2/2023, from 1), Giant Snowball 1.8 (6/9/2021, from 1.5), Fireball 1.0
+    # (2/8/2022, from 1.8), Barbarian Barrel 0 (REMOVED 3/9/2018). Arrows and Zap publish no
+    # pushback range and have no balance entry for one, so they get none -- the Arrows page's
+    # "knockback and slow effects" line is stale Strategy prose describing Giant Snowball (Arrows
+    # has no slow either), which is why HISTORY is trusted over prose here.
+    knockback_tiles = float(c.get("knockback_tiles") or 0.0)
+    if knockback_tiles <= 0.0 and "knockback" in flags:
+        knockback_tiles = _KNOCKBACK_DEFAULT
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     # BUILDING LIFETIME. Precedence: a curated override, then the wiki's own `life` vardefine
@@ -303,7 +325,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
-        knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
+        # PUBLISHED pushback range per card (KB `knockback_tiles`), falling back to the nearest
+        # documented sibling for a card that has the effect with no stated range. The old code hard-
+        # coded 1.6 tiles for the Log -- its CURRENT value is 0.7 (7/2/2023 balance, down from 1),
+        # so a defensive Log was shoving a push 2.3x too far up the arena.
+        knockback=knockback_tiles,
+        knockback_all=("knockback_all" in flags),
+        knockback_immune=("knockback_immune" in flags),
+        roll_len=(float(c.get("roll_tiles") or _LOG_ROLL_LEN) if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
         stage_time=float(c.get("stage_time_s") or 2.0),
@@ -1450,6 +1479,41 @@ class SimEngine:
                 speed=max(s.proj_speed, 8.0), left=_SPARK_TILES,
                 ground_only=not s.attacks_air, pierce=True, ox=p.x, oy=p.y))
 
+    def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
+        """Whether `spec`'s pushback moves THIS body at all.
+
+        Two independent exclusions, both sourced:
+          BUILDINGS are anchored -- once placed, a building holds its tile for its whole lifetime.
+          HEAVY TROOPS shrug off the small-to-medium pushback. Per the Bowler page, its knockback
+          "functions identically to a Fireball, Giant Snowball, or Rocket, pushing back small to
+          medium sized ground troops, and minimally damaging heavy troops such as the Prince,
+          Sparky, Dark Prince, Skeleton King, Giant Skeleton, Goblin Machine, P.E.K.K.A, Mega
+          Knight, Cannon Cart, and the Mighty Miner" -- and "his inability to knock back tanks means
+          he can separate the tanks and the support units".
+        The Log is the documented EXCEPTION (knockback_all): it "push[es] back all ground troops",
+        explicitly including the Prince and Dark Prince charges. So immunity is not a pure property
+        of the target -- the spell decides whether it applies.
+        """
+        if spec.knockback <= 0.0 or e.spec.kind == "building":
+            return False
+        return spec.knockback_all or not e.spec.knockback_immune
+
+    def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float) -> None:
+        """RADIAL pushback from a point blast (Fireball / Giant Snowball / Rocket) -- away from the
+        impact point, unlike a rolling spell which shoves everything the same way down its corridor.
+        The shove also RESETS the attack animation ("troops vulnerable to knockback will have their
+        attack animations reset"), which is the whole reason a Snowball answers a charge or an
+        Inferno's ramp -- modelled here by the same aggro_reset the Log already set."""
+        if not self._can_knock(e, spec):
+            return
+        dxt, dyt = (e.x - fx) * _TILES_X, (e.y - fy) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        if d <= 1e-6:                                    # dead centre: no radial direction exists
+            dxt, dyt, d = 0.0, 1.0, 1.0                  # deterministic fallback
+        e.x, e.y = _clamp_xy(e.x + (dxt / d) * spec.knockback / _TILES_X,
+                             e.y + (dyt / d) * spec.knockback / _TILES_Y, e.spec.radius)
+        e.aggro_reset = True
+
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:
         """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
 
@@ -1545,6 +1609,7 @@ class SimEngine:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
                 self._hurt(e, s.spec.spell_dmg)
                 self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
+                self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
@@ -1600,13 +1665,11 @@ class SimEngine:
             dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
                 self._hurt(e, s.spec.spell_dmg)
-                if e.spec.kind != "building":
-                    # BUILDINGS ARE ANCHORED. The Log damages an X-Bow / Tesla / Cannon but cannot
-                    # shove one, and with no shove there is no lock to break either -- only a stun or
-                    # freeze resets a building's target (see _acquire). Without this guard the Log
-                    # slid buildings down the board AND made them re-pick, so a Log thrown at a push
-                    # could knock a defending X-Bow off whatever it was firing at.
-                    e.y += fdir * s.spec.knockback / _TILES_Y  # knock back in the roll direction
+                if self._can_knock(e, s.spec):
+                    # BUILDINGS ARE ANCHORED and HEAVIES RESIST -- except the Log, which is the one
+                    # spell documented to push back ALL ground troops (see _can_knock). Damage still
+                    # lands on everything the corridor covers.
+                    e.x, e.y = _clamp_xy(e.x, e.y + fdir * s.spec.knockback / _TILES_Y, e.spec.radius)
                     e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
                                                                # where it LANDS, so a Log can pull a locked
                                                                # attacker onto whatever is now nearest
