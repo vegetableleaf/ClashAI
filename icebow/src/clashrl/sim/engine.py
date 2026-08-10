@@ -1304,10 +1304,16 @@ class SimEngine:
             # Splitting them matters: the wind-up is the window a defender has to react to, and the
             # travel is what closes a gap that walking never would.
             if u.leap_left > 0.0:
-                u.leap_left -= dt
-                if u.leap_left <= 0.0:
-                    u.leap_go = True
-                continue
+                # TARGETING KEEPS REFRESHING MID-CHARGE. `_acquire` already re-picks each tick while
+                # the unit is unlocked, so a closer body steals the leap; this re-checks the BAND for
+                # whatever it is now aimed at, so a body dropped inside the minimum cancels it.
+                if not self._leap_ok(u, ref):
+                    u.leap_left = 0.0                    # charge cancelled -- fall through and fight
+                else:
+                    u.leap_left -= dt
+                    if u.leap_left <= 0.0:
+                        u.leap_go = True
+                    continue
             if u.leap_go:
                 dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
                 d = math.hypot(dxt, dyt)
@@ -1321,10 +1327,7 @@ class SimEngine:
                                          u.y + (dyt / d) * step / _TILES_Y, u.spec.radius)
                 continue
             gap = _gap(u.x, u.y, ref)
-            if u.spec.leap_dmg > 0.0 and u.spec.leap_max > 0.0 \
-                    and u.spec.leap_min <= gap <= u.spec.leap_max \
-                    and ((isinstance(ref, Unit) and not ref.spec.flying)
-                         or (isinstance(ref, Tower) and u.spec.leap_towers)):
+            if self._leap_ok(u, ref):
                 # "he will STOP MOVING and begin charging" -- the wind-up is why a Mega Knight
                 # answered at 4 tiles still reaches you, and why baiting the dash out of a Bandit
                 # with a cheap body works.
@@ -1366,6 +1369,27 @@ class SimEngine:
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _leap_ok(self, u: "Unit", ref) -> bool:
+        """Is `ref` a legal leap target for `u` RIGHT NOW?
+
+        Re-checked on every wind-up tick, not just when the charge starts, because targeting keeps
+        refreshing while he winds up: drop a body closer than the minimum and the leaper switches to
+        it and the charge is CANCELLED -- he walks up and swings normally instead. That is the whole
+        counter-play to a Mega Knight, and it also means a target that walks out past the maximum
+        during the charge drops the jump rather than dragging it along.
+        """
+        if u.spec.leap_dmg <= 0.0 or u.spec.leap_max <= 0.0:
+            return False
+        if isinstance(ref, Tower):
+            if not u.spec.leap_towers or not ref.alive:
+                return False
+        elif isinstance(ref, Unit):
+            if ref.spec.flying or ref.hp <= 0:
+                return False
+        else:
+            return False
+        return u.spec.leap_min <= _gap(u.x, u.y, ref) <= u.spec.leap_max
 
     def _land_leap(self, u: "Unit", ref) -> None:
         """A dash/jump arrives: close the gap, then deliver the published double-damage hit.
