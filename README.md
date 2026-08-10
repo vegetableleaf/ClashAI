@@ -91,11 +91,15 @@ hard-counter X-Bow.
   the detector is on each frame (labelling time is the real bottleneck), `detect-adopt`
   safely ingests batches labelled by someone else, and `detect-eval` reports the recall
   numbers that gate turning it on.
+  
 - **Robust live play.** Screen-scraped tower/king HP, a 2×/3× elixir clock, team
   tracking (your own units aren't mistaken for threats), and overtime handling.
+  
 - **Watch what it sees.** A live preview window during training, and an optional
   `overlay_replay` gate that records the opening minute of every match with the
-  detector's boxes burned in (`data/overlayed_replays/`).
+  detector's boxes burned in (`data/overlayed_replays/`):
+
+   <img width="328" height="598" alt="ezgif-809f0756a3620006" src="https://github.com/user-attachments/assets/922065c6-d617-4247-8a5c-4159495bc0e4" />
 
 ---
 
