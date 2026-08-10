@@ -1512,11 +1512,30 @@ class SimEngine:
                 self.towers[1 - by_team][2].active = True
 
     def _check_end(self) -> None:
+        """The real CR match clock.
+
+        * ANY TIME: a KING falling ends it -- that is the third crown.
+        * AT REGULATION (180 s): if the crowns are UNEQUAL the match is OVER. The sim used to play
+          regulation + overtime unconditionally, so a 1-0 lead at 3:00 kept playing and could be
+          handed back; overtime was reachable from a winning position, which it never is in game.
+        * CROWNS LEVEL AT 180 s -> OVERTIME, 120 s of SUDDEN DEATH: the first crown taken wins
+          instantly. Because crowns are equal by construction once overtime starts, "the crowns are
+          now unequal" IS the sudden-death condition -- so the single test above covers both rules
+          and there is no separate overtime branch to keep in sync.
+        * STILL LEVEL AT 300 s -> the tiebreak on the least-healthy STANDING tower (_score_outcome).
+        """
         for team in (0, 1):
             if not self.towers[team][2].alive:               # king down -> that team loses
                 self.done = True
                 self.outcome = "loss" if team == 0 else "win"
                 return
+        if self.t < self.regulation:
+            return                                            # regulation runs its full length
+        my_c, op_c = self.crowns(0), self.crowns(1)
+        if my_c != op_c:
+            self.done = True
+            self.outcome = "win" if my_c > op_c else "loss"
+            return
         if self.t >= self.regulation + self.overtime:
             self.done = True
             self.outcome = self._score_outcome()

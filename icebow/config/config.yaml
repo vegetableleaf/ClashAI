@@ -763,7 +763,10 @@ sim:
   agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir goes single -> double at (regulation-60s); triple in overtime
-  overtime_s: 60                # sudden-death window after regulation
+  overtime_s: 120               # SUDDEN DEATH after regulation -- first crown wins instantly. Only
+                                # entered when the crowns are LEVEL at 180 s; a crown lead ends the
+                                # match there. 180 + 120 = the real 300 s ceiling (was 60, so
+                                # overtime ran half as long as the game's).
   # --- Tower Troops ---------------------------------------------------------------------------------
   # Per-troop HP + DISCRETE-HIT attack, sourced from the Clash Royale Fandom wiki at LEVEL 15 (VERIFY
   # against your in-game cards). Your two princess towers use `my_tower_troop` at `my_tower_level`; the
