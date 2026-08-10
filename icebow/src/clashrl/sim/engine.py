@@ -143,9 +143,10 @@ class CardSpec:
     leap_min: float = 0.0     # closer than this and it just walks in and swings normally
     leap_max: float = 0.0     # further than this and it keeps walking
     leap_invuln: bool = False  # "She is immune to damage during her dash" (Bandit only)
-    # Can the leap target a CROWN TOWER? The Bandits dash into a tower; the base Mega Knight does not
-    # -- his "Mega Power Jump" modifier exists precisely to grant "can target a unit OR TOWER for a
-    # jump attack", which only reads as an upgrade if the base jump cannot.
+    # Can the leap target a CROWN TOWER? True for every leaper we model. NB the Mega Knight's "Mega
+    # Power Jump" modifier ("can target a unit or tower for a jump attack AT ANY DISTANCE") is NOT
+    # evidence that his base jump cannot hit a tower -- the upgrade is the AT ANY DISTANCE part,
+    # which lifts the 3.5-5 tile band. He does jump crown towers in game.
     leap_towers: bool = False
     # SELF-PRESERVATION ABILITY (Boss Bandit's "Getaway Grenade", 1 elixir): "get invisible for one
     # second, then teleport 6 tiles behind her current spot", 3 s cooldown after the duration, and
