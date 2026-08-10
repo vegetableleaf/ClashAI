@@ -1682,6 +1682,16 @@ class SimEngine:
                 else:
                     e.x += (dxt / d) * pull / _TILES_X        # tiles -> normalised, per axis
                     e.y += (dyt / d) * pull / _TILES_Y
+                # BEING DRAGGED OFF WHAT YOU WERE HITTING BREAKS THE LOCK. This is the mechanic that
+                # makes KING ACTIVATION work: tornado a wincon off a princess tower and, once that
+                # tower is out of its reach, it re-picks -- taking the king if the king is now the
+                # nearest building. Without this a Hog hauled onto the king tower simply walked back
+                # to the princess it was still committed to, and the whole pull-to-activate play
+                # (and the defensive pull generally) did not exist. Same rule `_separate` already
+                # applies when a body is SHOVED out of reach; the vortex was the path that missed it.
+                if e.locked and e.target is not None \
+                        and _gap(e.x, e.y, e.target) > e.spec.reach + e.reach_extra:
+                    e.aggro_reset = True
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
