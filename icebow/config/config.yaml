@@ -355,7 +355,18 @@ rewards:
   # it does mean the term is mildly action-discouraging, because a policy that never plays opens no
   # forks and scores 0. Unlike the deleted taxing terms the way to improve it is to PLAY BETTER (a
   # play that beats holding scores positive), but keep it off the dominant slot until the mean moves.
-  counterfactual: 5.0
+  # RE-CALIBRATED AGAIN for horizon 15 s / budget 10 (see sim.counterfactual for WHY it was widened).
+  # The weight and the budget are COUPLED and it is not a small effect: MEASURED at unit weight over
+  # 15 matches, per-match total went -0.190 (SD 0.328, 2.5 settlements) at 6 s/3 to -1.665 (SD 0.689,
+  # 9.5 settlements) at 15 s/10 -- an 8.76x jump, because the longer horizon MORE THAN DOUBLES each
+  # settlement (-0.077 -> -0.175) on top of 3.2x more of them. Left at 5.0 this term alone would be
+  # -8.3/match and would swamp every other signal while pointing negative. 0.6 lands it near
+  # -1.0/match (SD ~0.4), alongside its neighbours.
+  # WATCH THIS ONE: settlements are 32 positive / 111 negative (22% positive, down from 35% at 6 s).
+  # A reachable positive branch is what separates this from the deleted action taxes (which had 0 of
+  # 305), and 22% is genuinely reachable -- but it is the same SHAPE that collapsed two runs, so if
+  # plays/match falls off a cliff after a restart, this is the first term to suspect.
+  counterfactual: 0.6
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
@@ -931,10 +942,25 @@ sim:
   # busy match cannot cost ten times a quiet one. Raise budget_per_match to buy signal with wall clock.
   counterfactual:
     enabled: true            # ON: it now REPLACES cycle_plan, which was deleted for being one-sided
-    horizon_s: 6.0           # lookahead per fork. A preventable tower hit lands in a few seconds and a
-                             # bridge wincon connects in ~5-10 s, so this must not be cut much further;
-                             # the GAE window is 17 s, so 6 s sits comfortably inside it.
-    budget_per_match: 3      # ~3 x 29 ms on a 99 ms match = ~1.9x wall clock
+    # WIDENED from 6 s / 3 after measuring WHY the policy plateaued. The gate had collapsed to
+    # P(play) = 0.999 and elixir never exceeded 5.00 in 5616 decisions, so X-Bow and Rocket (6 each)
+    # were masked as unaffordable on 100% of steps -- a masked action gets zero policy gradient, so
+    # the deck's win condition was not merely unrewarded, it was unlearnable. Root cause: with the
+    # trade term made a pure transfer, playing became weakly better than waiting in EVERY state
+    # (the card might do something; holding provably does nothing the reward could see), so there
+    # was no reason to ever bank. Elixir has OPTION value -- 6 in the bar can still become an X-Bow,
+    # two 3-cost bodies on the field cannot -- and nothing priced it.
+    # This fork is the mechanism that can price it WITHOUT hardcoding "save for the X-Bow" (which is
+    # what cycle_plan was, and it failed three times): _roll_fork advances the HELD branch doing
+    # nothing, and _position counts elixir, so over a long enough window holding visibly banks.
+    horizon_s: 15.0          # at 6 s the held branch banks only ~2 elixir = +0.2 position, below the
+                             # noise of whatever the played card did; 15 s banks ~5 and is legible.
+                             # NB this now EXCEEDS the 17 s GAE window only slightly -- if the GAE
+                             # horizon is raised next, revisit whether this should follow.
+    budget_per_match: 10     # was 3 = ~6% of ~50 plays sampled. MEASURED cost ~= 2.0 + 0.72 x
+                             # horizon_s ms per fork, so 15 s x 10 = ~116 ms/match, ~12% of the ~1 s
+                             # match at 4 envs on CPU. 20 s x 20 was 328 ms (~33%) -- too steep.
+                             # Settlements land at 9.5/match, so the budget is near-saturated.
     min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
     cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
     # How much a full elixir bar's worth of board value counts against one princess tower in the
