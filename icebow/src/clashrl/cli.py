@@ -653,7 +653,12 @@ def main() -> None:
     spr.add_argument("--paste", type=int, default=4, help="max sprites pasted per synthetic image (default 4)")
     spr.add_argument("--classes", default=None,
                      help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
-    spr.add_argument("--seed", type=int, default=None, help="RNG seed for a reproducible --synth set")
+    spr.add_argument("--seed", type=int, default=0,
+                     help="RNG seed for the --synth draw (default 0 = REPRODUCIBLE). Synth is ~40%% of the "
+                          "training set, so an unseeded regeneration silently changes that much of the data "
+                          "and makes any generation-to-generation comparison unattributable -- board-23's "
+                          "-5.1pp vs board-21 could not be split between the sprite-scaling fix and the new "
+                          "random draw. Vary it deliberately to MEASURE synth-draw noise.")
     spr.set_defaults(func=_cmd_sprites)
 
     dev = sub.add_parser("detect-eval",

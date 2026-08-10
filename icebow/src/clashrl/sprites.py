@@ -529,7 +529,10 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
     _write_data_yaml(root, classes)
     top = sorted(per_class.items(), key=lambda kv: -kv[1])[:12]
     print(f"[sprites] synthesized {made} image(s), {pasted} sprite paste(s) "
-          f"({time.time() - t0:.0f}s) -> {out_i.parent}")
+          f"({time.time() - t0:.0f}s) seed={seed!r} -> {out_i.parent}")
+    if seed is None:
+        print("[sprites] WARNING: UNSEEDED draw -- this synth set cannot be reproduced, so a detector "
+              "trained on it is not comparable to one trained on any other set. Pass --seed.")
     if n_native:
         print(f"[sprites] SCALE: {n_fit} paste(s) fitted to the base frame, {n_native} pasted at "
               f"NATIVE size (untagged cutouts). Rebuild the bank with `run.py sprites` to tag them "
