@@ -639,7 +639,7 @@ class SimMatchEnv:
         for u in eng.units:
             if u.team == team and u.spec.kind in ("troop", "building"):
                 frac = max(0.0, min(1.0, u.hp / u.spec.hp)) if u.spec.hp > 0 else 1.0
-                v += (u.spec.elixir / max(1, u.spec.count)) * frac
+                v += (u.spec.elixir / max(1, u.spec.squad_count or u.spec.count)) * frac
         return v
 
     def _position(self, eng) -> float:

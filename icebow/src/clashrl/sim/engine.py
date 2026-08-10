@@ -31,7 +31,7 @@ team 0 = you (bottom/blue), team 1 = opponent (top/red).
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
 # --- BOARD GEOMETRY (tiles) -------------------------------------------------------------------
@@ -177,6 +177,18 @@ class CardSpec:
     proj_radius: float = 0.0  # blast radius of the shot in tiles (0 = single target)
     proj_range: float = 0.0   # how far the shot flies (> reach for the piercing shots)
     proj_pierce: bool = False # keeps going past its target (Firecracker rocket / Magic Archer / Bowler)
+    # MIXED SQUADS: one card that fields SEVERAL UNIT TYPES AT ONCE, each its own CardSpec carrying
+    # its own count. Empty for the ~160 cards that field one body type (including swarms -- 15
+    # identical Skeletons stay on the plain `count` path). Only Goblin Gang, Rascals and Goblinstein
+    # populate it. Without this the squad took row 0's stats and merely SUMMED the counts, so the
+    # Rascal girls fought with the boy's 1940 hp -- ~2.4x the card's real effective HP, in about 1 of
+    # every 20 opponent decks.
+    components: tuple = ()
+    # TOTAL bodies the whole card fields, set only on a component spec (0 = use `count`). Board-value
+    # accounting splits a card's elixir across its bodies, and a component's `count` is only ITS OWN
+    # share -- so billing by that would charge Rascals 5/1 for the boy PLUS 5/2 each for the girls,
+    # i.e. 10 elixir for a 5-elixir card, inflating every position/counterfactual reading.
+    squad_count: int = 0
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -282,7 +294,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = build_spec(db, spw["unit"], level)
         except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
             spawner_spec = None
-    return CardSpec(
+    spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
@@ -334,6 +346,49 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         proj_radius=float(proj.get("radius") or 0.0),
         proj_range=float(proj.get("range") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
+    # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
+    # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
+    # crown-tower ratio) and overrides only what its own attributes row states. `damage` here is
+    # PER HIT, exactly as in the parent path, so dps is derived rather than trusted.
+    comps = c.get("components") or ()
+    if kind != "spell" and len(comps) > 1:
+        subs = []
+        total = sum(max(1, int(cm.get("count") or 1)) for cm in comps)
+        for cm in comps:
+            c_hp = float(cm.get("hitpoints") or 0.0) * sc
+            if c_hp <= 0.0:                                   # a half-resolved squad would field
+                subs = []                                     # phantom bodies -- take none of it
+                break
+            c_hit = float(cm.get("hit_speed") or hit) or 1.0
+            c_dmg = float(cm.get("damage") or 0.0) * sc
+            atk = cm.get("attacks") or ()
+            # Keep the parent's crown-tower RATIO (Miner-style reductions are published once for the
+            # card, not per body), defaulting to full damage when it takes none.
+            ratio = (tower_hit_dmg / hit_dmg) if hit_dmg else 1.0
+            subs.append(replace(
+                spec,
+                count=max(1, int(cm.get("count") or 1)),
+                squad_count=total,
+                hp=c_hp, hit_speed=c_hit, hit_dmg=c_dmg, dps=(c_dmg / c_hit),
+                tower_hit_dmg=c_dmg * ratio,
+                reach=float(cm.get("range_tiles") if cm.get("range_tiles") is not None else reach),
+                speed=float(cm.get("speed_tiles") or speed),
+                flying=(cm.get("movement") == "air"),
+                attacks_air=("air" in atk) if atk else db.attacks_air(base),
+                # TARGETING IS PER BODY. Goblinstein carries a card-level `building_targeting` flag
+                # that is only true of its Monster -- inheriting it would leave the Doctor unable to
+                # shoot troops at all, which is most of what he does.
+                building_only=("buildings" in atk) if atk else building_only,
+                # The wiki publishes projectile speed in its own units; the KB divides by 60 to get
+                # TILES/s (see CardDB.projectile) and this is the same number off the row.
+                proj_speed=float(cm.get("projectile_speed") or 0.0) / 60.0,
+                # A component never nests further, and its shield is its own body's -- a flat
+                # fraction of the parent's HP would hand the Rascal girls the boy's shield.
+                components=(),
+                shield_hp=(c_hp * _SHIELD_FRAC if "shield" in flags else 0.0)))
+        if subs:
+            spec = replace(spec, components=tuple(subs))
+    return spec
 
 
 @dataclass
@@ -647,6 +702,23 @@ class SimEngine:
         # continuous -- they are aimed, not placed).
         x = (math.floor(x * _TILES_X) + 0.5) / _TILES_X
         y = (math.floor(y * _TILES_Y) + 0.5) / _TILES_Y
+        # MIXED SQUAD: each unit type gets its OWN ROW, ordered SHORTEST ATTACK RANGE FIRST so the
+        # melee bodies stand between the enemy and the ranged ones. That single rule reproduces all
+        # three real formations -- Rascal boy ahead of the girls, Goblins ahead of the Spear
+        # Goblins, Goblinstein's Monster ahead of the Doctor -- without hardcoding any of them, and
+        # it is what makes the squad's shape (not just its stats) worth playing around.
+        if spec.components:
+            fwd = -1.0 if team == 0 else 1.0                  # team 0 attacks toward y = 0
+            rows = sorted(spec.components, key=lambda s: s.reach)
+            for ri, sub in enumerate(rows):
+                m = max(1, sub.count)
+                step = max(0.4, sub.radius * 2.2)
+                dy = ((len(rows) - 1) / 2.0 - ri) * step * fwd
+                for k in range(m):
+                    dx = (k - (m - 1) / 2.0) * step
+                    cx, cy = _clamp_xy(x + dx / _TILES_X, y + dy / _TILES_Y, sub.radius)
+                    self._place(sub, team, cx, cy)
+            return True
         # SWARM FORMATION. A multi-unit card spawns its members in a compact cluster CENTRED on the
         # drop point, spread by unit size -- so each body is separately killable, blockable and
         # splash-able, which is the whole point of a swarm.
@@ -668,16 +740,20 @@ class SimEngine:
             dx = (ox - mx) * step / _TILES_X             # tiles -> normalised, per axis
             dy = (oy - my) * step / _TILES_Y
             cx, cy = _clamp_xy(x + dx, y + dy, spec.radius)
-            u = Unit(spec, team, cx, cy, spec.hp)
-            u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
-            u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
-            # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
-            # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
-            u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
-            if spec.siege:
-                u.reach_extra = self.siege_sight - spec.reach
-            self.units.append(u)
+            self._place(spec, team, cx, cy)
         return True
+
+    def _place(self, spec: CardSpec, team: int, cx: float, cy: float) -> None:
+        """Put ONE body on the board, already positioned. Shared by the swarm and mixed-squad paths."""
+        u = Unit(spec, team, cx, cy, spec.hp)
+        u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
+        u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+        # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
+        # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
+        u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
+        if spec.siege:
+            u.reach_extra = self.siege_sight - spec.reach
+        self.units.append(u)
 
     # -- per-tick simulation ----------------------------------------------
     def _enemy_towers(self, team: int) -> List[Tower]:
