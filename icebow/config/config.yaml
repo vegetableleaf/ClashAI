@@ -54,7 +54,11 @@ elixir:
   #            templates/elixir_2x.png + elixir_3x.png (any crop scale) -- checked vs the clock, and
   #            the CLOCK WINS any disagreement (the mismatch is logged as a calibration hint).
   double_time_s: 120           # elapsed seconds when DOUBLE elixir starts (regulation 180 - last 60s)
-  triple_time_s: 180           # elapsed seconds when TRIPLE elixir starts (overtime)
+  # TRIPLE is the LAST MINUTE OF OVERTIME, not the start of it: regulation ends at 180 s and
+  # overtime's FIRST minute (180-240 s) is still DOUBLE. Was 180, which called x3 a minute early --
+  # and overtime is exactly when a 6-cost win condition becomes affordable, so the phase the policy
+  # banks for was mistimed. The on-screen x2/x3 badge cross-checks this; the CLOCK wins a tie.
+  triple_time_s: 240           # elapsed seconds when TRIPLE elixir starts (last minute of overtime)
   x2_template: elixir_2x.png   # optional PNG in templates/ for the on-screen "x2" badge (null => time only)
   x3_template: elixir_3x.png   # optional PNG in templates/ for the on-screen "x3" badge
   badge_threshold: 0.7         # min template-match score to accept a badge
@@ -776,7 +780,8 @@ sim:
   envs: 8                        # VECTORIZED match instances feeding one learner (batched inference + shared replay); --envs overrides
   agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
   sub_dt: 0.1                    # physics sub-tick within each agent step
-  regulation_s: 180             # elixir goes single -> double at (regulation-60s); triple in overtime
+  regulation_s: 180             # elixir: single -> DOUBLE at (regulation-60s); double CONTINUES through
+                                # overtime's first minute; TRIPLE only in the LAST 60s of overtime
   overtime_s: 120               # SUDDEN DEATH after regulation -- first crown wins instantly. Only
                                 # entered when the crowns are LEVEL at 180 s; a crown lead ends the
                                 # match there. 180 + 120 = the real 300 s ceiling (was 60, so

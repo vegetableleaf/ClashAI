@@ -705,10 +705,20 @@ class SimEngine:
         return troop, int(level)
 
     def elixir_rate(self) -> float:
-        if self.t >= self.regulation:
-            return 1.0 / 0.93                     # triple (overtime)
+        """Elixir per second. FOUR phases, not three -- overtime does NOT start at triple:
+             0 s .. reg-60      single   (2.8 s/elixir)
+             reg-60 .. reg      DOUBLE   -- the last minute of regulation
+             reg .. end-60      DOUBLE   -- overtime CONTINUES at 2x for its first minute
+             end-60 .. end      TRIPLE   (0.93 s/elixir) -- only the LAST minute of overtime
+        This used to flip to triple the instant regulation ended, handing both sides a third more
+        elixir for a whole minute that in the real game is still double -- and overtime is exactly
+        where a 6-cost win condition finally becomes affordable, so the phase the policy learns to
+        bank for was mistimed by 60 s."""
+        triple_at = self.regulation + max(0.0, self.overtime - 60.0)
+        if self.t >= triple_at:
+            return 1.0 / 0.93                     # triple: last minute of overtime only
         if self.t >= self.regulation - 60.0:
-            return 1.0 / 1.4                       # double
+            return 1.0 / 1.4                       # double: last minute of regulation THROUGH overtime
         return 1.0 / 2.8                          # single
 
     def can_afford(self, team: int, spec: CardSpec) -> bool:
