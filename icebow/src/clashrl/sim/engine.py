@@ -41,14 +41,27 @@ _TILES_X = 18.0
 _TILES_Y = 32.0
 _BRIDGES = (3.5 / 18.0, 14.5 / 18.0)     # bridge centres, normalised x (tile-derived; set below)
 _BRIDGE_HALF = 1.5                       # bridge deck HALF-width in TILES (set by configure_board)
+# THE RIVER IS A BAND, NOT A LINE. It is 2 TILES TALL in the real arena (rows 15..17, centre 16), so
+# the water a troop crosses has real THICKNESS and the bank it steps onto is a tile off the centre.
+# Modelling it as the single line y=16 made the whole 15..17 strip walkable-and-deployable: the
+# front-most deployable row centre sat at 16.67 tiles, i.e. IN THE WATER, about a tile further
+# forward than the game allows.
+_RIVER_HALF = 1.0                        # half-thickness in TILES (set by configure_board)
 
 
-def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0) -> None:
-    """Set the tile grid + bridge lanes. Called by SimEngine.__init__ from `sim.board`."""
-    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF
+def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0,
+                    river_width: float = 2.0) -> None:
+    """Set the tile grid + bridge lanes + river thickness. Called by SimEngine.__init__ from `sim.board`."""
+    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF, _RIVER_HALF
     _TILES_X, _TILES_Y = float(tiles_x), float(tiles_y)
     _BRIDGES = tuple(float(b) / _TILES_X for b in bridge_tiles)
     _BRIDGE_HALF = float(bridge_width) / 2.0
+    _RIVER_HALF = float(river_width) / 2.0
+
+
+def river_bank(y: float) -> float:
+    """The normalised y of the river EDGE on the same side as `y` -- the tile a troop steps onto."""
+    return _RIVER - _RIVER_HALF / _TILES_Y if y < _RIVER else _RIVER + _RIVER_HALF / _TILES_Y
 
 
 # speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
@@ -626,9 +639,11 @@ class SimEngine:
         self.tiles_y = float(board.get("tiles_y", 32.0))
         self.bridge_tiles = list(board.get("bridge_tiles", [3.5, 14.5]))
         self.bridge_width = float(board.get("bridge_width_tiles", 3.0))
+        self.river_width = float(board.get("river_width_tiles", 2.0))
         pt = list(board.get("princess_tile", [3.5, 6.5]))      # [x from the side wall, y from the back wall]
         kt = list(board.get("king_tile", [9.0, 3.0]))
-        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width)
+        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width,
+                        self.river_width)
         px_l, px_r = pt[0] / self.tiles_x, (self.tiles_x - pt[0]) / self.tiles_x
         py, kx, ky = pt[1] / self.tiles_y, kt[0] / self.tiles_x, kt[1] / self.tiles_y
         self._anchors = {                                      # [L princess, R princess, king]
@@ -998,7 +1013,9 @@ class SimEngine:
             half = max(0.0, _BRIDGE_HALF - u.spec.radius) / _TILES_X
             lane_x = min(max(u.x, bx - half), bx + half)
             if abs(u.x - lane_x) * _TILES_X > 1e-3:
-                tx, ty = lane_x, _RIVER                      # off the deck -> walk to its near edge
+                tx, ty = lane_x, river_bank(u.y)             # off the deck -> walk to the BANK on its own
+                                                             # side (the water has thickness; aiming at
+                                                             # the centreline walked it INTO the river)
             else:
                 tx, ty = u.x, ty                             # on the deck -> straight across
         tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
@@ -1560,21 +1577,16 @@ class SimEngine:
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
-            # A TOWER RELOADS WHILE IT HAS NOTHING TO SHOOT AT. This used to return early, freezing
-            # reload_left, and then RESET it to first_hit on every re-acquire -- so a tower that had
-            # been idle for ten seconds still waited another 0.8 s before its first arrow, and paid
-            # that again every time one target died and the next walked in. Combined with 0.85 s of
-            # arrow flight it put first blood ~1.65 tiles past the bridge for a medium troop (3.3 for
-            # a Hog), which reads on screen as the tower letting things walk in unopposed.
-            tw.reload_left = max(0.0, tw.reload_left - dt)
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
                 tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
             return
         if not tw.acquired:
             tw.acquired = True
-            # Fire as soon as the cooldown allows. first_hit is a CEILING on the wait, not a fresh
-            # penalty: a loaded tower shoots immediately, one still mid-reload finishes reloading.
-            tw.reload_left = min(tw.reload_left, tw.first_hit)
+            # LOAD TIME on acquiring a target. Keeping this is what reproduces the reference
+            # interaction: an L11 Bomber walking into an L11 princess tower lands EXACTLY ONE bomb
+            # before dying. Firing the instant a target appears kills it ~0.8 s sooner and the bomb
+            # never lands, so the tower's opening delay is real and load-bearing, not padding.
+            tw.reload_left = tw.first_hit
         tw.reload_left -= dt
         if tw.reload_left > 0.0:
             return

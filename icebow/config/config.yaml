@@ -810,7 +810,13 @@ sim:
                                 # converge on ONE point at the river, where collision (two 0.5-radius
                                 # bodies sit 1.0 tile apart) shoved them back out again -- goblins
                                 # pinned at y=0.5000 forever, oscillating between x 3.00 and 4.00.
-    deploy_top: 0.5             # troops deploy on your half only: normalized y of the river
+    river_width_tiles: 2.0      # THE RIVER HAS THICKNESS: 2 tiles (rows 15..17, centre 16), so the
+                                # bank a troop steps onto is a tile off the centre line. Modelled as a
+                                # zero-thickness line, the whole 15..17 strip was walkable AND
+                                # deployable -- the front-most deployable row centre sat at 16.67
+                                # tiles, i.e. IN THE WATER.
+    deploy_top: 0.53125         # troops deploy on your half only, and NOT in the river: 17/32 = the
+                                # near BANK, not 0.5 (=16/32, the river's centre line)
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
   # CROWN TOWER REACH, in tiles, measured from the tower's CENTRE to the target's body EDGE
