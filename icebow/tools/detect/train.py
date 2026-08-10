@@ -91,6 +91,10 @@ def main() -> None:
                          "UNCHANGED dataset reproduces the same weights -- change this to get a genuine "
                          "replicate and measure the run-to-run noise floor (needed to know whether a "
                          "1-3pp gap between generations is real or seed variance)")
+    ap.add_argument("--name", default="board",
+                    help="run-folder prefix under runs/detect (ultralytics auto-increments: board -> board-24). "
+                         "Use a different prefix for CONTROL runs so they do not consume the next board-N slot "
+                         "-- a generation number should mean 'a candidate for promotion', not 'an experiment'.")
     ap.add_argument("--status-aug", action="store_true",
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
@@ -141,11 +145,11 @@ def main() -> None:
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
         patience=args.patience, seed=args.seed,
-        project=str(root / "runs" / "detect"), name="board",
+        project=str(root / "runs" / "detect"), name=args.name,
         # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
         hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
     )
-    print("done -> runs/detect/board/weights/best.pt")
+    print(f"done -> runs/detect/{args.name}*/weights/best.pt")
 
 
 if __name__ == "__main__":
