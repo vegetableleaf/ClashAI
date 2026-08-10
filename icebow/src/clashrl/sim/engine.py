@@ -1560,12 +1560,21 @@ class SimEngine:
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
+            # A TOWER RELOADS WHILE IT HAS NOTHING TO SHOOT AT. This used to return early, freezing
+            # reload_left, and then RESET it to first_hit on every re-acquire -- so a tower that had
+            # been idle for ten seconds still waited another 0.8 s before its first arrow, and paid
+            # that again every time one target died and the next walked in. Combined with 0.85 s of
+            # arrow flight it put first blood ~1.65 tiles past the bridge for a medium troop (3.3 for
+            # a Hog), which reads on screen as the tower letting things walk in unopposed.
+            tw.reload_left = max(0.0, tw.reload_left - dt)
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
                 tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
             return
-        if not tw.acquired:                                     # first shot after (re)acquiring is delayed
+        if not tw.acquired:
             tw.acquired = True
-            tw.reload_left = tw.first_hit
+            # Fire as soon as the cooldown allows. first_hit is a CEILING on the wait, not a fresh
+            # penalty: a loaded tower shoots immediately, one still mid-reload finishes reloading.
+            tw.reload_left = min(tw.reload_left, tw.first_hit)
         tw.reload_left -= dt
         if tw.reload_left > 0.0:
             return
