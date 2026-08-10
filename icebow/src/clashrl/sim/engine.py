@@ -119,6 +119,19 @@ class CardSpec:
     spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
+    # DEPLOY / SURFACE BLAST: area damage the moment the body finishes appearing. Mega Knight "will
+    # deal damage to enemy units around him in a 360 deg area ... and inflict knockback" as he lands,
+    # and Goblin Drill does the same "when it surfaces". Both are published (`spawn_damage`), and
+    # both are a large part of why the card is played at all -- a Mega Knight that lands for nothing
+    # is not the card people answer with a swarm.
+    spawn_dmg: float = 0.0
+    spawn_radius: float = 0.0
+    spawn_crown_dmg: float = 0.0
+    # COMBO: every Nth normal attack carries the knockback (Monk's 3-strike). This has to be its own
+    # marker rather than "has the knockback flag", because for Golem / Giant Skeleton / Phoenix /
+    # Skeleton Barrel / Goblin Demolisher the knockback rides the DEATH blast and their melee swing
+    # must NOT push.
+    combo_every: int = 0
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
     # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
@@ -365,6 +378,13 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
+        # Radius falls back to the card's splash radius, which is the circle the wiki describes.
+        spawn_dmg=float(c.get("spawn_damage") or 0.0) * sc,
+        spawn_radius=float(c.get("spawn_radius_tiles") or c.get("splash_radius")
+                           or (_SPLASH_R if c.get("spawn_damage") else 0.0)),
+        spawn_crown_dmg=float(c.get("spawn_crown_damage") or 0.0) * sc,
+        combo_every=int(c.get("combo_every") or 0),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -456,6 +476,8 @@ class Unit:
     aggro_reset: bool = False    # set by a stun/freeze, a Log knockback, or being SHOVED out of reach of what
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
+    blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
+    hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -574,6 +596,23 @@ def _body_radius(ref) -> float:
     """Hitbox radius (tiles) of a Unit or a Tower."""
     spec = getattr(ref, "spec", None)
     return float(spec.radius) if spec is not None else float(getattr(ref, "radius", 0.0))
+
+
+def _push_mass(spec) -> float:
+    """How hard a body is to SHOVE, from its VOLUME (collision radius cubed).
+
+    Body-blocking used to split every push 50/50, so a 0.5-radius 81 hp Skeleton moved a 0.75-radius
+    3968 hp Giant exactly as far as the Giant moved it. MEASURED: six Skeletons cut a Giant to 34% of
+    its unblocked pace and nine to 30% -- a swarm was stopping a tank dead, which is not a play that
+    exists in the game.
+
+    Volume is used rather than the obvious momentum (mass x speed) because SPEED MAKES IT WORSE, not
+    better: the small units are the fast ones (Skeletons 1.5 tiles/s vs a Giant's 0.75), so weighting
+    by speed hands the swarm MORE shoving power. The radius is the one SOURCED size we have
+    (cr-api-data collision_radius), and cubing it is the physical reading of "bigger body, heavier",
+    with no free parameter to tune. Giant/Skeleton comes out 3.4:1.
+    """
+    return float(spec.radius) ** 3
 
 
 def _gap(ax: float, ay: float, ref) -> float:
@@ -1079,14 +1118,16 @@ class SimEngine:
                 else:
                     ux, uy = dx / d, dy / d
                 overlap = mind - d
-                am = 0.0 if a.spec.kind == "building" else 1.0
-                bm = 0.0 if b.spec.kind == "building" else 1.0
+                am = 0.0 if a.spec.kind == "building" else _push_mass(a.spec)
+                bm = 0.0 if b.spec.kind == "building" else _push_mass(b.spec)
                 s = am + bm
                 if s <= 0:
                     continue
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
-                a.x, a.y = _clamp_xy(a.x + px * (am / s), a.y + py * (am / s), a.spec.radius)
-                b.x, b.y = _clamp_xy(b.x - px * (bm / s), b.y - py * (bm / s), b.spec.radius)
+                # Each body yields in inverse proportion to its OWN mass, so the heavier one barely
+                # moves: a Skeleton takes 77% of the separation against a Giant instead of 50%.
+                a.x, a.y = _clamp_xy(a.x + px * (bm / s), a.y + py * (bm / s), a.spec.radius)
+                b.x, b.y = _clamp_xy(b.x - px * (am / s), b.y - py * (am / s), b.spec.radius)
                 # Being SHOVED off what you were hitting resets aggro. This is the real mechanic
                 # behind dropping a body between a melee attacker and the tower it is chewing on:
                 # the attacker is pushed out, loses its lock, and re-picks -- and the thing now in
@@ -1150,6 +1191,9 @@ class SimEngine:
             u.attacking = False                             # default; set True only when engaged (target in reach)
             if u.deploy_left > 0:                            # still spawning -> can't act yet (~1s)
                 u.deploy_left -= dt
+                if u.deploy_left <= 0.0 and not u.blast_done:
+                    u.blast_done = True
+                    self._deploy_blast(u)                    # Mega Knight lands / Goblin Drill surfaces
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
@@ -1209,6 +1253,24 @@ class SimEngine:
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _deploy_blast(self, u: "Unit") -> None:
+        """Area damage the instant a body finishes appearing -- Mega Knight LANDING, Goblin Drill
+        SURFACING. Both are published as `spawn_damage`, both knock back, and both are most of the
+        reason the card is scary on arrival rather than merely after it starts walking."""
+        s = u.spec
+        if s.spawn_dmg <= 0.0 or s.spawn_radius <= 0.0:
+            return
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= s.spawn_radius + e.spec.radius:
+                self._hurt(e, s.spawn_dmg)
+                self._knock(e, s, u.x, u.y)                  # radial, out of the landing circle
+        if s.spawn_crown_dmg > 0.0:                          # Goblin Drill publishes a reduced crown value
+            for tw in self._enemy_towers(u.team):
+                if tw.alive and _gap(u.x, u.y, tw) <= s.spawn_radius:
+                    self._damage_tower(tw, s.spawn_crown_dmg, u.team)
 
     def _death_blast(self, u: "Unit") -> None:
         """Area damage centred on a body that has just died.
@@ -1308,6 +1370,13 @@ class SimEngine:
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+        # MONK'S 3-STRIKE COMBO: "the first 2 attacks deal normal damage, while the 3rd strike deals
+        # extra damage and knockback, EVEN IF THE TARGETED TROOP IS NORMALLY IMMUNE TO KNOCKBACK"
+        # (hence knockback_all on the card). Only the shove is modelled -- the wiki does not publish
+        # the 3rd hit's damage, and inventing a multiplier would be worse than leaving it flat.
+        u.hit_no += 1
+        if u.spec.combo_every > 0 and u.hit_no % u.spec.combo_every == 0 and isinstance(ref, Unit):
+            self._knock(ref, u.spec, u.x, u.y)
         self._multi_hit(u.spec, u.team, u.x, u.y, ref, dmg)   # chain arcs / shotgun pellets
 
     @staticmethod
