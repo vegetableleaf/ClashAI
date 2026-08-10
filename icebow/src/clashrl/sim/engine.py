@@ -708,6 +708,30 @@ class SimEngine:
             tw = min(towers, key=lambda t: _gap(u.x, u.y, t)) if towers else None
             u.target = tw
             return ("tower", tw) if tw else (None, None)
+        if u.spec.kind == "building":
+            # STATIONARY BUILDINGS pick the CLOSEST thing they can actually HIT, right now -- and
+            # nothing else. The generic fallback further down ("nothing in sight -> march at a
+            # tower") is a TROOP behaviour: a troop that picks a distant tower WALKS to it, while a
+            # building just sits aiming at something permanently out of reach.
+            # MEASURED: an X-Bow placed behind y~0.56 is 12.34 tiles from the nearest enemy princess
+            # against an 11.50 reach, yet still latched onto it -- in sim-view that reads as an X-Bow
+            # aimed at a tower and never firing, which is exactly what it was.
+            # Towers are candidates only for SIEGE buildings (X-Bow / Mortar). A Tesla or Cannon
+            # cannot hit a crown tower at any range, so they consider units alone.
+            reach = u.spec.reach + u.reach_extra
+            best, best_gap, best_kind = None, float("inf"), None
+            for e in self.units:
+                if e.team != u.team and self._valid_foe(u, e):
+                    g = _gap(u.x, u.y, e)
+                    if g <= reach and g < best_gap:
+                        best, best_gap, best_kind = e, g, "unit"
+            if u.spec.siege:
+                for t in towers:
+                    g = _gap(u.x, u.y, t)
+                    if g <= reach and g < best_gap:
+                        best, best_gap, best_kind = t, g, "tower"
+            u.target, u.locked = best, False
+            return (best_kind, best) if best is not None else (None, None)
         sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
         if u.aggro_reset:                                     # knocked/stunned/shoved -> forget the lock
             u.aggro_reset = False
