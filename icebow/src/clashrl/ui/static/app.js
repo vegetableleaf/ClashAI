@@ -1522,11 +1522,38 @@ function labDraw() {
                  Math.abs(d.x1 - d.x0), Math.abs(d.y1 - d.y0));
     g.setLineDash([]);
   }
+  // The list is how you delete a SPECIFIC box. It used to be plain text, which left "Delete" with
+  // nothing to aim at but the last box drawn -- see the labundo handler.
   const list = $("#lablist");
   list.innerHTML = LAB.boxes.length
-    ? "<b>Boxes on this frame</b><br>" + LAB.boxes.map((b, i) =>
-        `${i + 1}. ${LAB.classes[b.cls] || b.cls}`).join("<br>")
-    : "No boxes yet. Drag around a unit on the board.";
+    ? LAB.boxes.map((b, i) =>
+        `<div class="boxrow${i === LAB.sel ? " on" : ""}" data-i="${i}">`
+        + `<span>${i + 1}. ${LAB.classes[b.cls] || b.cls}${b.suggested ? " ?" : ""}</span>`
+        + `<span class="x" data-del="${i}" title="Delete this box">&times;</span></div>`).join("")
+    : '<p class="hint">No boxes yet. Drag around a unit on the picture.</p>';
+  list.querySelectorAll(".boxrow").forEach(row => {
+    row.onclick = ev => {
+      const del = ev.target.dataset.del;
+      if (del !== undefined) { labDelete(+del); return; }
+      LAB.sel = +row.dataset.i;
+      const b = LAB.boxes[LAB.sel], sel = $("#labclass");
+      if (b && [...sel.options].some(o => +o.value === b.cls)) sel.value = String(b.cls);
+      labDraw();
+    };
+  });
+}
+
+/* Deleting must always name WHICH box. The old handler was
+     if (LAB.sel >= 0) splice(LAB.sel) else pop()
+   and since every delete then reset LAB.sel to -1, a second press fell through to pop() and
+   removed the newest box -- so holding Delete walked backwards through the frame in drawing
+   order, taking boxes nobody had pointed at. */
+function labDelete(i) {
+  if (i == null || i < 0 || i >= LAB.boxes.length) return;
+  LAB.boxes.splice(i, 1);
+  if (LAB.sel === i) LAB.sel = -1;
+  else if (LAB.sel > i) LAB.sel -= 1;          // the ones after it shifted down
+  labDraw();
 }
 
 /* Every reader's region drawn on the same frame, in its own colour. The point is that a
@@ -1793,11 +1820,29 @@ function drawCoverage() {
   if (!cv) return;
   const pos = ev => { const r = cv.getBoundingClientRect();
     return [ev.clientX - r.left, ev.clientY - r.top]; };
-  cv.onmousedown = ev => { const [x, y] = pos(ev); LAB.drag = { x0: x, y0: y, x1: x, y1: y }; };
+  cv.onmousedown = ev => { if (ev.button !== 0) return;
+    const [x, y] = pos(ev); LAB.drag = { x0: x, y0: y, x1: x, y1: y }; };
   cv.onmousemove = ev => { if (!LAB.drag) return; const [x, y] = pos(ev);
     LAB.drag.x1 = x; LAB.drag.y1 = y; labDraw(); };
-  cv.onmouseup = () => {
+  // Right-click deletes the box under the cursor -- the fastest correction when the model
+  // suggested something that is not there, which is most of them.
+  cv.oncontextmenu = ev => {
+    ev.preventDefault();
+    const [x, y] = pos(ev);
+    labPick(x, y);
+    if (LAB.sel >= 0) labDelete(LAB.sel);
+  };
+  const endDrag = () => {
     const d = LAB.drag; LAB.drag = null;
+    if (!d) return null;
+    return d;
+  };
+  // A release OUTSIDE the canvas never fired cv.onmouseup, so LAB.drag stayed set and labDraw
+  // kept painting the dashed rectangle forever -- the outline that would not go away. The
+  // window-level listener ends the drag wherever the button comes up.
+  window.addEventListener("mouseup", () => { if (LAB.drag) { endDrag(); labDraw(); } });
+  cv.onmouseup = () => {
+    const d = endDrag();
     if (!d) return;
     const w = Math.abs(d.x1 - d.x0), h = Math.abs(d.y1 - d.y0);
     if (w < 6 || h < 6) { labPick(d.x0, d.y0); labDraw(); return; }   // a click: select a box
@@ -1809,8 +1854,12 @@ function drawCoverage() {
     labDraw();
   };
   $("#labundo").onclick = () => {
-    if (LAB.sel >= 0) LAB.boxes.splice(LAB.sel, 1); else LAB.boxes.pop();
-    LAB.sel = -1; labDraw();
+    if (LAB.sel < 0) {
+      $("#labmsg").className = "msg err";
+      $("#labmsg").textContent = "click a box first (or right-click it on the picture)";
+      return;
+    }
+    labDelete(LAB.sel);
   };
   $("#labprefill").onchange = () => labLoad(LAB.ix);
   // Picking a class while a box is selected RELABELS it -- that is the common correction:

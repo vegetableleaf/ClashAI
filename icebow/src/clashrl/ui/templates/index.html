@@ -270,39 +270,60 @@
       </div>
       <div id="labcovbody"></div>
     </details>
-    <div class="row">
-      <button id="labprev" class="btn small">Previous</button>
-      <button id="labnext" class="btn small">Next frame</button>
-      <!-- 236 classes in the taxonomy's own order is unusable without a filter: type a few
-           letters, the list narrows, the class ids underneath stay untouched. -->
-      <label>Class <input id="labsearch" type="text" placeholder="search ..." size="12"
-             title="Filters the list below. Enter picks the first match."></label>
-      <select id="labclass" title="Recently used first, then alphabetical."></select>
-      <span id="labclassmsg" class="msg"></span>
-      <button id="labsave" class="btn primary">Save and continue</button>
-      <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
-      <button id="labundo" class="btn small" title="Removes the selected box, or the last one drawn">Delete box</button>
-      <span id="labmsg" class="msg"></span>
-    </div>
-    <div class="row">
-      <label class="chk"><input type="checkbox" id="labprefill" checked>
-        Pre-fill boxes from the model</label>
-      <span id="labprefillmsg" class="msg"></span>
-    </div>
-    <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
-         state) always ran silently, so this frame looked like it was only "units or
-         nothing". Show every reading on the same picture instead. -->
-    <div class="row">
-      <label><input type="checkbox" id="labread"> Show everything the bot reads off this frame</label>
-      <span id="labreadmsg" class="msg"></span>
-    </div>
-    <div id="labreadout"></div>
-    <div id="labwrap" class="heatwrap">
+    <!-- The frame is TALL (a phone client, 756x1334) so it leaves a wide empty column beside it.
+         Every control lives in that column instead of in rows above the picture: the picture is
+         what you look at, and the tools belong next to it, not scrolled away from it. -->
+    <div id="labwrap" class="labgrid">
       <div id="labcanvaswrap" style="position:relative;display:inline-block">
         <img id="labimg" alt="frame to label" style="display:block;max-width:100%">
         <canvas id="labcanvas" style="position:absolute;left:0;top:0;cursor:crosshair"></canvas>
       </div>
-      <div id="lablist" class="heatlegend"></div>
+      <div class="labtools">
+        <div class="labtool">
+          <div class="row">
+            <button id="labprev" class="btn small">Previous</button>
+            <button id="labnext" class="btn small">Next frame</button>
+          </div>
+          <span id="labmsg" class="msg"></span>
+        </div>
+
+        <div class="labtool">
+          <h4>Class</h4>
+          <!-- 225 classes in the taxonomy's own order is unusable without a filter: type a few
+               letters, the list narrows, the class ids underneath stay untouched. -->
+          <input id="labsearch" type="text" placeholder="search ..."
+                 title="Filters the list below. Enter picks the first match.">
+          <select id="labclass" size="8" title="Recently used first, then alphabetical."></select>
+          <span id="labclassmsg" class="msg"></span>
+        </div>
+
+        <div class="labtool">
+          <h4>Boxes on this frame</h4>
+          <div id="lablist"></div>
+          <button id="labundo" class="btn small"
+                  title="Removes the SELECTED box. Click one first, or right-click it on the picture.">
+            Delete selected box</button>
+        </div>
+
+        <div class="labtool">
+          <button id="labsave" class="btn primary">Save and continue</button>
+          <button id="labempty" class="btn small"
+                  title="This frame genuinely contains none of the classes">No units here</button>
+        </div>
+
+        <div class="labtool">
+          <label class="chk"><input type="checkbox" id="labprefill" checked>
+            Pre-fill boxes from the model</label>
+          <span id="labprefillmsg" class="msg"></span>
+          <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
+               state) always ran silently, so this frame looked like it was only "units or
+               nothing". Show every reading on the same picture instead. -->
+          <label class="chk"><input type="checkbox" id="labread">
+            Show everything the bot reads</label>
+          <span id="labreadmsg" class="msg"></span>
+        </div>
+        <div id="labreadout"></div>
+      </div>
     </div>
   </section>
 
