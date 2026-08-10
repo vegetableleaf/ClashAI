@@ -550,6 +550,13 @@ cards:
     damage: null
     hit_speed: null
 
+  # "When used, it can STUN enemies in its radius for 0.5 seconds" -- Lightning's stun was not
+  # modelled at all (no stun_duration_s in the import), so it was pure damage.
+  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, verified: true}
+  # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
+  # crowd-control modelled either. Duration is not published, so it falls back to the global
+  # sim.freeze_duration rather than being invented here.
+  vines: {kind: spell, flags: [freeze], verified: true}
   zap:
     display: "Zap"
     elixir: 2
@@ -907,12 +914,20 @@ cards:
   # IMMUNE TO DAMAGE during her dash." (dash_damage / dash_time_s are imported; the trigger band and
   # the immunity live in the lead PROSE, so they are curated.) Balance history confirms the minimum:
   # 12/2/2018 "decreased her minimum dash range to 3.5 tiles (from 4 tiles)".
-  bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_invulnerable: true, verified: true}
+  bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_invulnerable: true, leap_towers: true, verified: true}
   barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
   bats: {range: melee, verified: false}
   battle_healer: {range: melee, verified: false}
   berserker: {range: melee, verified: false}
-  boss_bandit: {range: melee, verified: false}
+  # SAME dash as the Bandit, word for word: "If there are ground units between 3.5 and 6 tiles of
+  # her, she will stop moving and begin charging a dash attack which takes 0.8 seconds to execute,
+  # and will deal double damage" (dash_damage 489 / dash_time_s 0.8 are imported). NOTE she is NOT
+  # described as immune during it -- that line is the Bandit's alone -- so no leap_invulnerable.
+  # ABILITY "Getaway Grenade", 1 elixir: "get invisible for one second, then teleport 6 tiles behind
+  # her current spot", 3 s cooldown after the duration, ONLY TWICE per deployment.
+  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_towers: true,
+                ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0,
+                ability_invis_s: 1.0, ability_back_tiles: 6.0, verified: true}
   # KNOCKBACK-IMMUNE HEAVIES. Sourced from the Bowler page, whose pushback "functions identically to
   # a Fireball, Giant Snowball, or Rocket, pushing back small to medium sized ground troops, and
   # minimally damaging heavy troops such as the Prince, Sparky, Dark Prince, Skeleton King, Giant
@@ -924,7 +939,9 @@ cards:
   dark_prince: {range: melee, flags: [knockback_immune], verified: false}
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
-  fisherman: {range: melee, verified: false}
+  # "...and slow their movement and attack speed by 35% for 1.5 seconds" -- the hook's SLOW was not
+  # modelled at all. (The pull itself still is not: it needs a directed yank, not a status.)
+  fisherman: {range: melee, flags: [slow], slow_duration_s: 1.5, slow_pct: -35, verified: true}
   giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
@@ -967,7 +984,11 @@ cards:
   cannon_cart: {range: long, flags: [knockback_immune], verified: false}
   dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
   electro_dragon: {range: long, multi: chain, verified: true}
-  electro_wizard: {range: long, multi: chain, verified: true}
+  # "If 2 or more targets are within his range, his attack will SPLIT and attack the closest 2
+  # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
+  # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes
+  # up to 2 OTHER targets" for full damage each.
+  electro_wizard: {range: long, multi: split, verified: true}
   executioner: {range: long, multi: boomerang, verified: true}
   firecracker: {range: long, multi: spark, verified: true}
   flying_machine: {range: long, verified: false}
@@ -983,7 +1004,9 @@ cards:
   # -- MULTI-HIT MECHANICS. The wiki gives `hits_per_attack` as one number but it covers four
   # unrelated behaviours, so only the KIND is curated (the count stays imported). Damage is PER HIT
   # and the published dps counts only one, so before this these cards were 2-10x too weak.
-  #   chain     the bolt arcs on to further targets, carrying the stun
+  #   chain     the bolt arcs on to further targets, carrying the stun (each takes the FULL hit)
+  #   split     ONE attack DIVIDED between the closest N targets -- the published damage is the
+  #             TOTAL, so counting it per target doubles the card (Electro Wizard only)
   #   boomerang the axe flies out AND back, damaging on both passes
   #   spark     sparks spray outward from where the rocket lands, not from the firer
   #   shotgun   a cone of pellets: nearly all connect point-blank, few at max range

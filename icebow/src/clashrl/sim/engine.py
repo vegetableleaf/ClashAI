@@ -143,6 +143,20 @@ class CardSpec:
     leap_min: float = 0.0     # closer than this and it just walks in and swings normally
     leap_max: float = 0.0     # further than this and it keeps walking
     leap_invuln: bool = False  # "She is immune to damage during her dash" (Bandit only)
+    # Can the leap target a CROWN TOWER? The Bandits dash into a tower; the base Mega Knight does not
+    # -- his "Mega Power Jump" modifier exists precisely to grant "can target a unit OR TOWER for a
+    # jump attack", which only reads as an upgrade if the base jump cannot.
+    leap_towers: bool = False
+    # SELF-PRESERVATION ABILITY (Boss Bandit's "Getaway Grenade", 1 elixir): "get invisible for one
+    # second, then teleport 6 tiles behind her current spot", 3 s cooldown after the duration, and
+    # it "can only be activated twice". Modelled as an AUTOMATIC reaction rather than a player
+    # action: exposing it to the policy would need a whole new action type (and a retrain), while
+    # the opponents who actually field her do need to use it or she is strictly worse than she reads.
+    ability_cost: float = 0.0
+    ability_uses: int = 0
+    ability_cd: float = 0.0
+    ability_invis: float = 0.0
+    ability_back: float = 0.0
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
     # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
@@ -404,6 +418,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         leap_min=float(c.get("leap_min_tiles") or 0.0),
         leap_max=float(c.get("leap_max_tiles") or 0.0),
         leap_invuln=bool(c.get("leap_invulnerable")),
+        leap_towers=bool(c.get("leap_towers")),
+        ability_cost=float(c.get("ability_cost") or 0.0),
+        ability_uses=int(c.get("ability_uses") or 0),
+        ability_cd=float(c.get("ability_cooldown_s") or 0.0),
+        ability_invis=float(c.get("ability_invis_s") or 0.0),
+        ability_back=float(c.get("ability_back_tiles") or 0.0),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -498,6 +518,9 @@ class Unit:
     blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
     hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
     leap_left: float = 0.0       # seconds of dash/jump wind-up still to run (0 = not leaping)
+    invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
+    ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
+    ability_cd_left: float = 0.0  # seconds until the ability can be used again
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -873,7 +896,9 @@ class SimEngine:
         return [t for t in self.towers[1 - team] if t.alive]
 
     def _valid_foe(self, u: Unit, e: Unit) -> bool:
-        return e.hp > 0 and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
+        # INVISIBLE bodies cannot be acquired at all (Boss Bandit's Getaway Grenade).
+        return e.hp > 0 and e.invis_left <= 0.0 \
+            and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
     def _acquire(self, u: Unit):
         """(kind, ref) this unit heads for.
@@ -1226,6 +1251,30 @@ class SimEngine:
             spd = u.slow_mult if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
+            # she is invisible and untouchable for a second, then reappears `ability_back` tiles
+            # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.
+            if u.spec.ability_invis > 0.0:
+                if u.ability_left < 0:
+                    u.ability_left = u.spec.ability_uses
+                u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
+                if u.invis_left > 0.0:
+                    u.invis_left -= dt
+                    if u.invis_left <= 0.0:                 # reappear BEHIND where she vanished
+                        back = -1.0 if u.team == 1 else 1.0  # away from the enemy side
+                        u.x, u.y = _clamp_xy(u.x, u.y + back * u.spec.ability_back / _TILES_Y,
+                                             u.spec.radius)
+                        u.ability_cd_left = u.spec.ability_cd
+                        u.aggro_reset = True
+                    continue                                 # invisible: no walking, no attacking
+                if u.ability_left > 0 and u.ability_cd_left <= 0.0 \
+                        and u.hp < u.spec.hp * 0.6 \
+                        and self.elixir[u.team] >= u.spec.ability_cost:
+                    self.elixir[u.team] -= u.spec.ability_cost
+                    u.ability_left -= 1
+                    u.invis_left = u.spec.ability_invis
+                    u.leap_left = 0.0                        # the escape cancels a wind-up
+                    continue
             prev_target = u.target
             kind, ref = self._acquire(u)
             # RAMP-UP bookkeeping: the damage stages climb only while this unit stays on ONE target,
@@ -1237,17 +1286,28 @@ class SimEngine:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            # LEAP (Bandit dash / Mega Knight jump). Mid-flight it is committed: it does not walk,
-            # does not swing, and -- for the Bandit -- cannot be damaged. On landing it arrives at
-            # its target's edge and delivers the published double-damage hit.
+            # LEAP (Bandit dash / Mega Knight jump). Mid-flight it is committed: it does not swing,
+            # and -- for the Bandit -- cannot be damaged. It TRAVELS across the gap over leap_time
+            # rather than teleporting: the dash has a real speed on screen, so a body that steps
+            # into the path, or a target that dies mid-dash, matters.
             if u.leap_left > 0.0:
+                dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
+                d = math.hypot(dxt, dyt)
+                stop = max(0.0, d - (_body_radius(ref) + u.spec.radius))
+                if stop > 1e-6:
+                    # cover the REMAINING distance over the REMAINING time -> constant dash speed
+                    step = stop * min(1.0, dt / max(u.leap_left, 1e-6))
+                    u.x, u.y = _clamp_xy(u.x + (dxt / d) * step / _TILES_X,
+                                         u.y + (dyt / d) * step / _TILES_Y, u.spec.radius)
                 u.leap_left -= dt
                 if u.leap_left <= 0.0:
                     self._land_leap(u, ref)
                 continue
             gap = _gap(u.x, u.y, ref)
-            if u.spec.leap_dmg > 0.0 and u.spec.leap_max > 0.0 and isinstance(ref, Unit) \
-                    and not ref.spec.flying and u.spec.leap_min <= gap <= u.spec.leap_max:
+            if u.spec.leap_dmg > 0.0 and u.spec.leap_max > 0.0 \
+                    and u.spec.leap_min <= gap <= u.spec.leap_max \
+                    and ((isinstance(ref, Unit) and not ref.spec.flying)
+                         or (isinstance(ref, Tower) and u.spec.leap_towers)):
                 # "he will STOP MOVING and begin charging" -- the wind-up is why a Mega Knight
                 # answered at 4 tiles still reaches you, and why baiting the dash out of a Bandit
                 # with a cheap body works.
@@ -1421,6 +1481,8 @@ class SimEngine:
         # of the wind-up is not an option the defender has.
         if u.leap_left > 0.0 and u.spec.leap_invuln:
             return
+        if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
+            return
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
         if u.shield_left > 0.0:
@@ -1441,6 +1503,27 @@ class SimEngine:
             tower_dmg = dmg
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
+            return
+        # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
+        # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
+        # bolt -- 115 / 1.8 s hit speed == his published dps of 64, so counting it once per target
+        # was dealing DOUBLE. One target takes the whole hit; two share it. A CROWN TOWER is a valid
+        # half ("the Electro Wizard could split the strike onto the Tower and deal unnecessary chip
+        # damage"), which is why you keep the defending troop a tile clear of your own tower.
+        # NB this is NOT the Electro Dragon's `chain`, which "arcs and strikes up to 2 OTHER targets"
+        # -- there each body takes the full hit, and that model stays as it is.
+        if u.spec.multi_kind == "split" and u.spec.multi_hits > 1:
+            reach = u.spec.reach + u.reach_extra
+            extra = [(_gap(u.x, u.y, e), e, "unit") for e in self.units
+                     if e.team != u.team and e.hp > 0 and e is not ref
+                     and self._valid_foe(u, e) and _gap(u.x, u.y, e) <= reach]
+            extra += [(_gap(u.x, u.y, tw), tw, "tower") for tw in self._enemy_towers(u.team)
+                      if tw is not ref and _gap(u.x, u.y, tw) <= reach]
+            extra.sort(key=lambda t: t[0])
+            picks = [(ref, kind)] + [(e, k) for _, e, k in extra[:u.spec.multi_hits - 1]]
+            share = 1.0 / len(picks)
+            for tgt, k in picks:
+                self._land_hit(u.team, k, tgt, u.spec, dmg * share, tower_dmg * share)
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
         # MONK'S 3-STRIKE COMBO: "the first 2 attacks deal normal damage, while the 3rd strike deals
@@ -1730,6 +1813,7 @@ class SimEngine:
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
+                and e.invis_left <= 0.0
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
