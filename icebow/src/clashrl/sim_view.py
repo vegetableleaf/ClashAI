@@ -276,6 +276,12 @@ def _policy_agent(env, path: str):
 
     ck = torch.load(path, map_location="cpu", weights_only=False)
     is_ppo = ck.get("algo") == "ppo"
+    # PPO gates on a PROBABILITY, not a raw logit compare. `gq[1] > gq[0]` is tau=0.5, which the
+    # b9ff324 A/B measured as costing 33pp of winrate vs the calibrated 0.25 -- a card play is rare
+    # per tick, so a calibrated gate sits far below 0.5. train_sim_ppo.choose_greedy and play.py were
+    # both fixed then; this debugger was missed, so it rendered a policy that under-deploys relative
+    # to the one that actually plays.
+    gate_tau = float(env.cfg.get("sim", "ppo_gate_threshold", default=0.25))
     oh, ow, _ = env.obs_shape
     net = PolicyNet(3, int(ck["n_cards"]), int(ck["n_cells"]), int(ck["threat_dim"]))
     net.load_state_dict(ck["model"])
@@ -304,7 +310,8 @@ def _policy_agent(env, path: str):
             cm = torch.tensor(e.actions.deployable_mask(card in e.anywhere_ids))
             ceqm = ceq.masked_fill(~cm, -1e9)
             cell = int(ceqm.argmax())
-            play = (gq[1] > gq[0]) if is_ppo else (gq[1] + cq.max() + ceqm.max() > gq[0])
+            play = (float(torch.sigmoid(gq[1] - gq[0])) > gate_tau) if is_ppo \
+                else (gq[1] + cq.max() + ceqm.max() > gq[0])
             return (int(bool(play)), card, cell)
     return choose
 
