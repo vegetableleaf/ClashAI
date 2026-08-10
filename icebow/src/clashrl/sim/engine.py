@@ -70,6 +70,7 @@ _SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, None: 1.0}
 # Attack reach is now PER CARD (cards.CardDB.attack_range_tiles, from cr-api-data `range`) rather
 # than one constant per melee/short/long bucket -- real melee spans 0.5-1.6 tiles.
 _REACH_SLOP = 0.6         # tiles of tolerance on "target is in reach"
+_PELLET_R = 0.1           # a shotgun pellet is a POINT, not a blast -- the target's own body does the work
 _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit counts as a heavy tank
 # TOWER FOOTPRINTS (half-size, tiles). Towers are BUILDINGS with real bodies -- a princess is 3x3
 # tiles and the king 4x4 -- so an attacker must stop OUTSIDE that box. Measuring reach to the tower
@@ -226,6 +227,8 @@ class CardSpec:
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
     hides: bool = False       # HIDDEN TESLA: retracts underground whenever nothing is in range
     hits_hidden: bool = False # this spell reaches a retracted building anyway (Earthquake)
+    invis_time: float = 0.0   # ROYAL GHOST: seconds of NOT fighting before he fades out again
+    spread: float = 0.0       # SHOTGUN half-angle in DEGREES that the pellets scatter within
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
@@ -464,6 +467,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         proj_width=float(proj.get("width") or 0.0),
         hides=("hides" in flags),
         hits_hidden=("hits_hidden" in flags),
+        invis_time=float(c.get("invisibility_time_s") or 0.0),
+        spread=float(c.get("spread_degrees") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -535,6 +540,8 @@ class Unit:
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
     hidden: bool = False         # HIDDEN TESLA: retracted underground -- untargetable and immune
+    ghost: bool = False          # ROYAL GHOST: currently faded out -- untargetable, but NOT immune
+    refade_left: float = 0.0     # seconds of not fighting still to run before he fades back out
     hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
     leap_left: float = 0.0       # seconds of dash/jump WIND-UP still to run (stationary)
     leap_go: bool = False        # airborne: past the wind-up, travelling at leap_speed
@@ -635,6 +642,7 @@ class Projectile:
     diry: float = 0.0          # travel. Steering at `tx,ty` every tick made the shot turn round
                                # the instant it passed the aim point instead of flying on through.
     hit: set = field(default_factory=set)   # ids already damaged by a piercing shot
+    stop_on_hit: bool = False  # a SHOTGUN PELLET: flies straight, but stops in the first body it hits
     ox: float = 0.0            # where it was fired from -- the BOOMERANG flies back to here
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
@@ -908,6 +916,11 @@ class SimEngine:
         u = Unit(spec, team, cx, cy, spec.hp)
         u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
         u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+        # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
+        # not something he earns, so he arrives already faded and the first thing anyone sees is him
+        # swinging. It is also why he cannot kite: he re-fades and the chaser forgets him.
+        u.ghost = spec.invis_time > 0.0
+        u.refade_left = spec.invis_time
         # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
         # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
         u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
@@ -920,9 +933,14 @@ class SimEngine:
         return [t for t in self.towers[1 - team] if t.alive]
 
     def _valid_foe(self, u: Unit, e: Unit) -> bool:
-        # INVISIBLE bodies cannot be acquired at all (Boss Bandit's Getaway Grenade), and neither
-        # can a RETRACTED Tesla -- "its underground mechanic prevents spell responses against it".
-        return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden \
+        # Three ways to be UNSEEN, and they are not the same thing:
+        #   invis_left -- Boss Bandit's Getaway Grenade: gone entirely, and immune with it
+        #   ghost      -- Royal Ghost's stealth: "will not be targeted by opposing units, but can
+        #                 still be hit by area damage or spells", so ONLY the targeting is blocked
+        #   hidden     -- a retracted Tesla: "its underground mechanic prevents spell responses"
+        # "The Royal Ghost will ignore an opposing Royal Ghost, a Suspicious Bush, a hidden Tesla,
+        # or an invisible Archer Queen and bypass them" -- one rule, all four cases.
+        return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden and not e.ghost \
             and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
     def _acquire(self, u: Unit):
@@ -1393,6 +1411,20 @@ class SimEngine:
                         u.hp = 0.0
             elif u.spec.kind != "building":                  # buildings are stationary
                 self._move_toward(u, rx, ry, dt, spd)
+        # ROYAL GHOST'S STEALTH. "Upon deployment, he will spawn invisible, and will only turn
+        # visible once he attacks... When he is not fighting any unit for 1.8 seconds, he will
+        # become invisible again." `u.attacking` is already exactly "has a target in reach", so
+        # FIGHTING is read straight off the combat loop rather than tracked separately -- which is
+        # why he re-fades the moment the last body in front of him dies.
+        for u in self.units:
+            if u.spec.invis_time <= 0.0 or u.hp <= 0:
+                continue
+            if u.attacking:
+                u.ghost, u.refade_left = False, u.spec.invis_time
+            elif not u.ghost:
+                u.refade_left -= dt
+                if u.refade_left <= 0.0:
+                    u.ghost = True
         if self.collide:
             self._separate()
         self._separate_towers()             # towers are solid whatever the soft-collision toggle says
@@ -1598,6 +1630,9 @@ class SimEngine:
             dmg = u.spec.charge_dmg * u.dmg_mult
             tower_dmg = dmg
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
+            if u.spec.multi_kind == "shotgun" and u.spec.multi_hits > 1:
+                self._shotgun(u, ref, dmg)
+                return
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
@@ -1696,6 +1731,45 @@ class SimEngine:
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y))
 
+    def _shotgun(self, u: Unit, ref, dmg: float) -> None:
+        """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
+
+        "The Hunter launches an attack that shoots 10 SHOTGUN PELLETS that travel in RANDOM
+        directions with a wide spread, giving him higher damage the closer he is to the target and
+        lower damage at long range." The falloff is not a rule -- it is what a diverging cone does
+        to a target of fixed size, so it is left to EMERGE rather than be computed. That also buys
+        three published behaviours for free:
+          * "each bullet is an individual hit", so a SHIELD eats one pellet and the rest dig in;
+          * pellets that miss keep flying to the projectile range (6.5) well past his own reach (4),
+            and hit whatever else is in the cone;
+          * against a Graveyard "the spawning order of his bullets is also random, possibly making
+            him miss more of his bullet shots" -- inconsistency by construction.
+        A pellet stops in the first body it touches: it scatters, it does not pierce.
+
+        The cone half-angle is the ONE number here the wiki does not publish (its only mention is
+        "slightly decreased his bullet spread", 24/1/2018, with no value). It is curated in
+        cards.yaml, chosen so that point-blank ALL ten connect -- which is what the published DPS of
+        84 x 10 / 2.2 assumes -- and so the count at his maximum range matches what the old
+        hardcoded falloff produced, so this fixes the mechanic without quietly rebalancing the card.
+        """
+        s = u.spec
+        d = _dist(u.x, u.y, ref.x, ref.y)
+        if d <= 1e-9:
+            return
+        base = math.atan2((ref.y - u.y) * _TILES_Y, (ref.x - u.x) * _TILES_X)
+        half = math.radians(s.spread)
+        rng = s.proj_range or (s.reach + _REACH_SLOP)
+        for i in range(s.multi_hits):
+            ang = base + self.rng.uniform(-half, half)
+            self.projectiles.append(Projectile(
+                label=f"{s.base}_pellet", team=u.team, x=u.x, y=u.y,
+                tx=u.x + math.cos(ang) * rng / _TILES_X,
+                ty=u.y + math.sin(ang) * rng / _TILES_Y,
+                target=None, spec=s, dmg=dmg, tower_dmg=dmg, radius=0.0, speed=s.proj_speed,
+                left=rng, ground_only=not s.attacks_air, pierce=True, width=_PELLET_R,
+                dirx=math.cos(ang) / _TILES_X, diry=math.sin(ang) / _TILES_Y,
+                stop_on_hit=True, ox=u.x, oy=u.y))
+
     def _pierce_pass(self, p: Projectile) -> None:
         """One tick of a piercing shot's damage: everything it is currently overlapping, once each.
 
@@ -1721,12 +1795,18 @@ class SimEngine:
                 # support behind it is the card's entire job, and it was landing damage with
                 # no push at all because knockback only ever ran on the SPELL paths.
                 self._knock(e, p.spec, p.x, p.y, p.dirx * _TILES_X, p.diry * _TILES_Y)
+                if p.stop_on_hit:
+                    p.left = 0.0          # a PELLET buries itself in the first body it reaches
+                    return
         for tw in self._enemy_towers(p.team):
             if id(tw) in p.hit:
                 continue
             if _gap(p.x, p.y, tw) <= reach:
                 p.hit.add(id(tw))
                 self._damage_tower(tw, p.tower_dmg, p.team)
+                if p.stop_on_hit:
+                    p.left = 0.0
+                    return
 
     def _tick_projectiles(self, dt: float) -> None:
         for p in list(self.projectiles):
@@ -1844,18 +1924,7 @@ class SimEngine:
                     speed=max(s.proj_speed, 20.0), left=_dist(ref.x, ref.y, e.x, e.y),
                     ground_only=not s.attacks_air))
         elif s.multi_kind == "shotgun":
-            # A CONE of pellets: they all converge at point-blank and spread out with distance, so
-            # the same attack is devastating up close and weak at range. That distance falloff is
-            # the entire identity of the Hunter -- one flat hit made him a mediocre single-target.
-            rng = s.proj_range or (s.reach + _REACH_SLOP)
-            gap = _gap(fx, fy, ref)
-            extra = max(0, int(round(n * max(0.0, 1.0 - gap / max(rng, 1e-6)))) - 1)
-            for _ in range(extra):
-                if isinstance(ref, Tower):
-                    if ref.alive:
-                        self._damage_tower(ref, dmg, team)
-                elif ref.hp > 0:
-                    self._hurt(ref, dmg)
+            return          # fired as real pellets in _shotgun, not as extra hits on one target
 
     def _spark_burst(self, p: Projectile) -> None:
         """Firecracker: the rocket hits its target, THEN splits into shrapnel.
@@ -1960,7 +2029,7 @@ class SimEngine:
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
-                and e.invis_left <= 0.0 and not e.hidden
+                and e.invis_left <= 0.0 and not e.hidden and not e.ghost
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False

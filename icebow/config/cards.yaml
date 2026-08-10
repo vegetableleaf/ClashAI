@@ -975,14 +975,29 @@ cards:
   pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, flags: [knockback_immune], verified: false}
   rascals: {range: melee, verified: false}
-  royal_ghost: {range: melee, verified: false}
+  # ROYAL GHOST. "Upon deployment, he will spawn invisible, and will only turn visible once he
+  # attacks. If he is in his invisible state, he will not be targeted by opposing units, but can
+  # still be hit by area damage or spells. When he is not fighting any unit for 1.8 seconds, he will
+  # become invisible again." 1.8 is from the HISTORY -- 7/6/2022 "increased the time required for
+  # turning invisible to 1.8 seconds (from 1.6)", after 4/6/2018 took it to 1.6 from 1.2. The
+  # attributes table still prints "Invisibility Time 2 sec", which the dated balance log contradicts.
+  # He is an AREA-damage troop ("a fast, area-damage, ground-targeting, melee, ground troop"), which
+  # the import missed entirely. That he takes splash while invisible is explicit: 8/4/2022 "fixed an
+  # issue where an invisible Royal Ghost was not receiving splash damage".
+  royal_ghost: {range: melee, splash: true, flags: [splash], invisibility_time_s: 1.8, verified: true}
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, knockback_immune], verified: false}
   suspicious_bush: {range: melee, verified: false}
   # -- short --
   electro_spirit: {range: short, verified: false}
-  hunter: {range: short, attacks: [air, ground], flags: [ranged], multi: shotgun, verified: true}
+  # HUNTER: 10 pellets of 84 (published as "84 x10"), each an individual hit, scattered across a
+  # cone -- the damage falloff is what the cone DOES to a target of fixed size, not a rule. The
+  # half-angle is the one number the wiki never prints (24/1/2018 only says it "slightly decreased
+  # his bullet spread"). 18 degrees is set so that point-blank all ten connect, which is what his
+  # published DPS of 84 x 10 / 2.2 assumes, and so his maximum range still lands what the previous
+  # hardcoded falloff produced -- a mechanic fix, not a rebalance.
+  hunter: {range: short, attacks: [air, ground], flags: [ranged], multi: shotgun, spread_degrees: 18, verified: true}
   minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
   phoenix: {range: short, flags: [knockback], verified: false}   # "When defeated, the Phoenix explodes, dealing damage, inflicting knockback"
   skeleton_dragons: {range: short, verified: false}
