@@ -917,7 +917,8 @@ async function loadVisionProgress() {
   box.appendChild(grid);
   box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
   box.appendChild(sparkline(rows.map(r => r.recall || 0), "recall per epoch"));
-  box.appendChild(sparkline(rows.map(r => r.cls_loss || 0), "class loss per epoch (down is good)"));
+  box.appendChild(sparkline(rows.map(r => r.cls_loss || 0), "class loss per epoch (down is good)",
+    { lowerIsBetter: true, pct: false }));
 
   const b = el("button", "btn small", "Open the Models tab");
   b.onclick = () => showTab("ckpt");
@@ -2273,20 +2274,31 @@ async function loadTaught(gal) {
 
 /* Minimal inline chart. The metrics tab's charting is bound to metrics.jsonl, and this is
    a different source (ultralytics' csv), so it draws its own rather than bending that one. */
-function sparkline(vals, title) {
+/* opts.lowerIsBetter: for a LOSS curve, the number worth calling out is the MINIMUM, not the
+   tallest point on the chart -- "top" and a bare number both read as "bigger is the achievement",
+   which is backwards for a loss. opts.pct=false: a loss is not a 0-1 ratio, so formatting it as a
+   percentage produced "486.8%" for an early epoch's cls_loss of 4.868. Default behaviour (no
+   opts) is unchanged, so the mAP50/recall call sites needed no edits. */
+function sparkline(vals, title, opts) {
+  opts = opts || {};
+  const pct = opts.pct !== false;
   const w = 520, h = 90, pad = 4;
   const hi = Math.max(0.02, ...vals);
   const pts = vals.map((y, i) => {
     const x = pad + (vals.length < 2 ? 0 : i * (w - 2 * pad) / (vals.length - 1));
     return `${x.toFixed(1)},${(h - pad - (y / hi) * (h - 2 * pad)).toFixed(1)}`;
   }).join(" ");
+  const fmt = v => pct ? pct1(v) : v.toFixed(3);
+  const call = opts.lowerIsBetter
+    ? `lowest so far = ${fmt(Math.min(...vals))}, latest = ${fmt(vals[vals.length - 1])}`
+    : `top = ${fmt(hi)}`;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   svg.setAttribute("width", "100%"); svg.setAttribute("height", "90");
   svg.innerHTML = `<title>${title}</title>`
     + `<rect x="0" y="0" width="${w}" height="${h}" fill="none" stroke="var(--line)"/>`
     + `<polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="1.5"/>`
-    + `<text x="6" y="12" fill="var(--dim)" font-size="10">${title} (top = ${pct1(hi)})</text>`;
+    + `<text x="6" y="12" fill="var(--dim)" font-size="10">${title} (${call})</text>`;
   return svg;
 }
 
