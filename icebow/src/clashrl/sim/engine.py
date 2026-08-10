@@ -1283,7 +1283,10 @@ class SimEngine:
                     self.elixir[u.team] -= u.spec.ability_cost
                     u.ability_left -= 1
                     u.invis_left = u.spec.ability_invis
-                    u.leap_left = 0.0                        # the escape cancels a wind-up
+                    # The only thing that drops a wind-up, and it is HER OWN doing, not the
+                    # defender's -- she vanishes and reappears further back, so there is nothing
+                    # left standing there to finish the dash.
+                    u.leap_left = 0.0
                     continue
             prev_target = u.target
             kind, ref = self._acquire(u)
@@ -1297,23 +1300,26 @@ class SimEngine:
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
-            #   WIND-UP  -- "he will STOP MOVING and begin charging"; stationary and committed. The
+            #   WIND-UP  -- "he will STOP MOVING and begin charging"; stationary and COMMITTED. The
             #               balance log calls this the CHARGE, not the flight.
             #   TRAVEL   -- airborne at the leap row's own published Speed (Mega Knight 250 = 4.17
             #               tiles/s, Bandit 500 = 8.33), so a longer leap takes longer to land.
-            # Splitting them matters: the wind-up is the window a defender has to react to, and the
-            # travel is what closes a gap that walking never would.
+            # Splitting them matters: the wind-up is the window a defender gets, and the travel is
+            # what closes a gap that walking never would.
             if u.leap_left > 0.0:
-                # TARGETING KEEPS REFRESHING MID-CHARGE. `_acquire` already re-picks each tick while
-                # the unit is unlocked, so a closer body steals the leap; this re-checks the BAND for
-                # whatever it is now aimed at, so a body dropped inside the minimum cancels it.
-                if not self._leap_ok(u, ref):
-                    u.leap_left = 0.0                    # charge cancelled -- fall through and fight
-                else:
-                    u.leap_left -= dt
-                    if u.leap_left <= 0.0:
-                        u.leap_go = True
-                    continue
+                # THE CHARGE CANNOT BE CANCELLED. Once he stops and starts winding up he is going to
+                # leap; there is no body you can drop that makes him abort and walk in instead.
+                #
+                # What DOES keep moving is the AIM. `_acquire` re-picks every tick while he is
+                # unlocked, so the leap lands on whatever is CLOSEST when the charge ENDS -- and the
+                # band is not re-tested, so a body dropped INSIDE the minimum still gets jumped on.
+                # Feeding a cheap body to a winding-up Mega Knight therefore does not save the unit
+                # behind it by denying the jump; it only changes WHO the jump lands on.
+                u.leap_left -= dt
+                if u.leap_left <= 0.0:
+                    u.leap_go = True
+                    u.locked = True             # aim settled HERE -- the flight does not re-pick
+                continue
             if u.leap_go:
                 dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
                 d = math.hypot(dxt, dyt)
@@ -1371,13 +1377,12 @@ class SimEngine:
         self._check_end()
 
     def _leap_ok(self, u: "Unit", ref) -> bool:
-        """Is `ref` a legal leap target for `u` RIGHT NOW?
+        """May `u` START a charge at `ref`?
 
-        Re-checked on every wind-up tick, not just when the charge starts, because targeting keeps
-        refreshing while he winds up: drop a body closer than the minimum and the leaper switches to
-        it and the charge is CANCELLED -- he walks up and swings normally instead. That is the whole
-        counter-play to a Mega Knight, and it also means a target that walks out past the maximum
-        during the charge drops the jump rather than dragging it along.
+        This gates BEGINNING a wind-up and nothing else. It is deliberately NOT re-checked while he
+        charges: the wind-up is uncancellable, and what he lands on is simply whatever is closest
+        when the charge ends -- inside the minimum range or not. The band only ever decides whether
+        a leap is STARTED, never whether it is seen through.
         """
         if u.spec.leap_dmg <= 0.0 or u.spec.leap_max <= 0.0:
             return False
