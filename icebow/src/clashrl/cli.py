@@ -285,7 +285,7 @@ def _cmd_detect_adopt(args) -> None:
 
 def _cmd_detect_import(args) -> None:
     from .detect import detect_import
-    detect_import(Config.load(args.config), args.export, args.val_frac)
+    detect_import(Config.load(args.config), args.export, args.val_frac, dry_run=args.dry_run)
 
 
 def _cmd_detect_frames(args) -> None:
@@ -641,6 +641,10 @@ def main() -> None:
                          help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")
     din.add_argument("--export", required=True, help="path to the LS export: a JSON file / folder (recommended on Windows), or a YOLO export folder (classes.txt + labels/)")
     din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
+    din.add_argument("--dry-run", action="store_true",
+                     help="report what would be imported, which classes do not map, and which of "
+                          "YOUR frames the export would push out of the split -- writes nothing. "
+                          "Use this first for any dataset you did not label yourself")
     din.set_defaults(func=_cmd_detect_import)
 
     dad = sub.add_parser("detect-adopt",

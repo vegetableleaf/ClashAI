@@ -1023,7 +1023,7 @@ def detect_adopt(cfg, json_path, images_dir=None, prefix=None, dry_run=False) ->
     print("[detect-adopt] ready -- include this json in the next detect-import")
 
 
-def detect_import(cfg, export_dir, val_frac=None) -> None:
+def detect_import(cfg, export_dir, val_frac=None, dry_run=False) -> None:
     """Ingest a Label Studio export into the training dataset. REMAPS classes to the taxonomy by NAME
     (order/compaction-proof) and lays images + labels into the Ultralytics train/val split + rebuilds
     data.yaml -- the export becomes the source of truth, so the previous split is replaced.
@@ -1037,6 +1037,18 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     a plain 'JSON' export (no image files) is enough -- but ONLY if the frames it references are
     actually in the dataset. An export made against someone else's local folder matches nothing
     until their image files are dropped into the labelling queue.
+
+    THE EXPORT REPLACES THE SPLIT, so anything not in it leaves the training set. Harmless when you
+    re-export your own dataset, destructive when you import someone else's -- their export does not
+    contain your frames. Two guards: ``dry_run`` reports what would happen and writes nothing, and
+    the replaced files are MOVED to data/detect/_replaced/<timestamp> rather than unlinked, so a
+    wrong import is recoverable.
+
+    Classes are matched BY NAME and a name absent from the taxonomy has its boxes SKIPPED, never
+    guessed. That is the safe direction -- lost data rather than a corrupted label -- but it is
+    SILENT: a whole foreign naming convention can miss and leave you with images and no boxes. Run
+    dry_run first and read the "not in the taxonomy" line before importing a dataset you did not
+    label yourself.
     """
     names = _load_classes(cfg)
     name_to_idx = {n: i for i, n in enumerate(names)}
@@ -1106,12 +1118,62 @@ def detect_import(cfg, export_dir, val_frac=None) -> None:
     pairs = list(best.values())
     vf = float(val_frac if val_frac is not None else cfg.get("detect", "val_frac", default=0.15))
     manifest = _load_split(root)                 # BEFORE the wipe -- it may have to bootstrap from disk
-    # the export is the source of truth -> clear the old split, then write fresh
+
+    # WHAT THIS REPLACES. The export is the source of truth, so frames NOT in it leave the split.
+    # That is fine when you re-export your own dataset and catastrophic when you import someone
+    # else's: a 1,000-image export from another machine does not contain YOUR frames, so a plain
+    # import would take every box you have ever drawn with it. Name them before touching anything.
+    incoming = {stem for stem, _, _ in pairs}
+    existing = {p.stem for sub in ("labels/train", "labels/val")
+                for p in (root / sub).glob("*.txt")} if root.is_dir() else set()
+    leaving = sorted(existing - incoming)
+    if leaving:
+        n_lost_boxes = 0
+        for stem in leaving:
+            for sub in ("labels/train", "labels/val"):
+                p = root / sub / f"{stem}.txt"
+                if p.is_file():
+                    n_lost_boxes += len([ln for ln in p.read_text(encoding="utf-8").splitlines()
+                                         if ln.strip()])
+        print(f"[detect-import] {len(leaving)} frame(s) with {n_lost_boxes} box(es) are NOT in this "
+              f"export and would leave the training split: {', '.join(leaving[:6])}"
+              + (" ..." if len(leaving) > 6 else ""))
+        print("[detect-import] to KEEP them, export them too and import both at once "
+              "(--export a.json,b.json merges them)")
+
+    if dry_run:
+        # The unknown-class line is reported at the very end of a real import. Repeat it HERE:
+        # it is the single most important line for a dataset you did not label, and returning
+        # early would otherwise suppress it in exactly the mode meant to check one.
+        if unknown:
+            print(f"[detect-import] {len(unknown)} export class(es) are NOT in the taxonomy and "
+                  f"their boxes would be SKIPPED: {', '.join(unknown[:12])}"
+                  + (" ..." if len(unknown) > 12 else ""))
+            print("[detect-import] if these are naming differences rather than genuinely unknown "
+                  "cards (e.g. 'spear-goblin' vs 'spear_goblins'), fix the names before importing "
+                  "-- skipped boxes are lost silently")
+        else:
+            print("[detect-import] every export class maps to the taxonomy")
+        print(f"[detect-import] --dry-run: would import {len(pairs)} image(s) with "
+              f"{sum(len(l) for _, _, l in pairs)} box(es); nothing written")
+        return
+
+    # Move the replaced split aside instead of unlinking it. Nothing under data/ is deleted -- if an
+    # import turns out to be the wrong one, the previous state is still on disk to put back.
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    backup = root / "_replaced" / stamp
+    n_moved = 0
     for sub in ("images/train", "images/val", "labels/train", "labels/val"):
         d = root / sub
         d.mkdir(parents=True, exist_ok=True)
-        for p in d.glob("*"):
-            p.unlink()
+        for p in sorted(d.glob("*")):
+            if not p.is_file():
+                continue
+            (backup / sub).mkdir(parents=True, exist_ok=True)
+            shutil.move(str(p), str(backup / sub / p.name))
+            n_moved += 1
+    if n_moved:
+        print(f"[detect-import] previous split moved to {backup} ({n_moved} file(s)), not deleted")
     q = int(cfg.get("detect", "jpeg_quality", default=92))
     n_val = n_box = n_new = 0
     for stem, img, lines in pairs:
