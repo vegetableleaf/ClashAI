@@ -248,16 +248,26 @@ COMMANDS: List[Dict[str, Any]] = [
             {"name": "model", "type": "choice",
              "choices": ["auto", "yolo11n.pt", "yolo11s.pt", "yolo11m.pt", "yolo11l.pt",
                          "yolo11x.pt"],
-             "default": "auto", "label": "Starting size (advanced)",
-             "help": "Not a second model -- the same detector at a different size. `auto` picks "
-                     "the largest that fits your GPU and prints which. Only change it if a "
-                     "training runs out of memory."},
+             "default": "auto", "label": "Starting point (advanced)",
+             "help": "Leave on `auto`. It CONTINUES the vision model you already have, and only "
+                     "picks a fresh backbone sized to your GPU if there is no model yet. The "
+                     "yolo11 entries are sizes of the same detector, not rival models -- change "
+                     "this only if a training runs out of memory."},
             {"name": "epochs", "type": "int", "default": 120, "label": "Epochs",
              "help": "Upper bound; it early-stops on its own when it stops improving."},
             {"name": "imgsz", "type": "int", "default": 960, "label": "Image size",
              "help": "Units are small on the board, so a high value matters here."},
-            {"name": "resume", "type": "bool", "default": False, "label": "Continue (--resume)",
-             "help": "Carry on from the newest interrupted run instead of starting over."},
+            # NOT "continue training on the new pictures" -- that is now what Start does anyway.
+            # This is ultralytics' resume: pick up a run that DIED mid-way, at the epoch it died
+            # on, with every setting restored from the checkpoint. Labelling it "Continue" made it
+            # read like the thing you actually want, and ticking it silently discards the Epochs
+            # and Image size above.
+            {"name": "resume", "type": "bool", "default": False,
+             "label": "Pick up a training that was cut off",
+             "help": "Leave this OFF. Normal training already continues the model you have. Tick "
+                     "it ONLY if a run was killed part-way (closed terminal, power cut) and you "
+                     "want it to carry on at the epoch it stopped -- it then IGNORES the Epochs "
+                     "and Image size set above and restores them from that run."},
         ],
     },
     {
