@@ -77,6 +77,17 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
         net.gate.load_state_dict(state["gate"])
     net.eval()
 
+    # THE GATE RULE IS PER-ALGORITHM AND MUST MATCH THE TRAINER'S. A DDQN gate is an additive Q
+    # comparison (wait_q vs play_q + best card + best cell); a PPO gate is a two-logit CLASSIFIER
+    # thresholded on its PROBABILITY (sim.ppo_gate_threshold). Reading a PPO gate with the DDQN rule
+    # made this report claim the gate never held -- the same drift that once cost 33pp when the
+    # benchmark used tau=0.5 on a gate whose median P(play) is ~0.05.
+    algo = str(state.get("algo", "") or "").lower()
+    is_ppo = algo == "ppo" or (not algo and "ppo" in ck_path.name.lower())
+    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
+    print(f"[policy-stats] checkpoint algo '{algo or 'unknown'}' -> gate rule "
+          + (f"PPO sigmoid(play-wait) > {gate_tau}" if is_ppo else "DDQN additive Q"))
+
     anywhere_ids = set(e0.anywhere_ids)
     yourhalf_mask = torch.tensor(e0.actions.deployable_mask(False), dtype=torch.bool, device=device)
     allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
@@ -138,7 +149,9 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
                 ci = int(cq_i.argmax())
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
                 ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
-                if gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max():
+                held = (float(torch.sigmoid(gq[i, 1] - gq[i, 0])) <= gate_tau if is_ppo
+                        else bool(gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max()))
+                if held:
                     wait_gate += 1                          # the GATE chose to hold, not a lack of options
                     acts.append((0, 0, 0))
                     continue
