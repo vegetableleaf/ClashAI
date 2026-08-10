@@ -67,11 +67,20 @@ _UI = {"bar", "bar-level", "clock", "emote", "text", "elixir", "selected", "towe
        "king-tower-bar", "dagger-duchess-tower-bar", "skeleton-king-bar", "evolution-symbol",
        "ice-spirit-evolution-symbol", "backgrounds", "background-items"}
 
+# CARDS WHOSE IN-GAME ART CHANGED AFTER THIS DATASET WAS CAPTURED. Their segments are pixels of a
+# sprite that no longer exists, so importing them teaches the detector an appearance it will never
+# see and actively competes with the current art. This is separate from _EXPLICIT (which is about
+# NAMING and concepts) because the reason is temporal, and Supercell reworks visuals regularly --
+# add to this set whenever a rework lands, with the date.
+_STALE_ART = {
+    "three-musketeers",     # visual rework, November 2025
+}
+
 
 def map_name(n: str) -> Optional[str]:
     """Their segment folder name -> our class name, or None to drop."""
     n = n.strip().lower()
-    if n in _UI:
+    if n in _UI or n in _STALE_ART:
         return None
     if n in _EXPLICIT:
         return _EXPLICIT[n]
