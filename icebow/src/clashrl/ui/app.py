@@ -331,7 +331,11 @@ def create_app(cfg) -> Flask:
     # -- box labelling (vision AI training data) ---------------------------
     @app.get("/api/label/status")
     def label_status():
-        return jsonify(labeler.status(C()))
+        try:
+            return jsonify(labeler.status(C(), source=request.args.get("source", "to_label"),
+                                          cls=request.args.get("class") or None))
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
 
     @app.get("/api/label/coverage")
     def label_coverage():

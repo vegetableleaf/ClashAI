@@ -284,6 +284,20 @@
       </div>
       <div class="labtools">
         <div class="labtool">
+          <!-- Labelling new frames is only half the job. The other half is REVIEWING labels that
+               already exist -- 2,414 of them came from another machine and nobody here has ever
+               looked at them, and the swarm-landing case (two Archers merged into one oversized
+               box) can only be fixed by opening the frame that already has it. -->
+          <h4>Which frames</h4>
+          <select id="labsource">
+            <option value="to_label">Waiting to be labelled</option>
+            <option value="labelled">Already labelled (review / fix)</option>
+            <option value="train">Already labelled &mdash; train only</option>
+            <option value="val">Already labelled &mdash; val only</option>
+          </select>
+          <label class="chk">only frames containing
+            <input id="labonly" type="text" placeholder="class name, e.g. archers" size="14"></label>
+          <span id="labsrcmsg" class="msg"></span>
           <div class="row">
             <button id="labprev" class="btn small">Previous</button>
             <button id="labnext" class="btn small">Next frame</button>

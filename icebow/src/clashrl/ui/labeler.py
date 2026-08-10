@@ -81,12 +81,63 @@ def _split_dirs(cfg, split: str):
     return r / "images" / split, r / "labels" / split
 
 
-def queue(cfg, limit: int = 500) -> List[str]:
-    """Frames waiting to be labelled, newest first (they are the most representative)."""
-    d = _root(cfg) / "images" / "to_label"
-    if not d.is_dir():
-        return []
-    files = [p for p in d.iterdir() if p.suffix.lower() in (".jpg", ".jpeg", ".png")]
+def queue(cfg, limit: int = 500, source: str = "to_label",
+          cls: Optional[str] = None) -> List[str]:
+    """Frames to work through, newest first.
+
+    `source` picks WHICH frames, because "label the next unlabelled frame" is only half the job.
+    The other half is fixing labels that already exist -- and 2,414 of them arrived from another
+    machine, so they are exactly the ones nobody here has ever looked at. Reviewing an existing
+    box is also the only way to fix the swarm-landing case (two Archers still merged into one
+    blob get a single oversized box), which no amount of new labelling repairs.
+
+        to_label   the harvest queue, nothing drawn yet
+        train      already labelled, training side
+        val        already labelled, validation side -- errors here poison every measurement
+        labelled   both splits together
+
+    `cls` narrows to frames containing that class, which is how you review one card's boxes
+    rather than scrolling 2,400 frames hoping to meet it.
+    """
+    r = _root(cfg)
+    if source == "to_label":
+        dirs = [(r / "images" / "to_label", None)]
+    elif source in ("train", "val"):
+        dirs = [(r / "images" / source, r / "labels" / source)]
+    elif source == "labelled":
+        dirs = [(r / "images" / s, r / "labels" / s) for s in ("train", "val")]
+    else:
+        raise LabelError(f"unknown source: {source!r}")
+
+    want_idx = None
+    if cls:
+        names = classes(cfg)
+        if cls not in names:
+            raise LabelError(f"unknown class: {cls!r}")
+        want_idx = names.index(cls)
+
+    files = []
+    for img_dir, lbl_dir in dirs:
+        if not img_dir.is_dir():
+            continue
+        for p in img_dir.iterdir():
+            if p.suffix.lower() not in (".jpg", ".jpeg", ".png"):
+                continue
+            if want_idx is not None:
+                if lbl_dir is None:
+                    continue                      # unlabelled frames cannot match a class
+                lp = lbl_dir / f"{p.stem}.txt"
+                if not lp.is_file():
+                    continue
+                hit = False
+                for ln in lp.read_text(encoding="utf-8").splitlines():
+                    parts = ln.split()
+                    if parts and parts[0].isdigit() and int(parts[0]) == want_idx:
+                        hit = True
+                        break
+                if not hit:
+                    continue
+            files.append(p)
     files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
     return [p.name for p in files[:limit]]
 
@@ -310,13 +361,15 @@ def save(cfg, name: str, boxes: List[Dict[str, Any]], split: Optional[str] = Non
     return {"name": name, "split": split, "boxes": len(clean)}
 
 
-def status(cfg) -> Dict[str, Any]:
+def status(cfg, source: str = "to_label", cls: Optional[str] = None) -> Dict[str, Any]:
     """Everything the labelling view needs in one call."""
     lab = labelled(cfg)
-    q = queue(cfg)
+    q = queue(cfg, source=source, cls=cls)
     return {
         "queue": q,
         "queue_count": len(q),
         "classes": classes(cfg),
+        "source": source,
+        "filter_class": cls,
         **lab,
     }

@@ -1819,9 +1819,24 @@ async function labLoad(i) {
 }
 
 async function loadLabeling() {
-  const st = await api("/api/label/status");
+  const src = $("#labsource") ? $("#labsource").value : "to_label";
+  const only = $("#labonly") ? $("#labonly").value.trim() : "";
+  let st;
+  try {
+    st = await api("/api/label/status?source=" + encodeURIComponent(src)
+                   + (only ? "&class=" + encodeURIComponent(only) : ""));
+    if ($("#labsrcmsg")) { $("#labsrcmsg").className = "msg"; $("#labsrcmsg").textContent = ""; }
+  } catch (e) {
+    // an unknown class name is a typo, not a crash -- say so and fall back to the plain list
+    if ($("#labsrcmsg")) {
+      $("#labsrcmsg").className = "msg err";
+      $("#labsrcmsg").textContent = (e && e.message) || "could not load";
+    }
+    st = await api("/api/label/status?source=" + encodeURIComponent(src));
+  }
   LAB.classes = st.classes || [];
   LAB.queue = st.queue || [];
+  LAB.source = st.source || src;
   if (!LAB.recent.length) {
     try { LAB.recent = JSON.parse(localStorage.getItem("clashai.labrecent") || "[]"); }
     catch (e) { LAB.recent = []; }
@@ -1840,11 +1855,28 @@ async function loadLabeling() {
   }
   loadCoverage();
   if (!LAB.queue.length) {
-    $("#labmsg").textContent = "Queue empty -- frames are harvested automatically while train-rl runs.";
+    $("#labmsg").textContent = LAB.source === "to_label"
+      ? "Queue empty -- frames are harvested automatically while train-rl runs."
+      : "No labelled frame matches" + (only ? ` "${only}"` : "") + ".";
     return;
+  }
+  if (LAB.source !== "to_label") {
+    $("#labsrcmsg").className = "msg";
+    $("#labsrcmsg").textContent = `${LAB.queue.length} frame(s) -- saving OVERWRITES the existing labels`;
   }
   await labLoad(0);
 }
+
+(function labSourceWire() {
+  const s = $("#labsource");
+  if (!s) return;
+  s.onchange = () => loadLabeling().catch(e => console.error(e));
+  let t = null;
+  $("#labonly").oninput = () => {           // debounce: it scans every label file per keystroke
+    clearTimeout(t);
+    t = setTimeout(() => loadLabeling().catch(e => console.error(e)), 400);
+  };
+})();
 
 /* ---- coverage: how many pictures of which unit ------------------------------
    The one number the labelling view was missing. "80 boxes" says nothing about whether the
