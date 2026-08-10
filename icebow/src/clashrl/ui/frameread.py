@@ -149,6 +149,10 @@ def read_bgr(cfg, frame, detector_conf: float = 0.25) -> Dict[str, Any]:
                 "hp": t["hp"] if in_match else None, "conf": t["conf"], "state": st,
                 "fill": None if (t["fill"] is None or not in_match) else round(t["fill"], 3),
                 "box": rect(t["box"]), "bar": rect(t["bar"]),
+                # non-zero = this frame's geometry does not match config.yaml and the box had to
+                # be moved to find the bar. Worth seeing: if it fires on frames from YOUR client,
+                # the config is wrong and should be recalibrated rather than compensated per frame.
+                "snapped": t.get("snapped") or 0.0,
             })
     except Exception as exc:                          # noqa: BLE001
         towers["error"] = str(exc)
