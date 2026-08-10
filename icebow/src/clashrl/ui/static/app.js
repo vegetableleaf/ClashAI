@@ -863,9 +863,14 @@ $("#dashreload").onclick = () => loadRuns();
 
 /* The vision AI on the Progress tab too -- it is the other half of the project and its
    training was only visible under Models, which is where you look for FILES, not progress. */
+let visionProgTimer = null;
 async function loadVisionProgress() {
   const host = $("#visionprog");
   if (!host) return;
+  // Redraw itself while a run is live. loadDash() only fires when the tab is OPENED, so the
+  // panel showed whatever was true at that moment and then sat frozen -- which is exactly why
+  // "you still cannot see any improvement" was a fair complaint even though the strip existed.
+  clearInterval(visionProgTimer); visionProgTimer = null;
   let v;
   try { v = (await api("/api/models")).vision || {}; } catch (e) { host.innerHTML = ""; return; }
   const pr = v.progress || {}, rows = pr.rows || [], mt = v.metrics || {};
@@ -876,20 +881,75 @@ async function loadVisionProgress() {
     box.appendChild(el("p", "hint", v.trained
       ? "Trained, but the epoch log of that run is gone (a later training start truncates it)."
       : "Not trained yet. Label frames in the Labelling tab, then run Train the vision AI."));
-  } else {
-    const last = rows[rows.length - 1];
-    const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
-    box.appendChild(el("p", "hint",
-      `${pr.running ? "training now" : "last run"} -- epoch ${last.epoch != null ? last.epoch : "?"}`
-      + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
-      + `  |  best mAP50 ${pct1(best)}  |  quality of the installed model ${pct1(mt.mAP50)}`
-      + `  |  trained on ${v.boxes} boxes`));
-    box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+    host.appendChild(box);
+    return;
   }
+  const last = rows[rows.length - 1];
+  const bestOf = k => rows.reduce((a, r) => (r[k] != null && (a == null || r[k] > a) ? r[k] : a), null);
+
+  box.appendChild(el("p", "hint",
+    (pr.running ? "TRAINING NOW" : "last run")
+    + ` -- epoch ${last.epoch != null ? last.epoch : "?"}`
+    + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
+    + `  |  installed model ${pct1(mt.mAP50)}  |  ${v.boxes} boxes on ${v.labelled_train
+       + v.labelled_val} frames` + (pr.running ? `  |  ${etaText(rows, pr.epochs_total)}` : "")));
+
+  // THE POINT OF THIS PANEL: not "what is it", but "is it getting better". Each number carries
+  // its change over the last five epochs, because a single value cannot answer that -- and mAP50
+  // alone is the worst one to watch early, since it crawls in the third decimal while RECALL is
+  // still climbing in whole percent.
+  const grid = el("div", "kpis");
+  [["mAP50", "mAP50", "how much it finds AND names right"],
+   ["recall", "recall", "share of real units it finds at all"],
+   ["precision", "precision", "share of its boxes that are real"],
+   ["mAP50_95", "mAP50-95", "the strict one: boxes must fit tightly"]].forEach(([k, label, why]) => {
+    const cur = last[k];
+    const d = delta(rows, k, 5);
+    const cell = el("div", "kpi");
+    cell.appendChild(el("div", "k", label));
+    cell.appendChild(el("div", "v", pct1(cur)));
+    const arrow = d == null || Math.abs(d) < 0.002 ? "" : (d > 0 ? "+" : "");
+    cell.appendChild(el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
+      d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
+    cell.title = why + `  |  best so far ${pct1(bestOf(k))}`;
+    grid.appendChild(cell);
+  });
+  box.appendChild(grid);
+  box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+  box.appendChild(sparkline(rows.map(r => r.recall || 0), "recall per epoch"));
+  box.appendChild(sparkline(rows.map(r => r.cls_loss || 0), "class loss per epoch (down is good)"));
+
   const b = el("button", "btn small", "Open the Models tab");
   b.onclick = () => showTab("ckpt");
   box.appendChild(b);
   host.appendChild(box);
+
+  if (pr.running) {
+    visionProgTimer = setInterval(() => {
+      if ($(".tab.active").dataset.tab !== "dash") return;   // idle when you are elsewhere
+      loadVisionProgress().catch(() => {});
+    }, 15000);                                               // an epoch takes ~75 s here
+  }
+}
+
+/* Change in a metric over the last n epochs -- the "is it still climbing" answer. */
+function delta(rows, key, n) {
+  const v = rows.map(r => r[key]).filter(x => x != null);
+  if (v.length < 2) return null;
+  return v[v.length - 1] - v[Math.max(0, v.length - 1 - n)];
+}
+
+/* How long is left. results.csv carries seconds-since-start per epoch, so this is measured
+   from THIS run rather than guessed from the epoch count. */
+function etaText(rows, total) {
+  const t = rows.map(r => r.t).filter(x => x != null);
+  if (t.length < 2 || !total) return "";
+  const done = rows[rows.length - 1].epoch;
+  const per = (t[t.length - 1] - t[Math.max(0, t.length - 6)]) / Math.min(5, t.length - 1);
+  const left = (total - done) * per;
+  if (!(left > 0)) return "";
+  const h = Math.floor(left / 3600), m = Math.round((left % 3600) / 60);
+  return `about ${h ? h + " h " : ""}${m} min left at ${per.toFixed(0)} s/epoch`;
 }
 
 async function loadDash() {

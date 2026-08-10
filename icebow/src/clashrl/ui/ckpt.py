@@ -171,7 +171,14 @@ def _progress(run_dir: Path) -> Dict[str, Any]:
         for ln in lines[1:]:
             row = dict(zip(head, ln.split(",")))
             get = lambda k: (float(row[k]) if row.get(k) not in (None, "", "nan") else None)  # noqa: E731
+            # precision/recall/time were dropped here, which is why the progress view could not
+            # show improvement: mAP50 alone moves in the third decimal early on, while RECALL is
+            # the number that actually says "it is starting to see things". `time` is seconds
+            # since the run began -- the only way to say how long is left.
             rows.append({"epoch": get("epoch"), "mAP50": get("metrics/mAP50(B)"),
+                         "mAP50_95": get("metrics/mAP50-95(B)"),
+                         "precision": get("metrics/precision(B)"),
+                         "recall": get("metrics/recall(B)"), "t": get("time"),
                          "cls_loss": get("train/cls_loss"), "box_loss": get("train/box_loss")})
     except (OSError, ValueError, IndexError):
         return {}
@@ -186,11 +193,19 @@ def _progress(run_dir: Path) -> Dict[str, Any]:
                     pass
                 break
     import time as _t
-    # Ultralytics writes results.png only when the run FINISHES, so its absence plus a
-    # recently touched csv is a reliable "still going" -- freshness alone would keep calling
-    # a run that ended two minutes ago live.
-    running = (not (run_dir / "results.png").is_file()
-               and (_t.time() - csv.stat().st_mtime) < 600)
+    # "Is it still going?" Ultralytics writes results.png only when a run FINISHES, so its
+    # ABSENCE used to stand for "running".
+    #
+    # That was wrong the moment training started writing into ONE folder (exist_ok=True): the
+    # png from the PREVIOUS run is still sitting there while the new one trains, so a live run
+    # reported itself as finished and neither the header strip nor the Progress panel ever
+    # appeared. Observed with a run at epoch 30 that the panel called idle.
+    #
+    # Compare the timestamps instead: a png OLDER than the csv is a leftover, not a verdict.
+    csv_m = csv.stat().st_mtime
+    png = run_dir / "results.png"
+    finished = png.is_file() and png.stat().st_mtime >= csv_m
+    running = (not finished) and (_t.time() - csv_m) < 600
     return {"rows": rows, "epochs_total": total, "running": running}
 
 

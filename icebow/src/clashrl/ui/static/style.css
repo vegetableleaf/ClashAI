@@ -86,6 +86,10 @@ details[open]>summary{color:var(--fg)}
 .kpi{background:var(--bg2);border:1px solid var(--line);border-left:0;border-top:0;padding:10px 12px}
 .kpi .v{font-size:20px;font-weight:600}
 .kpi .k{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em}
+/* the change, not the value -- "is it still improving" is the question a live panel answers */
+.kpi .d{font-size:10px;color:var(--dim);margin-top:2px}
+.kpi .d.up{color:var(--ok,#6f9b7c)}
+.kpi .d.down{color:var(--bad)}
 .charts{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:0;
   border:1px solid var(--line);border-right:0;border-bottom:0}
 .chart{background:var(--bg2);border:1px solid var(--line);border-left:0;border-top:0;padding:10px}
