@@ -132,6 +132,17 @@ class CardSpec:
     # Skeleton Barrel / Goblin Demolisher the knockback rides the DEATH blast and their melee swing
     # must NOT push.
     combo_every: int = 0
+    # LEAP -- Bandit's DASH and Mega Knight's JUMP are the SAME mechanic with different numbers, and
+    # the wiki states both in identical language: "If there are ground units between X and Y tiles of
+    # [them], [they] will stop moving and begin charging a [dash|jump] attack which takes T seconds
+    # to execute, and will deal DOUBLE DAMAGE". The leap closes the gap, so it is the reason both
+    # cards punish a defender placed at mid range instead of touching them -- and the reason a
+    # Bandit cannot be chip-damaged out of it.
+    leap_dmg: float = 0.0     # published dash_damage / jump_damage (already ~2x the base hit)
+    leap_time: float = 0.0    # seconds of wind-up before it lands
+    leap_min: float = 0.0     # closer than this and it just walks in and swings normally
+    leap_max: float = 0.0     # further than this and it keeps walking
+    leap_invuln: bool = False  # "She is immune to damage during her dash" (Bandit only)
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
     # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
@@ -385,6 +396,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
                            or (_SPLASH_R if c.get("spawn_damage") else 0.0)),
         spawn_crown_dmg=float(c.get("spawn_crown_damage") or 0.0) * sc,
         combo_every=int(c.get("combo_every") or 0),
+        # Bandit publishes dash_damage/dash_time_s, Mega Knight jump_damage/jump_time_s -- one
+        # mechanic, so they fold into the same fields. Trigger ranges come from the lead paragraph
+        # (Bandit 3.5-6, Mega Knight 3.5-5) and are curated because they are prose, not a table.
+        leap_dmg=float(c.get("dash_damage") or c.get("jump_damage") or 0.0) * sc,
+        leap_time=float(c.get("dash_time_s") or c.get("jump_time_s") or 0.0),
+        leap_min=float(c.get("leap_min_tiles") or 0.0),
+        leap_max=float(c.get("leap_max_tiles") or 0.0),
+        leap_invuln=bool(c.get("leap_invulnerable")),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -478,6 +497,7 @@ class Unit:
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
     blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
     hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
+    leap_left: float = 0.0       # seconds of dash/jump wind-up still to run (0 = not leaping)
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -1217,7 +1237,23 @@ class SimEngine:
                 continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
+            # LEAP (Bandit dash / Mega Knight jump). Mid-flight it is committed: it does not walk,
+            # does not swing, and -- for the Bandit -- cannot be damaged. On landing it arrives at
+            # its target's edge and delivers the published double-damage hit.
+            if u.leap_left > 0.0:
+                u.leap_left -= dt
+                if u.leap_left <= 0.0:
+                    self._land_leap(u, ref)
+                continue
+            gap = _gap(u.x, u.y, ref)
+            if u.spec.leap_dmg > 0.0 and u.spec.leap_max > 0.0 and isinstance(ref, Unit) \
+                    and not ref.spec.flying and u.spec.leap_min <= gap <= u.spec.leap_max:
+                # "he will STOP MOVING and begin charging" -- the wind-up is why a Mega Knight
+                # answered at 4 tiles still reaches you, and why baiting the dash out of a Bandit
+                # with a cheap body works.
+                u.leap_left = u.spec.leap_time
+                continue
+            if gap <= reach + _REACH_SLOP:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
@@ -1253,6 +1289,38 @@ class SimEngine:
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _land_leap(self, u: "Unit", ref) -> None:
+        """A dash/jump arrives: close the gap, then deliver the published double-damage hit.
+
+        Mega Knight's landing also knocks back (his `knockback` flag) and splashes, which is what
+        makes jumping onto a support group so punishing; Bandit's is single-target.
+        """
+        s = u.spec
+        dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        if d > 1e-6:                                          # land at its target's EDGE, not on top
+            stop = max(0.0, d - (_body_radius(ref) + s.radius))
+            u.x, u.y = _clamp_xy(u.x + (dxt / d) * stop / _TILES_X,
+                                 u.y + (dyt / d) * stop / _TILES_Y, s.radius)
+        u.charge_dist = 0.0
+        u.cooldown = s.hit_speed                              # the leap IS the attack -- then normal cadence
+        dmg = s.leap_dmg * u.dmg_mult
+        if isinstance(ref, Tower):
+            self._damage_tower(ref, dmg, u.team)
+            return
+        if ref.hp <= 0:
+            return
+        self._hurt(ref, dmg)
+        self._apply_status(s, ref)
+        self._knock(ref, s, u.x, u.y)
+        if s.splash:                                          # Mega Knight lands ON a group
+            for e in self.units:
+                if e.team != u.team and e is not ref and e.hp > 0 \
+                        and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
+                    self._hurt(e, dmg)
+                    self._apply_status(s, e)
+                    self._knock(e, s, u.x, u.y)
 
     def _deploy_blast(self, u: "Unit") -> None:
         """Area damage the instant a body finishes appearing -- Mega Knight LANDING, Goblin Drill
@@ -1348,6 +1416,11 @@ class SimEngine:
         - a SHIELD pool (Royal Recruits / Guards ...) that absorbs the WHOLE hit; like real Clash Royale the
           OVERFLOW that breaks the shield is DISCARDED, not carried to hp (a big hit only STRIPS the shield).
         A unit with neither behaves exactly as `u.hp -= dmg`."""
+        # DASH INVULNERABILITY: "She is immune to damage during her dash." This is most of what makes
+        # the Bandit worth 3 elixir -- she trades through a Crown Tower volley, and chipping her out
+        # of the wind-up is not an option the defender has.
+        if u.leap_left > 0.0 and u.spec.leap_invuln:
+            return
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
         if u.shield_left > 0.0:

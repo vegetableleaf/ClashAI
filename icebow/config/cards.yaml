@@ -902,7 +902,12 @@ cards:
   # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
   # Left UNCURATED on purpose: terry, wizard_trio (special troops -- not in normal 1v1s).
   # -- melee --
-  bandit: {range: melee, verified: false}
+  # "If there are ground units between 3.5 and 6 tiles of her, she will stop moving and begin
+  # charging a dash attack which takes 0.8 seconds to execute, and will deal double damage. She is
+  # IMMUNE TO DAMAGE during her dash." (dash_damage / dash_time_s are imported; the trigger band and
+  # the immunity live in the lead PROSE, so they are curated.) Balance history confirms the minimum:
+  # 12/2/2018 "decreased her minimum dash range to 3.5 tiles (from 4 tiles)".
+  bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_invulnerable: true, verified: true}
   barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
   bats: {range: melee, verified: false}
   battle_healer: {range: melee, verified: false}
@@ -928,7 +933,10 @@ cards:
   heal_spirit: {range: melee, verified: false}
   ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
   lumberjack: {range: melee, verified: false}
-  mega_knight: {range: melee, attacks: [ground], flags: [tank, splash, knockback, knockback_immune], verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it. "he will deal damage to enemy units around him in a 360 area ... and inflict knockback" (spawn_damage 430 over splash_radius 1.3)
+  # "If there are ground units between 3.5 and 5 tiles of him, he will stop moving and begin charging
+  # a jump attack which takes 0.9 seconds to execute, and will deal double damage, and inflict
+  # knockback." Same mechanic as the Bandit's dash, narrower band, no immunity.
+  mega_knight: {range: melee, attacks: [ground], flags: [tank, splash, knockback, knockback_immune], leap_min_tiles: 3.5, leap_max_tiles: 5.0, verified: false}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it. "he will deal damage to enemy units around him in a 360 area ... and inflict knockback" (spawn_damage 430 over splash_radius 1.3)
   mighty_miner: {range: melee, flags: [knockback_immune], verified: false}
   # "the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback,
   # EVEN IF the targeted troop is normally immune to knockback" -> combo_every 3 + knockback_all.
