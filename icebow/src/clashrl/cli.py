@@ -222,7 +222,7 @@ def _cmd_preannotate(args) -> None:
         return
     preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
                 device=args.device, limit=args.limit, out=args.out, classes=args.classes,
-                subdir=args.subdir, model_version=args.model_version)
+                subdir=args.subdir, model_version=args.model_version, reoffer=args.reoffer)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -555,6 +555,11 @@ def main() -> None:
                           "so you can tell WHICH detector guessed when reviewing")
     pan.add_argument("--out", default=None,
                      help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
+    pan.add_argument("--reoffer", action="store_true",
+                     help="IGNORE the preannot_offered.txt ledger and rebuild tasks for every frame "
+                          "not yet imported. By default a re-run emits ONLY frames added since the "
+                          "last run, so importing it cannot duplicate tasks already in your Label "
+                          "Studio project. Use this only when starting a FRESH project.")
     pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
