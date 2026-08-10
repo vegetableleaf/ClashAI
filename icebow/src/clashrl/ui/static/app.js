@@ -456,12 +456,29 @@ function setLogOpen(open) {
 }
 $("#logtoggle").onclick = () => setLogOpen($("#logpanel").classList.contains("collapsed"));
 
+/* Is the user selecting text inside the log right now?
+
+   This is why copying from the log was impossible while anything ran. Lines arrive continuously,
+   and both of the things done per line destroy a selection in progress: removeChild() drops the
+   node your selection anchors to, and setting scrollTop yanks the view out from under the drag.
+   Training prints several lines a second, so the selection never survived long enough to reach
+   Ctrl+C. Nothing about it was a CSS problem. */
+function logSelecting() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return false;
+  const pre = $("#log");
+  return pre && pre.contains(sel.getRangeAt(0).commonAncestorContainer);
+}
+
 function logLine(line) {
   const pre = $("#log");
   const cls = (line.startsWith("[ui]") || line.startsWith("$ ")) ? "ui"
     : (/EVAL @|new BEST/.test(line) ? "ev"
     : (/Traceback|Error|error|failed/.test(line) ? "err" : ""));
   pre.appendChild(el("div", cls, line));
+  // While you are selecting, the log keeps GROWING but stops being rewritten underneath you.
+  // The trim and the scroll resume the moment you let go.
+  if (logSelecting()) { $("#logstatus").textContent = "selection held -- release to resume"; return; }
   while (pre.childNodes.length > 3000) pre.removeChild(pre.firstChild);
   if ($("#autoscroll").checked) pre.scrollTop = pre.scrollHeight;
 }
@@ -490,6 +507,24 @@ function attachLog(jid) {
   $("#logstatus").textContent = "";
 }
 $("#logclear").onclick = () => { $("#log").innerHTML = ""; };
+
+// Copy without selecting at all -- the common case is "send someone the whole thing".
+$("#logcopy").onclick = async () => {
+  const sel = window.getSelection();
+  const picked = logSelecting() ? sel.toString() : "";
+  const text = picked || [...$("#log").childNodes].map(n => n.textContent).join("\n");
+  const st = $("#logstatus");
+  try {
+    await navigator.clipboard.writeText(text);
+    st.textContent = `copied ${picked ? "the selection" : "all"} (${text.length} chars)`;
+  } catch (e) {
+    // The native window may refuse clipboard access; fall back to selecting it FOR you so
+    // Ctrl+C works, rather than failing silently.
+    const r = document.createRange(); r.selectNodeContents($("#log"));
+    sel.removeAllRanges(); sel.addRange(r);
+    st.textContent = "selected everything -- press Ctrl+C";
+  }
+};
 $("#logselect").onchange = e => { if (e.target.value) attachLog(e.target.value); };
 
 function renderLogSelect() {
@@ -2319,10 +2354,17 @@ async function loadVisionIO() {
 
 /* ---------------- boot ---------------- */
 (async function boot() {
-  try { S.checkpoints = await api("/api/checkpoints"); } catch (e) { /* no data/ yet */ }
-  try { S.deck = await api("/api/deck"); } catch (e) { /* fine either way */ }
-  await refresh();
-  await loadOverview().catch(e => console.error(e));
+  // NOTHING SLOW BEFORE THE FIRST PAINT. /api/checkpoints imports torch and opens every policy
+  // file -- measured 3.14s on this machine -- and it used to be awaited FIRST, so the window sat
+  // empty for three seconds before a single pixel of the panel existed. It only fills dropdowns;
+  // it can arrive late.
+  await refresh();                                   // cheap: paints the shell and the job state
+  loadOverview().catch(e => console.error(e));       // no longer blocks either
+  api("/api/checkpoints").then(d => {
+    S.checkpoints = d;
+    $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, s.value));   // refill once it lands
+  }).catch(() => { /* no data/ yet */ });
+  api("/api/deck").then(d => { S.deck = d; }).catch(() => { /* fine either way */ });
   setInterval(refresh, 3000);
   trainPulse();
   setInterval(trainPulse, 8000);
