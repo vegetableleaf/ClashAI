@@ -1572,6 +1572,13 @@ class SimEngine:
             if d > v.spec.pull_radius:
                 continue
             self._hurt(e, v.spec.spell_dmg * frac)            # DoT slice of the total damage
+            # BUILDINGS ARE ANCHORED. A Tornado damages a Tesla / Cannon / X-Bow but CANNOT drag one:
+            # once a building is placed it holds that tile for its whole lifetime. Without this a
+            # Tornado could haul an enemy Tesla out of the lane it was built to cover -- and, worse,
+            # haul YOUR X-Bow off its firing position, which is not a play that exists in the game.
+            # Same rule as the Log's knockback guard in _resolve_roll.
+            if e.spec.kind == "building":
+                continue
             if d > 1e-6:
                 pull = step * (0.5 if e.spec.radius >= _TANK_RADIUS else 1.0)   # tanks resist
                 if pull >= d:
