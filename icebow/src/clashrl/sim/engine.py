@@ -709,16 +709,35 @@ class SimEngine:
             u.target = tw
             return ("tower", tw) if tw else (None, None)
         if u.spec.kind == "building":
-            # STATIONARY BUILDINGS pick the CLOSEST thing they can actually HIT, right now -- and
-            # nothing else. The generic fallback further down ("nothing in sight -> march at a
-            # tower") is a TROOP behaviour: a troop that picks a distant tower WALKS to it, while a
-            # building just sits aiming at something permanently out of reach.
-            # MEASURED: an X-Bow placed behind y~0.56 is 12.34 tiles from the nearest enemy princess
-            # against an 11.50 reach, yet still latched onto it -- in sim-view that reads as an X-Bow
-            # aimed at a tower and never firing, which is exactly what it was.
-            # Towers are candidates only for SIEGE buildings (X-Bow / Mortar). A Tesla or Cannon
-            # cannot hit a crown tower at any range, so they consider units alone.
+            # STATIONARY BUILDINGS lock onto the first thing that enters range and STAY on it. They
+            # cannot walk, so the generic fallback below (nothing in sight -> march at a tower) is a
+            # TROOP behaviour: a troop that picks a distant tower walks to it, while a building would
+            # sit aiming at something permanently out of reach.
+            # MEASURED: an X-Bow reaches an enemy princess only from y <= ~0.56 (11.18 tiles to its
+            # edge vs 11.50 reach); at y=0.60 it is 12.34 and cannot hit. Placed behind that it still
+            # latched onto a princess, which in sim-view reads as an X-Bow aimed and never firing.
+            #
+            # STICKINESS IS THE REAL RULE, and it is stricter than a troop's. A building holds its
+            # target until that target DIES or stops being targetable (out of reach, gone invisible);
+            # it does NOT re-pick whatever happens to be nearest each tick. The only external break
+            # is a STUN or FREEZE -- knockback does nothing, because a building is anchored (see
+            # _resolve_roll). Re-picking every tick would let a passing swarm yank an X-Bow off the
+            # tower it was chewing through, which is not how it behaves in game.
+            #
+            # Crown towers are candidates only for SIEGE buildings (X-Bow / Mortar); a Tesla or
+            # Cannon cannot hit one at any range, so they rank units alone.
             reach = u.spec.reach + u.reach_extra
+            if u.aggro_reset:                                 # stun / freeze: the only thing that breaks it
+                u.aggro_reset = False
+                u.locked = False
+                u.target = None
+            t = u.target
+            if isinstance(t, Unit):
+                if t.hp > 0 and self._valid_foe(u, t) and _gap(u.x, u.y, t) <= reach:
+                    return ("unit", t)
+            elif isinstance(t, Tower):
+                if t.alive and t in towers and _gap(u.x, u.y, t) <= reach:
+                    return ("tower", t)
             best, best_gap, best_kind = None, float("inf"), None
             for e in self.units:
                 if e.team != u.team and self._valid_foe(u, e):
@@ -726,10 +745,10 @@ class SimEngine:
                     if g <= reach and g < best_gap:
                         best, best_gap, best_kind = e, g, "unit"
             if u.spec.siege:
-                for t in towers:
-                    g = _gap(u.x, u.y, t)
+                for tw in towers:
+                    g = _gap(u.x, u.y, tw)
                     if g <= reach and g < best_gap:
-                        best, best_gap, best_kind = t, g, "tower"
+                        best, best_gap, best_kind = tw, g, "tower"
             u.target, u.locked = best, False
             return (best_kind, best) if best is not None else (None, None)
         sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
@@ -1463,10 +1482,16 @@ class SimEngine:
             dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
                 self._hurt(e, s.spec.spell_dmg)
-                e.y += fdir * s.spec.knockback / _TILES_Y     # knock back in the roll direction
-                e.aggro_reset = True                          # the shove breaks its lock -- it re-picks from
-                                                              # where it LANDS, so a Log can pull a locked
-                                                              # attacker onto whatever is now nearest
+                if e.spec.kind != "building":
+                    # BUILDINGS ARE ANCHORED. The Log damages an X-Bow / Tesla / Cannon but cannot
+                    # shove one, and with no shove there is no lock to break either -- only a stun or
+                    # freeze resets a building's target (see _acquire). Without this guard the Log
+                    # slid buildings down the board AND made them re-pick, so a Log thrown at a push
+                    # could knock a defending X-Bow off whatever it was firing at.
+                    e.y += fdir * s.spec.knockback / _TILES_Y  # knock back in the roll direction
+                    e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
+                                                               # where it LANDS, so a Log can pull a locked
+                                                               # attacker onto whatever is now nearest
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir * _TILES_Y
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
