@@ -1228,6 +1228,9 @@ class SimEngine:
                 continue
             if _dist(u.x, u.y, e.x, e.y) <= s.death_radius + e.spec.radius:
                 self._hurt(e, s.death_dmg)
+                # DEATH BLASTS SHOVE TOO -- Golem, Giant Skeleton, Phoenix, Skeleton Barrel and
+                # Goblin Demolisher all state it in their lead paragraph. Radial from the corpse.
+                self._knock(e, s, u.x, u.y)
         for tw in self._enemy_towers(u.team):
             if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
                 self._damage_tower(tw, s.death_dmg, u.team)
@@ -1379,6 +1382,11 @@ class SimEngine:
                         p.hit.add(id(e))
                         self._hurt(e, p.dmg)
                         self._apply_status(p.spec, e)
+                        # A PIERCING SHOT SHOVES ALONG ITS OWN LINE. The Bowler's boulder "inflicts
+                        # knockback, while piercing through enemies" -- separating a tank from the
+                        # support behind it is the card's entire job, and it was landing damage with
+                        # no push at all because knockback only ever ran on the SPELL paths.
+                        self._knock(e, p.spec, p.x, p.y, dxt, dyt)
                 if p.left <= 0.0:
                     # BOOMERANG: the axe does not stop at max range, it turns around and hits
                     # everything again on the way back. Clearing `hit` is what lets it re-damage the
@@ -1410,6 +1418,7 @@ class SimEngine:
                 if _dist(p.x, p.y, e.x, e.y) <= p.radius + e.spec.radius:
                     self._hurt(e, p.dmg)
                     self._apply_status(p.spec, e)
+                    self._knock(e, p.spec, p.x, p.y)      # area shot: radial from where it landed
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
                     self._damage_tower(tw, p.tower_dmg, p.team)
@@ -1525,20 +1534,25 @@ class SimEngine:
             return False
         return spec.knockback_all or not e.spec.knockback_immune
 
-    def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float) -> None:
-        """RADIAL pushback from a point blast (Fireball / Giant Snowball / Rocket) -- away from the
-        impact point, unlike a rolling spell which shoves everything the same way down its corridor.
+    def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
+               dx: float = 0.0, dy: float = 0.0) -> None:
+        """Push `e` back. `dx, dy` is an optional TRAVEL direction in tiles -- a rolling boulder shoves
+        everything it passes along its own line, so a Bowler splits a push apart lengthwise. With no
+        direction it falls back to RADIAL, away from the impact point (Fireball / Giant Snowball /
+        Rocket, and every death blast).
         The shove also RESETS the attack animation ("troops vulnerable to knockback will have their
-        attack animations reset"), which is the whole reason a Snowball answers a charge or an
-        Inferno's ramp -- modelled here by the same aggro_reset the Log already set."""
+        attack animations reset"), which is why a Snowball answers a charge or an Inferno's ramp --
+        modelled here by the same aggro_reset the Log already set."""
         if not self._can_knock(e, spec):
             return
-        dxt, dyt = (e.x - fx) * _TILES_X, (e.y - fy) * _TILES_Y
-        d = math.hypot(dxt, dyt)
-        if d <= 1e-6:                                    # dead centre: no radial direction exists
-            dxt, dyt, d = 0.0, 1.0, 1.0                  # deterministic fallback
-        e.x, e.y = _clamp_xy(e.x + (dxt / d) * spec.knockback / _TILES_X,
-                             e.y + (dyt / d) * spec.knockback / _TILES_Y, e.spec.radius)
+        d = math.hypot(dx, dy)
+        if d <= 1e-9:                                    # no travel direction -> radial from impact
+            dx, dy = (e.x - fx) * _TILES_X, (e.y - fy) * _TILES_Y
+            d = math.hypot(dx, dy)
+            if d <= 1e-6:                                # dead centre: no radial direction exists
+                dx, dy, d = 0.0, 1.0, 1.0                # deterministic fallback
+        e.x, e.y = _clamp_xy(e.x + (dx / d) * spec.knockback / _TILES_X,
+                             e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
 
     def _apply_status(self, spec: CardSpec, e: Unit) -> None:

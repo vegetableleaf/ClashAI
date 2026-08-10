@@ -625,7 +625,9 @@ cards:
     display: "Golem"
     win_condition: true
     targets: buildings_only
-    flags: [tank, building_targeting]
+    # "When defeated, the Golem explodes, dealing damage, INFLICTING KNOCKBACK, while spawning two
+    # Golemites" -- the knockback rides on the DEATH blast, not on its melee swing.
+    flags: [tank, building_targeting, knockback]
     range: melee
     verified: false
 
@@ -697,7 +699,8 @@ cards:
     display: "Skeleton Barrel"
     win_condition: true
     targets: buildings_only
-    flags: [flying, building_targeting, swarm]
+    # "the barrel drops, dealing area damage, INFLICTING KNOCKBACK, and spawning seven Skeletons"
+    flags: [flying, building_targeting, swarm, knockback]
     range: melee
     verified: false
 
@@ -915,7 +918,7 @@ cards:
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
   fisherman: {range: melee, verified: false}
-  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower
+  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
   golden_knight: {range: melee, verified: false}
@@ -939,11 +942,15 @@ cards:
   electro_spirit: {range: short, verified: false}
   hunter: {range: short, attacks: [air, ground], flags: [ranged], verified: false}
   minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
-  phoenix: {range: short, verified: false}
+  phoenix: {range: short, flags: [knockback], verified: false}   # "When defeated, the Phoenix explodes, dealing damage, inflicting knockback"
   skeleton_dragons: {range: short, verified: false}
   # -- long --
   archer_queen: {range: long, verified: false}
-  bowler: {range: long, attacks: [ground], splash: true, flags: [splash], verified: false}
+  # "The Bowler launches an attack that travels up to its maximum range, and inflicts knockback,
+  # while piercing through enemies" -- the ONLY card here whose knockback is its NORMAL ATTACK
+  # rather than a death blast, so it rides the piercing projectile and shoves along the roll line.
+  # The Bowler page is also the source of the knockback-immune list (see dark_prince).
+  bowler: {range: long, attacks: [ground], splash: true, flags: [splash, knockback], verified: false}
   cannon_cart: {range: long, flags: [knockback_immune], verified: false}
   dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
   electro_dragon: {range: long, verified: false}
@@ -996,6 +1003,14 @@ cards:
   # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
   furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
-  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage], verified: false}
+  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage, knockback], verified: false}   # "dealing high damage and inflicting knockback after defeat"
+  # NOT flagged, because the engine has no hook for the effect that carries their knockback:
+  #   mega_knight  -- the 360 deg DEPLOYMENT/jump blast
+  #   goblin_drill -- the 360 deg blast as it SURFACES
+  #   mighty_miner -- the bomb dropped by his ABILITY
+  #   monk         -- his 3rd-strike combo, which the wiki says lands "even if the targeted troop is
+  #                   normally immune to knockback" (a knockback_all case) -- champion abilities are
+  #                   deliberately out of scope
+  # All four are in the wiki's knockback list; flag them if those mechanics are ever modelled.
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
   spirit_empress: {range: melee, verified: false}                               # GROUND form (3e single-target melee); air form is ranged flying
