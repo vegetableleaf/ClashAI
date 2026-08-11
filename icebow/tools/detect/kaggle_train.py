@@ -32,8 +32,13 @@ if not (DATA / "classes.txt").is_file():
     # Two shapes, because Kaggle decompresses an uploaded .zip and leaves any other archive
     # alone. `detect-pack` puts the set in ONE tar inside the zip, so the dataset is a single
     # file -- Kaggle's own uploader crashes trying to list ~19,000. Loose files still work.
-    loose = next((p for p in IN.glob("*") if (p / "classes.txt").is_file()), None)
-    tar = next(IN.glob("*/*.tar"), None)
+    #
+    # RECURSIVE, not a fixed depth. A dataset attached via "+ Add Input" lands under
+    # /kaggle/input/<slug> (one level) on some accounts and under
+    # /kaggle/input/datasets/<user>/<dataset-name> (three levels) on others -- observed both.
+    # rglob walks to whatever depth Kaggle actually used instead of guessing it.
+    loose = next((p.parent for p in IN.rglob("classes.txt")), None)
+    tar = next(IN.rglob("*.tar"), None)
     if loose:
         shutil.copytree(loose, DATA)
         print(f"copied {loose.name} to scratch in {time.time() - t0:.0f}s")
