@@ -17,9 +17,32 @@ IMGSZ   = 960            # units are small on the board -- do not lower this to 
 import os, shutil, subprocess, sys, tarfile, time
 from pathlib import Path
 
-subprocess.run([sys.executable, "-m", "pip", "-q", "install", "ultralytics"], check=True)
+# A plain `pip install ultralytics` resolves torch/torchvision itself and can pull a fresh
+# CPU-only wheel from PyPI, silently REPLACING Kaggle's pre-installed CUDA build. That is
+# invisible until training starts -- "torch-...+cpu" in the startup banner and 0 GPUs found is
+# the tell, seen on a live run here.
+#
+# Pin what is ALREADY installed via a constraints file instead of `--no-deps` with a guessed
+# package list: pip still resolves and installs everything ultralytics needs (opencv, pyyaml,
+# ultralytics-thop, whatever Kaggle's image does not already carry), it is simply forbidden from
+# touching torch or torchvision, which stay exactly the CUDA build the image shipped with.
+import importlib.metadata as _md
+def _installed(pkg):
+    try:
+        return _md.version(pkg)
+    except _md.PackageNotFoundError:
+        return None
+_pins = Path("/tmp/torch_pins.txt")
+_pins.write_text("\n".join(f"{p}=={v}" for p in ("torch", "torchvision")
+                           if (v := _installed(p))))
+subprocess.run([sys.executable, "-m", "pip", "-q", "install", "-c", str(_pins), "ultralytics"],
+              check=True)
 import torch
 from ultralytics import YOLO
+assert torch.cuda.is_available(), (
+    f"no CUDA: torch is {torch.__version__} -- if it ends in '+cpu', something still replaced "
+    f"Kaggle's GPU build; if Settings -> Accelerator is not GPU, Restart Session after changing "
+    f"it (a running session keeps whatever it started with)")
 
 # Everything lands in writable scratch. /kaggle/input is READ-ONLY and ultralytics wants to write
 # a *.cache next to the labels; it survives being unable to, but then re-scans 9,000 labels at
