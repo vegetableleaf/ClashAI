@@ -28,6 +28,7 @@ far side would mean porting `katacr_boxes` into the notebook; that is not built.
 """
 from __future__ import annotations
 
+import json
 import shutil
 import tarfile
 import zipfile
@@ -39,6 +40,24 @@ from typing import Optional
 _PARTS = [("images/train", True), ("images/val", True),
           ("labels/train", True), ("labels/val", True),
           ("synth/images", False), ("synth/labels", False)]
+
+
+def _write_ipynb(script: Path, dest: Path) -> None:
+    """Wrap the script in a notebook, so it is IMPORTED rather than pasted.
+
+    Pasting is a step where indentation can be lost, and in Python losing it is not a warning --
+    it is a SyntaxError raised at COMPILE time, so not one line of the cell runs. That failure
+    mode is also confusing to diagnose from the far side: a cell that never ran looks the same as
+    one whose first statement failed. Importing the file removes the step entirely.
+    """
+    lines = script.read_text(encoding="utf-8").splitlines(keepends=True)
+    nb = {"cells": [{"cell_type": "code", "execution_count": None, "metadata": {},
+                     "outputs": [], "source": lines}],
+          "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
+                                      "name": "python3"},
+                       "language_info": {"name": "python"}},
+          "nbformat": 4, "nbformat_minor": 4}
+    dest.write_text(json.dumps(nb, indent=1), encoding="utf-8")
 
 
 def _add_all(root: Path, own_only: bool, put) -> tuple:
@@ -95,6 +114,7 @@ def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False,
     nb = Path(__file__).resolve().parents[2] / "tools" / "detect" / "kaggle_train.py"
     if nb.is_file():
         shutil.copyfile(nb, dest.with_name("kaggle_train.py"))
+        _write_ipynb(nb, dest.with_name("clashai-kaggle.ipynb"))
 
     gb = dest.stat().st_size / 1e9
     print(f"[pack] {n} file(s) -> {dest}  ({gb:.2f} GB)")
@@ -103,7 +123,8 @@ def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False,
               "leaves the tar alone, so the dataset is 1 file instead of ~19,000 (its uploader "
               "crashes listing that many). The notebook untars it.")
     if nb.is_file():
-        print(f"[pack] notebook next to it: {dest.with_name('kaggle_train.py').name}")
+        print(f"[pack] IMPORT this, do not paste it: {dest.with_name('clashai-kaggle.ipynb').name}"
+              f"   (Kaggle: New Notebook -> File -> Import Notebook)")
     if skipped:
         print(f"[pack] left out {skipped} katacr_* file(s) (--own-only). This zip does NOT train "
               f"on its own -- it is the hand-labelled half, for a target that already holds the "
