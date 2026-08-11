@@ -7,6 +7,7 @@ memory. Nothing here writes or deletes.
 """
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -182,16 +183,29 @@ def _progress(run_dir: Path) -> Dict[str, Any]:
                          "cls_loss": get("train/cls_loss"), "box_loss": get("train/box_loss")})
     except (OSError, ValueError, IndexError):
         return {}
+    # Epochs asked for, so "12 of 120" instead of "12". The MODEL CARD is asked first and
+    # args.yaml only as a fallback, because args.yaml belongs to whoever last CALLED train --
+    # not to the run that produced these rows. A start that died before its first epoch still
+    # rewrites it, and then the panel reads its numbers forever: a completed 60-epoch run showed
+    # "epoch 60 of 120", which reads as stopped two thirds of the way through. train.py writes
+    # the card from the run that actually finished, so it is the one that matches results.csv.
     total = None
-    args = run_dir / "args.yaml"
-    if args.is_file():                       # epochs asked for, so "12 of 120" instead of "12"
-        for ln in args.read_text(encoding="utf-8").splitlines():
-            if ln.startswith("epochs:"):
-                try:
-                    total = int(ln.split(":", 1)[1].strip())
-                except ValueError:
-                    pass
-                break
+    for src, key in ((run_dir / "model_card.json", "epochs_requested"),
+                     (run_dir / "args.yaml", "epochs")):
+        if not src.is_file():
+            continue
+        try:
+            if src.suffix == ".json":
+                total = int(json.loads(src.read_text(encoding="utf-8"))[key])
+            else:
+                for ln in src.read_text(encoding="utf-8").splitlines():
+                    if ln.startswith(f"{key}:"):
+                        total = int(ln.split(":", 1)[1].strip())
+                        break
+        except (OSError, ValueError, KeyError, TypeError):
+            total = None
+        if total:
+            break
     import time as _t
     # "Is it still going?" Ultralytics writes results.png only when a run FINISHES, so its
     # ABSENCE used to stand for "running".

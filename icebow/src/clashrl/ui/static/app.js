@@ -898,20 +898,31 @@ async function loadVisionProgress() {
   // its change over the last five epochs, because a single value cannot answer that -- and mAP50
   // alone is the worst one to watch early, since it crawls in the third decimal while RECALL is
   // still climbing in whole percent.
+  // WHICH epoch these cells describe depends on whether anything is still happening. While a run
+  // is going the question is "is it still improving", so the newest epoch and its five-epoch
+  // trend are exactly right. Once it has stopped they are the wrong numbers: what got INSTALLED
+  // is the best epoch, not the last. Showing the last one left three different recalls on one
+  // screen -- 64.8% in the cell (last epoch), 71.8% in the chart title (best epoch), and 68.5%
+  // in best.pt itself -- with nothing saying which was the model. After a run, read the card
+  // train.py wrote from the epoch it actually installed.
+  const shipped = !pr.running && mt && mt.mAP50 != null;
+  const src = shipped ? mt : last;
   const grid = el("div", "kpis");
   [["mAP50", "mAP50", "how much it finds AND names right"],
    ["recall", "recall", "share of real units it finds at all"],
    ["precision", "precision", "share of its boxes that are real"],
    ["mAP50_95", "mAP50-95", "the strict one: boxes must fit tightly"]].forEach(([k, label, why]) => {
-    const cur = last[k];
     const d = delta(rows, k, 5);
     const cell = el("div", "kpi");
     cell.appendChild(el("div", "k", label));
-    cell.appendChild(el("div", "v", pct1(cur)));
+    cell.appendChild(el("div", "v", pct1(src[k])));
     const arrow = d == null || Math.abs(d) < 0.002 ? "" : (d > 0 ? "+" : "");
-    cell.appendChild(el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
-      d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
-    cell.title = why + `  |  best so far ${pct1(bestOf(k))}`;
+    cell.appendChild(shipped
+      ? el("div", "d", mt.epochs != null ? `installed -- from epoch ${mt.epochs}` : "installed")
+      : el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
+           d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
+    cell.title = why + (shipped ? `  |  last epoch was ${pct1(last[k])}` : "")
+      + `  |  best over the run ${pct1(bestOf(k))}`;
     grid.appendChild(cell);
   });
   box.appendChild(grid);
