@@ -402,6 +402,8 @@ class SelfPlayOpponent:
                 view.apply_detector_noise(view.opponent_memory_items(eng, 1, self.detector_cards),
                                           self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                           self.det_recall_by_card), dt=self.agent_dt)
+            # Slot 5 mirrors the opponent-elixir signal from team 1's perspective.
+            mem[5] = eng.elixir[0] / 10.0
             thr = np.concatenate([thr, ident, mem]).astype(np.float32)
         if self.use_interactions:                      # mirrored: team 1 sees ITS towers as 'mine'
             units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,

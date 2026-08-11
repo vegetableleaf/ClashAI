@@ -28,6 +28,7 @@ from . import card_threat
 from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
+from .opponent_elixir import OpponentElixirEstimator
 
 
 def _pick_device(cfg):
@@ -212,6 +213,7 @@ def play(cfg) -> None:
             _detector = None
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
+    _opp_elx = OpponentElixirEstimator(_db)     # live estimate from mirrored spend accounting
     # LIVE team verdicts by evidence fusion (own plays / motion / HP bars / side prior with pocket gating)
     # so your units aren't read as enemy threats -- see replay_mine.TeamTracker.
     from .replay_mine import TeamTracker
@@ -249,7 +251,7 @@ def play(cfg) -> None:
                                 recorder=_replay_rec)
         _ploop.start()
 
-    def _threat_extra(frame):
+    def _threat_extra(frame, my_elixir: float):
         """The obs blocks appended AFTER the base threat vector when the checkpoint was trained with them,
         sized to the net: the identity block (RECOGNISED enemies on YOUR half) + the opponent MEMORY block
         (whole-match read, BOTH halves). ONE detector pass shared by both. Zeros where unavailable."""
@@ -303,6 +305,7 @@ def play(cfg) -> None:
                                                     dt=dt, horizon=predict_horizon)
         _ident_state["depth"] = float(ident[7]); _ident_state["t"] = now
         mem = _opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)          # memory: BOTH halves (incl. staging)
+        mem[5] = _opp_elx.update(float(my_elixir), dets, now)                 # normalized opponent-elixir estimate
         blocks = []
         if want_identity:
             blocks.append(ident)
@@ -342,7 +345,7 @@ def play(cfg) -> None:
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity or want_interactions:
-            threat_vec = np.concatenate([threat_vec, _threat_extra(frame)]).astype(np.float32)
+            threat_vec = np.concatenate([threat_vec, _threat_extra(frame, float(elixir))]).astype(np.float32)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
@@ -444,6 +447,7 @@ def play(cfg) -> None:
         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = actions.cell_center(gx, gy)
+        _opp_elx.record_my_play(card_threat.base_key(vision.deck_keys[card_id]))
         if _ploop is not None and _ploop.running:
             _ploop.record_play(cx, cy, time.time(), base=card_threat.base_key(vision.deck_keys[card_id]))
         else:
@@ -509,6 +513,7 @@ def play(cfg) -> None:
                     threat_tracker.reset()
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
+                    _opp_elx.reset(my_elixir=float(vision.read_elixir(frame)), now=time.time())
                     if _ploop is not None and _ploop.running:
                         _ploop.reset_tracker()        # forget last match's own-unit tracks
                     else:

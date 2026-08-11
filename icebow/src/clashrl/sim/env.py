@@ -313,6 +313,8 @@ class SimMatchEnv:
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                       self.det_recall_by_card), dt=self.agent_dt)
+        # Slot 5 is the current opponent-elixir signal; sim can provide it exactly.
+        mem[5] = self.eng.elixir[1] / 10.0
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                     # who is predicted to be marching at which tower
             units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,

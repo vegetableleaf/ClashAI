@@ -39,6 +39,7 @@ from . import interactions
 from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
+from .opponent_elixir import OpponentElixirEstimator
 
 Action = Tuple[int, int, int]  # (play 0/1, card_id, cell)
 
@@ -196,6 +197,7 @@ class LiveMatchEnv:
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
+        self._opp_elixir = OpponentElixirEstimator(db)   # live estimate from mirrored spend accounting
         from .replay_mine import TeamTracker
         self._team_tracker = TeamTracker(                # LIVE: evidence-fused teams (plays/motion/bars/pockets)
             spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
@@ -298,6 +300,9 @@ class LiveMatchEnv:
         self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
+        # Slot 5 carries the current opponent-elixir estimate (normalized), inferred from symmetric
+        # elixir accounting + detected enemy plays; keeps model width unchanged.
+        mem[5] = self._opp_elixir.update(self.elixir, dets, now)
         self._replay_rec.update(self._last_dets_all)     # overlay replay: newest boxes for the clip
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
@@ -366,6 +371,7 @@ class LiveMatchEnv:
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
                 self._opp_mem.reset()
+                self._opp_elixir.reset(my_elixir=self.elixir, now=time.time())
                 if self._ploop is not None and self._ploop.running:
                     self._ploop.reset_tracker()       # forget last match's tracks (thread-safe)
                 else:
@@ -398,6 +404,7 @@ class LiveMatchEnv:
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = self.actions.cell_center(gx, gy)
         base = card_threat.base_key(self.vision.deck_keys[card_id])
+        self._opp_elixir.record_my_play(base)
         if self._ploop is not None and self._ploop.running:
             self._ploop.record_play(cx, cy, time.time(), base=base)
         else:
