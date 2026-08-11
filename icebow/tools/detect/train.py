@@ -34,6 +34,8 @@ unlabelled units. Start with a few hundred well-labelled frames.
 from __future__ import annotations
 
 import argparse
+import atexit
+import os
 import shutil
 from pathlib import Path
 
@@ -111,6 +113,70 @@ def _install_status_aug() -> str:
 
     _aug.Albumentations.__init__ = _patched
     return "status-aug (Albumentations): " + ", ".join(names)
+
+
+def _fitness_of(pt: Path) -> float:
+    """The `best_fitness` ultralytics stored in a checkpoint, or -1 if it cannot be read.
+
+    -1, not 0: an unreadable file must never win a comparison against a real model."""
+    try:
+        import torch
+        ck = torch.load(pt, map_location="cpu", weights_only=False)
+        f = ck.get("best_fitness")
+        return float(f) if f is not None else -1.0
+    except Exception:                                    # noqa: BLE001
+        return -1.0
+
+
+def _keep_previous(best: Path) -> None:
+    """Copy best.pt aside -- but NEVER over a better copy that is already there.
+
+    An unconditional copy is worse than none. Starting a second run twenty minutes into the
+    first overwrote the good model (fitness 0.477) with that run's epoch-2 weights (0.184), so
+    the safety net held the very thing it existed to protect against. Compare and keep the better
+    one: the point is a way BACK, and the way back is whichever model is actually best."""
+    keep = best.with_name("best_previous.pt")
+    now, had = _fitness_of(best), (_fitness_of(keep) if keep.exists() else -1.0)
+    if had > now:
+        print(f"[train] {keep.name} already holds a BETTER model (fitness {had:.4f} vs {now:.4f}) "
+              f"-- keeping it, not overwriting with the weaker one")
+        return
+    shutil.copyfile(best, keep)
+    print(f"[train] kept the model you have now as {keep.name} (fitness {now:.4f}) -- this run "
+          f"overwrites best.pt from epoch 1, so that copy is the way back if it ends up worse")
+
+
+def _claim(run_dir: Path) -> None:
+    """Refuse to start if another training is already writing to this folder.
+
+    There is deliberately one run folder, and `exist_ok=True` lets a second run walk straight into
+    it: both then fight over best.pt, last.pt and results.csv. Seen exactly that -- a second start
+    truncated results.csv (losing the curve the panel draws) and clobbered the backup, then died
+    on VRAM a minute later having written no error anyone could see. Failing loudly here beats
+    corrupting the first run's output and dying quietly."""
+    lock = run_dir / ".training.pid"
+    if lock.is_file():
+        try:
+            pid = int(lock.read_text(encoding="utf-8").strip() or 0)
+        except ValueError:
+            pid = 0
+        alive = False
+        if pid:
+            try:
+                import psutil                            # already an ultralytics dependency
+                alive = psutil.pid_exists(pid)
+            except Exception:                            # noqa: BLE001
+                alive = True                             # cannot tell -> assume it is, and refuse
+        if alive:
+            raise SystemExit(
+                f"a training is ALREADY running in {run_dir.name} (process {pid}).\n"
+                f"Two runs in one folder overwrite each other's model and blank the progress "
+                f"curve, and the second one dies on VRAM anyway. Wait for it, or stop it first.\n"
+                f"If you are sure nothing is running, delete {lock}.")
+        print(f"[train] ignoring a stale lock from process {pid} (no longer running)")
+    run_dir.mkdir(parents=True, exist_ok=True)
+    lock.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(lambda: lock.unlink(missing_ok=True))
 
 
 def main() -> None:
@@ -195,6 +261,9 @@ def main() -> None:
         print(f"done -> {ckpt.parents[0] / 'best.pt'}")
         return
 
+    run_dir = root / "runs" / "detect" / RUN_NAME
+    _claim(run_dir)
+
     # ONE folder for one model (see the exist_ok note below) has a sharp edge: ultralytics
     # rewrites best.pt from epoch 1, so the moment a new run starts, the model you had is gone.
     # That is fine while the run improves on it and a disaster when it does not -- a fresh LR
@@ -202,10 +271,7 @@ def main() -> None:
     # run stopped in that window leaves the panel installing weights worse than yesterday's with
     # nothing to fall back to. The copy is taken once, before the first epoch can overwrite it.
     if ours.exists():
-        keep = ours.with_name("best_previous.pt")
-        shutil.copyfile(ours, keep)
-        print(f"[train] kept the model you have now as {keep.name} -- this run overwrites best.pt "
-              f"from epoch 1, so that copy is the way back if it ends up worse")
+        _keep_previous(ours)
 
     model = (RTDETR if is_rtdetr else YOLO)(args.model)
     print(f"[train] {'RT-DETR' if is_rtdetr else 'YOLO'} from {args.model}  ->  {data}")
