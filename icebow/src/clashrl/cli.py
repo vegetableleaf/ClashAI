@@ -316,6 +316,11 @@ def _cmd_katacr_segments(args) -> None:
                     dry_run=args.dry_run)
 
 
+def _cmd_detect_pack(args) -> None:
+    from .detect_pack import detect_pack
+    detect_pack(Config.load(args.config), out=args.out, own_only=args.own_only)
+
+
 def _cmd_katacr_boxes(args) -> None:
     from .katacr_boxes import katacr_boxes
     katacr_boxes(Config.load(args.config), src=args.src, dry_run=args.dry_run, limit=args.limit)
@@ -753,6 +758,16 @@ def main() -> None:
     kbox.add_argument("--dry-run", action="store_true",
                       help="report the mapping and the per-class gain, and write nothing")
     kbox.set_defaults(func=_cmd_katacr_boxes)
+
+    pk = sub.add_parser("detect-pack",
+                        help="pack the detection dataset into ONE zip to train on a rented GPU "
+                             "(8 GB here forces batch 3 at imgsz 960, which caps the model at "
+                             "yolo11s)")
+    pk.add_argument("--out", default=None, help="output zip (default: data/exports/clashai-detect.zip)")
+    pk.add_argument("--own-only", action="store_true", dest="own_only",
+                    help="leave out the katacr_* frames -- the notebook re-imports those from the "
+                         "public dataset, so a re-upload only carries what you labelled since")
+    pk.set_defaults(func=_cmd_detect_pack)
 
     mdl = sub.add_parser("models",
                          help="which NETWORKS exist and which one each path actually uses -- there "
