@@ -316,6 +316,11 @@ def _cmd_katacr_segments(args) -> None:
                     dry_run=args.dry_run)
 
 
+def _cmd_katacr_boxes(args) -> None:
+    from .katacr_boxes import katacr_boxes
+    katacr_boxes(Config.load(args.config), src=args.src, dry_run=args.dry_run, limit=args.limit)
+
+
 def _cmd_models(args) -> None:
     from .models import models
     models(Config.load(args.config))
@@ -730,6 +735,17 @@ def main() -> None:
                       help="'auto' measures the factor from classes both banks share, or give a number")
     kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
     kseg.set_defaults(func=_cmd_katacr_segments)
+
+    kbox = sub.add_parser("katacr-boxes",
+                          help="import KataCR's hand-labelled DETECTION frames (images/part2) into "
+                               "images/train -- val is left untouched so the next detector stays "
+                               "comparable to the current one")
+    kbox.add_argument("--src", required=True,
+                      help="their Clash-Royale-Detection-Dataset folder (or its images/part2)")
+    kbox.add_argument("--limit", type=int, default=0, help="stop after N frames (for a quick trial)")
+    kbox.add_argument("--dry-run", action="store_true",
+                      help="report the mapping and the per-class gain, and write nothing")
+    kbox.set_defaults(func=_cmd_katacr_boxes)
 
     mdl = sub.add_parser("models",
                          help="which NETWORKS exist and which one each path actually uses -- there "
