@@ -200,20 +200,29 @@ def main() -> None:
     if args.status_aug:
         erasing = 0.6                                    # spells/attacks/overlaps clouding a troop = partial occlusion
         print("[train] " + _install_status_aug())
-    model.train(
-        data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
-        patience=args.patience, seed=args.seed,
+    # The card is written in a finally: a run you STOP still leaves best.pt installed, and
+    # without this the panel goes on showing the previous run's numbers for weights that are no
+    # longer there. Seen exactly that -- a run stopped at epoch 103 left a card from two days
+    # earlier describing an 86-box model, so the panel reported 74.7% for a detector that had
+    # been replaced.
+    try:
+        model.train(
+            data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
+            patience=args.patience, seed=args.seed,
         # ONE vision model, always the same folder. Ultralytics' default (exist_ok=False)
         # auto-increments to board, board-2, board-3 ... which turns one network into a pile
         # of identically named directories, silently loads "whichever was newest", and makes
         # the count of models in this project unreadable. There is exactly one detector; a
         # retrain replaces it.
-        project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
-        # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
-        hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
-    )
-    print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
-    write_model_card(root / "runs" / "detect" / RUN_NAME, args)
+            project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
+            # colour jitter helps the own-troop (blue) labels transfer to the red enemy side
+            # (also covers slow/rage tints)
+            hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0,
+            erasing=erasing,           # no horizontal flip: lanes are asymmetric
+        )
+        print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
+    finally:
+        write_model_card(root / "runs" / "detect" / RUN_NAME, args)
 
 
 def write_model_card(run_dir: Path, args) -> None:
@@ -224,19 +233,38 @@ def write_model_card(run_dir: Path, args) -> None:
     quality at all. Measured that the hard way. The card is written only on COMPLETION, so it
     always describes best.pt as it currently stands, while results.csv stays free to show
     whatever is training right now.
+
+    THE ROW IT DESCRIBES IS THE BEST ONE, NOT THE LAST. best.pt is the best epoch's weights, so
+    a card built from the final row describes a checkpoint that is not on disk. Measured here:
+    a run stopped at epoch 103 had best.pt from epoch 76 (mAP50 0.710) while its last row read
+    0.695 -- the card would have understated the installed model and, worse, claimed numbers no
+    file backs. Ultralytics ranks by FITNESS (0.1*mAP50 + 0.9*mAP50-95), so that is the ranking
+    used here; picking the best mAP50 instead would name a different epoch than best.pt holds.
     """
     import json
     csv = run_dir / "results.csv"
     card = {"model": args.model, "imgsz": args.imgsz, "epochs_requested": args.epochs}
     try:
         lines = [ln for ln in csv.read_text(encoding="utf-8").splitlines() if ln.strip()]
-        head, last = [c.strip() for c in lines[0].split(",")], lines[-1].split(",")
-        row = dict(zip(head, last))
+        head = [c.strip() for c in lines[0].split(",")]
+        rows = [dict(zip(head, ln.split(","))) for ln in lines[1:]]
+
+        def _f(row, col):
+            v = row.get(col)
+            return float(v) if v not in (None, "", "nan") else None
+
+        def _fitness(row):
+            m50, m95 = _f(row, "metrics/mAP50(B)"), _f(row, "metrics/mAP50-95(B)")
+            return 0.1 * (m50 or 0.0) + 0.9 * (m95 or 0.0)
+
+        row = max(rows, key=_fitness) if rows else {}
+        card["epochs_run"] = _f(rows[-1], "epoch") if rows else None
         for key, col in (("epochs", "epoch"), ("mAP50", "metrics/mAP50(B)"),
                          ("mAP50_95", "metrics/mAP50-95(B)"),
                          ("precision", "metrics/precision(B)"), ("recall", "metrics/recall(B)")):
-            if row.get(col) not in (None, "", "nan"):
-                card[key] = float(row[col])
+            v = _f(row, col)
+            if v is not None:
+                card[key] = v
     except (OSError, ValueError, IndexError):
         pass
     try:
