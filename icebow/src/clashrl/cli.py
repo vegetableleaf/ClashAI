@@ -318,7 +318,8 @@ def _cmd_katacr_segments(args) -> None:
 
 def _cmd_detect_pack(args) -> None:
     from .detect_pack import detect_pack
-    detect_pack(Config.load(args.config), out=args.out, own_only=args.own_only)
+    detect_pack(Config.load(args.config), out=args.out, own_only=args.own_only,
+                one_file=not args.many_files)
 
 
 def _cmd_katacr_boxes(args) -> None:
@@ -764,9 +765,14 @@ def main() -> None:
                              "(8 GB here forces batch 3 at imgsz 960, which caps the model at "
                              "yolo11s)")
     pk.add_argument("--out", default=None, help="output zip (default: data/exports/clashai-detect.zip)")
+    pk.add_argument("--many-files", action="store_true", dest="many_files",
+                    help="put the frames in the zip individually instead of inside one tar. "
+                         "Kaggle's uploader crashes listing ~19,000 files, which is why the tar "
+                         "is the default -- use this only for a host that wants them loose")
     pk.add_argument("--own-only", action="store_true", dest="own_only",
-                    help="leave out the katacr_* frames -- the notebook re-imports those from the "
-                         "public dataset, so a re-upload only carries what you labelled since")
+                    help="leave out the katacr_* frames, keeping only what was labelled by hand. "
+                         "The result does NOT train on its own -- it is for a target that already "
+                         "has the KataCR half")
     pk.set_defaults(func=_cmd_detect_pack)
 
     mdl = sub.add_parser("models",

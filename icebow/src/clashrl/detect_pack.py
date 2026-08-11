@@ -21,12 +21,15 @@ files that needs hand-repair:
    here; leaving it out would mean scoring the new model on a different set than the old one and
    calling the difference progress.
 
-`--own-only` exists because the KataCR half is public: the notebook can fetch those 6,623 frames
-itself, so a re-upload after labelling only has to carry the frames that are actually new.
+`--own-only` drops the 6,623 katacr_* frames, leaving only what was labelled by hand here. That
+zip does NOT train on its own and is not a shortcut for the first upload -- it is for a target
+that already holds the KataCR half and only needs what is new since. (Re-importing them on the
+far side would mean porting `katacr_boxes` into the notebook; that is not built.)
 """
 from __future__ import annotations
 
 import shutil
+import tarfile
 import zipfile
 from pathlib import Path
 from typing import Optional
@@ -38,7 +41,29 @@ _PARTS = [("images/train", True), ("images/val", True),
           ("synth/images", False), ("synth/labels", False)]
 
 
-def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False) -> None:
+def _add_all(root: Path, own_only: bool, put) -> tuple:
+    """Walk the parts once and hand each file to `put(path, arcname)`."""
+    n = skipped = 0
+    for sub, required in _PARTS:
+        d = root / sub
+        if not d.is_dir():
+            if required:
+                print(f"[pack] MISSING {sub} -- the zip would not train")
+            continue
+        for p in sorted(d.iterdir()):
+            if not p.is_file():
+                continue
+            if own_only and p.name.startswith("katacr_"):
+                skipped += 1
+                continue
+            put(p, f"{sub}/{p.name}")
+            n += 1
+    put(root / "classes.txt", "classes.txt")
+    return n + 1, skipped
+
+
+def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False,
+                one_file: bool = False) -> None:
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
     classes = root / "classes.txt"
     if not classes.is_file():
@@ -48,25 +73,21 @@ def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False) -> None:
     dest = Path(out) if out else root.parent / "exports" / "clashai-detect.zip"
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-    n = skipped = 0
     with zipfile.ZipFile(dest, "w", zipfile.ZIP_STORED, allowZip64=True) as z:
-        for sub, required in _PARTS:
-            d = root / sub
-            if not d.is_dir():
-                if required:
-                    print(f"[pack] MISSING {sub} -- the zip would not train")
-                continue
-            for p in sorted(d.iterdir()):
-                if not p.is_file():
-                    continue
-                # The KataCR frames came from a public repo; the notebook can pull them itself.
-                if own_only and p.name.startswith("katacr_"):
-                    skipped += 1
-                    continue
-                z.write(p, f"{sub}/{p.name}")
-                n += 1
-        z.write(classes, "classes.txt")
-        n += 1
+        if one_file:
+            # Kaggle DECOMPRESSES an uploaded .zip and leaves every other archive alone. Uploading
+            # the set directly therefore creates a dataset of ~19,000 files, and its web uploader
+            # falls over listing them -- observed as a removeChild crash out of Kaggle's own
+            # vendor.js at the end of dataset creation, after the bytes were already up.
+            #
+            # So: one tar, inside the zip. Kaggle unwraps the zip, sees a single opaque file, and
+            # has nothing to enumerate. The notebook untars it. Streamed straight into the zip
+            # entry (mode "w|" never seeks) so the 1.1 GB tar is never also written to disk.
+            with z.open("detect.tar", "w", force_zip64=True) as raw:
+                with tarfile.open(fileobj=raw, mode="w|") as t:
+                    n, skipped = _add_all(root, own_only, lambda p, a: t.add(p, arcname=a))
+        else:
+            n, skipped = _add_all(root, own_only, lambda p, a: z.write(p, a))
 
     # The notebook lands NEXT TO the zip, copied from the tracked original rather than kept as a
     # second editable copy: two files that drift is how the training settings stop matching the
@@ -77,10 +98,15 @@ def detect_pack(cfg, out: Optional[str] = None, own_only: bool = False) -> None:
 
     gb = dest.stat().st_size / 1e9
     print(f"[pack] {n} file(s) -> {dest}  ({gb:.2f} GB)")
+    if one_file:
+        print("[pack] wrapped as ONE detect.tar inside the zip -- Kaggle unwraps the zip and "
+              "leaves the tar alone, so the dataset is 1 file instead of ~19,000 (its uploader "
+              "crashes listing that many). The notebook untars it.")
     if nb.is_file():
         print(f"[pack] notebook next to it: {dest.with_name('kaggle_train.py').name}")
     if skipped:
-        print(f"[pack] left out {skipped} katacr_* file(s) (--own-only); the notebook re-imports "
-              f"them from the public dataset")
+        print(f"[pack] left out {skipped} katacr_* file(s) (--own-only). This zip does NOT train "
+              f"on its own -- it is the hand-labelled half, for a target that already holds the "
+              f"KataCR half. Omit --own-only for a zip that stands alone.")
     print(f"[pack] classes.txt is inside -- the notebook builds data.yaml FROM IT, because the "
           f"local data.yaml holds an absolute Windows path that means nothing on Linux")

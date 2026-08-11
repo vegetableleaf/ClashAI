@@ -14,24 +14,42 @@ EPOCHS  = 60             # the local run was still climbing at 60, so this is a 
 IMGSZ   = 960            # units are small on the board -- do not lower this to buy speed
 
 # ---------------------------------------------------------------- setup
-import os, shutil, subprocess, sys, time
+import os, shutil, subprocess, sys, tarfile, time
 from pathlib import Path
 
 subprocess.run([sys.executable, "-m", "pip", "-q", "install", "ultralytics"], check=True)
 import torch
 from ultralytics import YOLO
 
-# Find the uploaded dataset without hard-coding the slug Kaggle assigns.
-IN = next((p for p in Path("/kaggle/input").glob("*") if (p / "classes.txt").is_file()), None)
-assert IN, "no dataset with classes.txt under /kaggle/input -- add it via '+ Add Input'"
-
-# Copy to writable scratch: ultralytics writes a *.cache next to the labels, and /kaggle/input
-# is read-only. It survives that, but re-scans 9,000 labels EVERY epoch-0 of every restart.
+# Everything lands in writable scratch. /kaggle/input is READ-ONLY and ultralytics wants to write
+# a *.cache next to the labels; it survives being unable to, but then re-scans 9,000 labels at
+# the start of every run.
 DATA = Path("/kaggle/temp/detect")
-if not DATA.is_dir():
+IN = Path("/kaggle/input")
+
+if not (DATA / "classes.txt").is_file():
     t0 = time.time()
-    shutil.copytree(IN, DATA)
-    print(f"copied dataset to scratch in {time.time() - t0:.0f}s")
+    # Two shapes, because Kaggle decompresses an uploaded .zip and leaves any other archive
+    # alone. `detect-pack` puts the set in ONE tar inside the zip, so the dataset is a single
+    # file -- Kaggle's own uploader crashes trying to list ~19,000. Loose files still work.
+    loose = next((p for p in IN.glob("*") if (p / "classes.txt").is_file()), None)
+    tar = next(IN.glob("*/*.tar"), None)
+    if loose:
+        shutil.copytree(loose, DATA)
+        print(f"copied {loose.name} to scratch in {time.time() - t0:.0f}s")
+    elif tar:
+        DATA.mkdir(parents=True, exist_ok=True)
+        with tarfile.open(tar) as t:
+            # filter="data" refuses absolute paths and ../ escapes; it is Python 3.12+, and the
+            # archive is ours either way, so fall back rather than fail on an older image.
+            try:
+                t.extractall(DATA, filter="data")
+            except TypeError:
+                t.extractall(DATA)
+        print(f"extracted {tar.name} in {time.time() - t0:.0f}s")
+    else:
+        raise SystemExit("no classes.txt and no .tar under /kaggle/input -- add the dataset "
+                         "via '+ Add Input' on the right")
 
 # ------------------------------------------------------- data.yaml
 # Built HERE, from classes.txt, never shipped in the zip: the local data.yaml carries an absolute
