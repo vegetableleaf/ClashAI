@@ -27,6 +27,35 @@ from .replay_mine import Detection, load_detector
 CHANNELS = ("enemy_ground", "enemy_air", "enemy_building", "my_ground", "my_building", "spell")
 N_CHANNELS = len(CHANNELS)
 
+
+def canvas_enabled(cfg) -> bool:
+    """Is the detector-rendered semantic CANVAS part of the observation image?
+
+    This is the `observation.use_detector_canvas` gate: the obs-canvas flip that `detect-eval`
+    measures with its class-agnostic PRESENCE recall (the canvas only needs position + team, not
+    the card's name -- that is what the separate identity block is for).
+    """
+    return bool(cfg.get("observation", "use_detector_canvas", default=False))
+
+
+def obs_in_channels(cfg) -> int:
+    """Channel count of the policy's IMAGE branch: 3 (RGB arena) + the semantic canvas when on.
+
+    Every PolicyNet construction site reads this so sim, live play and all three trainers agree;
+    the value is also stamped into each checkpoint as `in_ch` so `play` rebuilds the right net.
+    """
+    return 3 + (N_CHANNELS if canvas_enabled(cfg) else 0)
+
+
+def channels_to_uint8(channels: np.ndarray) -> np.ndarray:
+    """Semantic channels ([0,1] float) -> uint8 0..255.
+
+    The observation is ONE uint8 stack that every consumer divides by 255, so the canvas is stored
+    on the same scale as the image rather than as a second float array -- that keeps the replay
+    buffers, the .npz datasets and `to_obs_t` untouched.
+    """
+    return np.clip(channels * 255.0, 0.0, 255.0).astype(np.uint8)
+
 # channel -> BGR colour, for the human-readable preview only
 _VIZ = {0: (40, 40, 255), 1: (0, 165, 255), 2: (0, 0, 130),
         3: (255, 140, 40), 4: (150, 70, 0), 5: (0, 255, 255)}

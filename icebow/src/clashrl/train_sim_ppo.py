@@ -28,8 +28,11 @@ import random
 import signal
 import time
 from collections import deque
+from pathlib import Path
 
 import numpy as np
+
+from .ppo_monitor import should_intervene
 
 _NEG = -1e9   # finite mask value (avoids -inf NaNs through log_softmax / entropy)
 
@@ -54,7 +57,8 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float):
 
 
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
-                  init: str | None = None, device: str | None = None) -> None:
+                  init: str | None = None, device: str | None = None,
+                  reset_gate: bool = False) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -65,6 +69,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
     from .model import PolicyNet
     from .train_rl import _build_net, _pick_device
+    from .wincon_bank import apply_wincon_bank
     from .train_sim import pfsp_weights
     from .sim.env import SimMatchEnv
     from .sim.opponents import SelfPlayOpponent, make_opponent
@@ -73,6 +78,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
     e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
+    in_ch = int(e0.obs_shape[2])      # 3 (RGB) or 3 + the semantic canvas (observation.use_detector_canvas)
     gw, gh = e0.gw, e0.gh
     # MEASURED 2026-08-08: this trainer is FASTER ON CPU -- 1.0 match/s vs 0.2 on the GPU while a
     # detector run shared it. The match engine is pure Python (CPU-bound whatever the net does) and
@@ -86,7 +92,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
         def __init__(self):
             super().__init__()
-            self.policy = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim)
+            self.policy = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim)
             self.gate = nn.Linear(self.policy.embed_dim, 2)    # [wait, play] logits
             self.value = nn.Linear(self.policy.embed_dim, 1)   # V(s) for GAE
 
@@ -103,10 +109,30 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
     card_costs_t = torch.tensor([float(s.elixir) for s in e0.specs], dtype=torch.float32, device=device)
+    # WIN-CONDITION BANK: the deck's win conditions (X-Bow / Rocket) and the elixir needed for the
+    # cheapest of them. bank_floor 0 disables the rule entirely (the original always-affordable mask).
+    wincon_ids = sorted(set(e0.xbow_ids) | set(e0.rocket_ids))
+    wincon_ids_t = torch.tensor(wincon_ids, dtype=torch.long, device=device)
+    wincon_cost = min((float(e0.specs[i].elixir) for i in wincon_ids), default=0.0)
+    bank_floor = float(cfg.get("sim", "wincon_bank_floor", default=0.0)) if wincon_ids else 0.0
+    if bank_floor > 0.0:
+        print(f"[train-sim-ppo] win-condition bank ON: holding {wincon_cost:.0f}-elixir "
+              f"{'/'.join(e0.deck_keys[i] for i in wincon_ids)} masks cheaper cards from "
+              f"{bank_floor:.0f} elixir up, so the bar can actually reach them")
 
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
     resumed_best_wr = -1.0
-    if resume and ppo_path.exists():
+    # RESUME only into a MATCHING architecture. Flipping observation.use_detector_canvas changes the
+    # image width (3 -> 9), so an older checkpoint's conv1 cannot load -- and because the watchdog
+    # relaunches this trainer with --resume, a hard failure here would crash-loop instead of
+    # training. Fall through to a fresh run and say so.
+    stale_resume = (resume and ppo_path.exists()
+                    and int(torch.load(ppo_path, map_location="cpu").get("in_ch", 3)) != in_ch)
+    if stale_resume:
+        print(f"[train-sim-ppo] {ppo_path.name} was trained with a different observation width "
+              f"(in_ch != {in_ch}) -- the obs-canvas gate changed, so it CANNOT be resumed. "
+              f"Training from scratch; the old file is left untouched until the first save.")
+    if resume and ppo_path.exists() and not stale_resume:
         ck = torch.load(ppo_path, map_location="cpu")
         net.policy.load_state_dict(ck["model"])
         net.gate.load_state_dict(ck["gate"])
@@ -124,12 +150,16 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         if p.exists():
             ck = torch.load(p, map_location="cpu")
             ok = (int(ck.get("n_cards", -1)) == n_cards and int(ck.get("n_cells", -1)) == n_cells
-                  and int(ck.get("threat_dim", -1)) == threat_dim)
+                  and int(ck.get("threat_dim", -1)) == threat_dim
+                  and int(ck.get("in_ch", 3)) == in_ch)
             if ok:
                 net.policy.load_state_dict(ck["model"])
-                if "gate" in ck:
+                if "gate" in ck and not reset_gate:
                     net.gate.load_state_dict(ck["gate"])
-                print(f"[train-sim-ppo] warm-started policy+gate from {p.name} (value head fresh)")
+                print(f"[train-sim-ppo] warm-started policy{'' if reset_gate else '+gate'} from "
+                      f"{p.name} (value head fresh"
+                      + (", gate RESET -- the source gate had collapsed to always-play)" if reset_gate
+                         else ")"))
             else:
                 print(f"[train-sim-ppo] --init {p.name} shape-incompatible -> training from scratch")
         else:
@@ -162,7 +192,15 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         """Apply the SAME masking at sampling and update time (deterministic from stored inputs):
         card = in-hand AND affordable; no playable card -> the PLAY gate is masked (forced wait, so
         the stored log-prob stays consistent); cell = the DEPLOYABLE set of the (sampled) card."""
-        playable = (hand_t > 0.5) & (card_costs_t.view(1, -1) <= elx_t * 10.0 + 1e-6)
+        elixir = elx_t * 10.0
+        playable = (hand_t > 0.5) & (card_costs_t.view(1, -1) <= elixir + 1e-6)
+        if bank_floor > 0.0 and wincon_ids_t.numel():
+            # WIN-CONDITION BANK -- see clashrl/wincon_bank.py for WHY this exists (a masked action
+            # gets zero policy gradient, so an unaffordable win condition is unlearnable, not merely
+            # unrewarded). Shared with the greedy benchmark and policy-stats so all three agree.
+            playable = apply_wincon_bank(
+                playable, elixir.squeeze(-1), card_costs_t,
+                (hand_t > 0.5)[:, wincon_ids_t].any(1), wincon_cost, bank_floor)
         cq_m = cq.masked_fill(~playable, _NEG)
         gq_m = gq.clone()
         none_play = ~playable.any(1)
@@ -232,7 +270,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
                     "value": net.value.state_dict(), "algo": "ppo",
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
-                    "threat_dim": threat_dim, "deck": e0.deck_keys, "best_wr": best_wr,
+                    "threat_dim": threat_dim, "in_ch": in_ch, "deck": e0.deck_keys, "best_wr": best_wr,
                     "matches": done_n,     # matches played when this file was written (checkpoint inventory)
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
@@ -250,7 +288,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _prog = {"n": 0}
 
     def snapshot(store=True):
-        snap = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+        snap = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
         snap.policy.load_state_dict(net.policy.state_dict())
         snap.gate.load_state_dict(net.gate.state_dict())
         snap.eval()
@@ -409,6 +447,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     stats = None
     t0 = time.time()
+    intervention_log: list[tuple[int, str]] = []
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
@@ -444,6 +483,18 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             print(f"[train-sim-ppo] {done_n} matches: winrate={wr:4.0f}% "
                                   f"avg_rew={ar:+.1f} {mps:.1f} m/s total {wins}W-{losses}L-{draws}D{xs}",
                                   flush=True)
+                            should_stop, reason = should_intervene(
+                                winrate=wr,
+                                avg_reward=ar,
+                                recent_winrates=list(win_hist),
+                                recent_rewards=list(rew_hist),
+                                matches=done_n,
+                            )
+                            if should_stop:
+                                intervention_log.append((done_n, reason))
+                                print(f"[train-sim-ppo] intervention trigger at {done_n} matches: {reason}", flush=True)
+                                save()
+                                raise KeyboardInterrupt
                         if done_n % save_every == 0:
                             save()
                         if sp_prob > 0 and done_n % sp_snap_every == 0:

@@ -37,6 +37,7 @@ from .threats import ThreatTracker, Threat
 from . import card_threat
 from . import interactions
 from .cycle import CycleTracker
+from .opponent_elixir import OpponentElixirEstimator
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 from .opponent_elixir import OpponentElixirEstimator
@@ -76,7 +77,11 @@ class LiveMatchEnv:
         self._nav = MenuNavigator(cfg, self.controller, self.vision, label="train-rl")
 
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-        self.obs_shape = (int(oh), int(ow), 3)
+        # OBS-CANVAS FLIP: the image branch gains detect_obs's semantic channels when
+        # observation.use_detector_canvas is on (gated on detect-eval's PRESENCE recall).
+        from .detect_obs import canvas_enabled, obs_in_channels
+        self.use_canvas = canvas_enabled(cfg)
+        self.obs_shape = (int(oh), int(ow), obs_in_channels(cfg))
         self._last_obs = np.zeros(self.obs_shape, dtype=np.uint8)
         self.last_outcome: Optional[str] = None
         self.elixir = 0                 # your current elixir (0-10), updated each step
@@ -317,6 +322,21 @@ class LiveMatchEnv:
         if self._ploop is None:      # side window (perception loop feeds it at 10Hz itself when active)
             self._preview.update(frame, self._last_dets_all, self.capture.region)
 
+    def _observe(self, frame) -> np.ndarray:
+        """The policy's IMAGE observation: the downscaled arena, plus detect_obs's semantic CANVAS
+        when the obs-canvas gate is on.
+
+        The canvas is rendered from ``_last_dets_all`` -- the detections ``_update_threat`` already
+        produced for this frame -- so it costs NO extra detector pass. Both callers run
+        ``_update_threat`` first, which is what keeps the two in sync.
+        """
+        img = self.vision.observe(frame)
+        if not self.use_canvas:
+            return img
+        from . import detect_obs
+        ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1])
+        return np.concatenate([img, detect_obs.channels_to_uint8(ch)], axis=2)
+
     def _detect_enemies(self, frame):
         """Whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]). With the
         perception loop running this is the latest ~10Hz SNAPSHOT (already team-tagged in the
@@ -381,7 +401,7 @@ class LiveMatchEnv:
                 self._cycle_tracker.reset()
                 self._read_hand(frame)
                 self._update_threat(frame)
-                self._last_obs = self.vision.observe(frame)
+                self._last_obs = self._observe(frame)
                 self._last_frame = frame
                 self._prev_mass = enemy_mass(frame, self.cfg)
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
@@ -788,7 +808,7 @@ class LiveMatchEnv:
             self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
             self._read_hand(frame)
             self._update_threat(frame)
-            self._last_obs = self.vision.observe(frame)
+            self._last_obs = self._observe(frame)
             self._last_frame = frame
             return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
 

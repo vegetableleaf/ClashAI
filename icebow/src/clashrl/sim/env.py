@@ -90,7 +90,17 @@ class SimMatchEnv:
         self.evo_charge = [0] * self.n_slots             # base plays banked toward this slot's Evolution
         self.meta_pool = load_meta_decks(cfg, self.db)   # opponent decks (top-meta or curated fallback)
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-        self.obs_shape = (int(oh), int(ow), 3)
+        # OBS-CANVAS FLIP (observation.use_detector_canvas): the policy's IMAGE branch gains
+        # detect_obs's semantic channels -- enemy/ally x ground/air/building + spell -- so "what is
+        # where" arrives as a clean map instead of having to be inferred from a 64x96 blob canvas
+        # that domain randomisation repaints every match. Gated on detect-eval's class-agnostic
+        # PRESENCE recall because that is exactly what the canvas needs (position + team, not names).
+        # Sim renders it from ground truth degraded by `sim_detector_presence_recall`; live renders
+        # it from the real detector, so the two stay the same layout on the same 0..255 scale.
+        self.use_canvas = bool(cfg.get("observation", "use_detector_canvas", default=False))
+        self.canvas_presence_recall = float(
+            cfg.get("observation", "sim_detector_presence_recall", default=1.0))
+        self.obs_shape = (int(oh), int(ow), 3 + (view.CANVAS_DIM if self.use_canvas else 0))
         # Stage 3: identity-grounded threat block (KB roles of RECOGNISED enemy cards). When on, the
         # threat vector grows by card_threat.IDENTITY_DIM; the sim reads it from GROUND TRUTH but only
         # for whitelisted cards, so it mimics the live detector's (partial) recognition coverage.
@@ -313,8 +323,8 @@ class SimMatchEnv:
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                       self.det_recall_by_card), dt=self.agent_dt)
-        # Slot 5 is the current opponent-elixir signal; sim can provide it exactly.
-        mem[5] = self.eng.elixir[1] / 10.0
+        # Slot 5 mirrors the opponent-elixir signal from team 1's perspective.
+        mem[5] = self.eng.elixir[0] / 10.0
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                     # who is predicted to be marching at which tower
             units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
@@ -326,7 +336,12 @@ class SimMatchEnv:
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape
-        return view.render_obs(self.eng, oh, ow, team=0, dr=self.domain_rand)
+        img = view.render_obs(self.eng, oh, ow, team=0, dr=self.domain_rand)
+        if not self.use_canvas:
+            return img
+        ch = view.semantic_channels(self.eng, oh, ow, team=0, rng=self.rng,
+                                    presence_recall=self.canvas_presence_recall)
+        return np.concatenate([img, ch], axis=2)
 
     # -- lifecycle ---------------------------------------------------------
     def reset(self) -> np.ndarray:
@@ -386,6 +401,40 @@ class SimMatchEnv:
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
+
+    def _opp_hand_specs(self):
+        """Best-effort opponent hand from the sim opponent's cycle state.
+
+        ScriptedBot and SelfPlayOpponent both expose `specs` and `cycle`, where the first four cycle
+        entries are the current hand. If an opponent implementation does not expose this, fall back to
+        unknown (empty) so reward logic degrades to the old elixir-only behaviour.
+        """
+        cyc = getattr(self.opponent, "cycle", None)
+        specs = getattr(self.opponent, "specs", None)
+        if not cyc or not specs:
+            return []
+        out = []
+        for idx in list(cyc)[:4]:
+            if 0 <= int(idx) < len(specs):
+                out.append(specs[int(idx)])
+        return out
+
+    def _opp_can_block_now(self) -> bool:
+        """True when the opponent can immediately answer a forward X-Bow this decision step.
+
+        This is deterministic in sim: a blocker must be BOTH in the current 4-card hand and affordable
+        at the opponent's current elixir.
+        """
+        if not self._opp_block_bases:
+            return False
+        opp_elixir = float(self.eng.elixir[1])
+        for s in self._opp_hand_specs():
+            if s is None:
+                continue
+            base = str(getattr(s, "base", "") or "")
+            if base in self._opp_block_bases and float(getattr(s, "elixir", 99.0)) <= opp_elixir:
+                return True
+        return False
 
     def _bonus(self, credit: float) -> float:
         """Cap the POSITIVE correctness shaping per match (anti-farm); penalties pass through uncapped."""
@@ -490,40 +539,6 @@ class SimMatchEnv:
                     and self.specs[cid].elixir <= self.eng.elixir[0]):
                 return self.w_threat_miss
         return 0.0
-
-    def _opp_hand_specs(self):
-        """Best-effort opponent hand from the sim opponent's cycle state.
-
-        ScriptedBot and SelfPlayOpponent both expose `specs` and `cycle`, where the first four cycle
-        entries are the current hand. If an opponent implementation does not expose this, fall back to
-        unknown (empty) so reward logic degrades to the old elixir-only behaviour.
-        """
-        cyc = getattr(self.opponent, "cycle", None)
-        specs = getattr(self.opponent, "specs", None)
-        if not cyc or not specs:
-            return []
-        out = []
-        for idx in list(cyc)[:4]:
-            if 0 <= int(idx) < len(specs):
-                out.append(specs[int(idx)])
-        return out
-
-    def _opp_can_block_now(self) -> bool:
-        """True when the opponent can immediately answer a forward X-Bow this decision step.
-
-        This is deterministic in sim: a blocker must be BOTH in the current 4-card hand and affordable
-        at the opponent's current elixir.
-        """
-        if not self._opp_block_bases:
-            return False
-        opp_elixir = float(self.eng.elixir[1])
-        for s in self._opp_hand_specs():
-            if s is None:
-                continue
-            base = str(getattr(s, "base", "") or "")
-            if base in self._opp_block_bases and float(getattr(s, "elixir", 99.0)) <= opp_elixir:
-                return True
-        return False
 
     def _punish_window(self, spend: float = 0.0) -> bool:
         """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward

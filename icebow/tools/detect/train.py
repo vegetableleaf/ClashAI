@@ -77,15 +77,36 @@ def _install_status_aug() -> str:
     return "status-aug (Albumentations): " + ", ".join(names)
 
 
+def _resumable(ckpt: Path) -> bool:
+    """Does this checkpoint still carry the TRAINING state ultralytics needs to resume?
+
+    A run that finished (or was stripped) keeps only inference weights. `resume=True` on such a file
+    is not an error to ultralytics -- it warns and quietly starts a new training on its default
+    dataset -- so the caller has to check first. Any read failure is treated as NOT resumable: the
+    conservative answer is the one that does not waste a GPU-day on coco8.
+    """
+    try:
+        import torch
+        ck = torch.load(ckpt, map_location="cpu", weights_only=False)
+    except Exception:
+        return False
+    return bool(ck.get("optimizer")) and ck.get("epoch", -1) not in (None, -1)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
     ap.add_argument("--model", default="yolo11x.pt",
                     help="base weights: yolo11n/s/m/l/x.pt (YOLO, default x) or rtdetr-l/x.pt (RT-DETR)")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
-    ap.add_argument("--batch", type=int, default=-1,
-                    help="images per batch; -1 auto-sizes to your GPU (drop to yolo11l/m/s.pt if VRAM is tight)")
+    ap.add_argument("--batch", type=int, default=4,
+                    help="images per batch; keep at 4 for the current board-24 setup to stay safe on VRAM")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
+    ap.add_argument("--workers", type=int, default=8,
+                    help="dataloader worker processes. EACH worker imports torch, so this is a major RAM "
+                         "consumer: a board-24 run died with 'the paging file is too small' while a "
+                         "32-env CPU train-sim-ppo was running alongside it. Drop to 2-4 when sharing the "
+                         "machine with another training job; the run is GPU-bound, so throughput barely moves.")
     ap.add_argument("--seed", type=int, default=0,
                     help="training seed. Ultralytics runs seed=0 + deterministic=True, so re-running an "
                          "UNCHANGED dataset reproduces the same weights -- change this to get a genuine "
@@ -131,6 +152,19 @@ def main() -> None:
             ckpt = runs / args.resume / "weights" / "last.pt"
             if not ckpt.exists():
                 raise SystemExit(f"no checkpoint at {ckpt}")
+        # A FINISHED (or externally stripped) run has had its optimizer/epoch state removed --
+        # ultralytics strips last.pt/best.pt down to inference weights. Handing such a file to
+        # resume=True does NOT raise: it prints a warning and silently starts a BRAND-NEW training
+        # on its DEFAULT dataset (coco8.yaml, 80 classes) in a fresh runs/detect/train-N folder.
+        # That has already happened three times in this repo (runs/detect/train, train-2, train-3),
+        # burning GPU on a demo dataset while looking like a normal training log. Refuse instead.
+        if not _resumable(ckpt):
+            raise SystemExit(
+                f"{ckpt} carries no optimizer/epoch state -- it is a STRIPPED (finished) checkpoint,\n"
+                "so ultralytics cannot resume it and would silently start a NEW coco8 training.\n"
+                "That run is over: evaluate it (`run.py detect-eval --weights "
+                f"{ckpt.parents[1].name}/weights/best.pt --sweep --subset data/detect/val_board15.txt`)\n"
+                "or start a fresh generation with `--name` instead.")
         print(f"[train] RESUMING {ckpt.parents[1].name} from {ckpt}")
         (RTDETR if is_rtdetr else YOLO)(str(ckpt)).train(resume=True)
         print(f"done -> {ckpt.parents[0] / 'best.pt'}")
@@ -144,7 +178,7 @@ def main() -> None:
         print("[train] " + _install_status_aug())
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
-        patience=args.patience, seed=args.seed,
+        patience=args.patience, seed=args.seed, workers=args.workers,
         project=str(root / "runs" / "detect"), name=args.name,
         # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
         hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric

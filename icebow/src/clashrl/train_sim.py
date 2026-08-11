@@ -70,9 +70,10 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
     e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
+    in_ch = int(e0.obs_shape[2])      # 3 (RGB) or 3 + the semantic canvas (observation.use_detector_canvas)
     gw, gh = e0.gw, e0.gh
     device = _pick_device(cfg)
-    net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+    net = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
 
     # DEPLOYABLE cell mask (impossible-coordinate fix, mirrors train_rl + play): anywhere cards
     # (rocket / miner) -> any cell; every other card only YOUR half. Applied before the cell argmax in
@@ -94,6 +95,13 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
 
     sim_path = cfg.path(cfg.get("train", "sim_checkpoint", default="data/policy_sim.pt"))
     resumed_best_wr = -1.0                                    # prior peak benchmark (so --resume won't clobber a better best.pt)
+    # Same architecture guard as train_sim_ppo: the obs-canvas flip changes the image width, and a
+    # checkpoint from the other side of that flip cannot be resumed into this net.
+    if resume and sim_path.exists() and int(torch.load(sim_path, map_location="cpu").get("in_ch", 3)) != in_ch:
+        if not quiet:
+            print(f"[train-sim] {sim_path.name} has a different observation width (in_ch != {in_ch}) "
+                  f"-- the obs-canvas gate changed, so it cannot be resumed. Training from scratch.")
+        resume = False
     if resume and sim_path.exists():
         ck = torch.load(sim_path, map_location="cpu")
         net.policy.load_state_dict(ck["model"])
@@ -106,7 +114,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                      else " (no stored best -- back up policy_sim_best.pt once before relying on it)"))
     elif not quiet:
         print(f"[train-sim] training FROM SCRATCH ({sim_path.name} will be written)")
-    target = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+    target = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
     target.load_state_dict(net.state_dict())
     target.eval()
 
@@ -273,7 +281,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
         p.parent.mkdir(parents=True, exist_ok=True)
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
-                    "threat_dim": threat_dim, "deck": e0.deck_keys, "best_wr": best_wr,
+                    "threat_dim": threat_dim, "in_ch": in_ch, "deck": e0.deck_keys, "best_wr": best_wr,
                     "matches": done_n,     # matches played when this file was written (checkpoint inventory)
                     "arena_size": list(cfg.get("observation", "arena_size", default=[64, 96]))}, p)
 
@@ -294,7 +302,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
     _prog = {"n": 0}
 
     def snapshot(store=True):
-        snap = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+        snap = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
         snap.load_state_dict(net.state_dict())
         snap.eval()
         for p in snap.parameters():

@@ -106,6 +106,57 @@ def render_obs(engine, oh: int, ow: int, team: int = 0, dr: "DomainRand | None" 
     return img if dr is None else dr.finish(img)
 
 
+# --- SEMANTIC CANVAS (the obs-canvas flip) ------------------------------------------------------
+# Ground-truth twin of clashrl.detect_obs's detector-rendered channels. The channel INDICES must
+# match detect_obs.CHANNELS exactly, or the sim prior trains one layout and live play feeds another.
+CANVAS_DIM = 6                # enemy ground/air/building, my ground/building, spell
+
+
+def _canvas_channel(u, team: int) -> int:
+    """Semantic channel for a sim unit, mirroring detect_obs._channel_of's role mapping."""
+    mine = u.team == team
+    if u.spec.kind == "spell":
+        return 5                                     # spell / AOE (team-agnostic)
+    if u.spec.kind == "building" or u.spec.siege:
+        return 4 if mine else 2                      # building / siege
+    if mine:
+        return 3                                     # my troop (air or ground)
+    return 1 if u.spec.flying else 0                 # enemy air vs ground
+
+
+def semantic_channels(engine, oh: int, ow: int, team: int = 0, rng=None,
+                      presence_recall: float = 1.0) -> np.ndarray:
+    """The sim's stand-in for the live detector's semantic CANVAS, in ``team``'s local frame.
+
+    Rendered from GROUND TRUTH but degraded by ``presence_recall`` -- the class-agnostic presence
+    recall `detect-eval` gates on -- because live the canvas is built from detections and a missed
+    unit is simply absent from it. Deliberately NOT whitelist-filtered and NOT hit by the identity
+    PRECISION knob: the canvas carries position + team + coarse role, so naming a Knight a Valkyrie
+    lands in the same channel, and the detector boxes units it cannot confidently name.
+
+    Returns uint8 [oh, ow, CANVAS_DIM] on the same 0..255 scale as the arena image.
+    """
+    from . import engine as _engine        # imported here to keep view importable from engine
+    ch = np.zeros((oh, ow, CANVAS_DIM), np.uint8)
+    tx, ty = float(_engine._TILES_X), float(_engine._TILES_Y)
+    for u in engine.units:
+        if u.hp <= 0 or u.deploy_left > 0:
+            continue                                  # still spawning = not on screen yet
+        if presence_recall < 1.0 and rng is not None and rng.random() > presence_recall:
+            continue                                  # the detector would have MISSED this unit
+        lx, ly = to_local(u.x, u.y, team)
+        cxp, cyp = int(lx * ow), int(ly * oh)
+        rx = max(1, int(round(float(u.spec.radius) / tx * ow)))
+        ry = max(1, int(round(float(u.spec.radius) / ty * oh)))
+        x0, x1 = max(0, cxp - rx), min(ow, cxp + rx + 1)
+        y0, y1 = max(0, cyp - ry), min(oh, cyp + ry + 1)
+        if x0 >= x1 or y0 >= y1:
+            continue
+        k = _canvas_channel(u, team)
+        ch[y0:y1, x0:x1, k] = 255
+    return ch
+
+
 TOWER_DIM = 6                 # (L princess, R princess, king) x (mine, theirs)
 
 

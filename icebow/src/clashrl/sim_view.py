@@ -283,7 +283,7 @@ def _policy_agent(env, path: str):
     # to the one that actually plays.
     gate_tau = float(env.cfg.get("sim", "ppo_gate_threshold", default=0.25))
     oh, ow, _ = env.obs_shape
-    net = PolicyNet(3, int(ck["n_cards"]), int(ck["n_cells"]), int(ck["threat_dim"]))
+    net = PolicyNet(int(ck.get("in_ch", 3)), int(ck["n_cards"]), int(ck["n_cells"]), int(ck["threat_dim"]))
     net.load_state_dict(ck["model"])
     net.eval()
     gate = torch.nn.Linear(net.embed_dim, 2)

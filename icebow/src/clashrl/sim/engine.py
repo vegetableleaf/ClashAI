@@ -231,6 +231,10 @@ class CardSpec:
     invis_time: float = 0.0   # ROYAL GHOST: seconds of NOT fighting before he fades out again
     spread: float = 0.0       # SHOTGUN half-angle in DEGREES that the pellets scatter within
     curse_dur: float = 0.0    # Mother Witch curse duration on struck enemy troops (seconds)
+    hook_min: float = 0.0     # Fisherman hook starts only at/above this edge gap (tiles)
+    hook_max: float = 0.0     # Fisherman hook reaches up to this edge gap (tiles)
+    hook_time: float = 0.0    # Fisherman hook wind-up/execution time (seconds)
+    hook_speed: float = 0.0   # Fisherman hook projectile speed (tiles/s), informational for now
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
@@ -472,6 +476,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         invis_time=float(c.get("invisibility_time_s") or 0.0),
         spread=float(c.get("spread_degrees") or 0.0),
         curse_dur=float(c.get("curse_duration_s") or 0.0),
+        hook_min=float(c.get("hook_min_tiles") or 0.0),
+        hook_max=float(c.get("hook_max_tiles") or 0.0),
+        hook_time=float(c.get("hook_time_s") or 0.0),
+        hook_speed=float(c.get("hook_speed_tiles") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -555,9 +563,17 @@ class Unit:
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
     charge_dist: float = 0.0     # tiles walked without attacking -- arms the charge bonus
+    hook_left: float = 0.0       # Fisherman: seconds remaining in an active hook-pull motion
+    hook_windup_left: float = 0.0  # fixed pre-throw wind-up time
+    hook_out_left: float = 0.0   # hook projectile travel time OUT to target
+    hook_pull_left: float = 0.0  # return leg time while the pull movement happens
+    hook_mode: str = ""          # "self" (pull self to building/tower) or "target" (pull enemy troop in)
+    hook_kind: str = ""          # pending land-hit kind once the pull completes ("unit"/"tower")
+    hook_ref: object = None      # body being pulled to/from during the active hook
     curse_left: float = 0.0      # active curse timer (seconds remaining)
     cursed_by: int = -1          # team that cursed this unit (-1 = none)
     curse_level: int = 11        # level to use for the spawned Mother Witch Hog
+    fisherman_slowed: bool = False
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -588,6 +604,10 @@ class Tower:
     cook_left: float = 0.0        # time until the next pancake
     buff_mult: float = 1.0        # pancake buff (~+1 level) applied to HP + damage
     buff_min_frac: float = 0.33   # only feed a troop above this fraction of its max HP
+    stun_left: float = 0.0        # STUN / FREEZE status timer (can't act while > 0)
+    slow_left: float = 0.0        # SLOW status timer (halved attack speed)
+    slow_mult: float = 1.0        # movement/attack multiplier from whatever slowed this tower
+    fisherman_slowed: bool = False
 
 
 @dataclass
@@ -1212,16 +1232,27 @@ class SimEngine:
                 else:
                     ux, uy = dx / d, dy / d
                 overlap = mind - d
-                am = 0.0 if a.spec.kind == "building" else _push_mass(a.spec)
-                bm = 0.0 if b.spec.kind == "building" else _push_mass(b.spec)
+                a_anch = a.spec.kind == "building"
+                b_anch = b.spec.kind == "building"
+                if a_anch and b_anch:
+                    continue
+                am = 0.0 if a_anch else _push_mass(a.spec)
+                bm = 0.0 if b_anch else _push_mass(b.spec)
                 s = am + bm
                 if s <= 0:
                     continue
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
                 # Each body yields in inverse proportion to its OWN mass, so the heavier one barely
                 # moves: a Skeleton takes 77% of the separation against a Giant instead of 50%.
-                a.x, a.y = _clamp_xy(a.x + px * (bm / s), a.y + py * (bm / s), a.spec.radius)
-                b.x, b.y = _clamp_xy(b.x - px * (am / s), b.y - py * (am / s), b.spec.radius)
+                # Buildings are fully anchored once placed: the entire separation is applied to the
+                # non-building body, never to the building.
+                if a_anch:
+                    b.x, b.y = _clamp_xy(b.x - px, b.y - py, b.spec.radius)
+                elif b_anch:
+                    a.x, a.y = _clamp_xy(a.x + px, a.y + py, a.spec.radius)
+                else:
+                    a.x, a.y = _clamp_xy(a.x + px * (bm / s), a.y + py * (bm / s), a.spec.radius)
+                    b.x, b.y = _clamp_xy(b.x - px * (am / s), b.y - py * (am / s), b.spec.radius)
                 # Being SHOVED off what you were hitting resets aggro. This is the real mechanic
                 # behind dropping a body between a melee attacker and the tower it is chewing on:
                 # the attacker is pushed out, loses its lock, and re-picks -- and the thing now in
@@ -1298,6 +1329,9 @@ class SimEngine:
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
                 continue
+            if u.hook_left > 0.0:
+                self._tick_hook(u, dt)
+                continue
             if u.spec.pulse_interval > 0:                    # periodic area-shock (none ship with this today)
                 u.pulse_cd -= dt
                 if u.pulse_cd <= 0:
@@ -1358,6 +1392,8 @@ class SimEngine:
                 u.focus_time = 0.0
             if ref is None:
                 continue
+            if kind is None:
+                continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
@@ -1394,6 +1430,26 @@ class SimEngine:
                                          u.y + (dyt / d) * step / _TILES_Y, u.spec.radius)
                 continue
             gap = _gap(u.x, u.y, ref)
+            if u.spec.hook_max > 0.0 and gap > u.spec.reach and gap <= u.spec.hook_max:
+                # Fisherman commits to the hook prep inside hook range instead of taking extra
+                # walk steps first, so wind-up starts from a stable distance band.
+                u.attacking = True
+                u.locked = True
+                u.focus_time += dt
+                if u.cooldown <= 0.0 and u.hook_left <= 0.0:
+                    self._hook_attack(u, kind, ref)
+                    hook_cd = u.spec.hook_time if u.spec.hook_time > 0.0 else u.spec.hit_speed
+                    u.cooldown = hook_cd / spd
+                continue
+            if self._hook_ok(u, ref, gap):
+                u.attacking = True
+                u.locked = True
+                u.focus_time += dt
+                if u.cooldown <= 0.0:
+                    self._hook_attack(u, kind, ref)
+                    hook_cd = u.spec.hook_time if u.spec.hook_time > 0.0 else u.spec.hit_speed
+                    u.cooldown = hook_cd / spd
+                continue
             if self._leap_ok(u, ref):
                 # "he will STOP MOVING and begin charging" -- the wind-up is why a Mega Knight
                 # answered at 4 tiles still reaches you, and why baiting the dash out of a Bandit
@@ -1480,6 +1536,124 @@ class SimEngine:
         else:
             return False
         return u.spec.leap_min <= _gap(u.x, u.y, ref) <= u.spec.leap_max
+
+    @staticmethod
+    def _hook_ok(u: "Unit", ref, gap: float) -> bool:
+        """Whether this unit may use a Fisherman-style hook pull right now."""
+        s = u.spec
+        if s.hook_max <= 0.0:
+            return False
+        if not (s.hook_min <= gap <= s.hook_max):
+            return False
+        if isinstance(ref, Tower):
+            return ref.alive
+        if isinstance(ref, Unit):
+            return ref.hp > 0 and not ref.spec.flying
+        return False
+
+    def _hook_attack(self, u: "Unit", kind: str, ref) -> None:
+        """Fisherman hook: start a timed pull phase, then deal the hit when it completes."""
+        s = u.spec
+        gap = _gap(u.x, u.y, ref)
+        pull_dist = max(0.0, gap - s.reach)
+        speed = max(0.1, s.hook_speed or 12.0)
+        # Fixed WIND-UP, then distance-scaled travel: OUT to the target, RETURN while pulling.
+        u.hook_windup_left = max(0.0, s.hook_time)
+        u.hook_out_left = gap / speed
+        u.hook_pull_left = pull_dist / speed
+        u.hook_left = u.hook_windup_left + u.hook_out_left + u.hook_pull_left
+        u.hook_ref = ref
+        u.hook_kind = kind
+        if kind == "tower" or (isinstance(ref, Unit) and ref.spec.kind == "building"):
+            # Buildings/towers pull Fisherman IN over time.
+            u.hook_mode = "self"
+            return
+        # Troops are yanked TOWARD Fisherman over time.
+        u.hook_mode = "target"
+
+    def _tick_hook(self, u: "Unit", dt: float) -> None:
+        """Advance one active Fisherman hook-pull phase, landing damage at completion."""
+        ref = u.hook_ref
+        if ref is None or u.hook_mode not in ("self", "target"):
+            u.hook_left = 0.0
+            u.hook_mode = u.hook_kind = ""
+            u.hook_ref = None
+            return
+        if isinstance(ref, Tower):
+            if not ref.alive:
+                u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+                u.hook_mode = u.hook_kind = ""
+                u.hook_ref = None
+                return
+        elif isinstance(ref, Unit):
+            if ref.hp <= 0:
+                u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+                u.hook_mode = u.hook_kind = ""
+                u.hook_ref = None
+                return
+        else:
+            u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+            u.hook_mode = u.hook_kind = ""
+            u.hook_ref = None
+            return
+
+        if u.hook_windup_left > 0.0:
+            step = min(dt, u.hook_windup_left)
+            u.hook_windup_left -= step
+            u.hook_left = max(0.0, u.hook_left - step)
+            return
+        if u.hook_out_left > 0.0:
+            step = min(dt, u.hook_out_left)
+            u.hook_out_left -= step
+            u.hook_left = max(0.0, u.hook_left - step)
+            return
+
+        mover, anchor = (u, ref) if u.hook_mode == "self" else (ref, u)
+        dxt, dyt = (mover.x - anchor.x) * _TILES_X, (mover.y - anchor.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        goal = max(0.0, u.spec.reach + _body_radius(anchor) + _body_radius(mover))
+        left_dist = max(0.0, d - goal)
+        if left_dist > 1e-6 and d > 1e-6 and u.hook_pull_left > 0.0:
+            # Return leg: cover the remaining pull distance across the remaining return time.
+            step = left_dist if u.hook_pull_left <= dt else left_dist * (dt / u.hook_pull_left)
+            mover.x, mover.y = _clamp_xy(mover.x - (dxt / d) * step / _TILES_X,
+                                         mover.y - (dyt / d) * step / _TILES_Y,
+                                         _body_radius(mover))
+        step_t = min(dt, u.hook_pull_left)
+        u.hook_pull_left = max(0.0, u.hook_pull_left - step_t)
+        u.hook_left = max(0.0, u.hook_left - step_t)
+        if u.hook_left > 1e-6:
+            return
+
+        # Ensure final contact is in-range, then land the actual hit.
+        self._snap_to_reach(mover, anchor, u.spec.reach)
+        if u.hook_mode == "target" and isinstance(ref, Unit):
+            ref.aggro_reset = True
+        mult = self._ramp_mult(u)
+        dmg = u.spec.hit_dmg * u.dmg_mult * mult
+        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        if u.hook_kind == "tower":
+            self._land_hit(u.team, "tower", ref, u.spec, dmg, tower_dmg)
+        elif isinstance(ref, Unit) and ref.hp > 0:
+            self._land_hit(u.team, "unit", ref, u.spec, dmg, tower_dmg)
+        u.charge_dist = 0.0
+        u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+        u.hook_mode = u.hook_kind = ""
+        u.hook_ref = None
+
+    @staticmethod
+    def _snap_to_reach(mover, anchor, reach: float) -> None:
+        """Place `mover` so its edge-gap to `anchor` is at most `reach` tiles."""
+        dxt, dyt = (mover.x - anchor.x) * _TILES_X, (mover.y - anchor.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        goal = max(0.0, reach + _body_radius(anchor) + _body_radius(mover))
+        if d <= goal + 1e-6:
+            return
+        move = d - goal
+        if d <= 1e-6:
+            return
+        mover.x, mover.y = _clamp_xy(mover.x - (dxt / d) * move / _TILES_X,
+                                     mover.y - (dyt / d) * move / _TILES_Y, _body_radius(mover))
 
     def _land_leap(self, u: "Unit", ref) -> None:
         """A dash/jump arrives: close the gap, then deliver the published double-damage hit.
@@ -1724,6 +1898,7 @@ class SimEngine:
             # crown towers take the REDUCED per-hit value when the card has one (Miner) -- real CR's
             # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
             self._damage_tower(ref, tower_dmg, team)
+            self._apply_status(team, spec, ref)
             return
         self._hurt(ref, dmg)
         self._apply_status(team, spec, ref)
@@ -1732,6 +1907,10 @@ class SimEngine:
                 if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
                     self._hurt(e, dmg)
                     self._apply_status(team, spec, e)
+            for tw in self._enemy_towers(team):
+                if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= _SPLASH_R:
+                    self._damage_tower(tw, tower_dmg, team)
+                    self._apply_status(team, spec, tw)
 
     def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
                 dmg: float, tower_dmg: float) -> None:
@@ -1833,6 +2012,7 @@ class SimEngine:
             if _dist(p.x, p.y, tw.x, tw.y) <= reach + tower_r:
                 p.hit.add(id(tw))
                 self._damage_tower(tw, p.tower_dmg, p.team)
+                self._apply_status(p.team, p.spec, tw)
                 if p.stop_on_hit:
                     p.left = 0.0
                     return
@@ -1899,6 +2079,7 @@ class SimEngine:
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
                     self._damage_tower(tw, p.tower_dmg, p.team)
+                    self._apply_status(p.team, p.spec, tw)
             if spark:
                 self._spark_burst(p)              # ...and THEN it splits into shrapnel
             return
@@ -2028,27 +2209,34 @@ class SimEngine:
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
 
-    def _apply_status(self, team: int, spec: CardSpec, e: Unit) -> None:
-        """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
+    def _apply_status(self, team: int, spec: CardSpec, e) -> None:
+        """Apply a hitter's/spell's crowd-control to a struck unit or crown tower.
 
         Durations and slow strength are PER CARD where the wiki publishes them, falling back to the
         global config value. That difference is not cosmetic: a Freeze holds for 4s and an Ice Spirit
         for 1.1s, and a Ram Rider's snare (-70%) is more than twice a Giant Snowball's (-30%).
         """
-        # A retracted Tesla is "vulnerable to Earthquake and Freeze" and nothing else -- so a Zap or
-        # an Electro Wizard cannot stun it while it is under, but a Freeze still locks it down.
-        if e.hidden and not spec.freezes and not spec.hits_hidden:
-            return
+        if isinstance(e, Unit):
+            # A retracted Tesla is "vulnerable to Earthquake and Freeze" and nothing else -- so a Zap or
+            # an Electro Wizard cannot stun it while it is under, but a Freeze still locks it down.
+            if e.hidden and not spec.freezes and not spec.hits_hidden:
+                return
         if spec.freezes:
-            e.stun_left = max(e.stun_left, spec.freeze_dur or self.freeze_dur)
-            e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
+            e.stun_left = max(getattr(e, "stun_left", 0.0), spec.freeze_dur or self.freeze_dur)
+            if isinstance(e, Unit):
+                e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
         elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
-            e.stun_left = max(e.stun_left, spec.stun_dur or self.stun_dur)
-            e.aggro_reset = True
+            e.stun_left = max(getattr(e, "stun_left", 0.0), spec.stun_dur or self.stun_dur)
+            if isinstance(e, Unit):
+                e.aggro_reset = True
         if spec.slows:
-            e.slow_left = max(e.slow_left, spec.slow_dur or self.slow_dur)
+            if spec.base == "fisherman" and getattr(e, "fisherman_slowed", False):
+                return
+            if spec.base == "fisherman":
+                setattr(e, "fisherman_slowed", True)
+            e.slow_left = max(getattr(e, "slow_left", 0.0), spec.slow_dur or self.slow_dur)
             e.slow_mult = spec.slow_mult or self.slow_factor
-        if spec.curse_dur > 0.0 and e.spec.kind == "troop":
+        if spec.curse_dur > 0.0 and isinstance(e, Unit) and e.spec.kind == "troop":
             e.curse_left = max(e.curse_left, spec.curse_dur)
             e.cursed_by = team
             e.curse_level = spec.level
@@ -2067,6 +2255,12 @@ class SimEngine:
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
         """DISCRETE single-target tower shots. Cadence + damage come from the tower troop; Dagger Duchess
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
+        if tw.stun_left > 0.0:
+            tw.stun_left = max(0.0, tw.stun_left - dt)
+            return
+        if tw.slow_left > 0.0:
+            tw.slow_left = max(0.0, tw.slow_left - dt)
+        eff_dt = dt * (tw.slow_mult if tw.slow_left > 0.0 else 1.0)
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
                 and e.invis_left <= 0.0 and not e.hidden and not e.ghost
@@ -2083,7 +2277,7 @@ class SimEngine:
             # before dying. Firing the instant a target appears kills it ~0.8 s sooner and the bomb
             # never lands, so the tower's opening delay is real and load-bearing, not padding.
             tw.reload_left = tw.first_hit
-        tw.reload_left -= dt
+        tw.reload_left -= eff_dt
         if tw.reload_left > 0.0:
             return
         tgt = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
@@ -2140,6 +2334,7 @@ class SimEngine:
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+                self._apply_status(s.team, s.spec, tw)
         sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
         for i in range(s.spec.spawn_count if sp is not None else 0):
             ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0   # tiles -> normalised
@@ -2214,6 +2409,7 @@ class SimEngine:
             dy = (tw.y - s.y) * fdir * _TILES_Y
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+                self._apply_status(s.team, s.spec, tw)
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:

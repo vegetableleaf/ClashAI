@@ -316,6 +316,8 @@ class SelfPlayOpponent:
         self.det_recall_by_card = env.det_recall_by_card   # ...including the per-card recall override
         self.use_interactions = env.use_interactions   # mirror the troop-interaction block for team 1
         self.use_tower_obs = getattr(env, "use_tower_obs", False)   # ...and the crown-tower HP block
+        self.use_canvas = getattr(env, "use_canvas", False)         # ...and the semantic obs CANVAS
+        self.canvas_presence_recall = getattr(env, "canvas_presence_recall", 1.0)
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
@@ -381,6 +383,10 @@ class SelfPlayOpponent:
 
         oh, ow, _ = self.obs_shape
         obs = view.render_obs(eng, oh, ow, team=1, dr=self._dr)   # same match 'arena look' as team 0
+        if self.use_canvas:                                       # mirrored semantic canvas for team 1
+            obs = np.concatenate(
+                [obs, view.semantic_channels(eng, oh, ow, team=1, rng=self.rng,
+                                             presence_recall=self.canvas_presence_recall)], axis=2)
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0

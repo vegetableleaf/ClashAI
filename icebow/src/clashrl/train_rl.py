@@ -42,14 +42,14 @@ def _pick_device(cfg):
         return "cpu"
 
 
-def _build_net(cfg, device, n_cards, n_cells, threat_dim=14):
+def _build_net(cfg, device, n_cards, n_cells, threat_dim=14, in_ch=3):
     import torch.nn as nn
     from .model import PolicyNet
 
     class DQN(nn.Module):
         def __init__(self):
             super().__init__()
-            self.policy = PolicyNet(3, n_cards, n_cells, threat_dim=threat_dim)
+            self.policy = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim)
             self.gate = nn.Linear(self.policy.embed_dim, 2)  # [wait, play]
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
@@ -96,6 +96,12 @@ def train_rl(cfg, init: str | None = None) -> None:
     gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
     n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
     threat_dim = int(ckpt.get("threat_dim", 14))
+    # Image-branch width: 3 (RGB) or 3 + detect_obs's semantic canvas. Read from the CONFIG, not the
+    # checkpoint, because LiveMatchEnv builds its observation from the same gate -- a checkpoint from
+    # before the flip simply will not load here, which is the intended loud failure (flipping the
+    # canvas is a fresh-train event, exactly like widening threat_dim).
+    from .detect_obs import obs_in_channels
+    in_ch = obs_in_channels(cfg)
     deck = ckpt.get("deck")
 
     # Per-card elixir cost (by deck identity) so the policy can't select a card it can't PAY for --
@@ -141,11 +147,11 @@ def train_rl(cfg, init: str | None = None) -> None:
     yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
 
-    net = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+    net = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
     net.policy.load_state_dict(ckpt["model"])
     if "gate" in ckpt:
         net.gate.load_state_dict(ckpt["gate"])
-    target = _build_net(cfg, device, n_cards, n_cells, threat_dim)
+    target = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
     target.load_state_dict(net.state_dict())
     target.eval()
     print(f"[train-rl] initialised from {init_path.name} on {device} "
@@ -374,6 +380,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             "gate": net.gate.state_dict(),
             "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
             "threat_dim": threat_dim,
+            "in_ch": in_ch,
             "deck": deck,
             "arena_size": ckpt.get("arena_size", list(cfg.get("observation", "arena_size", default=[64, 96]))),
         }, rl_path)
