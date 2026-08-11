@@ -34,6 +34,7 @@ unlabelled units. Start with a few hundred well-labelled frames.
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 
 # The ONE vision model's folder. Everything that loads a detector resolves to
@@ -193,6 +194,18 @@ def main() -> None:
         (RTDETR if is_rtdetr else YOLO)(str(ckpt)).train(resume=True)
         print(f"done -> {ckpt.parents[0] / 'best.pt'}")
         return
+
+    # ONE folder for one model (see the exist_ok note below) has a sharp edge: ultralytics
+    # rewrites best.pt from epoch 1, so the moment a new run starts, the model you had is gone.
+    # That is fine while the run improves on it and a disaster when it does not -- a fresh LR
+    # warmup on a much larger dataset dips BELOW the starting point for the first epochs, and a
+    # run stopped in that window leaves the panel installing weights worse than yesterday's with
+    # nothing to fall back to. The copy is taken once, before the first epoch can overwrite it.
+    if ours.exists():
+        keep = ours.with_name("best_previous.pt")
+        shutil.copyfile(ours, keep)
+        print(f"[train] kept the model you have now as {keep.name} -- this run overwrites best.pt "
+              f"from epoch 1, so that copy is the way back if it ends up worse")
 
     model = (RTDETR if is_rtdetr else YOLO)(args.model)
     print(f"[train] {'RT-DETR' if is_rtdetr else 'YOLO'} from {args.model}  ->  {data}")
