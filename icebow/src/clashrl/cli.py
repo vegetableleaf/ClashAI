@@ -574,8 +574,15 @@ def main() -> None:
 
     dtr = sub.add_parser("detect-train",
                          help="train the VISION network (board detector) on your labelled frames")
-    dtr.add_argument("--model", default="yolo11s.pt",
-                     help="base weights: yolo11n/s/m/l/x.pt (bigger = better but needs more VRAM)")
+    # 'auto', NOT a fixed backbone. train.py reads 'auto' as "continue the detector we have, and
+    # only fall back to a sized backbone if there is none" -- and the panel has always passed
+    # 'auto'. Naming yolo11s.pt here made the two entry points disagree in the worst possible
+    # direction: the same job, started from a terminal instead of the panel, silently THREW AWAY
+    # the trained model and began again from COCO weights, while printing nothing to say so.
+    dtr.add_argument("--model", default="auto",
+                     help="'auto' continues the detector you have (and picks a backbone sized to "
+                          "your GPU only if there is none); or name yolo11n/s/m/l/x.pt to start "
+                          "from that instead")
     dtr.add_argument("--epochs", type=int, default=120, help="training epochs (early-stops on its own)")
     dtr.add_argument("--imgsz", type=int, default=960, help="training image size")
     dtr.add_argument("--batch", type=int, default=None,
