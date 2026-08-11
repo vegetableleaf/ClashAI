@@ -371,6 +371,14 @@ class SimMatchEnv:
              if p.kind == "troop" and not p.swarm and p.elixir
              and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)),
             default=self.punish_opp_elixir)
+        # Exact opponent blocker identities (sim-only ground truth): used by punish logic to ask
+        # whether a blocker is in hand NOW, not just whether the opponent has enough elixir in abstract.
+        self._opp_block_bases = {
+            p.name for p in
+            (card_threat.profile(self.db, k[:-4] if k.endswith("_evo") else k) for k in opp_cards)
+            if p.kind == "troop" and not p.swarm
+            and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)
+        }
         self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
         self._nado_king_credited = False
         self._reset_vectors()
@@ -481,17 +489,56 @@ class SimMatchEnv:
                 return self.w_threat_miss
         return 0.0
 
+    def _opp_hand_specs(self):
+        """Best-effort opponent hand from the sim opponent's cycle state.
+
+        ScriptedBot and SelfPlayOpponent both expose `specs` and `cycle`, where the first four cycle
+        entries are the current hand. If an opponent implementation does not expose this, fall back to
+        unknown (empty) so reward logic degrades to the old elixir-only behaviour.
+        """
+        cyc = getattr(self.opponent, "cycle", None)
+        specs = getattr(self.opponent, "specs", None)
+        if not cyc or not specs:
+            return []
+        out = []
+        for idx in list(cyc)[:4]:
+            if 0 <= int(idx) < len(specs):
+                out.append(specs[int(idx)])
+        return out
+
+    def _opp_can_block_now(self) -> bool:
+        """True when the opponent can immediately answer a forward X-Bow this decision step.
+
+        This is deterministic in sim: a blocker must be BOTH in the current 4-card hand and affordable
+        at the opponent's current elixir.
+        """
+        if not self._opp_block_bases:
+            return False
+        opp_elixir = float(self.eng.elixir[1])
+        for s in self._opp_hand_specs():
+            if s is None:
+                continue
+            base = str(getattr(s, "base", "") or "")
+            if base in self._opp_block_bases and float(getattr(s, "elixir", 99.0)) <= opp_elixir:
+                return True
+        return False
+
     def _punish_window(self, spend: float = 0.0) -> bool:
         """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
         X-Bow is a 6-elixir bet that is simply BLANKED by any 3-5 elixir tank or mini-tank, so the bar
         is not a flat number: it is whether they can still afford their own CHEAPEST BLOCKER
-        (_opp_block_cost, from their actual deck). Reward-side only -- it reads the opponent's TRUE
-        elixir, which the policy cannot observe (see the observability note on _leaking_first).
-        ``spend`` is added back for the same pre-spend reason: an X-Bow costs 6, so measured POST-spend
-        this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays."""
+        (_opp_block_cost, from their actual deck) AND whether a blocker is actually in hand NOW. Reward-
+        side only -- it reads the opponent's true sim state (elixir + cycle), which the policy cannot
+        observe live. ``spend`` is added back for the same pre-spend reason: an X-Bow costs 6, so
+        measured POST-spend this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays.
+        """
         mine = self.eng.elixir[0] + spend
-        return (self.eng.elixir[1] < self._opp_block_cost
-                and mine - self.eng.elixir[1] >= self.punish_elixir_gap)
+        opp = float(self.eng.elixir[1])
+        # If they can drop a blocker immediately, this is not a punish window even with an elixir lead.
+        if self._opp_can_block_now():
+            return False
+        return ((opp < self._opp_block_cost)
+                or (mine - opp >= self.punish_elixir_gap))
 
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
