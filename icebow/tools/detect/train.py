@@ -41,6 +41,36 @@ from pathlib import Path
 RUN_NAME = "vision"
 
 
+def _auto_model(imgsz: int) -> str:
+    """Largest yolo11 backbone that fits this GPU at `imgsz`.
+
+    yolo11 n/s/m/l/x are the SAME architecture at five sizes -- a starting point, not five
+    models, and training collapses whichever you pick into the one detector at
+    runs/detect/vision. Offering the list as a dropdown made it read as five competing
+    models, so the choice is made here from measured VRAM and merely printed.
+
+    Thresholds are for imgsz 960 with ultralytics' auto-batch, which is where this project
+    trains; anything smaller leaves headroom, so the bound scales with the area.
+    """
+    need = {"yolo11x.pt": 22.0, "yolo11l.pt": 14.0, "yolo11m.pt": 10.0, "yolo11s.pt": 6.0}
+    try:
+        import torch
+        if not torch.cuda.is_available():
+            print("[train] no CUDA -> yolo11n.pt (CPU training is slow; expect hours)")
+            return "yolo11n.pt"
+        gb = torch.cuda.get_device_properties(0).total_memory / 1024 ** 3
+    except Exception:                                    # noqa: BLE001 -- torch missing/odd driver
+        return "yolo11s.pt"
+    scale = max(0.35, (imgsz / 960.0) ** 2)              # VRAM tracks pixel count
+    for name, want in need.items():
+        if gb >= want * scale:
+            print(f"[train] {gb:.0f} GB VRAM at imgsz {imgsz} -> {name} "
+                  "(size only; the result is still ONE detector)")
+            return name
+    print(f"[train] {gb:.0f} GB VRAM at imgsz {imgsz} -> yolo11n.pt (smallest that fits)")
+    return "yolo11n.pt"
+
+
 def _install_status_aug() -> str:
     """Monkeypatch Ultralytics' Albumentations pipeline to SIMULATE Clash Royale STATUS EFFECTS that
     distort a troop's appearance: slow/rage COLOUR TINTS (blue/purple), spell/effect HAZE + partial-
@@ -84,8 +114,12 @@ def _install_status_aug() -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
-    ap.add_argument("--model", default="yolo11x.pt",
-                    help="base weights: yolo11n/s/m/l/x.pt (YOLO, default x) or rtdetr-l/x.pt (RT-DETR)")
+    ap.add_argument("--model", default="auto", metavar="WEIGHTS",
+                    help="ADVANCED. Leave this alone. `auto` (default) CONTINUES the vision model "
+                         "you already have, and only if none exists picks a pretrained backbone "
+                         "sized to this GPU's VRAM. There is one detector either way -- yolo11 "
+                         "n/s/m/l/x are sizes of the same network, not rival models. Pass an "
+                         "explicit path only to start from some other file.")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
     ap.add_argument("--batch", type=int, default=-1,
@@ -100,6 +134,11 @@ def main() -> None:
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
                          "Albumentations if installed. Default OFF (leaves training unchanged).")
+    ap.add_argument("--fresh", action="store_true",
+                    help="THROW AWAY what the vision model learned and start from a pretrained "
+                         "backbone. Normally you do not want this: training already continues the "
+                         "model you have. Use it only when the existing model is worse than "
+                         "nothing -- e.g. it was fitted on labels that turned out to be wrong.")
     ap.add_argument("--resume", nargs="?", const="auto", default=None, metavar="RUN",
                     help="CONTINUE an interrupted run instead of starting a new one. Bare --resume picks the "
                          "runs/detect/vision/weights/last.pt; pass a folder name to pick a different one. "
@@ -107,8 +146,6 @@ def main() -> None:
                          "folder/epoch count/best.pt, so resuming loses nothing. All other flags are IGNORED -- "
                          "ultralytics restores them from the checkpoint's own args.")
     args = ap.parse_args()
-
-    is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
     try:
         from ultralytics import RTDETR, YOLO
     except ImportError:
@@ -120,6 +157,27 @@ def main() -> None:
     if not data.exists():
         raise SystemExit(f"no dataset at {data}\n"
                          "Build it first:  run.py autolabel --all   (then hand-label the frames).")
+
+    # THE DEFAULT IS TO CARRY ON. There is one model; training it again on more pictures must
+    # continue THAT model, not quietly begin a different one. Only when no model exists yet does
+    # this fall back to a pretrained YOLO backbone -- and that is a starting point, not a choice
+    # between models: you never see it unless there is nothing to continue.
+    ours = root / "runs" / "detect" / RUN_NAME / "weights" / "best.pt"
+    if args.model == "auto":
+        if ours.exists() and not args.fresh:
+            args.model = str(ours)
+            print(f"[train] CONTINUING the vision model: {ours.relative_to(root)}")
+            print("[train] (it keeps what it already learned and now also sees the new pictures; "
+                  "--fresh starts over from a pretrained backbone instead)")
+        else:
+            args.model = _auto_model(args.imgsz)
+            why = "starting over on request" if args.fresh else "no vision model yet"
+            print(f"[train] {why} -> starting from {args.model}")
+    elif args.fresh:
+        raise SystemExit("--fresh and --model are contradictory: --fresh means 'ignore the model "
+                         "we have', --model names exactly what to start from. Pick one.")
+
+    is_rtdetr = "rtdetr" in args.model.lower() or "rt-detr" in args.model.lower()
 
     if args.resume:
         runs = root / "runs" / "detect"
@@ -142,20 +200,29 @@ def main() -> None:
     if args.status_aug:
         erasing = 0.6                                    # spells/attacks/overlaps clouding a troop = partial occlusion
         print("[train] " + _install_status_aug())
-    model.train(
-        data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
-        patience=args.patience, seed=args.seed,
+    # The card is written in a finally: a run you STOP still leaves best.pt installed, and
+    # without this the panel goes on showing the previous run's numbers for weights that are no
+    # longer there. Seen exactly that -- a run stopped at epoch 103 left a card from two days
+    # earlier describing an 86-box model, so the panel reported 74.7% for a detector that had
+    # been replaced.
+    try:
+        model.train(
+            data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
+            patience=args.patience, seed=args.seed,
         # ONE vision model, always the same folder. Ultralytics' default (exist_ok=False)
         # auto-increments to board, board-2, board-3 ... which turns one network into a pile
         # of identically named directories, silently loads "whichever was newest", and makes
         # the count of models in this project unreadable. There is exactly one detector; a
         # retrain replaces it.
-        project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
-        # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
-        hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
-    )
-    print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
-    write_model_card(root / "runs" / "detect" / RUN_NAME, args)
+            project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
+            # colour jitter helps the own-troop (blue) labels transfer to the red enemy side
+            # (also covers slow/rage tints)
+            hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0,
+            erasing=erasing,           # no horizontal flip: lanes are asymmetric
+        )
+        print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
+    finally:
+        write_model_card(root / "runs" / "detect" / RUN_NAME, args)
 
 
 def write_model_card(run_dir: Path, args) -> None:
@@ -166,19 +233,38 @@ def write_model_card(run_dir: Path, args) -> None:
     quality at all. Measured that the hard way. The card is written only on COMPLETION, so it
     always describes best.pt as it currently stands, while results.csv stays free to show
     whatever is training right now.
+
+    THE ROW IT DESCRIBES IS THE BEST ONE, NOT THE LAST. best.pt is the best epoch's weights, so
+    a card built from the final row describes a checkpoint that is not on disk. Measured here:
+    a run stopped at epoch 103 had best.pt from epoch 76 (mAP50 0.710) while its last row read
+    0.695 -- the card would have understated the installed model and, worse, claimed numbers no
+    file backs. Ultralytics ranks by FITNESS (0.1*mAP50 + 0.9*mAP50-95), so that is the ranking
+    used here; picking the best mAP50 instead would name a different epoch than best.pt holds.
     """
     import json
     csv = run_dir / "results.csv"
     card = {"model": args.model, "imgsz": args.imgsz, "epochs_requested": args.epochs}
     try:
         lines = [ln for ln in csv.read_text(encoding="utf-8").splitlines() if ln.strip()]
-        head, last = [c.strip() for c in lines[0].split(",")], lines[-1].split(",")
-        row = dict(zip(head, last))
+        head = [c.strip() for c in lines[0].split(",")]
+        rows = [dict(zip(head, ln.split(","))) for ln in lines[1:]]
+
+        def _f(row, col):
+            v = row.get(col)
+            return float(v) if v not in (None, "", "nan") else None
+
+        def _fitness(row):
+            m50, m95 = _f(row, "metrics/mAP50(B)"), _f(row, "metrics/mAP50-95(B)")
+            return 0.1 * (m50 or 0.0) + 0.9 * (m95 or 0.0)
+
+        row = max(rows, key=_fitness) if rows else {}
+        card["epochs_run"] = _f(rows[-1], "epoch") if rows else None
         for key, col in (("epochs", "epoch"), ("mAP50", "metrics/mAP50(B)"),
                          ("mAP50_95", "metrics/mAP50-95(B)"),
                          ("precision", "metrics/precision(B)"), ("recall", "metrics/recall(B)")):
-            if row.get(col) not in (None, "", "nan"):
-                card[key] = float(row[col])
+            v = _f(row, col)
+            if v is not None:
+                card[key] = v
     except (OSError, ValueError, IndexError):
         pass
     try:

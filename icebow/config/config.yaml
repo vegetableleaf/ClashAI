@@ -680,21 +680,28 @@ monitor:
 detect:
   classes_file: config/detect_classes.yaml
   # ONE VISION MODEL, deliberately not selectable. Training writes runs/detect/vision and
-  # REPLACES it; _resolve_weights reads that path and nothing else.
+  # REPLACES it; _resolve_weights reads that path and nothing else. There is no `weights:` key
+  # here on purpose -- see below before you add one back.
   #
-  # This REVERSES the pin below, and the reason it existed is real -- measured 2026-08-07,
-  # board-17 trained last but REGRESSED (whitelist identity recall 0.675 vs board-16's 0.724),
-  # so a newest-wins default silently promoted a worse detector. The pin solved that by making
-  # the operating model a config value, which produced its own failure: a pin carried between
-  # machines points at a run that is not there, and everything falls back to newest-wins ANYWAY,
-  # silently. Seen here: this key read board-16, board-16 did not exist, and play / train-rl /
-  # the overlay clips all ran board-2 without a word.
+  # This REVERSES an earlier pin, and the reason that pin existed is real. Measured 2026-08-07 on
+  # the frozen val subset (identical 241 images / 817 boxes for every generation), board-17 trained
+  # last but REGRESSED -- whitelist identity recall 0.675 / precision 0.882, failing the 0.70 gate,
+  # vs board-16's 0.724 / 0.911 which passes. Its ultralytics mAP50 looked best (0.7144) only
+  # because it validated on a larger val set. So a newest-wins default silently promoted a worse
+  # detector into play / train-rl / mine-replays / label-queue.
+  #
+  # The pin solved that by making the operating model a config value, which produced its own
+  # failure: a pin carried between machines points at a run that is not there, and everything falls
+  # back to newest-wins ANYWAY, silently. Seen here -- this key read board-16, board-16 did not
+  # exist, and play / train-rl / the overlay clips all ran board-2 without a word.
   #
   # The risk is NOT gone, it moved: a bad retrain now overwrites a good model instead of sitting
   # beside it. What guards it is that the panel shows the model's measured quality
   # (model_card.json, written on completion) and draws its predictions against your own labelled
-  # frames, so a regression is visible rather than inferred. Archive a run by copying the folder
-  # and compare with `detect-eval --weights <path>`.
+  # frames, so a regression is visible rather than inferred. Before retraining on top of something
+  # good, export it (panel button "Vision AI"). Judge a new generation with
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt` against the exported one, and
+  # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
   dataset_dir: data/detect
   # INFERENCE RESOLUTION for the live detector. MUST match what the weights were trained at.
   # ultralytics' predict() defaults to 640 no matter what the model was fitted for, and every

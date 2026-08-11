@@ -86,6 +86,10 @@ details[open]>summary{color:var(--fg)}
 .kpi{background:var(--bg2);border:1px solid var(--line);border-left:0;border-top:0;padding:10px 12px}
 .kpi .v{font-size:20px;font-weight:600}
 .kpi .k{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em}
+/* the change, not the value -- "is it still improving" is the question a live panel answers */
+.kpi .d{font-size:10px;color:var(--dim);margin-top:2px}
+.kpi .d.up{color:var(--ok,#6f9b7c)}
+.kpi .d.down{color:var(--bad)}
 .charts{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:0;
   border:1px solid var(--line);border-right:0;border-bottom:0}
 .chart{background:var(--bg2);border:1px solid var(--line);border-left:0;border-top:0;padding:10px}
@@ -102,7 +106,40 @@ svg{display:block;width:100%;height:180px}
 .tbl input{width:100%}
 .bar{background:var(--bg3);height:8px;border:1px solid var(--line);overflow:hidden;min-width:80px}
 .bar > i{display:block;height:100%;background:var(--acc)}
+.bar{display:inline-block;vertical-align:middle}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+/* A class with NO pictures is not "a low number", it is a hole -- the detector has never seen
+   that unit and cannot predict it at all. Colour the two cases differently. */
+.tbl tr.cov-err td:first-child{color:var(--bad)}
+.tbl tr.cov-warn td:first-child{color:var(--warn,#c90)}
+.tbl tr.cov-ok td:first-child{color:var(--ok,var(--acc))}
 
+/* Labelling: the frame is a tall phone client, so a plain block layout wastes the whole right
+   half of the window. Picture left at its natural width, every control in the column beside it. */
+.labgrid{display:flex;gap:14px;align-items:flex-start}
+/* The picture takes the room; the tool column is a FIXED strip. The other way round left an
+   800px-wide column of stretched controls, which is the same wasted space in a new place. The
+   frame is 756px natively, so it never upscales past its own pixels. */
+.labgrid > #labcanvaswrap{flex:1 1 auto;max-width:min(756px,calc(100% - 340px))}
+.labtools{flex:0 0 320px;display:flex;flex-direction:column;gap:10px}
+.labtool{border:1px solid var(--line);background:var(--bg2);padding:8px 10px}
+.labtool h4{margin:0 0 6px;font-size:11px;font-weight:500;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.06em}
+.labtool > .btn{width:100%;margin-top:6px}
+.labtool input[type=text],.labtool select{width:100%}
+.labtool .chk{display:block;margin:3px 0}
+/* the box list is the thing you click to select, so it has to look clickable */
+#lablist{max-height:180px;overflow:auto;font-size:12px}
+#lablist .boxrow{display:flex;justify-content:space-between;gap:6px;padding:3px 5px;cursor:pointer;
+  border:1px solid transparent}
+#lablist .boxrow:hover{background:var(--bg3)}
+#lablist .boxrow.on{border-color:var(--acc);color:var(--acc)}
+#lablist .boxrow .x{color:var(--dim);padding:0 3px}
+#lablist .boxrow .x:hover{color:var(--bad)}
+@media (max-width:1000px){
+  .labgrid{flex-wrap:wrap}
+  .labgrid > #labcanvaswrap{max-width:100%}
+}
 .heatwrap{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
 .heat{display:grid;gap:1px;background:var(--line);padding:1px;border:1px solid var(--line)}
 .heat div{width:11px;height:11px;background:#050709}

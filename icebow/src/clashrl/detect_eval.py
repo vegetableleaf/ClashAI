@@ -108,8 +108,9 @@ def detect_eval(cfg, weights: str | None = None, conf: float | None = None,
     deck = [d for d in deck if not (d in seen or seen.add(d))]
 
     if weights is None:
-        # Default to THE vision model, the one everything else loads; --weights is still how
-        # you point this at an archived file to compare two of them.
+        # Default to THE vision model -- the one everything else loads, so this scores the
+        # OPERATING detector, same intent as the pin it replaces. --weights is still how you
+        # point this at an archived file to compare two of them.
         from .detect import _resolve_weights
         wpath, _ = _resolve_weights(cfg, None)
         if wpath is None:

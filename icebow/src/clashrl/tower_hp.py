@@ -193,6 +193,108 @@ def _widen(box: List[float], fx: float = 0.6, fy: float = 0.4) -> List[float]:
     return [cx - hw * (1 + fx), cy - hh * (1 + fy), cx + hw * (1 + fx), cy + hh * (1 + fy)]
 
 
+def _team_mask(bgr: np.ndarray, mine: bool) -> np.ndarray:
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+    if mine:
+        return cv2.inRange(hsv, *_BLUE)
+    return cv2.bitwise_or(cv2.inRange(hsv, *_PINK), cv2.inRange(hsv, *_PINK2))
+
+
+# How far to hunt for a bar that is not where the config says, as a share of frame height.
+# A Windows title bar is ~30px on a 1200px-tall client, i.e. ~2.5%; 6% covers that with room
+# and still cannot reach the opposite tower's bar (they are ~50% of the height apart).
+_SNAP_DY = 0.06
+_SNAP_MIN_ROWS = 3          # a bar is a RUN of coloured rows, not one stray line of pixels
+
+
+# A real HP bar spans nearly the whole width of its own box; RED TEXT does not. Without this,
+# the search found the opponent's name (drawn in red) above the left tower and reported a
+# healthy-looking 95% "bar" for a tower whose actual bar it never reached -- seen on the
+# 657x1198 frames, where E2 snapped correctly and E1 landed on "parejaexplosiva".
+_SNAP_MIN_COLS = 0.55
+
+
+def _bars(frame: np.ndarray, mine: bool) -> List[Tuple[float, float]]:
+    """Centres of everything in the frame SHAPED like an HP bar, as (x, y) fractions.
+
+    Shape is what separates a bar from the other red things on screen. A princess bar is a wide,
+    flat, solidly filled rectangle; the opponent's NAME is red text of similar width but broken
+    into letters, and the card tray is blue but far too tall. Measured on a 657x1198 frame, this
+    returns exactly the two enemy bars and nothing else, where a colour-only search down the
+    expected column returned only the player's name.
+    """
+    h, w = frame.shape[:2]
+    m = (_team_mask(frame, mine) > 0).astype(np.uint8)
+    n, _lab, stats, _cent = cv2.connectedComponentsWithStats(m, 8)
+    out: List[Tuple[float, float]] = []
+    min_w = max(20, int(0.05 * w))                 # a bar spans a real part of the width
+    for i in range(1, n):
+        x, y, bw, bh, area = stats[i]
+        if bw < min_w or not (3 <= bh <= max(6, 0.035 * h)):
+            continue
+        if bw / max(bh, 1) < 3.0:                  # wide and FLAT
+            continue
+        if area < bw * bh * 0.4:                   # solid, not a row of letters
+            continue
+        out.append(((x + bw / 2) / w, (y + bh / 2) / h))
+    return out
+
+
+# How far a bar may sit from where config.yaml says before we refuse to believe it is the same
+# tower. The two princess towers are ~0.5 of the width apart, so 0.15 cannot cross between them.
+_MATCH_R = 0.15
+
+
+def frame_offset(frame: np.ndarray, cfg=None) -> Tuple[float, float]:
+    """ONE (dx, dy) correction for the whole frame, in frame fractions.
+
+    The boxes in config.yaml are fractions of the WHOLE frame, which survives a change of
+    resolution and does not survive a change of what is in the frame. A client captured with its
+    window title bar, or with different padding around the arena, puts every bar somewhere else;
+    the fractions then point at empty board, `bar_fraction` returns None, and a healthy tower is
+    reported DESTROYED -- the worst possible failure, because "destroyed" is exactly what the
+    policy must never get wrong.
+
+    Measured on a 657x1198 frame: the enemy bars sit at y 0.164-0.177 while config points at
+    0.091-0.156, and at x 0.199-0.314 while config points at 0.096-0.295. So it is NOT only a
+    vertical shift -- an earlier vertical-only version of this failed for that reason, and a
+    per-box hunt failed differently by latching onto the opponent's red name. Both were measured
+    before being replaced.
+
+    Estimated once per frame and shared by every box, because the cause is the capture geometry,
+    which cannot differ between two towers in the same picture. Returns (0.0, 0.0) when nothing
+    matches, i.e. when the geometry is already right or the towers really are gone.
+    """
+    enemy, mine_boxes = _boxes(cfg)
+    dxs: List[float] = []
+    dys: List[float] = []
+    for boxes, is_mine in ((enemy, False), (mine_boxes, True)):
+        found = _bars(frame, is_mine)
+        if not found:
+            continue
+        for box in boxes:
+            wide = _widen(box)
+            cx, cy = (wide[0] + wide[2]) / 2, (wide[1] + wide[3]) / 2
+            near = [(abs(fx - cx) + abs(fy - cy), fx, fy) for fx, fy in found]
+            near.sort()
+            d, fx, fy = near[0]
+            if d > _MATCH_R:
+                continue
+            dxs.append(fx - cx)
+            dys.append(fy - cy)
+    if not dxs:
+        return 0.0, 0.0
+    # median: one mismatched tower cannot drag the estimate
+    dxs.sort(); dys.sort()
+    mid = len(dxs) // 2
+    dx = dxs[mid] if len(dxs) % 2 else (dxs[mid - 1] + dxs[mid]) / 2
+    dy = dys[mid] if len(dys) % 2 else (dys[mid - 1] + dys[mid]) / 2
+    h, w = frame.shape[:2]
+    if abs(dx) < 1.0 / w and abs(dy) < 1.0 / h:
+        return 0.0, 0.0
+    return dx, dy
+
+
 def bar_cover(frame: np.ndarray, box: List[float], mine: bool, widen: bool = True) -> float:
     """Share of the box painted in that team's HP-bar colour. ~0 = no bar there = destroyed.
 
@@ -300,9 +402,28 @@ def read_towers(frame: np.ndarray, cfg=None, reader: Optional["DigitReader"] = N
     out: List[Dict[str, Any]] = []
     spec = [(f"E{i+1}", b, False, f"opponent princess {i+1}") for i, b in enumerate(enemy)]
     spec += [(f"M{i+1}", b, True, f"your princess {i+1}") for i, b in enumerate(mine)]
+
+    # Does this frame's geometry match the config at all? Ask ONCE, from the whole frame, before
+    # reading anything -- a per-box hunt lets a box with no bar in reach latch onto unrelated red.
+    dx = dy = 0.0
+    if any(bar_fraction(frame, _widen(b), m) is None for b, m in
+           [(b, False) for b in enemy] + [(b, True) for b in mine]):
+        dx, dy = frame_offset(frame, cfg)
+
     for name, box, is_mine, label in spec:
+        snapped = 0.0
         bar = _widen(box)
         fill = bar_fraction(frame, bar, is_mine)
+        if fill is None and (dx or dy):
+            # Nothing at the configured spot AND the frame's geometry is shifted: try the shifted
+            # spot before calling a tower destroyed. A tower that is genuinely gone has no bar
+            # EITHER WAY, so this cannot resurrect one.
+            box2 = [box[0] + dx, box[1] + dy, box[2] + dx, box[3] + dy]
+            bar2 = _widen(box2)
+            fill2 = bar_fraction(frame, bar2, is_mine)
+            if fill2 is not None:
+                box, bar, fill = box2, bar2, fill2
+                snapped = max(abs(dx), abs(dy))
         hp, conf = reader.read(_crop(frame, box))
         if fill is None:
             state, hp, conf = "destroyed", 0, 1.0
@@ -312,7 +433,11 @@ def read_towers(frame: np.ndarray, cfg=None, reader: Optional["DigitReader"] = N
             state = "alive"
         out.append({"name": name, "label": label, "side": "enemy" if not is_mine else "mine",
                     "hp": hp, "conf": round(float(conf), 3), "fill": fill,
-                    "state": state, "box": box, "bar": bar, "kind": "princess"})
+                    "state": state, "box": box, "bar": bar, "kind": "princess",
+                    # non-zero = this frame's geometry differs from config.yaml's and the box was
+                    # moved to find the bar. Surfaced so a systematic offset is visible rather
+                    # than silently compensated forever.
+                    "snapped": round(snapped, 4) if snapped else 0.0})
     for side, is_mine, label in (("enemy", False, "opponent king"), ("mine", True, "your king")):
         key = "enemy_king_bar" if not is_mine else "my_king_bar"
         band = (cfg.get("env", key, default=_KING_BARS[side]) if cfg else _KING_BARS[side])

@@ -9,7 +9,11 @@
 <body>
 <header>
   <h1>ClashAI <span class="sub">Launcher</span></h1>
-  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span></div>
+  <!-- The training curve used to live only in the Models tab and only refreshed while that tab
+       was open -- but you start a training from Control and then watch nothing happen. This
+       strip follows you: it appears on every tab while the detector is training. -->
+  <div id="statusbar"><span class="pill idle" id="runpill">no job running</span>
+    <span id="trainpill" class="pill run" hidden></span></div>
   <div class="spacer"></div>
   <button id="helpbtn" class="btn small" title="Open the introduction again">Introduction</button>
   <button id="tosbtn" class="btn small" title="Note on the terms of service">Notes</button>
@@ -239,39 +243,105 @@
       <kbd>Del</kbd> removes it &middot; drag to add one &middot; <kbd>Enter</kbd> saves and moves on.
       Need frames? Control tab &rarr; Vision AI &rarr; <i>1. Get frames to label</i>.</p>
     <div id="labstats" class="row"></div>
-    <div class="row">
-      <button id="labprev" class="btn small">Previous</button>
-      <button id="labnext" class="btn small">Next frame</button>
-      <!-- 236 classes in the taxonomy's own order is unusable without a filter: type a few
-           letters, the list narrows, the class ids underneath stay untouched. -->
-      <label>Class <input id="labsearch" type="text" placeholder="search ..." size="12"
-             title="Filters the list below. Enter picks the first match."></label>
-      <select id="labclass" title="Recently used first, then alphabetical."></select>
-      <span id="labclassmsg" class="msg"></span>
-      <button id="labsave" class="btn primary">Save and continue</button>
-      <button id="labempty" class="btn small" title="This frame genuinely contains none of the classes">No units here</button>
-      <button id="labundo" class="btn small" title="Removes the selected box, or the last one drawn">Delete box</button>
-      <span id="labmsg" class="msg"></span>
-    </div>
-    <div class="row">
-      <label class="chk"><input type="checkbox" id="labprefill" checked>
-        Pre-fill boxes from the model</label>
-      <span id="labprefillmsg" class="msg"></span>
-    </div>
-    <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
-         state) always ran silently, so this frame looked like it was only "units or
-         nothing". Show every reading on the same picture instead. -->
-    <div class="row">
-      <label><input type="checkbox" id="labread"> Show everything the bot reads off this frame</label>
-      <span id="labreadmsg" class="msg"></span>
-    </div>
-    <div id="labreadout"></div>
-    <div id="labwrap" class="heatwrap">
+    <!-- "How many pictures do I have of which unit" -- the question that decides whether another
+         training run is worth starting. A total box count cannot answer it: 80 boxes spread over
+         3 cards and 80 boxes spread over 30 are completely different datasets. -->
+    <details id="labcovwrap" class="cfggroup">
+      <summary><b>Coverage &mdash; how many pictures of which unit</b>
+        <span id="labcovsum" class="hint"></span></summary>
+      <p class="hint">Two numbers per class, because they are not the same thing. <b>Boxes</b> is how
+        many examples the detector sees; <b>frames</b> is how many different pictures they came
+        from. Fifty boxes out of three frames is three backgrounds and three poses &mdash; it can be
+        memorised and still fail on the fourth.
+        <br><b>Deck</b> = your own eight cards. <b>Threat</b> = the cards the playing AI is actually
+        fed (<code>observation.detector_cards</code>). Everything else can stay at zero without
+        costing anything, which is why the raw count is not a to-do list.</p>
+      <div class="row">
+        <label>Find <input id="labcovsearch" type="text" placeholder="unit name ..." size="14"></label>
+        <label>Show
+          <select id="labcovfilter">
+            <option value="matters">Deck + threats (what counts)</option>
+            <option value="missing">Missing only (zero pictures)</option>
+            <option value="all">Every class</option>
+          </select></label>
+        <label>Sort
+          <select id="labcovsort">
+            <option value="need">Least covered first</option>
+            <option value="boxes">Most boxes first</option>
+            <option value="name">Name</option>
+          </select></label>
+        <button id="labcovreload" class="btn small">Refresh</button>
+      </div>
+      <div id="labcovbody"></div>
+    </details>
+    <!-- The frame is TALL (a phone client, 756x1334) so it leaves a wide empty column beside it.
+         Every control lives in that column instead of in rows above the picture: the picture is
+         what you look at, and the tools belong next to it, not scrolled away from it. -->
+    <div id="labwrap" class="labgrid">
       <div id="labcanvaswrap" style="position:relative;display:inline-block">
         <img id="labimg" alt="frame to label" style="display:block;max-width:100%">
         <canvas id="labcanvas" style="position:absolute;left:0;top:0;cursor:crosshair"></canvas>
       </div>
-      <div id="lablist" class="heatlegend"></div>
+      <div class="labtools">
+        <div class="labtool">
+          <!-- Labelling new frames is only half the job. The other half is REVIEWING labels that
+               already exist -- 2,414 of them came from another machine and nobody here has ever
+               looked at them, and the swarm-landing case (two Archers merged into one oversized
+               box) can only be fixed by opening the frame that already has it. -->
+          <h4>Which frames</h4>
+          <select id="labsource">
+            <option value="to_label">Waiting to be labelled</option>
+            <option value="labelled">Already labelled (review / fix)</option>
+            <option value="train">Already labelled &mdash; train only</option>
+            <option value="val">Already labelled &mdash; val only</option>
+          </select>
+          <label class="chk">only frames containing
+            <input id="labonly" type="text" placeholder="class name, e.g. archers" size="14"></label>
+          <span id="labsrcmsg" class="msg"></span>
+          <div class="row">
+            <button id="labprev" class="btn small">Previous</button>
+            <button id="labnext" class="btn small">Next frame</button>
+          </div>
+          <span id="labmsg" class="msg"></span>
+        </div>
+
+        <div class="labtool">
+          <h4>Class</h4>
+          <!-- 225 classes in the taxonomy's own order is unusable without a filter: type a few
+               letters, the list narrows, the class ids underneath stay untouched. -->
+          <input id="labsearch" type="text" placeholder="search ..."
+                 title="Filters the list below. Enter picks the first match.">
+          <select id="labclass" size="8" title="Recently used first, then alphabetical."></select>
+          <span id="labclassmsg" class="msg"></span>
+        </div>
+
+        <div class="labtool">
+          <h4>Boxes on this frame</h4>
+          <div id="lablist"></div>
+          <button id="labundo" class="btn small"
+                  title="Removes the SELECTED box. Click one first, or right-click it on the picture.">
+            Delete selected box</button>
+        </div>
+
+        <div class="labtool">
+          <button id="labsave" class="btn primary">Save and continue</button>
+          <button id="labempty" class="btn small"
+                  title="This frame genuinely contains none of the classes">No units here</button>
+        </div>
+
+        <div class="labtool">
+          <label class="chk"><input type="checkbox" id="labprefill" checked>
+            Pre-fill boxes from the model</label>
+          <span id="labprefillmsg" class="msg"></span>
+          <!-- The detector is one of five readers. The others (hand, elixir, tower HP, screen
+               state) always ran silently, so this frame looked like it was only "units or
+               nothing". Show every reading on the same picture instead. -->
+          <label class="chk"><input type="checkbox" id="labread">
+            Show everything the bot reads</label>
+          <span id="labreadmsg" class="msg"></span>
+        </div>
+        <div id="labreadout"></div>
+      </div>
     </div>
   </section>
 
@@ -286,16 +356,25 @@
     <!-- Labelling is the expensive part and the part that combines across people, so the
          vision model has to be movable in one file: no git, no server, no typed paths. -->
     <div class="cfggroup">
-      <h3>Move the vision AI to another PC</h3>
+      <h3>Move a model to another PC</h3>
       <p class="hint" id="visioniodesc">One .zip in, one .zip out. Nothing is uploaded anywhere &mdash;
         it writes a file and you move it however you like.</p>
       <div class="row">
-        <button id="vioexportmodel" class="btn small">Download model only</button>
-        <button id="vioexportfull" class="btn small">Download model + labelled frames</button>
+        <button id="vioexportmodel" class="btn small" data-kind="model">Vision AI</button>
+        <button id="vioexportfull" class="btn small" data-kind="full">Vision AI + labelled frames</button>
+        <button id="vioexportpolicy" class="btn small" data-kind="policy">Playing AI</button>
+        <button id="vioexportall" class="btn small" data-kind="all">Everything</button>
         <span id="vioexportmsg" class="msg"></span>
       </div>
+      <!-- Two ways in. The native window has no download manager and its file dialog is not
+           guaranteed, so a bundle already sitting in data/exports must be selectable directly. -->
       <div class="row">
-        <label>Import a bundle <input type="file" id="vioimportfile" accept=".zip"></label>
+        <label>Already on this PC
+          <select id="violocal" title="Bundles found in data/exports"></select></label>
+        <button id="violocalreload" class="btn small">Refresh</button>
+      </div>
+      <div class="row">
+        <label>&hellip; or browse for one <input type="file" id="vioimportfile" accept=".zip"></label>
         <button id="vioimportcheck" class="btn small">Check it</button>
         <button id="vioimportapply" class="btn primary" disabled>Install</button>
         <span id="vioimportmsg" class="msg"></span>
@@ -311,6 +390,8 @@
     <button id="logtoggle" class="btn small" title="Show or hide the log">Show log</button>
     <select id="logselect"></select>
     <label class="chk"><input type="checkbox" id="autoscroll" checked> Auto-scroll</label>
+    <button id="logcopy" class="btn small"
+            title="Copies your selection, or the whole log if nothing is selected">Copy</button>
     <button id="logclear" class="btn small">Clear view</button>
     <a id="logdl" class="btn small" href="#">Log file</a>
     <span id="logstatus" class="hint"></span>

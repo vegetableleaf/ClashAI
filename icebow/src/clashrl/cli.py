@@ -131,7 +131,7 @@ def _cmd_train_sim(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim(_sized_config(args), matches=args.matches, resume=args.resume,
-              seed=args.seed, envs=args.envs)
+              seed=args.seed, envs=args.envs, resume_from=args.resume_from)
 
 
 def _cmd_train_sim_ppo(args) -> None:
@@ -283,9 +283,15 @@ def _cmd_detect_adopt(args) -> None:
                  prefix=args.prefix, dry_run=args.dry_run)
 
 
+def _cmd_detect_check(args) -> None:
+    from .detect_check import detect_check
+    detect_check(Config.load(args.config), n=args.n, split=args.split, cls=args.cls,
+                 out=args.out, seed=args.seed, min_boxes=args.min_boxes, scale=args.scale)
+
+
 def _cmd_detect_import(args) -> None:
     from .detect import detect_import
-    detect_import(Config.load(args.config), args.export, args.val_frac)
+    detect_import(Config.load(args.config), args.export, args.val_frac, dry_run=args.dry_run)
 
 
 def _cmd_detect_frames(args) -> None:
@@ -302,6 +308,17 @@ def _cmd_detect_timelapse(args) -> None:
 def _cmd_detect_preview(args) -> None:
     from .detect import detect_preview
     detect_preview(Config.load(args.config), args.session, args.count, args.weights, args.conf)
+
+
+def _cmd_katacr_segments(args) -> None:
+    from .katacr_segments import katacr_segments
+    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+                    dry_run=args.dry_run)
+
+
+def _cmd_models(args) -> None:
+    from .models import models
+    models(Config.load(args.config))
 
 
 def _cmd_sprites(args) -> None:
@@ -428,7 +445,11 @@ def main() -> None:
     tsi = sub.add_parser("train-sim",
                          help="train the policy in the headless SIMULATOR (thousands of matches, from scratch, no vision)")
     tsi.add_argument("--matches", type=int, default=2000, help="max matches to play before stopping")
-    tsi.add_argument("--resume", action="store_true", help="continue data/policy_sim.pt instead of training from scratch")
+    tsi.add_argument("--resume", action="store_true", help="continue an existing checkpoint instead of training from scratch")
+    tsi.add_argument("--resume-from", choices=["best", "latest"], default="best",
+                     help="WHICH checkpoint --resume continues: 'best' = policy_sim_best.pt, the "
+                          "highest benchmark ever reached (default); 'latest' = policy_sim.pt, "
+                          "exactly where the last run stopped, which can be worse")
     tsi.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsi.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances feeding one learner (default: sim.envs)")
@@ -604,7 +625,8 @@ def main() -> None:
     pan.add_argument("--conf", type=float, default=0.20,
                      help="detection floor. RECALL-FIRST and deliberately below the live gate (0.40): "
                           "deleting a wrong box is one keypress, drawing a missed one takes seconds")
-    pan.add_argument("--weights", default=None, help="best.pt (default: the pinned detect.weights)")
+    pan.add_argument("--weights", default=None,
+                     help="best.pt (default: THE vision model, runs/detect/vision/weights/best.pt)")
     pan.add_argument("--device", default=None,
                      help="torch device, e.g. cpu -- use cpu while a training run owns the GPU")
     pan.add_argument("--limit", type=int, default=None, help="only do the first N queue frames (trial)")
@@ -625,6 +647,10 @@ def main() -> None:
                          help="import a Label Studio JSON or YOLO export into the training dataset (remaps classes by name + train/val split)")
     din.add_argument("--export", required=True, help="path to the LS export: a JSON file / folder (recommended on Windows), or a YOLO export folder (classes.txt + labels/)")
     din.add_argument("--val-frac", type=float, default=None, help="validation fraction (default: detect.val_frac)")
+    din.add_argument("--dry-run", action="store_true",
+                     help="report what would be imported, which classes do not map, and which of "
+                          "YOUR frames the export would push out of the split -- writes nothing. "
+                          "Use this first for any dataset you did not label yourself")
     din.set_defaults(func=_cmd_detect_import)
 
     dad = sub.add_parser("detect-adopt",
@@ -676,6 +702,40 @@ def main() -> None:
     dpv.add_argument("--weights", default=None, help="path to best.pt (default: latest runs/detect/*/weights/best.pt)")
     dpv.add_argument("--conf", type=float, default=0.25, help="confidence threshold for shown detections")
     dpv.set_defaults(func=_cmd_detect_preview)
+
+    # The counterpart to detect-preview: that one shows what the MODEL predicts, this one shows
+    # what the LABELS claim. A dataset can pass every count-based check with every box in the
+    # wrong place, and looking is the only way to find that.
+    dck = sub.add_parser("detect-check",
+                         help="draw the GROUND-TRUTH boxes onto frames and save a contact sheet "
+                              "-- verify a dataset (especially an imported one) with your eyes")
+    dck.add_argument("--class", dest="cls", default=None,
+                     help="only frames containing this class, and highlight it. The point of the "
+                          "tool: a class with 1 box is where a single mislabel is 100%% of it")
+    dck.add_argument("--n", type=int, default=6, help="how many frames to show")
+    dck.add_argument("--split", default="train", choices=("train", "val", "both"))
+    dck.add_argument("--min-boxes", type=int, default=1, help="skip frames with fewer boxes")
+    dck.add_argument("--scale", type=float, default=0.5, help="tile scale (1.0 = native size)")
+    dck.add_argument("--seed", type=int, default=None, help="repeat the same sample")
+    dck.add_argument("--out", default=None, help="output image (default: data/detect_check.jpg)")
+    dck.set_defaults(func=_cmd_detect_check)
+
+    kseg = sub.add_parser("katacr-segments",
+                          help="import KataCR's MIT-licensed segment library into the sprite bank "
+                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
+                               "to our arena -- synth pastes at native size)")
+    kseg.add_argument("--src", required=True,
+                      help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
+    kseg.add_argument("--scale", default="auto",
+                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
+    kseg.set_defaults(func=_cmd_katacr_segments)
+
+    mdl = sub.add_parser("models",
+                         help="which NETWORKS exist and which one each path actually uses -- there "
+                              "are two (the VISION detector and the PLAYING policy) and they share "
+                              "nothing; also checks the pin resolves and inference imgsz matches training")
+    mdl.set_defaults(func=_cmd_models)
 
     spr = sub.add_parser("sprites",
                          help="cut annotated units out of their arena background (GrabCut) into a per-class RGBA "

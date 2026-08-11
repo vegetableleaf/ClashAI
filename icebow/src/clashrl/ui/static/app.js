@@ -456,12 +456,29 @@ function setLogOpen(open) {
 }
 $("#logtoggle").onclick = () => setLogOpen($("#logpanel").classList.contains("collapsed"));
 
+/* Is the user selecting text inside the log right now?
+
+   This is why copying from the log was impossible while anything ran. Lines arrive continuously,
+   and both of the things done per line destroy a selection in progress: removeChild() drops the
+   node your selection anchors to, and setting scrollTop yanks the view out from under the drag.
+   Training prints several lines a second, so the selection never survived long enough to reach
+   Ctrl+C. Nothing about it was a CSS problem. */
+function logSelecting() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return false;
+  const pre = $("#log");
+  return pre && pre.contains(sel.getRangeAt(0).commonAncestorContainer);
+}
+
 function logLine(line) {
   const pre = $("#log");
   const cls = (line.startsWith("[ui]") || line.startsWith("$ ")) ? "ui"
     : (/EVAL @|new BEST/.test(line) ? "ev"
     : (/Traceback|Error|error|failed/.test(line) ? "err" : ""));
   pre.appendChild(el("div", cls, line));
+  // While you are selecting, the log keeps GROWING but stops being rewritten underneath you.
+  // The trim and the scroll resume the moment you let go.
+  if (logSelecting()) { $("#logstatus").textContent = "selection held -- release to resume"; return; }
   while (pre.childNodes.length > 3000) pre.removeChild(pre.firstChild);
   if ($("#autoscroll").checked) pre.scrollTop = pre.scrollHeight;
 }
@@ -490,6 +507,24 @@ function attachLog(jid) {
   $("#logstatus").textContent = "";
 }
 $("#logclear").onclick = () => { $("#log").innerHTML = ""; };
+
+// Copy without selecting at all -- the common case is "send someone the whole thing".
+$("#logcopy").onclick = async () => {
+  const sel = window.getSelection();
+  const picked = logSelecting() ? sel.toString() : "";
+  const text = picked || [...$("#log").childNodes].map(n => n.textContent).join("\n");
+  const st = $("#logstatus");
+  try {
+    await navigator.clipboard.writeText(text);
+    st.textContent = `copied ${picked ? "the selection" : "all"} (${text.length} chars)`;
+  } catch (e) {
+    // The native window may refuse clipboard access; fall back to selecting it FOR you so
+    // Ctrl+C works, rather than failing silently.
+    const r = document.createRange(); r.selectNodeContents($("#log"));
+    sel.removeAllRanges(); sel.addRange(r);
+    st.textContent = "selected everything -- press Ctrl+C";
+  }
+};
 $("#logselect").onchange = e => { if (e.target.value) attachLog(e.target.value); };
 
 function renderLogSelect() {
@@ -828,9 +863,14 @@ $("#dashreload").onclick = () => loadRuns();
 
 /* The vision AI on the Progress tab too -- it is the other half of the project and its
    training was only visible under Models, which is where you look for FILES, not progress. */
+let visionProgTimer = null;
 async function loadVisionProgress() {
   const host = $("#visionprog");
   if (!host) return;
+  // Redraw itself while a run is live. loadDash() only fires when the tab is OPENED, so the
+  // panel showed whatever was true at that moment and then sat frozen -- which is exactly why
+  // "you still cannot see any improvement" was a fair complaint even though the strip existed.
+  clearInterval(visionProgTimer); visionProgTimer = null;
   let v;
   try { v = (await api("/api/models")).vision || {}; } catch (e) { host.innerHTML = ""; return; }
   const pr = v.progress || {}, rows = pr.rows || [], mt = v.metrics || {};
@@ -841,20 +881,76 @@ async function loadVisionProgress() {
     box.appendChild(el("p", "hint", v.trained
       ? "Trained, but the epoch log of that run is gone (a later training start truncates it)."
       : "Not trained yet. Label frames in the Labelling tab, then run Train the vision AI."));
-  } else {
-    const last = rows[rows.length - 1];
-    const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
-    box.appendChild(el("p", "hint",
-      `${pr.running ? "training now" : "last run"} -- epoch ${last.epoch != null ? last.epoch : "?"}`
-      + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
-      + `  |  best mAP50 ${pct1(best)}  |  quality of the installed model ${pct1(mt.mAP50)}`
-      + `  |  trained on ${v.boxes} boxes`));
-    box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+    host.appendChild(box);
+    return;
   }
+  const last = rows[rows.length - 1];
+  const bestOf = k => rows.reduce((a, r) => (r[k] != null && (a == null || r[k] > a) ? r[k] : a), null);
+
+  box.appendChild(el("p", "hint",
+    (pr.running ? "TRAINING NOW" : "last run")
+    + ` -- epoch ${last.epoch != null ? last.epoch : "?"}`
+    + (pr.epochs_total ? ` of ${pr.epochs_total}` : "")
+    + `  |  installed model ${pct1(mt.mAP50)}  |  ${v.boxes} boxes on ${v.labelled_train
+       + v.labelled_val} frames` + (pr.running ? `  |  ${etaText(rows, pr.epochs_total)}` : "")));
+
+  // THE POINT OF THIS PANEL: not "what is it", but "is it getting better". Each number carries
+  // its change over the last five epochs, because a single value cannot answer that -- and mAP50
+  // alone is the worst one to watch early, since it crawls in the third decimal while RECALL is
+  // still climbing in whole percent.
+  const grid = el("div", "kpis");
+  [["mAP50", "mAP50", "how much it finds AND names right"],
+   ["recall", "recall", "share of real units it finds at all"],
+   ["precision", "precision", "share of its boxes that are real"],
+   ["mAP50_95", "mAP50-95", "the strict one: boxes must fit tightly"]].forEach(([k, label, why]) => {
+    const cur = last[k];
+    const d = delta(rows, k, 5);
+    const cell = el("div", "kpi");
+    cell.appendChild(el("div", "k", label));
+    cell.appendChild(el("div", "v", pct1(cur)));
+    const arrow = d == null || Math.abs(d) < 0.002 ? "" : (d > 0 ? "+" : "");
+    cell.appendChild(el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
+      d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
+    cell.title = why + `  |  best so far ${pct1(bestOf(k))}`;
+    grid.appendChild(cell);
+  });
+  box.appendChild(grid);
+  box.appendChild(sparkline(rows.map(r => r.mAP50 || 0), "mAP50 per epoch"));
+  box.appendChild(sparkline(rows.map(r => r.recall || 0), "recall per epoch"));
+  box.appendChild(sparkline(rows.map(r => r.cls_loss || 0), "class loss per epoch (down is good)",
+    { lowerIsBetter: true, pct: false }));
+
   const b = el("button", "btn small", "Open the Models tab");
   b.onclick = () => showTab("ckpt");
   box.appendChild(b);
   host.appendChild(box);
+
+  if (pr.running) {
+    visionProgTimer = setInterval(() => {
+      if ($(".tab.active").dataset.tab !== "dash") return;   // idle when you are elsewhere
+      loadVisionProgress().catch(() => {});
+    }, 15000);                                               // an epoch takes ~75 s here
+  }
+}
+
+/* Change in a metric over the last n epochs -- the "is it still climbing" answer. */
+function delta(rows, key, n) {
+  const v = rows.map(r => r[key]).filter(x => x != null);
+  if (v.length < 2) return null;
+  return v[v.length - 1] - v[Math.max(0, v.length - 1 - n)];
+}
+
+/* How long is left. results.csv carries seconds-since-start per epoch, so this is measured
+   from THIS run rather than guessed from the epoch count. */
+function etaText(rows, total) {
+  const t = rows.map(r => r.t).filter(x => x != null);
+  if (t.length < 2 || !total) return "";
+  const done = rows[rows.length - 1].epoch;
+  const per = (t[t.length - 1] - t[Math.max(0, t.length - 6)]) / Math.min(5, t.length - 1);
+  const left = (total - done) * per;
+  if (!(left > 0)) return "";
+  const h = Math.floor(left / 3600), m = Math.round((left % 3600) / 60);
+  return `about ${h ? h + " h " : ""}${m} min left at ${per.toFixed(0)} s/epoch`;
 }
 
 async function loadDash() {
@@ -1522,11 +1618,38 @@ function labDraw() {
                  Math.abs(d.x1 - d.x0), Math.abs(d.y1 - d.y0));
     g.setLineDash([]);
   }
+  // The list is how you delete a SPECIFIC box. It used to be plain text, which left "Delete" with
+  // nothing to aim at but the last box drawn -- see the labundo handler.
   const list = $("#lablist");
   list.innerHTML = LAB.boxes.length
-    ? "<b>Boxes on this frame</b><br>" + LAB.boxes.map((b, i) =>
-        `${i + 1}. ${LAB.classes[b.cls] || b.cls}`).join("<br>")
-    : "No boxes yet. Drag around a unit on the board.";
+    ? LAB.boxes.map((b, i) =>
+        `<div class="boxrow${i === LAB.sel ? " on" : ""}" data-i="${i}">`
+        + `<span>${i + 1}. ${LAB.classes[b.cls] || b.cls}${b.suggested ? " ?" : ""}</span>`
+        + `<span class="x" data-del="${i}" title="Delete this box">&times;</span></div>`).join("")
+    : '<p class="hint">No boxes yet. Drag around a unit on the picture.</p>';
+  list.querySelectorAll(".boxrow").forEach(row => {
+    row.onclick = ev => {
+      const del = ev.target.dataset.del;
+      if (del !== undefined) { labDelete(+del); return; }
+      LAB.sel = +row.dataset.i;
+      const b = LAB.boxes[LAB.sel], sel = $("#labclass");
+      if (b && [...sel.options].some(o => +o.value === b.cls)) sel.value = String(b.cls);
+      labDraw();
+    };
+  });
+}
+
+/* Deleting must always name WHICH box. The old handler was
+     if (LAB.sel >= 0) splice(LAB.sel) else pop()
+   and since every delete then reset LAB.sel to -1, a second press fell through to pop() and
+   removed the newest box -- so holding Delete walked backwards through the frame in drawing
+   order, taking boxes nobody had pointed at. */
+function labDelete(i) {
+  if (i == null || i < 0 || i >= LAB.boxes.length) return;
+  LAB.boxes.splice(i, 1);
+  if (LAB.sel === i) LAB.sel = -1;
+  else if (LAB.sel > i) LAB.sel -= 1;          // the ones after it shifted down
+  labDraw();
 }
 
 /* Every reader's region drawn on the same frame, in its own colour. The point is that a
@@ -1696,9 +1819,24 @@ async function labLoad(i) {
 }
 
 async function loadLabeling() {
-  const st = await api("/api/label/status");
+  const src = $("#labsource") ? $("#labsource").value : "to_label";
+  const only = $("#labonly") ? $("#labonly").value.trim() : "";
+  let st;
+  try {
+    st = await api("/api/label/status?source=" + encodeURIComponent(src)
+                   + (only ? "&class=" + encodeURIComponent(only) : ""));
+    if ($("#labsrcmsg")) { $("#labsrcmsg").className = "msg"; $("#labsrcmsg").textContent = ""; }
+  } catch (e) {
+    // an unknown class name is a typo, not a crash -- say so and fall back to the plain list
+    if ($("#labsrcmsg")) {
+      $("#labsrcmsg").className = "msg err";
+      $("#labsrcmsg").textContent = (e && e.message) || "could not load";
+    }
+    st = await api("/api/label/status?source=" + encodeURIComponent(src));
+  }
   LAB.classes = st.classes || [];
   LAB.queue = st.queue || [];
+  LAB.source = st.source || src;
   if (!LAB.recent.length) {
     try { LAB.recent = JSON.parse(localStorage.getItem("clashai.labrecent") || "[]"); }
     catch (e) { LAB.recent = []; }
@@ -1715,23 +1853,124 @@ async function loadLabeling() {
       " A detector needs hundreds of boxes across many frames before it predicts anything "
       + "useful; this many will train but will not detect much."));
   }
+  loadCoverage();
   if (!LAB.queue.length) {
-    $("#labmsg").textContent = "Queue empty -- frames are harvested automatically while train-rl runs.";
+    $("#labmsg").textContent = LAB.source === "to_label"
+      ? "Queue empty -- frames are harvested automatically while train-rl runs."
+      : "No labelled frame matches" + (only ? ` "${only}"` : "") + ".";
     return;
+  }
+  if (LAB.source !== "to_label") {
+    $("#labsrcmsg").className = "msg";
+    $("#labsrcmsg").textContent = `${LAB.queue.length} frame(s) -- saving OVERWRITES the existing labels`;
   }
   await labLoad(0);
 }
+
+(function labSourceWire() {
+  const s = $("#labsource");
+  if (!s) return;
+  s.onchange = () => loadLabeling().catch(e => console.error(e));
+  let t = null;
+  $("#labonly").oninput = () => {           // debounce: it scans every label file per keystroke
+    clearTimeout(t);
+    t = setTimeout(() => loadLabeling().catch(e => console.error(e)), 400);
+  };
+})();
+
+/* ---- coverage: how many pictures of which unit ------------------------------
+   The one number the labelling view was missing. "80 boxes" says nothing about whether the
+   detector can see a Musketeer; 80 boxes across 3 classes and 80 across 30 train completely
+   different things, and only the per-class view shows which it is. */
+let COV = null;
+async function loadCoverage() {
+  if (!$("#labcovbody")) return;
+  COV = await api("/api/label/coverage").catch(() => null);
+  if (!COV) return;
+  const t = COV.totals;
+  $("#labcovsum").textContent =
+    ` — ${t.matters_done} of ${t.matters} ready, ${t.matters_thin} thin, `
+    + `${t.matters_missing} with no pictures at all`;
+  drawCoverage();
+}
+
+function drawCoverage() {
+  const box = $("#labcovbody");
+  if (!box || !COV) return;
+  const q = ($("#labcovsearch").value || "").trim().toLowerCase();
+  const mode = $("#labcovfilter").value, sort = $("#labcovsort").value;
+  let rows = COV.classes.slice();
+  if (mode === "matters") rows = rows.filter(r => r.role !== "other");
+  else if (mode === "missing") rows = rows.filter(r => r.role !== "other" && r.boxes === 0);
+  if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+  // "least covered first" must put the ones that MATTER on top, not the 190 classes nobody
+  // needs -- otherwise the default view is a wall of irrelevant zeroes.
+  const rank = r => (r.role === "deck" ? 0 : r.role === "threat" ? 1 : 2);
+  if (sort === "need") rows.sort((a, b) => rank(a) - rank(b) || a.boxes - b.boxes
+    || a.name.localeCompare(b.name));
+  else if (sort === "boxes") rows.sort((a, b) => b.boxes - a.boxes || a.name.localeCompare(b.name));
+  else rows.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (!rows.length) { box.innerHTML = '<p class="hint">Nothing matches.</p>'; return; }
+  const want = COV.wanted;
+  const cell = r => {
+    const pctv = r.wanted ? Math.min(100, Math.round(100 * r.boxes / r.wanted)) : 0;
+    const state = r.boxes === 0 ? "err" : (r.wanted && r.boxes < r.wanted ? "warn" : "ok");
+    return `<tr class="cov-${state}">`
+      + `<td>${r.name}</td>`
+      + `<td><span class="pill ${r.role === "deck" ? "run" : r.role === "threat" ? "warn" : ""}">`
+      + `${r.role}</span></td>`
+      + `<td class="num">${r.boxes}</td>`
+      + `<td class="num">${r.images}</td>`
+      + `<td class="num">${r.train}/${r.val}</td>`
+      + `<td>${r.wanted ? `<span class="bar"><i style="width:${pctv}%"></i></span> ${pctv}%` : ""}</td>`
+      + "</tr>";
+  };
+  box.innerHTML = `<p class="hint">${rows.length} class(es) shown. The bar is progress towards `
+    + `roughly ${want} boxes &mdash; a rule of thumb for fine-tuning, not a measurement from this `
+    + `project.</p>`
+    + '<table class="tbl"><thead><tr><th>Unit</th><th>Role</th><th class="num">Boxes</th>'
+    + '<th class="num">Frames</th><th class="num">train/val</th><th>Towards ' + want + '</th>'
+    + "</tr></thead><tbody>" + rows.map(cell).join("") + "</tbody></table>";
+}
+
+(function covWire() {
+  const s = $("#labcovsearch");
+  if (!s) return;
+  s.oninput = () => drawCoverage();
+  $("#labcovfilter").onchange = () => drawCoverage();
+  $("#labcovsort").onchange = () => drawCoverage();
+  $("#labcovreload").onclick = () => loadCoverage();
+})();
 
 (function labWire() {
   const cv = $("#labcanvas");
   if (!cv) return;
   const pos = ev => { const r = cv.getBoundingClientRect();
     return [ev.clientX - r.left, ev.clientY - r.top]; };
-  cv.onmousedown = ev => { const [x, y] = pos(ev); LAB.drag = { x0: x, y0: y, x1: x, y1: y }; };
+  cv.onmousedown = ev => { if (ev.button !== 0) return;
+    const [x, y] = pos(ev); LAB.drag = { x0: x, y0: y, x1: x, y1: y }; };
   cv.onmousemove = ev => { if (!LAB.drag) return; const [x, y] = pos(ev);
     LAB.drag.x1 = x; LAB.drag.y1 = y; labDraw(); };
-  cv.onmouseup = () => {
+  // Right-click deletes the box under the cursor -- the fastest correction when the model
+  // suggested something that is not there, which is most of them.
+  cv.oncontextmenu = ev => {
+    ev.preventDefault();
+    const [x, y] = pos(ev);
+    labPick(x, y);
+    if (LAB.sel >= 0) labDelete(LAB.sel);
+  };
+  const endDrag = () => {
     const d = LAB.drag; LAB.drag = null;
+    if (!d) return null;
+    return d;
+  };
+  // A release OUTSIDE the canvas never fired cv.onmouseup, so LAB.drag stayed set and labDraw
+  // kept painting the dashed rectangle forever -- the outline that would not go away. The
+  // window-level listener ends the drag wherever the button comes up.
+  window.addEventListener("mouseup", () => { if (LAB.drag) { endDrag(); labDraw(); } });
+  cv.onmouseup = () => {
+    const d = endDrag();
     if (!d) return;
     const w = Math.abs(d.x1 - d.x0), h = Math.abs(d.y1 - d.y0);
     if (w < 6 || h < 6) { labPick(d.x0, d.y0); labDraw(); return; }   // a click: select a box
@@ -1743,8 +1982,12 @@ async function loadLabeling() {
     labDraw();
   };
   $("#labundo").onclick = () => {
-    if (LAB.sel >= 0) LAB.boxes.splice(LAB.sel, 1); else LAB.boxes.pop();
-    LAB.sel = -1; labDraw();
+    if (LAB.sel < 0) {
+      $("#labmsg").className = "msg err";
+      $("#labmsg").textContent = "click a box first (or right-click it on the picture)";
+      return;
+    }
+    labDelete(LAB.sel);
   };
   $("#labprefill").onchange = () => labLoad(LAB.ix);
   // Picking a class while a box is selected RELABELS it -- that is the common correction:
@@ -2063,20 +2306,31 @@ async function loadTaught(gal) {
 
 /* Minimal inline chart. The metrics tab's charting is bound to metrics.jsonl, and this is
    a different source (ultralytics' csv), so it draws its own rather than bending that one. */
-function sparkline(vals, title) {
+/* opts.lowerIsBetter: for a LOSS curve, the number worth calling out is the MINIMUM, not the
+   tallest point on the chart -- "top" and a bare number both read as "bigger is the achievement",
+   which is backwards for a loss. opts.pct=false: a loss is not a 0-1 ratio, so formatting it as a
+   percentage produced "486.8%" for an early epoch's cls_loss of 4.868. Default behaviour (no
+   opts) is unchanged, so the mAP50/recall call sites needed no edits. */
+function sparkline(vals, title, opts) {
+  opts = opts || {};
+  const pct = opts.pct !== false;
   const w = 520, h = 90, pad = 4;
   const hi = Math.max(0.02, ...vals);
   const pts = vals.map((y, i) => {
     const x = pad + (vals.length < 2 ? 0 : i * (w - 2 * pad) / (vals.length - 1));
     return `${x.toFixed(1)},${(h - pad - (y / hi) * (h - 2 * pad)).toFixed(1)}`;
   }).join(" ");
+  const fmt = v => pct ? pct1(v) : v.toFixed(3);
+  const call = opts.lowerIsBetter
+    ? `lowest so far = ${fmt(Math.min(...vals))}, latest = ${fmt(vals[vals.length - 1])}`
+    : `top = ${fmt(hi)}`;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   svg.setAttribute("width", "100%"); svg.setAttribute("height", "90");
   svg.innerHTML = `<title>${title}</title>`
     + `<rect x="0" y="0" width="${w}" height="${h}" fill="none" stroke="var(--line)"/>`
     + `<polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="1.5"/>`
-    + `<text x="6" y="12" fill="var(--dim)" font-size="10">${title} (top = ${pct1(hi)})</text>`;
+    + `<text x="6" y="12" fill="var(--dim)" font-size="10">${title} (${call})</text>`;
   return svg;
 }
 
@@ -2087,35 +2341,82 @@ async function loadVisionIO() {
   const d = await api("/api/vision/bundle").catch(() => null);
   const box = $("#visioniodesc");
   if (!box) return;
-  if (!d || !d.trained) {
-    box.textContent = "Nothing to export yet -- train the vision AI first.";
-    $("#vioexportmodel").disabled = $("#vioexportfull").disabled = true;
-    return;
-  }
-  const m = d.metrics || {};
+  if (!d) return;
+  const m = d.metrics || {}, pol = d.policy_files || [];
+  $("#vioexportmodel").disabled = $("#vioexportfull").disabled = !d.trained;
+  $("#vioexportpolicy").disabled = !pol.length;
+  $("#vioexportall").disabled = !d.trained && !pol.length;
   box.innerHTML = "One .zip in, one .zip out. Nothing is uploaded anywhere &mdash; it writes a "
     + "file and you move it however you like."
-    + `<br><b>Model only</b>: ${fmtSize(d.weights_size)}, measured mAP50 ${pct1(m.mAP50)}, `
-    + `recall ${pct1(m.recall)}, trained on ${m.trained_on_boxes} boxes.`
-    + `<br><b>Model + frames</b>: adds ${d.images} labelled images with ${d.boxes} boxes. `
-    + "Take this one if the other machine should keep TRAINING; the frames are the expensive part.";
+    + `<br><b>Vision AI</b>: ${d.trained ? fmtSize(d.weights_size) + ", mAP50 " + pct1(m.mAP50)
+        + ", recall " + pct1(m.recall) + ", trained on " + m.trained_on_boxes + " boxes"
+        : "not trained yet"}.`
+    + `<br><b>+ labelled frames</b>: adds ${d.images} images with ${d.boxes} boxes &mdash; take `
+    + "this one if the other machine should keep TRAINING; the frames are the expensive part."
+    + `<br><b>Playing AI</b>: ${pol.length ? fmtSize(d.policy_size) + ", " + pol.length
+        + " checkpoint(s), trained for the deck " + (d.deck || []).join(", ")
+        : "no checkpoint yet"}.`
+    + (pol.length ? "<br>Its card indices ARE deck slots, so it only means the same thing on a "
+        + "machine running that deck." : "");
 }
 
 (function visionIOWire() {
   const file = $("#vioimportfile");
   if (!file) return;
   const msg = $("#vioimportmsg"), info = $("#vioimportinfo"), apply = $("#vioimportapply");
-  const dl = kind => { window.location = `/api/vision/export?kind=${kind}`;
-    $("#vioexportmsg").textContent = "packing ... the download starts on its own"; };
-  $("#vioexportmodel").onclick = () => dl("model");
-  $("#vioexportfull").onclick = () => dl("full");
+  // Write the file, then SHOW it. Navigating to a Content-Disposition attachment does nothing
+  // in the native window (no download manager), which is why this silently produced no file.
+  $$("[data-kind]").forEach(b => b.onclick = async () => {
+    const out = $("#vioexportmsg");
+    out.className = "msg"; out.textContent = "packing ...";
+    $$("[data-kind]").forEach(x => x.disabled = true);
+    try {
+      const d = await api(`/api/vision/export?kind=${b.dataset.kind}`);
+      out.className = "msg ok";
+      out.innerHTML = `Written: <b>${d.name}</b> (${fmtSize(d.size)}, ${d.files} files)`
+        + `<br><span class="hint">${d.folder}</span> `
+        + `<button class="link" id="vioreveal">open the folder</button>`;
+      $("#vioreveal").onclick = async () => {
+        const fd = new FormData(); fd.append("path", "data/exports");
+        const r = await fetch("/api/reveal", { method: "POST", body: fd });
+        if (!r.ok) out.insertAdjacentHTML("beforeend", " &mdash; could not open it, "
+          + "copy the path above instead");
+      };
+      loadVisionLocal();
+    } catch (e) {
+      out.className = "msg err"; out.textContent = (e && e.message) || "export failed";
+    } finally {
+      $$("[data-kind]").forEach(x => x.disabled = false);
+      loadVisionIO();
+    }
+  });
+
+  // Importing must not depend on a file dialog either: list what is already on this machine.
+  async function loadVisionLocal() {
+    const sel = $("#violocal");
+    if (!sel) return;
+    const d = await api("/api/vision/local").catch(() => null);
+    if (!d) return;
+    sel.innerHTML = `<option value="">-- pick a .zip from ${d.folder} --</option>`
+      + d.bundles.map(b => `<option value="${b.name}">${b.name} &middot; ${fmtSize(b.size)}`
+        + ` &middot; ${b.when}</option>`).join("");
+  }
+  loadVisionLocal();
+  const reload = $("#violocalreload");
+  if (reload) reload.onclick = () => loadVisionLocal();
 
   // Always inspect before installing: an import replaces the model and merges frames, and
   // a manifest costs nothing to read. The Install button stays disabled until it is checked.
   const post_ = async (applyIt) => {
-    if (!file.files.length) { msg.className = "msg err"; msg.textContent = "pick a .zip first"; return; }
+    const local = $("#violocal") ? $("#violocal").value : "";
+    if (!local && !file.files.length) {
+      msg.className = "msg err";
+      msg.textContent = "pick a .zip -- either choose one below, or browse for one";
+      return;
+    }
     const fd = new FormData();
-    fd.append("bundle", file.files[0]);
+    if (local) fd.append("local", local);
+    else fd.append("bundle", file.files[0]);
     if (applyIt) fd.append("apply", "1");
     msg.className = "msg"; msg.textContent = applyIt ? "installing ..." : "reading ...";
     const r = await fetch("/api/vision/import", { method: "POST", body: fd });
@@ -2125,18 +2426,26 @@ async function loadVisionIO() {
     if (d.dry_run) {
       const m = d.manifest;
       info.innerHTML = `<p class="hint">Bundle <b>${m.kind}</b> from ${m.created} &middot; `
-        + `${m.classes.length} classes &middot; model ${m.model && m.model.mAP50 != null
-            ? "mAP50 " + pct1(m.model.mAP50) : "(none)"} &middot; `
-        + `${m.dataset_files} dataset file(s), ${m.counts ? m.counts.boxes : "?"} boxes.<br>`
-        + "Installing REPLACES your vision model (the old one is saved to data/exports/ first) "
-        + "and MERGES the frames &mdash; a frame you already have is kept, never overwritten.</p>";
+        + `${m.classes.length} classes &middot; `
+        + `vision ${m.has_model ? (m.model && m.model.mAP50 != null
+            ? "mAP50 " + pct1(m.model.mAP50) : "yes") : "none"} &middot; `
+        + `playing AI ${m.has_policy ? (m.policy_files || []).length + " file(s)" : "none"} &middot; `
+        + `${m.dataset_files} dataset file(s).`
+        + (m.deck && m.deck.length ? `<br>Trained for the deck: ${m.deck.join(", ")}.` : "")
+        + "<br>Installing REPLACES the models it contains (the old ones are copied to "
+        + "data/exports/ first) and MERGES the frames &mdash; a frame you already have is kept, "
+        + "never overwritten.</p>";
       msg.textContent = "checked";
       apply.disabled = false;
       return;
     }
     info.innerHTML = `<p class="hint">Installed: ${d.added} file(s) written, `
       + `${d.skipped_existing} already here and left alone.`
-      + (d.previous_model_saved_to ? `<br>Your previous model: ${d.previous_model_saved_to}` : "")
+      + (d.previous_model_saved_to ? `<br>Your previous vision model: ${d.previous_model_saved_to}` : "")
+      + (d.deck_mismatch ? "<br><b>Note:</b> that playing AI was trained for a different deck ("
+          + (d.their_deck || []).join(", ") + ") than the one configured here ("
+          + (d.our_deck || []).join(", ") + "). It loads, but its card slots mean other cards."
+        : "")
       + "</p>";
     msg.className = "msg ok"; msg.textContent = "done";
     apply.disabled = true;
@@ -2149,12 +2458,48 @@ async function loadVisionIO() {
 
 /* ---------------- boot ---------------- */
 (async function boot() {
-  try { S.checkpoints = await api("/api/checkpoints"); } catch (e) { /* no data/ yet */ }
-  try { S.deck = await api("/api/deck"); } catch (e) { /* fine either way */ }
-  await refresh();
-  await loadOverview().catch(e => console.error(e));
+  // NOTHING SLOW BEFORE THE FIRST PAINT. /api/checkpoints imports torch and opens every policy
+  // file -- measured 3.14s on this machine -- and it used to be awaited FIRST, so the window sat
+  // empty for three seconds before a single pixel of the panel existed. It only fills dropdowns;
+  // it can arrive late.
+  await refresh();                                   // cheap: paints the shell and the job state
+  loadOverview().catch(e => console.error(e));       // no longer blocks either
+  api("/api/checkpoints").then(d => {
+    S.checkpoints = d;
+    $$("select[data-ckpt]").forEach(s => fillCkptSelect(s, s.value));   // refill once it lands
+  }).catch(() => { /* no data/ yet */ });
+  api("/api/deck").then(d => { S.deck = d; }).catch(() => { /* fine either way */ });
   setInterval(refresh, 3000);
+  trainPulse();
+  setInterval(trainPulse, 8000);
 })();
+
+/* The vision AI's training, visible from ANY tab.
+
+   results.csv gains a line per epoch, so there is always something honest to show while a run
+   is going. It used to be shown only inside the Models tab and only polled while that tab was
+   open, which is exactly the wrong place: you start the training from Control and then stare at
+   a panel that says nothing is happening. */
+async function trainPulse() {
+  const pill = $("#trainpill");
+  if (!pill) return;
+  const m = await api("/api/models").catch(() => null);
+  const pr = m && m.vision && m.vision.progress;
+  if (!pr || !pr.running || !(pr.rows || []).length) { pill.hidden = true; return; }
+  const rows = pr.rows;
+  const last = rows[rows.length - 1];
+  const best = rows.reduce((a, r) => (r.mAP50 != null && (a == null || r.mAP50 > a) ? r.mAP50 : a), null);
+  // Trend over the last five epochs: a number alone cannot tell you whether it is still climbing,
+  // and "is it still getting better" is the actual question while you wait.
+  const win = rows.slice(-5).map(r => r.mAP50).filter(v => v != null);
+  const trend = win.length > 1 ? (win[win.length - 1] - win[0]) : 0;
+  const arrow = Math.abs(trend) < 0.002 ? "flat" : (trend > 0 ? "↑" : "↓");
+  pill.hidden = false;
+  pill.textContent = `vision AI training: epoch ${last.epoch != null ? last.epoch : "?"}`
+    + (pr.epochs_total ? `/${pr.epochs_total}` : "")
+    + ` · best mAP50 ${pct1(best)} · ${arrow}`;
+  pill.title = "Updated from results.csv, one line per epoch. Full curve in the Models tab.";
+}
 
 
 /* ---------------- Live ---------------- */
