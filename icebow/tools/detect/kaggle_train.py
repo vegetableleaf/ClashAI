@@ -32,6 +32,23 @@ def _installed(pkg):
         return _md.version(pkg)
     except _md.PackageNotFoundError:
         return None
+
+# Pinning only protects a torch that is CURRENTLY the CUDA build. If an earlier cell run in this
+# same kernel already swapped it for a CPU wheel -- pip does not undo that on a re-run, and
+# neither does re-running this cell -- pinning would lock in the ALREADY-BROKEN version instead
+# of fixing anything. Catch that here, before spending a minute reinstalling for nothing: pip
+# cannot put the CUDA build back (that only exists baked into a fresh session), so the one fix is
+# Kaggle's own "Restart Session", which discards the kernel and reprovisions the GPU image clean.
+_torch_now = _installed("torch")
+if _torch_now and "+cpu" in _torch_now:
+    raise SystemExit(
+        f"torch is ALREADY {_torch_now} in this session -- a previous cell run (this one, before "
+        f"a fix, or any other pip install) already replaced Kaggle's CUDA build, and nothing run "
+        f"from here can put it back.\n"
+        f"Fix: the menu above the notebook -> Run -> Restart Session (or the restart icon). That "
+        f"discards this kernel and starts a clean one with the CUDA torch Kaggle provisions by "
+        f"default. Then Run All again -- do not just re-run this cell.")
+
 _pins = Path("/tmp/torch_pins.txt")
 _pins.write_text("\n".join(f"{p}=={v}" for p in ("torch", "torchvision")
                            if (v := _installed(p))))
@@ -40,9 +57,10 @@ subprocess.run([sys.executable, "-m", "pip", "-q", "install", "-c", str(_pins), 
 import torch
 from ultralytics import YOLO
 assert torch.cuda.is_available(), (
-    f"no CUDA: torch is {torch.__version__} -- if it ends in '+cpu', something still replaced "
-    f"Kaggle's GPU build; if Settings -> Accelerator is not GPU, Restart Session after changing "
-    f"it (a running session keeps whatever it started with)")
+    f"no CUDA: torch is {torch.__version__}, was {_torch_now} before this cell ran (unchanged, "
+    f"so the pin held) -- but CUDA is still not available. If Settings -> Accelerator is not "
+    f"GPU T4 x2 / P100, set it and Restart Session; a running session keeps whatever "
+    f"accelerator it started with even if you change the setting afterward.")
 
 # Everything lands in writable scratch. /kaggle/input is READ-ONLY and ultralytics wants to write
 # a *.cache next to the labels; it survives being unable to, but then re-scans 9,000 labels at
