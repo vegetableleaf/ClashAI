@@ -115,9 +115,45 @@ print(f"{len(names)} classes | "
 n_gpu = torch.cuda.device_count()
 print(f"{n_gpu} GPU(s): " + ", ".join(torch.cuda.get_device_name(i) for i in range(n_gpu)))
 
+# batch=-1 (AutoBatch) is a single-GPU feature -- ultralytics raises ValueError under Multi-GPU
+# and asks for a fixed batch instead, seen on a live run here. Rather than guess one number for
+# whatever card Kaggle happens to grant (a T4 today might be a P100 or something else next time),
+# reuse ultralytics' OWN memory probe: run AutoBatch once on GPU 0 alone -- exactly what it would
+# do for a single-GPU run -- to get a safe per-card batch, then multiply by the GPU count. That
+# keeps the actual choice tied to the real card, not to a constant that goes stale.
+batch = -1
+if n_gpu > 1:
+    import copy
+    from ultralytics.nn.tasks import DetectionModel
+    from ultralytics.utils.autobatch import check_train_batch_size
+    try:
+        # NOT `YOLO(MODEL).model.to(0)` -- tried that first and it silently profiles the WRONG
+        # model. A checkpoint loaded straight from disk still carries nc=80 (COCO) and lacks the
+        # loss setup a real Trainer attaches, and check_train_batch_size profiles memory through a
+        # full forward+backward, so both distort the reading. Measured on the local 3070 against
+        # the true value from an actual training run (batch=3 for yolo11s/nc=225/imgsz=960): the
+        # naive probe said 20 -- 6.7x too high, an OOM waiting to happen hours into a rented run.
+        # Rebuilding via DetectionModel with the real class count matched that true batch=3
+        # exactly, for both yolo11s and this run's actual yolo11m.
+        arch = copy.deepcopy(YOLO(MODEL).model.yaml)
+        probe = DetectionModel(cfg=arch, ch=3, nc=len(names), verbose=False).to(0)
+        per_gpu = check_train_batch_size(probe, imgsz=IMGSZ, amp=True)
+        del probe
+        torch.cuda.empty_cache()
+        batch = per_gpu * n_gpu
+        print(f"AutoBatch (multi-GPU unsupported) -- probed {per_gpu}/GPU on GPU0, "
+              f"using batch={batch} across {n_gpu} GPUs")
+    except Exception as exc:                                      # noqa: BLE001
+        # A guessed number is still better than a crashed run: fall back to what the local 8 GB
+        # card used for the smaller yolo11s (batch 3/GPU) -- conservative on a 15 GB T4, so the
+        # risk is under-using memory, never an OOM hours into the run.
+        torch.cuda.empty_cache()
+        batch = 3 * n_gpu
+        print(f"AutoBatch probe failed ({exc}); falling back to batch={batch} (3/GPU)")
+
 YOLO(MODEL).train(
     data=str(DATA / "data.yaml"),
-    epochs=EPOCHS, imgsz=IMGSZ, batch=-1, patience=30, seed=0,
+    epochs=EPOCHS, imgsz=IMGSZ, batch=batch, patience=30, seed=0,
     device=list(range(n_gpu)) if n_gpu > 1 else 0,
     project="/kaggle/working/runs", name="vision", exist_ok=True,
     # Identical to the local run, so the comparison is of the MODEL and nothing else.
