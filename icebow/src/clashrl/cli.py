@@ -316,6 +316,21 @@ def _cmd_katacr_segments(args) -> None:
                     dry_run=args.dry_run)
 
 
+def _cmd_observe(args) -> None:
+    import json
+    from pathlib import Path as _P
+    from .observation_export import observe_file
+    cfg = Config.load(args.config)
+    rec = observe_file(cfg, _P(args.image), detector_conf=args.conf,
+                       assume_match=args.assume_match)
+    text = json.dumps(rec, indent=2)
+    if args.out:
+        _P(args.out).write_text(text, encoding="utf-8")
+        print(f"[observe] {args.image} -> {args.out}")
+    else:
+        print(text)
+
+
 def _cmd_detect_pack(args) -> None:
     from .detect_pack import detect_pack
     detect_pack(Config.load(args.config), out=args.out, own_only=args.own_only,
@@ -774,6 +789,19 @@ def main() -> None:
                          "The result does NOT train on its own -- it is for a target that already "
                          "has the KataCR half")
     pk.set_defaults(func=_cmd_detect_pack)
+
+    ob = sub.add_parser("observe",
+                        help="read EVERYTHING off one frame into one versioned JSON record -- the "
+                             "hand-off format for the simulator (positions in arena TILES, every "
+                             "field carrying how it was read)")
+    ob.add_argument("image", help="a frame (jpg/png)")
+    ob.add_argument("--conf", type=float, default=0.25, help="detector confidence gate")
+    ob.add_argument("--out", default=None, help="write JSON here instead of printing")
+    ob.add_argument("--assume-match", action="store_true", dest="assume_match",
+                    help="treat the frame as IN_MATCH even if the screen-state reader says "
+                         "UNKNOWN. Needed for frames from someone else's client, where the "
+                         "state templates do not match and every reader would suppress itself")
+    ob.set_defaults(func=_cmd_observe)
 
     mdl = sub.add_parser("models",
                          help="which NETWORKS exist and which one each path actually uses -- there "
