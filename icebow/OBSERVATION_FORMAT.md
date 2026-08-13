@@ -136,6 +136,34 @@ disagreement between them is itself information.
 | `airborne` | whether the shadow correction applied |
 | `team_evidence` | `bar` and `body` votes that fed the team decision |
 | `hp` | `{"frac": 0..1}` from the unit's health bar, or `null` — see `bars` |
+| `id` | stable identity across records within one match, or `null` — see below |
+
+**`id` is not a list position.** The detector reorders `units.list` every frame; `id` is the
+same number for the same unit across records, which is what lets you tell two knights apart
+instead of re-guessing from position each time. It is `null` on a single-frame read (`run.py
+observe` on a file) — one frame has no history, and an id that changed every read would be
+worse than none. The Live tab supplies one.
+
+### `units.remembered` — units the detector lost, that are still there
+
+Present only alongside `id`. Clash Royale units do not blink out of existence, but detections
+do: a unit walking behind a tower, or swallowed by a neighbour's box in a crowded push, drops
+out for a few frames and comes back.
+
+| field | meaning |
+|---|---|
+| `id` | same id it had when last seen, and the same one it gets back on return |
+| `xy` / `tile` | **frozen at the last real sighting** |
+| `missing_s` | seconds since it was last actually detected |
+| `missed_reads` | consecutive reads it has been absent for |
+
+**The position is not extrapolated.** Carrying it along its last heading would produce a
+confident position nobody measured — and a unit that *stopped* behind a tower would be reported
+marching straight through it. Frozen-and-dated is what is actually known.
+
+Entries drop out after `observation.team_forget_s` (4.5 s by default). A consumer that wants
+only confirmed sightings can ignore this block entirely; one that wants object permanence has
+it without inventing it.
 
 `team` comes from evidence fusion over short tracks — own-play anchor, motion direction, HP-bar
 colour, first-seen side, body art — **not** from colour alone. `unknown` is a real answer and

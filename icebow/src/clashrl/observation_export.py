@@ -73,8 +73,14 @@ def _r(v, n=4):
 
 
 def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None,
-            assume_match: bool = False) -> Dict[str, Any]:
+            assume_match: bool = False, tracker=None) -> Dict[str, Any]:
     """Read EVERYTHING off one BGR frame. `prev` (an earlier record) enables velocity.
+
+    `tracker` is a live TeamTracker. Given one, every unit carries a STABLE `id` across records
+    and a `remembered` block lists units the tracker still holds but the detector did not report
+    this frame -- a unit walking behind a tower, or swallowed by a neighbour's box in a push.
+    Without a tracker both are absent rather than faked: a single frame has no history, and an
+    id that changed every read would be worse than none.
 
     `assume_match` overrides the screen-state reader. That reader template-matches against
     templates captured from THIS machine's client, so on a frame from anyone else's client -- a
@@ -217,7 +223,21 @@ def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None
         det = load_detector(cfg, None)
         if not getattr(det, "_model", None):
             units["error"] = "no trained detector"
-        for d in det.detect(frame, conf=detector_conf):
+        found = det.detect(frame, conf=detector_conf)
+        if tracker is not None:
+            import time as _time
+            now = _time.monotonic()
+            tracker.tag(found, now)          # stamps d.track_id and fuses d.team over the track
+            units["remembered"] = [
+                {"id": u["id"], "cls": u["cls"], "card": u["base"], "team": u["team"],
+                 "xy": [_r(u["xy"][0]), _r(u["xy"][1])],
+                 "tile": grid.tile(u["xy"][0], u["xy"][1]),
+                 "missing_s": u["missing_s"], "missed_reads": u["misses"],
+                 # FROZEN at the last real sighting, not extrapolated. A unit that stops behind
+                 # a tower would otherwise be reported marching through it.
+                 "position": "last seen, not predicted"}
+                for u in tracker.unseen(now)]
+        for d in found:
             airborne = d.ground_cy is not None
             gy = d.gy                                # shadow for flyers, box centre for ground
             units["list"].append({
@@ -233,6 +253,9 @@ def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None
                 "airborne": airborne,
                 "sprite_xy": [_r(d.cx), _r(d.cy)],
                 "team_evidence": {"bar": d.bar_vote, "body": d.body_vote},
+                # Stable across records within one match, null without a tracker. NOT the
+                # position in this list -- the detector reorders that every frame.
+                "id": d.track_id,
             })
     except Exception as exc:                                        # noqa: BLE001
         units["error"] = str(exc)

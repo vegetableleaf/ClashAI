@@ -37,9 +37,15 @@ def _ensure(cfg):
 
 def reset() -> None:
     """Drop the cached capture/vision, e.g. after the window moved or the config changed."""
+    global _TRACKER
     with _LOCK:
         _STATE["capture"] = None
         _STATE["vision"] = None
+        # Unit ids only mean anything within one continuous view. Once capture restarts -- the
+        # window moved, a new match -- carrying them over would claim a unit from the old view is
+        # the same unit as one in the new. Drop the history rather than assert continuity.
+        _TRACKER = None
+        _PREV_RECORD.clear()
 
 
 # The order `Vision.detect_state` tries them in: the FIRST state whose template clears its
@@ -127,6 +133,7 @@ def _detector_report(cfg) -> Dict[str, Any]:
 
 
 _PREV_RECORD: Dict[str, Any] = {}       # last observation record, so `motion` has two frames
+_TRACKER = None                         # unit identity across ticks; see TeamTracker.unseen()
 
 
 def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False,
@@ -216,7 +223,17 @@ def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False,
     if observe:
         try:
             from .. import observation_export
-            rec = observation_export.observe(cfg, frame, prev=_PREV_RECORD or None)
+            global _TRACKER
+            if _TRACKER is None:
+                # Its own tracker, NOT the live bot's: this is a viewer, and sharing state with
+                # the thing being watched would let the panel's refresh rate change what the bot
+                # decides. Cleared with the capture by reset().
+                from ..replay_mine import TeamTracker
+                _TRACKER = TeamTracker(
+                    track_radius=float(cfg.get('observation', 'team_track_radius', default=0.12)),
+                    forget_s=float(cfg.get('observation', 'team_forget_s', default=4.5)))
+            rec = observation_export.observe(cfg, frame, prev=_PREV_RECORD or None,
+                                             tracker=_TRACKER)
             _PREV_RECORD.clear()
             _PREV_RECORD.update(rec)
             out["record"] = rec
