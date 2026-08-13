@@ -37,8 +37,10 @@ from .threats import ThreatTracker, Threat
 from . import card_threat
 from . import interactions
 from .cycle import CycleTracker
+from .opponent_elixir import OpponentElixirEstimator
 from .tower_hp import TowerHpTracker
 from .vision import Vision
+from .opponent_elixir import OpponentElixirEstimator
 
 Action = Tuple[int, int, int]  # (play 0/1, card_id, cell)
 
@@ -75,7 +77,11 @@ class LiveMatchEnv:
         self._nav = MenuNavigator(cfg, self.controller, self.vision, label="train-rl")
 
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
-        self.obs_shape = (int(oh), int(ow), 3)
+        # OBS-CANVAS FLIP: the image branch gains detect_obs's semantic channels when
+        # observation.use_detector_canvas is on (gated on detect-eval's PRESENCE recall).
+        from .detect_obs import canvas_enabled, obs_in_channels
+        self.use_canvas = canvas_enabled(cfg)
+        self.obs_shape = (int(oh), int(ow), obs_in_channels(cfg))
         self._last_obs = np.zeros(self.obs_shape, dtype=np.uint8)
         self.last_outcome: Optional[str] = None
         self.elixir = 0                 # your current elixir (0-10), updated each step
@@ -196,6 +202,7 @@ class LiveMatchEnv:
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
+        self._opp_elixir = OpponentElixirEstimator(db)   # live estimate from mirrored spend accounting
         from .replay_mine import TeamTracker
         self._team_tracker = TeamTracker(                # LIVE: evidence-fused teams (plays/motion/bars/pockets)
             spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
@@ -298,6 +305,9 @@ class LiveMatchEnv:
         self._prev_ident_depth = float(self._threat_id[7])
         self._prev_ident_t = now
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
+        # Slot 5 carries the current opponent-elixir estimate (normalized), inferred from symmetric
+        # elixir accounting + detected enemy plays; keeps model width unchanged.
+        mem[5] = self._opp_elixir.update(self.elixir, dets, now)
         self._replay_rec.update(self._last_dets_all)     # overlay replay: newest boxes for the clip
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
@@ -311,6 +321,21 @@ class LiveMatchEnv:
         self.threat_vec = np.concatenate(parts).astype(np.float32)
         if self._ploop is None:      # side window (perception loop feeds it at 10Hz itself when active)
             self._preview.update(frame, self._last_dets_all, self.capture.region)
+
+    def _observe(self, frame) -> np.ndarray:
+        """The policy's IMAGE observation: the downscaled arena, plus detect_obs's semantic CANVAS
+        when the obs-canvas gate is on.
+
+        The canvas is rendered from ``_last_dets_all`` -- the detections ``_update_threat`` already
+        produced for this frame -- so it costs NO extra detector pass. Both callers run
+        ``_update_threat`` first, which is what keeps the two in sync.
+        """
+        img = self.vision.observe(frame)
+        if not self.use_canvas:
+            return img
+        from . import detect_obs
+        ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1])
+        return np.concatenate([img, detect_obs.channels_to_uint8(ch)], axis=2)
 
     def _detect_enemies(self, frame):
         """Whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]). With the
@@ -366,6 +391,7 @@ class LiveMatchEnv:
                 self._prev_ident_depth = 0.0
                 self._prev_ident_t = None
                 self._opp_mem.reset()
+                self._opp_elixir.reset(my_elixir=self.elixir, now=time.time())
                 if self._ploop is not None and self._ploop.running:
                     self._ploop.reset_tracker()       # forget last match's tracks (thread-safe)
                 else:
@@ -375,7 +401,7 @@ class LiveMatchEnv:
                 self._cycle_tracker.reset()
                 self._read_hand(frame)
                 self._update_threat(frame)
-                self._last_obs = self.vision.observe(frame)
+                self._last_obs = self._observe(frame)
                 self._last_frame = frame
                 self._prev_mass = enemy_mass(frame, self.cfg)
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
@@ -398,6 +424,7 @@ class LiveMatchEnv:
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = self.actions.cell_center(gx, gy)
         base = card_threat.base_key(self.vision.deck_keys[card_id])
+        self._opp_elixir.record_my_play(base)
         if self._ploop is not None and self._ploop.running:
             self._ploop.record_play(cx, cy, time.time(), base=base)
         else:
@@ -781,7 +808,7 @@ class LiveMatchEnv:
             self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
             self._read_hand(frame)
             self._update_threat(frame)
-            self._last_obs = self.vision.observe(frame)
+            self._last_obs = self._observe(frame)
             self._last_frame = frame
             return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
 

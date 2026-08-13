@@ -223,6 +223,21 @@ def _claim(run_dir: Path) -> None:
     atexit.register(lambda: lock.unlink(missing_ok=True))
 
 
+def _resumable(ckpt: Path) -> bool:
+    """Does this checkpoint still carry the TRAINING state ultralytics needs to resume?
+
+    A run that finished (or was stripped) keeps only inference weights. `resume=True` on such a file
+    is not an error to ultralytics -- it warns and quietly starts a new training on its default
+    dataset -- so the caller has to check first. Any read failure is treated as NOT resumable: the
+    conservative answer is the one that does not waste a GPU-day on coco8.
+    """
+    try:
+        import torch
+        ck = torch.load(ckpt, map_location="cpu", weights_only=False)
+    except Exception:
+        return False
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
     ap.add_argument("--model", default="auto", metavar="WEIGHTS",
@@ -233,14 +248,34 @@ def main() -> None:
                          "explicit path only to start from some other file.")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
+    # MERGE NOTE: upstream hardcodes 4 ("safe on VRAM for the board-24 setup") -- safe on THEIR
+    # card. This branch measures instead: _auto_model() picks the backbone from actual VRAM and
+    # -1 lets ultralytics' AutoBatch size the batch to whatever that leaves. A number tuned on
+    # someone else's GPU is exactly the kind of borrowed constant that reads as a decision.
     ap.add_argument("--batch", type=int, default=-1,
-                    help="images per batch; -1 auto-sizes to your GPU (drop to yolo11l/m/s.pt if VRAM is tight)")
+                    help="images per batch; -1 auto-sizes to your GPU. Pin it only if AutoBatch "
+                         "guesses high and the run dies out of memory.")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
+    ap.add_argument("--workers", type=int, default=8,
+                    help="dataloader worker processes. EACH worker imports torch, so this is a major RAM "
+                         "consumer: a board-24 run died with 'the paging file is too small' while a "
+                         "32-env CPU train-sim-ppo was running alongside it. Drop to 2-4 when sharing the "
+                         "machine with another training job; the run is GPU-bound, so throughput barely moves.")
     ap.add_argument("--seed", type=int, default=0,
                     help="training seed. Ultralytics runs seed=0 + deterministic=True, so re-running an "
                          "UNCHANGED dataset reproduces the same weights -- change this to get a genuine "
                          "replicate and measure the run-to-run noise floor (needed to know whether a "
                          "1-3pp gap between generations is real or seed variance)")
+    # MERGE NOTE: upstream defaults this to "board" and lets ultralytics auto-increment into
+    # board-22, board-23, board-24 ... one generation per run. This branch went the other way on
+    # purpose (see the model.train call): there is ONE detector, at runs/detect/vision, and a
+    # retrain replaces it -- the panel, detect._resolve_weights and ui/ckpt.py all read that one
+    # path. Keeping their flag but OUR default means a deliberate side experiment still gets its
+    # own folder, while the normal case cannot quietly fork the model into a pile of directories.
+    ap.add_argument("--name", default=RUN_NAME,
+                    help="run folder under runs/detect. Defaults to the ONE vision model's folder, "
+                         "which a retrain replaces. Pass something else for a side experiment you "
+                         "do not want installed as the operating detector.")
     ap.add_argument("--status-aug", action="store_true",
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
@@ -300,12 +335,25 @@ def main() -> None:
             ckpt = runs / args.resume / "weights" / "last.pt"
             if not ckpt.exists():
                 raise SystemExit(f"no checkpoint at {ckpt}")
+        # A FINISHED (or externally stripped) run has had its optimizer/epoch state removed --
+        # ultralytics strips last.pt/best.pt down to inference weights. Handing such a file to
+        # resume=True does NOT raise: it prints a warning and silently starts a BRAND-NEW training
+        # on its DEFAULT dataset (coco8.yaml, 80 classes) in a fresh runs/detect/train-N folder.
+        # That has already happened three times in this repo (runs/detect/train, train-2, train-3),
+        # burning GPU on a demo dataset while looking like a normal training log. Refuse instead.
+        if not _resumable(ckpt):
+            raise SystemExit(
+                f"{ckpt} carries no optimizer/epoch state -- it is a STRIPPED (finished) checkpoint,\n"
+                "so ultralytics cannot resume it and would silently start a NEW coco8 training.\n"
+                "That run is over: evaluate it (`run.py detect-eval --weights "
+                f"{ckpt.parents[1].name}/weights/best.pt --sweep --subset data/detect/val_board15.txt`)\n"
+                "or start a fresh generation with `--name` instead.")
         print(f"[train] RESUMING {ckpt.parents[1].name} from {ckpt}")
         (RTDETR if is_rtdetr else YOLO)(str(ckpt)).train(resume=True)
         print(f"done -> {ckpt.parents[0] / 'best.pt'}")
         return
 
-    run_dir = root / "runs" / "detect" / RUN_NAME
+    run_dir = root / "runs" / "detect" / args.name
     claim_gpu(root / "runs", "train")
     _claim(run_dir)
 
@@ -333,20 +381,26 @@ def main() -> None:
         model.train(
             data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
             patience=args.patience, seed=args.seed,
+            # MERGE NOTE: upstream's --workers is kept, their board-N run naming is not.
+            # Their default is 8 and each worker imports torch, which killed one of their runs
+            # with "the paging file is too small" while a 32-env train-sim-ppo ran beside it --
+            # worth having on a machine that shares the GPU, which this one now does.
+            workers=args.workers,
         # ONE vision model, always the same folder. Ultralytics' default (exist_ok=False)
         # auto-increments to board, board-2, board-3 ... which turns one network into a pile
         # of identically named directories, silently loads "whichever was newest", and makes
         # the count of models in this project unreadable. There is exactly one detector; a
-        # retrain replaces it.
-            project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
+        # retrain replaces it. --name still works for a deliberate side experiment, but it
+        # defaults to that one folder rather than to the next generation number.
+            project=str(root / "runs" / "detect"), name=args.name, exist_ok=True,
             # colour jitter helps the own-troop (blue) labels transfer to the red enemy side
             # (also covers slow/rage tints)
             hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0,
             erasing=erasing,           # no horizontal flip: lanes are asymmetric
         )
-        print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
+        print(f"done -> runs/detect/{args.name}/weights/best.pt")
     finally:
-        write_model_card(root / "runs" / "detect" / RUN_NAME, args)
+        write_model_card(root / "runs" / "detect" / args.name, args)
 
 
 def write_model_card(run_dir: Path, args) -> None:

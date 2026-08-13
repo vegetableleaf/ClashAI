@@ -18,19 +18,27 @@ TWO CONVERSIONS ARE REQUIRED, and both are silent failures if skipped.
    skips unknown classes, so the failure mode of a bad mapping is LOST DATA rather than a corrupted
    label -- worth preserving deliberately.
 
-2. SCALE. `sprites.synth_images` pastes at NATIVE size (only +-15% jitter; "native scale is real"),
-   so a segment cut from their 1080x2400 phone frames lands roughly 1.6x too large on our 668x1182
-   arena. The factor is NOT assumed: `--scale auto` measures it from the classes both banks share,
-   comparing median sprite heights, which is robust to their arena-crop geometry being unknown.
+2. SCALE. A sprite's pixel size means nothing on its own -- it is only comparable as a fraction of
+   the frame it was cut from. `sprites` records that as a `_w<px>` tag and `synth_images` rescales
+   each paste by base_width/source_width, so importing here means answering ONE question: what frame
+   width are their segments effectively cut from, expressed in our arena's terms?
+
+   `--src-width auto` measures it from the classes both banks share. It compares ALPHA-TIGHT heights
+   (the bounding box of the non-transparent pixels), not crop heights: their crops carry far more
+   transparent padding than ours (alpha fill 0.53 vs 0.73), so raw crop dimensions measure padding
+   convention as much as scale. It also REQUIRES our bank to be width-tagged, because a bank mixing
+   392 px and 669 px sources has no single native scale to compare against -- the first attempt at
+   this measurement scattered across a 0.41..1.75 range for exactly that reason.
 """
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 from typing import Optional
 
 import cv2
 import numpy as np
+
+from .sprites import _src_width
 
 # they box the BODY, we sometimes name the CARD
 _PLURAL = {
@@ -59,11 +67,20 @@ _UI = {"bar", "bar-level", "clock", "emote", "text", "elixir", "selected", "towe
        "king-tower-bar", "dagger-duchess-tower-bar", "skeleton-king-bar", "evolution-symbol",
        "ice-spirit-evolution-symbol", "backgrounds", "background-items"}
 
+# CARDS WHOSE IN-GAME ART CHANGED AFTER THIS DATASET WAS CAPTURED. Their segments are pixels of a
+# sprite that no longer exists, so importing them teaches the detector an appearance it will never
+# see and actively competes with the current art. This is separate from _EXPLICIT (which is about
+# NAMING and concepts) because the reason is temporal, and Supercell reworks visuals regularly --
+# add to this set whenever a rework lands, with the date.
+_STALE_ART = {
+    "three-musketeers",     # visual rework, November 2025
+}
+
 
 def map_name(n: str) -> Optional[str]:
     """Their segment folder name -> our class name, or None to drop."""
     n = n.strip().lower()
-    if n in _UI:
+    if n in _UI or n in _STALE_ART:
         return None
     if n in _EXPLICIT:
         return _EXPLICIT[n]
@@ -79,16 +96,47 @@ def map_name(n: str) -> Optional[str]:
     return n.replace("-", "_")
 
 
-def _median_h(paths, limit=60) -> float:
+def _alpha_h(paths, limit: int = 80):
+    """Median height of the TIGHT alpha bounding box, and the sample size.
+
+    The sprite itself, not the canvas it sits on: comparing crop heights across two banks with
+    different padding conventions measures the padding as much as the unit."""
     hs = []
     for p in list(paths)[:limit]:
         im = cv2.imread(str(p), cv2.IMREAD_UNCHANGED)
-        if im is not None and im.size:
-            hs.append(im.shape[0])
-    return float(np.median(hs)) if hs else 0.0
+        if im is None or im.size == 0:
+            continue
+        if im.ndim == 3 and im.shape[2] == 4:
+            ys = np.where((im[:, :, 3] > 16).any(axis=1))[0]
+            if ys.size:
+                hs.append(float(ys[-1] - ys[0] + 1))
+        else:
+            hs.append(float(im.shape[0]))
+    return (float(np.median(hs)) if hs else 0.0), len(hs)
 
 
-def katacr_segments(cfg, src: str, scale: str = "auto", dry_run: bool = False,
+def _our_rel_h(paths, limit: int = 80):
+    """Median of height/source_width over OUR cutouts -- the scale-free size of this class.
+
+    Untagged cutouts are skipped rather than assumed: their source width is genuinely unknown."""
+    rel = []
+    for p in list(paths)[:limit]:
+        w_src = _src_width(p)
+        if not w_src:
+            continue
+        im = cv2.imread(str(p), cv2.IMREAD_UNCHANGED)
+        if im is None or im.size == 0:
+            continue
+        if im.ndim == 3 and im.shape[2] == 4:
+            ys = np.where((im[:, :, 3] > 16).any(axis=1))[0]
+            if ys.size:
+                rel.append(float(ys[-1] - ys[0] + 1) / w_src)
+        else:
+            rel.append(float(im.shape[0]) / w_src)
+    return (float(np.median(rel)) if rel else 0.0), len(rel)
+
+
+def katacr_segments(cfg, src: str, src_width: str = "auto", dry_run: bool = False,
                     min_per_class: int = 1) -> None:
     from .detect import _load_classes
 
@@ -132,26 +180,45 @@ def katacr_segments(cfg, src: str, scale: str = "auto", dry_run: bool = False,
         for a, b, c in sorted(unmatched, key=lambda r: -r[2])[:12]:
             print(f"           {a:<28} -> '{b}' not in taxonomy   ({c} segs)")
 
-    # ---- scale factor, MEASURED on the classes both banks share ----
-    if scale == "auto":
-        ratios = []
-        for cls, pngs in mapped.items():
+    # ---- effective SOURCE FRAME WIDTH, measured on the classes both banks share ----
+    # Per shared class: their alpha height / our height-per-source-pixel = the frame width their
+    # segments behave as if cut from. Median across classes; the spread is printed because a wide
+    # one means the two banks disagree and no single number is right.
+    if src_width == "auto":
+        ests, untagged = [], 0
+        for cls, pngs in sorted(mapped.items()):
             mine = list((bank / cls).glob("*.png")) if (bank / cls).is_dir() else []
-            if len(mine) >= 5 and len(pngs) >= 5:
-                a, b = _median_h(mine), _median_h(pngs)
-                if a > 0 and b > 0:
-                    ratios.append(a / b)
-        if ratios:
-            f = float(np.median(ratios))
-            print(f"[katacr] scale AUTO = {f:.3f} (median over {len(ratios)} shared class(es); "
-                  f"their frames are larger, so <1 is expected)")
-        else:
-            f = 1.0
-            print("[katacr] scale AUTO found no shared class with enough samples -> 1.0 (NO rescale). "
-                  "Check this: synth pastes at NATIVE size, so a wrong factor trains on wrong-sized units.")
+            if len(mine) < 5 or len(pngs) < 5:
+                continue
+            rel, n_rel = _our_rel_h(mine)
+            theirs, n_th = _alpha_h(pngs)
+            if n_rel < 5:
+                untagged += 1
+                continue
+            if rel > 0 and theirs > 0 and n_th >= 5:
+                ests.append(theirs / rel)
+        if not ests:
+            print("[katacr] cannot MEASURE the source width: "
+                  + (f"{untagged} shared class(es) have no width-tagged cutouts. "
+                     "Rebuild the bank first (`run.py sprites`) so every cutout records the frame "
+                     "it came from, then re-run." if untagged else
+                     "no shared class has enough samples on both sides."))
+            print("[katacr] refusing to guess -- pass an explicit --src-width <px> to override.")
+            return
+        e = np.array(ests)
+        w_k = float(np.median(e))
+        cv_ = float(e.std() / max(1e-9, e.mean()))
+        print(f"[katacr] source width AUTO = {w_k:.0f} px  (median over {len(e)} shared class(es); "
+              f"p10 {np.percentile(e, 10):.0f}, p90 {np.percentile(e, 90):.0f}, CV {cv_:.2f})")
+        if untagged:
+            print(f"[katacr] note: {untagged} shared class(es) skipped -- no width-tagged cutouts")
+        if cv_ > 0.20:
+            print("[katacr] WARNING: the shared classes DISAGREE (CV > 0.20). One width will be "
+                  "wrong for some classes -- inspect before trusting this import.")
     else:
-        f = float(scale)
-        print(f"[katacr] scale FIXED = {f:.3f}")
+        w_k = float(src_width)
+        print(f"[katacr] source width FIXED = {w_k:.0f} px")
+    w_tag = max(1, int(round(w_k)))
 
     if dry_run:
         print("[katacr] --dry-run: nothing written")
@@ -167,13 +234,12 @@ def katacr_segments(cfg, src: str, scale: str = "auto", dry_run: bool = False,
             im = cv2.imread(str(p), cv2.IMREAD_UNCHANGED)
             if im is None or im.size == 0:
                 continue
-            if abs(f - 1.0) > 0.02:
-                h, w = im.shape[:2]
-                im = cv2.resize(im, (max(2, int(round(w * f))), max(2, int(round(h * f)))),
-                                interpolation=cv2.INTER_AREA if f < 1 else cv2.INTER_LINEAR)
+            # NO resampling here: the segments keep their full resolution and carry the measured
+            # source width instead, so synth_images scales each paste to ITS base frame. Baking one
+            # global factor in would throw away detail and re-freeze the same mixed-scale mistake.
             # katacr_ prefix keeps provenance visible and makes a re-import idempotent
-            cv2.imwrite(str(out / f"katacr_{p.stem}_{i:05d}.png"), im)
+            cv2.imwrite(str(out / f"katacr_{p.stem}_{i:05d}_w{w_tag}.png"), im)
             written += 1
-    print(f"[katacr] wrote {written} segment(s) into {bank}")
+    print(f"[katacr] wrote {written} segment(s) into {bank}, tagged _w{w_tag}")
     print("[katacr] NEXT: `run.py sprites --synth N` -- do NOT re-run `run.py sprites`, it CLEARS "
           "the bank and would delete everything just imported.")

@@ -2,7 +2,7 @@
  "meta": {
   "level": 11,
   "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
-  "generated": "2026-08-08",
+  "generated": "2026-08-10",
   "count": 163,
   "champions": 8,
   "evolutions": 41
@@ -638,9 +638,9 @@
    "rarity": "epic",
    "kind": "troop",
    "hitpoints": 1451,
-   "damage": 308,
-   "hit_speed": 2.4,
-   "dps": 128,
+   "damage": 267,
+   "hit_speed": 2.3,
+   "dps": 116,
    "hits_per_attack": 3.0,
    "count": 1,
    "movement": "air",
@@ -659,9 +659,9 @@
    "rarity": "epic",
    "kind": "troop",
    "hitpoints": 1451,
-   "damage": 308,
-   "hit_speed": 2.4,
-   "dps": 128,
+   "damage": 267,
+   "hit_speed": 2.3,
+   "dps": 116,
    "hits_per_attack": 3.0,
    "count": 1,
    "movement": "air",
@@ -1277,6 +1277,34 @@
    "attacks": [
     "ground"
    ],
+   "components": [
+    {
+     "count": 3,
+     "hit_speed": 1.1,
+     "range_tiles": 0.5,
+     "speed_tiles": 2.0,
+     "attacks": [
+      "ground"
+     ],
+     "movement": "ground",
+     "hitpoints": 202.0,
+     "damage": 120.0
+    },
+    {
+     "count": 3,
+     "hit_speed": 1.7,
+     "range_tiles": 5.0,
+     "speed_tiles": 2.0,
+     "attacks": [
+      "air",
+      "ground"
+     ],
+     "movement": "ground",
+     "projectile_speed": 500.0,
+     "hitpoints": 133.0,
+     "damage": 81.0
+    }
+   ],
    "spawn_unit_stats": {
     "range_tiles": 0.5,
     "speed_tiles": 2.0,
@@ -1395,13 +1423,40 @@
    "damage": 128,
    "hit_speed": 1.5,
    "dps": 85,
-   "count": 1,
+   "count": 2,
    "movement": "ground",
    "speed_tiles": 1.0,
    "range_tiles": 5.5,
    "attacks": [
     "air",
     "ground"
+   ],
+   "components": [
+    {
+     "count": 1,
+     "hit_speed": 1.8,
+     "range_tiles": 5.5,
+     "speed_tiles": 1.0,
+     "attacks": [
+      "air",
+      "ground"
+     ],
+     "movement": "ground",
+     "hitpoints": 721.0,
+     "damage": 92.0
+    },
+    {
+     "count": 1,
+     "hit_speed": 1.5,
+     "range_tiles": 1.2,
+     "speed_tiles": 1.0,
+     "attacks": [
+      "buildings"
+     ],
+     "movement": "ground",
+     "hitpoints": 2393.0,
+     "damage": 128.0
+    }
    ],
    "spawn_unit_stats": {
     "range_tiles": 5.5,
@@ -2418,6 +2473,34 @@
    "attacks": [
     "ground"
    ],
+   "components": [
+    {
+     "count": 1,
+     "hit_speed": 1.5,
+     "range_tiles": 0.8,
+     "speed_tiles": 1.0,
+     "attacks": [
+      "ground"
+     ],
+     "movement": "ground",
+     "hitpoints": 1940.0,
+     "damage": 204.0
+    },
+    {
+     "count": 2,
+     "hit_speed": 1.0,
+     "range_tiles": 5.0,
+     "speed_tiles": 1.0,
+     "attacks": [
+      "air",
+      "ground"
+     ],
+     "movement": "ground",
+     "projectile_speed": 800.0,
+     "hitpoints": 261.0,
+     "damage": 125.0
+    }
+   ],
    "spawn_unit_stats": {
     "range_tiles": 0.8,
     "speed_tiles": 1.0,
@@ -2888,9 +2971,9 @@
    "display": "Spirit Empress",
    "rarity": "legendary",
    "kind": "troop",
-   "hitpoints": 1121,
+   "hitpoints": 1697,
    "damage": 309,
-   "count": 2,
+   "count": 1,
    "movement": "air",
    "speed_tiles": 1.0,
    "range_tiles": 5.0,
@@ -3286,8 +3369,8 @@
    "kind": "troop",
    "hitpoints": 529,
    "damage": 117,
-   "hit_speed": 2.1,
-   "dps": 56,
+   "hit_speed": 2.2,
+   "dps": 53,
    "count": 3,
    "movement": "ground",
    "speed_tiles": 1.0,

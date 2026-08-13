@@ -15,9 +15,9 @@ from typing import List
 import numpy as np
 
 from .engine import build_spec
+from ..cycle import cycle_vector
 from .. import card_threat
 from .. import interactions
-from ..cycle import cycle_vector
 from . import view
 
 _NEG = -1e9   # finite mask value (matches train_sim_ppo; -inf can NaN through a softmax)
@@ -315,6 +315,9 @@ class SelfPlayOpponent:
         self.det_precision = env.det_precision         # the same sparse/noisy identity signal it trained on
         self.det_recall_by_card = env.det_recall_by_card   # ...including the per-card recall override
         self.use_interactions = env.use_interactions   # mirror the troop-interaction block for team 1
+        self.use_tower_obs = getattr(env, "use_tower_obs", False)   # ...and the crown-tower HP block
+        self.use_canvas = getattr(env, "use_canvas", False)         # ...and the semantic obs CANVAS
+        self.canvas_presence_recall = getattr(env, "canvas_presence_recall", 1.0)
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
@@ -380,6 +383,10 @@ class SelfPlayOpponent:
 
         oh, ow, _ = self.obs_shape
         obs = view.render_obs(eng, oh, ow, team=1, dr=self._dr)   # same match 'arena look' as team 0
+        if self.use_canvas:                                       # mirrored semantic canvas for team 1
+            obs = np.concatenate(
+                [obs, view.semantic_channels(eng, oh, ow, team=1, rng=self.rng,
+                                             presence_recall=self.canvas_presence_recall)], axis=2)
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0
@@ -387,7 +394,8 @@ class SelfPlayOpponent:
         elx = np.array([eng.elixir[1] / 10.0], np.float32)
         base_dim = self.threat_dim \
             - ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM) if self.use_detector else 0) \
-            - (interactions.INTERACTION_DIM if self.use_interactions else 0)
+            - (interactions.INTERACTION_DIM if self.use_interactions else 0) \
+            - (view.TOWER_DIM if self.use_tower_obs else 0)
         thr = view.threat_vector(eng, base_dim, team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
@@ -400,12 +408,16 @@ class SelfPlayOpponent:
                 view.apply_detector_noise(view.opponent_memory_items(eng, 1, self.detector_cards),
                                           self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                           self.det_recall_by_card), dt=self.agent_dt)
+            # Slot 5 mirrors the opponent-elixir signal from team 1's perspective.
+            mem[5] = eng.elixir[0] / 10.0
             thr = np.concatenate([thr, ident, mem]).astype(np.float32)
         if self.use_interactions:                      # mirrored: team 1 sees ITS towers as 'mine'
             units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,
                                                          self.det_recall, self.det_recall_by_card)
             ivec = interactions.interaction_vector(units, mine_t, en_t, self.db)
             thr = np.concatenate([thr, ivec]).astype(np.float32)
+        if self.use_tower_obs:                         # ...same mirroring for the tower block
+            thr = np.concatenate([thr, view.tower_vector(eng, 1)]).astype(np.float32)
 
         dev = next(self.net.parameters()).device
         obs_t = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(dev) / 255.0

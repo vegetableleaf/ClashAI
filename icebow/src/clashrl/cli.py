@@ -269,7 +269,7 @@ def _cmd_preannotate(args) -> None:
         return
     preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
                 device=args.device, limit=args.limit, out=args.out, classes=args.classes,
-                subdir=args.subdir, model_version=args.model_version)
+                subdir=args.subdir, model_version=args.model_version, reoffer=args.reoffer)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -312,7 +312,7 @@ def _cmd_detect_preview(args) -> None:
 
 def _cmd_katacr_segments(args) -> None:
     from .katacr_segments import katacr_segments
-    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+    katacr_segments(Config.load(args.config), src=args.src, src_width=args.src_width,
                     dry_run=args.dry_run)
 
 
@@ -674,6 +674,11 @@ def main() -> None:
                           "so you can tell WHICH detector guessed when reviewing")
     pan.add_argument("--out", default=None,
                      help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
+    pan.add_argument("--reoffer", action="store_true",
+                     help="IGNORE the preannot_offered.txt ledger and rebuild tasks for every frame "
+                          "not yet imported. By default a re-run emits ONLY frames added since the "
+                          "last run, so importing it cannot duplicate tasks already in your Label "
+                          "Studio project. Use this only when starting a FRESH project.")
     pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
@@ -755,12 +760,13 @@ def main() -> None:
 
     kseg = sub.add_parser("katacr-segments",
                           help="import KataCR's MIT-licensed segment library into the sprite bank "
-                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
-                               "to our arena -- synth pastes at native size)")
+                               "(maps their singular/hyphenated names onto our taxonomy and tags the "
+                               "segments with a measured source width so synth pastes them at size)")
     kseg.add_argument("--src", required=True,
                       help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
-    kseg.add_argument("--scale", default="auto",
-                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--src-width", default="auto",
+                      help="effective frame width their segments were cut from, in px; 'auto' "
+                           "measures it from the classes both banks share (needs a width-tagged bank)")
     kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
     kseg.set_defaults(func=_cmd_katacr_segments)
 
@@ -831,7 +837,12 @@ def main() -> None:
     spr.add_argument("--paste", type=int, default=4, help="max sprites pasted per synthetic image (default 4)")
     spr.add_argument("--classes", default=None,
                      help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
-    spr.add_argument("--seed", type=int, default=None, help="RNG seed for a reproducible --synth set")
+    spr.add_argument("--seed", type=int, default=0,
+                     help="RNG seed for the --synth draw (default 0 = REPRODUCIBLE). Synth is ~40%% of the "
+                          "training set, so an unseeded regeneration silently changes that much of the data "
+                          "and makes any generation-to-generation comparison unattributable -- board-23's "
+                          "-5.1pp vs board-21 could not be split between the sprite-scaling fix and the new "
+                          "random draw. Vary it deliberately to MEASURE synth-draw noise.")
     spr.set_defaults(func=_cmd_sprites)
 
     dev = sub.add_parser("detect-eval",
