@@ -38,6 +38,7 @@ import atexit
 import os
 import shutil
 from pathlib import Path
+from typing import Optional
 
 # The ONE vision model's folder. Everything that loads a detector resolves to
 # runs/detect/<RUN_NAME>/weights/best.pt; see detect._resolve_weights.
@@ -144,6 +145,49 @@ def _keep_previous(best: Path) -> None:
     shutil.copyfile(best, keep)
     print(f"[train] kept the model you have now as {keep.name} (fitness {now:.4f}) -- this run "
           f"overwrites best.pt from epoch 1, so that copy is the way back if it ends up worse")
+
+
+def _holder(lock: Path) -> Optional[int]:
+    """PID currently holding `lock`, or None if it is free or stale."""
+    if not lock.is_file():
+        return None
+    try:
+        pid = int(lock.read_text(encoding="utf-8").strip() or 0)
+    except (ValueError, OSError):
+        return None
+    if not pid:
+        return None
+    try:
+        import psutil                                    # already an ultralytics dependency
+        return pid if psutil.pid_exists(pid) else None
+    except Exception:                                    # noqa: BLE001
+        return pid                                       # cannot tell -> assume held, refuse
+
+
+def claim_gpu(runs_root: Path, what: str) -> None:
+    """Refuse to start if ANOTHER training already has this GPU.
+
+    The folder lock below only knows about other runs writing the SAME folder. It cannot see a
+    second trainer writing somewhere else -- runs/bars, say -- and that one is just as fatal:
+    two trainings on one 8 GB card do not queue, they OOM, and the loser dies with an error the
+    panel never shows. A separate lock beside the run folders covers the resource rather than
+    the directory, so a clear refusal replaces a silent crash.
+
+    Deliberately NOT the same file as the folder lock: they answer different questions, and
+    merging them would let a CPU-only job block the GPU or the reverse.
+    """
+    lock = runs_root / ".gpu.pid"
+    pid = _holder(lock)
+    if pid and pid != os.getpid():
+        raise SystemExit(
+            f"another training already has the GPU (process {pid}).\n"
+            f"Two trainings on one card run out of memory instead of taking turns, and the one "
+            f"that loses dies without a message anyone sees. Wait for it, or stop it first.\n"
+            f"If you are sure nothing is running, delete {lock}.")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    lock.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(lambda: lock.unlink(missing_ok=True))
+    print(f"[{what}] holding the GPU lock ({lock})")
 
 
 def _claim(run_dir: Path) -> None:
@@ -262,6 +306,7 @@ def main() -> None:
         return
 
     run_dir = root / "runs" / "detect" / RUN_NAME
+    claim_gpu(root / "runs", "train")
     _claim(run_dir)
 
     # ONE folder for one model (see the exist_ok note below) has a sharp edge: ultralytics
@@ -348,10 +393,18 @@ def write_model_card(run_dir: Path, args) -> None:
         pass
     try:
         det = run_dir.parents[2] / "data" / "detect"   # runs/detect/<run> -> icebow/
-        boxes = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
-                    for split in ("train", "val")
-                    for p in (det / "labels" / split).glob("*.txt"))
-        card["trained_on_boxes"] = boxes
+        # Count the splits SEPARATELY. This used to sum train+val into a field called
+        # `trained_on_boxes`, which overstated the training set by the whole validation split
+        # (1,452 of 37,768 boxes) and, worse, described data the model never saw as data it
+        # was trained on. That number was copied into the hand-off spec before anyone checked.
+        def _count(split: str) -> tuple[int, int]:
+            ps = list((det / "labels" / split).glob("*.txt"))
+            n = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
+                    for p in ps)
+            return len(ps), n
+
+        card["trained_on_frames"], card["trained_on_boxes"] = _count("train")
+        card["val_frames"], card["val_boxes"] = _count("val")
     except OSError:
         pass
     try:
