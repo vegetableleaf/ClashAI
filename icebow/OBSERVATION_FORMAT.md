@@ -1,7 +1,5 @@
 # ClashAI observation format — `clashai-observation/1`
 
-The hand-off contract between ClashAI's vision stack and a simulator. One screenshot in, one JSON
-record out, containing everything the screen can be made to say.
 
 Produce one with:
 
@@ -13,7 +11,6 @@ run.py observe <frame.jpg> --out obs.json [--assume-match]
 
 ## Why the format looks like this
 
-Four rules, each answering a mistake that is easy to make when consuming this data.
 
 **1. Every position is given twice.** `xy` is normalized image space (0–1), `tile` is the arena
 lattice. The tile lattice is what a simulator thinks in; the image coordinates are what lets you
@@ -48,14 +45,29 @@ tile [18, 32] = bottom-right, behind YOUR back line
 18 × 32 is Clash Royale's real board. Values are **fractional** — a unit standing between tiles is
 a real thing, and rounding would throw that away.
 
-> ⚠️ **The one calibration you must check.** Tiles are derived from `arena.box_norm`, which is
+>  **The one calibration you must check.** Tiles are derived from `arena.box_norm`, which is
 > calibrated for the client that captured the frame. A frame from a *different* client — other
 > aspect ratio, cropped capture, YouTube recording — comes out **uniformly offset**. Uniform
 > offsets look correct, which is what makes this dangerous.
 >
-> **Sanity check:** the princess towers should land near tile y ≈ **3.5** (enemy) and ≈ **28.5**
-> (yours). If they don't, `arena.box_norm` needs recalibrating for that source and every tile in
-> the record is shifted by the same amount.
+> **Sanity check.** Use the tower entries — but read the next paragraph first, because their
+> `tile` is **not** where the tower stands.
+>
+> A tower's `tile` is the centre of its **HP bar**, which floats above the tower. Measured over
+> 120 validation frames it is stable to the second decimal:
+>
+> | | x | y |
+> |---|---|---|
+> | `E1` / `E2` (enemy) | 3.17 / 13.17 | **0.99** |
+> | `M1` / `M2` (yours) | 4.02 / 13.62 | **22.27 / 22.50** |
+>
+> If your frames land near those, `box_norm` is right for your source. If they are all off by a
+> constant, it is not, and every tile in the record carries that same shift.
+>
+> Two things this table admits rather than hides: the enemy and own pairs are **not** mirror
+> images about x = 9, so the configured read windows are only roughly placed; and you cannot
+> derive a tower footprint from these numbers. If your simulator needs the tower's ground
+> position, treat that as missing data, not as something to compute from here.
 
 ---
 
@@ -123,10 +135,57 @@ disagreement between them is itself information.
 | `sprite_xy` | uncorrected box centre |
 | `airborne` | whether the shadow correction applied |
 | `team_evidence` | `bar` and `body` votes that fed the team decision |
+| `hp` | `{"frac": 0..1}` from the unit's health bar, or `null` — see `bars` |
 
 `team` comes from evidence fusion over short tracks — own-play anchor, motion direction, HP-bar
 colour, first-seen side, body art — **not** from colour alone. `unknown` is a real answer and
 appears often for spells, which carry no team UI.
+
+### `bars` — health bars, and where per-unit HP comes from
+
+A **second, separate detector** (2 classes: `hp_bar`, `tower_hp_bar`). Bars are geometry, not
+card art, so they are not part of the 225-class model. If those weights are absent the block
+reports `available: false`, every unit's `hp` stays `null`, and nothing else changes.
+
+| field | meaning |
+|---|---|
+| `kind` | `unit` / `tower` |
+| `fill` | filled fraction 0–1, or `null` if unreadable |
+| `team` | from the bar's colour — **unit bars only**, always `null` on tower bars |
+| `unit_index` | index into `units.list`, or `null` |
+
+**`unit_index: null` does not mean "no unit there."** It means no *single* owner could be
+named. Matching a bar to its unit was measured against 11,735 hand-labelled bars:
+
+| | |
+|---|---|
+| exactly one plausible owner | **79.4 %** |
+| two or more (ambiguous) | 2.5 % |
+| none | 18.1 % |
+
+Ties are reported, not broken. Picking the nearest candidate would convert 2.5 % of "don't
+know" into roughly 1.3 % of confident-and-wrong, which is worse in a training label.
+
+**A bar with no owner is a signal.** It usually means the board detector missed a unit that is
+plainly there, so the entry is kept rather than dropped.
+
+**`team` is a unit-bar reader and is `null` on tower bars.** Own unit bars measure at median
+hue 100 (blue) and enemy ones at 18 (red), which scores **91.0 %** against ground truth on
+3,008 bars. Tower bars do *not* separate: measured over 2,005 of them, own towers sit at median
+hue 27 and enemy at 52, overlapping almost entirely. Reporting a side there would be a confident
+coin flip, so it is not reported — each tower's side is already in the `towers` block, where it
+comes from a fixed position rather than a guess.
+
+> **`hp.frac` is not verified against true HP.** There is no HP ground truth in any dataset we
+> have to score it against. What is established is that the measurement is derived from the
+> bar's own two brightness plateaus (the spent part of a CR bar is not dark, only duller — an
+> absolute threshold reads two thirds of all bars as exactly full), that it is measured from the
+> **right** because the left end of the bar carries the unit's level badge, and that the
+> resulting distribution is continuous over 0.12–1.00 with a median of 0.81 and nothing piled at
+> zero. Treat it as a good relative signal, not a calibrated number.
+
+**No bar usually means full health** — Clash Royale draws none until a unit takes damage. It is
+still reported as `null`, not as `1.0`, because "undamaged" and "occluded" look identical here.
 
 ### `motion`
 `available: false` in a single-frame record. Pass a previous record as `prev` to get per-unit
@@ -141,10 +200,12 @@ Stated plainly so you don't plan around data that doesn't exist:
 
 | missing | why |
 |---|---|
-| **Troop HP** | `troop_hp.py` exists but is a **scaffold, not wired in**. A troop's bar only appears once damaged, is tiny, and overlaps in a crowded push. |
+| **Absolute troop HP** | `bars` gives a *fraction*. Multiplying by max HP needs the unit's LEVEL, which nothing reads. |
+| **Unit levels** | The only dataset that labels the level badge has it in **86 frames**. That is not a training set, so there is no reader and no near-term path to one. |
+| **Status effects** (rage, freeze, shield, invisible…) | Ground truth exists but is far too thin: of seven flags, three have **zero** positive examples, `shield` appears only on one card, and the rest total ~4,300 boxes across dozens of classes. |
 | **Crown count** | no reader built |
 | **Match clock (mm:ss)** | not OCR'd; the live bot tracks elapsed time instead |
-| **Unit levels** | no reader built |
+| **Tower ground position** | only the HP bar's position is known — see the coordinate section |
 | **Elixir multiplier** | needs match context, not one frame |
 
 ---
@@ -163,7 +224,16 @@ never trained on):
 | presence (units found at conf 0.40) | **0.837** |
 | whitelist identity recall | **0.848** |
 
-`yolo11m` @ 960 px, 225 classes, trained on 38,265 boxes across 8,731 frames.
+`yolo11m` @ 960 px, 225 classes. Trained on **36,316 boxes across 8,731 frames**; the 401-frame
+validation split above holds a further 1,452 boxes and is never trained on.
+
+> **Read those numbers as "on frames like ours".** 75.9 % of the training frames come from an
+> imported public dataset (a different client, different capture pipeline) while the validation
+> split is **0 %** of it — all 401 frames come from our own client. That is the right way round:
+> the score measures what we care about rather than flattering itself on the bigger source. But
+> it does mean the table describes accuracy **on our capture setup**. Frames from a different
+> client, resolution or recording chain are out-of-distribution for this measurement, and the
+> honest expectation is lower, not equal. Measure it on your own frames before relying on it.
 
 Per-class recall varies a lot — common units (`skeletons` n=167, `knight` n=91) sit at 0.78–0.80,
 while classes with few validation instances are noisy by construction. **Treat any per-class
@@ -190,7 +260,14 @@ number with n < 20 as indicative only.**
     {"cls": "ice_wizard", "card": "ice_wizard", "conf": 0.817, "team": "enemy",
      "xy": [0.29, 0.49], "tile": [5.12, 15.96],
      "airborne": false, "sprite_xy": [0.29, 0.49],
-     "team_evidence": {"bar": "enemy", "body": null}}
+     "team_evidence": {"bar": "enemy", "body": null},
+     "hp": {"frac": 0.463, "method": "bar fill"}}
+  ]},
+  "bars": {"available": true, "list": [
+    {"kind": "unit", "conf": 0.824, "fill": 0.463, "team": "mine",
+     "xy": [0.3, 0.47], "tile": [7.946, 15.044], "unit_index": 0},
+    {"kind": "unit", "conf": 0.828, "fill": 0.365, "team": "enemy",
+     "xy": [0.28, 0.4], "tile": [4.492, 11.251], "unit_index": null}
   ]},
   "motion": {"available": false}
 }
@@ -198,16 +275,3 @@ number with n < 20 as indicative only.**
 
 ---
 
-## Feedback wanted
-
-This is a **proposal**, not a fixed contract. Specifically:
-
-1. **Tile origin** — we put `[0,0]` behind the opponent. If the sim uses a different origin or
-   axis direction, say so; it's a one-line change here rather than a conversion on your side.
-2. **Fractional vs integer tiles** — we emit fractional. If the sim snaps to integers anyway,
-   we can emit both.
-3. **Per-frame vs stream** — currently one record per frame. If the sim wants a time series with
-   stable unit IDs, that needs the real tracker from `perception.py` wired in, which is a bigger
-   change worth agreeing on first.
-4. **Which missing readers matter most?** Troop HP is the most-requested and the most work; if
-   the sim can do without it, we'd rather spend that effort elsewhere.

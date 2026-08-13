@@ -403,6 +403,36 @@ def create_app(cfg) -> Flask:
             return jsonify({"error": "no such frame"}), 404
         return jsonify(frameread.read_frame(C(), p))
 
+    @app.get("/api/label/observe/<name>")
+    def label_observe(name: str):
+        """The same frame as ONE interchange record -- the shape the simulator gets.
+
+        Existed only as `run.py observe` until now, which put the whole hand-off format out
+        of reach of anyone working from the panel. Same readers as /api/label/read, different
+        shape: tile coordinates, explicit nulls, and a version.
+
+        `assume_match=1` overrides the screen-state reader, which is calibrated to one client
+        and returns UNKNOWN on foreign frames -- suppressing every match-only block. Dataset
+        frames are matches, so the labelling view passes it.
+        """
+        from .. import observation_export
+        try:
+            p = labeler.find_image(C(), name)
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        if p is None:
+            return jsonify({"error": "no such frame"}), 404
+        try:
+            rec = observation_export.observe_file(
+                C(), p, assume_match=request.args.get("assume_match") == "1")
+        except Exception as exc:                          # noqa: BLE001
+            return jsonify({"error": str(exc)}), 500
+        if request.args.get("download") != "1":
+            return jsonify(rec)
+        body = json.dumps(rec, indent=2)
+        return Response(body, mimetype="application/json", headers={
+            "Content-Disposition": f'attachment; filename="{Path(name).stem}.observation.json"'})
+
     @app.get("/api/label/boxes/<name>")
     def label_boxes(name: str):
         try:

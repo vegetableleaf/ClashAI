@@ -1666,7 +1666,8 @@ function labDelete(i) {
 /* Every reader's region drawn on the same frame, in its own colour. The point is that a
    wrong number is almost always a crop sitting in the wrong place -- which you can SEE
    here, and cannot see in a log line that just says the HP is 7151. */
-const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c" };
+const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c",
+                       bar: "#d8d24a" };
 
 function labDrawRead(g, cv) { drawRead(g, cv, LAB.read); }
 
@@ -1705,6 +1706,13 @@ function drawRead(g, cv, r) {
   (r.units && r.units.boxes || []).forEach(u =>
     rect({ x: u.cx - u.w / 2, y: u.cy - u.h / 2, w: u.w, h: u.h },
          READ_COLOURS.unit, `${u.cls} ${u.conf}`));
+  (r.bars && r.bars.boxes || []).forEach(b => {
+    // "?" is an unmatched bar, and it is deliberately loud: it usually means the BOARD
+    // detector missed a unit that is plainly standing there.
+    const who = b.kind === "tower" ? "tower" : (b.of || "?");
+    rect(b.box, READ_COLOURS.bar,
+         `${who} ${b.fill == null ? "--" : Math.round(b.fill * 100) + "%"}`);
+  });
 }
 
 function labReadout() {
@@ -1732,7 +1740,8 @@ function readoutCard(r) {
     `This screen is ${r.state || "not recognised"}, not a match. Everything below except the `
     + "screen state only means something during a match, so it is not shown."));
   box.appendChild(el("p", "hint",
-    "Five separate readers, only one of which is the vision AI. Hover a line for how it works."));
+    "Six separate readers. Two are neural (the board detector and the health-bar detector); "
+    + "the rest are plain code. Hover a line for how it works."));
   const c = el("div", "statcard");
   c.appendChild(row("screen", "template match against templates/*.png", r.state || "?", null, false));
   const h = r.hand || {};
@@ -1755,6 +1764,13 @@ function readoutCard(r) {
   const u = r.units || {};
   c.appendChild(row("units on the board", u.how || "",
     u.error ? u.error : `${(u.boxes || []).length} found`, READ_COLOURS.unit, true));
+  const bz = r.bars || {};
+  const bl = bz.boxes || [];
+  c.appendChild(row("health bars", bz.how || "", bz.error ? bz.error
+    : `${bl.filter(x => x.kind === "unit").length} unit / `
+      + `${bl.filter(x => x.kind === "tower").length} tower`
+      + (bz.orphans ? `, ${bz.orphans} unmatched` : ""),
+    READ_COLOURS.bar, true));
   const g = el("div", "statgrid"); g.appendChild(c); box.appendChild(g);
   box.appendChild(el("p", "hint",
     "This is exactly the set of numbers the playing AI receives -- the same shape it gets in "
@@ -1773,6 +1789,19 @@ function readoutCard(r) {
     notes.push("The next-card preview needs its own templates under templates/next/ -- without "
                + "them the playing AI cannot see what is coming and cannot plan its cycle.");
   if (notes.length) box.appendChild(el("p", "hint", notes.join(" ")));
+  // The same readings as ONE interchange record. This was `run.py observe` only, i.e. out of
+  // reach from the panel, which is where the hand-off format is actually needed.
+  const dl = el("button", "btn", "Download observation JSON");
+  dl.onclick = () => {
+    const n = LAB.queue[LAB.ix];
+    if (n) window.location = `/api/label/observe/${encodeURIComponent(n)}`
+                             + "?download=1&assume_match=1";
+  };
+  box.appendChild(dl);
+  box.appendChild(el("p", "hint",
+    "One frame as the versioned record the simulator consumes -- tile coordinates, explicit "
+    + "nulls, and how each number was read. See OBSERVATION_FORMAT.md. Dataset frames are "
+    + "matches, so the screen-state check is overridden for this download."));
   return box;
 }
 

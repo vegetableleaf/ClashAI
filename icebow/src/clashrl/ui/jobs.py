@@ -271,6 +271,35 @@ COMMANDS: List[Dict[str, Any]] = [
         ],
     },
     {
+        # The 8 GB card caps this machine at yolo11s/batch 3 @ 960 px. Every better detector we
+        # have was trained somewhere else, which meant the one step that made it possible was
+        # the only one with no button -- so it did not exist for anyone working from the panel.
+        "cmd": "detect-pack",
+        "group": "Vision AI", "stage": "train",
+        "title": "4b. Pack the dataset to train elsewhere",
+        "desc": "Writes ONE zip of everything the detector trains on, plus a ready-to-run "
+                "notebook, into data/exports/. Upload that to a rented or free GPU (Kaggle "
+                "gives two T4s), train there, and bring the weights back with Models -> import. "
+                "This machine's 8 GB caps training at the small model; the big one came from "
+                "here. Nothing is uploaded by this button -- it only writes the file.",
+        "gpu": False,
+        "metrics": False,
+        "args": [
+            # HYPHENATED on purpose: build_argv emits `--{name}` verbatim, and the CLI declares
+            # `--many-files` / `--own-only`. An underscore here spawns a flag argparse rejects.
+            {"name": "many-files", "type": "bool", "default": False,
+             "label": "Loose files instead of one archive",
+             "help": "Leave OFF. The frames normally go inside a single tar because Kaggle's "
+                     "uploader crashes while listing ~19,000 separate files. Turn it on only "
+                     "for a host that insists on loose files."},
+            {"name": "own-only", "type": "bool", "default": False,
+             "label": "Only my own labelled frames",
+             "help": "Leaves out the 6,623 imported frames, keeping the 2,108 labelled here. "
+                     "The result CANNOT train a good detector on its own -- it is for a target "
+                     "that already has the imported half."},
+        ],
+    },
+    {
         "cmd": "label",
         "group": "Playing AI", "stage": "data",
         "title": "Prepare imitation data",

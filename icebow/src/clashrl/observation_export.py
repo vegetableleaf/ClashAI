@@ -179,6 +179,12 @@ def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None
     # -- towers -------------------------------------------------------------
     towers: Dict[str, Any] = {
         "method": "HP digits via a small CNN (hp_digits.npz); bar fill by colour, independently",
+        # THE TILE IS THE HP BAR, NOT THE TOWER. read_towers returns the bar's read window, so
+        # `tile` says where that bar floats, not where the tower stands. Measured over 120 val
+        # frames it is stable: enemy y 0.99, own y 22.3-22.5 (x 3.17/13.17 and 4.02/13.62).
+        # Those two are NOT mirror images about x=9, so the configured windows are themselves
+        # only roughly placed -- do not derive a tower footprint from them.
+        "tile_note": "tile is the HP BAR's centre, not the tower's ground position",
         "list": []}
     try:
         from .tower_hp import read_towers
@@ -232,6 +238,9 @@ def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None
         units["error"] = str(exc)
     out["units"] = units
 
+    # -- per-unit HP, from a SECOND detector ---------------------------------
+    out["bars"] = _bars_block(cfg, frame, grid, units["list"])
+
     # -- velocity, only if a previous record was handed in --------------------
     # One frame cannot show motion. Rather than omit the field (ambiguous) or fake a zero
     # (a lie a simulator would integrate), it is present and null until two frames exist.
@@ -241,6 +250,104 @@ def observe(cfg, frame, detector_conf: float = 0.25, prev: Optional[Dict] = None
     if prev:
         out["motion"]["units"] = _velocity(prev, out)
     return out
+
+
+_BAR_MODEL = None       # loaded once, then reused; None means "not tried yet"
+
+
+def _bars_block(cfg, frame, grid, unit_list: List[Dict]) -> Dict[str, Any]:
+    """Detected HP bars, and the per-unit HP fraction they imply.
+
+    A SEPARATE model from the one behind `units` (runs/bars, 2 classes) -- bars are geometry,
+    not card art, and mixing them into the 225-class detector would mean retraining it. If
+    those weights are absent this block reports `available: false` and every unit's `hp`
+    stays null; nothing else in the record changes.
+
+    Bars that match no unit are still listed. A bar with no owner is evidence of a unit the
+    board detector missed, which is exactly the kind of thing a consumer should be able to
+    see rather than have quietly dropped.
+    """
+    global _BAR_MODEL
+    from .troop_hp import bar_team, match_bars, read_fill
+
+    block: Dict[str, Any] = {
+        "available": False,
+        "method": "2-class YOLO (hp_bar, tower_hp_bar) + per-bar fill measurement",
+        "reliability": "fill is calibrated on bar structure but UNVERIFIED against true HP -- "
+                       "the training data carries no HP ground truth to score it against",
+        "list": [],
+    }
+    w = Path(cfg.path("runs/bars/v1/weights/best.pt"))
+    if not w.is_file():
+        block["reason"] = f"no bar detector at {w}"
+        return block
+    try:
+        if _BAR_MODEL is None:
+            from ultralytics import YOLO
+            _BAR_MODEL = YOLO(str(w))
+        res = _BAR_MODEL.predict(frame, conf=0.30, verbose=False)[0]
+        names = res.names
+        h, wpx = frame.shape[:2]
+
+        bars, kinds, confs = [], [], []
+        for b in res.boxes:
+            x0, y0, x1, y1 = (float(v) for v in b.xyxy[0])
+            bars.append((x0 / wpx, y0 / h, x1 / wpx, y1 / h))
+            kinds.append(names[int(b.cls)])
+            confs.append(float(b.conf))
+
+        # unit boxes, rebuilt from what the units block already published
+        boxes = []
+        for u in unit_list:
+            (cx, cy), (bw, bh) = u["sprite_xy"], u["size_norm"]
+            boxes.append((cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2))
+
+        unit_bars = [i for i, k in enumerate(kinds) if k == "hp_bar"]
+        owner = match_bars([bars[i] for i in unit_bars], boxes)
+
+        for n, i in enumerate(unit_bars):
+            ui = owner.get(n)
+            frac = read_fill(frame, bars[i])
+            cx = (bars[i][0] + bars[i][2]) / 2
+            cy = (bars[i][1] + bars[i][3]) / 2
+            block["list"].append({
+                "kind": "unit",
+                "conf": _r(confs[i], 3),
+                "fill": None if frac is None else _r(frac, 3),
+                "team": bar_team(frame, bars[i]),
+                "xy": [_r(cx), _r(cy)],
+                "tile": grid.tile(cx, cy),
+                # null does NOT mean "no unit there" -- it means no SINGLE owner could be
+                # named, which is either no candidate (18.1% on ground truth) or several
+                # (2.5%). Guessing between candidates would trade a gap for a silent error.
+                "unit_index": ui,
+            })
+            if ui is not None and frac is not None:
+                unit_list[ui]["hp"] = {"frac": _r(frac, 3), "method": "bar fill"}
+
+        for i, k in enumerate(kinds):
+            if k != "hp_bar":
+                cx = (bars[i][0] + bars[i][2]) / 2
+                cy = (bars[i][1] + bars[i][3]) / 2
+                tf = read_fill(frame, bars[i])
+                block["list"].append({"kind": "tower", "conf": _r(confs[i], 3),
+                                      # `or 0.0` here would report an UNREADABLE bar as an
+                                      # empty one, i.e. a destroyed tower. Null means null.
+                                      "fill": None if tf is None else _r(tf, 3),
+                                      # bar_team() is a UNIT-bar reader. Tower bars overlap
+                                      # almost completely in hue between the two sides, so it
+                                      # would answer confidently and wrongly. The `towers`
+                                      # block already carries each tower's side.
+                                      "team": None,
+                                      "xy": [_r(cx), _r(cy)], "tile": grid.tile(cx, cy),
+                                      "unit_index": None})
+        block["available"] = True
+    except Exception as exc:                                        # noqa: BLE001
+        block["error"] = str(exc)
+    # present-but-null on every unit, so "no bar" is distinguishable from "no reader"
+    for u in unit_list:
+        u.setdefault("hp", None)
+    return block
 
 
 def _velocity(prev: Dict, cur: Dict) -> List[Dict]:
