@@ -126,7 +126,11 @@ def _detector_report(cfg) -> Dict[str, Any]:
     }
 
 
-def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False) -> Dict[str, Any]:
+_PREV_RECORD: Dict[str, Any] = {}       # last observation record, so `motion` has two frames
+
+
+def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False,
+             observe: bool = False) -> Dict[str, Any]:
     """One frame plus the bot's reading of it. Never raises; reports the problem instead."""
     t0 = time.time()
     try:
@@ -200,6 +204,24 @@ def snapshot(cfg, width: int = 420, quality: int = 65, read: bool = False) -> Di
             out["read"] = frameread.read_bgr(cfg, frame)
         except Exception as exc:                              # noqa: BLE001
             out["read_error"] = str(exc)
+
+    # The SAME frame as the interchange record the simulator consumes -- arena tiles, explicit
+    # nulls, a version. Separate from `read` because they answer different questions: `read` is
+    # "which reader produced which number, and where on the picture", the record is "what a
+    # consumer receives". Both come off this one grab, so they can never disagree.
+    #
+    # The previous record is passed back in, which is what makes `motion` real here: a single
+    # frame cannot show movement, and this is the only path in the project that HAS two frames.
+    # (`observe` on a file never does, so there it stays available: false.)
+    if observe:
+        try:
+            from .. import observation_export
+            rec = observation_export.observe(cfg, frame, prev=_PREV_RECORD or None)
+            _PREV_RECORD.clear()
+            _PREV_RECORD.update(rec)
+            out["record"] = rec
+        except Exception as exc:                              # noqa: BLE001
+            out["record_error"] = str(exc)
 
     scale = width / float(w)
     small = cv2.resize(frame, (width, max(1, int(round(h * scale)))), interpolation=cv2.INTER_AREA)

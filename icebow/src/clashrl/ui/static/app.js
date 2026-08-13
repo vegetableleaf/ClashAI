@@ -1721,9 +1721,64 @@ function labReadout() {
   if (LAB.read) out.appendChild(readoutCard(LAB.read));
 }
 
-const liveReadout = readoutCard;      // the Live tab wants the same panel
+const liveReadout = (r) => readoutCard(r, "live");   // same panel, different frame source
 
-function readoutCard(r) {
+/* The interchange record, as the simulator receives it. NOT a second reading of the frame --
+   it is the same one, reshaped: arena TILES instead of image coordinates, an explicit null
+   wherever a number could not be read, and a version. The summary is what a consumer would
+   plan around; the raw JSON below it is what they actually get. */
+function recordCard(rec) {
+  const box = el("div", "cfggroup");
+  box.appendChild(el("h3", null, "What the simulator would receive"));
+  box.appendChild(el("p", "hint",
+    `Format ${rec.schema}. Positions are arena tiles on an ${(rec.arena && rec.arena.tiles || [18, 32]).join("x")} `
+    + "board, fractional. Flyers report their SHADOW, so a Baby Dragon is placed where it "
+    + "stands, not where it is drawn."));
+  box.appendChild(el("p", "hint",
+    "This costs about 0.85 s per tick on an RTX 3070 -- the overlay and the record each run "
+    + "the detector once, so the board model runs twice. Fine at 1.5 s; at the 'fast' 0.7 s "
+    + "setting the panel will fall behind."));
+
+  const c = el("div", "statcard");
+  const row = (k, v, hint) => {
+    const d = el("div", "kv");
+    d.appendChild(el("span", null, k));
+    d.appendChild(el("span", null, v));
+    if (hint) d.title = hint;
+    c.appendChild(d);
+  };
+  const units = (rec.units && rec.units.list) || [];
+  const bars = (rec.bars && rec.bars.list) || [];
+  const withHp = units.filter(u => u.hp).length;
+  const orphan = bars.filter(b => b.kind === "unit" && b.unit_index == null).length;
+  row("screen", (rec.screen && rec.screen.state) || "?",
+      "match-only blocks are null unless this says IN_MATCH");
+  row("units", String(units.length), "detector boxes, tile-positioned");
+  row("with HP", `${withHp} of ${units.length}`,
+      "no bar usually means undamaged -- reported as null, never as full");
+  row("bars without an owner", String(orphan),
+      "a bar nobody owns usually means the BOARD detector missed a unit that is plainly there");
+  const mot = rec.motion || {};
+  row("motion", mot.available ? `${(mot.units || []).length} unit(s)` : "needs two frames",
+      "the Live tab is the only path that has a previous frame to compare against");
+  const g = el("div", "statgrid"); g.appendChild(c); box.appendChild(g);
+
+  // Collapsed by default: this is a wall of JSON, and it is here to be COPIED, not read.
+  const det = el("details");
+  det.appendChild(el("summary", null, "the raw record"));
+  const pre = el("pre");
+  pre.style.cssText = "overflow:auto;max-height:22em;font-family:var(--mono);font-size:11px";
+  pre.textContent = JSON.stringify(rec, null, 2);
+  det.appendChild(pre);
+  box.appendChild(det);
+
+  const dl = el("button", "btn", "Download this record");
+  dl.onclick = () => { window.location = "/api/live/observe?download=1"; };
+  box.appendChild(dl);
+  return box;
+}
+
+function readoutCard(r, src) {
   if (!r) return el("div");
   const row = (what, how, value, colour, trained) => {
     const d = el("div", "kv");
@@ -1791,8 +1846,13 @@ function readoutCard(r) {
   if (notes.length) box.appendChild(el("p", "hint", notes.join(" ")));
   // The same readings as ONE interchange record. This was `run.py observe` only, i.e. out of
   // reach from the panel, which is where the hand-off format is actually needed.
+  // WHICH FRAME this card is describing. `liveReadout` is the same function, so without a
+  // source the Live tab rendered this button too and it read LAB.queue -- the labelling
+  // queue, which on the Live tab points at an unrelated frame or nothing at all. It looked
+  // like a working button and downloaded the wrong thing or silently nothing.
   const dl = el("button", "btn", "Download observation JSON");
   dl.onclick = () => {
+    if (src === "live") { window.location = "/api/live/observe?download=1"; return; }
     const n = LAB.queue[LAB.ix];
     if (n) window.location = `/api/label/observe/${encodeURIComponent(n)}`
                              + "?download=1&assume_match=1";
@@ -1800,8 +1860,10 @@ function readoutCard(r) {
   box.appendChild(dl);
   box.appendChild(el("p", "hint",
     "One frame as the versioned record the simulator consumes -- tile coordinates, explicit "
-    + "nulls, and how each number was read. See OBSERVATION_FORMAT.md. Dataset frames are "
-    + "matches, so the screen-state check is overridden for this download."));
+    + "nulls, and how each number was read. See OBSERVATION_FORMAT.md."
+    + (src === "live" ? " Taken from the window as it is right now."
+                      : " Dataset frames are matches, so the screen-state check is "
+                        + "overridden for this download.")));
   return box;
 }
 
@@ -2566,7 +2628,9 @@ $("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast
 async function liveOnce() {
   const body = $("#livebody"), msg = $("#livemsg");
   let d;
-  try { d = await api("/api/live" + ($("#livemark").checked ? "?read=1" : "")); }
+  // observe rides along with read: it reuses the SAME grabbed frame and the same cached
+  // detector, so the record costs the readers it does not share, not a second inference.
+  try { d = await api("/api/live" + ($("#livemark").checked ? "?read=1&observe=1" : "")); }
   catch (e) { msg.className = "msg err"; msg.textContent = e.message; return; }
   if (!d.ok) {
     msg.className = "msg err"; msg.textContent = d.error || "unknown error";
@@ -2604,6 +2668,8 @@ async function liveOnce() {
   }
   wrap.appendChild(left);
   if (d.read) left.appendChild(liveReadout(d.read));
+  if (d.record) left.appendChild(recordCard(d.record));
+  if (d.record_error) left.appendChild(el("p", "msg err", d.record_error));
 
   const right = el("div"); right.style.minWidth = "320px";
   const inMatch = d.state === "IN_MATCH";

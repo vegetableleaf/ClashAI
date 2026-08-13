@@ -390,13 +390,32 @@ class BoardDetector:
         return out
 
 
+_DETECTOR_CACHE: dict = {}
+
+
 def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
     """Load the trained board detector (mirrors ``detect_preview``'s YOLO/RT-DETR fallback).
-    Returns an *unavailable* :class:`BoardDetector` when no weights exist yet (Stage 2/3 pending)."""
+    Returns an *unavailable* :class:`BoardDetector` when no weights exist yet (Stage 2/3 pending).
+
+    CACHED BY (path, mtime). It was not, and the panel calls it once per reader pass -- so the
+    Live tab at its 1.5 s tick was constructing a fresh ultralytics model, weights off disk and
+    all, several times a minute, and the observation record would have done it again on the same
+    tick. mtime is part of the key on purpose: a retrain replaces best.pt in place, and a cache
+    keyed on the path alone would serve the OLD detector until the panel restarted -- which is
+    exactly the "the panel still shows the bad model" confusion this project has already had.
+    """
     from .detect import _resolve_weights
     wpath, _ = _resolve_weights(cfg, weights)
     if wpath is None or not Path(wpath).exists():
         return BoardDetector()
+    try:
+        key = (str(wpath), Path(wpath).stat().st_mtime_ns)
+        hit = _DETECTOR_CACHE.get(key)
+        if hit is not None:
+            return hit
+        _DETECTOR_CACHE.clear()                  # only ever the current model
+    except OSError:
+        key = None
     try:
         from ultralytics import YOLO
         model = YOLO(str(wpath))
@@ -415,9 +434,12 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
         db = CardDB(cfg)
     except Exception:
         db = None
-    return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
-                         conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
-                         imgsz=int(cfg.get("detect", "imgsz", default=960)))
+    det = BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
+                        conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
+                        imgsz=int(cfg.get("detect", "imgsz", default=960)))
+    if key is not None:
+        _DETECTOR_CACHE[key] = det
+    return det
 
 
 # ---------------------------------------------------------------------------
