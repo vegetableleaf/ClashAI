@@ -109,7 +109,11 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
                         shuffle=True)
 
     threat_dim = int(thr.shape[1])
-    net = PolicyNet(in_ch=3, n_cards=n_cards, n_cells=n_cells, threat_dim=threat_dim).to(device)
+    # BC learns from RECORDED frames, so the image width comes from the DATASET rather than the
+    # config: a dataset labelled before the obs-canvas flip is still 3-channel and must train a
+    # 3-channel net (re-run `label` to rebuild it wide).
+    in_ch = int(x.shape[1])
+    net = PolicyNet(in_ch=in_ch, n_cards=n_cards, n_cells=n_cells, threat_dim=threat_dim).to(device)
     if init:                                     # WARM-START: fine-tune an existing policy instead of random init
         ip = cfg.path(init)                      # e.g. data/policy_sim.pt -> combine the SIM prior with your recordings
         if not ip.exists():
@@ -169,6 +173,7 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
             "n_cards": n_cards,
             "n_cells": n_cells,
             "threat_dim": threat_dim,
+            "in_ch": in_ch,
             "deck": deck,
         }, ckpt)
         suffix = f" (after iteration {it}/{iterations})" if iterations > 1 else ""

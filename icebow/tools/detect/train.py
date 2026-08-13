@@ -34,7 +34,11 @@ unlabelled units. Start with a few hundred well-labelled frames.
 from __future__ import annotations
 
 import argparse
+import atexit
+import os
+import shutil
 from pathlib import Path
+from typing import Optional
 
 # The ONE vision model's folder. Everything that loads a detector resolves to
 # runs/detect/<RUN_NAME>/weights/best.pt; see detect._resolve_weights.
@@ -112,6 +116,128 @@ def _install_status_aug() -> str:
     return "status-aug (Albumentations): " + ", ".join(names)
 
 
+def _fitness_of(pt: Path) -> float:
+    """The `best_fitness` ultralytics stored in a checkpoint, or -1 if it cannot be read.
+
+    -1, not 0: an unreadable file must never win a comparison against a real model."""
+    try:
+        import torch
+        ck = torch.load(pt, map_location="cpu", weights_only=False)
+        f = ck.get("best_fitness")
+        return float(f) if f is not None else -1.0
+    except Exception:                                    # noqa: BLE001
+        return -1.0
+
+
+def _keep_previous(best: Path) -> None:
+    """Copy best.pt aside -- but NEVER over a better copy that is already there.
+
+    An unconditional copy is worse than none. Starting a second run twenty minutes into the
+    first overwrote the good model (fitness 0.477) with that run's epoch-2 weights (0.184), so
+    the safety net held the very thing it existed to protect against. Compare and keep the better
+    one: the point is a way BACK, and the way back is whichever model is actually best."""
+    keep = best.with_name("best_previous.pt")
+    now, had = _fitness_of(best), (_fitness_of(keep) if keep.exists() else -1.0)
+    if had > now:
+        print(f"[train] {keep.name} already holds a BETTER model (fitness {had:.4f} vs {now:.4f}) "
+              f"-- keeping it, not overwriting with the weaker one")
+        return
+    shutil.copyfile(best, keep)
+    print(f"[train] kept the model you have now as {keep.name} (fitness {now:.4f}) -- this run "
+          f"overwrites best.pt from epoch 1, so that copy is the way back if it ends up worse")
+
+
+def _holder(lock: Path) -> Optional[int]:
+    """PID currently holding `lock`, or None if it is free or stale."""
+    if not lock.is_file():
+        return None
+    try:
+        pid = int(lock.read_text(encoding="utf-8").strip() or 0)
+    except (ValueError, OSError):
+        return None
+    if not pid:
+        return None
+    try:
+        import psutil                                    # already an ultralytics dependency
+        return pid if psutil.pid_exists(pid) else None
+    except Exception:                                    # noqa: BLE001
+        return pid                                       # cannot tell -> assume held, refuse
+
+
+def claim_gpu(runs_root: Path, what: str) -> None:
+    """Refuse to start if ANOTHER training already has this GPU.
+
+    The folder lock below only knows about other runs writing the SAME folder. It cannot see a
+    second trainer writing somewhere else -- runs/bars, say -- and that one is just as fatal:
+    two trainings on one 8 GB card do not queue, they OOM, and the loser dies with an error the
+    panel never shows. A separate lock beside the run folders covers the resource rather than
+    the directory, so a clear refusal replaces a silent crash.
+
+    Deliberately NOT the same file as the folder lock: they answer different questions, and
+    merging them would let a CPU-only job block the GPU or the reverse.
+    """
+    lock = runs_root / ".gpu.pid"
+    pid = _holder(lock)
+    if pid and pid != os.getpid():
+        raise SystemExit(
+            f"another training already has the GPU (process {pid}).\n"
+            f"Two trainings on one card run out of memory instead of taking turns, and the one "
+            f"that loses dies without a message anyone sees. Wait for it, or stop it first.\n"
+            f"If you are sure nothing is running, delete {lock}.")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    lock.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(lambda: lock.unlink(missing_ok=True))
+    print(f"[{what}] holding the GPU lock ({lock})")
+
+
+def _claim(run_dir: Path) -> None:
+    """Refuse to start if another training is already writing to this folder.
+
+    There is deliberately one run folder, and `exist_ok=True` lets a second run walk straight into
+    it: both then fight over best.pt, last.pt and results.csv. Seen exactly that -- a second start
+    truncated results.csv (losing the curve the panel draws) and clobbered the backup, then died
+    on VRAM a minute later having written no error anyone could see. Failing loudly here beats
+    corrupting the first run's output and dying quietly."""
+    lock = run_dir / ".training.pid"
+    if lock.is_file():
+        try:
+            pid = int(lock.read_text(encoding="utf-8").strip() or 0)
+        except ValueError:
+            pid = 0
+        alive = False
+        if pid:
+            try:
+                import psutil                            # already an ultralytics dependency
+                alive = psutil.pid_exists(pid)
+            except Exception:                            # noqa: BLE001
+                alive = True                             # cannot tell -> assume it is, and refuse
+        if alive:
+            raise SystemExit(
+                f"a training is ALREADY running in {run_dir.name} (process {pid}).\n"
+                f"Two runs in one folder overwrite each other's model and blank the progress "
+                f"curve, and the second one dies on VRAM anyway. Wait for it, or stop it first.\n"
+                f"If you are sure nothing is running, delete {lock}.")
+        print(f"[train] ignoring a stale lock from process {pid} (no longer running)")
+    run_dir.mkdir(parents=True, exist_ok=True)
+    lock.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(lambda: lock.unlink(missing_ok=True))
+
+
+def _resumable(ckpt: Path) -> bool:
+    """Does this checkpoint still carry the TRAINING state ultralytics needs to resume?
+
+    A run that finished (or was stripped) keeps only inference weights. `resume=True` on such a file
+    is not an error to ultralytics -- it warns and quietly starts a new training on its default
+    dataset -- so the caller has to check first. Any read failure is treated as NOT resumable: the
+    conservative answer is the one that does not waste a GPU-day on coco8.
+    """
+    try:
+        import torch
+        ck = torch.load(ckpt, map_location="cpu", weights_only=False)
+    except Exception:
+        return False
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train the board detector (Ultralytics YOLO / RT-DETR).")
     ap.add_argument("--model", default="auto", metavar="WEIGHTS",
@@ -122,14 +248,34 @@ def main() -> None:
                          "explicit path only to start from some other file.")
     ap.add_argument("--epochs", type=int, default=120, help="training epochs (early-stop via --patience)")
     ap.add_argument("--imgsz", type=int, default=960, help="train image size (the frame is tall ~668x1182)")
+    # MERGE NOTE: upstream hardcodes 4 ("safe on VRAM for the board-24 setup") -- safe on THEIR
+    # card. This branch measures instead: _auto_model() picks the backbone from actual VRAM and
+    # -1 lets ultralytics' AutoBatch size the batch to whatever that leaves. A number tuned on
+    # someone else's GPU is exactly the kind of borrowed constant that reads as a decision.
     ap.add_argument("--batch", type=int, default=-1,
-                    help="images per batch; -1 auto-sizes to your GPU (drop to yolo11l/m/s.pt if VRAM is tight)")
+                    help="images per batch; -1 auto-sizes to your GPU. Pin it only if AutoBatch "
+                         "guesses high and the run dies out of memory.")
     ap.add_argument("--patience", type=int, default=30, help="early-stop patience (epochs)")
+    ap.add_argument("--workers", type=int, default=8,
+                    help="dataloader worker processes. EACH worker imports torch, so this is a major RAM "
+                         "consumer: a board-24 run died with 'the paging file is too small' while a "
+                         "32-env CPU train-sim-ppo was running alongside it. Drop to 2-4 when sharing the "
+                         "machine with another training job; the run is GPU-bound, so throughput barely moves.")
     ap.add_argument("--seed", type=int, default=0,
                     help="training seed. Ultralytics runs seed=0 + deterministic=True, so re-running an "
                          "UNCHANGED dataset reproduces the same weights -- change this to get a genuine "
                          "replicate and measure the run-to-run noise floor (needed to know whether a "
                          "1-3pp gap between generations is real or seed variance)")
+    # MERGE NOTE: upstream defaults this to "board" and lets ultralytics auto-increment into
+    # board-22, board-23, board-24 ... one generation per run. This branch went the other way on
+    # purpose (see the model.train call): there is ONE detector, at runs/detect/vision, and a
+    # retrain replaces it -- the panel, detect._resolve_weights and ui/ckpt.py all read that one
+    # path. Keeping their flag but OUR default means a deliberate side experiment still gets its
+    # own folder, while the normal case cannot quietly fork the model into a pile of directories.
+    ap.add_argument("--name", default=RUN_NAME,
+                    help="run folder under runs/detect. Defaults to the ONE vision model's folder, "
+                         "which a retrain replaces. Pass something else for a side experiment you "
+                         "do not want installed as the operating detector.")
     ap.add_argument("--status-aug", action="store_true",
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
@@ -189,10 +335,36 @@ def main() -> None:
             ckpt = runs / args.resume / "weights" / "last.pt"
             if not ckpt.exists():
                 raise SystemExit(f"no checkpoint at {ckpt}")
+        # A FINISHED (or externally stripped) run has had its optimizer/epoch state removed --
+        # ultralytics strips last.pt/best.pt down to inference weights. Handing such a file to
+        # resume=True does NOT raise: it prints a warning and silently starts a BRAND-NEW training
+        # on its DEFAULT dataset (coco8.yaml, 80 classes) in a fresh runs/detect/train-N folder.
+        # That has already happened three times in this repo (runs/detect/train, train-2, train-3),
+        # burning GPU on a demo dataset while looking like a normal training log. Refuse instead.
+        if not _resumable(ckpt):
+            raise SystemExit(
+                f"{ckpt} carries no optimizer/epoch state -- it is a STRIPPED (finished) checkpoint,\n"
+                "so ultralytics cannot resume it and would silently start a NEW coco8 training.\n"
+                "That run is over: evaluate it (`run.py detect-eval --weights "
+                f"{ckpt.parents[1].name}/weights/best.pt --sweep --subset data/detect/val_board15.txt`)\n"
+                "or start a fresh generation with `--name` instead.")
         print(f"[train] RESUMING {ckpt.parents[1].name} from {ckpt}")
         (RTDETR if is_rtdetr else YOLO)(str(ckpt)).train(resume=True)
         print(f"done -> {ckpt.parents[0] / 'best.pt'}")
         return
+
+    run_dir = root / "runs" / "detect" / args.name
+    claim_gpu(root / "runs", "train")
+    _claim(run_dir)
+
+    # ONE folder for one model (see the exist_ok note below) has a sharp edge: ultralytics
+    # rewrites best.pt from epoch 1, so the moment a new run starts, the model you had is gone.
+    # That is fine while the run improves on it and a disaster when it does not -- a fresh LR
+    # warmup on a much larger dataset dips BELOW the starting point for the first epochs, and a
+    # run stopped in that window leaves the panel installing weights worse than yesterday's with
+    # nothing to fall back to. The copy is taken once, before the first epoch can overwrite it.
+    if ours.exists():
+        _keep_previous(ours)
 
     model = (RTDETR if is_rtdetr else YOLO)(args.model)
     print(f"[train] {'RT-DETR' if is_rtdetr else 'YOLO'} from {args.model}  ->  {data}")
@@ -209,20 +381,26 @@ def main() -> None:
         model.train(
             data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
             patience=args.patience, seed=args.seed,
+            # MERGE NOTE: upstream's --workers is kept, their board-N run naming is not.
+            # Their default is 8 and each worker imports torch, which killed one of their runs
+            # with "the paging file is too small" while a 32-env train-sim-ppo ran beside it --
+            # worth having on a machine that shares the GPU, which this one now does.
+            workers=args.workers,
         # ONE vision model, always the same folder. Ultralytics' default (exist_ok=False)
         # auto-increments to board, board-2, board-3 ... which turns one network into a pile
         # of identically named directories, silently loads "whichever was newest", and makes
         # the count of models in this project unreadable. There is exactly one detector; a
-        # retrain replaces it.
-            project=str(root / "runs" / "detect"), name=RUN_NAME, exist_ok=True,
+        # retrain replaces it. --name still works for a deliberate side experiment, but it
+        # defaults to that one folder rather than to the next generation number.
+            project=str(root / "runs" / "detect"), name=args.name, exist_ok=True,
             # colour jitter helps the own-troop (blue) labels transfer to the red enemy side
             # (also covers slow/rage tints)
             hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0,
             erasing=erasing,           # no horizontal flip: lanes are asymmetric
         )
-        print(f"done -> runs/detect/{RUN_NAME}/weights/best.pt")
+        print(f"done -> runs/detect/{args.name}/weights/best.pt")
     finally:
-        write_model_card(root / "runs" / "detect" / RUN_NAME, args)
+        write_model_card(root / "runs" / "detect" / args.name, args)
 
 
 def write_model_card(run_dir: Path, args) -> None:
@@ -269,10 +447,18 @@ def write_model_card(run_dir: Path, args) -> None:
         pass
     try:
         det = run_dir.parents[2] / "data" / "detect"   # runs/detect/<run> -> icebow/
-        boxes = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
-                    for split in ("train", "val")
-                    for p in (det / "labels" / split).glob("*.txt"))
-        card["trained_on_boxes"] = boxes
+        # Count the splits SEPARATELY. This used to sum train+val into a field called
+        # `trained_on_boxes`, which overstated the training set by the whole validation split
+        # (1,452 of 37,768 boxes) and, worse, described data the model never saw as data it
+        # was trained on. That number was copied into the hand-off spec before anyone checked.
+        def _count(split: str) -> tuple[int, int]:
+            ps = list((det / "labels" / split).glob("*.txt"))
+            n = sum(len([ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()])
+                    for p in ps)
+            return len(ps), n
+
+        card["trained_on_frames"], card["trained_on_boxes"] = _count("train")
+        card["val_frames"], card["val_boxes"] = _count("val")
     except OSError:
         pass
     try:

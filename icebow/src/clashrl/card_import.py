@@ -61,6 +61,30 @@ _ANYNUM = re.compile(r"-?\d+(?:\.\d+)?")
 _DEATH_SPAWN = re.compile(
     r"(?:when|once|after|if)\b[^.]{0,70}\b(?:destroyed|defeated|dies|die)"
     r"|upon death|splits? into|reveals? the|drops?,[^.]*spawning", re.I)
+# CHAMPION BOILERPLATE, removed BEFORE the death-spawn test. Champion pages still carry "they will
+# stay out of the player's card cycle, and only return once they are defeated" -- prose the game
+# itself has since dropped, as champions now sit in the normal 8-card cycle like anything else. It
+# is stale on both counts: it describes a removed mechanic, and it trips the generous death clause
+# above while spawning nothing. It cost Goblinstein its components (its Monster + Doctor deploy
+# together and read as a death chain); on single-body champions it was invisible, count being 1
+# either way. Harmless once the wiki catches up -- the sentence simply stops matching.
+_CHAMPION_CYCLE = re.compile(r"[^.]*\bcard cycle\b[^.]*\.", re.I)
+
+
+def _lead_para(intro: str) -> str:
+    """The card's own description paragraph, skipping infobox templates, hatnotes and images.
+
+    Death-spawn behaviour is CORE card behaviour and every one of the seven such cards states it
+    here -- "When defeated, it splits into two Golemites". Ability prose lives in later paragraphs,
+    which is where Goblinstein's "If the Monster has already been defeated, it will drop an antenna"
+    sits: a death clause that spawns no body. Scoping the test to this paragraph is what keeps that
+    sentence, and any future ability written like it, from being read as a death chain.
+    """
+    for blk in re.split(r"\n\s*\n", intro):
+        blk = blk.strip()
+        if blk[:1] not in "{|[!" and len(blk) > 80:
+            return blk
+    return intro
 # Spirits: "It launches itself at its target when attacking, destroying itself on impact."
 _KAMIKAZE = re.compile(r"destroying itself on impact|launches itself at its target", re.I)
 # CR speed ratings are quoted as "Very Fast (120)"; 60 of these units = 1 tile/second.
@@ -107,6 +131,46 @@ def _attr_rows(wt: str) -> list:
     return rows_out
 
 
+def _unit_groups(wt: str) -> dict:
+    """``prefix -> {hp, dmg, atk}`` for every unit body the page defines.
+
+    A multi-body card publishes ONE PREFIXED SET PER UNIT and the card's own body uses the bare
+    names: Goblin Gang has stab_/spear_, Rascals boy_/girl_, Goblinstein monster_/bare, Little
+    Prince guard_/bare. The prefixes are page-specific words, so they cannot be enumerated -- but
+    every group also carries ``<prefix>_atk_speed`` and the attributes table publishes each row's
+    ``Hit Speed``, which is the SAME NUMBER. That is the join, and it is exact.
+    """
+    out: dict = {}
+    for key, val in ((k, v.strip()) for k, v in _VARDEF.findall(wt)):
+        for suf, field in (("_hp_11", "hp"), ("_dmg_11", "dmg"), ("_atk_speed", "atk")):
+            if key.endswith(suf):
+                out.setdefault(key[: -len(suf)], {})[field] = _lit(val)
+                break
+        else:
+            if key in ("hp_11", "dmg_11", "atk_speed"):
+                out.setdefault("", {})["hp" if key == "hp_11" else
+                                       "dmg" if key == "dmg_11" else "atk"] = _lit(val)
+    return out
+
+
+def _row_stats(r: dict) -> dict:
+    """The geometry half of a component, straight off its attributes row."""
+    sp = _tiles(r.get("Speed"))
+    tgt = (r.get("Target") or "").lower()
+    attacks = (["buildings"] if "building" in tgt else
+               ["air", "ground"] if ("air" in tgt and "ground" in tgt) else
+               ["ground"] if "ground" in tgt else ["air"] if "air" in tgt else None)
+    return {k: v for k, v in {
+        "hit_speed": _tiles(r.get("Hit Speed")),
+        "range_tiles": _tiles(r.get("Range")),
+        "speed_tiles": round(sp / _SPEED_UNITS_PER_TILE, 3) if sp else None,
+        "attacks": attacks,
+        "movement": ("air" if (r.get("Transport") or "").lower() == "air" else "ground")
+                    if r.get("Transport") else None,
+        "projectile_speed": _tiles(r.get("Projectile Speed")),
+    }.items() if v is not None}
+
+
 def _parse_attr_tables(wt: str) -> dict:
     rows = _attr_rows(wt)
     # THE CARD'S OWN table is the one carrying Cost -- every card page leads with it. A SPAWNER page
@@ -128,9 +192,15 @@ def _parse_attr_tables(wt: str) -> dict:
         return int(m.group()) if m else 1
 
     main = units[0]
-    intro = wt.split("==Strategy==")[0]
-    bodies = [r for r in units if r.get("Transport")]
-    count = sum(_n(r) for r in bodies) if (len(bodies) > 1 and not _DEATH_SPAWN.search(intro)) \
+    intro = _CHAMPION_CYCLE.sub("", wt.split("==Strategy==")[0])
+    lead = _lead_para(intro)
+    # A COMPONENT ROW needs BOTH Transport and Count. Requiring Count is what separates the three
+    # real cases from two look-alikes: Three Musketeers' extra rows are its two ATTACK MODES (ranged
+    # 6 / melee long, no Count, no Transport) and Little Prince's third row is the ABILITY-summoned
+    # Guardian (Transport but no Count). Neither is a simultaneous deploy, and both would otherwise
+    # have been folded in as extra bodies.
+    bodies = [r for r in units if r.get("Transport") and r.get("Count")]
+    count = sum(_n(r) for r in bodies) if (len(bodies) > 1 and not _DEATH_SPAWN.search(lead)) \
         else _n(main)
 
     target = (main.get("Target") or "").lower()
@@ -166,6 +236,29 @@ def _parse_attr_tables(wt: str) -> dict:
         "spawn_delay_s": _tiles(main.get("Spawn Delay")),
         "spawn_range_tiles": _tiles(main.get("Spawn Range")),
     }
+    # COMPONENTS: a card that fields SEVERAL UNIT TYPES AT ONCE. Without this the importer kept row
+    # 0's stats and merely SUMMED the counts, so Goblin Gang became 6 Goblins (the 3 Spear Goblins
+    # lost their 133 hp / 5-tile range), Rascals became 3 Rascal BOYS at 1940 hp each instead of one
+    # boy plus two 261 hp girls -- roughly 2.4x its real effective hitpoints, in 1 of every 20
+    # opponent decks -- and Goblinstein became a chimera with the Monster's hp/damage and the
+    # Doctor's range. Death-spawn chains (Golem -> Golemites, Lava Hound -> Pups) are excluded by the
+    # same prose test that already guards `count`, because those bodies arrive LATER, not together.
+    if len(bodies) > 1 and not _DEATH_SPAWN.search(lead):
+        groups = _unit_groups(wt)
+        comps = []
+        for r in bodies:
+            hs = _tiles(r.get("Hit Speed"))
+            g = next((v for v in groups.values()
+                      if v.get("hp") and v.get("atk") is not None and hs is not None
+                      and abs(float(v["atk"]) - float(hs)) < 1e-6), None)
+            c = {"count": _n(r), **_row_stats(r)}
+            if g:
+                c["hitpoints"], c["damage"] = g.get("hp"), g.get("dmg")
+            comps.append(c)
+        # Only worth recording if every body resolved to real hitpoints; a half-resolved list would
+        # be worse than none, since the engine would field some bodies with fallback stats.
+        if comps and all(c.get("hitpoints") for c in comps):
+            out["components"] = comps
     if spawned:                      # the summoned troop's own row (never has Cost)
         sp = spawned[0]
         sp_speed = _tiles(sp.get("Speed"))

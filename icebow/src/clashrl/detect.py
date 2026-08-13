@@ -166,8 +166,36 @@ def _write_label_studio_helpers(root: Path, names: list[str]) -> None:
     """Helpers for hand-labelling in Label Studio: a ``classes.txt`` (newline-separated names,
     which ``label-studio-converter import yolo`` needs to pull the auto boxes in as
     pre-annotations) and a ready-to-paste labelling-config XML with every class as a box label
-    (so you don't hand-type the taxonomy into the project)."""
-    (root / "classes.txt").write_text("\n".join(names) + "\n", encoding="utf-8")
+    (so you don't hand-type the taxonomy into the project).
+
+    REFUSES TO SILENTLY RESHUFFLE AN EXISTING TAXONOMY. classes.txt is not a convenience file:
+    together with labels/*.txt it forms a contract pairing every integer on disk with a name. If
+    the current taxonomy has drifted since those labels were written -- a class inserted rather
+    than appended shifts every index after it -- rewriting this file re-points thousands of
+    existing boxes at the wrong classes, and nothing crashes. That has already happened once here
+    (see model_class_names: 236 -> 225 renamed 209 classes), and it happened again upstream at
+    225 -> 230, where five classes were inserted ALPHABETICALLY and the first landed at index 137,
+    shifting 92. Upstream deliberately left classes.txt alone for that reason.
+
+    So: same length and same order -> rewrite freely. Different, with labels already on disk ->
+    leave the file untouched and say what to run. `detect-import` rewrites labels BY NAME and
+    regenerates this file consistently; that is the only safe path across a taxonomy change.
+    """
+    cls = root / "classes.txt"
+    if cls.is_file():
+        have = [ln.strip() for ln in cls.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        if have != names and any((root / "labels").rglob("*.txt")):
+            first = next((i for i, (a, b) in enumerate(zip(have, names)) if a != b), min(len(have), len(names)))
+            print(f"[detect] REFUSING to rewrite {cls}: it lists {len(have)} classes, the current "
+                  f"taxonomy has {len(names)}, and they first differ at index {first} "
+                  f"({have[first] if first < len(have) else '-'} -> "
+                  f"{names[first] if first < len(names) else '-'}).")
+            print(f"[detect] labels/*.txt on disk are written in the {len(have)}-index space. "
+                  f"Rewriting this file would silently re-point every box from index {first} up.")
+            print("[detect] To adopt the new taxonomy, run `detect-import` -- it remaps labels BY "
+                  "NAME and regenerates classes.txt with them. Nothing was changed.")
+            return
+    cls.write_text("\n".join(names) + "\n", encoding="utf-8")
     labels = "\n".join(f'    <Label value="{n}"/>' for n in names)
     (root / "label_studio_config.xml").write_text(
         '<View>\n'

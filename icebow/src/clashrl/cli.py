@@ -269,7 +269,7 @@ def _cmd_preannotate(args) -> None:
         return
     preannotate(Config.load(args.config), weights=args.weights, conf=args.conf,
                 device=args.device, limit=args.limit, out=args.out, classes=args.classes,
-                subdir=args.subdir, model_version=args.model_version)
+                subdir=args.subdir, model_version=args.model_version, reoffer=args.reoffer)
 
 
 def _cmd_detect_merge(args) -> None:
@@ -312,8 +312,34 @@ def _cmd_detect_preview(args) -> None:
 
 def _cmd_katacr_segments(args) -> None:
     from .katacr_segments import katacr_segments
-    katacr_segments(Config.load(args.config), src=args.src, scale=args.scale,
+    katacr_segments(Config.load(args.config), src=args.src, src_width=args.src_width,
                     dry_run=args.dry_run)
+
+
+def _cmd_observe(args) -> None:
+    import json
+    from pathlib import Path as _P
+    from .observation_export import observe_file
+    cfg = Config.load(args.config)
+    rec = observe_file(cfg, _P(args.image), detector_conf=args.conf,
+                       assume_match=args.assume_match)
+    text = json.dumps(rec, indent=2)
+    if args.out:
+        _P(args.out).write_text(text, encoding="utf-8")
+        print(f"[observe] {args.image} -> {args.out}")
+    else:
+        print(text)
+
+
+def _cmd_detect_pack(args) -> None:
+    from .detect_pack import detect_pack
+    detect_pack(Config.load(args.config), out=args.out, own_only=args.own_only,
+                one_file=not args.many_files)
+
+
+def _cmd_katacr_boxes(args) -> None:
+    from .katacr_boxes import katacr_boxes
+    katacr_boxes(Config.load(args.config), src=args.src, dry_run=args.dry_run, limit=args.limit)
 
 
 def _cmd_models(args) -> None:
@@ -569,8 +595,15 @@ def main() -> None:
 
     dtr = sub.add_parser("detect-train",
                          help="train the VISION network (board detector) on your labelled frames")
-    dtr.add_argument("--model", default="yolo11s.pt",
-                     help="base weights: yolo11n/s/m/l/x.pt (bigger = better but needs more VRAM)")
+    # 'auto', NOT a fixed backbone. train.py reads 'auto' as "continue the detector we have, and
+    # only fall back to a sized backbone if there is none" -- and the panel has always passed
+    # 'auto'. Naming yolo11s.pt here made the two entry points disagree in the worst possible
+    # direction: the same job, started from a terminal instead of the panel, silently THREW AWAY
+    # the trained model and began again from COCO weights, while printing nothing to say so.
+    dtr.add_argument("--model", default="auto",
+                     help="'auto' continues the detector you have (and picks a backbone sized to "
+                          "your GPU only if there is none); or name yolo11n/s/m/l/x.pt to start "
+                          "from that instead")
     dtr.add_argument("--epochs", type=int, default=120, help="training epochs (early-stops on its own)")
     dtr.add_argument("--imgsz", type=int, default=960, help="training image size")
     dtr.add_argument("--batch", type=int, default=None,
@@ -641,6 +674,11 @@ def main() -> None:
                           "so you can tell WHICH detector guessed when reviewing")
     pan.add_argument("--out", default=None,
                      help="tasks JSON path (default: <dataset_dir>/preannot_tasks.json)")
+    pan.add_argument("--reoffer", action="store_true",
+                     help="IGNORE the preannot_offered.txt ledger and rebuild tasks for every frame "
+                          "not yet imported. By default a re-run emits ONLY frames added since the "
+                          "last run, so importing it cannot duplicate tasks already in your Label "
+                          "Studio project. Use this only when starting a FRESH project.")
     pan.set_defaults(func=_cmd_preannotate)
 
     din = sub.add_parser("detect-import",
@@ -722,14 +760,54 @@ def main() -> None:
 
     kseg = sub.add_parser("katacr-segments",
                           help="import KataCR's MIT-licensed segment library into the sprite bank "
-                               "(maps their singular/hyphenated names onto our taxonomy and RESCALES "
-                               "to our arena -- synth pastes at native size)")
+                               "(maps their singular/hyphenated names onto our taxonomy and tags the "
+                               "segments with a measured source width so synth pastes them at size)")
     kseg.add_argument("--src", required=True,
                       help="their Clash-Royale-Detection-Dataset folder (or its images/segment)")
-    kseg.add_argument("--scale", default="auto",
-                      help="'auto' measures the factor from classes both banks share, or give a number")
+    kseg.add_argument("--src-width", default="auto",
+                      help="effective frame width their segments were cut from, in px; 'auto' "
+                           "measures it from the classes both banks share (needs a width-tagged bank)")
     kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
     kseg.set_defaults(func=_cmd_katacr_segments)
+
+    kbox = sub.add_parser("katacr-boxes",
+                          help="import KataCR's hand-labelled DETECTION frames (images/part2) into "
+                               "images/train -- val is left untouched so the next detector stays "
+                               "comparable to the current one")
+    kbox.add_argument("--src", required=True,
+                      help="their Clash-Royale-Detection-Dataset folder (or its images/part2)")
+    kbox.add_argument("--limit", type=int, default=0, help="stop after N frames (for a quick trial)")
+    kbox.add_argument("--dry-run", action="store_true",
+                      help="report the mapping and the per-class gain, and write nothing")
+    kbox.set_defaults(func=_cmd_katacr_boxes)
+
+    pk = sub.add_parser("detect-pack",
+                        help="pack the detection dataset into ONE zip to train on a rented GPU "
+                             "(8 GB here forces batch 3 at imgsz 960, which caps the model at "
+                             "yolo11s)")
+    pk.add_argument("--out", default=None, help="output zip (default: data/exports/clashai-detect.zip)")
+    pk.add_argument("--many-files", action="store_true", dest="many_files",
+                    help="put the frames in the zip individually instead of inside one tar. "
+                         "Kaggle's uploader crashes listing ~19,000 files, which is why the tar "
+                         "is the default -- use this only for a host that wants them loose")
+    pk.add_argument("--own-only", action="store_true", dest="own_only",
+                    help="leave out the katacr_* frames, keeping only what was labelled by hand. "
+                         "The result does NOT train on its own -- it is for a target that already "
+                         "has the KataCR half")
+    pk.set_defaults(func=_cmd_detect_pack)
+
+    ob = sub.add_parser("observe",
+                        help="read EVERYTHING off one frame into one versioned JSON record -- the "
+                             "hand-off format for the simulator (positions in arena TILES, every "
+                             "field carrying how it was read)")
+    ob.add_argument("image", help="a frame (jpg/png)")
+    ob.add_argument("--conf", type=float, default=0.25, help="detector confidence gate")
+    ob.add_argument("--out", default=None, help="write JSON here instead of printing")
+    ob.add_argument("--assume-match", action="store_true", dest="assume_match",
+                    help="treat the frame as IN_MATCH even if the screen-state reader says "
+                         "UNKNOWN. Needed for frames from someone else's client, where the "
+                         "state templates do not match and every reader would suppress itself")
+    ob.set_defaults(func=_cmd_observe)
 
     mdl = sub.add_parser("models",
                          help="which NETWORKS exist and which one each path actually uses -- there "
@@ -759,7 +837,12 @@ def main() -> None:
     spr.add_argument("--paste", type=int, default=4, help="max sprites pasted per synthetic image (default 4)")
     spr.add_argument("--classes", default=None,
                      help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
-    spr.add_argument("--seed", type=int, default=None, help="RNG seed for a reproducible --synth set")
+    spr.add_argument("--seed", type=int, default=0,
+                     help="RNG seed for the --synth draw (default 0 = REPRODUCIBLE). Synth is ~40%% of the "
+                          "training set, so an unseeded regeneration silently changes that much of the data "
+                          "and makes any generation-to-generation comparison unattributable -- board-23's "
+                          "-5.1pp vs board-21 could not be split between the sprite-scaling fix and the new "
+                          "random draw. Vary it deliberately to MEASURE synth-draw noise.")
     spr.set_defaults(func=_cmd_sprites)
 
     dev = sub.add_parser("detect-eval",

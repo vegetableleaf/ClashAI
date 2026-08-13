@@ -403,6 +403,36 @@ def create_app(cfg) -> Flask:
             return jsonify({"error": "no such frame"}), 404
         return jsonify(frameread.read_frame(C(), p))
 
+    @app.get("/api/label/observe/<name>")
+    def label_observe(name: str):
+        """The same frame as ONE interchange record -- the shape the simulator gets.
+
+        Existed only as `run.py observe` until now, which put the whole hand-off format out
+        of reach of anyone working from the panel. Same readers as /api/label/read, different
+        shape: tile coordinates, explicit nulls, and a version.
+
+        `assume_match=1` overrides the screen-state reader, which is calibrated to one client
+        and returns UNKNOWN on foreign frames -- suppressing every match-only block. Dataset
+        frames are matches, so the labelling view passes it.
+        """
+        from .. import observation_export
+        try:
+            p = labeler.find_image(C(), name)
+        except labeler.LabelError as exc:
+            return jsonify({"error": str(exc)}), 400
+        if p is None:
+            return jsonify({"error": "no such frame"}), 404
+        try:
+            rec = observation_export.observe_file(
+                C(), p, assume_match=request.args.get("assume_match") == "1")
+        except Exception as exc:                          # noqa: BLE001
+            return jsonify({"error": str(exc)}), 500
+        if request.args.get("download") != "1":
+            return jsonify(rec)
+        body = json.dumps(rec, indent=2)
+        return Response(body, mimetype="application/json", headers={
+            "Content-Disposition": f'attachment; filename="{Path(name).stem}.observation.json"'})
+
     @app.get("/api/label/boxes/<name>")
     def label_boxes(name: str):
         try:
@@ -563,9 +593,34 @@ def create_app(cfg) -> Flask:
         from .live import snapshot
         try:
             return jsonify(snapshot(C(), width=int(request.args.get("width", 420)),
-                                    read=request.args.get("read") == "1"))
+                                    read=request.args.get("read") == "1",
+                                    observe=request.args.get("observe") == "1"))
         except Exception as exc:                       # noqa: BLE001 -- must never break the panel
             return jsonify({"ok": False, "error": str(exc)})
+
+    @app.get("/api/live/observe")
+    def live_observe():
+        """The window RIGHT NOW as one interchange record -- the Labelling tab's
+        /api/label/observe, for the live frame instead of a saved one.
+
+        No assume_match here, unlike the labelling route: a dataset frame is known to be a
+        match, but whatever is on screen this second may well be a menu, and the record
+        should say so rather than be told otherwise.
+        """
+        from .live import snapshot
+        try:
+            snap = snapshot(C(), width=64, observe=True)
+        except Exception as exc:                       # noqa: BLE001
+            return jsonify({"ok": False, "error": str(exc)}), 500
+        rec = snap.get("record")
+        if rec is None:
+            return jsonify({"ok": False,
+                            "error": snap.get("record_error") or snap.get("error")
+                            or "no frame"}), 503
+        if request.args.get("download") != "1":
+            return jsonify(rec)
+        return Response(json.dumps(rec, indent=2), mimetype="application/json", headers={
+            "Content-Disposition": 'attachment; filename="live.observation.json"'})
 
     @app.post("/api/live/reset")
     def live_reset():

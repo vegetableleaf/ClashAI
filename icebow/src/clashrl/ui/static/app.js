@@ -898,20 +898,31 @@ async function loadVisionProgress() {
   // its change over the last five epochs, because a single value cannot answer that -- and mAP50
   // alone is the worst one to watch early, since it crawls in the third decimal while RECALL is
   // still climbing in whole percent.
+  // WHICH epoch these cells describe depends on whether anything is still happening. While a run
+  // is going the question is "is it still improving", so the newest epoch and its five-epoch
+  // trend are exactly right. Once it has stopped they are the wrong numbers: what got INSTALLED
+  // is the best epoch, not the last. Showing the last one left three different recalls on one
+  // screen -- 64.8% in the cell (last epoch), 71.8% in the chart title (best epoch), and 68.5%
+  // in best.pt itself -- with nothing saying which was the model. After a run, read the card
+  // train.py wrote from the epoch it actually installed.
+  const shipped = !pr.running && mt && mt.mAP50 != null;
+  const src = shipped ? mt : last;
   const grid = el("div", "kpis");
   [["mAP50", "mAP50", "how much it finds AND names right"],
    ["recall", "recall", "share of real units it finds at all"],
    ["precision", "precision", "share of its boxes that are real"],
    ["mAP50_95", "mAP50-95", "the strict one: boxes must fit tightly"]].forEach(([k, label, why]) => {
-    const cur = last[k];
     const d = delta(rows, k, 5);
     const cell = el("div", "kpi");
     cell.appendChild(el("div", "k", label));
-    cell.appendChild(el("div", "v", pct1(cur)));
+    cell.appendChild(el("div", "v", pct1(src[k])));
     const arrow = d == null || Math.abs(d) < 0.002 ? "" : (d > 0 ? "+" : "");
-    cell.appendChild(el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
-      d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
-    cell.title = why + `  |  best so far ${pct1(bestOf(k))}`;
+    cell.appendChild(shipped
+      ? el("div", "d", mt.epochs != null ? `installed -- from epoch ${mt.epochs}` : "installed")
+      : el("div", "d" + (d > 0.002 ? " up" : d < -0.002 ? " down" : ""),
+           d == null ? "" : `${arrow}${(100 * d).toFixed(1)} pp / 5 epochs`));
+    cell.title = why + (shipped ? `  |  last epoch was ${pct1(last[k])}` : "")
+      + `  |  best over the run ${pct1(bestOf(k))}`;
     grid.appendChild(cell);
   });
   box.appendChild(grid);
@@ -1655,7 +1666,8 @@ function labDelete(i) {
 /* Every reader's region drawn on the same frame, in its own colour. The point is that a
    wrong number is almost always a crop sitting in the wrong place -- which you can SEE
    here, and cannot see in a log line that just says the HP is 7151. */
-const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c" };
+const READ_COLOURS = { hand: "#8bb0d8", elixir: "#c08ad8", tower: "#d8a24a", unit: "#6f9b7c",
+                       bar: "#d8d24a" };
 
 function labDrawRead(g, cv) { drawRead(g, cv, LAB.read); }
 
@@ -1694,6 +1706,13 @@ function drawRead(g, cv, r) {
   (r.units && r.units.boxes || []).forEach(u =>
     rect({ x: u.cx - u.w / 2, y: u.cy - u.h / 2, w: u.w, h: u.h },
          READ_COLOURS.unit, `${u.cls} ${u.conf}`));
+  (r.bars && r.bars.boxes || []).forEach(b => {
+    // "?" is an unmatched bar, and it is deliberately loud: it usually means the BOARD
+    // detector missed a unit that is plainly standing there.
+    const who = b.kind === "tower" ? "tower" : (b.of || "?");
+    rect(b.box, READ_COLOURS.bar,
+         `${who} ${b.fill == null ? "--" : Math.round(b.fill * 100) + "%"}`);
+  });
 }
 
 function labReadout() {
@@ -1702,9 +1721,64 @@ function labReadout() {
   if (LAB.read) out.appendChild(readoutCard(LAB.read));
 }
 
-const liveReadout = readoutCard;      // the Live tab wants the same panel
+const liveReadout = (r) => readoutCard(r, "live");   // same panel, different frame source
 
-function readoutCard(r) {
+/* The interchange record, as the simulator receives it. NOT a second reading of the frame --
+   it is the same one, reshaped: arena TILES instead of image coordinates, an explicit null
+   wherever a number could not be read, and a version. The summary is what a consumer would
+   plan around; the raw JSON below it is what they actually get. */
+function recordCard(rec) {
+  const box = el("div", "cfggroup");
+  box.appendChild(el("h3", null, "What the simulator would receive"));
+  box.appendChild(el("p", "hint",
+    `Format ${rec.schema}. Positions are arena tiles on an ${(rec.arena && rec.arena.tiles || [18, 32]).join("x")} `
+    + "board, fractional. Flyers report their SHADOW, so a Baby Dragon is placed where it "
+    + "stands, not where it is drawn."));
+  box.appendChild(el("p", "hint",
+    "This costs about 0.85 s per tick on an RTX 3070 -- the overlay and the record each run "
+    + "the detector once, so the board model runs twice. Fine at 1.5 s; at the 'fast' 0.7 s "
+    + "setting the panel will fall behind."));
+
+  const c = el("div", "statcard");
+  const row = (k, v, hint) => {
+    const d = el("div", "kv");
+    d.appendChild(el("span", null, k));
+    d.appendChild(el("span", null, v));
+    if (hint) d.title = hint;
+    c.appendChild(d);
+  };
+  const units = (rec.units && rec.units.list) || [];
+  const bars = (rec.bars && rec.bars.list) || [];
+  const withHp = units.filter(u => u.hp).length;
+  const orphan = bars.filter(b => b.kind === "unit" && b.unit_index == null).length;
+  row("screen", (rec.screen && rec.screen.state) || "?",
+      "match-only blocks are null unless this says IN_MATCH");
+  row("units", String(units.length), "detector boxes, tile-positioned");
+  row("with HP", `${withHp} of ${units.length}`,
+      "no bar usually means undamaged -- reported as null, never as full");
+  row("bars without an owner", String(orphan),
+      "a bar nobody owns usually means the BOARD detector missed a unit that is plainly there");
+  const mot = rec.motion || {};
+  row("motion", mot.available ? `${(mot.units || []).length} unit(s)` : "needs two frames",
+      "the Live tab is the only path that has a previous frame to compare against");
+  const g = el("div", "statgrid"); g.appendChild(c); box.appendChild(g);
+
+  // Collapsed by default: this is a wall of JSON, and it is here to be COPIED, not read.
+  const det = el("details");
+  det.appendChild(el("summary", null, "the raw record"));
+  const pre = el("pre");
+  pre.style.cssText = "overflow:auto;max-height:22em;font-family:var(--mono);font-size:11px";
+  pre.textContent = JSON.stringify(rec, null, 2);
+  det.appendChild(pre);
+  box.appendChild(det);
+
+  const dl = el("button", "btn", "Download this record");
+  dl.onclick = () => { window.location = "/api/live/observe?download=1"; };
+  box.appendChild(dl);
+  return box;
+}
+
+function readoutCard(r, src) {
   if (!r) return el("div");
   const row = (what, how, value, colour, trained) => {
     const d = el("div", "kv");
@@ -1721,7 +1795,8 @@ function readoutCard(r) {
     `This screen is ${r.state || "not recognised"}, not a match. Everything below except the `
     + "screen state only means something during a match, so it is not shown."));
   box.appendChild(el("p", "hint",
-    "Five separate readers, only one of which is the vision AI. Hover a line for how it works."));
+    "Six separate readers. Two are neural (the board detector and the health-bar detector); "
+    + "the rest are plain code. Hover a line for how it works."));
   const c = el("div", "statcard");
   c.appendChild(row("screen", "template match against templates/*.png", r.state || "?", null, false));
   const h = r.hand || {};
@@ -1744,6 +1819,13 @@ function readoutCard(r) {
   const u = r.units || {};
   c.appendChild(row("units on the board", u.how || "",
     u.error ? u.error : `${(u.boxes || []).length} found`, READ_COLOURS.unit, true));
+  const bz = r.bars || {};
+  const bl = bz.boxes || [];
+  c.appendChild(row("health bars", bz.how || "", bz.error ? bz.error
+    : `${bl.filter(x => x.kind === "unit").length} unit / `
+      + `${bl.filter(x => x.kind === "tower").length} tower`
+      + (bz.orphans ? `, ${bz.orphans} unmatched` : ""),
+    READ_COLOURS.bar, true));
   const g = el("div", "statgrid"); g.appendChild(c); box.appendChild(g);
   box.appendChild(el("p", "hint",
     "This is exactly the set of numbers the playing AI receives -- the same shape it gets in "
@@ -1762,6 +1844,26 @@ function readoutCard(r) {
     notes.push("The next-card preview needs its own templates under templates/next/ -- without "
                + "them the playing AI cannot see what is coming and cannot plan its cycle.");
   if (notes.length) box.appendChild(el("p", "hint", notes.join(" ")));
+  // The same readings as ONE interchange record. This was `run.py observe` only, i.e. out of
+  // reach from the panel, which is where the hand-off format is actually needed.
+  // WHICH FRAME this card is describing. `liveReadout` is the same function, so without a
+  // source the Live tab rendered this button too and it read LAB.queue -- the labelling
+  // queue, which on the Live tab points at an unrelated frame or nothing at all. It looked
+  // like a working button and downloaded the wrong thing or silently nothing.
+  const dl = el("button", "btn", "Download observation JSON");
+  dl.onclick = () => {
+    if (src === "live") { window.location = "/api/live/observe?download=1"; return; }
+    const n = LAB.queue[LAB.ix];
+    if (n) window.location = `/api/label/observe/${encodeURIComponent(n)}`
+                             + "?download=1&assume_match=1";
+  };
+  box.appendChild(dl);
+  box.appendChild(el("p", "hint",
+    "One frame as the versioned record the simulator consumes -- tile coordinates, explicit "
+    + "nulls, and how each number was read. See OBSERVATION_FORMAT.md."
+    + (src === "live" ? " Taken from the window as it is right now."
+                      : " Dataset frames are matches, so the screen-state check is "
+                        + "overridden for this download.")));
   return box;
 }
 
@@ -2526,7 +2628,9 @@ $("#livereset").onclick = async () => { await post("/api/live/reset", {}); toast
 async function liveOnce() {
   const body = $("#livebody"), msg = $("#livemsg");
   let d;
-  try { d = await api("/api/live" + ($("#livemark").checked ? "?read=1" : "")); }
+  // observe rides along with read: it reuses the SAME grabbed frame and the same cached
+  // detector, so the record costs the readers it does not share, not a second inference.
+  try { d = await api("/api/live" + ($("#livemark").checked ? "?read=1&observe=1" : "")); }
   catch (e) { msg.className = "msg err"; msg.textContent = e.message; return; }
   if (!d.ok) {
     msg.className = "msg err"; msg.textContent = d.error || "unknown error";
@@ -2564,6 +2668,8 @@ async function liveOnce() {
   }
   wrap.appendChild(left);
   if (d.read) left.appendChild(liveReadout(d.read));
+  if (d.record) left.appendChild(recordCard(d.record));
+  if (d.record_error) left.appendChild(el("p", "msg err", d.record_error));
 
   const right = el("div"); right.style.minWidth = "320px";
   const inMatch = d.state === "IN_MATCH";

@@ -76,6 +76,11 @@ class Detection:
     ground_cy: Optional[float] = None   # shadow (true ground) y for FLYERS; None = ground unit (use cy)
     bar_vote: Optional[str] = None      # team from the HP-bar strip ABOVE the unit (None = no bar visible)
     body_vote: Optional[str] = None     # LAST-RESORT team hint from overwhelming body-art colour
+    # Stable identity across frames, stamped by TeamTracker.tag(). None until a tracker has seen
+    # it -- a single-frame read has no history and must not invent one. NOT an index into any
+    # list: two records taken a second apart use the same number for the same unit, which is the
+    # whole point, and lists get reordered by the detector every frame.
+    track_id: Optional[int] = None
 
     @property
     def base(self) -> str:
@@ -220,7 +225,11 @@ class TeamTracker:
 
     def reset(self) -> None:
         self._plays: list = []     # recent own plays: (x, y, t, base)
-        self._tracks: list = []    # dicts: x, y, x0, y0, base, t, team, rank, bm, be
+        self._tracks: list = []    # dicts: id, x, y, x0, y0, base, cls, t, team, rank, bm, be, misses
+        # Monotonic, never reused within a match. Reset per match (env/play call reset()), so ids
+        # are only comparable inside one match -- which is the only place they mean anything.
+        self._next_id: int = 0
+        self._last_t: float = 0.0
         self._pocket_my = [False, False]      # [L, R]: MY princess down -> ENEMY pocket in that lane of MY half
         self._pocket_enemy = [False, False]   # [L, R]: ENEMY princess down -> MY pocket in that lane of THEIRS
 
@@ -281,9 +290,17 @@ class TeamTracker:
             if trk is not None:
                 prev.remove(trk)
                 trk["x"], trk["y"], trk["t"] = dx, dy, t
+                trk["misses"] = 0
             else:
+                self._next_id += 1
                 trk = {"x": dx, "y": dy, "x0": dx, "y0": dy, "base": d.base, "t0": t,
-                       "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0}
+                       "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0,
+                       # A NUMBER THAT SURVIVES THE FRAME. The tracker has always carried units
+                       # across detector misses -- that is what forget_s is for -- but nothing
+                       # downstream could tell that this box and the one a second ago were the
+                       # same unit, so every consumer re-guessed identity from position and class
+                       # and got it wrong whenever two of a kind stood together.
+                       "id": self._next_id, "cls": d.cls, "misses": 0}
             if d.bar_vote == "mine":
                 trk["bm"] += 1
             elif d.bar_vote == "enemy":
@@ -298,10 +315,39 @@ class TeamTracker:
                 if rank <= trk["rank"]:                           # stronger/equal evidence -> (re)decide
                     trk["team"], trk["rank"] = team, rank
             d.team = trk["team"]
+            d.track_id = trk["id"]
             live.append(trk)
         # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.
+        for tr in prev:
+            tr["misses"] = tr.get("misses", 0) + 1
         self._tracks = live + prev
+        self._last_t = t
         return dets
+
+    def unseen(self, now: float) -> list:
+        """Units the tracker still holds that the detector did NOT report this read.
+
+        These are not noise and they are not gone. A unit walking behind a tower, or standing
+        inside a push where its box is swallowed by a neighbour's, drops out of the detector for
+        a few frames and comes back -- the tracker has always bridged that gap internally, but
+        it was invisible from outside, so every consumer saw the unit blink out of existence and
+        blink back as something new.
+
+        Returned with the position FROZEN at the last real sighting and an explicit age, because
+        that is what is actually known. Extrapolating along its last heading would produce a
+        confident position nobody measured, and a unit that stops behind a tower would be
+        reported marching through it.
+        """
+        seen = {id(tr) for tr in self._tracks if tr.get("misses", 0) == 0}
+        out = []
+        for tr in self._tracks:
+            if id(tr) in seen or now - tr["t"] > self.forget_s:
+                continue
+            out.append({"id": tr["id"], "cls": tr.get("cls"), "base": tr["base"],
+                        "team": tr["team"], "xy": (tr["x"], tr["y"]),
+                        "missing_s": round(now - tr["t"], 3),
+                        "misses": tr.get("misses", 0)})
+        return out
 
     def enemy_tracks(self, now: float):
         """[(x, y, vx, vy)] for RECENT enemy tracks: current position + LIFETIME-average velocity
@@ -390,13 +436,32 @@ class BoardDetector:
         return out
 
 
+_DETECTOR_CACHE: dict = {}
+
+
 def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
     """Load the trained board detector (mirrors ``detect_preview``'s YOLO/RT-DETR fallback).
-    Returns an *unavailable* :class:`BoardDetector` when no weights exist yet (Stage 2/3 pending)."""
+    Returns an *unavailable* :class:`BoardDetector` when no weights exist yet (Stage 2/3 pending).
+
+    CACHED BY (path, mtime). It was not, and the panel calls it once per reader pass -- so the
+    Live tab at its 1.5 s tick was constructing a fresh ultralytics model, weights off disk and
+    all, several times a minute, and the observation record would have done it again on the same
+    tick. mtime is part of the key on purpose: a retrain replaces best.pt in place, and a cache
+    keyed on the path alone would serve the OLD detector until the panel restarted -- which is
+    exactly the "the panel still shows the bad model" confusion this project has already had.
+    """
     from .detect import _resolve_weights
     wpath, _ = _resolve_weights(cfg, weights)
     if wpath is None or not Path(wpath).exists():
         return BoardDetector()
+    try:
+        key = (str(wpath), Path(wpath).stat().st_mtime_ns)
+        hit = _DETECTOR_CACHE.get(key)
+        if hit is not None:
+            return hit
+        _DETECTOR_CACHE.clear()                  # only ever the current model
+    except OSError:
+        key = None
     try:
         from ultralytics import YOLO
         model = YOLO(str(wpath))
@@ -415,9 +480,12 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
         db = CardDB(cfg)
     except Exception:
         db = None
-    return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
-                         conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
-                         imgsz=int(cfg.get("detect", "imgsz", default=960)))
+    det = BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
+                        conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
+                        imgsz=int(cfg.get("detect", "imgsz", default=960)))
+    if key is not None:
+        _DETECTOR_CACHE[key] = det
+    return det
 
 
 # ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 """Run EVERY reader the bot uses over one still frame, and report what each one said.
 
-The board detector is only one of five readers. The rest -- hand cards, elixir, tower HP,
+The board detector is only one of six readers. The rest -- hand cards, elixir, tower HP,
 which screen is showing -- are plain code that has always run silently, so the panel gave
 the impression that the detector was the whole of "reading the screen" and that anything
 it cannot do is simply not read. It is read; it is just read somewhere else:
@@ -11,6 +11,8 @@ it cannot do is simply not read. It is read; it is just read somewhere else:
     elixir               counts filled pips on the bar by HSV     no
     tower HP             small digit CNN (hp_digits.npz)          yes, ships trained
     units on the board   YOLO detector                            yes, THE vision AI
+    health bars          a SECOND, 2-class YOLO (runs/bars)       yes, optional -- absent
+                                                                  weights just report so
 
 This module calls all of them on a single frame and returns both the VALUES and the
 BOXES they were read from, so the UI can draw each reader's region on the picture. That
@@ -27,6 +29,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import cv2
+
+
+_BARS = None            # the bar detector, loaded once and reused across frames
 
 
 def _hand_boxes(cfg, vision) -> List[Dict[str, float]]:
@@ -174,4 +179,66 @@ def read_bgr(cfg, frame, detector_conf: float = 0.25) -> Dict[str, Any]:
     except Exception as exc:                          # noqa: BLE001
         units["error"] = str(exc)
     out["units"] = units
+
+    # -- 6. health bars (a SECOND detector) ------------------------------
+    # Separate from the board detector on purpose: bars are geometry, not card art, so they are
+    # their own 2-class model rather than two more classes in the 225-class one. Drawn here so
+    # "does it read troop HP?" is something you can look at, same as every other reader.
+    bars: Dict[str, Any] = {"how": "2-class YOLO (unit bar / tower bar); fill measured from the "
+                                   "bar's own two brightness plateaus, from the RIGHT -- the "
+                                   "left end carries the unit's level badge",
+                            "trained": True, "boxes": []}
+    try:
+        from ..troop_hp import bar_team, match_bars, read_fill
+        w_ = Path(cfg.path("runs/bars/v1/weights/best.pt"))
+        if not w_.is_file():
+            bars["error"] = "no bar detector trained yet"
+        else:
+            from ultralytics import YOLO
+            global _BARS
+            if _BARS is None:
+                _BARS = YOLO(str(w_))
+            res = _BARS.predict(frame, conf=0.30, verbose=False)[0]
+            boxes, kinds, confs = [], [], []
+            for b in res.boxes:
+                x0, y0, x1, y1 = (float(v) for v in b.xyxy[0])
+                boxes.append((x0 / w, y0 / h, x1 / w, y1 / h))
+                kinds.append(res.names[int(b.cls)])
+                confs.append(float(b.conf))
+            ub = [i for i, k in enumerate(kinds) if k == "hp_bar"]
+            unit_boxes = [(u["cx"] - u["w"] / 2, u["cy"] - u["h"] / 2,
+                           u["cx"] + u["w"] / 2, u["cy"] + u["h"] / 2)
+                          for u in units.get("boxes", [])]
+            owner = match_bars([boxes[i] for i in ub], unit_boxes)
+            for n, i in enumerate(ub):
+                ui = owner.get(n)
+                f = read_fill(frame, boxes[i])
+                bars["boxes"].append({
+                    "kind": "unit", "conf": round(confs[i], 3),
+                    "fill": None if f is None else round(f, 3),
+                    "team": bar_team(frame, boxes[i]),
+                    "of": (units["boxes"][ui]["cls"] if ui is not None else None),
+                    "box": {"x": boxes[i][0], "y": boxes[i][1],
+                            "w": boxes[i][2] - boxes[i][0], "h": boxes[i][3] - boxes[i][1]},
+                })
+            for i, k in enumerate(kinds):
+                if k == "hp_bar":
+                    continue
+                f = read_fill(frame, boxes[i])
+                bars["boxes"].append({
+                    "kind": "tower", "conf": round(confs[i], 3),
+                    "fill": None if f is None else round(f, 3),
+                    # NOT bar_team(): tower bars do not separate by hue (see troop_hp).
+                    # The tower reader already knows each tower's side from its position.
+                    "team": None, "of": None,
+                    "box": {"x": boxes[i][0], "y": boxes[i][1],
+                            "w": boxes[i][2] - boxes[i][0], "h": boxes[i][3] - boxes[i][1]},
+                })
+            # A bar nobody owns is worth surfacing: it usually means the BOARD detector missed a
+            # unit that is plainly on screen, which is a detector gap, not a bar gap.
+            bars["orphans"] = sum(1 for b in bars["boxes"]
+                                  if b["kind"] == "unit" and b["of"] is None)
+    except Exception as exc:                          # noqa: BLE001
+        bars["error"] = str(exc)
+    out["bars"] = bars
     return out

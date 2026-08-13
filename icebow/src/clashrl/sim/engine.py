@@ -31,7 +31,7 @@ team 0 = you (bottom/blue), team 1 = opponent (top/red).
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
 # --- BOARD GEOMETRY (tiles) -------------------------------------------------------------------
@@ -41,14 +41,27 @@ _TILES_X = 18.0
 _TILES_Y = 32.0
 _BRIDGES = (3.5 / 18.0, 14.5 / 18.0)     # bridge centres, normalised x (tile-derived; set below)
 _BRIDGE_HALF = 1.5                       # bridge deck HALF-width in TILES (set by configure_board)
+# THE RIVER IS A BAND, NOT A LINE. It is 2 TILES TALL in the real arena (rows 15..17, centre 16), so
+# the water a troop crosses has real THICKNESS and the bank it steps onto is a tile off the centre.
+# Modelling it as the single line y=16 made the whole 15..17 strip walkable-and-deployable: the
+# front-most deployable row centre sat at 16.67 tiles, i.e. IN THE WATER, about a tile further
+# forward than the game allows.
+_RIVER_HALF = 1.0                        # half-thickness in TILES (set by configure_board)
 
 
-def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0) -> None:
-    """Set the tile grid + bridge lanes. Called by SimEngine.__init__ from `sim.board`."""
-    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF
+def configure_board(tiles_x: float, tiles_y: float, bridge_tiles, bridge_width: float = 3.0,
+                    river_width: float = 2.0) -> None:
+    """Set the tile grid + bridge lanes + river thickness. Called by SimEngine.__init__ from `sim.board`."""
+    global _TILES_X, _TILES_Y, _BRIDGES, _BRIDGE_HALF, _RIVER_HALF
     _TILES_X, _TILES_Y = float(tiles_x), float(tiles_y)
     _BRIDGES = tuple(float(b) / _TILES_X for b in bridge_tiles)
     _BRIDGE_HALF = float(bridge_width) / 2.0
+    _RIVER_HALF = float(river_width) / 2.0
+
+
+def river_bank(y: float) -> float:
+    """The normalised y of the river EDGE on the same side as `y` -- the tile a troop steps onto."""
+    return _RIVER - _RIVER_HALF / _TILES_Y if y < _RIVER else _RIVER + _RIVER_HALF / _TILES_Y
 
 
 # speed word -> TILES/second (CR: medium ~= 1 tile/s; matches the old 0.031 normalised x 32)
@@ -57,6 +70,8 @@ _SPEED = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, None: 1.0}
 # Attack reach is now PER CARD (cards.CardDB.attack_range_tiles, from cr-api-data `range`) rather
 # than one constant per melee/short/long bucket -- real melee spans 0.5-1.6 tiles.
 _REACH_SLOP = 0.6         # tiles of tolerance on "target is in reach"
+_PELLET_R = 0.1           # a shotgun pellet is a POINT, not a blast -- the target's own body does the work
+_PELLET_TOWER_R = 0.6     # tower crown body that can catch a pellet (smaller than the full 3x3 footprint)
 _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit counts as a heavy tank
 # TOWER FOOTPRINTS (half-size, tiles). Towers are BUILDINGS with real bodies -- a princess is 3x3
 # tiles and the king 4x4 -- so an attacker must stop OUTSIDE that box. Measuring reach to the tower
@@ -74,8 +89,12 @@ _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
 _LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
 _LOG_ROLL_HALFW = 2.2     # corridor half-width (tiles, ~a lane)
-_LOG_KNOCKBACK = 1.6      # pushes ground troops this far in the roll direction (tiles)
 _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corridor
+# KNOCKBACK fallback for a card the wiki says HAS pushback but publishes no range for (Rocket).
+# 1 tile is Fireball's CURRENT published value (2/8/2022 balance: "decreased the Fireball's pushback
+# range to 1 tile (from 1.8 tiles)"), so it is the measured value of the nearest documented sibling
+# rather than a guess. Per-card values live in the KB as `knockback_tiles`.
+_KNOCKBACK_DEFAULT = 1.0
 
 
 @dataclass
@@ -102,7 +121,60 @@ class CardSpec:
     spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
+    # DEPLOY / SURFACE BLAST: area damage the moment the body finishes appearing. Mega Knight "will
+    # deal damage to enemy units around him in a 360 deg area ... and inflict knockback" as he lands,
+    # and Goblin Drill does the same "when it surfaces". Both are published (`spawn_damage`), and
+    # both are a large part of why the card is played at all -- a Mega Knight that lands for nothing
+    # is not the card people answer with a swarm.
+    spawn_dmg: float = 0.0
+    spawn_radius: float = 0.0
+    spawn_crown_dmg: float = 0.0
+    # COMBO: every Nth normal attack carries the knockback (Monk's 3-strike). This has to be its own
+    # marker rather than "has the knockback flag", because for Golem / Giant Skeleton / Phoenix /
+    # Skeleton Barrel / Goblin Demolisher the knockback rides the DEATH blast and their melee swing
+    # must NOT push.
+    combo_every: int = 0
+    # LEAP -- Bandit's DASH and Mega Knight's JUMP are the SAME mechanic with different numbers, and
+    # the wiki states both in identical language: "If there are ground units between X and Y tiles of
+    # [them], [they] will stop moving and begin charging a [dash|jump] attack which takes T seconds
+    # to execute, and will deal DOUBLE DAMAGE". The leap closes the gap, so it is the reason both
+    # cards punish a defender placed at mid range instead of touching them -- and the reason a
+    # Bandit cannot be chip-damaged out of it.
+    leap_dmg: float = 0.0     # published dash_damage / jump_damage (already ~2x the base hit)
+    leap_time: float = 0.0    # WIND-UP: seconds charging, stationary, before he leaves the ground.
+                              # The balance log is explicit that this is the charge, not the flight:
+                              # "decreased the time required for CHARGING his jump to 0.9 seconds".
+    leap_speed: float = 0.0   # TRAVEL speed in tiles/s, from the leap row's own Speed column
+                              # (Mega Knight 250 -> 4.17 t/s, Bandit 500 -> 8.33 t/s, at 60 = 1 t/s)
+    leap_splash: float = 0.0  # the LEAP's own splash radius -- Mega Knight's jump is 2.2 tiles vs
+                              # his 1.3 on a normal swing, so the jump covers a much wider group
+    leap_min: float = 0.0     # closer than this and it just walks in and swings normally
+    leap_max: float = 0.0     # further than this and it keeps walking
+    leap_invuln: bool = False  # "She is immune to damage during her dash" (Bandit only)
+    # Can the leap target a CROWN TOWER? True for every leaper we model. NB the Mega Knight's "Mega
+    # Power Jump" modifier ("can target a unit or tower for a jump attack AT ANY DISTANCE") is NOT
+    # evidence that his base jump cannot hit a tower -- the upgrade is the AT ANY DISTANCE part,
+    # which lifts the 3.5-5 tile band. He does jump crown towers in game.
+    leap_towers: bool = False
+    # SELF-PRESERVATION ABILITY (Boss Bandit's "Getaway Grenade", 1 elixir): "get invisible for one
+    # second, then teleport 6 tiles behind her current spot", 3 s cooldown after the duration, and
+    # it "can only be activated twice". Modelled as an AUTOMATIC reaction rather than a player
+    # action: exposing it to the policy would need a whole new action type (and a retrain), while
+    # the opponents who actually field her do need to use it or she is strictly worse than she reads.
+    ability_cost: float = 0.0
+    ability_uses: int = 0
+    ability_cd: float = 0.0
+    ability_invis: float = 0.0
+    ability_back: float = 0.0
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
+    # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
+    # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
+    # Prince and Dark Prince" -- names the two units the Bowler page lists as knockback-IMMUNE, so
+    # vulnerability is per-SPELL, not purely a property of the target.
+    knockback_all: bool = False
+    # This BODY shrugs off the small-to-medium pushback (Fireball / Giant Snowball / Rocket / Bowler).
+    # Curated: CR's underlying mass is not published as a field, only named in prose. See cards.yaml.
+    knockback_immune: bool = False
     roll_len: float = 0.0     # forward length of the roll corridor (tiles)
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
@@ -154,6 +226,15 @@ class CardSpec:
     pulse_r: float = 0.0      # pulse radius (tiles)
     pulse_stun: float = 0.0   # STUN seconds applied by each pulse
     pulse_interval: float = 0.0  # seconds between pulses (0 = no pulse)
+    hides: bool = False       # HIDDEN TESLA: retracts underground whenever nothing is in range
+    hits_hidden: bool = False # this spell reaches a retracted building anyway (Earthquake)
+    invis_time: float = 0.0   # ROYAL GHOST: seconds of NOT fighting before he fades out again
+    spread: float = 0.0       # SHOTGUN half-angle in DEGREES that the pellets scatter within
+    curse_dur: float = 0.0    # Mother Witch curse duration on struck enemy troops (seconds)
+    hook_min: float = 0.0     # Fisherman hook starts only at/above this edge gap (tiles)
+    hook_max: float = 0.0     # Fisherman hook reaches up to this edge gap (tiles)
+    hook_time: float = 0.0    # Fisherman hook wind-up/execution time (seconds)
+    hook_speed: float = 0.0   # Fisherman hook projectile speed (tiles/s), informational for now
     spawn_spec: Optional["CardSpec"] = None  # a unit dropped when the SPELL lands (Royal Delivery -> a Royal Recruit)
     spawn_count: int = 0      # how many spawn_spec units to drop at the landing point
     # --- TROOP PRODUCTION (spawners). A spawner does NOT attack towers itself: its damage comes from
@@ -177,6 +258,22 @@ class CardSpec:
     proj_radius: float = 0.0  # blast radius of the shot in tiles (0 = single target)
     proj_range: float = 0.0   # how far the shot flies (> reach for the piercing shots)
     proj_pierce: bool = False # keeps going past its target (Firecracker rocket / Magic Archer / Bowler)
+    proj_width: float = 0.0   # HALF the published Projectile Width, in tiles: how wide the piercing
+                              # line actually is. The Executioner's axe is published at width 2, and
+                              # "the axe itself has a 1 tile radius, so his effective reach is 8.5"
+                              # (7.5 throw + 1) -- so half-width is the number that does the work.
+    # MIXED SQUADS: one card that fields SEVERAL UNIT TYPES AT ONCE, each its own CardSpec carrying
+    # its own count. Empty for the ~160 cards that field one body type (including swarms -- 15
+    # identical Skeletons stay on the plain `count` path). Only Goblin Gang, Rascals and Goblinstein
+    # populate it. Without this the squad took row 0's stats and merely SUMMED the counts, so the
+    # Rascal girls fought with the boy's 1940 hp -- ~2.4x the card's real effective HP, in about 1 of
+    # every 20 opponent decks.
+    components: tuple = ()
+    # TOTAL bodies the whole card fields, set only on a component spec (0 = use `count`). Board-value
+    # accounting splits a card's elixir across its bodies, and a component's `count` is only ITS OWN
+    # share -- so billing by that would charge Rascals 5/1 for the boy PLUS 5/2 each for the girls,
+    # i.e. 10 elixir for a 5-elixir card, inflating every position/counterfactual reading.
+    squad_count: int = 0
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -225,11 +322,21 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
-    # a ROLLING spell (The Log / Barbarian Barrel) = knockback AND ground-only corridor. Knockback alone
-    # is NOT enough: Rocket/Snowball also knock back but are POINT blasts hitting air -- classifying
-    # Rocket as a roll gave it a forward CORRIDOR (and the Log's 0.07 half-width) instead of its blast.
-    rolls = kind == "spell" and "knockback" in flags and ground_only
+    # a ROLLING spell (The Log / Barbarian Barrel) = a forward ground-only CORRIDOR. This used to be
+    # derived as "has knockback AND ground_only", which COUPLED two independent facts: Barbarian
+    # Barrel still rolls but its pushback was REMOVED on 3/9/2018, so it was being modelled as a
+    # POINT BLAST, and adding/removing a knockback flag silently changed whether a spell rolled.
+    rolls = kind == "spell" and "rolls" in flags and ground_only
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
+    # PUSHBACK RANGE, sourced per card from the wiki's balance history rather than one constant:
+    # The Log 0.7 (7/2/2023, from 1), Giant Snowball 1.8 (6/9/2021, from 1.5), Fireball 1.0
+    # (2/8/2022, from 1.8), Barbarian Barrel 0 (REMOVED 3/9/2018). Arrows and Zap publish no
+    # pushback range and have no balance entry for one, so they get none -- the Arrows page's
+    # "knockback and slow effects" line is stale Strategy prose describing Giant Snowball (Arrows
+    # has no slow either), which is why HISTORY is trusted over prose here.
+    knockback_tiles = float(c.get("knockback_tiles") or 0.0)
+    if knockback_tiles <= 0.0 and "knockback" in flags:
+        knockback_tiles = _KNOCKBACK_DEFAULT
     if rolls:
         spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
     # BUILDING LIFETIME. Precedence: a curated override, then the wiki's own `life` vardefine
@@ -282,7 +389,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = build_spec(db, spw["unit"], level)
         except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
             spawner_spec = None
-    return CardSpec(
+    spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
         splash=db.has_splash(base), building_only=building_only, siege=siege,
@@ -291,7 +398,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
         rolls=rolls, ground_only=ground_only,
-        knockback=(_LOG_KNOCKBACK if rolls else 0.0), roll_len=(_LOG_ROLL_LEN if rolls else 0.0),
+        # PUBLISHED pushback range per card (KB `knockback_tiles`), falling back to the nearest
+        # documented sibling for a card that has the effect with no stated range. The old code hard-
+        # coded 1.6 tiles for the Log -- its CURRENT value is 0.7 (7/2/2023 balance, down from 1),
+        # so a defensive Log was shoving a push 2.3x too far up the arena.
+        knockback=knockback_tiles,
+        knockback_all=("knockback_all" in flags),
+        knockback_immune=("knockback_immune" in flags),
+        roll_len=(float(c.get("roll_tiles") or _LOG_ROLL_LEN) if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
         stage_time=float(c.get("stage_time_s") or 2.0),
@@ -311,6 +425,29 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
+        # Radius falls back to the card's splash radius, which is the circle the wiki describes.
+        spawn_dmg=float(c.get("spawn_damage") or 0.0) * sc,
+        spawn_radius=float(c.get("spawn_radius_tiles") or c.get("splash_radius")
+                           or (_SPLASH_R if c.get("spawn_damage") else 0.0)),
+        spawn_crown_dmg=float(c.get("spawn_crown_damage") or 0.0) * sc,
+        combo_every=int(c.get("combo_every") or 0),
+        # Bandit publishes dash_damage/dash_time_s, Mega Knight jump_damage/jump_time_s -- one
+        # mechanic, so they fold into the same fields. Trigger ranges come from the lead paragraph
+        # (Bandit 3.5-6, Mega Knight 3.5-5) and are curated because they are prose, not a table.
+        leap_dmg=float(c.get("dash_damage") or c.get("jump_damage") or 0.0) * sc,
+        leap_time=float(c.get("dash_time_s") or c.get("jump_time_s") or 0.0),
+        leap_speed=float(c.get("leap_speed_tiles") or 0.0),
+        leap_splash=float(c.get("leap_splash_tiles") or 0.0),
+        leap_min=float(c.get("leap_min_tiles") or 0.0),
+        leap_max=float(c.get("leap_max_tiles") or 0.0),
+        leap_invuln=bool(c.get("leap_invulnerable")),
+        leap_towers=bool(c.get("leap_towers")),
+        ability_cost=float(c.get("ability_cost") or 0.0),
+        ability_uses=int(c.get("ability_uses") or 0),
+        ability_cd=float(c.get("ability_cooldown_s") or 0.0),
+        ability_invis=float(c.get("ability_invis_s") or 0.0),
+        ability_back=float(c.get("ability_back_tiles") or 0.0),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -333,7 +470,60 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         proj_speed=float(proj.get("speed") or 0.0),
         proj_radius=float(proj.get("radius") or 0.0),
         proj_range=float(proj.get("range") or 0.0),
+        proj_width=float(proj.get("width") or 0.0),
+        hides=("hides" in flags),
+        hits_hidden=("hits_hidden" in flags),
+        invis_time=float(c.get("invisibility_time_s") or 0.0),
+        spread=float(c.get("spread_degrees") or 0.0),
+        curse_dur=float(c.get("curse_duration_s") or 0.0),
+        hook_min=float(c.get("hook_min_tiles") or 0.0),
+        hook_max=float(c.get("hook_max_tiles") or 0.0),
+        hook_time=float(c.get("hook_time_s") or 0.0),
+        hook_speed=float(c.get("hook_speed_tiles") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
+    # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
+    # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
+    # crown-tower ratio) and overrides only what its own attributes row states. `damage` here is
+    # PER HIT, exactly as in the parent path, so dps is derived rather than trusted.
+    comps = c.get("components") or ()
+    if kind != "spell" and len(comps) > 1:
+        subs = []
+        total = sum(max(1, int(cm.get("count") or 1)) for cm in comps)
+        for cm in comps:
+            c_hp = float(cm.get("hitpoints") or 0.0) * sc
+            if c_hp <= 0.0:                                   # a half-resolved squad would field
+                subs = []                                     # phantom bodies -- take none of it
+                break
+            c_hit = float(cm.get("hit_speed") or hit) or 1.0
+            c_dmg = float(cm.get("damage") or 0.0) * sc
+            atk = cm.get("attacks") or ()
+            # Keep the parent's crown-tower RATIO (Miner-style reductions are published once for the
+            # card, not per body), defaulting to full damage when it takes none.
+            ratio = (tower_hit_dmg / hit_dmg) if hit_dmg else 1.0
+            subs.append(replace(
+                spec,
+                count=max(1, int(cm.get("count") or 1)),
+                squad_count=total,
+                hp=c_hp, hit_speed=c_hit, hit_dmg=c_dmg, dps=(c_dmg / c_hit),
+                tower_hit_dmg=c_dmg * ratio,
+                reach=float(cm.get("range_tiles") if cm.get("range_tiles") is not None else reach),
+                speed=float(cm.get("speed_tiles") or speed),
+                flying=(cm.get("movement") == "air"),
+                attacks_air=("air" in atk) if atk else db.attacks_air(base),
+                # TARGETING IS PER BODY. Goblinstein carries a card-level `building_targeting` flag
+                # that is only true of its Monster -- inheriting it would leave the Doctor unable to
+                # shoot troops at all, which is most of what he does.
+                building_only=("buildings" in atk) if atk else building_only,
+                # The wiki publishes projectile speed in its own units; the KB divides by 60 to get
+                # TILES/s (see CardDB.projectile) and this is the same number off the row.
+                proj_speed=float(cm.get("projectile_speed") or 0.0) / 60.0,
+                # A component never nests further, and its shield is its own body's -- a flat
+                # fraction of the parent's HP would hand the Rascal girls the boy's shield.
+                components=(),
+                shield_hp=(c_hp * _SHIELD_FRAC if "shield" in flags else 0.0)))
+        if subs:
+            spec = replace(spec, components=tuple(subs))
+    return spec
 
 
 @dataclass
@@ -359,10 +549,31 @@ class Unit:
     aggro_reset: bool = False    # set by a stun/freeze, a Log knockback, or being SHOVED out of reach of what
                                  # it was hitting -- consumed by _acquire, which then re-picks from scratch
     gen_count: int = 0           # elixir units this pump has already paid out (spec.gen_every > 0 only)
+    blast_done: bool = False     # its DEPLOY/SURFACE blast has already fired (Mega Knight, Goblin Drill)
+    hidden: bool = False         # HIDDEN TESLA: retracted underground -- untargetable and immune
+    ghost: bool = False          # ROYAL GHOST: currently faded out -- untargetable, but NOT immune
+    refade_left: float = 0.0     # seconds of not fighting still to run before he fades back out
+    hit_no: int = 0              # attacks landed -- drives Monk's 3-strike combo
+    leap_left: float = 0.0       # seconds of dash/jump WIND-UP still to run (stationary)
+    leap_go: bool = False        # airborne: past the wind-up, travelling at leap_speed
+    invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
+    ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
+    ability_cd_left: float = 0.0  # seconds until the ability can be used again
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
     charge_dist: float = 0.0     # tiles walked without attacking -- arms the charge bonus
+    hook_left: float = 0.0       # Fisherman: seconds remaining in an active hook-pull motion
+    hook_windup_left: float = 0.0  # fixed pre-throw wind-up time
+    hook_out_left: float = 0.0   # hook projectile travel time OUT to target
+    hook_pull_left: float = 0.0  # return leg time while the pull movement happens
+    hook_mode: str = ""          # "self" (pull self to building/tower) or "target" (pull enemy troop in)
+    hook_kind: str = ""          # pending land-hit kind once the pull completes ("unit"/"tower")
+    hook_ref: object = None      # body being pulled to/from during the active hook
+    curse_left: float = 0.0      # active curse timer (seconds remaining)
+    cursed_by: int = -1          # team that cursed this unit (-1 = none)
+    curse_level: int = 11        # level to use for the spawned Mother Witch Hog
+    fisherman_slowed: bool = False
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -393,6 +604,10 @@ class Tower:
     cook_left: float = 0.0        # time until the next pancake
     buff_mult: float = 1.0        # pancake buff (~+1 level) applied to HP + damage
     buff_min_frac: float = 0.33   # only feed a troop above this fraction of its max HP
+    stun_left: float = 0.0        # STUN / FREEZE status timer (can't act while > 0)
+    slow_left: float = 0.0        # SLOW status timer (halved attack speed)
+    slow_mult: float = 1.0        # movement/attack multiplier from whatever slowed this tower
+    fisherman_slowed: bool = False
 
 
 @dataclass
@@ -448,7 +663,12 @@ class Projectile:
     left: float                   # TILES of flight remaining (piercing shots fly their full range)
     ground_only: bool = False     # some shots cannot touch air (the KB's `attacks` list says so)
     pierce: bool = False
+    width: float = 0.0         # half-width of a piercing line, TILES (0 -> the 0.5 default)
+    dirx: float = 0.0          # FIXED heading for a piercing shot, normalised units per tile of
+    diry: float = 0.0          # travel. Steering at `tx,ty` every tick made the shot turn round
+                               # the instant it passed the aim point instead of flying on through.
     hit: set = field(default_factory=set)   # ids already damaged by a piercing shot
+    stop_on_hit: bool = False  # a SHOTGUN PELLET: flies straight, but stops in the first body it hits
     ox: float = 0.0            # where it was fired from -- the BOOMERANG flies back to here
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
@@ -477,6 +697,23 @@ def _body_radius(ref) -> float:
     """Hitbox radius (tiles) of a Unit or a Tower."""
     spec = getattr(ref, "spec", None)
     return float(spec.radius) if spec is not None else float(getattr(ref, "radius", 0.0))
+
+
+def _push_mass(spec) -> float:
+    """How hard a body is to SHOVE, from its VOLUME (collision radius cubed).
+
+    Body-blocking used to split every push 50/50, so a 0.5-radius 81 hp Skeleton moved a 0.75-radius
+    3968 hp Giant exactly as far as the Giant moved it. MEASURED: six Skeletons cut a Giant to 34% of
+    its unblocked pace and nine to 30% -- a swarm was stopping a tank dead, which is not a play that
+    exists in the game.
+
+    Volume is used rather than the obvious momentum (mass x speed) because SPEED MAKES IT WORSE, not
+    better: the small units are the fast ones (Skeletons 1.5 tiles/s vs a Giant's 0.75), so weighting
+    by speed hands the swarm MORE shoving power. The radius is the one SOURCED size we have
+    (cr-api-data collision_radius), and cubing it is the physical reading of "bigger body, heavier",
+    with no free parameter to tune. Giant/Skeleton comes out 3.4:1.
+    """
+    return float(spec.radius) ** 3
 
 
 def _gap(ax: float, ay: float, ref) -> float:
@@ -542,9 +779,11 @@ class SimEngine:
         self.tiles_y = float(board.get("tiles_y", 32.0))
         self.bridge_tiles = list(board.get("bridge_tiles", [3.5, 14.5]))
         self.bridge_width = float(board.get("bridge_width_tiles", 3.0))
+        self.river_width = float(board.get("river_width_tiles", 2.0))
         pt = list(board.get("princess_tile", [3.5, 6.5]))      # [x from the side wall, y from the back wall]
         kt = list(board.get("king_tile", [9.0, 3.0]))
-        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width)
+        configure_board(self.tiles_x, self.tiles_y, self.bridge_tiles, self.bridge_width,
+                        self.river_width)
         px_l, px_r = pt[0] / self.tiles_x, (self.tiles_x - pt[0]) / self.tiles_x
         py, kx, ky = pt[1] / self.tiles_y, kt[0] / self.tiles_x, kt[1] / self.tiles_y
         self._anchors = {                                      # [L princess, R princess, king]
@@ -621,10 +860,20 @@ class SimEngine:
         return troop, int(level)
 
     def elixir_rate(self) -> float:
-        if self.t >= self.regulation:
-            return 1.0 / 0.93                     # triple (overtime)
+        """Elixir per second. FOUR phases, not three -- overtime does NOT start at triple:
+             0 s .. reg-60      single   (2.8 s/elixir)
+             reg-60 .. reg      DOUBLE   -- the last minute of regulation
+             reg .. end-60      DOUBLE   -- overtime CONTINUES at 2x for its first minute
+             end-60 .. end      TRIPLE   (0.93 s/elixir) -- only the LAST minute of overtime
+        This used to flip to triple the instant regulation ended, handing both sides a third more
+        elixir for a whole minute that in the real game is still double -- and overtime is exactly
+        where a 6-cost win condition finally becomes affordable, so the phase the policy learns to
+        bank for was mistimed by 60 s."""
+        triple_at = self.regulation + max(0.0, self.overtime - 60.0)
+        if self.t >= triple_at:
+            return 1.0 / 0.93                     # triple: last minute of overtime only
         if self.t >= self.regulation - 60.0:
-            return 1.0 / 1.4                       # double
+            return 1.0 / 1.4                       # double: last minute of regulation THROUGH overtime
         return 1.0 / 2.8                          # single
 
     def can_afford(self, team: int, spec: CardSpec) -> bool:
@@ -647,6 +896,23 @@ class SimEngine:
         # continuous -- they are aimed, not placed).
         x = (math.floor(x * _TILES_X) + 0.5) / _TILES_X
         y = (math.floor(y * _TILES_Y) + 0.5) / _TILES_Y
+        # MIXED SQUAD: each unit type gets its OWN ROW, ordered SHORTEST ATTACK RANGE FIRST so the
+        # melee bodies stand between the enemy and the ranged ones. That single rule reproduces all
+        # three real formations -- Rascal boy ahead of the girls, Goblins ahead of the Spear
+        # Goblins, Goblinstein's Monster ahead of the Doctor -- without hardcoding any of them, and
+        # it is what makes the squad's shape (not just its stats) worth playing around.
+        if spec.components:
+            fwd = -1.0 if team == 0 else 1.0                  # team 0 attacks toward y = 0
+            rows = sorted(spec.components, key=lambda s: s.reach)
+            for ri, sub in enumerate(rows):
+                m = max(1, sub.count)
+                step = max(0.4, sub.radius * 2.2)
+                dy = ((len(rows) - 1) / 2.0 - ri) * step * fwd
+                for k in range(m):
+                    dx = (k - (m - 1) / 2.0) * step
+                    cx, cy = _clamp_xy(x + dx / _TILES_X, y + dy / _TILES_Y, sub.radius)
+                    self._place(sub, team, cx, cy)
+            return True
         # SWARM FORMATION. A multi-unit card spawns its members in a compact cluster CENTRED on the
         # drop point, spread by unit size -- so each body is separately killable, blockable and
         # splash-able, which is the whole point of a swarm.
@@ -668,23 +934,40 @@ class SimEngine:
             dx = (ox - mx) * step / _TILES_X             # tiles -> normalised, per axis
             dy = (oy - my) * step / _TILES_Y
             cx, cy = _clamp_xy(x + dx, y + dy, spec.radius)
-            u = Unit(spec, team, cx, cy, spec.hp)
-            u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
-            u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
-            # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
-            # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
-            u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
-            if spec.siege:
-                u.reach_extra = self.siege_sight - spec.reach
-            self.units.append(u)
+            self._place(spec, team, cx, cy)
         return True
+
+    def _place(self, spec: CardSpec, team: int, cx: float, cy: float) -> None:
+        """Put ONE body on the board, already positioned. Shared by the swarm and mixed-squad paths."""
+        u = Unit(spec, team, cx, cy, spec.hp)
+        u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
+        u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+        # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
+        # not something he earns, so he arrives already faded and the first thing anyone sees is him
+        # swinging. It is also why he cannot kite: he re-fades and the chaser forgets him.
+        u.ghost = spec.invis_time > 0.0
+        u.refade_left = spec.invis_time
+        # A spawner's FIRST production tick waits its own spawn delay on top of the deploy delay
+        # (Goblin Hut 0.5s, Goblin Drill 1s), so it cannot summon the instant it lands.
+        u.spawn_cd = spec.spawner_delay if spec.spawner_interval > 0.0 else 0.0
+        if spec.siege:
+            u.reach_extra = self.siege_sight - spec.reach
+        self.units.append(u)
 
     # -- per-tick simulation ----------------------------------------------
     def _enemy_towers(self, team: int) -> List[Tower]:
         return [t for t in self.towers[1 - team] if t.alive]
 
     def _valid_foe(self, u: Unit, e: Unit) -> bool:
-        return e.hp > 0 and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
+        # Three ways to be UNSEEN, and they are not the same thing:
+        #   invis_left -- Boss Bandit's Getaway Grenade: gone entirely, and immune with it
+        #   ghost      -- Royal Ghost's stealth: "will not be targeted by opposing units, but can
+        #                 still be hit by area damage or spells", so ONLY the targeting is blocked
+        #   hidden     -- a retracted Tesla: "its underground mechanic prevents spell responses"
+        # "The Royal Ghost will ignore an opposing Royal Ghost, a Suspicious Bush, a hidden Tesla,
+        # or an invisible Archer Queen and bypass them" -- one rule, all four cases.
+        return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden and not e.ghost \
+            and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
     def _acquire(self, u: Unit):
         """(kind, ref) this unit heads for.
@@ -705,9 +988,87 @@ class SimEngine:
         and engaged from further out than a skeleton standing in the same spot."""
         towers = self._enemy_towers(u.team)
         if u.spec.building_only:
-            tw = min(towers, key=lambda t: _gap(u.x, u.y, t)) if towers else None
-            u.target = tw
-            return ("tower", tw) if tw else (None, None)
+            # BUILDING-TARGETERS (Hog Rider, Royal Hogs, Battle Ram, Ram Rider, Miner...) ignore
+            # TROOPS -- but they emphatically do not ignore BUILDINGS. The old code looked at crown
+            # towers ONLY, so a Tesla or Cannon dropped in the lane was invisible and the wincon
+            # walked straight past it into the tower. That deleted the most important defensive play
+            # in the game: you could not PULL a wincon with a building, which is the entire reason
+            # defensive buildings exist. `interactions.py` already predicted the real behaviour
+            # ("nearest of {building unit, tower}"), so the policy's OBSERVATION disagreed with the
+            # PHYSICS -- it was being shown a pull that never happened, which is a good way to never
+            # learn to answer a wincon with a building.
+            #
+            # Re-evaluated every tick WHILE TRAVELLING, so a building placed into its path steals it
+            # mid-run. Once it is actually swinging (u.locked) it commits, and only an aggro reset
+            # (stun / freeze) breaks that -- same rule as every other unit.
+            if u.aggro_reset:
+                u.aggro_reset = False
+                u.locked = False
+                u.target = None
+            t = u.target
+            if u.locked:
+                if isinstance(t, Unit) and t.hp > 0 and t.team != u.team \
+                        and t.spec.kind == "building":
+                    return ("unit", t)
+                if isinstance(t, Tower) and t.alive and t in towers:
+                    return ("tower", t)
+                u.locked = False                              # target died -> re-pick
+            best, best_gap, best_kind = None, float("inf"), None
+            for e in self.units:
+                if e.team != u.team and e.hp > 0 and e.spec.kind == "building" \
+                        and self._valid_foe(u, e):
+                    g = _gap(u.x, u.y, e)
+                    if g < best_gap:
+                        best, best_gap, best_kind = e, g, "unit"
+            for tw in towers:                                 # crown towers are buildings too
+                g = _gap(u.x, u.y, tw)
+                if g < best_gap:
+                    best, best_gap, best_kind = tw, g, "tower"
+            u.target = best
+            return (best_kind, best) if best is not None else (None, None)
+        if u.spec.kind == "building":
+            # STATIONARY BUILDINGS lock onto the first thing that enters range and STAY on it. They
+            # cannot walk, so the generic fallback below (nothing in sight -> march at a tower) is a
+            # TROOP behaviour: a troop that picks a distant tower walks to it, while a building would
+            # sit aiming at something permanently out of reach.
+            # MEASURED: an X-Bow reaches an enemy princess only from y <= ~0.56 (11.18 tiles to its
+            # edge vs 11.50 reach); at y=0.60 it is 12.34 and cannot hit. Placed behind that it still
+            # latched onto a princess, which in sim-view reads as an X-Bow aimed and never firing.
+            #
+            # STICKINESS IS THE REAL RULE, and it is stricter than a troop's. A building holds its
+            # target until that target DIES or stops being targetable (out of reach, gone invisible);
+            # it does NOT re-pick whatever happens to be nearest each tick. The only external break
+            # is a STUN or FREEZE -- knockback does nothing, because a building is anchored (see
+            # _resolve_roll). Re-picking every tick would let a passing swarm yank an X-Bow off the
+            # tower it was chewing through, which is not how it behaves in game.
+            #
+            # Crown towers are candidates only for SIEGE buildings (X-Bow / Mortar); a Tesla or
+            # Cannon cannot hit one at any range, so they rank units alone.
+            reach = u.spec.reach + u.reach_extra
+            if u.aggro_reset:                                 # stun / freeze: the only thing that breaks it
+                u.aggro_reset = False
+                u.locked = False
+                u.target = None
+            t = u.target
+            if isinstance(t, Unit):
+                if t.hp > 0 and self._valid_foe(u, t) and _gap(u.x, u.y, t) <= reach:
+                    return ("unit", t)
+            elif isinstance(t, Tower):
+                if t.alive and t in towers and _gap(u.x, u.y, t) <= reach:
+                    return ("tower", t)
+            best, best_gap, best_kind = None, float("inf"), None
+            for e in self.units:
+                if e.team != u.team and self._valid_foe(u, e):
+                    g = _gap(u.x, u.y, e)
+                    if g <= reach and g < best_gap:
+                        best, best_gap, best_kind = e, g, "unit"
+            if u.spec.siege:
+                for tw in towers:
+                    g = _gap(u.x, u.y, tw)
+                    if g <= reach and g < best_gap:
+                        best, best_gap, best_kind = tw, g, "tower"
+            u.target, u.locked = best, False
+            return (best_kind, best) if best is not None else (None, None)
         sight = self.siege_sight if u.spec.siege else (u.spec.sight or self.sight_range)
         if u.aggro_reset:                                     # knocked/stunned/shoved -> forget the lock
             u.aggro_reset = False
@@ -805,7 +1166,9 @@ class SimEngine:
             half = max(0.0, _BRIDGE_HALF - u.spec.radius) / _TILES_X
             lane_x = min(max(u.x, bx - half), bx + half)
             if abs(u.x - lane_x) * _TILES_X > 1e-3:
-                tx, ty = lane_x, _RIVER                      # off the deck -> walk to its near edge
+                tx, ty = lane_x, river_bank(u.y)             # off the deck -> walk to the BANK on its own
+                                                             # side (the water has thickness; aiming at
+                                                             # the centreline walked it INTO the river)
             else:
                 tx, ty = u.x, ty                             # on the deck -> straight across
         tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
@@ -869,14 +1232,27 @@ class SimEngine:
                 else:
                     ux, uy = dx / d, dy / d
                 overlap = mind - d
-                am = 0.0 if a.spec.kind == "building" else 1.0
-                bm = 0.0 if b.spec.kind == "building" else 1.0
+                a_anch = a.spec.kind == "building"
+                b_anch = b.spec.kind == "building"
+                if a_anch and b_anch:
+                    continue
+                am = 0.0 if a_anch else _push_mass(a.spec)
+                bm = 0.0 if b_anch else _push_mass(b.spec)
                 s = am + bm
                 if s <= 0:
                     continue
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
-                a.x, a.y = _clamp_xy(a.x + px * (am / s), a.y + py * (am / s), a.spec.radius)
-                b.x, b.y = _clamp_xy(b.x - px * (bm / s), b.y - py * (bm / s), b.spec.radius)
+                # Each body yields in inverse proportion to its OWN mass, so the heavier one barely
+                # moves: a Skeleton takes 77% of the separation against a Giant instead of 50%.
+                # Buildings are fully anchored once placed: the entire separation is applied to the
+                # non-building body, never to the building.
+                if a_anch:
+                    b.x, b.y = _clamp_xy(b.x - px, b.y - py, b.spec.radius)
+                elif b_anch:
+                    a.x, a.y = _clamp_xy(a.x + px, a.y + py, a.spec.radius)
+                else:
+                    a.x, a.y = _clamp_xy(a.x + px * (bm / s), a.y + py * (bm / s), a.spec.radius)
+                    b.x, b.y = _clamp_xy(b.x - px * (am / s), b.y - py * (am / s), b.spec.radius)
                 # Being SHOVED off what you were hitting resets aggro. This is the real mechanic
                 # behind dropping a body between a melee attacker and the tower it is chewing on:
                 # the attacker is pushed out, loses its lock, and re-picks -- and the thing now in
@@ -938,13 +1314,25 @@ class SimEngine:
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
             u.attacking = False                             # default; set True only when engaged (target in reach)
+            if u.curse_left > 0.0:
+                u.curse_left = max(0.0, u.curse_left - dt)
+                if u.curse_left <= 0.0:
+                    u.cursed_by = -1
             if u.deploy_left > 0:                            # still spawning -> can't act yet (~1s)
                 u.deploy_left -= dt
+                if u.deploy_left <= 0.0 and not u.blast_done:
+                    u.blast_done = True
+                    self._deploy_blast(u)                    # Mega Knight lands / Goblin Drill surfaces
+                    if u.spec.pulse_dmg > 0.0:
+                        self._pulse(u)                       # "After surfacing AND DEPLOYMENT"
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
                 continue
-            if u.spec.pulse_interval > 0:                    # Evo Tesla area-shock: periodic AoE damage + stun
+            if u.hook_left > 0.0:
+                self._tick_hook(u, dt)
+                continue
+            if u.spec.pulse_interval > 0:                    # periodic area-shock (none ship with this today)
                 u.pulse_cd -= dt
                 if u.pulse_cd <= 0:
                     self._pulse(u)
@@ -952,8 +1340,51 @@ class SimEngine:
             spd = u.slow_mult if u.slow_left > 0 else 1.0
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
+            # she is invisible and untouchable for a second, then reappears `ability_back` tiles
+            # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.
+            if u.spec.ability_invis > 0.0:
+                if u.ability_left < 0:
+                    u.ability_left = u.spec.ability_uses
+                u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
+                if u.invis_left > 0.0:
+                    u.invis_left -= dt
+                    if u.invis_left <= 0.0:                 # reappear BEHIND where she vanished
+                        back = -1.0 if u.team == 1 else 1.0  # away from the enemy side
+                        u.x, u.y = _clamp_xy(u.x, u.y + back * u.spec.ability_back / _TILES_Y,
+                                             u.spec.radius)
+                        u.ability_cd_left = u.spec.ability_cd
+                        u.aggro_reset = True
+                    continue                                 # invisible: no walking, no attacking
+                if u.ability_left > 0 and u.ability_cd_left <= 0.0 \
+                        and u.hp < u.spec.hp * 0.6 \
+                        and self.elixir[u.team] >= u.spec.ability_cost:
+                    self.elixir[u.team] -= u.spec.ability_cost
+                    u.ability_left -= 1
+                    u.invis_left = u.spec.ability_invis
+                    # The only thing that drops a wind-up, and it is HER OWN doing, not the
+                    # defender's -- she vanishes and reappears further back, so there is nothing
+                    # left standing there to finish the dash.
+                    u.leap_left = 0.0
+                    continue
             prev_target = u.target
             kind, ref = self._acquire(u)
+            # HIDDEN TESLA. "When there are no enemies within range, it retracts underground, making
+            # itself immune to all damage except for the Earthquake and the Freeze." So the retract
+            # is driven by exactly the same targeting test it uses to shoot -- nothing in range means
+            # nothing to come up for. While under it is untargetable (`_valid_foe`), which is what
+            # makes it survive the spell that would otherwise trade up on it, and what lets it eat a
+            # Hog's whole run: he cannot lock it until it surfaces in his face.
+            if u.spec.hides:
+                if ref is None:
+                    u.hidden = True
+                    continue
+                if u.hidden:
+                    u.hidden = False
+                    # EVO TESLA: a pulse on EVERY surfacing, not on a timer -- "the Tesla will close
+                    # and open again", which is how you get two pulses out of one building.
+                    if u.spec.pulse_dmg > 0.0:
+                        self._pulse(u)
             # RAMP-UP bookkeeping: the damage stages climb only while this unit stays on ONE target,
             # and drop straight back to stage 1 the instant the target changes -- which is why a stun,
             # a knockback or simply feeding a fresh body resets an Inferno.
@@ -961,9 +1392,80 @@ class SimEngine:
                 u.focus_time = 0.0
             if ref is None:
                 continue
+            if kind is None:
+                continue
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
-            if _gap(u.x, u.y, ref) <= reach + _REACH_SLOP:
+            # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
+            #   WIND-UP  -- "he will STOP MOVING and begin charging"; stationary and COMMITTED. The
+            #               balance log calls this the CHARGE, not the flight.
+            #   TRAVEL   -- airborne at the leap row's own published Speed (Mega Knight 250 = 4.17
+            #               tiles/s, Bandit 500 = 8.33), so a longer leap takes longer to land.
+            # Splitting them matters: the wind-up is the window a defender gets, and the travel is
+            # what closes a gap that walking never would.
+            if u.leap_left > 0.0:
+                # THE CHARGE CANNOT BE CANCELLED. Once he stops and starts winding up he is going to
+                # leap; there is no body you can drop that makes him abort and walk in instead.
+                #
+                # What DOES keep moving is the AIM. `_acquire` re-picks every tick while he is
+                # unlocked, so the leap lands on whatever is CLOSEST when the charge ENDS -- and the
+                # band is not re-tested, so a body dropped INSIDE the minimum still gets jumped on.
+                # Feeding a cheap body to a winding-up Mega Knight therefore does not save the unit
+                # behind it by denying the jump; it only changes WHO the jump lands on.
+                u.leap_left -= dt
+                if u.leap_left <= 0.0:
+                    u.leap_go = True
+                    u.locked = True             # aim settled HERE -- the flight does not re-pick
+                continue
+            if u.leap_go:
+                dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
+                d = math.hypot(dxt, dyt)
+                stop = max(0.0, d - (_body_radius(ref) + u.spec.radius))
+                step = (u.spec.leap_speed or u.spec.speed) * dt
+                if step >= stop or stop <= 1e-6 or d <= 1e-6:
+                    u.leap_go = False
+                    self._land_leap(u, ref)
+                else:
+                    u.x, u.y = _clamp_xy(u.x + (dxt / d) * step / _TILES_X,
+                                         u.y + (dyt / d) * step / _TILES_Y, u.spec.radius)
+                continue
+            gap = _gap(u.x, u.y, ref)
+            if u.spec.hook_max > 0.0 and gap > u.spec.reach and gap <= u.spec.hook_max:
+                # Fisherman commits to the hook prep inside hook range instead of taking extra
+                # walk steps first, so wind-up starts from a stable distance band.
+                u.attacking = True
+                u.locked = True
+                u.focus_time += dt
+                if u.cooldown <= 0.0 and u.hook_left <= 0.0:
+                    self._hook_attack(u, kind, ref)
+                    hook_cd = u.spec.hook_time if u.spec.hook_time > 0.0 else u.spec.hit_speed
+                    u.cooldown = hook_cd / spd
+                continue
+            if self._hook_ok(u, ref, gap):
+                u.attacking = True
+                u.locked = True
+                u.focus_time += dt
+                if u.cooldown <= 0.0:
+                    self._hook_attack(u, kind, ref)
+                    hook_cd = u.spec.hook_time if u.spec.hook_time > 0.0 else u.spec.hit_speed
+                    u.cooldown = hook_cd / spd
+                continue
+            if self._leap_ok(u, ref):
+                # "he will STOP MOVING and begin charging" -- the wind-up is why a Mega Knight
+                # answered at 4 tiles still reaches you, and why baiting the dash out of a Bandit
+                # with a cheap body works.
+                u.leap_left = u.spec.leap_time
+                continue
+            # NO SLOP AGAINST A CROWN TOWER. The tolerance exists so a body closing the last
+            # fraction of a tile on a MOVING target does not stall a tick short; a crown tower is
+            # stationary and 3 tiles wide, so there is nothing to absorb. Granting it anyway handed
+            # every attacker a free 0.6 tiles that the tower does not get back, and 0.6 is exactly
+            # the margin that decides whether a card can chip a tower from outside its return fire.
+            # MEASURED with the slop: Magic Archer (7.0 reach) opened fire at 7.55 while the tower
+            # could only answer out to 8.0 of its own -- he took ZERO damage and landed 25 hits.
+            # Dart Goblin (6.5) sieged untouched too. Neither can do that in game.
+            slop = 0.0 if isinstance(ref, Tower) else _REACH_SLOP
+            if gap <= reach + slop:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
@@ -975,6 +1477,20 @@ class SimEngine:
                         u.hp = 0.0
             elif u.spec.kind != "building":                  # buildings are stationary
                 self._move_toward(u, rx, ry, dt, spd)
+        # ROYAL GHOST'S STEALTH. "Upon deployment, he will spawn invisible, and will only turn
+        # visible once he attacks... When he is not fighting any unit for 1.8 seconds, he will
+        # become invisible again." `u.attacking` is already exactly "has a target in reach", so
+        # FIGHTING is read straight off the combat loop rather than tracked separately -- which is
+        # why he re-fades the moment the last body in front of him dies.
+        for u in self.units:
+            if u.spec.invis_time <= 0.0 or u.hp <= 0:
+                continue
+            if u.attacking:
+                u.ghost, u.refade_left = False, u.spec.invis_time
+            elif not u.ghost:
+                u.refade_left -= dt
+                if u.refade_left <= 0.0:
+                    u.ghost = True
         if self.collide:
             self._separate()
         self._separate_towers()             # towers are solid whatever the soft-collision toggle says
@@ -993,12 +1509,202 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
+                self._spawn_cursed_hog(u)
                 self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
                 continue
             alive.append(u)
         self.units = alive
         self._check_end()
+
+    def _leap_ok(self, u: "Unit", ref) -> bool:
+        """May `u` START a charge at `ref`?
+
+        This gates BEGINNING a wind-up and nothing else. It is deliberately NOT re-checked while he
+        charges: the wind-up is uncancellable, and what he lands on is simply whatever is closest
+        when the charge ends -- inside the minimum range or not. The band only ever decides whether
+        a leap is STARTED, never whether it is seen through.
+        """
+        if u.spec.leap_dmg <= 0.0 or u.spec.leap_max <= 0.0:
+            return False
+        if isinstance(ref, Tower):
+            if not u.spec.leap_towers or not ref.alive:
+                return False
+        elif isinstance(ref, Unit):
+            if ref.spec.flying or ref.hp <= 0:
+                return False
+        else:
+            return False
+        return u.spec.leap_min <= _gap(u.x, u.y, ref) <= u.spec.leap_max
+
+    @staticmethod
+    def _hook_ok(u: "Unit", ref, gap: float) -> bool:
+        """Whether this unit may use a Fisherman-style hook pull right now."""
+        s = u.spec
+        if s.hook_max <= 0.0:
+            return False
+        if not (s.hook_min <= gap <= s.hook_max):
+            return False
+        if isinstance(ref, Tower):
+            return ref.alive
+        if isinstance(ref, Unit):
+            return ref.hp > 0 and not ref.spec.flying
+        return False
+
+    def _hook_attack(self, u: "Unit", kind: str, ref) -> None:
+        """Fisherman hook: start a timed pull phase, then deal the hit when it completes."""
+        s = u.spec
+        gap = _gap(u.x, u.y, ref)
+        pull_dist = max(0.0, gap - s.reach)
+        speed = max(0.1, s.hook_speed or 12.0)
+        # Fixed WIND-UP, then distance-scaled travel: OUT to the target, RETURN while pulling.
+        u.hook_windup_left = max(0.0, s.hook_time)
+        u.hook_out_left = gap / speed
+        u.hook_pull_left = pull_dist / speed
+        u.hook_left = u.hook_windup_left + u.hook_out_left + u.hook_pull_left
+        u.hook_ref = ref
+        u.hook_kind = kind
+        if kind == "tower" or (isinstance(ref, Unit) and ref.spec.kind == "building"):
+            # Buildings/towers pull Fisherman IN over time.
+            u.hook_mode = "self"
+            return
+        # Troops are yanked TOWARD Fisherman over time.
+        u.hook_mode = "target"
+
+    def _tick_hook(self, u: "Unit", dt: float) -> None:
+        """Advance one active Fisherman hook-pull phase, landing damage at completion."""
+        ref = u.hook_ref
+        if ref is None or u.hook_mode not in ("self", "target"):
+            u.hook_left = 0.0
+            u.hook_mode = u.hook_kind = ""
+            u.hook_ref = None
+            return
+        if isinstance(ref, Tower):
+            if not ref.alive:
+                u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+                u.hook_mode = u.hook_kind = ""
+                u.hook_ref = None
+                return
+        elif isinstance(ref, Unit):
+            if ref.hp <= 0:
+                u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+                u.hook_mode = u.hook_kind = ""
+                u.hook_ref = None
+                return
+        else:
+            u.hook_left = u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+            u.hook_mode = u.hook_kind = ""
+            u.hook_ref = None
+            return
+
+        if u.hook_windup_left > 0.0:
+            step = min(dt, u.hook_windup_left)
+            u.hook_windup_left -= step
+            u.hook_left = max(0.0, u.hook_left - step)
+            return
+        if u.hook_out_left > 0.0:
+            step = min(dt, u.hook_out_left)
+            u.hook_out_left -= step
+            u.hook_left = max(0.0, u.hook_left - step)
+            return
+
+        mover, anchor = (u, ref) if u.hook_mode == "self" else (ref, u)
+        dxt, dyt = (mover.x - anchor.x) * _TILES_X, (mover.y - anchor.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        goal = max(0.0, u.spec.reach + _body_radius(anchor) + _body_radius(mover))
+        left_dist = max(0.0, d - goal)
+        if left_dist > 1e-6 and d > 1e-6 and u.hook_pull_left > 0.0:
+            # Return leg: cover the remaining pull distance across the remaining return time.
+            step = left_dist if u.hook_pull_left <= dt else left_dist * (dt / u.hook_pull_left)
+            mover.x, mover.y = _clamp_xy(mover.x - (dxt / d) * step / _TILES_X,
+                                         mover.y - (dyt / d) * step / _TILES_Y,
+                                         _body_radius(mover))
+        step_t = min(dt, u.hook_pull_left)
+        u.hook_pull_left = max(0.0, u.hook_pull_left - step_t)
+        u.hook_left = max(0.0, u.hook_left - step_t)
+        if u.hook_left > 1e-6:
+            return
+
+        # Ensure final contact is in-range, then land the actual hit.
+        self._snap_to_reach(mover, anchor, u.spec.reach)
+        if u.hook_mode == "target" and isinstance(ref, Unit):
+            ref.aggro_reset = True
+        mult = self._ramp_mult(u)
+        dmg = u.spec.hit_dmg * u.dmg_mult * mult
+        tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        if u.hook_kind == "tower":
+            self._land_hit(u.team, "tower", ref, u.spec, dmg, tower_dmg)
+        elif isinstance(ref, Unit) and ref.hp > 0:
+            self._land_hit(u.team, "unit", ref, u.spec, dmg, tower_dmg)
+        u.charge_dist = 0.0
+        u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
+        u.hook_mode = u.hook_kind = ""
+        u.hook_ref = None
+
+    @staticmethod
+    def _snap_to_reach(mover, anchor, reach: float) -> None:
+        """Place `mover` so its edge-gap to `anchor` is at most `reach` tiles."""
+        dxt, dyt = (mover.x - anchor.x) * _TILES_X, (mover.y - anchor.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        goal = max(0.0, reach + _body_radius(anchor) + _body_radius(mover))
+        if d <= goal + 1e-6:
+            return
+        move = d - goal
+        if d <= 1e-6:
+            return
+        mover.x, mover.y = _clamp_xy(mover.x - (dxt / d) * move / _TILES_X,
+                                     mover.y - (dyt / d) * move / _TILES_Y, _body_radius(mover))
+
+    def _land_leap(self, u: "Unit", ref) -> None:
+        """A dash/jump arrives: close the gap, then deliver the published double-damage hit.
+
+        Mega Knight's landing also knocks back (his `knockback` flag) and splashes, which is what
+        makes jumping onto a support group so punishing; Bandit's is single-target.
+        """
+        s = u.spec
+        dxt, dyt = (ref.x - u.x) * _TILES_X, (ref.y - u.y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        if d > 1e-6:                                          # land at its target's EDGE, not on top
+            stop = max(0.0, d - (_body_radius(ref) + s.radius))
+            u.x, u.y = _clamp_xy(u.x + (dxt / d) * stop / _TILES_X,
+                                 u.y + (dyt / d) * stop / _TILES_Y, s.radius)
+        u.charge_dist = 0.0
+        u.cooldown = s.hit_speed                              # the leap IS the attack -- then normal cadence
+        dmg = s.leap_dmg * u.dmg_mult
+        if isinstance(ref, Tower):
+            self._damage_tower(ref, dmg, u.team)
+            return
+        if ref.hp <= 0:
+            return
+        self._hurt(ref, dmg)
+        self._apply_status(u.team, s, ref)
+        self._knock(ref, s, u.x, u.y)
+        if s.splash:                                          # Mega Knight lands ON a group
+            rad = s.leap_splash or _SPLASH_R                  # the JUMP has its own, wider radius
+            for e in self.units:
+                if e.team != u.team and e is not ref and e.hp > 0 \
+                        and _dist(e.x, e.y, ref.x, ref.y) <= rad:
+                    self._hurt(e, dmg)
+                    self._apply_status(u.team, s, e)
+                    self._knock(e, s, u.x, u.y)
+
+    def _deploy_blast(self, u: "Unit") -> None:
+        """Area damage the instant a body finishes appearing -- Mega Knight LANDING, Goblin Drill
+        SURFACING. Both are published as `spawn_damage`, both knock back, and both are most of the
+        reason the card is scary on arrival rather than merely after it starts walking."""
+        s = u.spec
+        if s.spawn_dmg <= 0.0 or s.spawn_radius <= 0.0:
+            return
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= s.spawn_radius + e.spec.radius:
+                self._hurt(e, s.spawn_dmg)
+                self._knock(e, s, u.x, u.y)                  # radial, out of the landing circle
+        if s.spawn_crown_dmg > 0.0:                          # Goblin Drill publishes a reduced crown value
+            for tw in self._enemy_towers(u.team):
+                if tw.alive and _gap(u.x, u.y, tw) <= s.spawn_radius:
+                    self._damage_tower(tw, s.spawn_crown_dmg, u.team)
 
     def _death_blast(self, u: "Unit") -> None:
         """Area damage centred on a body that has just died.
@@ -1018,6 +1724,9 @@ class SimEngine:
                 continue
             if _dist(u.x, u.y, e.x, e.y) <= s.death_radius + e.spec.radius:
                 self._hurt(e, s.death_dmg)
+                # DEATH BLASTS SHOVE TOO -- Golem, Giant Skeleton, Phoenix, Skeleton Barrel and
+                # Goblin Demolisher all state it in their lead paragraph. Radial from the corpse.
+                self._knock(e, s, u.x, u.y)
         for tw in self._enemy_towers(u.team):
             if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
                 self._damage_tower(tw, s.death_dmg, u.team)
@@ -1066,13 +1775,41 @@ class SimEngine:
             nu.deploy_left = sp.deploy_time
             self.units.append(nu)
 
-    def _hurt(self, u: "Unit", dmg: float) -> None:
+    def _spawn_cursed_hog(self, u: "Unit") -> None:
+        """Mother Witch curse: a cursed enemy TROOP turns into a hog for the curser's team on death."""
+        if u.curse_left <= 0.0 or u.cursed_by not in (0, 1) or u.spec.kind != "troop":
+            return
+        if u.spec.base == "mother_witch_hog":
+            return
+        try:
+            sp = build_spec(self.db, "mother_witch_hog", max(1, int(u.curse_level)))
+        except Exception:
+            return
+        nu = Unit(spec=sp, team=u.cursed_by, x=u.x, y=u.y, hp=sp.hp)
+        nu.deploy_left = min(sp.deploy_time, 0.2)
+        self.units.append(nu)
+
+    def _hurt(self, u: "Unit", dmg: float, hits_hidden: bool = False) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
         - DAMAGE REDUCTION while NOT attacking (Evo Knight -- 60% less from ALL sources whenever it isn't
           engaged; it drops the moment it deals a hit, tracked by `u.attacking`). NOT a numerical HP pool.
         - a SHIELD pool (Royal Recruits / Guards ...) that absorbs the WHOLE hit; like real Clash Royale the
           OVERFLOW that breaks the shield is DISCARDED, not carried to hp (a big hit only STRIPS the shield).
         A unit with neither behaves exactly as `u.hp -= dmg`."""
+        # DASH INVULNERABILITY: "She is immune to damage during her dash." This is most of what makes
+        # the Bandit worth 3 elixir -- she trades through a Crown Tower volley, and chipping her out
+        # of the wind-up is not an option the defender has.
+        # "She is immune to damage during her dash" -- the WHOLE dash, charge and flight alike.
+        if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
+            return
+        if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
+            return
+        # RETRACTED TESLA: "immune to all damage except for the Earthquake". The exception is a
+        # PROPERTY OF THE SPELL, not of the Tesla -- Earthquake was given this specifically
+        # (3/3/2020, "allowed the Earthquake to affect the Tesla even if it is hidden"), so it is
+        # carried on the spell's own `hits_hidden` flag rather than special-cased by card name.
+        if u.hidden and not hits_hidden:
+            return
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
         if u.shield_left > 0.0:
@@ -1092,9 +1829,49 @@ class SimEngine:
             dmg = u.spec.charge_dmg * u.dmg_mult
             tower_dmg = dmg
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
+            if u.spec.multi_kind == "shotgun" and u.spec.multi_hits > 1:
+                self._shotgun(u, ref, dmg)
+                return
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
             return
+        # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
+        # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
+        # bolt -- 115 / 1.8 s hit speed == his published dps of 64, so counting it once per target
+        # was dealing DOUBLE. One target takes the whole hit; two share it. A CROWN TOWER is a valid
+        # half ("the Electro Wizard could split the strike onto the Tower and deal unnecessary chip
+        # damage"), which is why you keep the defending troop a tile clear of your own tower.
+        # NB this is NOT the Electro Dragon's `chain`, which "arcs and strikes up to 2 OTHER targets"
+        # -- there each body takes the full hit, and that model stays as it is.
+        if u.spec.multi_kind == "split" and u.spec.multi_hits > 1:
+            reach = u.spec.reach + u.reach_extra + _REACH_SLOP
+            extra = [(_gap(u.x, u.y, e), e, "unit") for e in self.units
+                     if e.team != u.team and e.hp > 0 and e is not ref
+                     and self._valid_foe(u, e) and _gap(u.x, u.y, e) <= reach]
+            # AT MOST ONE CROWN TOWER among the halves. Towers cluster: MEASURED, 100 of the 18x32
+            # cells have two or more enemy towers inside a 5-tile reach (the whole area behind the
+            # bridge, and all three towers dead centre), so counting each tower separately made an
+            # Electro Wizard whose ONLY target is a crown tower deal half damage to it -- the other
+            # bolt quietly went into the King, which also woke him up. He splits between a troop and
+            # a tower, never between two towers.
+            if not any(k == "tower" for _, _, k in extra) and not isinstance(ref, Tower):
+                towers = [(_gap(u.x, u.y, tw), tw, "tower") for tw in self._enemy_towers(u.team)
+                          if tw is not ref and _gap(u.x, u.y, tw) <= reach]
+                if towers:
+                    extra.append(min(towers, key=lambda t: t[0]))
+            extra.sort(key=lambda t: t[0])
+            picks = [(ref, kind)] + [(e, k) for _, e, k in extra[:u.spec.multi_hits - 1]]
+            share = 1.0 / len(picks)
+            for tgt, k in picks:
+                self._land_hit(u.team, k, tgt, u.spec, dmg * share, tower_dmg * share)
+            return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+        # MONK'S 3-STRIKE COMBO: "the first 2 attacks deal normal damage, while the 3rd strike deals
+        # extra damage and knockback, EVEN IF THE TARGETED TROOP IS NORMALLY IMMUNE TO KNOCKBACK"
+        # (hence knockback_all on the card). Only the shove is modelled -- the wiki does not publish
+        # the 3rd hit's damage, and inventing a multiplier would be worse than leaving it flat.
+        u.hit_no += 1
+        if u.spec.combo_every > 0 and u.hit_no % u.spec.combo_every == 0 and isinstance(ref, Unit):
+            self._knock(ref, u.spec, u.x, u.y)
         self._multi_hit(u.spec, u.team, u.x, u.y, ref, dmg)   # chain arcs / shotgun pellets
 
     @staticmethod
@@ -1121,19 +1898,34 @@ class SimEngine:
             # crown towers take the REDUCED per-hit value when the card has one (Miner) -- real CR's
             # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
             self._damage_tower(ref, tower_dmg, team)
+            self._apply_status(team, spec, ref)
             return
         self._hurt(ref, dmg)
-        self._apply_status(spec, ref)
+        self._apply_status(team, spec, ref)
         if spec.splash:
             for e in self.units:
                 if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
                     self._hurt(e, dmg)
-                    self._apply_status(spec, e)
+                    self._apply_status(team, spec, e)
+            for tw in self._enemy_towers(team):
+                if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= _SPLASH_R:
+                    self._damage_tower(tw, tower_dmg, team)
+                    self._apply_status(team, spec, tw)
 
     def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
                 dmg: float, tower_dmg: float) -> None:
         radius = spec.proj_radius
         rng = spec.proj_range or (spec.reach + _REACH_SLOP)
+        pierce = spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun")
+        dx, dy = 0.0, 0.0
+        if pierce:
+            # A piercing shot is fired ALONG A HEADING and keeps that heading for the whole leg.
+            # Re-aiming at `tx,ty` each tick made it turn round the moment it passed the target, so
+            # it hovered there instead of flying on -- which is most of the Executioner's reach
+            # (7.5-tile throw vs his own 4.5-tile range) and all of Magic Archer's.
+            d = _dist(x, y, ref.x, ref.y)
+            if d > 1e-9:
+                dx, dy = (ref.x - x) / d, (ref.y - y) / d
         self.projectiles.append(Projectile(
             label=label, team=team, x=x, y=y, tx=ref.x, ty=ref.y, target=ref, spec=spec,
             dmg=dmg, tower_dmg=tower_dmg, radius=radius, speed=spec.proj_speed,
@@ -1141,7 +1933,89 @@ class SimEngine:
             ground_only=not spec.attacks_air,
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
-            pierce=spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun"), ox=x, oy=y))
+            pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y))
+
+    def _shotgun(self, u: Unit, ref, dmg: float) -> None:
+        """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
+
+        "The Hunter launches an attack that shoots 10 SHOTGUN PELLETS that travel in RANDOM
+        directions with a wide spread, giving him higher damage the closer he is to the target and
+        lower damage at long range." The falloff is not a rule -- it is what a diverging cone does
+        to a target of fixed size, so it is left to EMERGE rather than be computed. That also buys
+        three published behaviours for free:
+          * "each bullet is an individual hit", so a SHIELD eats one pellet and the rest dig in;
+          * pellets that miss keep flying to the projectile range (6.5) well past his own reach (4),
+            and hit whatever else is in the cone;
+          * against a Graveyard "the spawning order of his bullets is also random, possibly making
+            him miss more of his bullet shots" -- inconsistency by construction.
+        A pellet stops in the first body it touches: it scatters, it does not pierce.
+
+        The cone half-angle is the ONE number here the wiki does not publish (its only mention is
+        "slightly decreased his bullet spread", 24/1/2018, with no value). It is curated in
+        cards.yaml, chosen so that point-blank ALL ten connect -- which is what the published DPS of
+        84 x 10 / 2.2 assumes -- and so the count at his maximum range matches what the old
+        hardcoded falloff produced, so this fixes the mechanic without quietly rebalancing the card.
+        """
+        s = u.spec
+        d = _dist(u.x, u.y, ref.x, ref.y)
+        if d <= 1e-9:
+            return
+        base = math.atan2((ref.y - u.y) * _TILES_Y, (ref.x - u.x) * _TILES_X)
+        half = math.radians(s.spread)
+        rng = s.proj_range or (s.reach + _REACH_SLOP)
+        for i in range(s.multi_hits):
+            ang = base + self.rng.uniform(-half, half)
+            self.projectiles.append(Projectile(
+                label=f"{s.base}_pellet", team=u.team, x=u.x, y=u.y,
+                tx=u.x + math.cos(ang) * rng / _TILES_X,
+                ty=u.y + math.sin(ang) * rng / _TILES_Y,
+                target=None, spec=s, dmg=dmg, tower_dmg=dmg, radius=0.0, speed=s.proj_speed,
+                left=rng, ground_only=not s.attacks_air, pierce=True, width=_PELLET_R,
+                dirx=math.cos(ang) / _TILES_X, diry=math.sin(ang) / _TILES_Y,
+                stop_on_hit=True, ox=u.x, oy=u.y))
+
+    def _pierce_pass(self, p: Projectile) -> None:
+        """One tick of a piercing shot's damage: everything it is currently overlapping, once each.
+
+        Crown towers are hit too. They were not before, and the omission was total rather than
+        partial: a piercing shot is removed at max range and never reaches ``_impact``, which is the
+        only place towers were ever checked -- so an Executioner, Bowler or Magic Archer left alone
+        against a tower did literally nothing to it. The wiki assumes the opposite ("Left alone, the
+        Executioner will deal the same damage to all tower troops, throwing his axe 3 times against
+        all of them").
+        """
+        reach = p.width or max(p.radius, 0.5)
+        for e in self.units:
+            if e.team == p.team or e.hp <= 0 or id(e) in p.hit or e.hidden:
+                continue
+            if p.ground_only and e.spec.flying:
+                continue
+            if _dist(p.x, p.y, e.x, e.y) <= reach + e.spec.radius:
+                p.hit.add(id(e))
+                self._hurt(e, p.dmg)
+                self._apply_status(p.team, p.spec, e)
+                # A PIERCING SHOT SHOVES ALONG ITS OWN LINE. The Bowler's boulder "inflicts
+                # knockback, while piercing through enemies" -- separating a tank from the
+                # support behind it is the card's entire job, and it was landing damage with
+                # no push at all because knockback only ever ran on the SPELL paths.
+                self._knock(e, p.spec, p.x, p.y, p.dirx * _TILES_X, p.diry * _TILES_Y)
+                if p.stop_on_hit:
+                    p.left = 0.0          # a PELLET buries itself in the first body it reaches
+                    return
+        for tw in self._enemy_towers(p.team):
+            if id(tw) in p.hit:
+                continue
+            # A pellet is tiny and clips the tower's crown/turret body, not the full 3x3 base used
+            # for melee stand-off and pathing. Keeping the full footprint here made Hunter land
+            # 8-9 pellets on a tower at range where live behavior is closer to 3-4.
+            tower_r = _PELLET_TOWER_R if p.stop_on_hit else tw.radius
+            if _dist(p.x, p.y, tw.x, tw.y) <= reach + tower_r:
+                p.hit.add(id(tw))
+                self._damage_tower(tw, p.tower_dmg, p.team)
+                self._apply_status(p.team, p.spec, tw)
+                if p.stop_on_hit:
+                    p.left = 0.0
+                    return
 
     def _tick_projectiles(self, dt: float) -> None:
         for p in list(self.projectiles):
@@ -1152,39 +2026,40 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
-            d = math.hypot(dxt, dyt)
-            if d > 1e-9:
-                move = min(step, d) if not p.pierce else step
-                p.x += (dxt / d) * move / _TILES_X
-                p.y += (dyt / d) * move / _TILES_Y
-            p.left -= step
-            if p.pierce:                              # damages everything it passes through, once each
-                for e in self.units:
-                    if e.team == p.team or e.hp <= 0 or id(e) in p.hit:
-                        continue
-                    if p.ground_only and e.spec.flying:
-                        continue
-                    if _dist(p.x, p.y, e.x, e.y) <= max(p.radius, 0.5) + e.spec.radius:
-                        p.hit.add(id(e))
-                        self._hurt(e, p.dmg)
-                        self._apply_status(p.spec, e)
+            if p.pierce:
+                p.x += p.dirx * step                 # straight on along the launch heading
+                p.y += p.diry * step
+                p.x, p.y = _clamp_xy(p.x, p.y, 0.0)
+                p.left -= step
+                self._pierce_pass(p)
                 if p.left <= 0.0:
                     # BOOMERANG: the axe does not stop at max range, it turns around and hits
-                    # everything again on the way back. Clearing `hit` is what lets it re-damage the
-                    # same bodies -- that return leg is the whole reason Executioner trades so well
-                    # into a line of troops.
+                    # everything again on the way back -- "striking all enemies on the way out AND
+                    # back", which is HALF this card's published damage (168 x2 per throw).
+                    # Clearing `hit` is what lets it re-damage the same bodies. It flies back to
+                    # where it was THROWN, not to the thrower: "if he is defeated while his axe is
+                    # not in his hand, the axe will still fly back to where he was defeated".
                     if (p.spec.multi_kind == "boomerang" and not p.returning
                             and p.spec.multi_hits >= 2):
+                        back = _dist(p.x, p.y, p.ox, p.oy)
                         p.returning = True
                         p.label = f"{p.spec.base}_axe_return"
                         p.target = None
                         p.tx, p.ty = p.ox, p.oy
-                        p.left = _dist(p.x, p.y, p.ox, p.oy)
+                        p.dirx = (p.ox - p.x) / back if back > 1e-9 else 0.0
+                        p.diry = (p.oy - p.y) / back if back > 1e-9 else 0.0
+                        p.left = back
                         p.hit.clear()
                         continue
                     self.projectiles.remove(p)
                 continue
+            dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
+            d = math.hypot(dxt, dyt)
+            if d > 1e-9:
+                move = min(step, d)
+                p.x += (dxt / d) * move / _TILES_X
+                p.y += (dyt / d) * move / _TILES_Y
+            p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
                 self._impact(p)
                 self.projectiles.remove(p)
@@ -1199,10 +2074,12 @@ class SimEngine:
                     continue
                 if _dist(p.x, p.y, e.x, e.y) <= p.radius + e.spec.radius:
                     self._hurt(e, p.dmg)
-                    self._apply_status(p.spec, e)
+                    self._apply_status(p.team, p.spec, e)
+                    self._knock(e, p.spec, p.x, p.y)      # area shot: radial from where it landed
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
                     self._damage_tower(tw, p.tower_dmg, p.team)
+                    self._apply_status(p.team, p.spec, tw)
             if spark:
                 self._spark_burst(p)              # ...and THEN it splits into shrapnel
             return
@@ -1238,37 +2115,33 @@ class SimEngine:
         if n < 2 or not s.multi_kind:
             return
         if s.multi_kind == "chain":
-            # The bolt arcs from the struck body to the next nearest enemies (Electro Dragon 3,
-            # Electro Wizard 2). Each arc carries the card's stun, which is why a chain resets a
-            # whole line of attackers rather than just the one it hit.
+            # The bolt hops BODY-TO-BODY, each hop picking the nearest new enemy in chain range
+            # from the CURRENT node. This enforces unique targets (Electro Spirit's cap is 9) and
+            # reproduces the published "up to N" behaviour instead of spraying from only the first
+            # target.
             if not isinstance(ref, Unit):
                 return
-            near = sorted((e for e in self.units
-                           if e.team != team and e.hp > 0 and e is not ref
-                           and _dist(ref.x, ref.y, e.x, e.y) <= _CHAIN_TILES
-                           and not (not s.attacks_air and e.spec.flying)),
-                          key=lambda e: _dist(ref.x, ref.y, e.x, e.y))
-            for e in near[:n - 1]:
+            seen = {id(ref)}
+            cur = ref
+            for _ in range(n - 1):
+                near = [e for e in self.units
+                        if e.team != team and e.hp > 0 and id(e) not in seen
+                        and _dist(cur.x, cur.y, e.x, e.y) <= _CHAIN_TILES
+                        and not (not s.attacks_air and e.spec.flying)]
+                if not near:
+                    break
+                e = min(near, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
                 self._hurt(e, dmg)
-                self._apply_status(s, e)
+                self._apply_status(team, s, e)
                 self.projectiles.append(Projectile(
-                    label=f"{s.base}_chain", team=team, x=ref.x, y=ref.y, tx=e.x, ty=e.y,
+                    label=f"{s.base}_chain", team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
                     target=e, spec=s, dmg=0.0, tower_dmg=0.0, radius=0.0,
-                    speed=max(s.proj_speed, 20.0), left=_dist(ref.x, ref.y, e.x, e.y),
+                    speed=max(s.proj_speed, 20.0), left=_dist(cur.x, cur.y, e.x, e.y),
                     ground_only=not s.attacks_air))
+                seen.add(id(e))
+                cur = e
         elif s.multi_kind == "shotgun":
-            # A CONE of pellets: they all converge at point-blank and spread out with distance, so
-            # the same attack is devastating up close and weak at range. That distance falloff is
-            # the entire identity of the Hunter -- one flat hit made him a mediocre single-target.
-            rng = s.proj_range or (s.reach + _REACH_SLOP)
-            gap = _gap(fx, fy, ref)
-            extra = max(0, int(round(n * max(0.0, 1.0 - gap / max(rng, 1e-6)))) - 1)
-            for _ in range(extra):
-                if isinstance(ref, Tower):
-                    if ref.alive:
-                        self._damage_tower(ref, dmg, team)
-                elif ref.hp > 0:
-                    self._hurt(ref, dmg)
+            return          # fired as real pellets in _shotgun, not as extra hits on one target
 
     def _spark_burst(self, p: Projectile) -> None:
         """Firecracker: the rocket hits its target, THEN splits into shrapnel.
@@ -1296,22 +2169,77 @@ class SimEngine:
                 speed=max(s.proj_speed, 8.0), left=_SPARK_TILES,
                 ground_only=not s.attacks_air, pierce=True, ox=p.x, oy=p.y))
 
-    def _apply_status(self, spec: CardSpec, e: Unit) -> None:
-        """Apply a hitter's/spell's crowd-control to a struck ground/air unit.
+    def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
+        """Whether `spec`'s pushback moves THIS body at all.
+
+        Two independent exclusions, both sourced:
+          BUILDINGS are anchored -- once placed, a building holds its tile for its whole lifetime.
+          HEAVY TROOPS shrug off the small-to-medium pushback. Per the Bowler page, its knockback
+          "functions identically to a Fireball, Giant Snowball, or Rocket, pushing back small to
+          medium sized ground troops, and minimally damaging heavy troops such as the Prince,
+          Sparky, Dark Prince, Skeleton King, Giant Skeleton, Goblin Machine, P.E.K.K.A, Mega
+          Knight, Cannon Cart, and the Mighty Miner" -- and "his inability to knock back tanks means
+          he can separate the tanks and the support units".
+        The Log is the documented EXCEPTION (knockback_all): it "push[es] back all ground troops",
+        explicitly including the Prince and Dark Prince charges. So immunity is not a pure property
+        of the target -- the spell decides whether it applies.
+        """
+        if spec.knockback <= 0.0 or e.spec.kind == "building":
+            return False
+        return spec.knockback_all or not e.spec.knockback_immune
+
+    def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
+               dx: float = 0.0, dy: float = 0.0) -> None:
+        """Push `e` back. `dx, dy` is an optional TRAVEL direction in tiles -- a rolling boulder shoves
+        everything it passes along its own line, so a Bowler splits a push apart lengthwise. With no
+        direction it falls back to RADIAL, away from the impact point (Fireball / Giant Snowball /
+        Rocket, and every death blast).
+        The shove also RESETS the attack animation ("troops vulnerable to knockback will have their
+        attack animations reset"), which is why a Snowball answers a charge or an Inferno's ramp --
+        modelled here by the same aggro_reset the Log already set."""
+        if not self._can_knock(e, spec):
+            return
+        d = math.hypot(dx, dy)
+        if d <= 1e-9:                                    # no travel direction -> radial from impact
+            dx, dy = (e.x - fx) * _TILES_X, (e.y - fy) * _TILES_Y
+            d = math.hypot(dx, dy)
+            if d <= 1e-6:                                # dead centre: no radial direction exists
+                dx, dy, d = 0.0, 1.0, 1.0                # deterministic fallback
+        e.x, e.y = _clamp_xy(e.x + (dx / d) * spec.knockback / _TILES_X,
+                             e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
+        e.aggro_reset = True
+
+    def _apply_status(self, team: int, spec: CardSpec, e) -> None:
+        """Apply a hitter's/spell's crowd-control to a struck unit or crown tower.
 
         Durations and slow strength are PER CARD where the wiki publishes them, falling back to the
         global config value. That difference is not cosmetic: a Freeze holds for 4s and an Ice Spirit
         for 1.1s, and a Ram Rider's snare (-70%) is more than twice a Giant Snowball's (-30%).
         """
+        if isinstance(e, Unit):
+            # A retracted Tesla is "vulnerable to Earthquake and Freeze" and nothing else -- so a Zap or
+            # an Electro Wizard cannot stun it while it is under, but a Freeze still locks it down.
+            if e.hidden and not spec.freezes and not spec.hits_hidden:
+                return
         if spec.freezes:
-            e.stun_left = max(e.stun_left, spec.freeze_dur or self.freeze_dur)
-            e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
+            e.stun_left = max(getattr(e, "stun_left", 0.0), spec.freeze_dur or self.freeze_dur)
+            if isinstance(e, Unit):
+                e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
         elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
-            e.stun_left = max(e.stun_left, spec.stun_dur or self.stun_dur)
-            e.aggro_reset = True
+            e.stun_left = max(getattr(e, "stun_left", 0.0), spec.stun_dur or self.stun_dur)
+            if isinstance(e, Unit):
+                e.aggro_reset = True
         if spec.slows:
-            e.slow_left = max(e.slow_left, spec.slow_dur or self.slow_dur)
+            if spec.base == "fisherman" and getattr(e, "fisherman_slowed", False):
+                return
+            if spec.base == "fisherman":
+                setattr(e, "fisherman_slowed", True)
+            e.slow_left = max(getattr(e, "slow_left", 0.0), spec.slow_dur or self.slow_dur)
             e.slow_mult = spec.slow_mult or self.slow_factor
+        if spec.curse_dur > 0.0 and isinstance(e, Unit) and e.spec.kind == "troop":
+            e.curse_left = max(e.curse_left, spec.curse_dur)
+            e.cursed_by = team
+            e.curse_level = spec.level
 
     def _pulse(self, u: Unit) -> None:
         """Evo Tesla area-shock: damage + STUN every enemy within pulse_r of the tower."""
@@ -1327,18 +2255,29 @@ class SimEngine:
     def _tower_fire(self, team: int, tw: Tower, dt: float) -> None:
         """DISCRETE single-target tower shots. Cadence + damage come from the tower troop; Dagger Duchess
         bursts through a loaded dagger clip (fast) then fires slower until it reloads while it has no target."""
+        if tw.stun_left > 0.0:
+            tw.stun_left = max(0.0, tw.stun_left - dt)
+            return
+        if tw.slow_left > 0.0:
+            tw.slow_left = max(0.0, tw.slow_left - dt)
+        eff_dt = dt * (tw.slow_mult if tw.slow_left > 0.0 else 1.0)
         rng = self.king_range if tw.king else self.tower_range
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
+                and e.invis_left <= 0.0 and not e.hidden and not e.ghost
                 and _gap(tw.x, tw.y, e) <= rng]
         if not foes:
             tw.acquired = False
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
                 tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
             return
-        if not tw.acquired:                                     # first shot after (re)acquiring is delayed
+        if not tw.acquired:
             tw.acquired = True
+            # LOAD TIME on acquiring a target. Keeping this is what reproduces the reference
+            # interaction: an L11 Bomber walking into an L11 princess tower lands EXACTLY ONE bomb
+            # before dying. Firing the instant a target appears kills it ~0.8 s sooner and the bomb
+            # never lands, so the tower's opening delay is real and load-bearing, not padding.
             tw.reload_left = tw.first_hit
-        tw.reload_left -= dt
+        tw.reload_left -= eff_dt
         if tw.reload_left > 0.0:
             return
         tgt = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
@@ -1389,11 +2328,13 @@ class SimEngine:
             return
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
-                self._hurt(e, s.spec.spell_dmg)
-                self._apply_status(s.spec, e)                 # Zap/Freeze stun; slow spells
+                self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
+                self._apply_status(s.team, s.spec, e)                 # Zap/Freeze stun; slow spells
+                self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
             if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+                self._apply_status(s.team, s.spec, tw)
         sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
         for i in range(s.spec.spawn_count if sp is not None else 0):
             ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0   # tiles -> normalised
@@ -1418,6 +2359,13 @@ class SimEngine:
             if d > v.spec.pull_radius:
                 continue
             self._hurt(e, v.spec.spell_dmg * frac)            # DoT slice of the total damage
+            # BUILDINGS ARE ANCHORED. A Tornado damages a Tesla / Cannon / X-Bow but CANNOT drag one:
+            # once a building is placed it holds that tile for its whole lifetime. Without this a
+            # Tornado could haul an enemy Tesla out of the lane it was built to cover -- and, worse,
+            # haul YOUR X-Bow off its firing position, which is not a play that exists in the game.
+            # Same rule as the Log's knockback guard in _resolve_roll.
+            if e.spec.kind == "building":
+                continue
             if d > 1e-6:
                 pull = step * (0.5 if e.spec.radius >= _TANK_RADIUS else 1.0)   # tanks resist
                 if pull >= d:
@@ -1425,6 +2373,16 @@ class SimEngine:
                 else:
                     e.x += (dxt / d) * pull / _TILES_X        # tiles -> normalised, per axis
                     e.y += (dyt / d) * pull / _TILES_Y
+                # BEING DRAGGED OFF WHAT YOU WERE HITTING BREAKS THE LOCK. This is the mechanic that
+                # makes KING ACTIVATION work: tornado a wincon off a princess tower and, once that
+                # tower is out of its reach, it re-picks -- taking the king if the king is now the
+                # nearest building. Without this a Hog hauled onto the king tower simply walked back
+                # to the princess it was still committed to, and the whole pull-to-activate play
+                # (and the defensive pull generally) did not exist. Same rule `_separate` already
+                # applies when a body is SHOVED out of reach; the vortex was the path that missed it.
+                if e.locked and e.target is not None \
+                        and _gap(e.x, e.y, e.target) > e.spec.reach + e.reach_extra:
+                    e.aggro_reset = True
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
@@ -1439,14 +2397,19 @@ class SimEngine:
             dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
                 self._hurt(e, s.spec.spell_dmg)
-                e.y += fdir * s.spec.knockback / _TILES_Y     # knock back in the roll direction
-                e.aggro_reset = True                          # the shove breaks its lock -- it re-picks from
-                                                              # where it LANDS, so a Log can pull a locked
-                                                              # attacker onto whatever is now nearest
+                if self._can_knock(e, s.spec):
+                    # BUILDINGS ARE ANCHORED and HEAVIES RESIST -- except the Log, which is the one
+                    # spell documented to push back ALL ground troops (see _can_knock). Damage still
+                    # lands on everything the corridor covers.
+                    e.x, e.y = _clamp_xy(e.x, e.y + fdir * s.spec.knockback / _TILES_Y, e.spec.radius)
+                    e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
+                                                               # where it LANDS, so a Log can pull a locked
+                                                               # attacker onto whatever is now nearest
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir * _TILES_Y
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
+                self._apply_status(s.team, s.spec, tw)
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:
@@ -1463,26 +2426,61 @@ class SimEngine:
                 self.towers[1 - by_team][2].active = True
 
     def _check_end(self) -> None:
+        """The real CR match clock.
+
+        * ANY TIME: a KING falling ends it -- that is the third crown.
+        * AT REGULATION (180 s): if the crowns are UNEQUAL the match is OVER. The sim used to play
+          regulation + overtime unconditionally, so a 1-0 lead at 3:00 kept playing and could be
+          handed back; overtime was reachable from a winning position, which it never is in game.
+        * CROWNS LEVEL AT 180 s -> OVERTIME, 120 s of SUDDEN DEATH: the first crown taken wins
+          instantly. Because crowns are equal by construction once overtime starts, "the crowns are
+          now unequal" IS the sudden-death condition -- so the single test above covers both rules
+          and there is no separate overtime branch to keep in sync.
+        * STILL LEVEL AT 300 s -> the tiebreak on the least-healthy STANDING tower (_score_outcome).
+        """
         for team in (0, 1):
             if not self.towers[team][2].alive:               # king down -> that team loses
                 self.done = True
                 self.outcome = "loss" if team == 0 else "win"
                 return
+        if self.t < self.regulation:
+            return                                            # regulation runs its full length
+        my_c, op_c = self.crowns(0), self.crowns(1)
+        if my_c != op_c:
+            self.done = True
+            self.outcome = "win" if my_c > op_c else "loss"
+            return
         if self.t >= self.regulation + self.overtime:
             self.done = True
             self.outcome = self._score_outcome()
 
     def _score_outcome(self) -> str:
+        """Crowns first, then CR's overtime TIEBREAK on the least-healthy REMAINING Crown Tower.
+
+        Real rule: when overtime expires level, every tower still STANDING starts taking damage
+        together, and the side whose weakest one falls first loses. So the comparison is over ALIVE
+        towers only.
+
+        THE BUG THIS FIXES: the filter used to be `t.max_hp > 0`, which a DESTROYED tower also
+        passes (hp 0, max_hp unchanged) -- so it contributed a fraction of 0.0. The moment each side
+        had lost one princess (crowns 1-1, the most common way a close match stands), both minima
+        were 0.0, the equality band fired, and the match was declared a DRAW no matter how far ahead
+        one side was on the towers still standing. MEASURED: 7 of 40 matches ended
+        `TRUE DRAW (both weakest at 0.000)`, i.e. 17.5% of matches returned a terminal reward of 0
+        instead of +-w_win. It erased exactly the win the rocket-cycle plan is built to produce --
+        chip damage that never finishes a tower is precisely what the tiebreak is supposed to read.
+
+        Fractions rather than absolute HP, so asymmetric tower-troop/level max-HP between the two
+        sides stays comparable.
+        """
         my_crowns = self.crowns(0)
         op_crowns = self.crowns(1)
         if my_crowns != op_crowns:
             return "win" if my_crowns > op_crowns else "loss"
-        # Crowns tied -> CR tiebreak on the LEAST-healthy Crown Tower (lowest HP fraction loses). Fractions,
-        # not absolute HP, so asymmetric tower-troop/level max-HP between the two sides stays fair.
-        my_min = min((t.hp / t.max_hp for t in self.towers[0] if t.max_hp > 0), default=1.0)
-        op_min = min((t.hp / t.max_hp for t in self.towers[1] if t.max_hp > 0), default=1.0)
+        my_min = min((t.hp / t.max_hp for t in self.towers[0] if t.alive and t.max_hp > 0), default=1.0)
+        op_min = min((t.hp / t.max_hp for t in self.towers[1] if t.alive and t.max_hp > 0), default=1.0)
         if abs(my_min - op_min) < 1e-3:
-            return "draw"
+            return "draw"                                    # genuinely level on every standing tower
         return "win" if op_min < my_min else "loss"
 
     # -- reward / observation accessors ------------------------------------

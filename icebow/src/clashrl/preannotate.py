@@ -48,7 +48,8 @@ def _ls_ref(subdir: str, name: str) -> str:
 def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
                 device: Optional[str] = None, limit: Optional[int] = None,
                 out: Optional[str] = None, classes: Optional[str] = None,
-                subdir: Optional[str] = None, model_version: Optional[str] = None) -> None:
+                subdir: Optional[str] = None, model_version: Optional[str] = None,
+                reoffer: bool = False) -> None:
     from .detect import _load_classes, _resolve_weights, model_class_names
 
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
@@ -73,15 +74,53 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
         print("[pre-annotate] no detector weights -- train one first (tools/detect/train.py)")
         return
 
-    # Frames already in train/val are ANNOTATED -- never re-offer them.
+    # WHAT COUNTS AS "ALREADY HANDLED" -- two independent records, because they answer two
+    # different questions and neither alone is enough:
+    #   images/train|val  = ANNOTATED AND IMPORTED. Filled ONLY by detect-import.
+    #   preannot_offered.txt = ALREADY HANDED TO LABEL STUDIO. This exists because pre-annotate has
+    #     no visibility into an LS project: without it, adding new frames to the queue and re-running
+    #     BEFORE importing your labelled work re-emits every still-pending frame, and importing that
+    #     file duplicates every task already sitting in the project.
     done = {p.stem for s in ("train", "val") for p in (root / "images" / s).glob("*")
             if p.suffix.lower() in (".jpg", ".jpeg", ".png")}
-    pend = [p for p in sorted(qdir.iterdir())
-            if p.suffix.lower() in (".jpg", ".jpeg", ".png") and p.stem not in done]
+    ledger = root / "preannot_offered.txt"
+    # BOOTSTRAP, same pattern as detect._load_split's split manifest: a ledger that starts empty
+    # would re-offer every frame already sitting in Label Studio. Seed it from the tasks file that
+    # was last written, which IS the record of what was handed over.
+    if not ledger.exists():
+        prev = root / "preannot_tasks.json"
+        seed = []
+        if prev.exists():
+            from .detect import _ls_export_image_name
+            try:
+                for t in json.loads(prev.read_text(encoding="utf-8")):
+                    ref = (t.get("data") or {}).get("image")
+                    if ref:
+                        seed.append(Path(_ls_export_image_name(ref)).stem)
+            except Exception as exc:                          # noqa: BLE001 - unreadable = seed nothing
+                print(f"[pre-annotate] could not seed the ledger from {prev.name}: {exc}")
+        ledger.write_text(
+            "# frames pre-annotate has already handed to Label Studio. Delete a line to re-offer\n"
+            "# that frame; delete the file (or pass --reoffer) to rebuild the whole set.\n"
+            + ("\n".join(sorted(set(seed))) + "\n" if seed else ""), encoding="utf-8")
+        print(f"[pre-annotate] created {ledger.name}, seeded with {len(set(seed))} frame(s) "
+              f"from {prev.name}")
+    offered = set()
+    if ledger.exists() and not reoffer:
+        offered = {ln.strip() for ln in ledger.read_text(encoding="utf-8").splitlines()
+                   if ln.strip() and not ln.startswith("#")}
+    imgs = [p for p in sorted(qdir.iterdir())
+            if p.suffix.lower() in (".jpg", ".jpeg", ".png")]
+    pend = [p for p in imgs if p.stem not in done and p.stem not in offered]
+    n_imported = sum(1 for p in imgs if p.stem in done)
+    n_prev = len(imgs) - n_imported - len(pend)
+    print(f"[pre-annotate] queue {len(imgs)} frame(s): {n_imported} already imported, "
+          f"{n_prev} already offered{' (IGNORED, --reoffer)' if reoffer else ''}, {len(pend)} NEW")
     if limit:
         pend = pend[:int(limit)]
     if not pend:
-        print(f"[pre-annotate] nothing unlabelled in {qdir}")
+        print(f"[pre-annotate] nothing NEW in {qdir} -- add frames, or pass --reoffer to rebuild "
+              f"tasks for everything still unimported (for a FRESH project only).")
         return
 
     from ultralytics import YOLO
@@ -105,6 +144,7 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
         kw["device"] = device
 
     tasks, hist = [], {}
+    emitted: list[str] = []
     n_box = n_skip = empty = 0
     for i, p in enumerate(pend):
         try:
@@ -143,12 +183,21 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
         # frame worth a human eye, not one to hide.
         tasks.append({"data": {"image": _ls_ref(qsub, p.name)},
                       "predictions": [{"model_version": mv, "result": regions}]})
+        emitted.append(p.stem)
         if (i + 1) % 200 == 0:
             print(f"  ...{i+1}/{len(pend)}", flush=True)
 
     dst = Path(out) if out else (root / "preannot_tasks.json")
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(json.dumps(tasks, indent=1), encoding="utf-8")
+
+    # Record what went out, so the NEXT run offers only genuinely new frames. Appended (never
+    # rewritten) because the tasks file itself is overwritten every run -- the ledger is the only
+    # durable record of what Label Studio has already been given. Only frames that actually became
+    # a task are recorded: one that failed to decode was never offered and must stay in the queue.
+    if emitted:
+        with ledger.open("a", encoding="utf-8") as fh:
+            fh.write("\n".join(emitted) + "\n")
 
     print(f"\n[pre-annotate] {len(tasks)} task(s), {n_box} pre-drawn box(es) "
           f"({n_box / max(1, len(tasks)):.1f}/frame; {empty} frame(s) got nothing)")
@@ -158,6 +207,8 @@ def preannotate(cfg, weights: Optional[str] = None, conf: float = 0.20,
         top = sorted(hist.items(), key=lambda kv: -kv[1])[:12]
         print("[pre-annotate] most-drawn: " + ", ".join(f"{k} {v}" for k, v in top))
     print(f"[pre-annotate] -> {dst}  (NO images copied -- tasks point into images/{qsub})")
+    print(f"[pre-annotate] ledger {ledger.name}: {len(offered) + len(emitted)} frame(s) offered to "
+          f"date -- a re-run emits ONLY frames added after this one.")
     print("[pre-annotate] NEXT:")
     print(f"  1) NEW Label Studio project; labelling config = {root / 'label_studio_config.xml'}")
     print("  2) add Local Storage pointing at data/detect/images as usual, but do NOT press Sync "

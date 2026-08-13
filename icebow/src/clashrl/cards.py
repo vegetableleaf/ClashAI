@@ -354,6 +354,11 @@ class CardDB:
             "speed": float(spd) / 60.0,
             "radius": float(c.get("projectile_radius") or c.get("splash_radius") or 0.0),
             "range": float(rng) if rng else None,
+            # HALF the published Projectile Width -- the wiki quotes width (Executioner 2, Bowler
+            # 3.6) but reasons in radius ("the axe itself has a 1 tile radius, so his effective
+            # reach is 8.5" = 7.5 throw + 1). Kept apart from `radius`, which is the BLAST footprint
+            # of a shot that explodes; these shots do not explode, they sweep a lane.
+            "width": float(c.get("projectile_width_tiles") or 0.0) / 2.0,
             "pierce": bool(rng and rng > (c.get("range_tiles") or 0)),
         }
 
