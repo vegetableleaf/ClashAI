@@ -1,50 +1,7 @@
-# --- Virtual environments (huge; recreate from requirements.txt) ---
 .venv/
-venv/
-env/
-ENV/
-
-# --- Python caches ---
 __pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.ipynb_checkpoints/
-
-# --- Recordings, datasets & trained weights (large / regenerable) ---
-# Gameplay videos, labeled datasets, and policy checkpoints live under data/.
+*.pyc
 data/
-*.mp4
-*.avi
-*.mkv
-
-# --- Label Studio exports & detector training output (transient working artifacts) ---
-annotation_export*/
-runs/
-
-# --- Scratch / diagnostics ---
-**/tmp_*.py
-**/diag_*.png
-**/_cand_*.png
-**/_candidates.png
-
-# --- OS cruft ---
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# --- Card reference pictures (third-party art, regenerable) ---
-# `run.py cards-art` re-downloads these from the Fandom wiki whenever they are needed.
-# Not committed: they are someone else's images and cost ~2.6 MB.
-icebow/templates/cardart/
-
-# Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png
-
-# --- ClashAI.exe build output (rebuild from launcher.py, see its own docstring) ---
-/dist/
-/build_tmp/
-/ClashAI.exe
-*.spec
+*.pt
+cr_token.txt
+.env
