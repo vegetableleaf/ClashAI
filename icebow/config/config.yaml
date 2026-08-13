@@ -221,14 +221,32 @@ observation:
   # Measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.40). Re-measure after each
   # retrain: `run.py detect-eval --sweep --subset data/detect/val_board15.txt` (the subset keeps
   # generations comparable as val grows).
-  sim_detector_recall: 0.82      # GLOBAL fallback (mid-tier + thin-val cards): measured whitelist 0.823 @0.35
-  sim_detector_precision: 0.89   # ~11% of seen detections relabelled (measured folded 0.886 @0.35)
+  # RE-MEASURED FOR THE DETECTOR THIS BRANCH ACTUALLY RUNS. The merge brought in 0.82/0.89/0.85,
+  # measured on upstream's board-24 over their frozen 241-image subset -- a different model on a
+  # different val set. Numbers that describe someone else's detector are exactly the kind of
+  # borrowed constant that later reads as a decision. Ours, `detect-eval --conf 0.35` over the
+  # 401-frame split, 2026-08-13:
+  #     presence (all)    R 0.848 / P 0.886
+  #     presence (UNITS)  R 0.848 / P 0.889
+  #     whitelist ident   R 0.858 / P 0.892
+  # For reference, board-24 at the same conf: presence 0.855/0.882, whitelist 0.823/0.886 -- so
+  # ~level on presence and ~3.5pp ahead on identity, though the two val sets differ and the
+  # comparison is indicative only.
+  sim_detector_recall: 0.86      # GLOBAL fallback (mid-tier + thin-val cards): measured whitelist 0.858 @0.35
+  sim_detector_precision: 0.89   # ~11% of seen detections relabelled (measured folded 0.892 @0.35)
   # CANVAS presence recall -- the class-agnostic "is there a box on that unit at all" rate, which is
   # what the semantic canvas actually depends on (a missed unit is simply absent from the map). Kept
   # SEPARATE from sim_detector_recall because the two are different measurements and the canvas one is
-  # materially higher: naming a unit is harder than seeing it. MEASURED presence(UNITS) 0.855 @0.35 on
-  # board-24. Not paired with a precision knob: a mislabelled box still lands in the right channel
-  # unless its coarse role changes, so identity precision does not describe this signal.
+  # materially higher: naming a unit is harder than seeing it. Not paired with a precision knob: a
+  # mislabelled box still lands in the right channel unless its coarse role changes, so identity
+  # precision does not describe this signal.
+  #
+  # MEASURED presence(UNITS) 0.848 @0.35 on THIS branch's detector (upstream's board-24 reads 0.855).
+  # NOTE THE GATE: use_detector_canvas below was flipped on upstream against a presence >= 0.85
+  # threshold, and this detector sits at 0.848 -- 0.2pp short, i.e. AT the gate rather than through
+  # it. Left on, because 0.002 on a 401-frame split is well inside the noise floor and the whitelist
+  # gate passes wide (0.858 vs 0.70), but it is a coin-flip margin and not a pass. Re-check it after
+  # the next retrain instead of assuming it cleared.
   sim_detector_presence_recall: 0.85
   # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed.
   # Values are the MEAN across board-14/15/16, NOT the latest run: at n=48 val instances the binomial
