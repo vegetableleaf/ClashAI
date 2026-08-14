@@ -142,6 +142,48 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         resumed_best_wr = float(ck.get("best_wr", -1.0))
         print(f"[train-sim-ppo] resumed {ppo_path.name}"
               + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0 else ""))
+        # RAIL GUARD (2026-08-14). A checkpoint whose RAW head logits sit far beyond the tanh cap
+        # is FROZEN: softmax saturated at the rails, zero gradient, suppressed cards (tornado,
+        # x_bow) unrecoverable forever -- and it LOOKS alive (placement varies, matches play).
+        # That exact state shipped once: the manual repair_card_head.py run never landed (wrong
+        # cwd / autosave overwrite) and the resumed run trained a frozen head for hours. The
+        # trainer now refuses to resume one silently -- it measures and rescales itself.
+        try:
+            from .model import _LOGIT_CAP
+            penv = SimMatchEnv(cfg, seed=101)
+            pobs = penv.reset()
+            worst_card = worst_cell = 0.0
+            with torch.no_grad():
+                for _ in range(8):
+                    px = torch.from_numpy(np.asarray(pobs, np.float32)).unsqueeze(0).permute(0, 3, 1, 2)
+                    pv = [torch.from_numpy(getattr(penv, k).astype(np.float32)).unsqueeze(0)
+                          for k in ("hand_vec", "next_vec", "elixir_vec", "threat_vec")]
+                    fmap = net.policy.features(px)
+                    z = net.policy._embed(fmap, *pv)
+                    worst_card = max(worst_card, float(net.policy.card_head(z).abs().max()))
+                    worst_cell = max(worst_cell, float(net.policy._cell_logits(fmap, z).abs().max()))
+                    po = penv.step((True, 0, 200))
+                    pobs = po[0] if not po[2] else penv.reset()
+                fixed = []
+                if worst_card > 2.0 * _LOGIT_CAP:
+                    a = 3.0 / worst_card
+                    net.policy.card_head.weight.mul_(a)
+                    net.policy.card_head.bias.mul_(a)
+                    fixed.append(f"card head x{a:.4f} (raw absmax {worst_card:.0f})")
+                if worst_cell > 2.0 * _LOGIT_CAP:
+                    a = 4.5 / worst_cell
+                    last = net.policy.cell_conv[-1]
+                    last.weight.mul_(a)
+                    if last.bias is not None:
+                        last.bias.mul_(a)
+                    fixed.append(f"cell head x{a:.4f} (raw absmax {worst_cell:.0f})")
+            if fixed:
+                print("[train-sim-ppo] RAIL GUARD: resumed head(s) saturated beyond the tanh cap -- "
+                      f"rescaled into the linear region: {', '.join(fixed)}. Rankings preserved; "
+                      "suppressed cards are gradient-reachable again. (For the neutral-prior lift, "
+                      "run tools/repair_card_head.py --lift manually.)")
+        except Exception as exc:  # noqa: BLE001 -- the guard must never block a resume
+            print(f"[train-sim-ppo] rail guard skipped ({exc})")
     elif init:
         # WARM-START from any compatible checkpoint (e.g. the DDQN champion policy_sim_best.pt).
         # Q-heads read as logits = a Boltzmann policy over the learned Q values (greedy behaviour is
