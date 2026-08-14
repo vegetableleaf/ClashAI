@@ -226,8 +226,14 @@ class CardSpec:
     zap_pulses: int = 0          # EVO ZAP: total pulses (3), ~1 s apart, ring GROWING by
     zap_step: float = 0.0        # zap_step tiles each pulse (2.5 -> 3.0 -> 3.5)
     kill_heal: float = 0.0       # EVO PEKKA: flat heal per troop/building KILL (12.5% = 470)...
-    overheal_frac: float = 1.0   # ...overhealing up to this x deploy hp (1.5)
+    overheal_frac: float = 1.0   # ...overhealing up to this x deploy hp (1.5; EVO BATS 2.0)
     mid_drop_frac: float = 0.0   # EVO SKEL BARREL: first barrel drops when hp falls to this frac
+    hit_heal: float = 0.0        # EVO BATS: heal per landed swing (two 0.5s pulses folded into one)
+    # LITTLE PRINCE: attack speed RAMPS while he keeps shooting from the same spot -- every
+    # `atk_ramp_per` attacks the cadence multiplier steps through `atk_ramp_mults`
+    # (1.2s -> 0.8s -> 0.4s = 1x/1.5x/3x). ANY movement or displacement resets it.
+    atk_ramp_per: int = 0
+    atk_ramp_mults: tuple = ()
     # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
     # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
     # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
@@ -513,6 +519,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         kill_heal=float(c.get("kill_heal") or 0.0) * sc,
         overheal_frac=float(c.get("overheal_frac") or 1.0),
         mid_drop_frac=float(c.get("mid_drop_frac") or 0.0),
+        hit_heal=float(c.get("hit_heal") or 0.0) * sc,
+        atk_ramp_per=int((c.get("attack_ramp") or {}).get("per_stage") or 0),
+        atk_ramp_mults=tuple(float(m) for m in (c.get("attack_ramp") or {}).get("mults") or ()),
         elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
@@ -646,6 +655,7 @@ class Unit:
     from_egg: bool = False       # reborn phoenix: no death blast, no second egg
     rage_self_left: float = 0.0  # EVO BARBARIANS: seconds of self-rage left (refreshed per swing)
     mid_drop_done: bool = False  # EVO SKEL BARREL: the 75%-hp barrel has been spent
+    ramp_shots: int = 0          # LITTLE PRINCE: attacks landed since he last moved/was displaced
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
     locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
                                  # targets just because something wandered closer; only an aggro RESET frees it
@@ -1312,6 +1322,8 @@ class SimEngine:
             return
         step = min(u.spec.speed * spd_mult * dt, d)
         u.charge_dist += step                                # tiles covered without swinging -> arms a charge
+        if step > 1e-9 and u.ramp_shots:
+            u.ramp_shots = 0                                 # Little Prince: MOVING resets the ramp
         u.x += (dxt / d) * step / _TILES_X
         u.y += (dyt / d) * step / _TILES_Y
 
@@ -1626,7 +1638,14 @@ class SimEngine:
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.charge_dist = 0.0                      # the charge is SPENT (and stopping cancels a run-up)
-                    u.cooldown = u.spec.hit_speed / spd
+                    rm = 1.0
+                    if u.spec.atk_ramp_per and u.spec.atk_ramp_mults:
+                        # LITTLE PRINCE: cadence steps up every `atk_ramp_per` attacks landed
+                        # from the same spot (1.2s -> 0.8s -> 0.4s); movement resets the count.
+                        rm = u.spec.atk_ramp_mults[min(u.ramp_shots // u.spec.atk_ramp_per,
+                                                       len(u.spec.atk_ramp_mults) - 1)]
+                        u.ramp_shots += 1
+                    u.cooldown = u.spec.hit_speed / spd / rm
                     if u.spec.kamikaze:
                         u.hp = 0.0
             elif u.spec.kind != "building":                  # buildings are stationary
@@ -2065,6 +2084,8 @@ class SimEngine:
             self.vortices.append(_Vortex(u.team, u.x, u.y, nspec, u.spec.attack_nado_s))
         if u.spec.hit_rage_s > 0.0:                          # Evo Barbarians rage themselves
             u.rage_self_left = u.spec.hit_rage_s
+        if u.spec.hit_heal > 0.0:                            # Evo Bats drink on every swing
+            u.hp = min(u.spec.hp * u.spec.overheal_frac, u.hp + u.spec.hit_heal)
         if u.spec.spawn_on_hit and u.spec.spawn_on_hit_cap > 0:
             # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn,
             # for a maximum total of 8" -- the cap counts LIVING bodies of the same evo on this team.
@@ -2544,6 +2565,7 @@ class SimEngine:
         e.x, e.y = _clamp_xy(e.x + (dx / d) * spec.knockback / _TILES_X,
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
+        e.ramp_shots = 0                                 # displacement resets the Little Prince ramp too
 
     def _apply_status(self, team: int, spec: CardSpec, e) -> None:
         """Apply a hitter's/spell's crowd-control to a struck unit or crown tower.

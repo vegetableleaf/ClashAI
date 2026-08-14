@@ -2140,6 +2140,18 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- Evo Bats heal + Little Prince stat/ramp fixes (user bug reports)
+- EVO BATS: heal on EVERY swing -- 76 hp/s at the L11 row x 1.3 s hit = 99 per attack (the two
+  0.5 s pulses folded into the swing on our grid), OVERHEAL to 2x deploy hp (244 cap).
+  VERIFIED bats climb to exactly 244 while attacking.
+- LITTLE PRINCE (user: ranged damage too high, suspected Guardian's): CONFIRMED and worse --
+  the imported row carried the GUARDIAN's hp 1600, damage 217, AND his dash charge_damage 256
+  (the sim's LP had charged hits!). Re-curated the real champion: 653 hp / 98 dmg / no charge.
+  ATTACK RAMP implemented: every 3 attacks the cadence steps 1.2 s -> 0.8 s -> 0.4 s (dps
+  82 -> 123 -> 247 published anchors; 3-attack stages since 17/11/2023); ANY movement resets
+  it (14/12/2023 fix) and so does knockback displacement (_knock). Generic attack_ramp
+  curation + ramp_shots counter. VERIFIED gaps 1.2x3 / 0.8x3 / 0.45x4 and knock reset.
+
 2026-08-14 -- T1 EVO MECHANICS BATCH: all eight, wiki-swept + unit-tested (user request)
 - New suite tests/test_evo_t1.py (8/8 green) pins every number below; stats flow from the
   imported _evo rows via the overlay fix. Mechanics land on the NEXT sim restart (round 5

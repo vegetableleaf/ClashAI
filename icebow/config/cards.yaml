@@ -1067,6 +1067,11 @@ cards:
   bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_invulnerable: true, leap_towers: true, verified: true}
   barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
   bats: {range: melee, verified: false}
+  # EVO BATS: "every time they attack, [they] heal themselves, having two healing pulses with a
+  # 0.5 second interval. The healing can OVERHEAL them ... up to double their initial hitpoints."
+  # 76 hp/s at the level-11 row x 1.3 s hit speed = ~99 per attack (both pulses folded into the
+  # swing on our 0.1 s grid); cap 244 = 2 x their 122 deploy hp. Spawn hp 150% flows from import.
+  bats_evo: {hit_heal: 99, overheal_frac: 2.0, verified: true}
   battle_healer: {range: melee, verified: false}
   berserker: {range: melee, verified: false}
   # SAME dash as the Bandit, word for word: "If there are ground units between 3.5 and 6 tiles of
@@ -1221,7 +1226,22 @@ cards:
   firecracker: {range: long, multi: spark, verified: true}
   flying_machine: {range: long, verified: false}
   inferno_dragon: {range: long, targets: any, flags: [ranged, flying], verified: false}   # 4e FLYING tank-melter (ramping single-target) -> needs AIR defence; a swarm or a reset stops the ramp
-  little_prince: {range: long, verified: false}
+  # LITTLE PRINCE (user bug report): the imported row carried the GUARDIAN's stats -- hp 1600,
+  # damage 217, and his dash's charge_damage 256 -- so the sim's Little Prince hit like the
+  # bodyguard. Real level-11 champion: 653 hp, 98 damage (stage-1 dps 82 x 1.2 s), NO charge.
+  # His cadence RAMPS while attacking from the same spot: every 3 attacks the stage steps
+  # 1.2 s -> 0.8 s -> 0.4 s (dps 82 -> 123 -> 247, the published anchors; 3-attack stages since
+  # 17/11/2023), and ANY movement or displacement (knockback/stun shove) resets it (14/12/2023
+  # fix). The Guardian ability itself remains unmodeled (champion abilities are out of scope).
+  little_prince:
+    range: long
+    hitpoints: 653
+    damage: 98
+    dps: 82
+    hit_speed: 1.2
+    charge_damage: 0
+    attack_ramp: {per_stage: 3, mults: [1.0, 1.5, 3.0]}
+    verified: true
   magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
   # Mother Witch page carries two unit rows (witch + cursed hog). The importer currently binds the
   # hog row's hp/dmg onto the card body, so the witch herself is corrected here from the page's
