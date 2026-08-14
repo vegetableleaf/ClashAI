@@ -85,6 +85,7 @@ _RIVER = 0.5              # the board is symmetric about this now that anchors a
 # chain bolt will arc to its next target, and how far Firecracker's sparks spray from the impact.
 _CHAIN_TILES = 3.0
 _SPARK_TILES = 2.5
+_SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
 _LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
@@ -243,6 +244,43 @@ class CardSpec:
     javelin_dmg: float = 0.0     # EVO E-BARBS: rage-tipped spear at the current target (troop OR
     javelin_cd: float = 0.0      # crown tower) every javelin_cd seconds, leaving a rage TRAIL
     decoy_mirror: str = ""       # EVO GOBLIN BARREL: also throw this spell at the MIRRORED tile
+    # ---- PHASE B WAVE 3 (2026-08-14 sweep 3; per-mechanic sources in cards.yaml) ----
+    uppercut_tiles: float = 0.0  # EVO MK: every swing launches the TARGET this far toward ITS OWN
+                                 # nearest crown tower, ignoring weight (buildings excepted)
+    smash_range: float = 0.0     # EVO EXECUTIONER: targets within this range also get SHOVED
+    smash_knock: float = 0.0     # smash_knock tiles (resets charges via the shove's aggro_reset)
+    net_cd: float = 0.0          # EVO HUNTER: net at the closest unit every net_cd seconds...
+    net_root_s: float = 0.0      # ...rooting it (stun-equivalent: no move/attack, still hittable)
+    net_range: float = 0.0
+    shield_burst_dmg: float = 0.0  # EVO WIZARD: the Fire Shield EXPLODES when it breaks
+    shield_burst_r: float = 0.0
+    shield_burst_knock: float = 0.0
+    spawn_death_heal: float = 0.0  # EVO WITCH: heals this much when ANY friendly skeleton/guard dies
+    ramp_keep_s: float = 0.0     # EVO INFERNO D: keeps its damage stage this long after a KILL
+    ramp4_s: float = 0.0         # ...and reaches a 4th stage after ramp4_s at ramp4_mult x stage 3
+    ramp4_mult: float = 0.0
+    aura_r: float = 0.0          # EVO BABY D: moving wind aura -- enemies slowed, allies sped up
+    aura_slow: float = 0.0
+    aura_boost: float = 0.0
+    volley_slow_every: int = 0   # EVO PRINCESS: every Nth volley SLOWS (7 s) in a wider blast
+    volley_slow_s: float = 0.0
+    first_hit_immune_s: float = 0.0  # EVO MINION HORDE: first hit taken -> invincible this long
+    poison_dps: float = 0.0      # EVO DART GOBLIN: darts poison; stronger the longer he lives
+    poison_s: float = 0.0
+    deploy_volley: int = 0       # EVO CANNON: cannonball fan on deployment (9 in 2 rows)
+    volley_dmg: float = 0.0
+    deploy_spawn: str = ""       # EVO ROYAL GHOST (Souldiers) / EVO SKARMY (the General):
+    deploy_spawn_n: int = 0      # companions placed once per CARD at deploy
+    low_hp_frac: float = 0.0     # EVO GOBLIN GIANT: below this hp fraction...
+    low_hp_spawn_s: float = 0.0  # ...passively spawns its spawner unit every this many seconds
+    army_ghosts: bool = False    # EVO SKARMY: its skeletons GHOST on death while the General lives
+    carry_roll: bool = False     # EVO SNOWBALL: the roll GATHERS troops and drops them at the end
+    drill_relocate: bool = False # EVO DRILL: resurfaces around the tower as it takes damage
+    ram_bounce: bool = False     # EVO BATTLE RAM: bounces off the building and re-charges
+    air_drop: bool = False       # EVO ROYAL HOGS: deploy AIRBORNE; fall on attacking/getting hurt
+    air_drop_dmg: float = 0.0
+    always_ghost: bool = False   # LJ GHOST: never unfades -- untargetable for its whole life
+    ghost_life_s: float = 0.0    # ...which is this long (removed silently, no death effects)
     # LITTLE PRINCE: attack speed RAMPS while he keeps shooting from the same spot -- every
     # `atk_ramp_per` attacks the cadence multiplier steps through `atk_ramp_mults`
     # (1.2s -> 0.8s -> 0.4s = 1x/1.5x/3x). ANY movement or displacement resets it.
@@ -383,6 +421,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             c = {**c, **{k: v for k, v in ev_row.items()
                          if v is not None and k not in ("evolution", "base", "display", "rarity")}}
     flags = set(db.flags(base))
+    if is_evo:
+        flags |= set((db.get(key) or {}).get("flags") or ())   # evo-only flags (Evo Snowball ROLLS)
     kind = c.get("kind", "troop")
     elixir = int(c.get("elixir") or db.elixir(base) or 4)
     hp = float(c.get("hitpoints") or 300)
@@ -472,8 +512,11 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     # TROOP PRODUCTION. `db.spawner()` merges the wiki timings with the curated unit identity. The
     # guard on `unit != base` stops a self-referential curation from recursing forever, and a
     # missing/unknown unit key degrades to "not a spawner" rather than raising during a match.
-    spw = db.spawner(base) or {}
-    spawner_spec = None
+    spw = dict(db.spawner(base) or {})
+    if c.get("spawns"):
+        spw.update(c["spawns"])          # an EVO row / curation may override the whole spawner
+    spawner_spec = None                  # (Evo Furnace 2.4s, Evo Battle Ram -> EVO barbarians,
+                                         # Evo Goblin Giant + Evo Lumberjack gain one outright)
     if spw and spw.get("unit") and spw["unit"] != base:
         try:
             spawner_spec = build_spec(db, spw["unit"], level)
@@ -481,7 +524,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = None
     spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
-        count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
+        count=count, flying=(c.get("movement") == "air" if c.get("movement") else db.is_flying(base)),
+        attacks_air=db.attacks_air(base),
         # splash: the stats import OR the curated flag. Testing only db.has_splash silently
         # single-targeted witch (flag curated but unread) and every flag-only splash troop.
         splash=db.has_splash(base) or ("splash" in set(db.flags(base))),
@@ -557,6 +601,41 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         javelin_dmg=float(c.get("javelin_damage") or 0.0) * sc,
         javelin_cd=float(c.get("javelin_cd_s") or 0.0),
         decoy_mirror=str(c.get("decoy_mirror") or ""),
+        uppercut_tiles=float(c.get("uppercut_tiles") or 0.0),
+        smash_range=float(c.get("smash_range_tiles") or 0.0),
+        smash_knock=float(c.get("smash_knockback_tiles") or 0.0),
+        net_cd=float(c.get("net_cd_s") or 0.0),
+        net_root_s=float(c.get("net_root_s") or 0.0),
+        net_range=float(c.get("net_range_tiles") or 0.0),
+        shield_burst_dmg=float(c.get("shield_burst_damage") or 0.0) * sc,
+        shield_burst_r=float(c.get("shield_burst_radius_tiles") or 0.0),
+        shield_burst_knock=float(c.get("shield_burst_knockback_tiles") or 0.0),
+        spawn_death_heal=float(c.get("spawn_death_heal") or 0.0) * sc,
+        ramp_keep_s=float(c.get("ramp_keep_s") or 0.0),
+        ramp4_s=float(c.get("ramp_stage4_s") or 0.0),
+        ramp4_mult=float(c.get("ramp_stage4_mult") or 0.0),
+        aura_r=float(c.get("aura_radius_tiles") or 0.0),
+        aura_slow=float(c.get("aura_slow_frac") or 0.0),
+        aura_boost=float(c.get("aura_boost_frac") or 0.0),
+        volley_slow_every=int(c.get("volley_slow_every") or 0),
+        volley_slow_s=float(c.get("volley_slow_s") or 0.0),
+        first_hit_immune_s=float(c.get("first_hit_immune_s") or 0.0),
+        poison_dps=float(c.get("poison_dps") or 0.0) * sc,
+        poison_s=float(c.get("poison_s") or 0.0),
+        deploy_volley=int(c.get("deploy_volley") or 0),
+        volley_dmg=float(c.get("volley_damage") or 0.0) * sc,
+        deploy_spawn=str(c.get("deploy_spawn") or ""),
+        deploy_spawn_n=int(c.get("deploy_spawn_n") or 0),
+        low_hp_frac=float(c.get("low_hp_frac") or 0.0),
+        low_hp_spawn_s=float(c.get("low_hp_interval_s") or 0.0),
+        army_ghosts=bool(c.get("army_ghosts")),
+        carry_roll=bool(c.get("carry_roll")),
+        drill_relocate=bool(c.get("drill_relocate")),
+        ram_bounce=bool(c.get("ram_bounce")),
+        air_drop=bool(c.get("air_drop")),
+        air_drop_dmg=float(c.get("air_drop_damage") or 0.0) * sc,
+        always_ghost=bool(c.get("always_ghost")),
+        ghost_life_s=float(c.get("ghost_life_s") or 0.0),
         elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
@@ -693,6 +772,15 @@ class Unit:
     ramp_shots: int = 0          # LITTLE PRINCE: attacks landed since he last moved/was displaced
     sniper_left: int = 0         # EVO MUSKETEER: infinite-range rounds remaining
     javelin_left: float = 0.0    # EVO E-BARBS: cooldown until the next spear
+    net_left: float = 0.0        # EVO HUNTER: cooldown until the next net
+    iframes_left: float = 0.0    # EVO MINION HORDE: first-hit invincibility remaining
+    iframes_used: bool = False
+    poison_left: float = 0.0     # EVO DART GOBLIN: DoT seconds remaining on THIS unit
+    poison_take: float = 0.0     # ...at this dps
+    lowspawn_cd: float = 0.0     # EVO GOBLIN GIANT: next passive low-hp spawn
+    ramp_hold: float = 0.0       # EVO INFERNO D: stage kept alive this long after a kill
+    relocate_next: float = 0.75  # EVO DRILL: next hp fraction that triggers a resurface
+    parent: object = None        # spawner linkage (EVO SKARMY ghosts die with their General)
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
     locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
                                  # targets just because something wandered closer; only an aggro RESET frees it
@@ -1074,6 +1162,18 @@ class SimEngine:
         # three real formations -- Rascal boy ahead of the girls, Goblins ahead of the Spear
         # Goblins, Goblinstein's Monster ahead of the Doctor -- without hardcoding any of them, and
         # it is what makes the squad's shape (not just its stats) worth playing around.
+        if spec.deploy_spawn and spec.deploy_spawn_n > 0:
+            # Deploy COMPANIONS, once per CARD (Evo Royal Ghost's 2 Souldiers, Evo Skarmy's
+            # General): placed just behind the drop point, whatever formation the card itself uses.
+            try:
+                cs = build_spec(self.db, spec.deploy_spawn, spec.level)
+                fwdc = 1.0 if team == 0 else -1.0
+                for i in range(spec.deploy_spawn_n):
+                    ox = (i - (spec.deploy_spawn_n - 1) / 2.0) * (2.2 * cs.radius) / _TILES_X
+                    cx2, cy2 = _clamp_xy(x + ox, y + fwdc * 1.0 / _TILES_Y, cs.radius)
+                    self._place(cs, team, cx2, cy2)
+            except Exception:                                 # noqa: BLE001 - bad curation: no companions
+                pass
         if spec.components:
             fwd = -1.0 if team == 0 else 1.0                  # team 0 attacks toward y = 0
             rows = sorted(spec.components, key=lambda s: s.reach)
@@ -1116,6 +1216,26 @@ class SimEngine:
         u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
         u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
         u.sniper_left = spec.sniper_shots             # Evo Musketeer spawns with her 3 rounds loaded
+        if spec.ghost_life_s > 0.0:                   # LJ ghost: vanishes silently after its time
+            u.hatch_left = spec.ghost_life_s          # (hatch with no hatch_spec = timed removal)
+        if spec.deploy_volley > 0:
+            # EVO CANNON: "after deployment, [it] shoots 9 cannonballs in 2 rows, 5 on the top
+            # row and 4 on the bottom, which deals area damage and inflicts knockback."
+            fwdv = -1.0 if team == 0 else 1.0
+            vspec = replace(spec, knockback=1.0, splash=False, multi_kind="", multi_hits=1)
+            k = 0
+            for row_n, row_d in ((5, 5.0), (4, 3.5)):
+                for i in range(row_n):
+                    if k >= spec.deploy_volley:
+                        break
+                    k += 1
+                    bx = cx + (i - (row_n - 1) / 2.0) * 1.4 / _TILES_X
+                    by = cy + fwdv * row_d / _TILES_Y
+                    bx, by = _clamp_xy(bx, by, 0.0)
+                    self.projectiles.append(Projectile(
+                        label=f"{spec.base}_volley", team=team, x=cx, y=cy, tx=bx, ty=by,
+                        target=None, spec=vspec, dmg=spec.volley_dmg, tower_dmg=spec.volley_dmg,
+                        radius=1.0, speed=8.0, left=row_d + 1.0, ground_only=True, ox=cx, oy=cy))
         # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
         # not something he earns, so he arrives already faded and the first thing anyone sees is him
         # swinging. It is also why he cannot kite: he re-fades and the chaser forgets him.
@@ -1238,6 +1358,8 @@ class SimEngine:
             # Crown towers are candidates only for SIEGE buildings (X-Bow / Mortar); a Tesla or
             # Cannon cannot hit one at any range, so they rank units alone.
             reach = u.spec.reach + u.reach_extra
+            if u.spec.hook_max > 0.0:
+                reach = max(reach, u.spec.hook_max)           # Evo Goblin Cage: it can HOOK past its arms
             if u.aggro_reset:                                 # stun / freeze: the only thing that breaks it
                 u.aggro_reset = False
                 u.locked = False
@@ -1490,6 +1612,9 @@ class SimEngine:
         self._tick_hatch(dt)
         if self.rage_zones:                                  # drop zones whose effect has ended
             self.rage_zones = [z for z in self.rage_zones if z[5] > self.t]
+        self._auras = [(u.x, u.y, u.team, u.spec.aura_r, u.spec.aura_slow, u.spec.aura_boost)
+                       for u in self.units
+                       if u.spec.aura_r > 0.0 and u.hp > 0 and u.deploy_left <= 0.0]
         if self.spark_zones:                                 # Evo FC lingering sparks: DoT + move slow
             for z in list(self.spark_zones):
                 if self.t >= z[4]:
@@ -1526,6 +1651,35 @@ class SimEngine:
             u.cooldown = max(0.0, u.cooldown - dt)
             if u.rage_self_left > 0.0:
                 u.rage_self_left = max(0.0, u.rage_self_left - dt)
+            if u.iframes_left > 0.0:
+                u.iframes_left = max(0.0, u.iframes_left - dt)
+            if u.poison_left > 0.0:                          # Evo Dart Goblin's poison ticks
+                u.poison_left = max(0.0, u.poison_left - dt)
+                u.hp -= u.poison_take * dt                   # DoT bypasses shields (spell-like)
+            if u.ramp_hold > 0.0:
+                u.ramp_hold = max(0.0, u.ramp_hold - dt)
+                if u.ramp_hold <= 0.0 and not u.attacking:
+                    u.focus_time = 0.0                       # the kept inferno stage finally expires
+            if (u.spec.low_hp_spawn_s > 0.0 and u.spec.spawner_spec is not None
+                    and u.deploy_left <= 0.0 and u.hp <= u.spec.hp * u.spec.low_hp_frac):
+                u.lowspawn_cd -= dt                          # Evo Goblin Giant: passive goblins below 50%
+                if u.lowspawn_cd <= 0.0:
+                    u.lowspawn_cd = u.spec.low_hp_spawn_s
+                    self._spawn_from(u, 1)
+            if (u.spec.drill_relocate and u.deploy_left <= 0.0
+                    and u.hp > 0 and u.hp <= u.spec.hp * u.relocate_next):
+                # EVO GOBLIN DRILL: "submerges and reappears around the tower as it takes damage,
+                # spawning Goblins each time" -- every quarter of its hp lost, it pops up on a new
+                # side of the nearest enemy tower with a fresh goblin.
+                u.relocate_next -= 0.25
+                tws = [t for t in self._enemy_towers(u.team) if t.alive]
+                if tws:
+                    tw = min(tws, key=lambda t: _dist(u.x, u.y, t.x, t.y))
+                    ang = self.rng.uniform(0.0, 6.283)
+                    u.x, u.y = _clamp_xy(tw.x + math.cos(ang) * 2.0 / _TILES_X,
+                                         tw.y + math.sin(ang) * 2.0 / _TILES_Y, u.spec.radius)
+                    u.aggro_reset = True
+                self._spawn_from(u, 1)
             if (u.spec.mid_drop_frac > 0.0 and not u.mid_drop_done and u.deploy_left <= 0.0
                     and u.hp <= u.spec.hp * u.spec.mid_drop_frac):
                 # EVO SKELETON BARREL: "one dropped when it reaches 75% hitpoints" -- the first
@@ -1560,6 +1714,12 @@ class SimEngine:
             spd = u.slow_mult if u.slow_left > 0 else 1.0
             if self.rage_zones or u.rage_self_left > 0.0:
                 spd *= self._rage_mult(u)                   # rage: +30% move AND attack speed, no stacking
+            if self._auras:
+                for (ax, ay, at, ar, aslow, aboost) in self._auras:
+                    d_a = _dist(u.x, u.y, ax, ay)
+                    if d_a <= ar:                           # Evo Baby Dragon's gust: +30% friends, -30% foes
+                        spd *= (1.0 + aboost) if u.team == at else (1.0 - aslow)
+                        break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
             # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
@@ -1618,7 +1778,13 @@ class SimEngine:
             # and drop straight back to stage 1 the instant the target changes -- which is why a stun,
             # a knockback or simply feeding a fresh body resets an Inferno.
             if u.target is not prev_target:
-                u.focus_time = 0.0
+                if (u.spec.ramp_keep_s > 0.0 and prev_target is not None
+                        and isinstance(prev_target, Unit) and prev_target.hp <= 0):
+                    # EVO INFERNO DRAGON: "once [it] defeats a troop ... it remains on that damage
+                    # state" for ramp_keep_s unless it is stunned or goes that long without a hit.
+                    u.ramp_hold = u.spec.ramp_keep_s
+                else:
+                    u.focus_time = 0.0
             if ref is None:
                 continue
             if kind is None:
@@ -1628,6 +1794,25 @@ class SimEngine:
                 if u.javelin_left <= 0.0:
                     self._throw_javelin(u, ref)
                     u.javelin_left = u.spec.javelin_cd
+            if u.spec.net_cd > 0.0 and u.deploy_left <= 0.0:
+                # EVO HUNTER: "throws a net at the closest unit every 5 seconds, freezing the troop
+                # in place and rendering it unable to move or attack for 3 seconds" -- a root: the
+                # stun machinery is exactly that (still hittable), and it resets charges and ramps.
+                u.net_left = max(0.0, u.net_left - dt)
+                if u.net_left <= 0.0:
+                    best, bg = None, u.spec.net_range
+                    for e in self.units:
+                        if e.team == u.team or e.hp <= 0 or not self._valid_foe(u, e):
+                            continue
+                        g = _gap(u.x, u.y, e)
+                        if g <= bg:
+                            best, bg = e, g
+                    if best is not None:
+                        best.stun_left = max(best.stun_left, u.spec.net_root_s)
+                        best.aggro_reset = True
+                        u.net_left = u.spec.net_cd
+                        self.splash_events.append((best.x, best.y, 0.8, self.t))
+                        del self.splash_events[:-40]
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
@@ -1714,7 +1899,16 @@ class SimEngine:
                                                        len(u.spec.atk_ramp_mults) - 1)]
                         u.ramp_shots += 1
                     u.cooldown = u.spec.hit_speed / spd / rm
-                    if u.spec.kamikaze:
+                    if u.spec.ram_bounce:
+                        # EVO BATTLE RAM'S SUPER CHARGE: it "charges and bounces multiple times
+                        # against buildings and towers until its HP is depleted" -- the landing
+                        # throws it back 4 tiles and the run-up starts again. Death (by damage)
+                        # still breaks it into its riders via the normal spawner_death path.
+                        fwd = 1.0 if u.team == 0 else -1.0
+                        u.x, u.y = _clamp_xy(u.x, u.y + fwd * 4.0 / _TILES_Y, u.spec.radius)
+                        u.charge_dist = 0.0
+                        u.locked = False
+                    elif u.spec.kamikaze:
                         u.hp = 0.0
             elif u.spec.sniper_shots > 0 and self._try_snipe(u):
                 pass                                         # Evo Musketeer STANDS to take the shot
@@ -1728,7 +1922,7 @@ class SimEngine:
         for u in self.units:
             if u.spec.invis_time <= 0.0 or u.hp <= 0:
                 continue
-            if u.attacking:
+            if u.attacking and not u.spec.always_ghost:
                 u.ghost, u.refade_left = False, u.spec.invis_time
             elif not u.ghost:
                 u.refade_left -= dt
@@ -1756,6 +1950,31 @@ class SimEngine:
                     # ...and, for the Elixir Golem line, the elixir too (capped like every other gain)
                     foe = 1 - u.team
                     self.elixir[foe] = min(10.0, self.elixir[foe] + u.spec.elixir_death)
+                if u.spec.spawn_death_heal <= 0.0 and u.spec.base in _SKELETON_BASES:
+                    # EVO WITCH'S HEALING BONES: "whenever a Skeleton or Guard dies, she heals
+                    # 109 HP", overhealing to +30%. Any friendly bone counts, not only her own.
+                    for w in self.units:
+                        if (w.team == u.team and w.hp > 0 and w.spec.spawn_death_heal > 0.0):
+                            w.hp = min(w.spec.hp * w.spec.overheal_frac,
+                                       w.hp + w.spec.spawn_death_heal)
+                if (u.spec.key == "skeleton_army_evo" and u.spec.kind == "troop"
+                        and not u.from_egg and u.invis_left <= 0.0):
+                    # EVO SKARMY: a skeleton dying while the shielded GENERAL lives becomes a
+                    # GHOST -- "invisible and indestructible" but still swinging -- and every
+                    # ghost vanishes the moment the General is destroyed.
+                    gen = next((g for g in self.units
+                                if g.team == u.team and g.hp > 0
+                                and g.spec.base == "skarmy_general"), None)
+                    if gen is not None:
+                        nu = Unit(u.spec, u.team, u.x, u.y, 1.0)
+                        nu.invis_left = 9999.0               # untargetable AND unhittable
+                        nu.parent = gen
+                        nu.from_egg = True                   # ghosts die quietly, no re-ghosting
+                        self.units.append(nu)
+                if u.spec.base == "skarmy_general":
+                    for g in self.units:
+                        if g.parent is u and g.invis_left > 9000.0:
+                            g.hp = 0.0                       # the ghosts go down with their General
                 self._spawn_cursed_hog(u)
                 if not u.from_egg:                           # a REBORN phoenix dies quietly
                     self._death_blast(u)                     # Balloon / Giant Skeleton / Bomb Tower
@@ -2081,6 +2300,34 @@ class SimEngine:
             zy = u.y + (ref.y - u.y) * f
             self.rage_zones.append((zx, zy, 1.2, u.team, self.t, self.t + 3.0, 0.30))
 
+    def _shield_burst(self, u: "Unit") -> None:
+        """EVO WIZARD: "when the Fire Shield is destroyed, it triggers an explosion" -- area
+        damage in shield_burst_r around him, shoving enemies shield_burst_knock tiles (normal
+        knockback immunity rules; air is a valid victim, he is a wizard)."""
+        ks = replace(u.spec, knockback=u.spec.shield_burst_knock)
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= u.spec.shield_burst_r + e.spec.radius:
+                self._hurt(e, u.spec.shield_burst_dmg)
+                if self._can_knock(e, ks):
+                    self._knock(e, ks, u.x, u.y)
+        self.splash_events.append((u.x, u.y, u.spec.shield_burst_r, self.t))
+        del self.splash_events[:-40]
+
+    def _air_drop(self, u: "Unit") -> None:
+        """EVO ROYAL HOGS: "deploy as flying troops ... upon attacking or getting hurt, the hogs
+        will fall to the ground, dealing low area damage on impact." The spec swap is the
+        transition -- ground-targeters can touch them from here on."""
+        u.spec = replace(u.spec, flying=False, air_drop=False)
+        if u.spec.air_drop_dmg > 0.0:
+            for e in self.units:
+                if e.team != u.team and e.hp > 0 and not e.spec.flying \
+                        and _dist(u.x, u.y, e.x, e.y) <= 1.5 + e.spec.radius:
+                    self._hurt(e, u.spec.air_drop_dmg)
+            self.splash_events.append((u.x, u.y, 1.5, self.t))
+            del self.splash_events[:-40]
+
     def _recoil_blast(self, u: "Unit") -> None:
         """EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around
         it and knocks back enemy ground troops by 1 tile" -- a defensive blast around HIMSELF on
@@ -2139,6 +2386,10 @@ class SimEngine:
             x, y = _clamp_xy(u.x + ox, u.y + oy, sp.radius)
             nu = Unit(spec=sp, team=u.team, x=x, y=y, hp=sp.hp)
             nu.deploy_left = sp.deploy_time
+            nu.ghost = sp.invis_time > 0.0               # LJ ghost / Souldiers spawn faded
+            nu.refade_left = sp.invis_time
+            if sp.ghost_life_s > 0.0:
+                nu.hatch_left = sp.ghost_life_s          # timed silent removal (no death effects)
             self.units.append(nu)
 
     def _spawn_cursed_hog(self, u: "Unit") -> None:
@@ -2176,12 +2427,26 @@ class SimEngine:
         # carried on the spell's own `hits_hidden` flag rather than special-cased by card name.
         if u.hidden and not hits_hidden:
             return
+        if u.spec.first_hit_immune_s > 0.0 and u.iframes_left > 0.0:
+            return                                           # Evo Minion Horde: mid-immunity window
+        if u.spec.air_drop and u.spec.flying:
+            self._air_drop(u)                                # Evo Royal Hogs FALL when first hurt
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
         if u.shield_left > 0.0:
             u.shield_left = max(0.0, u.shield_left - dmg)
+            if u.shield_left <= 0.0 and u.spec.shield_burst_dmg > 0.0:
+                self._shield_burst(u)                        # Evo Wizard's Fire Shield EXPLODES
+            if u.spec.first_hit_immune_s > 0.0 and not u.iframes_used:
+                u.iframes_used = True
+                u.iframes_left = u.spec.first_hit_immune_s
             return
         u.hp -= dmg
+        if u.spec.first_hit_immune_s > 0.0 and not u.iframes_used and u.hp > 0:
+            # EVO MINION HORDE'S HORDE IMMUNITY: "the first strike against each member makes it
+            # briefly invincible" -- it TAKES that first hit, then cannot be hurt for 3 seconds.
+            u.iframes_used = True
+            u.iframes_left = u.spec.first_hit_immune_s
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
         # T1 EVO on-swing effects: fire once per ATTACK (the swing), independent of what it lands on
@@ -2195,6 +2460,8 @@ class SimEngine:
             u.rage_self_left = u.spec.hit_rage_s
         if u.spec.hit_heal > 0.0:                            # Evo Bats drink on every swing
             u.hp = min(u.spec.hp * u.spec.overheal_frac, u.hp + u.spec.hit_heal)
+        if u.spec.air_drop and u.spec.flying:                # Evo Royal Hogs fall when they attack
+            self._air_drop(u)
         if u.spec.spawn_on_hit and u.spec.spawn_on_hit_cap > 0:
             # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn,
             # for a maximum total of 8" -- the cap counts LIVING bodies of the same evo on this team.
@@ -2229,7 +2496,15 @@ class SimEngine:
             if u.spec.multi_kind == "shotgun" and u.spec.multi_hits > 1:
                 self._shotgun(u, ref, dmg)
                 return
-            self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, u.spec, dmg, tower_dmg)
+            fspec = u.spec
+            if u.spec.volley_slow_every > 0 and u.hit_no % u.spec.volley_slow_every == 0:
+                # EVO PRINCESS: this volley SLOWS (7 s) in a widened blast; the next two are normal
+                fspec = replace(u.spec, slows=True, slow_dur=u.spec.volley_slow_s, proj_radius=3.0)
+            if u.spec.poison_dps > 0.0:
+                # EVO DART GOBLIN: poisoned darts, "stronger the longer [he] remains alive" --
+                # the dps grows with his age, doubling by 30 s on the board [growth curve: verify]
+                fspec = replace(fspec, poison_dps=u.spec.poison_dps * (1.0 + min(1.0, u.age / 30.0)))
+            self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
         # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
@@ -2263,6 +2538,27 @@ class SimEngine:
             return
         self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg, attacker=u,
                        splash_r=charged_splash)
+        if (u.spec.uppercut_tiles > 0.0 and isinstance(ref, Unit) and ref.hp > 0
+                and ref.spec.kind != "building"):
+            # EVO MEGA KNIGHT'S MEGA UPPERCUT: "launching the targeted troop back 4 tiles towards
+            # the nearest enemy Crown Tower ... isn't dependent on troop weight" -- the defender is
+            # punched back toward ITS OWN side, re-entering his jump band, so he bullies it home.
+            tws = [t for t in self.towers[ref.team] if t.alive]
+            if tws:
+                tw = min(tws, key=lambda t: _dist(ref.x, ref.y, t.x, t.y))
+                dxt, dyt = (tw.x - ref.x) * _TILES_X, (tw.y - ref.y) * _TILES_Y
+                d = math.hypot(dxt, dyt)
+                if d > 1e-6:
+                    ref.x, ref.y = _clamp_xy(
+                        ref.x + (dxt / d) * u.spec.uppercut_tiles / _TILES_X,
+                        ref.y + (dyt / d) * u.spec.uppercut_tiles / _TILES_Y, ref.spec.radius)
+                    ref.aggro_reset = True
+        if (u.spec.smash_knock > 0.0 and isinstance(ref, Unit) and ref.hp > 0
+                and _gap(u.x, u.y, ref) <= u.spec.smash_range):
+            # EVO EXECUTIONER'S AXE SMASH: close targets are also shoved 2 tiles (the shove's
+            # aggro_reset is what "can reset Ram Rider and Prince's charge attacks").
+            self._knock(ref, replace(u.spec, knockback=u.spec.smash_knock, knockback_all=False),
+                        u.x, u.y)
         # MONK'S 3-STRIKE COMBO: "the first 2 attacks deal normal damage, while the 3rd strike deals
         # extra damage and knockback, EVEN IF THE TARGETED TROOP IS NORMALLY IMMUNE TO KNOCKBACK"
         # (hence knockback_all on the card). Only the shove is modelled -- the wiki does not publish
@@ -2287,7 +2583,10 @@ class SimEngine:
         if len(st) < 2 or not st[0]:
             return 1.0
         idx = min(int(u.focus_time // max(0.1, u.spec.stage_time)), len(st) - 1)
-        return float(st[idx]) / float(st[0])
+        mult = float(st[idx]) / float(st[0])
+        if u.spec.ramp4_s > 0.0 and u.focus_time >= u.spec.ramp4_s:
+            mult *= u.spec.ramp4_mult                        # Evo Inferno D's 4th stage: 2x stage 3
+        return mult
 
     def _land_hit(self, team: int, kind: str, ref, spec: CardSpec, dmg: float,
                   tower_dmg: float, attacker: "Unit | None" = None,
@@ -2689,6 +2988,11 @@ class SimEngine:
         e.ramp_shots = 0                                 # displacement resets the Little Prince ramp too
 
     def _apply_status(self, team: int, spec: CardSpec, e) -> None:
+        if spec.poison_dps > 0.0 and isinstance(e, Unit):
+            # EVO DART GOBLIN: the dart leaves poison ticking on the victim (dps already grown
+            # by the goblin's age at fire time -- see _attack's fspec).
+            e.poison_left = max(e.poison_left, spec.poison_s)
+            e.poison_take = spec.poison_dps
         """Apply a hitter's/spell's crowd-control to a struck unit or crown tower.
 
         Durations and slow strength are PER CARD where the wiki publishes them, falling back to the
@@ -2908,6 +3212,25 @@ class SimEngine:
                     e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
                                                                # where it LANDS, so a Log can pull a locked
                                                                # attacker onto whatever is now nearest
+        if s.spec.carry_roll:
+            # EVO SNOWBALL'S SNOW BOWLING: "the affected troops get pulled into it and [it] rolls
+            # for 4.5 tiles ... when it finishes its roll, the troops are freed" -- every ground
+            # body the corridor touched is swept to the corridor's END and slowed 4 s. (While
+            # carried they are untargetable in game; at our tick size the sweep is instant, so
+            # the untargetable window is folded into the displacement.)
+            endy = s.y + fdir * s.spec.roll_len / _TILES_Y
+            k = 0
+            for e in self.units:
+                if e.team == s.team or e.spec.flying or e.hp <= 0 or e.spec.kind == "building":
+                    continue
+                dy = (e.y - s.y) * fdir * _TILES_Y
+                if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
+                    e.x, e.y = _clamp_xy(s.x + ((k % 3) - 1) * 0.6 / _TILES_X,
+                                         endy + (k // 3) * 0.5 / _TILES_Y, e.spec.radius)
+                    e.slow_left = max(e.slow_left, s.spec.slow_dur or self.slow_dur)
+                    e.slow_mult = s.spec.slow_mult or self.slow_factor
+                    e.aggro_reset = True
+                    k += 1
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir * _TILES_Y
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:

@@ -191,6 +191,164 @@ cards:
   # the damage row is missing -- both re-curated from the base card. Post-rework heal: "each kill
   # heals the same amount ... always 12.5% of the core HP" = 470 at L11, overheal to 150%.
   pekka_evo: {hitpoints: 3760, damage: 842, dps: 468, kill_heal: 470, overheal_frac: 1.5, verified: true}
+  # ---- PHASE B WAVE 3 (2026-08-14 sweep 3): the 17 remaining evos ----
+  # EVO MEGA KNIGHT: "every time [he] attacks, [he] will do an uppercut, launching the targeted
+  # troop back 4 tiles towards the nearest enemy Crown Tower", weight-independent (buildings
+  # excepted, as always). The shove re-enters his own jump band -- the uppercut-jump loop.
+  mega_knight_evo: {uppercut_tiles: 4.0, verified: true}
+  # EVO EXECUTIONER: "the Axe Smash ability ... pushes foes back two tiles. The range for this
+  # attack is 3.5 tiles, and it is effective on Ground and Air"; the shove resets charges.
+  executioner_evo: {smash_range_tiles: 3.5, smash_knockback_tiles: 2.0, verified: true}
+  # EVO HUNTER: "throws a net at the closest unit every 5 seconds, freezing the troop in place
+  # and rendering it unable to move or attack for 3 seconds" (root -- still hittable). Net range
+  # curated to his sight [verify].
+  hunter_evo: {net_cd_s: 5.0, net_root_s: 3.0, net_range_tiles: 5.5, verified: true}
+  # EVO WIZARD: Fire Shield (imported shield_hp 192); "when the Fire Shield is destroyed, it
+  # triggers an explosion ... and a knockback effect, pushing all enemy troops within a 3-tile
+  # radius back by 3 tiles". The imported death_damage 281 IS that break blast (he has no death
+  # damage) -- moved to shield_burst_damage and zeroed as death damage.
+  wizard_evo: {death_damage: 0, shield_burst_damage: 281, shield_burst_radius_tiles: 3.0, shield_burst_knockback_tiles: 3.0, verified: true}
+  # EVO WITCH: "Healing Bones. Heals 109 HP with each Skeleton death, overheal limit of +30% HP.
+  # Whenever a Skeleton or Guard dies, she heals 109 HP" (RoyaleAPI official). The imported
+  # hitpoints 1039 is the OVERHEAL CAP (796 x 1.3), the same mis-import as Evo PEKKA.
+  witch_evo: {hitpoints: 796, spawn_death_heal: 109, overheal_frac: 1.3, verified: true}
+  # EVO ELECTRO DRAGON: "bolts chain indefinitely between multiple targets within a 3.5-tile
+  # radius, provided there is more than one enemy in range" -- hits_per_attack raised to 12 as
+  # the practical infinity on a 18x32 board.
+  electro_dragon_evo: {hits_per_attack: 12, verified: true}
+  # EVO INFERNO DRAGON: "once [it] defeats a troop on whatever damage stage it was in, it
+  # remains on that damage state until 9 seconds ... or it is reset by a stun. After 20 seconds
+  # of damage, [it] will reach a 4th damage stage which deals twice the damage of the 3rd."
+  inferno_dragon_evo: {ramp_keep_s: 9.0, ramp_stage4_s: 20.0, ramp_stage4_mult: 2.0, verified: true}
+  # EVO BABY DRAGON: "produces a 8x9 square area of a gust of wind around it that slows enemy
+  # troops by 30% and speeds up allies by 30%" -- modeled as a 4-tile moving aura.
+  baby_dragon_evo: {aura_radius_tiles: 4.0, aura_slow_frac: 0.30, aura_boost_frac: 0.30, verified: true}
+  # EVO PRINCESS: "her first shot will slow down enemies within a 3-tile radius for 7 seconds.
+  # After this first shot, she will fire two normal shots, and the third one will slow them."
+  princess_evo: {volley_slow_every: 3, volley_slow_s: 7.0, verified: true}
+  # EVO MINION HORDE: "Horde Immunity makes a minion invincible for 3 seconds after taking the
+  # initial hit. Only the Minions that receive a hit become invincible."
+  minion_horde_evo: {first_hit_immune_s: 3.0, verified: true}
+  # EVO DART GOBLIN: "Poisonous Darts, which inflict poison damage on impact. This poison
+  # becomes stronger the longer the Dart Goblin remains alive." Base dps + the x2-by-30s growth
+  # curve are curated [verify] -- no published numbers anywhere scrapeable.
+  dart_goblin_evo: {poison_dps: 35, poison_s: 2.0, verified: false}
+  # EVO CANNON: "after deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row
+  # and 4 on the bottom, which deals area damage and inflicts knockback". Per-ball damage is not
+  # published anywhere scrapeable: 87 [verify].
+  cannon_evo: {deploy_volley: 9, volley_damage: 87, verified: false}
+  # EVO MORTAR: hit speed 4 s (imported; 1 s faster) + "every attack that it does also spawns a
+  # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
+  mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
+  # EVO FURNACE: "the spawn speed is decreased to 2.4 sec" (sides-vs-front is cosmetic here).
+  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}
+  # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
+  # passively summon a Goblin." Imported hp 3223 flows via the overlay.
+  goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
+  # EVO WALL BREAKERS: "rolling on a large, explosive barrel, and the barrel deals DEATH
+  # damage" -- imported death_damage 291 flows via the overlay + the death-blast machinery.
+  # (No curation needed; row kept for the audit trail.)
+  wall_breakers_evo: {verified: true}
+  # EVO ROYAL GHOST: "summons two Souldiers upon deployment. Souldiers have the Hit Points of a
+  # Skeleton, but deal Damage like a Royal Ghost. They also inherit the invisibility ability."
+  royal_ghost_evo: {deploy_spawn: ghost_souldier, deploy_spawn_n: 2, verified: true}
+
+  ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
+    display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
+    elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: true
+    flags: [splash]
+    count: 1
+    win_condition: false
+    hitpoints: 81
+    damage: 261
+    hit_speed: 1.8
+    range_tiles: 1.2
+    speed_tiles: 1.5
+    deploy_time: 1.0
+    invisibility_time_s: 1.8
+    verified: true
+
+  # EVO SKELETON ARMY: "15 skeletons + a shielded General [Gerry] ... if a skeleton is
+  # destroyed while the General is alive, the skeleton turns into a ghost. Skeleton ghosts can
+  # keep dealing damage, but they are invisible and indestructible. Once the shielded General
+  # is destroyed, the ghosts disappear with him." General stats unpublished -- guard-like
+  # curation [verify].
+  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, verified: false}
+
+  skarmy_general:                  # Gerry -- the Evo Skarmy's shielded General [verify stats]
+    display: "Skeleton General"
+    elixir: null
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 219
+    damage: 110
+    hit_speed: 1.1
+    range_tiles: 0.8
+    speed_tiles: 1.5
+    deploy_time: 1.0
+    shield_hp: 240
+    verified: false
+
+  # EVO GIANT SNOWBALL: "Snow Bowling: the affected troops get pulled into it and [it] rolls on
+  # the ground for 4.5 tiles ... troops inside cannot be targeted [approximated: they are swept
+  # to the end of the roll]. When it finishes its roll, the troops are freed" + 4 s slow
+  # (4/3/2025 balance). Modeled as a Log-style roll whose victims are carried to the corridor's
+  # end. Roll is ground-only (air is not gathered).
+  giant_snowball_evo: {flags: [rolls], roll_tiles: 4.5, carry_roll: true, slow_duration_s: 4.0, attacks: [ground], verified: true}
+  # EVO GOBLIN CAGE: "when a ground troop comes within 3 tiles of the building, they get pulled
+  # into the cage and attacked directly" -- the Fisherman's hook machinery on a building body
+  # (prep + reel timings fisherman-like [verify]).
+  goblin_cage_evo: {hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, verified: true}
+  # EVO GOBLIN DRILL: "submerges and reappears around the tower as it takes damage, spawning
+  # Goblins each time" -- every 25% hp lost it resurfaces on a new side with a fresh goblin.
+  goblin_drill_evo: {drill_relocate: true, verified: true}
+  # EVO BATTLE RAM: "Super Charge: charge and bounce multiple times against buildings and towers
+  # until its HP is depleted", breaking into EVOLVED Barbarians ("the only evolution to spawn
+  # another evolved troop").
+  battle_ram_evo: {ram_bounce: true, spawns: {unit: barbarians_evo, on_death: 2}, verified: true}
+  # EVO ROYAL HOGS: "deploy as flying troops ... upon attacking or getting hurt, the hogs will
+  # fall to the ground, dealing low area damage on impact" (fall damage [verify]).
+  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 74, verified: false}
+  # EVO LUMBERJACK: the base death-Rage stays, and "when [he] dies, his ghost will spawn. The
+  # ghost has unlimited health, and can't be targeted by troops, buildings and towers, but can
+  # be affected by spells, and will disappear after a short time." Lifetime [verify] 5 s;
+  # spell-vulnerability approximated by a big-but-finite hp pool.
+  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, verified: false}
+
+  lumberjack_ghost:                # the Evo Lumberjack's death ghost -- spawned, NOT a card
+    display: "Lumberjack Ghost"
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 4000
+    damage: 256
+    hit_speed: 0.8
+    range_tiles: 0.8
+    speed_tiles: 2.0
+    deploy_time: 0.5
+    invisibility_time_s: 1.8
+    always_ghost: true
+    ghost_life_s: 5.0
+    verified: false
+
   # EVO SKEL BARREL: imported count 2 is the BARRELS-carried attribute, not bodies -- one flying
   # unit with 665 hp (125% of base) and 238 death damage per barrel. First barrel drops at 75%
   # hp (blast + 7 skeletons); the second on death; both at once if it reaches the tower unspent.

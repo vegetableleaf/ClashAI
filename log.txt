@@ -2140,6 +2140,33 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- SWEEP 3: the remaining 24 evos ALL MODELED (user request; 42/42 complete)
+- tests/test_evo_wave3.py 16/16 + all prior suites green. Detail-swept first (MK uppercut
+  direction = toward the TARGET's own tower, weight-independent; Souldiers 81hp/261 area dmg;
+  Witch Healing Bones 109/death overheal +30% -- KB hp 1039 was the OVERHEAL CAP mis-import
+  again, re-curated 796; Cannon 9-ball deploy volley).
+- T1 batch 2: MK Mega Uppercut (4t toward victim's tower, re-enters his jump band); Executioner
+  Axe Smash (<=3.5t targets shoved 2t, resets charges); Hunter net (root 3s every 5s); Wizard
+  Fire Shield burst (281/3t + 3t shove on break -- imported death_damage 281 WAS the burst,
+  zeroed as death dmg); Witch heal-on-bone-death (any friendly skeleton/guard); E-Drag chain 12
+  hops; Inferno D stage-keep 9s + stage4 at 20s (2x); Baby D wind aura (4t, +/-30%); Princess
+  slow volley (every 3rd, 7s, 3t); Minion Horde first-hit i-frames (3s); Dart Goblin poison
+  darts (35dps x age-growth [verify]); Cannon deploy volley (9x87 [verify] + knockback);
+  Mortar goblin-per-shot (spawn_on_hit, cap that never binds); Furnace 2.4s; Goblin Giant
+  <50% goblin/2.2s; Wall Breakers 291 death blast (pure overlay); Royal Ghost 2 Souldiers
+  (deploy_spawn companions).
+- T2 approximations (noted in EVOLUTIONS banner): Skarmy shielded General + indestructible
+  ghost-skeletons that die with him (invis_left channel); Snowball Snow Bowling (corridor
+  sweep to roll end + 4s slow); Goblin Cage hook (fisherman machinery on a building; buildings
+  with hook_max now ACQUIRE past reach); Drill resurfacing per quarter-hp + goblin; Battle Ram
+  Super Charge bounce (no kamikaze; 4t self-knockback + re-charge; breaks into EVO barbs);
+  Royal Hogs air-drop (spec-swap flying->ground on first attack/hurt + 74 impact [verify]);
+  LJ death ghost (untargetable always_ghost, 5s life via silent hatch removal, big-finite hp).
+- Engine generalizations that fell out: evo rows can now carry their own FLAGS + SPAWNS
+  overrides (previously base-only -- furnace/ram/LJ/goblin-giant spawner overrides were
+  silently ignored); movement: air on an evo row now yields flying; _spawn_from initializes
+  ghost/lifetime state; _apply_status carries poison.
+
 2026-08-14 -- ROUND-5 DIAGNOSIS: card-head LOGIT EXPLOSION froze tornado + x_bow at zero
 - User report (3500 matches, ~5% winrate, policy-stats: 0 tornado / 0 x_bow) CONFIRMED on the
   CURRENT checkpoint (fresh 60-match eval, 3/60 wins): tornado 0 plays, x_bow 0 plays, every

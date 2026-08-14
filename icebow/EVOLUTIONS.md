@@ -103,6 +103,15 @@ is wiki-swept. ✅ = modeled and unit-tested in the sim. Tier = engine effort fo
 stat-only (works via the `_evo` stat overlay), **T1** maps onto an existing engine primitive,
 **T2** needs a new primitive.
 
+**2026-08-14 (sweep 3): EVERY row below is now MODELED and unit-tested** (`tests/test_evo_t1.py`,
+`test_evo_phase_b.py`, `test_evo_wave3.py`). The per-row tier notes are kept as implementation
+references. Honest approximations: the Cage reels victims to REACH (fisherman semantics) rather
+than inside the building; the Snowball's carry is an instant sweep to the corridor end; the LJ
+ghost's "unlimited health" is a big-but-finite pool (spells can still clear it); the Drill's
+resurfacing triggers on quarter-hp thresholds; the Baby Dragon's 8x9 gust is a 4-tile aura.
+Values marked [verify] remain: dart-goblin poison numbers, cannon per-ball 87, skarmy General
+stats, royal-hogs fall damage 74, LJ-ghost lifetime 5 s, hunter net range 5.5, cage reel timing.
+
 | Evolution | Cycles | Special mechanic vs base (SWEPT) | Status / engine mapping |
 |---|---|---|---|
 | Knight | 2 | −60% damage while not attacking | ✅ done (`damage_reduction`) |
@@ -183,7 +192,8 @@ stat-only (works via the `_evo` stat overlay), **T1** maps onto an existing engi
 4. ~~T2 primitives~~ **DONE 2026-08-14**: sniper ammo (Musketeer), power shot (Archers),
    lingering ground effect (FC spark zones + E-Barbs rage trail), projectile continuation
    (Bomber), decoy (Goblin Barrel mirror). Plus the GOBLIN BARREL BASE FIX (it spawned nothing).
-5. **Phase B remainder — the 17 swept-but-unmodeled evos** (see table): T1 batch 2 candidates
+5. ~~Phase B remainder~~ **DONE 2026-08-14 (sweep 3)** — all remaining evos modeled + tested
+   (see the banner above §1's table). Originally scoped as: (see table): T1 batch 2 candidates
    in meta order: Mega Knight uppercut, Executioner axe smash, Hunter net, Wizard shield-burst,
    Witch skeleton-heal, E-Drag infinite chain, Inferno stage-keep, Baby Dragon aura, Princess
    slow shot, Mortar/Furnace/Goblin Giant spawner tweaks, Minion Horde i-frames, Dart Goblin
