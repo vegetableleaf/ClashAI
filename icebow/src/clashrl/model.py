@@ -28,6 +28,9 @@ import torch.nn.functional as F
 # n_cells -> (grid_w, grid_h). Every construction site passes n_cells, so the placement grid can
 # be inferred here without touching a single caller (matches cli._GRID_SIZES).
 _GRIDS = {432: (18, 24), 576: (18, 32)}
+_LOGIT_CAP = 8.0   # both heads' logits are tanh-bounded to +/- this (see forward_parts) -- wide
+                   # enough for a near-deterministic policy (e^16 ~ 9M:1 across the cap range),
+                   # tight enough that softmax never saturates into zero-gradient territory
 
 
 class PolicyNet(nn.Module):
@@ -120,7 +123,17 @@ class PolicyNet(nn.Module):
         replaced; see the class docstring)."""
         fmap = self.features(x)                                   # (B, 64, in_h/8, in_w/8)
         z = self._embed(fmap, hand, nxt, elx, thr)
-        return z, self.card_head(z), self._cell_logits(fmap, z)
+        # LOGIT CAP (2026-08-14). Round 5 diagnosed CARD-HEAD LOGIT EXPLOSION: raw logits reached
+        # +/-140 (a delta softmax per state), which zeroed tornado and x_bow FOREVER -- at that
+        # saturation the gradient to ever raise a suppressed card is ~e^-200, so neither the 15%
+        # exploration floor nor the entropy bonus could recover it. A scaled tanh bounds every
+        # logit to +/-_LOGIT_CAP: ranking is preserved (monotone), softmax can never fully
+        # saturate, and the entropy gradient stays alive at any weight norm. Checkpoints trained
+        # BEFORE the cap carry raw weights in the saturated zone -- rescale them into the linear
+        # region first (tools/repair_card_head.py), or the tanh just freezes them at the rails.
+        cards = _LOGIT_CAP * torch.tanh(self.card_head(z) / _LOGIT_CAP)
+        cells = _LOGIT_CAP * torch.tanh(self._cell_logits(fmap, z) / _LOGIT_CAP)
+        return z, cards, cells
 
     def forward(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
                 elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):

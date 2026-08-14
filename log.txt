@@ -2140,6 +2140,27 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- ROUND-5 DIAGNOSIS: card-head LOGIT EXPLOSION froze tornado + x_bow at zero
+- User report (3500 matches, ~5% winrate, policy-stats: 0 tornado / 0 x_bow) CONFIRMED on the
+  CURRENT checkpoint (fresh 60-match eval, 3/60 wins): tornado 0 plays, x_bow 0 plays, every
+  other card fine; placement HEALTHY (118 cells, 13% top share); wait_forced 84% (the wincon
+  bank waiting for an x-bow play that never comes).
+- ROOT CAUSE (probed the head directly): raw card logits reached +/-91..144 -- a delta softmax.
+  tornado -104 / x_bow -120: at that saturation the gradient to ever raise them is ~e^-200, so
+  neither the 15% card floor nor entropy 0.01 could recover them. NOT env-side: forced deploys
+  of both cards work fine. The avoidance was also LEARNED AGAINST THE BROKEN POOL (toothless
+  goblin barrel, base-stat evos) and then froze. Cell head also inflated (raw 38) though
+  behaviorally diverse.
+- FIXES: (1) model.py: both heads' logits now tanh-BOUNDED to +/-8 (_LOGIT_CAP) -- softmax can
+  never saturate into zero-gradient territory again, ranking-monotone; (2) ppo_entropy 0.01 ->
+  0.02 (with the cap the entropy gradient always has traction); (3) NEW tools/
+  repair_card_head.py: rescales an exploded checkpoint's heads back into the linear region
+  (card x0.0328 -> max 3.0, cell x0.117 -> 4.5 on the round-5 ckpt; rankings preserved --
+  linear maps). VERIFIED repaired head: tornado/x_bow alive again (small but gradient-reachable).
+- RESTART PROTOCOL: stop trainer -> repair data/policy_sim_ppo.pt in place -> restart (which
+  also picks up ALL of today's engine batches). Old checkpoints without repair would just sit
+  frozen at the tanh rails.
+
 2026-08-14 -- LIVE elixir_trade REWORK: the do-nothing exploit is real; Phi implemented
              (user diagnosis + ELIXIR_TRADE_DESIGN.md, implemented as its own gated change)
 - USER DIAGNOSIS CONFIRMED, and worse: _trade_reward = clip(enemy-mass killed) - spend/norm.

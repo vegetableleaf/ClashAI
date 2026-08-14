@@ -1077,7 +1077,11 @@ sim:
   ppo_minibatch: 512            # minibatch size within a rollout
   ppo_clip: 0.2                 # PPO clip epsilon (the trust region)
   ppo_lr: 0.00025               # PPO learning rate (on-policy tolerates more than the DQN's 5e-5)
-  ppo_entropy: 0.01             # entropy bonus (exploration pressure on the gate + CARD categoricals)
+  ppo_entropy: 0.02             # entropy bonus (exploration pressure on the gate + CARD categoricals).
+                                # 0.01 -> 0.02 after the round-5 card-head logit explosion (+/-140
+                                # raw, tornado/x_bow frozen at ~0 prob): with the new +/-8 tanh cap
+                                # the entropy gradient always has traction, and the stronger pull
+                                # resists re-sharpening into the rails.
   # CELL-HEAD ANTI-COLLAPSE. The card head has had a floor since 2026-08-11; the 432-way CELL head
   # had NONE, and it collapsed completely: MEASURED on policy_sim_ppo_best over 150 greedy matches,
   # 3 distinct cells out of 432 were ever used, with 79% of ALL plays on ONE tile (x=0.21, y=0.53 --
