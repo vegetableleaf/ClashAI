@@ -2140,6 +2140,24 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- X-BOW REWARD LEDGER REPAIR implemented (user-directed; tests/test_xbow_rewards.py)
+- Implements the audited design (findings earlier today): the bow's value is DELAYED and
+  INSTRUMENTAL, but the ledger paid geometry once (+w) and billed the death (-0.6 Phi) while
+  convex chip muted the DoT -- a bow play netted <= 0 in nearly every line.
+- NEW LANES (sim env, all rw_stats-visible):
+  * xbow_overcommit: enemies TARGETING the bow are tallied once each (squad-share for
+    multi-body cards); on the bow's death, +0.08 x (drawn elixir - 6), cap 0.5. "Thwarted but
+    drew a 10-elixir answer" now nets positive -- the user's forced-overcommit insight.
+  * xbow_lock: +0.02/s while the bow is TOWER-LOCKED, cap 0.4 per bow (re-bows re-cap,
+    mirroring the ~24 s re-bow cadence). Dense proxy for chip at 0.94^dt credit reach-back.
+  * chip_linear: while a bow stands, the step's tower chip pays LINEARLY (0.15/full tower)
+    alongside the crown-convex pool that pays a bow's typical 20-30% chip ~0.01.
+- CONTEXT MODIFIERS on wincon_exec's offensive branch (Hunter-lineage deck guides):
+  * first-play bridge bow (t < 30 s) x0.25 ("never X-Bow the bridge first play");
+  * back-tank invested deep -> OPPOSITE-lane bow is punish-class (SAME lane vs Lava Hound);
+  * Little Prince / Evo Bomber SEEN -> x0.6 on every positive offensive branch.
+- 4/4 new tests + suites + smoke green. Lands on the next sim restart.
+
 2026-08-14 -- POST-REPAIR RE-EXPLOSION diagnosed: sharpness cap + value warmup
 - User repaired correctly this time (card 171.7->2.8, cell 224.8->4.5, lift 0,4) and resumed.
   PROBED the new run's FIRST autosave (~8 min in): raw absmax back at 119, x_bow -109, with a

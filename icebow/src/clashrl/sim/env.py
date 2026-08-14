@@ -203,6 +203,25 @@ class SimMatchEnv:
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
         self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
         self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
+        # X-BOW LEDGER REPAIR (2026-08-14, user-directed; findings in log). The bow's value is
+        # DELAYED (chip over 10-30 s at (gamma*lambda)^dt = 0.94^dt reach-back: +15 s arrives at
+        # 0.40 strength) and INSTRUMENTAL (a thwarted bow that drew a 9-elixir answer did its
+        # job). The old ledger paid geometry once (+0.8) and billed the death (-0.6 Phi), while
+        # the convex chip pool muted the bow's whole product (20-30% chip ~ +0.01-0.03) -- so a
+        # bow play netted <= 0 in essentially every line and the head RATIONALLY learned
+        # never-bow (raw logit -7 within minutes of the repair). Three dense-but-capped lanes +
+        # doctrine context modifiers fix the ledger. Sources: the 3.5 IceBow + 3.0 X-Bow deck
+        # guides (Hunter-lineage doctrine): "never X-Bow the bridge first play", "if they invest
+        # a high cost tank at the back, immediately X-Bow opposite lane" (SAME lane vs a Lava
+        # Hound), "Little Prince/Evolved Bomber ... wrecks a X-Bow" -> discount when seen.
+        self.w_bow_over = r("xbow_overcommit", 0.08)          # per enemy elixir drawn beyond the bow's 6
+        self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
+        self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
+        self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
+        self.w_bow_chip = r("xbow_chip_linear", 0.15)         # LINEAR chip lane while a bow stands
+        self.bow_first_frac = float(cfg.get("rewards", "xbow_first_play_frac", default=0.25))
+        self.bow_hostile_frac = float(cfg.get("rewards", "xbow_hostile_frac", default=0.6))
+        self._bow_hostile_keys = {"little_prince", "bomber_evo"}
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
@@ -386,6 +405,8 @@ class SimMatchEnv:
         self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
         self._ally_xbow_standing = False  # pre-deploy read for the wincon repeat-credit gate
+        self._bow_ledger = {}             # id(bow) -> {ids, cost, lock}: overcommit + uptime ledgers
+        self._enemy_seen = set()          # enemy spec.keys fielded this match (context modifiers)
         # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
         # "turtle" half is the my_c >= 1 flip in step(), so the matchup lock here only needs to cover
         # decks that STRUCTURALLY blank a siege. A SPLIT-LANE deck (Royal Recruits / Royal Hogs) does:
@@ -607,6 +628,17 @@ class SimMatchEnv:
         return ((opp < self._opp_block_cost)
                 or (mine - opp >= self.punish_elixir_gap))
 
+    def _bow_split_punish(self, nx: float) -> bool:
+        """The guide's tank-investment punish: a heavy enemy tank committed DEEP in their own
+        territory means an immediate bow is answered late -- OPPOSITE lane for ground tanks
+        (splits their push), SAME lane for a Lava Hound (forces the ground answer early)."""
+        for u in self.eng.units:
+            if (u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
+                    and u.spec.elixir >= 5 and u.spec.hp >= 2000 and u.y < 0.25):
+                same = (u.x - 0.5) * (nx - 0.5) > 0.0
+                return same if u.spec.flying else not same
+        return False
+
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
         forward-in-range (offensive) / back-centre (defensive), Miner chipping the princess (not the king),
@@ -634,6 +666,10 @@ class SimMatchEnv:
                 val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
             elif d <= self.xbow_range:                        # OFFENSIVE: forward, in tower range = win condition set
                 val = self.w_wincon
+                if self.eng.t < 30.0:
+                    val *= self.bow_first_frac               # "never X-Bow the bridge first play"
+                elif self._bow_split_punish(nx):
+                    val = self.w_wincon * self.xbow_punish_mult   # back-tank invested -> split-push bow
             else:
                 val = self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
             # REPEAT-CREDIT GATE (2026-08-12): NO placement credit while an allied X-Bow is ALREADY
@@ -647,6 +683,11 @@ class SimMatchEnv:
             # bow at a time -- re-credits every time, because the previous bow is dead when it fires.
             # `_ally_xbow_standing` is read PRE-deploy in step(), so the just-placed bow never gates
             # its own credit.
+            if (val > 0.0 and d <= self.xbow_range
+                    and (self._bow_hostile_keys & self._enemy_seen)):
+                val *= self.bow_hostile_frac                 # their deck wrecks bows (Little Prince /
+                                                             # Evo Bomber seen) -> tempered credit on
+                                                             # EVERY positive offensive branch
             if val > 0.0 and self._ally_xbow_standing:
                 val = 0.0
             return val
@@ -1033,6 +1074,33 @@ class SimMatchEnv:
         reward += self.rw_stats.add("elixir_trade", self._trade_reward())
         reward += self.rw_stats.add("nado", self._bonus(self._nado_shaping()))    # delayed tornado-execution credit
         reward += self.rw_stats.add("counterfactual", self._cf_shaping())   # did playing beat holding? (zero-mean)
+        # X-BOW LEDGER (see __init__): uptime ticks while TOWER-LOCKED, one-shot overcommit
+        # credit when a bow dies, and the enemy-cards-seen set the context modifiers read.
+        bow_alive = set()
+        for u in self.eng.units:
+            if u.team == 1 and u.hp > 0:
+                self._enemy_seen.add(u.spec.key)
+                continue
+            if u.team != 0 or u.spec.base != "x_bow" or u.hp <= 0:
+                continue
+            bid = id(u)
+            bow_alive.add(bid)
+            led = self._bow_ledger.setdefault(bid, {"ids": set(), "cost": 0.0, "lock": 0.0})
+            for e in self.eng.units:                      # enemies COMMITTED to answering this bow
+                if e.team == 1 and e.hp > 0 and e.target is u and id(e) not in led["ids"]:
+                    led["ids"].add(id(e))
+                    led["cost"] += float(e.spec.elixir) / max(1, e.spec.squad_count or e.spec.count)
+            if (u.deploy_left <= 0.0 and u.attacking and hasattr(u.target, "king")
+                    and led["lock"] < self.bow_lock_cap):
+                tick = min(self.w_bow_lock * self.agent_dt, self.bow_lock_cap - led["lock"])
+                led["lock"] += tick
+                reward += self.rw_stats.add("xbow_lock", tick)
+        for bid in [b for b in self._bow_ledger if b not in bow_alive]:
+            led = self._bow_ledger.pop(bid)
+            over = max(0.0, led["cost"] - 6.0)            # "they paid more than the bow to stop it"
+            if over > 0.0:
+                reward += self.rw_stats.add("xbow_overcommit",
+                                            min(self.bow_over_cap, over * self.w_bow_over))
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.rw_stats.add("leak", self.w_leak)
@@ -1053,6 +1121,12 @@ class SimMatchEnv:
         ep = self._chip_progress(self.eng.towers[1])
         reward += self.rw_stats.add("chip_offence", (ep - self._prev_chip_prog) * self.tower_chip_scale)
         self._prev_chip_prog = ep
+        if bow_alive and chip0 > 0.0:
+            # LINEAR bow-chip lane: while a bow stands, its DoT is the deck's entire plan -- the
+            # convex pool above (power 2, crown-weighted) pays a bow's typical 20-30% chip
+            # ~ +0.01-0.03 total, i.e. nothing. Full-tower equivalent here = w_bow_chip.
+            reward += self.rw_stats.add(
+                "chip_linear", self.w_bow_chip * chip0 / max(1.0, self.eng.towers[1][0].max_hp))
         mp = self._chip_progress(self.eng.towers[0])
         reward -= self.rw_stats.add("chip_defence", (mp - self._prev_chip_prog_def) * self.tower_chip_scale)
         self._prev_chip_prog_def = mp

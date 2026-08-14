@@ -481,6 +481,14 @@ rewards:
   nado_retarget: 0.4       # dragged a tower-locked wincon (hog etc.) off your tower (lost hits)
   correctness_cap: 20.0    # per-match ceiling on POSITIVE shaping (terms 1,3,4) -- anti-farm; penalties + trade + outcome are uncapped
   # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
+  # ---- X-BOW LEDGER REPAIR (2026-08-14; design in log + DOCTRINE, Hunter-lineage guides) ----
+  xbow_overcommit: 0.08    # per enemy elixir drawn onto a bow BEYOND its 6, paid when the bow dies
+  xbow_overcommit_cap: 0.5 # ...capped per bow ("they paid 12 to stop it" -> +0.48: the draw did its job)
+  xbow_lock_tick: 0.02     # per second the bow is TOWER-LOCKED (dense proxy for the delayed chip)...
+  xbow_lock_cap: 0.4       # ...capped per bow; a re-bow re-caps, mirroring the real re-bow cadence
+  xbow_chip_linear: 0.15   # LINEAR chip lane while a bow stands (the convex pool mutes partial chip)
+  xbow_first_play_frac: 0.25   # "never X-Bow the bridge first play": offensive credit fraction, t < 30 s
+  xbow_hostile_frac: 0.6   # offensive credit x this once Little Prince / Evo Bomber has been SEEN
   win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
   loss: -2.0
   take_enemy_tower: 1.0    # CROWN JUMP: destroying a tower is a big discrete reward -- a tower at 1-2 HP still fully works
