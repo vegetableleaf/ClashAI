@@ -97,59 +97,56 @@ row had pinned the goblins' stats on the parent).
 
 ## 1. The 42 evolutions
 
-41 in the imported KB + **Evo Elite Barbarians** (Season 86, Aug 2026 — not yet imported; re-run
-`cards-import`). Icebow's own two (**Knight** — 60% DR while not attacking; **Tesla** — stun pulse
-+ 25 s life) are **already fully modeled** for OUR side. Mechanics below from guides/knowledge;
-rows marked **[verify]** need their Fandom Evolution page read before implementation — the
-verification pass IS part of Phase B. Tier = engine effort: **T0** stat-only (works the moment an
-opponent fields it — `build_spec` already overlays `_evo` stats), **T1** maps onto an existing
-engine primitive (charge, pulse, DR, spawner, spawner_death, knockback, slow/stun/freeze, curse,
-buff_mult, multi-hit), **T2** needs a new primitive.
+All 41 in the KB + **Evo Elite Barbarians** (Season 86 — wiki page still unscrapeable; full row
+curated from the announcement). **The [verify] sweep is COMPLETE (2026-08-14)** — every row below
+is wiki-swept. ✅ = modeled and unit-tested in the sim. Tier = engine effort for the rest: **T0**
+stat-only (works via the `_evo` stat overlay), **T1** maps onto an existing engine primitive,
+**T2** needs a new primitive.
 
-| Evolution | Cycles | Special mechanic vs base | Tier / engine mapping |
+| Evolution | Cycles | Special mechanic vs base (SWEPT) | Status / engine mapping |
 |---|---|---|---|
 | Knight | 2 | −60% damage while not attacking | ✅ done (`damage_reduction`) |
 | Tesla | 2 | periodic stun pulse; 25 s life | ✅ done (pulse fields) |
-| Skeletons | 1 | 4 bodies; each KILL spawns a new skeleton | T1 — spawn-on-kill ≈ spawner_death inverted; small add |
-| Royal Giant | 1 | each shot RECOILS: knockback on the target + pushes himself back | T1 — knockback exists; self-push is a sign flip |
-| Royal Recruits | 1 | shielded CHARGE dash across the lane | T1 — charge primitive exists |
-| Barbarians | 1 | enrage themselves while attacking (speed/damage ramp) | T1 — buff_mult + focus_time ramp |
-| Musketeer | 2 | charged SNIPER shot: extra-long-range piercing first shot | T2 — piercing projectile |
-| Archers | 2 | charged power shot, pierces | T2 — same piercing primitive as Musketeer |
-| Valkyrie | 2 | whirlwind PULLS enemies into her spin | T1 — tornado pull logic exists (small-radius pull on attack) |
-| Zap | 2 | strikes twice (second zap after a beat) | T1 — two applications of the existing spell |
-| Firecracker | 2 | lingering SPARKS burn the ground where shots land | T2 — lingering ground-effect primitive |
-| Bomber | 2 | bombs BOUNCE past the first target | T2 — projectile continuation |
-| Wall Breakers | 2 | [verify] survive/second blast behavior | T0/T1 pending verify |
-| Bats | 1 | [verify] heal-on-hit (lifesteal) | T1 — small lifesteal add |
-| Wizard | 2 | spawn shield + wider blast | T1 — shield ≈ temp DR; radius via splash_r work |
-| Witch | 2 | [verify] | pending |
-| Skeleton Army | 1 | [verify] re-summon behavior | pending |
-| Skeleton Barrel | 2 | [verify] double pop | pending |
-| Mortar | 2 | shells carry a passenger goblin (spawns at impact) | T1 — spawner-at-impact ≈ spawn primitive |
-| Cannon | 2 | [verify] shockwave knockback shots | T1 if knockback-on-hit |
-| Goblin Barrel | 2 | decoy barrel (second, empty barrel) | T2 — decoy entity (cheap: spawn nothing, draw fire) |
-| Goblin Cage | 2 | [verify] | pending |
-| Goblin Drill | 2 | [verify] extra goblin on surface hits | pending |
-| Goblin Giant | 2 | [verify] | pending |
-| Battle Ram | 2 | [verify] re-charge / bulldoze behavior | pending |
-| Hunter | 2 | [verify] tighter spread or net | pending |
-| Ice Spirit | 1 | [verify] bigger freeze / split | pending |
-| Inferno Dragon | 2 | [verify] beam keeps ramp between targets | T1 — focus_time carry-over |
-| Lumberjack | 2 | [verify] rage behavior on death exists base; evo = ? | pending |
-| Mega Knight | 2 | [verify] jump changes | pending (leap system now correct) |
-| Minion Horde | 2 | [verify] | pending |
-| PEKKA | 3 | heals on kills (butterflies) | T1 — heal-on-kill |
-| Princess | 2 | [verify] volley size/range | T0-ish pending |
-| Royal Ghost | 2 | [verify] invisibility changes | T1 — invis fields exist |
-| Royal Hogs | 1 | [verify] | pending |
-| Baby Dragon | 2 | [verify] | pending |
-| Dart Goblin | 2 | [verify] poison darts (stacking DoT) | T1 — curse-like DoT |
-| Electro Dragon | 2 | [verify] | pending |
-| Executioner | 2 | [verify] axe behavior | pending (splash-flag fix first) |
-| Furnace | 2 | [verify] | pending |
-| Giant Snowball | 2 | [verify] grows/rolls further | pending |
-| **Elite Barbarians (NEW, S86)** | 1 | throw **Rage-tipped javelins** at range (hits troops AND towers) leaving a RAGE TRAIL that buffs allies moving through it | T2 — projectile + lingering ground buff; the season's midladder menace |
+| Skeletons | 2 | +1 evo skeleton per landed swing, hard cap 8 alive | ✅ done (spawn_on_hit) |
+| Royal Giant | 1 | every shot blasts 2.5 t AROUND HIMSELF, 1-tile shove, air immune | ✅ done (recoil; dmg 154 [verify]) |
+| Royal Recruits | 1 | charge arms only AFTER the shield breaks; 2.5 t run-up, 2× | ✅ done (charge_after_shield) |
+| Barbarians | 1 | self-rage per swing: +30% move/attack for 3 s, no stacking | ✅ done (hit_rage) |
+| Musketeer | 2 | 3 SNIPER rounds: infinite range, only when out of reach, 1.8×, never at crowns | ✅ done (sniper ammo) |
+| Archers | 2 | POWER SHOT at ≥4 tiles: 1.5×; reach 6 | ✅ done (power_mult) |
+| Valkyrie | 2 | 0.5 s whirlwind per swing: 5.5 t pull (ground AND air), 76 dmg | ✅ done (attack_nado) |
+| Zap | 2 | growing TRIPLE pulse: 2.5→3.0→3.5 t, ~1 s apart, full zap each | ✅ done (zap_pulses) |
+| Firecracker | 2 | shots leave SPARK ZONES: tick every 0.25 s, 15% slow, 2.5 s | ✅ done (tick dmg 12 [verify]) |
+| Bomber | 2 | bomb BOUNCES twice, 2.5 t apart, once-per-attack dedup | ✅ done (bounce chain) |
+| Bats | 2 | heal 99 per swing, OVERHEAL to 2× (244) | ✅ done (hit_heal) |
+| PEKKA | 1 | flat 470 heal per kill, overheal to 150% | ✅ done (kill_heal) |
+| Skeleton Barrel | 2 | 2 barrels: first drops at 75% hp, second on death, both on unspent arrival | ✅ done (mid_drop) |
+| Goblin Barrel | 2 | second DECOY barrel to the MIRRORED tile: 3 decoy goblins (32 hp [verify]) | ✅ done (decoy_mirror) |
+| **Elite Barbarians (S86)** | 1 | rage-tipped JAVELIN every 5 s (284, hits crowns) + rage TRAIL | ✅ done (javelin; page pending import) |
+| Wizard | 2 | FIRE SHIELD; on shield break: 231 explosion + 3-tile knockback in 3 t | T1 — shield exists; break-blast hook |
+| Witch | 1 | HEALS when each of her spawned skeletons dies; overheal to 124% | T1 — death-hook heal |
+| Skeleton Army | 1 | 15 skels + shielded GENERAL: skels dying while he lives become invisible INDESTRUCTIBLE GHOSTS that keep attacking; ghosts vanish with him | T2 — ghost-body lifecycle |
+| Mortar | 2 | hit speed 1 s faster + every shot spawns a GOBLIN at the mortar | T1 — spawner-on-attack |
+| Cannon | 2 | DEPLOY VOLLEY: 9 cannonballs in 2 rows (5+4), area + knockback | T1 — deploy burst |
+| Goblin Cage | 1 | ground troops within 3 t get PULLED INTO the cage and fought inside | T2 — hook machinery (fisherman) reusable |
+| Goblin Drill | 2 | near crowns: submerges/reappears around the tower as it takes damage, spawning goblins each surfacing | T2 — relocation loop |
+| Goblin Giant | 1 | below 50% hp: passively spawns a goblin every 2.2 s | T1 — conditional spawner |
+| Battle Ram | 2 | SUPER CHARGE: re-charges and bounces off buildings repeatedly until its hp is gone; breaks into EVO barbarians | T2 — bounce-recharge loop |
+| Hunter | 2 | NET every 5 s: roots the closest unit 3 s (no move/attack), resets charges/ramps | T1 — stun-with-attackable ≈ root |
+| Ice Spirit | 1 | bigger freeze (2.0 t radius in Table 1) | T0 — radius flows already |
+| Inferno Dragon | 1 | KEEPS its damage stage on kill (9 s memory); 4th stage at 20 s = 2× stage 3 | T1 — focus_time carry-over |
+| Lumberjack | 2 | death rage (base ✅) + his GHOST spawns on death: untargetable, spell-only, short-lived, keeps swinging | T2 — untargetable attacker |
+| Mega Knight | 1 | MEGA UPPERCUT: every swing launches the target 4 tiles TOWARD the nearest enemy crown tower, ignoring weight | T1 — directed knockback_all |
+| Minion Horde | 2 | HORDE IMMUNITY: first hit against each minion makes it INVINCIBLE for 3 s | T1 — per-unit i-frames |
+| Princess | 2 | every volley cycle: 1 SLOWING shot (3-tile, 7 s slow) then 2 normal | T1 — periodic status shot |
+| Royal Ghost | 2 | spawns 2 SOLDIERS on deploy; stealth unchanged | T1 — deploy companions (spawn_spec) |
+| Royal Hogs | 2 | deploy FLYING (ground-targeters can't touch them); FALL on attacking/getting hurt with small area impact | T2 — air→ground transition |
+| Baby Dragon | 2 | WIND AURA around him: enemies −30% speed, allies +30% | T1 — moving rage/slow aura |
+| Dart Goblin | 2 | POISON darts (DoT on hit) that grow stronger the longer he lives | T1 — stacking DoT |
+| Electro Dragon | 1 | chain hops INDEFINITELY (3.5 t hops while >1 enemy in range) | T1 — chain count ∞ |
+| Executioner | 1 | AXE SMASH: pushes ground AND air back 2 tiles, resets charges; 3.5 t | T1 — knockback on hit |
+| Furnace | 2 | spawns every 2.4 s, fire spirits emerge to the SIDES | T0.5 — spawner params |
+| Giant Snowball | 2 | SNOW BOWLING: rolls 4.5 t GATHERING troops (untargetable inside), frees them at the end; 4 s slow | T2 — carry-roll |
+| Wall Breakers | 2 | rolling BARREL bodies whose blast is death damage (Super Wall Breaker) | T1 — death blast (radius in import) |
 
 ## 2. Implementation plan
 
@@ -180,10 +177,19 @@ buff_mult, multi-hit), **T2** needs a new primitive.
    150% (imported hp 5640 was the CAP — deploy hp re-curated 3760, damage row restored);
    **Evo Skeleton Barrel** first barrel at 75% hp, second on death, both at once on an unspent
    arrival (KB `count: 2` was barrels-carried, re-curated to one body).
-3. [verify] sweep for the REMAINING pending evos: read each Fandom page, fill the table, re-tier.
-4. T2 primitives, in order of reuse: piercing projectile (Musketeer+Archers), lingering ground
-   effect (Firecracker sparks + **Evo E-Barbs rage trail** — the rage-zone system is most of
-   this), ~~projectile continuation (Bomber)~~ **DONE** (bouncing bombs), decoy (Goblin Barrel).
+3. ~~[verify] sweep~~ **DONE 2026-08-14** — all 41 rows swept and re-tiered (see §1; several of
+   my earlier guesses were wrong: Musketeer/Archers have SPECIAL shots, not piercing; Royal
+   Ghost spawns Soldiers, no recoil; Mortar spawns goblins per shot, no rolling shell).
+4. ~~T2 primitives~~ **DONE 2026-08-14**: sniper ammo (Musketeer), power shot (Archers),
+   lingering ground effect (FC spark zones + E-Barbs rage trail), projectile continuation
+   (Bomber), decoy (Goblin Barrel mirror). Plus the GOBLIN BARREL BASE FIX (it spawned nothing).
+5. **Phase B remainder — the 17 swept-but-unmodeled evos** (see table): T1 batch 2 candidates
+   in meta order: Mega Knight uppercut, Executioner axe smash, Hunter net, Wizard shield-burst,
+   Witch skeleton-heal, E-Drag infinite chain, Inferno stage-keep, Baby Dragon aura, Princess
+   slow shot, Mortar/Furnace/Goblin Giant spawner tweaks, Minion Horde i-frames, Dart Goblin
+   DoT, Cannon deploy volley, Wall Breakers death blast, Royal Ghost soldiers. T2: Skarmy
+   general-ghosts, Snowball carry-roll, Goblin Cage pull-in, Goblin Drill relocation, Battle
+   Ram bounce, Royal Hogs air-drop, Lumberjack ghost.
 5. Evo E-Barbs specifically (midladder-hot per the user's 10k context): javelin = ranged attack
    with tower damage + the rage-trail ground effect; DOCTRINE.md will need a counter row once
    its behavior is testable.
