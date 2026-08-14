@@ -2140,6 +2140,30 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- PHASE B: special shots, spark trails, decoy barrel, javelins + GOBLIN BARREL
+             base-card fix (user request; tests/test_evo_phase_b.py 6/6)
+- GOBLIN BARREL (found during the sweep): the sim resolved it as a bare 120-damage blast that
+  spawned NOTHING -- every logbait deck was toothless. The damage row is the GOBLIN's swing.
+  New generic spell curation spawns_troop {unit, count}: barrel now drops 3 goblins, zero
+  impact damage. VERIFIED.
+- EVO MUSKETEER (user: sniper ammo, not piercing): 3 infinite-range rounds, fired only when
+  NOTHING is in her normal reach, at the closest enemy unit IN FRONT (never crown towers),
+  1.8x her hit (1.5x at launch, page's current figure). She stands still to shoot. VERIFIED
+  exactly 3 arena-crossing rounds then none.
+- EVO ARCHERS (user: power shot): swings at >= 4 tiles deal 1.5x (168); reach 6 from the
+  imported row. VERIFIED 168 at 5 tiles / 112 at 2.
+- EVO FIRECRACKER: lingering SPARK ZONES along carrier + shard paths -- tick every 0.25 s,
+  15% slow (import attributes beat Theria's no-slow prose), 2.5 s life; tick damage is NOT
+  published: 12/tick (48 dps, poison-class) curated [verify]. New engine spark_zones + trail
+  drops every 1.25 tiles of projectile flight; orange rings in sim_view.
+- EVO GOBLIN BARREL: second barrel to the MIRRORED tile (1-x) spawning 3 DECOY GOBLINS
+  (32 hp [verify] / goblin swing). VERIFIED 3 real + 3 decoys in opposite lanes.
+- EVO ELITE BARBARIANS (wiki STILL not scrapeable -- full row curated from the Season-86
+  announcement, import will supersede): rage-tipped javelin at the current target (troop OR
+  crown tower) every 5 s, 284 dmg, laying a 3-segment rage TRAIL (reuses rage_zones, 30%,
+  3 s [verify]). VERIFIED spear lands ~284 before melee + trail zones appear.
+- All suites green (phase-b 6/6, t1 8/8, status, death splits, wincon bank) + 3-match smoke.
+
 2026-08-14 -- Evo Bats heal + Little Prince stat/ramp fixes (user bug reports)
 - EVO BATS: heal on EVERY swing -- 76 hp/s at the L11 row x 1.3 s hit = 99 per attack (the two
   0.5 s pulses folded into the swing on our grid), OVERHEAL to 2x deploy hp (244 cap).

@@ -229,6 +229,19 @@ class CardSpec:
     overheal_frac: float = 1.0   # ...overhealing up to this x deploy hp (1.5; EVO BATS 2.0)
     mid_drop_frac: float = 0.0   # EVO SKEL BARREL: first barrel drops when hp falls to this frac
     hit_heal: float = 0.0        # EVO BATS: heal per landed swing (two 0.5s pulses folded into one)
+    # ---- PHASE B EVO MECHANICS (2026-08-14 sweep 2) ----
+    sniper_shots: int = 0        # EVO MUSKETEER: infinite-range rounds she spawns with (3). Fired
+    sniper_mult: float = 0.0     # only when NOTHING is in her normal reach, at the closest enemy
+                                 # unit IN FRONT of her, each dealing sniper_mult x her hit (1.8).
+                                 # She can never snipe a crown tower.
+    power_mult: float = 0.0      # EVO ARCHERS: POWER SHOT -- swings at gap >= power_min tiles
+    power_min: float = 0.0       # (4.0) deal power_mult x damage (1.5); their reach is 6.
+    spark_tick: float = 0.0      # EVO FC: shots leave LINGERING SPARK ZONES along their paths --
+    spark_dur: float = 0.0       # damage every 0.25 s + 15% move slow, zone lives spark_dur (2.5 s)
+    spark_r: float = 0.0
+    javelin_dmg: float = 0.0     # EVO E-BARBS: rage-tipped spear at the current target (troop OR
+    javelin_cd: float = 0.0      # crown tower) every javelin_cd seconds, leaving a rage TRAIL
+    decoy_mirror: str = ""       # EVO GOBLIN BARREL: also throw this spell at the MIRRORED tile
     # LITTLE PRINCE: attack speed RAMPS while he keeps shooting from the same spot -- every
     # `atk_ramp_per` attacks the cadence multiplier steps through `atk_ramp_mults`
     # (1.2s -> 0.8s -> 0.4s = 1x/1.5x/3x). ANY movement or displacement resets it.
@@ -445,6 +458,16 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if base == "royal_delivery":                              # RD drops ONE shielded Royal Recruit where it lands
         spawn_spec = build_spec(db, "royal_recruits", level)  # single-recruit combat stats (the Royal Recruits card)
         spawn_count = 1
+    # GENERIC SPELL TROOP DROP (curated `spawns_troop`). Goblin Barrel resolved as a bare 120
+    # blast and spawned NOTHING -- the damage row is the GOBLIN's swing, and the barrel drops
+    # 3 goblins with zero impact damage. Every logbait deck in the pool was toothless.
+    st = c.get("spawns_troop") or {}
+    if spawn_spec is None and st.get("unit") and st["unit"] != base:
+        try:
+            spawn_spec = build_spec(db, st["unit"], level)
+            spawn_count = int(st.get("count") or 1)
+        except Exception:                                     # noqa: BLE001 - unknown key: no drop
+            spawn_spec = None
     # TROOP PRODUCTION. `db.spawner()` merges the wiki timings with the curated unit identity. The
     # guard on `unit != base` stops a self-referential curation from recursing forever, and a
     # missing/unknown unit key degrades to "not a spawner" rather than raising during a match.
@@ -522,6 +545,16 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hit_heal=float(c.get("hit_heal") or 0.0) * sc,
         atk_ramp_per=int((c.get("attack_ramp") or {}).get("per_stage") or 0),
         atk_ramp_mults=tuple(float(m) for m in (c.get("attack_ramp") or {}).get("mults") or ()),
+        sniper_shots=int(c.get("sniper_shots") or 0),
+        sniper_mult=float(c.get("sniper_mult") or 0.0),
+        power_mult=float(c.get("power_mult") or 0.0),
+        power_min=float(c.get("power_min") or 0.0),
+        spark_tick=float(c.get("spark_tick_damage") or 0.0) * sc,
+        spark_dur=float(c.get("spark_duration_s") or 0.0),
+        spark_r=float(c.get("spark_radius_tiles") or 0.0),
+        javelin_dmg=float(c.get("javelin_damage") or 0.0) * sc,
+        javelin_cd=float(c.get("javelin_cd_s") or 0.0),
+        decoy_mirror=str(c.get("decoy_mirror") or ""),
         elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
@@ -656,6 +689,8 @@ class Unit:
     rage_self_left: float = 0.0  # EVO BARBARIANS: seconds of self-rage left (refreshed per swing)
     mid_drop_done: bool = False  # EVO SKEL BARREL: the 75%-hp barrel has been spent
     ramp_shots: int = 0          # LITTLE PRINCE: attacks landed since he last moved/was displaced
+    sniper_left: int = 0         # EVO MUSKETEER: infinite-range rounds remaining
+    javelin_left: float = 0.0    # EVO E-BARBS: cooldown until the next spear
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
     locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
                                  # targets just because something wandered closer; only an aggro RESET frees it
@@ -792,6 +827,7 @@ class Projectile:
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
     bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
+    trail_next: float = 0.75   # EVO FC: tiles of flight until the next lingering spark zone drops
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -868,6 +904,7 @@ class SimEngine:
         self.rng = rng
         self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
         self.rage_zones: list = []      # (x, y, r_tiles, team, t_on, t_off, boost) -- Lumberjack's bottle
+        self.spark_zones: list = []     # [x, y, r, team, t_end, tick_dmg, next_tick_t] -- Evo FC trails
                                         # flashes each as a brief AOE circle (~0.15 s), capped at 40
         # Tower Troops: per-troop HP + discrete-hit attack (CR wiki, L15). Your side plays my_tower_troop at
         # my_tower_level; the opponent rolls a troop (weighted) + a ladder level per match (see reset()).
@@ -1014,6 +1051,14 @@ class SimEngine:
                 delay = 0.4 + _dist(x, y, 0.5, oy) / _TILES_Y   # (live-parity physics; ~1.4s at max range)
             self.spells.append(_Spell(team, x, y, spec, delay,
                                       echoes=max(0, spec.zap_pulses - 1)))
+            if spec.decoy_mirror:
+                # EVO GOBLIN BARREL: "a second Goblin Barrel is launched alongside the first one,
+                # which lands on its mirroring tile in the other lane" -- with the decoy goblins.
+                try:
+                    dspec = build_spec(self.db, spec.decoy_mirror, spec.level)
+                    self.spells.append(_Spell(team, 1.0 - x, y, dspec, delay))
+                except Exception:                             # noqa: BLE001 - bad curation: main only
+                    pass
             return True
         n = max(1, spec.count)
         # TILE SNAP: troops/buildings land on a tile centre, as in the real game (spells stay
@@ -1066,6 +1111,7 @@ class SimEngine:
         u = Unit(spec, team, cx, cy, spec.hp)
         u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
         u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval
+        u.sniper_left = spec.sniper_shots             # Evo Musketeer spawns with her 3 rounds loaded
         # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
         # not something he earns, so he arrives already faded and the first thing anyone sees is him
         # swinging. It is also why he cannot kite: he re-fades and the chaser forgets him.
@@ -1440,6 +1486,19 @@ class SimEngine:
         self._tick_hatch(dt)
         if self.rage_zones:                                  # drop zones whose effect has ended
             self.rage_zones = [z for z in self.rage_zones if z[5] > self.t]
+        if self.spark_zones:                                 # Evo FC lingering sparks: DoT + move slow
+            for z in list(self.spark_zones):
+                if self.t >= z[4]:
+                    self.spark_zones.remove(z)
+                    continue
+                if self.t >= z[6]:
+                    z[6] = self.t + 0.25                     # "deal damage every 0.25 seconds"
+                    for e in self.units:
+                        if e.team != z[3] and e.hp > 0 \
+                                and _dist(e.x, e.y, z[0], z[1]) <= z[2] + e.spec.radius:
+                            self._hurt(e, z[5])
+                            e.slow_left = max(e.slow_left, 0.3)   # 15% slow while standing in it
+                            e.slow_mult = 0.85
         # spells land
         landed = []
         for s in self.spells:
@@ -1560,6 +1619,11 @@ class SimEngine:
                 continue
             if kind is None:
                 continue
+            if u.spec.javelin_dmg > 0.0:                     # Evo E-Barbs: spear the target, then charge on
+                u.javelin_left = max(0.0, u.javelin_left - dt)
+                if u.javelin_left <= 0.0:
+                    self._throw_javelin(u, ref)
+                    u.javelin_left = u.spec.javelin_cd
             rx, ry = (ref.x, ref.y)
             reach = u.spec.reach + u.reach_extra
             # LEAP (Bandit dash / Mega Knight jump), in TWO phases:
@@ -1648,6 +1712,8 @@ class SimEngine:
                     u.cooldown = u.spec.hit_speed / spd / rm
                     if u.spec.kamikaze:
                         u.hp = 0.0
+            elif u.spec.sniper_shots > 0 and self._try_snipe(u):
+                pass                                         # Evo Musketeer STANDS to take the shot
             elif u.spec.kind != "building":                  # buildings are stationary
                 self._move_toward(u, rx, ry, dt, spd)
         # ROYAL GHOST'S STEALTH. "Upon deployment, he will spawn invisible, and will only turn
@@ -1972,6 +2038,45 @@ class SimEngine:
                 best = max(best, boost)
         return 1.0 + best
 
+    def _try_snipe(self, u: "Unit") -> bool:
+        """EVO MUSKETEER's Sniper Ammo: 3 infinite-range rounds, spent ONLY when nothing is in her
+        normal reach, at the closest enemy unit IN FRONT of her (troops and building-units; "she
+        cannot snipe Crown Towers"), each dealing sniper_mult x her hit (1.8). Returns True if a
+        round was fired this tick -- she stands still to take the shot."""
+        if u.sniper_left <= 0 or u.cooldown > 0.0:
+            return False
+        fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks toward y = 0
+        best, best_gap = None, float("inf")
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0 or not self._valid_foe(u, e):
+                continue
+            if (e.y - u.y) * fwd < 0.0:                      # behind her: not a sniper target
+                continue
+            g = _gap(u.x, u.y, e)
+            if g < best_gap:
+                best, best_gap = e, g
+        if best is None:
+            return False
+        self._launch(f"{u.spec.base}_snipe", u.team, u.x, u.y, best, u.spec,
+                     u.spec.hit_dmg * u.dmg_mult * u.spec.sniper_mult, 0.0)
+        u.sniper_left -= 1
+        u.cooldown = u.spec.hit_speed
+        return True
+
+    def _throw_javelin(self, u: "Unit", ref) -> None:
+        """EVO ELITE BARBARIANS: "each ... throws a Rage-tipped javelin at an enemy troop or Crown
+        Tower, then charges as normal" -- a spear every javelin_cd seconds that also lays a RAGE
+        TRAIL along its flight, buffing any friendly that walks it (the announcement's "any of
+        your troops that steps into them will be enhanced")."""
+        jspec = replace(u.spec, proj_speed=10.0, proj_radius=0.0,   # the SPEAR flies; the barb is
+                        splash=False, multi_kind="", multi_hits=1)  # melee, so his spec has no shot
+        self._launch(f"{u.spec.base}_javelin", u.team, u.x, u.y, ref, jspec,
+                     u.spec.javelin_dmg * u.dmg_mult, u.spec.javelin_dmg * u.dmg_mult)
+        for f in (0.3, 0.6, 0.9):                            # trail segments toward the target
+            zx = u.x + (ref.x - u.x) * f
+            zy = u.y + (ref.y - u.y) * f
+            self.rage_zones.append((zx, zy, 1.2, u.team, self.t, self.t + 3.0, 0.30))
+
     def _recoil_blast(self, u: "Unit") -> None:
         """EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around
         it and knocks back enemy ground troops by 1 tile" -- a defensive blast around HIMSELF on
@@ -2102,6 +2207,9 @@ class SimEngine:
         mult = self._ramp_mult(u)
         dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        if u.spec.power_mult > 0.0 and _gap(u.x, u.y, ref) >= u.spec.power_min:
+            dmg *= u.spec.power_mult                         # Evo Archers' POWER SHOT: 4+ tiles out -> 1.5x
+            tower_dmg *= u.spec.power_mult
         # CHARGE: a completed run-up REPLACES this hit's damage (Prince 783 vs a ~200 base hit). It
         # is a flat published value, not a multiplier, so it overrides rather than scales -- and it
         # applies to towers too, which is what makes an unblocked Prince so punishing.
@@ -2332,6 +2440,13 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
+            if p.spec.spark_tick > 0.0:              # Evo FC: "both the initial and small shrapnel
+                p.trail_next -= step                 # will leave sparks behind" along their flight
+                if p.trail_next <= 0.0:
+                    p.trail_next = 1.25
+                    self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
+                                             self.t + p.spec.spark_dur, p.spec.spark_tick, self.t])
+                    del self.spark_zones[:-60]
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
                 p.y += p.diry * step

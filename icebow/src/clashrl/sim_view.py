@@ -234,6 +234,10 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         if t0 <= eng.t < t1:
             cv2.ellipse(img, px(zx, zy), rad_px(zr), 0, 0, 360, (200, 0, 200), 1)
 
+    # Evo Firecracker's lingering sparks: small orange rings while the patch burns
+    for z in getattr(eng, "spark_zones", []):
+        cv2.ellipse(img, px(z[0], z[1]), rad_px(z[2]), 0, 0, 360, (0, 140, 255), 1)
+
     for p in getattr(eng, "projectiles", []):
         c = px(p.x, p.y)
         col = _TEAM[p.team]
