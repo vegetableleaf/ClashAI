@@ -54,7 +54,7 @@ now carries `charge_splash_r` (a completed run-up replaces the hit's damage AND 
 | Card | Spawn dmg | Crown dmg | Blast radius |
 |---|---|---|---|
 | barbarian_barrel | 230 | — | 1.9 fallback |
-| electro_wizard | 115 **[verify]** | — | 3.0 **[verify]** — spawn ZAP also **stuns** (blast now applies status) |
+| electro_wizard | 115 | — | 3.0 — spawn ZAP also **stuns** (blast now applies status) |
 | goblin_drill (+evo) | 84 | 26 | 1.9 fallback |
 | ice_wizard | 84 | — | 1.5 — spawn nova now also applies his **slow** |
 | mega_knight (+evo) | 430 | — | 1.3 |
@@ -63,7 +63,8 @@ now carries `charge_splash_r` (a completed run-up replaces the hit's damage AND 
 
 `_deploy_blast` now runs `_apply_status` on everything it hits, so status flags ride spawn
 blasts: E-Wiz's zap stuns, Ice Wizard's nova slows. (MK/drill/delivery have no status flags —
-unchanged.) E-Wiz dmg curated as one zap at L11; both his values need the user's verify pass.
+unchanged.) E-Wiz values **user-verified** (115 dmg / 3.0 tiles) — both sweep tables are now
+fully verified; no [verify] tags remain in §0.1.
 
 **Ranged-AOE audit (no change needed):** bomber, wizard, princess, sparky, firecracker already
 fire real projectiles (speed imported) whose impact blast radius = their published splash radius

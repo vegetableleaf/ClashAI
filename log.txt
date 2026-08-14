@@ -2115,6 +2115,12 @@ science; its placement ceiling is now understood).
   Status-effects suite still green (4/4).
 - Repo now COMMITTED + PUSHED to main after every change batch (user request, standing rule).
 
+2026-08-14 -- E-Wiz spawn zap values user-verified
+- USER CONFIRMED: electro_wizard spawn zap 115 dmg / 3.0-tile radius -- both correct as
+  curated. [verify] tags cleared from cards.yaml comment + EVOLUTIONS.md Table 2.
+- Sweep tables 0.1 are now FULLY verified (dark_prince settled yesterday) -> round-5 restart
+  is clear to launch: run.py train-sim-ppo --matches 100000 --envs 32 --resume --size 432.
+
 
 ------------------------------------------------------------------------------
 Notes / caveats
