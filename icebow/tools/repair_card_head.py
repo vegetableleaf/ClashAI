@@ -63,6 +63,10 @@ def main() -> None:
     ap.add_argument("ckpt", help="checkpoint to repair (e.g. data/policy_sim_ppo.pt)")
     ap.add_argument("--out", default=None, help="write here instead of in place")
     ap.add_argument("--target", type=float, default=3.0, help="desired max |raw card logit|")
+    ap.add_argument("--lift", default="", help="comma-separated card INDICES to reset to a neutral "
+                    "prior (icebow deck: 0=tornado, 4=x_bow). Amnesty for cards whose suppression "
+                    "was learned against broken physics: their head row/bias becomes the mean of "
+                    "the others, so the policy re-decides from the floors' fresh evidence.")
     args = ap.parse_args()
 
     cfg = Config.load()
@@ -90,6 +94,16 @@ def main() -> None:
             if last.bias is not None:
                 last.bias.mul_(a)
             print(f"[repair] cell head x{a:.5f}")
+    if args.lift:
+        idx = [int(i) for i in args.lift.split(",") if i.strip() != ""]
+        with torch.no_grad():
+            keep = [i for i in range(net.card_head.weight.shape[0]) if i not in idx]
+            wmean = net.card_head.weight[keep].mean(dim=0)
+            bmean = net.card_head.bias[keep].mean()
+            for i in idx:
+                net.card_head.weight[i] = wmean
+                net.card_head.bias[i] = bmean
+        print(f"[repair] lifted cards {idx} to the neutral prior (mean of the other rows)")
     card_after, cell_after = measure_absmax(net, cfg)
     print(f"[repair] max|raw logits| card {card_before:.1f} -> {card_after:.1f}, "
           f"cell {cell_before:.1f} -> {cell_after:.1f}; rankings preserved (linear maps)")

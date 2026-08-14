@@ -2140,6 +2140,20 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- PHASE C: doctrine addenda + repaired-ckpt eval vs the FULL evo pool + --lift
+- DOCTRINE.md 3b: 17 evolution addenda rows (how each meta evo changes OUR counters: Evo RG
+  recoil kills swarm-on-top -> skels BEHIND; Evo MK uppercut moves the kite spot deeper; Evo
+  Witch overheal breaks rocket math; feeding singles to Evo PEKKA/Inferno is now anti-play...).
+- PHASE C EVAL (repaired r5 ckpt, 60 matches vs the 42-evo full-fidelity pool): 3/60 wins,
+  placement healthy (104 cells / 13% top), tornado + x_bow still 0 AT EVAL -- expected: the
+  rescale made them GRADIENT-REACHABLE (~0.02%), not popular; recovery is a TRAINING effect
+  via the 15% floor + entropy 0.02 + the tanh cap. This eval is the round-6 restart BASELINE.
+- NEW --lift amnesty in tools/repair_card_head.py: resets named card indices to the NEUTRAL
+  prior (mean of the other head rows) -- defensible because their suppression was learned
+  against broken physics (toothless goblin barrel, base-stat evos). VERIFIED on a copy:
+  tornado/x_bow -> ~2.9% each, everything else's ranking untouched. RECOMMENDED for the
+  restart: stop trainer -> repair_card_head.py data/policy_sim_ppo.pt --lift 0,4 -> resume.
+
 2026-08-14 -- SWEEP 3: the remaining 24 evos ALL MODELED (user request; 42/42 complete)
 - tests/test_evo_wave3.py 16/16 + all prior suites green. Detail-swept first (MK uppercut
   direction = toward the TARGET's own tower, weight-independent; Souldiers 81hp/261 area dmg;
