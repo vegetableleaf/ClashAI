@@ -449,6 +449,23 @@ def import_cards(cfg) -> None:
     if not names:
         print("[cards-import] no card pages found (wiki category names may have changed).")
         return
+    # FALLBACK EVOLUTION DISCOVERY. The category walk only sees `<Card>/Evolution` subpages the
+    # editors have already categorized -- a freshly created Evolution page (Elite Barbarians,
+    # Season 86: the page existed for days while `Category:Troop Cards` didn't list it) was
+    # silently invisible. Probe every base card's `/Evolution` subpage existence directly in
+    # batched title queries; anything that exists joins the import regardless of categories.
+    bases = [n for n in names if not n.endswith(_EVO)]
+    have = {n[: -len(_EVO)] for n in names if n.endswith(_EVO)}
+    probe = [b + _EVO for b in bases if b not in have]
+    found = []
+    for i in range(0, len(probe), 50):
+        d = _api({"action": "query", "titles": "|".join(probe[i:i + 50])})
+        for p in d.get("query", {}).get("pages", {}).values():
+            if "missing" not in p:
+                found.append(p["title"])
+    if found:
+        print(f"[cards-import] uncategorized Evolution pages found by probe: {', '.join(sorted(found))}")
+        names = sorted(set(names) | set(found))
 
     try:
         removed = set(_members(EXCLUDE_CATEGORY))

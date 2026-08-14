@@ -266,9 +266,11 @@ class CardSpec:
     volley_slow_s: float = 0.0
     first_hit_immune_s: float = 0.0  # EVO MINION HORDE: first hit taken -> invincible this long
     poison_dps: float = 0.0      # EVO DART GOBLIN: darts poison; stronger the longer he lives
+    poison_stages: tuple = ()    # ...3-stage dps (51/115/307 by time alive, wiki vardefines)
     poison_s: float = 0.0
     deploy_volley: int = 0       # EVO CANNON: cannonball fan on deployment (9 in 2 rows)
-    volley_dmg: float = 0.0
+    volley_dmg: float = 0.0      # 304 per ball; crown towers take volley_crown (89)
+    volley_crown: float = 0.0
     deploy_spawn: str = ""       # EVO ROYAL GHOST (Souldiers) / EVO SKARMY (the General):
     deploy_spawn_n: int = 0      # companions placed once per CARD at deploy
     low_hp_frac: float = 0.0     # EVO GOBLIN GIANT: below this hp fraction...
@@ -621,9 +623,11 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         volley_slow_s=float(c.get("volley_slow_s") or 0.0),
         first_hit_immune_s=float(c.get("first_hit_immune_s") or 0.0),
         poison_dps=float(c.get("poison_dps") or 0.0) * sc,
+        poison_stages=tuple(float(v) * sc for v in (c.get("poison_stages") or ())),
         poison_s=float(c.get("poison_s") or 0.0),
         deploy_volley=int(c.get("deploy_volley") or 0),
         volley_dmg=float(c.get("volley_damage") or 0.0) * sc,
+        volley_crown=float(c.get("volley_crown_damage") or 0.0) * sc,
         deploy_spawn=str(c.get("deploy_spawn") or ""),
         deploy_spawn_n=int(c.get("deploy_spawn_n") or 0),
         low_hp_frac=float(c.get("low_hp_frac") or 0.0),
@@ -1234,7 +1238,8 @@ class SimEngine:
                     bx, by = _clamp_xy(bx, by, 0.0)
                     self.projectiles.append(Projectile(
                         label=f"{spec.base}_volley", team=team, x=cx, y=cy, tx=bx, ty=by,
-                        target=None, spec=vspec, dmg=spec.volley_dmg, tower_dmg=spec.volley_dmg,
+                        target=None, spec=vspec, dmg=spec.volley_dmg,
+                        tower_dmg=spec.volley_crown or spec.volley_dmg,
                         radius=1.0, speed=8.0, left=row_d + 1.0, ground_only=True, ox=cx, oy=cy))
         # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
         # not something he earns, so he arrives already faded and the first thing anyone sees is him
@@ -2501,9 +2506,13 @@ class SimEngine:
                 # EVO PRINCESS: this volley SLOWS (7 s) in a widened blast; the next two are normal
                 fspec = replace(u.spec, slows=True, slow_dur=u.spec.volley_slow_s, proj_radius=3.0)
             if u.spec.poison_dps > 0.0:
-                # EVO DART GOBLIN: poisoned darts, "stronger the longer [he] remains alive" --
-                # the dps grows with his age, doubling by 30 s on the board [growth curve: verify]
-                fspec = replace(fspec, poison_dps=u.spec.poison_dps * (1.0 + min(1.0, u.age / 30.0)))
+                # EVO DART GOBLIN: "poison becomes stronger the longer [he] remains alive" --
+                # wiki vardefines publish THREE stage dps values (51/115/307); the stage
+                # thresholds are not published, curated at 15 s steps [verify].
+                dps = u.spec.poison_dps
+                if u.spec.poison_stages:
+                    dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
+                fspec = replace(fspec, poison_dps=dps)
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT

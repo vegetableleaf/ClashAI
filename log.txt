@@ -2140,6 +2140,29 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- DATA-ACCESS UPGRADE (user pointed at github.com/Panniantong/agent-reach)
+- Analyzed agent-reach (agent capability layer: multi-backend fallbacks, Jina Reader proxy,
+  per-platform CLIs, cookie/browser-session reuse). ADOPTED the ideas natively, ran none of
+  their code: (1) the multi-backend/fallback PATTERN -> cards-import gained a PROBE fallback
+  for Evolution discovery (batched action=query titles= existence checks) because category
+  membership lags new pages; (2) noted Jina Reader as a fetch fallback of last resort --
+  UNNEEDED once the api.php route proved sufficient. REJECTED cookie/browser-session reuse
+  (touches the user's logged-in sessions; our data is public).
+- THE REAL UNLOCK: the MediaWiki api.php endpoint serves RAW WIKITEXT for any page even where
+  page-HTML fetches 402/403 (action=parse&prop=wikitext). Everything I fought WebFetch for all
+  day was one endpoint away.
+- RESULTS: Elite Barbarians/Evolution EXISTS now (pageid 280645, uncategorized -- the probe
+  finds it; page body is still "Coming soon...", so our curated row stays authoritative and
+  auto-supersedes when the wiki fills in). 42 evolutions in the KB.
+- [verify] BACKLOG RESOLVED from vardefines, with corrections: Evo Cannon volley = 304/ball
+  (crown 89) -- my 87 was 3.5x low; Skarmy General = 81 hp + 81 shield + 81 dmg @1.0 s (a
+  shielded skeleton, not a guard -- my 219/240/110 replaced); Evo Royal Hogs landing = 115
+  (post -27% nerf; 74 was their swing); Evo Dart Goblin poison is 3-STAGED 51/115/307 dps by
+  time alive (thresholds unpublished, 15 s steps [verify]; towers: 1 s at 25%); Evo LJ ghost
+  CONFIRMED 256/0.8 s/~5 s, and his dropped rage also DAMAGES (179, crown 54 -> modeled as a
+  death blast at the rage radius). Engine: staged poison lookup + volley crown damage.
+- All suites green; curations flipped to verified.
+
 2026-08-14 -- PHASE C: doctrine addenda + repaired-ckpt eval vs the FULL evo pool + --lift
 - DOCTRINE.md 3b: 17 evolution addenda rows (how each meta evo changes OUR counters: Evo RG
   recoil kills swarm-on-top -> skels BEHIND; Evo MK uppercut moves the kite spot deeper; Evo

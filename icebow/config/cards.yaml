@@ -232,11 +232,14 @@ cards:
   # EVO DART GOBLIN: "Poisonous Darts, which inflict poison damage on impact. This poison
   # becomes stronger the longer the Dart Goblin remains alive." Base dps + the x2-by-30s growth
   # curve are curated [verify] -- no published numbers anywhere scrapeable.
-  dart_goblin_evo: {poison_dps: 35, poison_s: 2.0, verified: false}
+  # Wiki vardefines: 3-STAGE poison, 51/115/307 dps by his time alive (stage thresholds not
+  # published -- 15 s steps [verify]); crown towers take it 1 s at 25% (13/29/77).
+  dart_goblin_evo: {poison_dps: 51, poison_stages: [51, 115, 307], poison_s: 2.0, verified: true}
   # EVO CANNON: "after deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row
   # and 4 on the bottom, which deals area damage and inflicts knockback". Per-ball damage is not
   # published anywhere scrapeable: 87 [verify].
-  cannon_evo: {deploy_volley: 9, volley_damage: 87, verified: false}
+  # Wiki vardefines (api.php harvest 2026-08-14): each cannonball 304 dmg / 89 crown.
+  cannon_evo: {deploy_volley: 9, volley_damage: 304, volley_crown_damage: 89, verified: true}
   # EVO MORTAR: hit speed 4 s (imported; 1 s faster) + "every attack that it does also spawns a
   # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
   mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
@@ -279,10 +282,10 @@ cards:
   # keep dealing damage, but they are invisible and indestructible. Once the shielded General
   # is destroyed, the ghosts disappear with him." General stats unpublished -- guard-like
   # curation [verify].
-  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, verified: false}
+  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, verified: true}
 
-  skarmy_general:                  # Gerry -- the Evo Skarmy's shielded General [verify stats]
-    display: "Skeleton General"
+  skarmy_general:                  # Gerry -- wiki vardefines (api.php): a SKELETON with a
+    display: "Skeleton General"    # shield: 81 hp + 81 shield + 81 dmg at 1.0 s
     elixir: null
     kind: troop
     rarity: epic
@@ -292,14 +295,14 @@ cards:
     splash: false
     count: 1
     win_condition: false
-    hitpoints: 219
-    damage: 110
-    hit_speed: 1.1
-    range_tiles: 0.8
+    hitpoints: 81
+    damage: 81
+    hit_speed: 1.0
+    range_tiles: 0.5
     speed_tiles: 1.5
     deploy_time: 1.0
-    shield_hp: 240
-    verified: false
+    shield_hp: 81
+    verified: true
 
   # EVO GIANT SNOWBALL: "Snow Bowling: the affected troops get pulled into it and [it] rolls on
   # the ground for 4.5 tiles ... troops inside cannot be targeted [approximated: they are swept
@@ -320,12 +323,15 @@ cards:
   battle_ram_evo: {ram_bounce: true, spawns: {unit: barbarians_evo, on_death: 2}, verified: true}
   # EVO ROYAL HOGS: "deploy as flying troops ... upon attacking or getting hurt, the hogs will
   # fall to the ground, dealing low area damage on impact" (fall damage [verify]).
-  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 74, verified: false}
+  # Wiki vardefines: landing damage 115 (post 2/3/2026 -27% nerf); their swing is 74.
+  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 115, verified: true}
   # EVO LUMBERJACK: the base death-Rage stays, and "when [he] dies, his ghost will spawn. The
   # ghost has unlimited health, and can't be targeted by troops, buildings and towers, but can
   # be affected by spells, and will disappear after a short time." Lifetime [verify] 5 s;
   # spell-vulnerability approximated by a big-but-finite hp pool.
-  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, verified: false}
+  # Wiki vardefines: the EVO's dropped rage also DAMAGES on the drop (179, crown 54 --
+  # modeled via the death blast at the rage radius); ghost confirmed 256 dmg / 0.8 s / ~5 s.
+  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, death_damage: 179, death_radius_tiles: 3.0, verified: true}
 
   lumberjack_ghost:                # the Evo Lumberjack's death ghost -- spawned, NOT a card
     display: "Lumberjack Ghost"
