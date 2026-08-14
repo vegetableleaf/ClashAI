@@ -173,6 +173,30 @@ every rule below applies to the hero versions automatically.
 
 ---
 
+## 3b. Evolution addenda (2026-08-14 — Phase C; all 42 evos now modeled in sim)
+
+How the evolutions CHANGE our answers. Rows keyed to the counter catalog's numbering style.
+
+| # | Threat (evo) | What changes vs the base counter | Our line |
+|---|---|---|---|
+| E1 | **Evo Royal Giant** (recoil 81 / 2.5 t / 1-t shove, air immune) | Swarm-ON-TOP dies: skels placed inside his recoil ring get blasted + shoved every shot | Skels BEHIND him (outside 2.5 t of his body), Tesla pull stays king; Ice Wizard outranges the ring entirely |
+| E2 | **Evo Mega Knight** (uppercut: victim launched 4 t toward OUR tower, then he re-jumps) | The kite-centre knight gets punched INTO our side — the kite walk must start deeper so the launch doesn't gift him a jump onto the tower | Kite spot moves ~2 t deeper (0.48, 0.68); skels-bait + knight king-bait chain unchanged (uppercut on a 1-elixir skel is a win); NEVER tank the uppercut next to our princess tower |
+| E3 | **Evo E-Barbs** (284 javelin every 5 s, hits crowns; rage trails) | They chip towers from range and self-rage crossing their own trails — pure kiting leaks tower hp | Answer FAST and off-trail: Tesla pull + IW slow (slow counters the rage tempo); do not path our counters through the glowing lanes |
+| E4 | **Evo Valkyrie** (0.5 s whirlwind, 5.5 t pull, air too) | Her spin drags our skels/IW INTO her splash — spaced defense collapses inward | IW from ≥6 t (outside the pull), skels only AFTER her swing lands (0.5 s window), Tesla pull is immune (building) |
+| E5 | **Evo Zap** (3 growing rings, 1 s apart) | Our skels die to ring 1 AND the re-cycle dies to ring 3 — don't re-drop skels into the ring sequence | Wait out the third ring (~2 s) before recommitting swarm; Tesla eats all three stuns but keeps lock resets in mind |
+| E6 | **Evo Musketeer** (3 infinite-range snipes at 1.8×, only when idle-ranged) | She snipes our Ice Wizard/back-line from across the arena while walking | Deny her idle range: engage her with knight quickly or keep IW BEHIND towers until her 3 rounds are spent (count them) |
+| E7 | **Evo Hunter** (net roots 3 s every 5 s) | Our kiting knight gets rooted mid-kite and shredded point-blank | Kite with skels instead (1 elixir to eat the net), knight commits only inside the 5 s net cooldown window |
+| E8 | **Evo Witch** (heals 109 per friendly bone death, overheal 130%) | Rocket math changes: an overhealed witch (1035) survives rocket (863) | Rocket her BEFORE her skels die en masse (early push phase), or finish with Log after; our own skels feeding her heal is a real anti-synergy — prefer Tesla/IW answers |
+| E9 | **Evo Wizard** (shield burst 281 + 3-t shove on break) | Skels that break his shield get blasted + scattered — the surround dies at the break moment | Break the shield with TESLA/IW/log FIRST, then swarm; never let the shield break inside our skels |
+| E10 | **Evo Bomber** (bombs bounce 2.5 t twice) | His bounces reach our Tesla BEHIND the tank he targets — the standard center Tesla eats chip | Offset Tesla laterally from his approach line; knight ON TOP of him (bounces fly past, not around) |
+| E11 | **Evo Firecracker** (spark trails: 192/60 dps zones, 15% slow) | Her spark carpets zone our skels' path to her | Approach off-line (lateral knight), or tank the small-spark lane (60 dps) never the carrier lane (192) |
+| E12 | **Evo Skarmy** (shielded General; skels ghost while he lives) | Log alone no longer clears — ghosts keep chewing until the General dies | Log THE GENERAL's cluster first (shield 240 + 219 hp needs log + one Tesla zap), or IW slow + tower fire; ghosts vanish with him |
+| E13 | **Evo Goblin Barrel** (mirror decoy barrel, 3 decoys) | Two lanes light up at once; decoys are 81 hp paper but 89-dmg real threats | Log the REAL side (watch the throw origin lane), tower + one skel eats the decoy side |
+| E14 | **Evo Skeleton Barrel** (75% mid-drop, both barrels on arrival) | Shooting it down early now costs 7 skels mid-lane + 7 more at death | IW the barrel (slow + splash kills the drop), Tesla ignores it (air) only if IW is rotating |
+| E15 | **Evo Battle Ram** (bounces and re-rams until dead) | One Tesla pull no longer ends it — it re-charges from the bounce | Kill the RAM'S HP, not its charge: Tesla + skels sustained; breaking it spawns EVO barbs (self-raging) — keep IW for the barbs |
+| E16 | **Evo Royal Hogs** (airborne until they attack/get hurt) | Ground-only answers (skels, log) whiff the approach phase | Tesla and IW both hit air — either touch drops them to ground, where log/skels resume normal service |
+| E17 | **Evo PEKKA / Evo Inferno D** (kill-heal / stage-keep) | Feeding 1-elixir skels now HEALS her (470/kill) or preserves his ramp | Do NOT drip-feed singles: bulk value trades only (knight), Tesla pull + rocket on the support behind |
+
 ## 4. Standing placement priors (the always-on shape hints)
 
 1. **Defensive band discipline**: buildings at y 0.52–0.62, centre-biased; never deeper than 0.62 unless EQ-flag.
