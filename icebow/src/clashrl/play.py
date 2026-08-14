@@ -29,7 +29,8 @@ from .cycle import CycleTracker
 from .tower_hp import TowerHpTracker
 from .vision import Vision
 from .opponent_elixir import OpponentElixirEstimator
-from .detect_obs import canvas_enabled, channels_to_uint8, detection_channels
+from .detect_obs import (canvas_enabled, canvas_stack_dt, channels_to_uint8, detection_channels,
+                         CanvasStack, N_CHANNELS)
 
 
 def _pick_device(cfg):
@@ -196,6 +197,20 @@ def play(cfg) -> None:
     # append card_threat's identity features for the RECOGNISED, HIGH-confidence enemy cards the
     # detector names on your half. Gated on the checkpoint width so play always matches the net.
     extra_dim = threat_dim - THREAT_DIM
+    # Crown-tower HP block (6 dims, always LAST) -- mirrors sim/view.TOWER_DIM and env._tower_frac.
+    _TOWER_DIM = 6
+    _known_no_tower = (0,
+                       card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM,
+                       interactions.INTERACTION_DIM,
+                       card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
+                       + interactions.INTERACTION_DIM)
+    # Peel the tower block off FIRST so the identity/interaction combo math below is unchanged from
+    # before the block existed. It is present when the checkpoint width exceeds a no-tower combo by
+    # EXACTLY _TOWER_DIM; the guard keeps the one ambiguous width (identity+memory == interactions+
+    # tower, both 18) reading as identity+memory -- its meaning before the tower block was added.
+    want_tower = (extra_dim not in _known_no_tower) and ((extra_dim - _TOWER_DIM) in _known_no_tower)
+    if want_tower:
+        extra_dim -= _TOWER_DIM
     want_identity = extra_dim in (card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM,
                                   card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
                                   + interactions.INTERACTION_DIM)
@@ -206,6 +221,7 @@ def play(cfg) -> None:
     detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
     detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
     predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+    _ident_front = card_threat.identity_front(cfg)   # identity watch line (shared with sim/env/label)
     sight_range = float(cfg.get("sim", "sight_range", default=0.12))
     _detector = None
     if want_identity or want_interactions:
@@ -222,6 +238,12 @@ def play(cfg) -> None:
     # The canvas is fed only when the LOADED policy was trained with it -- the config gate decides
     # what a NEW training run sees, the checkpoint decides what THIS net expects.
     _use_canvas = canvas_enabled(cfg) and in_ch > 3
+    # Stack DEPTH comes from the CHECKPOINT, not the config: `play` deploys whatever net it is given,
+    # and in_ch records how many canvas slices that net was trained on (3 RGB + N_CHANNELS each).
+    _canvas_slices = max(1, (in_ch - 3) // N_CHANNELS) if _use_canvas else 1
+    _canvas_stack = CanvasStack(_canvas_slices, canvas_stack_dt(cfg))
+    if _use_canvas and _canvas_slices > 1:
+        print(f"[play] canvas stack: {_canvas_slices} slices @ {canvas_stack_dt(cfg):g}s (motion input).")
     # LIVE team verdicts by evidence fusion (own plays / motion / HP bars / side prior with pocket gating)
     # so your units aren't read as enemy threats -- see replay_mine.TeamTracker.
     from .replay_mine import TeamTracker
@@ -307,7 +329,10 @@ def play(cfg) -> None:
         _replay_rec.update(dets_all)                 # overlay replay: newest boxes for the clip
         _last_dets["all"] = dets_all                 # ...and the source for the semantic canvas
         dets = [d for d in dets_all if d.team == "enemy" and d.base in detector_cards]
-        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
+        # identity: from the WATCH LINE (the bridge) rather than "already across the river", so an
+        # incoming win condition lights its role flags while a defender still has time to deploy.
+        items = [(d.base, card_threat.identity_depth(d.gy, _ident_front))
+                 for d in dets if d.gy >= _ident_front]
         now = time.time()
         dt = (now - _ident_state["t"]) if _ident_state["t"] else 0.0
         ident = card_threat.identity_threat_vector(items, _db, prev_depth=_ident_state["depth"],
@@ -329,6 +354,25 @@ def play(cfg) -> None:
                      for d in dets_all if d.team in ("mine", "enemy") and d.base in detector_cards]
             blocks.append(interactions.interaction_vector(units, my_t, en_t, _db))
         return np.concatenate(blocks).astype(np.float32) if blocks else np.zeros(0, np.float32)
+
+    def _tower_frac() -> np.ndarray:
+        """6-dim crown-tower HP block, byte-identical to sim/view.tower_vector and env._tower_frac:
+        HP FRACTION of (L princess, R princess, king) for MINE then THEIRS, 0.0 == destroyed. Princess
+        HP is the live digit read (hp_tracker); the KING's HP is never printed on screen, so its alive
+        flag is the proxy (1.0 until it falls). Destroyed towers are forced to 0.0 via the alive flags."""
+        v = np.zeros(_TOWER_DIM, np.float32)
+        mine_alive = list(getattr(tower_tracker, "mine_alive", []) or [])
+        enemy_alive = list(getattr(tower_tracker, "enemy_alive", []) or [])
+        my_full = hp_tracker.my_full if getattr(hp_tracker, "my_full", 0) > 0 else 1.0
+        en_full = hp_tracker.full if getattr(hp_tracker, "full", 0) > 0 else 1.0
+        for i in range(2):                                    # L, R princess (index 0, 1)
+            if i < len(mine_alive) and mine_alive[i] and i < len(hp_tracker.my_hp):
+                v[i] = min(1.0, max(0.0, float(hp_tracker.my_hp[i]) / my_full))
+            if i < len(enemy_alive) and enemy_alive[i] and i < len(hp_tracker.enemy_hp):
+                v[3 + i] = min(1.0, max(0.0, float(hp_tracker.enemy_hp[i]) / en_full))
+        v[2] = 1.0 if (len(mine_alive) > 2 and mine_alive[2]) else 0.0    # king: alive proxy (no live HP)
+        v[5] = 1.0 if (len(enemy_alive) > 2 and enemy_alive[2]) else 0.0
+        return v
 
     eps = float(cfg.get("play", "epsilon", default=0.0))
     act_period = float(cfg.get("play", "act_period", default=1.5))
@@ -355,18 +399,19 @@ def play(cfg) -> None:
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity or want_interactions:
             threat_vec = np.concatenate([threat_vec, _threat_extra(frame, float(elixir))]).astype(np.float32)
+        if want_tower:                        # crown-tower HP -- appended LAST, matching sim/view + env
+            threat_vec = np.concatenate([threat_vec, _tower_frac()]).astype(np.float32)
         if _use_canvas:                       # semantic channels from the SAME detections as the threat blocks
-            obs = np.concatenate(
-                [obs, channels_to_uint8(detection_channels(_last_dets["all"], _db,
-                                                           obs.shape[0], obs.shape[1]))], axis=2)
+            ch = channels_to_uint8(detection_channels(_last_dets["all"], _db,
+                                                      obs.shape[0], obs.shape[1]))
+            obs = np.concatenate([obs, _canvas_stack.push(ch, time.time())], axis=2)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
         ev = torch.tensor([[elixir / 10.0]], dtype=torch.float32, device=device)
         tv = torch.from_numpy(threat_vec).unsqueeze(0).float().to(device)
         with torch.no_grad():
-            z = net.features_vec(x, hv, nv, ev, tv)
-            card_logits, cell_logits = net.card_head(z), net.cell_head(z)
+            z, card_logits, cell_logits = net.forward_parts(x, hv, nv, ev, tv)
             gate_logits = gate(z) if gate is not None else None
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
         # ELIXIR: mask out any card you can't currently AFFORD (cost from the card DB). This is the
@@ -532,6 +577,7 @@ def play(cfg) -> None:
                     else:
                         _team_tracker.reset()
                     _cycle_tracker.reset()        # forget last match's cycle order
+                    _canvas_stack.reset()         # ...and last match's canvas motion history
                     _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
                     prev_mult = 1
                 prev = state

@@ -102,7 +102,19 @@ def _cmd_train_bc(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu121")
         return
-    train_bc(Config.load(args.config), init=args.init, iterations=args.iterations)
+    train_bc(Config.load(args.config), init=args.init, iterations=args.iterations,
+             data=args.data, val_frac=args.val_frac, patience=args.patience)
+
+
+def _cmd_replay_bc(args) -> None:
+    try:
+        from .replay_bc import build_replay_bc
+    except ImportError as exc:
+        print(f"[replay-bc] OpenCV/NumPy are required ({exc}).")
+        return
+    build_replay_bc(Config.load(args.config), replays=args.replays, weights=args.weights,
+                    conf=args.conf, stride=args.stride, out=args.out, min_hand=args.min_hand,
+                    limit=args.limit, preview=args.preview)
 
 
 def _cmd_train_rl(args) -> None:
@@ -142,7 +154,8 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
-                  seed=args.seed, envs=args.envs, init=args.init, device=args.device)
+                  seed=args.seed, envs=args.envs, init=args.init, device=args.device,
+                  reset_gate=args.reset_gate)
 
 
 def _cmd_sim_bench(args) -> None:
@@ -371,7 +384,36 @@ def main() -> None:
     tbc.add_argument("--iterations", type=int, default=1, metavar="N",
                      help="run N successive BC passes in one command, each warm-starting from the previous "
                           "(fresh optimizer each pass, not just more epochs); saves data/policy.pt after every pass")
+    tbc.add_argument("--data", default=None, metavar="DIR",
+                     help="dataset root to clone from (default: record.out_dir = your recordings). "
+                          "Use data/replay_bc for the pro-replay samples built by `replay-bc`.")
+    tbc.add_argument("--val-frac", type=float, default=0.0, dest="val_frac", metavar="F",
+                     help="hold out this fraction for validation and EARLY-STOP on it (e.g. 0.2). "
+                          "Strongly recommended when cloning replays: it is what stops the policy "
+                          "memorising a small, detector-noisy set instead of generalising from it.")
+    tbc.add_argument("--patience", type=int, default=3, metavar="N",
+                     help="early-stop after N epochs without val-loss improvement (default 3)")
     tbc.set_defaults(func=_cmd_train_bc)
+
+    rbc = sub.add_parser("replay-bc",
+                         help="mine PRO replay videos into a train-bc dataset (detector -> canonical "
+                              "re-render + semantic canvas; never the pro's pixels)")
+    rbc.add_argument("--replays", default=None, metavar="DIR",
+                     help="folder of replay videos (default: replay_mine.replays_dir)")
+    rbc.add_argument("--weights", default=None, help="detector weights (default: the pinned detector)")
+    rbc.add_argument("--conf", type=float, default=None, help="detector confidence (default: replay_mine.detect_conf)")
+    rbc.add_argument("--stride", type=int, default=None,
+                     help="sample every Nth frame (default: replay_mine.frame_stride)")
+    rbc.add_argument("--out", default=None, metavar="DIR", help="output root (default: data/replay_bc)")
+    rbc.add_argument("--min-hand", type=int, default=2, dest="min_hand", metavar="N",
+                     help="skip a play unless at least N tray cards were recognised -- BC learns "
+                          "'which card AMONG THESE', which needs a real hand (default 2)")
+    rbc.add_argument("--limit", type=int, default=0, metavar="N",
+                     help="stop after N samples per video (0 = no cap; handy for a quick trial)")
+    rbc.add_argument("--preview", action="store_true",
+                     help="also save annotated frames of each mined play so you can EYEBALL what "
+                          "was recovered before training on it")
+    rbc.set_defaults(func=_cmd_replay_bc)
 
     trl = sub.add_parser("train-rl", help="RL fine-tune the policy on live matches (tower/win rewards)")
     trl.add_argument("--init", default=None, metavar="CKPT",
@@ -403,6 +445,13 @@ def main() -> None:
     tsp.add_argument("--init", metavar="CKPT", default=None,
                      help="warm-start policy+gate from a checkpoint (e.g. data/policy_sim_best.pt -- Q-heads "
                           "read as logits = a Boltzmann start; the value head trains fresh)")
+    tsp.add_argument("--reset-gate", action="store_true",
+                     help="keep the warm-started TRUNK but start the wait/play gate FRESH. Use when the "
+                          "source checkpoint's gate has COLLAPSED to always-play: measured P(play) 0.938 "
+                          "with min 0.911 means it never holds at any threshold, elixir never passes 5, "
+                          "and the 6-cost win conditions stay masked (= zero policy gradient) forever. "
+                          "A fresh gate starts near P(play) 0.5, so the bar can climb and X-Bow/Rocket "
+                          "become samplable again, while the trunk keeps everything it learned.")
     tsp.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsp.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances (default: sim.envs)")

@@ -121,16 +121,17 @@ def _identity_blocks(det, db, cfg, opp_mem, prev_frame, frame, dt):
     (for the approach-velocity feature) and on the play frame, feed the opponent memory in time order,
     and return (identity block, memory block) exactly as the live policy would have seen them."""
     horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+    front = card_threat.identity_front(cfg)      # identity watch line -- MUST match live/sim
     prev_depth = 0.0
     d_prev = _enemy_dets(det, cfg, prev_frame)
     if d_prev:
         v_prev = card_threat.identity_threat_vector(
-            [(d.base, (d.gy - 0.5) / 0.5) for d in d_prev if d.gy >= 0.5], db)
+            [(d.base, card_threat.identity_depth(d.gy, front)) for d in d_prev if d.gy >= front], db)
         prev_depth = float(v_prev[7])
         opp_mem.update([(d.base, d.gy) for d in d_prev], dt=dt)
     d_now = _enemy_dets(det, cfg, frame)
     ident = card_threat.identity_threat_vector(
-        [(d.base, (d.gy - 0.5) / 0.5) for d in d_now if d.gy >= 0.5], db,
+        [(d.base, card_threat.identity_depth(d.gy, front)) for d in d_now if d.gy >= front], db,
         prev_depth=prev_depth, dt=max(1e-3, dt), horizon=horizon)
     mem = opp_mem.update([(d.base, d.gy) for d in d_now], dt=dt)
     return ident, mem

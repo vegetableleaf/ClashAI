@@ -40,9 +40,12 @@ from .cycle import CycleTracker
 from .opponent_elixir import OpponentElixirEstimator
 from .tower_hp import TowerHpTracker
 from .vision import Vision
-from .opponent_elixir import OpponentElixirEstimator
 
 Action = Tuple[int, int, int]  # (play 0/1, card_id, cell)
+
+# Crown-tower HP block width -- mirrors sim/view.TOWER_DIM: (L princess, R princess, king) x (mine, theirs).
+# Kept as a local constant (not imported from sim.view) so the live path never drags in the sim engine.
+_TOWER_DIM = 6
 
 
 class LiveMatchEnv:
@@ -79,8 +82,12 @@ class LiveMatchEnv:
         ow, oh = cfg.get("observation", "arena_size", default=[64, 96])
         # OBS-CANVAS FLIP: the image branch gains detect_obs's semantic channels when
         # observation.use_detector_canvas is on (gated on detect-eval's PRESENCE recall).
-        from .detect_obs import canvas_enabled, obs_in_channels
+        from .detect_obs import canvas_enabled, obs_in_channels, CanvasStack, canvas_stack_len, canvas_stack_dt
         self.use_canvas = canvas_enabled(cfg)
+        # CANVAS STACK: >1 carries the canvas as it looked canvas_stack_dt_s ago so the conv trunk
+        # reads MOTION off the channel deltas. Sampled by TIMESTAMP because the act loop is
+        # event-driven (wakes early on a new enemy), so consecutive decisions are NOT evenly spaced.
+        self._canvas_stack = CanvasStack(canvas_stack_len(cfg), canvas_stack_dt(cfg))
         self.obs_shape = (int(oh), int(ow), obs_in_channels(cfg))
         self._last_obs = np.zeros(self.obs_shape, dtype=np.uint8)
         self.last_outcome: Optional[str] = None
@@ -145,8 +152,30 @@ class LiveMatchEnv:
         self.lane_split_x = 0.48                       # left/right split -- matches reward.threat_side
         self.wrong_lane_margin = float(cfg.get("env", "wrong_lane_margin", default=0.12))
         self._match_bonus = 0.0
+        self._match_penalty = 0.0        # symmetric twin of _match_bonus (see _bonus)
+        # Per-term reward accounting -- which shaping term is actually driving the policy.
+        from .reward_stats import RewardTerms
+        self.rw_stats = RewardTerms()
+        self.rw_stats_path = cfg.path(f"data/reward_stats/live_{time.strftime('%Y%m%d_%H%M%S')}.jsonl")
+        # CADENCE accounting (log 2026-08-12 item 5): where a live decision's wall time actually goes.
+        # The per-match means are printed and appended to the reward-stats JSONL, so the trained-vs-
+        # served cadence mismatch (act_period 1.0 vs the measured ~2.2 s/decision) stays measured
+        # instead of inferred from match timestamps.
+        from collections import defaultdict
+        self._cad = defaultdict(float)
+        self._cad_n = 0
+        self._last_step_t: Optional[float] = None   # previous step() entry (decision-to-decision wall time)
+        self._last_frame_t: Optional[float] = None  # previous observation grab (the paced-wait anchor)
+        self._play_log: list = []                   # per-play telemetry (rebuilt per match in reset())
+        self._match_t0 = time.time()
         # X-Bow win-condition geometry (offence forward-in-range / defence back-centre) + the phase gauge
         self.xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
+        # X-Bow lifetime (s) -- the live repeat-credit gate's "our bow may still be standing" window
+        # (see _wincon_exec_live). Curated `lifetime` wins, else the imported `lifetime_s`, else the
+        # 40s generic building default (mirrors sim/engine.build_spec's resolution order).
+        _xb = (db.get("x_bow") or {}) if hasattr(db, "get") else {}
+        self.xbow_lifetime = float(_xb.get("lifetime") or _xb.get("lifetime_s") or 40.0)
+        self._xbow_play_t = None                 # when we last played an X-Bow (reset per match)
         self.deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
         self.tesla_pull_front = float(cfg.get("env", "tesla_pull_front", default=0.52))
         self.tesla_pull_back = float(cfg.get("env", "tesla_pull_back", default=0.59))
@@ -170,6 +199,7 @@ class LiveMatchEnv:
         self.detector_conf = float(cfg.get("observation", "detector_conf", default=0.75))
         self.detector_cards = set(cfg.get("observation", "detector_cards", default=[]))
         self.predict_horizon = float(cfg.get("observation", "predict_horizon_s", default=1.0))
+        self.identity_front = card_threat.identity_front(cfg)   # identity watch line (shared with sim/play/label)
         self.db = db
         # your deck's KB profiles (played-card role) for the role-based COUNTER reward
         self._deck_profiles = [card_threat.profile(db, (k[:-4] if k.endswith("_evo") else k))
@@ -182,8 +212,10 @@ class LiveMatchEnv:
         self.w_elixir_trade = rw("elixir_trade", 1.0)         # (2) (enemy value eliminated - elixir spent), normalised
         self.w_wincon = rw("wincon_exec", 0.8)                # (3) win-condition executed right for the phase
         self.w_wincon_mis = rw("wincon_misplace", -0.6)       # win-condition thrown away
-        self.w_cycle_plan = rw("cycle_plan", 0.4)             # (4) cheap play advancing toward a NEEDED upcoming counter
-        self.w_cycle_waste = rw("cycle_waste", -0.4)          # purposeless cheap spam
+        # (4) cycle_plan / cycle_waste: DELETED live too (2026-08-12). The sim deleted its copy after
+        # 110 fires / 0 positives (see sim/env._cycle_plan's stub); live then measured the identical
+        # action-tax shape -- 2 positives vs 24 negatives over 5 matches -- while being one of only
+        # three terms that fired at all. Same term, same shape, same fix.
         self.w_leak = rw("leak_penalty", -0.2)                # (5) sitting at elixir capacity, leaking
         self.correctness_cap = rw("correctness_cap", 20.0)    # per-match cap on POSITIVE shaping (anti-farm)
         self.w_take = rw("take_enemy_tower", 1.0); self.w_lose = rw("lose_own_tower", -1.0)   # the CROWN jump on a take/loss
@@ -191,8 +223,6 @@ class LiveMatchEnv:
         self.chip_power = float(cfg.get("env", "tower_chip_power", default=2.0))   # >1 -> partial chip sub-proportional
         self.combo_mult = rw("rocket_combo_mult", 3.0)
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))
-        self.cycle_cheap_max = int(cfg.get("env", "cycle_cheap_max", default=3))
-        self.cycle_spare_elixir = float(cfg.get("env", "cycle_spare_elixir", default=7.0))
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
         self.card_elixir = [(db.elixir(k) or db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
@@ -215,6 +245,11 @@ class LiveMatchEnv:
             deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
         # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
+        # TOWER-HP block: fed to the policy exactly as the sim feeds it (sim/view.tower_vector). The sim
+        # trains WITH it (threat_dim 46 -> 52) but the live env used to build the vector WITHOUT it, so a
+        # sim/PPO checkpoint's threat_fc (52 wide) could not multiply the live 46-wide vector. Same
+        # observation.use_tower_hp gate as the sim so the two widths always agree.
+        self.use_tower_obs = bool(cfg.get("observation", "use_tower_hp", default=True))
         self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
         self._last_dets_all = []                         # every tagged detection this frame (both teams)
         # PUMP PUNISH (elixir collector -> rocket): sighting state for the reward + the aim assist
@@ -245,6 +280,9 @@ class LiveMatchEnv:
         if self.use_interactions:                        # widen by the interaction block (zeros until read)
             self.threat_vec = np.concatenate(
                 [self.threat_vec, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
+        if self.use_tower_obs:                           # widen by the tower-HP block (zeros until first read)
+            self.threat_vec = np.concatenate(
+                [self.threat_vec, np.zeros(_TOWER_DIM, np.float32)]).astype(np.float32)
         # live side-window: each frame + the detector's team-coloured boxes (train-rl babysitting).
         from .detect import LivePreview, OverlayReplayRecorder
         self._preview = LivePreview(cfg)
@@ -283,6 +321,27 @@ class LiveMatchEnv:
         self.next_id = self.vision.recognize_next(frame)
         self.next_vec = self._cycle_tracker.observe(self.hand_ids, self.next_id)
 
+    def _tower_frac(self) -> np.ndarray:
+        """6-dim crown-tower HP block in the SAME layout the sim trained on (sim/view.tower_vector):
+        HP FRACTION of (L princess, R princess, king) for MINE then THEIRS, 0.0 == destroyed. Princess
+        HP is the live digit read (TowerHpTracker) normalised by each side's full; the KING's HP is
+        never printed on screen, so its alive flag is the proxy (1.0 until it falls). Destroyed towers
+        are forced to 0.0 via the alive flags, matching the sim's '0.0 => crown taken' contract."""
+        v = np.zeros(_TOWER_DIM, np.float32)
+        hp = self.tower_hp
+        mine_alive = list(getattr(self.tower, "mine_alive", []) or [])
+        enemy_alive = list(getattr(self.tower, "enemy_alive", []) or [])
+        my_full = hp.my_full if getattr(hp, "my_full", 0) > 0 else 1.0
+        en_full = hp.full if getattr(hp, "full", 0) > 0 else 1.0
+        for i in range(2):                                    # L, R princess (index 0, 1)
+            if i < len(mine_alive) and mine_alive[i] and i < len(hp.my_hp):
+                v[i] = min(1.0, max(0.0, float(hp.my_hp[i]) / my_full))
+            if i < len(enemy_alive) and enemy_alive[i] and i < len(hp.enemy_hp):
+                v[3 + i] = min(1.0, max(0.0, float(hp.enemy_hp[i]) / en_full))
+        v[2] = 1.0 if (len(mine_alive) > 2 and mine_alive[2]) else 0.0    # king: alive proxy (no live HP read)
+        v[5] = 1.0 if (len(enemy_alive) > 2 and enemy_alive[2]) else 0.0
+        return v
+
     def _update_threat(self, frame) -> None:
         """Advance the live enemy-threat read from the current frame -> policy input vector. When
         use_detector, append card_threat's identity block (RECOGNISED, HIGH-confidence enemy cards on
@@ -291,15 +350,20 @@ class LiveMatchEnv:
         self._last_threat = self.threat_tracker.update(frame, time.time())
         base = self._last_threat.vector()
         if not self.use_detector:
-            self.threat_vec = base if not self.use_interactions else np.concatenate(
-                [base, np.zeros(interactions.INTERACTION_DIM, np.float32)]).astype(np.float32)
+            parts = [base]
+            if self.use_interactions:
+                parts.append(np.zeros(interactions.INTERACTION_DIM, np.float32))
+            if self.use_tower_obs:
+                parts.append(self._tower_frac())
+            self.threat_vec = np.concatenate(parts).astype(np.float32) if len(parts) > 1 else base
             self._preview.update(frame, [], self.capture.region)      # plain frame (no detector loaded)
             return
         dets = self._detect_enemies(frame)                                   # ONE detector pass this frame
         now = time.time()
         self._track_pump(now)                                                # pump sighting -> punish window
         dt = (now - self._prev_ident_t) if self._prev_ident_t else 0.0
-        items = [(d.base, (d.gy - 0.5) / 0.5) for d in dets if d.gy >= 0.5]   # identity: YOUR half only
+        items = [(d.base, card_threat.identity_depth(d.gy, self.identity_front))
+                 for d in dets if d.gy >= self.identity_front]   # identity: from the WATCH LINE (bridge)
         self._threat_id = card_threat.identity_threat_vector(
             items, self.db, prev_depth=self._prev_ident_depth, dt=dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
@@ -318,6 +382,8 @@ class LiveMatchEnv:
                      for d in self._last_dets_all
                      if d.team in ("mine", "enemy") and d.base in self.detector_cards]
             parts.append(interactions.interaction_vector(units, my_t, en_t, self.db))
+        if self.use_tower_obs:                           # crown-tower HP -- appended LAST, as in sim/view
+            parts.append(self._tower_frac())
         self.threat_vec = np.concatenate(parts).astype(np.float32)
         if self._ploop is None:      # side window (perception loop feeds it at 10Hz itself when active)
             self._preview.update(frame, self._last_dets_all, self.capture.region)
@@ -335,7 +401,8 @@ class LiveMatchEnv:
             return img
         from . import detect_obs
         ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1])
-        return np.concatenate([img, detect_obs.channels_to_uint8(ch)], axis=2)
+        stack = self._canvas_stack.push(detect_obs.channels_to_uint8(ch), time.time())
+        return np.concatenate([img, stack], axis=2)
 
     def _detect_enemies(self, frame):
         """Whitelisted ENEMY detections (both halves; each has .base + .gy in [0,1]). With the
@@ -369,9 +436,19 @@ class LiveMatchEnv:
         self.stopped = False
         self.tower.reset()
         self.tower_hp.reset()
+        self._canvas_stack.reset()        # motion history must never bridge two matches
         self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
+        self._xbow_play_t = None          # wincon repeat-credit window must not bridge two matches
         self._match_bonus = 0.0
+        self._match_penalty = 0.0
+        self.rw_stats.new_match()
+        self._cad.clear()                 # cadence accounting is per match
+        self._cad_n = 0
+        self._last_step_t = None
+        self._last_frame_t = None         # menu time must not count against the first paced wait
+        self._play_log = []               # per-play telemetry for this match (see step's record block)
+        self._match_t0 = time.time()      # re-anchored below when IN_MATCH is actually detected
         self._nav.reset_state()
         while True:
             if self.stop_requested is not None and self.stop_requested():
@@ -383,6 +460,7 @@ class LiveMatchEnv:
             state = self.vision.detect_state(frame)
             if state == GameState.IN_MATCH:
                 self.clock.reset()               # zero the 2x/3x elixir clock at match start
+                self._match_t0 = time.time()     # per-play records use match-relative time
                 self._replay_rec.new_match()     # arm a fresh overlay-replay clip for this match
                 self.elixir_mult = 1
                 self.elixir = self.vision.read_elixir(frame)
@@ -528,23 +606,35 @@ class LiveMatchEnv:
         opposite = abs(off) > self.wrong_lane_margin and (off < 0) == (side > 0)
         return not opposite
 
-    def _threat_response_live(self, card_id: int, cx: float, cy: float, cur_mass: float) -> float:
+    def _threat_response_live(self, card_id: int, cx: float, cy: float) -> float:
         """(1) THREAT-RESPONSE: the KB-correct counter to the RECOGNISED threat, placed to intercept
-        (its lane, your half). Wrong role dropped as a defence -> penalty; a defender on a QUIET board
-        (nothing recognised, no mass) -> premature. Offensive placements are judged by wincon_exec / trade."""
+        (its lane, your half). Wrong role dropped as a defence -> penalty. Offensive placements are
+        judged by wincon_exec / trade. Mirrors sim/env._threat_response under live perception."""
         prof = self._deck_profiles[card_id] if 0 <= card_id < len(self._deck_profiles) else None
         if prof is None:
             return 0.0
         tid = self._threat_id
-        has_threat = tid is not None and len(tid) >= card_threat.IDENTITY_DIM and tid[0] >= 0.5
-        if not has_threat:
-            if cur_mass < self.quiet_frac and cy >= 0.5 and card_id in self.reactive_ids:
-                return self.w_threat_miss * 0.4        # a defender on a quiet board = premature (small)
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            # NO RECOGNISED THREAT -> NOT GRADED. The quiet-board branch here used to charge
+            # w_threat_miss * 0.4 for a reactive card on a quiet board. The sim retired that branch
+            # after 257 fires / 0 positives (see sim/env._threat_response for the full reasoning:
+            # the question cannot be answered at play time; chip/crown bill the real consequence),
+            # and live measured the same one-sided shape -- threat_response paid 7 positives against
+            # 43 negatives over 5 matches (2026-08-12). Live it was doubly wrong: `tid` unlit also
+            # covers every frame the DETECTOR simply could not read, so it punished defending
+            # exactly when perception was blind while idling scored 0 (diagnosis C4).
             return 0.0
-        intercept = self._same_lane(cx) and cy >= 0.5
+        if prof.kind == "building":
+            # A building ATTRACTS, it does not intercept -- a building-targeter is pulled to the
+            # nearest BUILDING, so the classic central Tesla against an off-lane wincon is the RIGHT
+            # play and a same-lane test is the wrong physics. The sim grades buildings on counter
+            # role alone (sim/env._threat_response); live still demanded same-lane, so the deck's
+            # signature defensive play earned ZERO here -- one of the missing reachable positives.
+            return self.w_threat_response if card_threat.counters(prof, tid) else 0.0
         if prof.pull:
             return 0.0        # PULL spells are graded by their delayed clump payoff, not by role match
-                              # (see sim/env._threat_response) -- spell_waste still punishes an empty cast
+                              # (see sim/env._threat_response; live bills an empty cast via the trade spend)
+        intercept = self._same_lane(cx) and cy >= 0.5
         if card_threat.counters(prof, tid):
             return self.w_threat_response if intercept else 0.0
         return self.w_threat_miss if intercept else 0.0
@@ -575,10 +665,22 @@ class LiveMatchEnv:
             behind = central and cy > self.xbow_defense_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
             if self._defensive:
-                return self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
-            if d <= self.xbow_range:
-                return self.w_wincon
-            return self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
+                val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
+            elif d <= self.xbow_range:
+                val = self.w_wincon
+            else:
+                val = self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
+            # REPEAT-CREDIT GATE, live twin of sim/env._wincon_exec's (2026-08-12): no positive
+            # credit while our previous X-Bow can still be standing. Live cannot reliably SEE its
+            # own bow (detector recall), but it KNOWS when it played one -- so "standing" is the
+            # KB lifetime window since our last X-Bow play. Perception-independent by design; the
+            # cost is a brief over-waive when the bow died early, which only withholds a bonus.
+            # Misplaces still charge, and sequential re-placement re-credits once the window lapses.
+            if val > 0.0 and self._xbow_play_t is not None \
+                    and (time.time() - self._xbow_play_t) < self.xbow_lifetime:
+                val = 0.0
+            self._xbow_play_t = time.time()      # every X-Bow play re-anchors the window
+            return val
         if card_id in self.rocket_ids:
             pxy = self._pump_xy if self._pump_fresh() else None   # PUMP PUNISH mirror (perception-gated)
             if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius:
@@ -600,29 +702,20 @@ class LiveMatchEnv:
                 return self.w_wincon
         return 0.0
 
-    def _needed_counter_coming(self, hand) -> bool:
-        """True when the hand holds NO KB counter to the assessed threat but the deck DOES (upcoming)."""
-        if (self._pump_fresh() and not (set(hand) & self.rocket_ids)
-                and any(r not in hand for r in self.rocket_ids)):
-            return True                                       # a fresh enemy PUMP is a rocket job: cycle to it
+    def _perception_blind(self, cur_mass: float) -> bool:
+        """True when the coarse mass read says the board is ACTIVE but the detector recognised
+        nothing -- a frame whose threat the identity block cannot justify judging. The sim never has
+        such frames (ground truth), so this is live's one principled divergence: a defensive play on
+        a blind frame has its trade-term SPEND waived, because billing it taught the policy that
+        defending is wrong exactly when perception fails (diagnosis C4: defending was punished 6:1
+        while idling scored 0). The mass-delta half of the trade term still applies every step, so
+        the telescoping anti-farm property is untouched. Without a detector wired, live keeps the
+        sim's plain spend semantics."""
+        if self._detector is None:
+            return False
         tid = self._threat_id
-        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            return False
-        if any(0 <= c < len(self._deck_profiles) and card_threat.counters(self._deck_profiles[c], tid)
-               for c in hand):
-            return False
-        return any(card_threat.counters(self._deck_profiles[c], tid)
-                   for c in range(self.n_cards) if c not in hand)
-
-    def _cycle_plan_live(self, card_id: int, pre_elixir: float) -> float:
-        """(4) CYCLE-PLAN: a CHEAP play at spare elixir that advances toward a NEEDED counter you don't
-        hold but the deck does -> +; purposeless cheap spam -> -."""
-        if not (0 <= card_id < self.n_cards) or self.card_elixir[card_id] > self.cycle_cheap_max:
-            return 0.0
-        hand = [c for c in self.hand_ids if 0 <= c < self.n_cards]
-        if self._needed_counter_coming(hand):
-            return self.w_cycle_plan if pre_elixir >= self.cycle_spare_elixir else 0.0
-        return self.w_cycle_waste if pre_elixir < self.cycle_spare_elixir else 0.0
+        unlit = tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5
+        return unlit and cur_mass >= self.quiet_frac
 
     def _trade_reward(self, mass_delta: float, spent: float) -> float:
         """(2) ELIXIR-TRADE: potential-based enemy-mass change (clipped to a 'full push' fraction so it
@@ -666,13 +759,22 @@ class LiveMatchEnv:
         return prog
 
     def _bonus(self, credit: float) -> float:
-        """Cap the CUMULATIVE positive correctness shaping per match (anti-farm); penalties (<=0) pass
-        through untouched."""
-        if credit <= 0.0:
-            return credit
-        allowed = min(credit, max(0.0, self.correctness_cap - self._match_bonus))
-        self._match_bonus += allowed
-        return allowed
+        """Cap the CUMULATIVE correctness shaping per match, SYMMETRICALLY (anti-farm both ways).
+
+        This used to cap only the POSITIVE side and let penalties through untouched. Over a ~180-300
+        decision match that is not a cap, it is a slope: the bonus saturates at `correctness_cap` while
+        the penalty stream keeps growing, so the highest-value policy becomes the one that ENDS THE
+        MATCH SOONEST -- exactly the passivity/self-defeat collapse this project has now hit three
+        times. Bounding both signs by the same budget keeps the original anti-farm intent without
+        making 'stop playing' the optimum.
+        """
+        if credit >= 0.0:
+            allowed = min(credit, max(0.0, self.correctness_cap - self._match_bonus))
+            self._match_bonus += allowed
+            return allowed
+        allowed = min(-credit, max(0.0, self.correctness_cap - self._match_penalty))
+        self._match_penalty += allowed
+        return -allowed
 
     def step(self, action: Action):
         play, card_id, cell = action
@@ -712,15 +814,24 @@ class LiveMatchEnv:
                     if pull is not None:
                         cell = pull
             action = (play, card_id, cell)
+        now = time.time()                                     # -- cadence: decision-to-decision wall time
+        if self._last_step_t is not None:
+            self._cad["loop"] += now - self._last_step_t
+            self._cad_n += 1
+        self._last_step_t = now
         eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
         is_rocket = card_id in self.rocket_ids
         is_rd = card_id in self.royal_delivery_ids
+        t0 = time.time()
         self._execute(action)
+        self._cad["act"] += time.time() - t0
         spell_samples = []
         if eval_spell:
             # Predict the impact time (rocket travel ~ distance; tornado ~immediate) and
             # sample a short window around it, so troops are caught in the radius whatever
-            # the target distance is.
+            # the target distance is. NB this stalls the loop up to ~spell_eval_time + 0.6s --
+            # the single biggest cadence outlier; it shows up under `spell` in the [cadence] line.
+            t0 = time.time()
             gx, gy = cell % self.gw, cell // self.gw
             cx, cy = self.actions.cell_center(gx, gy)
             it = self._impact_time(cx, cy, is_rocket, is_rd)
@@ -732,20 +843,39 @@ class LiveMatchEnv:
                 if f is not None:
                     spell_samples.append(f)
             frame = spell_samples[-1] if spell_samples else self._grab()
+            self._cad["spell"] += time.time() - t0
         else:
+            # PACED WAIT, anchored to the PREVIOUS OBSERVATION. The old form slept the full
+            # act_period and THEN paid the whole pipeline (grab + vision + OCR + detector + tap), so
+            # the served cadence was act_period + pipeline -- measured ~2.2 s/decision against the
+            # trained agent_dt of 1.0 s (log 2026-08-12, C-list item 5: an unflagged train/serve
+            # mismatch). Waiting only for what REMAINS of the period since the last frame grab runs
+            # the pipeline inside the period, so the served cadence converges to act_period whenever
+            # pipeline + learner fit within it (and to their sum, not their sum + act_period, when
+            # they don't). EVENT-DRIVEN wake is unchanged: perception can still cut the wait short
+            # the moment it spots a new enemy commitment (react_min_gap rate-limits, so quiet-board
+            # cadence stays at the trained act_period).
+            t0 = time.time()
+            remaining = self.act_period if self._last_frame_t is None else \
+                max(0.0, self._last_frame_t + self.act_period - t0)
             if self._ploop is not None and self._ploop.running:
-                # EVENT-DRIVEN: wake the moment perception spots a new enemy commitment (reaction
-                # ~0.3-0.45s = perception period + inference + tap) instead of sleeping the full period;
-                # min_gap rate-limits so quiet-board cadence stays at the trained act_period.
-                self._ploop.wait_event(self.act_period, self.react_min_gap)
-            else:
-                time.sleep(self.act_period)
+                if remaining > 0.0:
+                    self._ploop.wait_event(remaining, self.react_min_gap)
+            elif remaining > 0.0:
+                time.sleep(remaining)
+            self._cad["wait"] += time.time() - t0
+            t0 = time.time()
             frame = self._grab()
+            self._cad["grab"] += time.time() - t0
+        self._last_frame_t = time.time()
         if frame is None:
             return self._last_obs, 0.0, True, {"outcome": None, "error": "capture_lost"}
 
+        t0 = time.time()
         state = self.vision.detect_state(frame)
+        self._cad["vision"] += time.time() - t0
         if state == GameState.IN_MATCH:
+            t0 = time.time()
             prev_princess = list(self.tower.mine_alive[:2])
             prev_enemy = list(self.tower.enemy_alive[:2])
             # OUTCOME compass: the CROWN is the big JUMP (enemy tower taken -> +take, my king lost -> +lose);
@@ -756,13 +886,17 @@ class LiveMatchEnv:
             # works), so the reward JUMPS on the crown, not gradually with damage.
             ep = self._chip_progress(self.tower_hp.enemy_hp, self.tower_hp.full)
             reward = crown_r + (ep - self._prev_chip_prog) * self.tower_chip_scale
+            self.rw_stats.add("crown", crown_r)
+            self.rw_stats.add("chip_offence", (ep - self._prev_chip_prog) * self.tower_chip_scale)
             self._prev_chip_prog = ep
             mp = self._chip_progress(self.tower_hp.my_hp, self.tower_hp.my_full)
             reward -= (mp - self._prev_chip_prog_def) * self.tower_chip_scale
+            self.rw_stats.add("chip_defence", -(mp - self._prev_chip_prog_def) * self.tower_chip_scale)
             self._prev_chip_prog_def = mp
             for i in range(len(prev_princess)):              # a felled princess -> the big defensive jump
                 if prev_princess[i] and not self.tower.mine_alive[i]:
                     reward += self.w_lose
+                    self.rw_stats.add("lose_own_tower", self.w_lose)
             cur_mass = enemy_mass(frame, self.cfg)
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
@@ -770,11 +904,7 @@ class LiveMatchEnv:
             if new_mult != self.elixir_mult:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
             self.elixir_mult = new_mult
-            # BEHIND + FULL-BAR read (for the idle penalty + the offense-when-behind reward below):
-            # behind = a princess is down that the enemy still has, OR our weakest STANDING tower has
-            # less HP than the enemy's weakest. pre_elixir = the bar at DECISION time (post-action the
-            # card's cost is already spent, so a played card would read a non-full bar).
-            pre_elixir = self.vision.read_elixir(self._last_frame) if self._last_frame is not None else cur_elixir
+            self._cad["vision"] += time.time() - t0              # tower reads + HP OCR + mass + elixir + clock
             # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
             # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
             # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
@@ -792,29 +922,84 @@ class LiveMatchEnv:
             spent = float(self.card_elixir[card_id]) if (play and 0 <= card_id < self.n_cards) else 0.0
             if play and self._forced_expensive_spend(card_id, cy):
                 spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
+            elif play and cy >= 0.5 and self._perception_blind(cur_mass):
+                spent = 0.0            # perception gate: defence on a frame the detector could not justify is not billed
+            tr = wc = tmi = lk = 0.0
             if play:
-                reward += self._bonus(self._threat_response_live(card_id, cx, cy, cur_mass))   # (1) counter the assessed threat
-                reward += self._bonus(self._wincon_exec_live(card_id, cx, cy))                  # (3) win-condition executed right
-                reward += self._bonus(self._cycle_plan_live(card_id, pre_elixir))              # (4) deliberate cycling
+                tr = self.rw_stats.add("threat_response", self._bonus(self._threat_response_live(card_id, cx, cy)))   # (1) counter the assessed threat
+                wc = self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec_live(card_id, cx, cy)))            # (3) win-condition executed right
             else:
-                reward += self._threat_miss_idle_live(cur_mass)                                 # (1) ignored an ANSWERABLE threat
+                tmi = self.rw_stats.add("threat_miss_idle", self._threat_miss_idle_live(cur_mass))                     # (1) ignored an ANSWERABLE threat
             # (2) ELIXIR-TRADE: potential-based enemy-mass change (telescopes, anti-farm) minus the elixir spent.
-            reward += self._trade_reward(self._prev_mass - cur_mass, spent)
+            trd = self.rw_stats.add("elixir_trade", self._trade_reward(self._prev_mass - cur_mass, spent))
             if not play and cur_elixir >= self.full_elixir:
-                reward += self.w_leak                                                            # (5) leaking at capacity
+                lk = self.rw_stats.add("leak", self.w_leak)                                                            # (5) leaking at capacity
+            reward += tr + wc + tmi + trd + lk
+            self.rw_stats.step(bool(play))
+            # PER-PLAY record -> the reward-stats JSONL ("plays" array per match): every play, plus
+            # every wait that drew the idle penalty. This is what turns "elixir_trade -22/match" into
+            # "rocket at (0.19, 0.02) with no recognised threat, x14" -- the per-term aggregates can
+            # name the guilty TERM but not the guilty HABIT. Pure telemetry: values are the exact
+            # numbers already added to `reward` above, recorded after the fact.
+            if play or tmi != 0.0:
+                rec = {"t": round(time.time() - self._match_t0, 1), "play": int(bool(play)),
+                       "trade": round(float(trd), 3), "elixir": round(float(cur_elixir), 1),
+                       "mult": int(self.elixir_mult), "mass": round(float(cur_mass), 4)}
+                if play:
+                    cost = float(self.card_elixir[card_id]) if 0 <= card_id < self.n_cards else 0.0
+                    rec.update(card=(self.vision.deck_keys[card_id] if 0 <= card_id < self.n_cards
+                                     else str(card_id)),
+                               cell=int(cell), x=round(float(cx), 3), y=round(float(cy), 3),
+                               raw_cell=int(raw_cell), cost=round(cost, 1),
+                               waived=int(cost > 0.0 and spent == 0.0),   # forced-counter or blind-frame spend waiver
+                               tr=round(float(tr), 3), wc=round(float(wc), 3))
+                else:
+                    rec["tmi"] = round(float(tmi), 2)
+                tid = self._threat_id
+                if tid is not None and len(tid) >= card_threat.IDENTITY_DIM and float(tid[0]) >= 0.5:
+                    rec["tid"] = [round(float(v), 2) for v in tid[:card_threat.IDENTITY_DIM]]
+                if len(self._play_log) < 600:                  # ~70 decisions/match; cap is a safety net
+                    self._play_log.append(rec)
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
             self.elixir = cur_elixir
             self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
+            t0 = time.time()
             self._read_hand(frame)
+            self._cad["hand"] += time.time() - t0
+            t0 = time.time()
             self._update_threat(frame)
+            self._cad["threat"] += time.time() - t0
+            t0 = time.time()
             self._last_obs = self._observe(frame)
+            self._cad["obs"] += time.time() - t0
             self._last_frame = frame
             return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
 
         # match is over -> resolve win/loss terminal reward, then exit
         reward, outcome, detail = self._resolve_terminal()
         self.last_outcome = outcome
+        # Per-term breakdown for THIS match: the action-tax signature (a term that fires often and
+        # never pays positive) is visible here in one match instead of after a whole training run.
+        self.rw_stats.add("outcome", reward)
+        self.rw_stats.matches += 1
+        print(self.rw_stats.format_match(f"match {self.rw_stats.matches} ({outcome})"), flush=True)
+        # Per-phase cadence means for THIS match. `loop` is the true decision-to-decision wall time
+        # (env pipeline + the trainer's inference/learn step); the named phases are the env's share,
+        # so `loop - sum(phases)` ~= what the TRAINER added. The mismatch this measures is C-list
+        # item 5 (trained act_period 1.0 vs the ~2.2 s that was actually served).
+        cad = {}
+        if self._cad_n:
+            order = ("loop", "wait", "spell", "grab", "vision", "hand", "threat", "obs", "act")
+            cad = {k: round(self._cad[k] / self._cad_n, 3) for k in order if self._cad.get(k)}
+            print(f"[cadence] {self._cad_n} decisions | "
+                  + "  ".join(f"{k} {v:.2f}s" for k, v in cad.items()), flush=True)
+        self.rw_stats.dump_match(self.rw_stats_path,
+                                 {"outcome": outcome, "decisions": self._cad_n, "cadence": cad,
+                                  # NB key must NOT be "plays": dump_match merges match_summary() LAST,
+                                  # whose int "plays" count would silently clobber this array (it did,
+                                  # 2026-08-13 -- the whole day's per-play detail was lost to that).
+                                  "play_log": self._play_log})
         return self._last_obs, reward, True, {"outcome": outcome, **detail}
 
     def _impact_time(self, cx: float, cy: float, is_rocket: bool, is_rd: bool = False) -> float:

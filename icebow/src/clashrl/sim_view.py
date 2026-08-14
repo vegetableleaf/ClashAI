@@ -37,7 +37,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from .sim.engine import _RIVER, _ROCKET_RADIUS, _TILES_X, _TILES_Y, _TORNADO_RADIUS
+from .sim.engine import (_LOG_BACK_SLOP, _RIVER, _ROCKET_RADIUS, _TILES_X, _TILES_Y,
+                         _TORNADO_RADIUS)
 from .sim.env import SimMatchEnv
 
 WINDOW = "clashrl sim-view"
@@ -147,6 +148,14 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.putText(img, f"pull {v.left:.1f}s", (c[0] - 22, c[1] - semi[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _VORTEX, 1)
 
+    # --- splash flashes: each splash HIT draws its true AOE circle for ~0.15 s (user request:
+    # a brief flash at the moment of attack, not a continuous ring) -------------------------------
+    for (sx, sy, sr, st) in getattr(eng, "splash_events", []):
+        age = eng.t - st
+        if 0.0 <= age <= 0.15:
+            c = px(sx, sy)
+            cv2.ellipse(img, c, rad_px(sr), 0, 0, 360, (0, 200, 255), 1)
+
     # --- towers ------------------------------------------------------------------------------
     for team in (1, 0):
         for tw in eng.towers[team]:
@@ -171,8 +180,18 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
                             (60, 200, 255) if "AWAKE" in tag else _DIM, 1)
 
     # --- spells in flight --------------------------------------------------------------------
+    # Draw the AREA a pending spell will affect, not just its cast point. A rolling Log is a forward
+    # ground CORRIDOR (what `_resolve_roll` actually tests), so without its rectangle it reads as a
+    # point blast localized to the cast tile -- the exact confusion this debugger exists to prevent.
     for s in getattr(eng, "spells", []):
         c = px(s.x, s.y)
+        if getattr(s.spec, "rolls", False):               # The Log: forward corridor toward the enemy
+            fdir = -1.0 if s.team == 0 else 1.0           # forward = up for you (team 0), down for them
+            halfw = s.spec.spell_radius                   # corridor half-width (tiles)
+            y_front = s.y + fdir * s.spec.roll_len / _TILES_Y     # reaches roll_len tiles ahead...
+            y_back = s.y - fdir * _LOG_BACK_SLOP / _TILES_Y       # ...and a little behind the cast tile
+            cv2.rectangle(img, px(s.x - halfw / _TILES_X, y_back),
+                          px(s.x + halfw / _TILES_X, y_front), _SPELL, 1)
         cv2.drawMarker(img, c, _SPELL, cv2.MARKER_CROSS, 13, 1)
         if "rocket" in s.spec.key:                        # show the blast it WILL make
             cv2.ellipse(img, c, rad_px(_ROCKET_RADIUS), 0, 0, 360, _SPELL, 1)
@@ -296,12 +315,12 @@ def _policy_agent(env, path: str):
     def choose(e):
         with torch.no_grad():
             x = torch.from_numpy(e._last_obs).float().div(255).permute(2, 0, 1).unsqueeze(0)
-            z = net.features_vec(x,
-                                 torch.from_numpy(e.hand_vec).unsqueeze(0),
-                                 torch.from_numpy(e.next_vec).unsqueeze(0),
-                                 torch.from_numpy(e.elixir_vec).unsqueeze(0),
-                                 torch.from_numpy(e.threat_vec).unsqueeze(0))
-            cq, ceq, gq = net.card_head(z)[0], net.cell_head(z)[0], gate(z)[0]
+            z, cq_b, ceq_b = net.forward_parts(x,
+                                               torch.from_numpy(e.hand_vec).unsqueeze(0),
+                                               torch.from_numpy(e.next_vec).unsqueeze(0),
+                                               torch.from_numpy(e.elixir_vec).unsqueeze(0),
+                                               torch.from_numpy(e.threat_vec).unsqueeze(0))
+            cq, ceq, gq = cq_b[0], ceq_b[0], gate(z)[0]
             ok = torch.tensor([bool(v >= 0.5 and e.specs[i].elixir <= e.eng.elixir[0])
                                for i, v in enumerate(e.hand_vec)])
             if not bool(ok.any()):

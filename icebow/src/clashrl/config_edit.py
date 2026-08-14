@@ -155,10 +155,8 @@ FIELDS: List[Dict[str, Any]] = [
      "group": "Rewards", "label": "Elixir leaked"},
     {"path": ["rewards", "spell_waste"], "type": "float", "min": -100, "max": 100,
      "group": "Rewards", "label": "Spell wasted"},
-    {"path": ["rewards", "cycle_plan"], "type": "float", "min": -100, "max": 100,
-     "group": "Rewards", "label": "Cycle planned"},
-    {"path": ["rewards", "cycle_waste"], "type": "float", "min": -100, "max": 100,
-     "group": "Rewards", "label": "Cycle wasted"},
+    # cycle_plan / cycle_waste: removed from the editor -- the term was deleted from BOTH envs
+    # (2026-08-12; see sim/env._cycle_plan), so the knobs are inert and tuning them is a trap.
     {"path": ["rewards", "correctness_cap"], "type": "float", "min": 0, "max": 1000,
      "group": "Rewards", "label": "Cap on shaping rewards",
      "help": "Limits how much the correctness rewards weigh against the match outcome."},

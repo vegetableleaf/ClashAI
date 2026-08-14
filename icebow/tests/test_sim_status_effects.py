@@ -58,6 +58,30 @@ def _make_engine():
 
 
 class SimStatusEffectsTests(unittest.TestCase):
+    def test_tower_keeps_its_lock_until_reset(self):
+        eng = _make_engine()
+        tower = eng.towers[0][0]
+        far = Unit(spec=build_spec(eng.db, "knight"), team=1, x=tower.x, y=tower.y - 0.15, hp=100.0)
+        near = Unit(spec=build_spec(eng.db, "skeletons"), team=1, x=tower.x, y=tower.y - 0.05, hp=100.0)
+        eng.units.extend([far, near])
+
+        eng._tower_fire(0, tower, tower.first_hit + 0.01)
+        self.assertIs(tower.target, near, "the tower should lock the nearest target when it first acquires")
+
+        nearer = Unit(spec=build_spec(eng.db, "skeletons"), team=1, x=tower.x, y=tower.y - 0.02, hp=100.0)
+        eng.units.append(nearer)
+        tower.reload_left = 0.0
+        eng._tower_fire(0, tower, tower.hit_speed + 0.01)
+        self.assertIs(tower.target, near,
+                      "a closer enemy must not steal crown-tower aggro until the current lock is reset")
+
+        eng._apply_status(1, build_spec(eng.db, "zap"), tower)
+        tower.stun_left = 0.0
+        tower.reload_left = 0.0
+        eng._tower_fire(0, tower, tower.first_hit + 0.01)
+        self.assertIs(tower.target, nearer,
+                      "after a stun/freeze reset the tower should recalculate and pick the new nearest foe")
+
     def test_status_effects_apply_to_crown_towers(self):
         eng = _make_engine()
         tower = eng.towers[0][2]

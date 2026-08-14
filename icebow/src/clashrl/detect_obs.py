@@ -13,6 +13,7 @@ Reuses the detector wrapper in replay_mine (load_detector / BoardDetector / Dete
 from __future__ import annotations
 
 import random
+from collections import deque
 from datetime import datetime
 from pathlib import Path
 from typing import List
@@ -38,13 +39,90 @@ def canvas_enabled(cfg) -> bool:
     return bool(cfg.get("observation", "use_detector_canvas", default=False))
 
 
+def canvas_stack_len(cfg) -> int:
+    """How many semantic-canvas SNAPSHOTS the image branch carries. 1 = a single canvas (today).
+
+    A single canvas is a SNAPSHOT: it says where every unit is, never where it is GOING. Stacking
+    the last N canvases at a fixed spacing lets the conv trunk read MOTION straight off the channel
+    deltas -- the cheap alternative to an explicit per-unit velocity channel, which would depend on
+    cross-frame box association (a much harder ask than the class-agnostic PRESENCE recall the
+    canvas is gated on: a unit missed on one frame is simply absent from that slice).
+    """
+    if not canvas_enabled(cfg):
+        return 1
+    return max(1, int(cfg.get("observation", "canvas_stack", default=1)))
+
+
+def canvas_stack_dt(cfg) -> float:
+    """Seconds BETWEEN stacked canvas snapshots.
+
+    Sampled on a FIXED clock rather than 'the last N observations' because neither producer ticks
+    evenly: live perception is a ceiling (`observation.perception_hz`, ~5-10 Hz depending on what
+    else holds the GPU) and the act loop wakes early on a new-enemy event, so consecutive decisions
+    can be 0.3-1.0 s apart. Sampling by TIME keeps the implied motion scale constant, so a stack
+    means the same thing in the sim, live, and a mined replay.
+    """
+    return max(1e-3, float(cfg.get("observation", "canvas_stack_dt_s", default=0.5)))
+
+
 def obs_in_channels(cfg) -> int:
     """Channel count of the policy's IMAGE branch: 3 (RGB arena) + the semantic canvas when on.
 
     Every PolicyNet construction site reads this so sim, live play and all three trainers agree;
     the value is also stamped into each checkpoint as `in_ch` so `play` rebuilds the right net.
     """
-    return 3 + (N_CHANNELS if canvas_enabled(cfg) else 0)
+    return 3 + (N_CHANNELS * canvas_stack_len(cfg) if canvas_enabled(cfg) else 0)
+
+
+class CanvasStack:
+    """Fixed-dt history of semantic canvases -> the MOTION half of the observation image.
+
+    ``push`` the newest canvas with its timestamp each time an observation is built; ``stacked``
+    returns ``[oh, ow, N_CHANNELS * n]`` ordered NEWEST FIRST, so channels 0..5 stay exactly the
+    canvas a 1-deep stack would have produced and the older slices are appended behind it.
+
+    Slices are picked by NEAREST TIMESTAMP to ``t - k*dt`` rather than by position, which is what
+    makes an uneven producer safe. Before enough history exists every slot resolves to the newest
+    canvas, so a match opens with ZERO apparent motion instead of a phantom velocity.
+
+    Dtype-agnostic: the sim renders uint8 channels and the live path converts through
+    ``channels_to_uint8``, so the stack simply concatenates whatever it was given.
+    """
+
+    def __init__(self, n: int, dt: float, maxlen: int = 64):
+        self.n = max(1, int(n))
+        self.dt = max(1e-3, float(dt))
+        self._buf: deque = deque(maxlen=max(2, int(maxlen)))
+
+    def reset(self) -> None:
+        """Drop all history -- call at MATCH START so motion never bridges two matches."""
+        self._buf.clear()
+
+    def push(self, canvas: np.ndarray, t: float) -> np.ndarray:
+        """Record ``canvas`` at time ``t`` and return the stacked view ending at it."""
+        self._buf.append((float(t), canvas))
+        return self.stacked(t)
+
+    def stacked(self, t: float | None = None) -> np.ndarray:
+        """The stacked canvas ending at ``t`` (default: the newest pushed timestamp)."""
+        if not self._buf:
+            raise ValueError("CanvasStack.stacked() before any push()")
+        newest_t, newest = self._buf[-1]
+        if self.n == 1:
+            return newest                      # identical to the un-stacked canvas (no copy, no cost)
+        t = newest_t if t is None else float(t)
+        slices = [newest]
+        for k in range(1, self.n):
+            slices.append(self._nearest(t - k * self.dt))
+        return np.concatenate(slices, axis=2)
+
+    def _nearest(self, target: float) -> np.ndarray:
+        best, best_d = self._buf[-1][1], None
+        for et, ec in self._buf:
+            d = abs(et - target)
+            if best_d is None or d < best_d:
+                best, best_d = ec, d
+        return best
 
 
 def channels_to_uint8(channels: np.ndarray) -> np.ndarray:

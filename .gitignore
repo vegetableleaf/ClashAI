@@ -41,4 +41,8 @@ desktop.ini
 # Not committed: they are someone else's images and cost ~2.6 MB.
 icebow/templates/cardart/
 
+# --- Stale push worktrees + root-level model weights (large / regenerable) ---
+_push_worktree/
+*.pt
+
 # Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png

@@ -36,7 +36,7 @@ deck:
     - {card: rocket, level: 14}
     - {card: knight, evolved: true, level: 16}   # EVO Knight (2-cycle evolution: gains a shield + damage-reduction dash); swapped in for miner 2026-08-04
     - {card: the_log, level: 14}
-    - {card: skeletons, level: 13}
+    - {card: skeletons, level: 15}    # upgraded 13 -> 15 on 2026-08-11 (real account level, confirmed)
 
 # ---------------------------------------------------------------------
 # card fields:
@@ -637,17 +637,31 @@ cards:
     targets: buildings_only
     # "When defeated, the Golem explodes, dealing damage, INFLICTING KNOCKBACK, while spawning two
     # Golemites" -- the knockback rides on the DEATH blast, not on its melee swing.
-    flags: [tank, building_targeting, knockback]
+    # SPLIT-ON-DEATH (2026-08-11): the split was never wired, so in the sim the Golem simply
+    # VANISHED when killed -- the defender got the whole 8-elixir tank for free and never had to
+    # answer the second wave. `spawns.on_death` is the same death-burst path the Tombstone uses;
+    # with no `interval` it fires ONLY on death, which is exactly the Golem's behaviour.
+    # death_damage 225 = the Fandom Card Statistics table at LEVEL 11 (this file's reference level,
+    # cards_stats.json meta.level), which the import left null -- so the death blast did nothing.
+    spawns: {unit: golemite, on_death: 2}
+    death_damage: 225            # L11 Fandom; radius 2.0 tiles already imported (death_radius_tiles)
+    flags: [tank, building_targeting, knockback, death_damage]
     range: melee
-    verified: false
+    verified: true
 
   lava_hound:
     display: "Lava Hound"
     win_condition: true
     targets: buildings_only
+    # "When defeated, it bursts into six spread-out Lava Pups" (Fandom; Lava Pup Attributes = x6).
+    # The Hound is the SHIELD, the Pups are the damage -- without this split the sim's LavaLoon
+    # opponents were a slow 7-elixir balloon that died to nothing, so the policy never learned that
+    # killing the Hound is when the fight actually starts.
+    # NO death damage: "the Lava Hound in Clash Royale does not have death damage" (Fandom trivia).
+    spawns: {unit: lava_pups, on_death: 6}
     flags: [flying, building_targeting]
     range: melee
-    verified: false
+    verified: true
 
   ram_rider:
     display: "Ram Rider"
@@ -685,9 +699,18 @@ cards:
     display: "Elixir Golem"
     win_condition: true
     targets: buildings_only
+    # Splits TWICE: Elixir Golem -> 2 Elixir Golemites -> 2 Elixir Blobs each (4 blobs). The chain
+    # is automatic -- build_spec resolves a spawn unit's OWN `spawns`, so the golemite entry below
+    # carries the second split and the blobs (which spawn nothing) terminate it.
+    # THE DRAWBACK IS THE POINT: every death in the chain REFUNDS ELIXIR TO THE OPPONENT --
+    # Golem 1 + 2 Golemites x0.5 + 4 Blobs x0.5 = up to 4 elixir back for a 3-elixir card. Modelled
+    # via `elixir_on_death` (sim/engine.py pays it to the other team on death), so the sim can no
+    # longer learn that Elixir Golem is free value.
+    spawns: {unit: elixir_golemite, on_death: 2}
+    elixir_on_death: 1.0
     flags: [building_targeting]
     range: melee
-    verified: false
+    verified: true
 
   royal_hogs:
     display: "Royal Hogs"
@@ -703,6 +726,11 @@ cards:
     targets: buildings_only
     flags: [tank, building_targeting]
     range: melee
+    # ZAP PACK (wiki): units damaging him within 3 tiles take ~120 (L11) back + a 0.5s stun; off
+    # while frozen/stunned. This is what makes the ranged-only counter-doctrine learnable in sim.
+    reflect_damage: 120
+    reflect_radius_tiles: 3.0
+    reflect_stun_s: 0.5
     verified: false
 
   skeleton_barrel:
@@ -864,8 +892,21 @@ cards:
     win_condition: false           # a death-spawn, not a deployed win condition -- but it keeps going for the tower
     targets: buildings_only
     flags: [building_targeting, death_damage]
+    # COMBAT STATS ARE CURATED HERE ON PURPOSE: death-spawn children are not cards, so they are
+    # absent from cards_stats.json (the importer only keeps the parent's `spawn_unit_stats`, i.e.
+    # the attributes below). Without these the Golemites would spawn at 0 HP and die on arrival --
+    # i.e. the split would look wired but change nothing. LEVEL 11 = this file's reference level,
+    # from the Fandom Golem page's "Card Statistics" table (Golemite columns).
+    hitpoints: 1039
+    damage: 84
+    dps: 33
+    hit_speed: 2.5
+    death_damage: 99               # "the Golemites also deal area damage upon death"
+    death_radius_tiles: 2.0        # Fandom Golemite Attributes: Death Damage Splash Radius 2
+    range_tiles: 0.25              # Melee: Short (0.25) -- matches golem.spawn_unit_stats
+    speed_tiles: 0.75              # Slow (45)
     evolution: null
-    verified: false
+    verified: true
 
   elixir_golemite:                 # the 2 mid units Elixir Golem splits into on death (each then splits into blobs)
     display: "Elixir Golemite"
@@ -881,8 +922,18 @@ cards:
     win_condition: false
     targets: buildings_only
     flags: [building_targeting]
+    spawns: {unit: elixir_blob, on_death: 2}   # the SECOND split: 2 golemites -> 4 blobs total
+    elixir_on_death: 0.5                       # each Golemite hands the opponent half an elixir
+    # LEVEL 11 (this file's reference level), USER-VERIFIED in-game 2026-08-11. The attributes also
+    # match elixir_golem.spawn_unit_stats from the import (hit_speed 1.1, range 0.8, medium speed).
+    hitpoints: 762
+    damage: 128
+    dps: 116                       # 128 / 1.1
+    hit_speed: 1.1
+    range_tiles: 0.8
+    speed_tiles: 1.0               # medium
     evolution: null
-    verified: false
+    verified: true
 
   elixir_blob:                     # the smallest Elixir Golem split (gives the OPPONENT elixir when it dies)
     display: "Elixir Blob"
@@ -891,15 +942,25 @@ cards:
     rarity: rare
     attacks: [ground]
     movement: ground
-    speed: medium
+    speed: fast
     range: melee
     splash: false
     count: 1
     win_condition: false
     targets: buildings_only
     flags: [building_targeting]
+    # End of the chain -- blobs spawn nothing, which is what terminates the recursion.
+    # LEVEL 11, USER-VERIFIED in-game 2026-08-11. Blobs are FAST (1.5 tiles/s), so they reach a
+    # tower quickly if they are ignored -- and each one still refunds half an elixir when killed.
+    elixir_on_death: 0.5
+    hitpoints: 360
+    damage: 64
+    dps: 58                        # 64 / 1.1
+    hit_speed: 1.1
+    range_tiles: 0.8
+    speed_tiles: 1.5               # fast
     evolution: null
-    verified: false
+    verified: true
 
   lava_pups:                       # the small FLYING units Lava Hound splits into on death (6 pups); UNLIKE
     display: "Lava Pups"           # the Hound (buildings_only) they attack troops too -> targets any, air+ground
@@ -915,8 +976,17 @@ cards:
     win_condition: false           # a death-spawn swarm, not a deployed win condition
     targets: any
     flags: [flying]
+    # Curated for the same reason as the Golemite above (not a card -> not in the stats import).
+    # LEVEL 11, from the Fandom Lava Hound page's "Card Statistics" table (Lava Pup columns) and
+    # its "Lava Pup Attributes" row; they match lava_hound.spawn_unit_stats exactly.
+    hitpoints: 217
+    damage: 81
+    dps: 47
+    hit_speed: 1.7
+    range_tiles: 1.6               # Melee: Long (1.6)
+    speed_tiles: 1.0               # Medium (60)
     evolution: null
-    verified: false
+    verified: true
 
   # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
   # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
@@ -950,12 +1020,22 @@ cards:
   # from vulnerable troops -- measured: Sparky (immune, 1451 hp) sits below Knight (vulnerable, 1766),
   # and goblin_machine / cannon_cart / mighty_miner share collision radius 0.50 with plain Goblins.
   # The Log ignores this list entirely (see its knockback_all flag).
-  dark_prince: {range: melee, flags: [knockback_immune], verified: false}
+  dark_prince: {range: melee, flags: [splash, knockback_immune], splash_radius_tiles: 1.25, charge_splash_radius_tiles: 2.2, verified: true}   # splash swing 1.25 tiles, widened to 2.2 on a CHARGED strike (user-verified); was silently single-target
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
-  # "...and slow their movement and attack speed by 35% for 1.5 seconds" -- the hook's SLOW was not
-  # modelled at all. (The pull itself still is not: it needs a directed yank, not a status.)
-  fisherman: {range: melee, flags: [slow], slow_duration_s: 1.5, slow_pct: -35, verified: true}
+  # Fisherman (Fandom attributes): hook range 3.5-7, hook time 1.3s, hook projectile speed 800.
+  # Lead quote: his ranged hook pulls ENEMY TROOPS toward him and pulls HIMSELF to enemy buildings.
+  # Current history also lists his slow as 1.5s at -30%.
+  fisherman:
+    range: melee
+    flags: [slow]
+    slow_duration_s: 1.5
+    slow_pct: -30
+    hook_min_tiles: 3.5
+    hook_max_tiles: 7.0
+    hook_time_s: 1.3
+    hook_speed_tiles: 13.33
+    verified: true
   giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
@@ -994,7 +1074,7 @@ cards:
   royal_ghost: {range: melee, splash: true, flags: [splash], invisibility_time_s: 1.8, verified: true}
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
-  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, knockback_immune], verified: false}
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
   suspicious_bush: {range: melee, verified: false}
   # -- short --
   electro_spirit: {range: short, multi: chain, hits_per_attack: 9, verified: false}
@@ -1022,7 +1102,7 @@ cards:
   # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
   # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes
   # up to 2 OTHER targets" for full damage each.
-  electro_wizard: {range: long, multi: split, verified: true}
+  electro_wizard: {range: long, multi: split, spawn_damage: 115, spawn_radius_tiles: 3.0, verified: true}   # SPAWN ZAP: damages + STUNS around him on deploy (dmg = one zap at L11, radius [verify]); the stun rides via his `stuns` flag now that _deploy_blast applies status
   executioner: {range: long, multi: boomerang, verified: true}
   firecracker: {range: long, multi: spark, verified: true}
   flying_machine: {range: long, verified: false}

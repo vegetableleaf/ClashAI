@@ -90,14 +90,29 @@ class ElixirClock:
             pass
         return 0
 
+    def _badge_window(self, now: Optional[float] = None) -> bool:
+        """Only cross-check the badge NEAR an expected transition. The badge NEVER decides the
+        multiplier (the clock is authoritative), so its whole value is the calibration hint when the
+        two disagree -- and they can only meaningfully disagree around a transition. Away from one,
+        each check is up to 2 templates x 8 scales = 16 whole-frame matchTemplates for nothing:
+        MEASURED at ~865 ms/step under training load, the single largest term in the live decision
+        pipeline (log 2026-08-12, cadence item). elixir.badge_check_window_s = 0 disables the badge
+        entirely; a very large value restores the old every-step behaviour."""
+        win = float(self.cfg.get("elixir", "badge_check_window_s", default=20.0))
+        if win <= 0.0:
+            return False
+        elapsed = (time.time() if now is None else now) - self._start
+        return any(abs(elapsed - t) <= win for t in (self.double_t, self.triple_t))
+
     def update(self, frame=None, now: Optional[float] = None) -> int:
         """Refresh + return the current multiplier (1/2/3). The CLOCK (elapsed time) and the on-screen
         ICON are read independently and CROSS-CHECKED; on ANY disagreement the CLOCK wins -- elapsed
         time is monotonic and can't false-fire, whereas a template match can mis-hit or miss. A NEW
         mismatch is logged (a hint that the badge crop / time threshold needs a look). Since time is
-        monotonic the multiplier only ever rises within a match."""
+        monotonic the multiplier only ever rises within a match. The badge read only runs inside
+        `_badge_window` of a transition (elsewhere it is dead weight -- see that docstring)."""
         t = self._time_mult(now)
-        b = self._badge_mult(frame)
+        b = self._badge_mult(frame) if self._badge_window(now) else 0
         self.badge_mult = b
         self.disagreed = bool(b and b != t)              # icon gave a reading AND it differs from the clock
         if self.disagreed and (t, b) != self._logged_mismatch:

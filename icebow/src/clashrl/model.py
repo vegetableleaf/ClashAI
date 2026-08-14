@@ -23,19 +23,49 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
+# n_cells -> (grid_w, grid_h). Every construction site passes n_cells, so the placement grid can
+# be inferred here without touching a single caller (matches cli._GRID_SIZES).
+_GRIDS = {432: (18, 24), 576: (18, 32)}
 
 
 class PolicyNet(nn.Module):
-    def __init__(self, in_ch: int = 3, n_cards: int = 8, n_cells: int = 576, threat_dim: int = 14):
+    """SPATIAL cell head (2026-08-14). The cell head used to be ``nn.Linear(embed, n_cells)`` --
+    432 placement logits read out of a GLOBAL embedding whose image half had been flattened
+    through a 256-dim bottleneck. That function class has no spatial correspondence between board
+    positions and cell outputs, and three training generations never learned one: MEASURED, the
+    strongest checkpoint (win 19.3%) kept a near-constant cell argmax across 40 varied states on
+    BOTH sim and live observations, and a live session put 44/44 plays of seven different cards
+    on one tile regardless of the recognised threat. "Place the counter in the threat's lane"
+    was architecturally out of reach.
+
+    The cell head is now a logit MAP: the pre-pool conv feature map (in_h/8 x in_w/8, e.g. 12x8
+    for the 96x64 obs) is conditioned on the full context embedding (broadcast-concat), passed
+    through 1x1 convs to a 1-channel map, and bilinearly resized to the placement grid. Placement
+    thereby inherits translation structure from convolution itself: threat features at a board
+    position produce placement logits at that position by construction, instead of hoping a dense
+    layer learns 432 special cases. Output shape/order is unchanged (row-major gy*gw+gx, exactly
+    ActionSpace's indexing), so every consumer keeps working; OLD checkpoints (cell_head.*) are
+    deliberately incompatible -- this head must be retrained (BC -> sim)."""
+
+    def __init__(self, in_ch: int = 3, n_cards: int = 8, n_cells: int = 576, threat_dim: int = 14,
+                 grid_wh: "tuple[int, int] | None" = None):
         super().__init__()
         self.n_cards = n_cards
         self.threat_dim = threat_dim
+        gw, gh = grid_wh or _GRIDS.get(n_cells, (0, 0))
+        if gw * gh != n_cells:
+            raise ValueError(f"n_cells {n_cells} does not match a known grid; pass grid_wh=(w, h)")
+        self.grid_wh = (gw, gh)
         self.features = nn.Sequential(
             nn.Conv2d(in_ch, 32, 5, stride=2, padding=2), nn.ReLU(inplace=True),
             nn.Conv2d(32, 64, 3, stride=2, padding=1), nn.ReLU(inplace=True),
             nn.Conv2d(64, 64, 3, stride=2, padding=1), nn.ReLU(inplace=True),
-            nn.AdaptiveAvgPool2d((6, 4)),
         )
+        # the GLOBAL path (card head / RL gate heads) still pools -- embed_dim and the trunk/
+        # card_head parameter names are unchanged, so nothing downstream needs relearning names.
+        self.pool = nn.AdaptiveAvgPool2d((6, 4))
         self.trunk = nn.Sequential(
             nn.Flatten(),
             nn.Linear(64 * 6 * 4, 256), nn.ReLU(inplace=True),
@@ -46,15 +76,18 @@ class PolicyNet(nn.Module):
         self.threat_fc = nn.Sequential(nn.Linear(threat_dim, 16), nn.ReLU(inplace=True))
         self.embed_dim = 256 + 32 + 16 + 8 + 16
         self.card_head = nn.Linear(self.embed_dim, n_cards)
-        self.cell_head = nn.Linear(self.embed_dim, n_cells)
+        # spatial cell head: context -> per-location conditioning -> 1x1 convs -> logit map
+        self.cell_ctx = nn.Sequential(nn.Linear(self.embed_dim, 32), nn.ReLU(inplace=True))
+        self.cell_conv = nn.Sequential(
+            nn.Conv2d(64 + 32, 48, 1), nn.ReLU(inplace=True),
+            nn.Conv2d(48, 24, 1), nn.ReLU(inplace=True),
+            nn.Conv2d(24, 1, 1),
+        )
 
-    def features_vec(self, x: torch.Tensor, hand: torch.Tensor,
-                     nxt: torch.Tensor | None = None, elx: torch.Tensor | None = None,
-                     thr: torch.Tensor | None = None) -> torch.Tensor:
-        """Shared embedding of (image, hand multi-hot, next-card one-hot, normalized elixir,
-        enemy-threat vector). Exposed so RL can add heads. ``nxt``/``elx``/``thr`` may be
-        None (treated as all-zero = next card unknown / elixir 0 / no threat read)."""
-        z = self.trunk(self.features(x))
+    def _embed(self, fmap: torch.Tensor, hand: torch.Tensor,
+               nxt: torch.Tensor | None, elx: torch.Tensor | None,
+               thr: torch.Tensor | None) -> torch.Tensor:
+        z = self.trunk(self.pool(fmap))
         if nxt is None:
             nxt = torch.zeros(hand.shape[0], self.n_cards, device=hand.device, dtype=hand.dtype)
         if elx is None:
@@ -64,8 +97,33 @@ class PolicyNet(nn.Module):
         return torch.cat([z, self.hand_fc(hand), self.next_fc(nxt),
                           self.elixir_fc(elx), self.threat_fc(thr)], dim=1)
 
+    def features_vec(self, x: torch.Tensor, hand: torch.Tensor,
+                     nxt: torch.Tensor | None = None, elx: torch.Tensor | None = None,
+                     thr: torch.Tensor | None = None) -> torch.Tensor:
+        """Shared embedding of (image, hand multi-hot, next-card one-hot, normalized elixir,
+        enemy-threat vector). Exposed so RL can add heads (gate). Unchanged width (328)."""
+        return self._embed(self.features(x), hand, nxt, elx, thr)
+
+    def _cell_logits(self, fmap: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
+        ctx = self.cell_ctx(z)[:, :, None, None].expand(-1, -1, fmap.shape[2], fmap.shape[3])
+        m = self.cell_conv(torch.cat([fmap, ctx], dim=1))         # (B, 1, h', w') logit map
+        gw, gh = self.grid_wh
+        cells = F.interpolate(m, size=(gh, gw), mode="bilinear", align_corners=False)
+        return cells.flatten(1)                                   # row-major gy*gw+gx == ActionSpace
+
+    def forward_parts(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
+                      elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):
+        """(embed z, card logits, cell logits) in ONE conv pass. The RL wrappers (gate/value heads
+        on z) and the visualisers must use THIS instead of features_vec + .cell_head(z): the
+        spatial cell head needs the pre-pool FEATURE MAP, which features_vec discards -- and
+        `cell_head` no longer exists as a module (that dense readout is the collapse this head
+        replaced; see the class docstring)."""
+        fmap = self.features(x)                                   # (B, 64, in_h/8, in_w/8)
+        z = self._embed(fmap, hand, nxt, elx, thr)
+        return z, self.card_head(z), self._cell_logits(fmap, z)
+
     def forward(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
                 elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):
-        z = self.features_vec(x, hand, nxt, elx, thr)
-        return self.card_head(z), self.cell_head(z)
+        _, cards, cells = self.forward_parts(x, hand, nxt, elx, thr)
+        return cards, cells
 

@@ -17,6 +17,7 @@ import numpy as np
 from .engine import build_spec
 from ..cycle import cycle_vector
 from .. import card_threat
+from .. import detect_obs
 from .. import interactions
 from . import view
 
@@ -77,6 +78,23 @@ class ScriptedBot:
         # against a deck with no cycle cost at all.
         self.cycle = list(range(len(self.specs)))
         rng.shuffle(self.cycle)
+        # PHASE-A EVOLUTIONS (2026-08-14): each deck fields ONE evolution (the 2026 slot rules).
+        # Heuristic pick until meta_decks carries explicit evo slots: the first deck card with a
+        # loadable `_evo` stat block. Cycle count from the KB's evolution block (default 2).
+        # T0 (stat-only) evos work end-to-end through the ordinary build_spec overlay; mechanic
+        # evos inherit whatever the engine models for their fields (pulse, DR, leap, ...).
+        self.evo_idx, self.evo_spec, self.evo_cycles, self.evo_charge = -1, None, 2, 0
+        for _i, _k in enumerate(cards):
+            try:
+                _ev = build_spec(db, _k + "_evo", (levels or [11] * len(cards))[_i])
+            except Exception:  # noqa: BLE001 -- no evolution for this card
+                continue
+            if _ev.hp <= 0 and _ev.kind != "spell":
+                continue
+            _evd = (db.get(_k) or {}).get("evolution") or {}
+            self.evo_idx, self.evo_spec = _i, _ev
+            self.evo_cycles = int(_evd.get("cycles") or 2)
+            break
 
     def _hand_specs(self):
         """The 4 cards currently in hand (the rest are cycling)."""
@@ -84,10 +102,20 @@ class ScriptedBot:
 
     def _play(self, eng, spec, x: float, y: float) -> bool:
         """Deploy + send that card to the back of the cycle. EVERY deploy goes through here, so no
-        branch can bypass the cycle."""
+        branch can bypass the cycle. The deck's EVOLUTION slot charges by playing the base card
+        `evo_cycles` times; the next play of that card fields the `_evo` spec instead."""
+        idx = next((i for i, s in enumerate(self.specs) if s is spec), -1)
+        if (idx == self.evo_idx and self.evo_spec is not None
+                and self.evo_charge >= self.evo_cycles
+                and eng.elixir[1] >= self.evo_spec.elixir):
+            spec = self.evo_spec                              # the charged Evolution takes the slot
         if not eng.deploy(1, spec, x, y):
             return False
-        idx = next((i for i, s in enumerate(self.specs) if s is spec), -1)
+        if idx == self.evo_idx:
+            if spec is self.evo_spec:
+                self.evo_charge = 0                           # spent -> recharge from scratch
+            else:
+                self.evo_charge += 1
         if idx >= 0 and idx in self.cycle:
             self.cycle.remove(idx)
             self.cycle.append(idx)
@@ -318,9 +346,13 @@ class SelfPlayOpponent:
         self.use_tower_obs = getattr(env, "use_tower_obs", False)   # ...and the crown-tower HP block
         self.use_canvas = getattr(env, "use_canvas", False)         # ...and the semantic obs CANVAS
         self.canvas_presence_recall = getattr(env, "canvas_presence_recall", 1.0)
+        # Own canvas history: the opponent is rebuilt each env.reset(), so this starts empty per match.
+        self._canvas_stack = detect_obs.CanvasStack(detect_obs.canvas_stack_len(cfg),
+                                                    detect_obs.canvas_stack_dt(cfg))
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
+        self.identity_front = getattr(env, "identity_front", card_threat.IDENTITY_FRONT_DEFAULT)
         self._dr = env.domain_rand                    # share the match's visual restyle (resampled by env.reset)
         self._prev_ident_depth = 0.0
         self._opp_mem = card_threat.OpponentMemory(env.db)   # per-match opponent memory (mirrors team 0)
@@ -384,9 +416,9 @@ class SelfPlayOpponent:
         oh, ow, _ = self.obs_shape
         obs = view.render_obs(eng, oh, ow, team=1, dr=self._dr)   # same match 'arena look' as team 0
         if self.use_canvas:                                       # mirrored semantic canvas for team 1
-            obs = np.concatenate(
-                [obs, view.semantic_channels(eng, oh, ow, team=1, rng=self.rng,
-                                             presence_recall=self.canvas_presence_recall)], axis=2)
+            ch = view.semantic_channels(eng, oh, ow, team=1, rng=self.rng,
+                                        presence_recall=self.canvas_presence_recall)
+            obs = np.concatenate([obs, self._canvas_stack.push(ch, eng.t)], axis=2)
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():
             hand[i] = 1.0
@@ -399,7 +431,8 @@ class SelfPlayOpponent:
         thr = view.threat_vector(eng, base_dim, team=1)
         if self.use_detector:
             ident = card_threat.identity_threat_vector(
-                view.apply_detector_noise(view.identity_items(eng, 1, self.detector_cards),
+                view.apply_detector_noise(view.identity_items(eng, 1, self.detector_cards,
+                                                              self.identity_front),
                                           self.det_recall, self.det_precision, self.rng, self.detector_cards,
                                           self.det_recall_by_card),
                 self.db, prev_depth=self._prev_ident_depth, dt=self.agent_dt, horizon=self.predict_horizon)

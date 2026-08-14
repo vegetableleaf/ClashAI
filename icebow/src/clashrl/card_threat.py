@@ -161,6 +161,34 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
 IDENTITY_DIM = 10
 _VEL_NORM = 0.6    # depth/sec that reads as "fast" (~a troop covering the half-field in <2s)
 
+# --- the identity block's WATCH LINE -----------------------------------------------------------
+# How far up the board the identity block looks, in the normalised y where 0.5 is the RIVER and 1.0
+# is your king. This used to be hard-coded to 0.5 in every producer, which meant a win condition was
+# only ever recognised AFTER it had crossed -- and it crossed with depth ~0, i.e. the "a wincon is
+# coming" flags arrived at the LATEST possible moment, too late to pre-place a defensive building
+# that still has to deploy and acquire a target. Watching from the BRIDGE instead lights the role
+# flags (win_condition / building_targeting) while the push is still arriving, and gives a real depth
+# and approach VELOCITY to act on.
+# EVERY producer must use the SAME value -- live play, the live RL env, the sim, the sim's mirrored
+# opponent and the offline labeller -- or the policy trains on one distribution and plays on another.
+IDENTITY_FRONT_DEFAULT = 0.44      # ~the deploy line / bridge approach (action.deploy_top)
+
+
+def identity_front(cfg) -> float:
+    """The y at which the identity block starts watching (see IDENTITY_FRONT_DEFAULT)."""
+    return float(cfg.get("observation", "identity_front_y", default=IDENTITY_FRONT_DEFAULT))
+
+
+def identity_depth(y: float, front: float) -> float:
+    """Advance toward your king, normalised over the WATCHED span: 0.0 at ``front``, 1.0 at your king.
+
+    Renormalising (rather than keeping the old 'fraction past the river') is what makes the depth [7]
+    and velocity [8] features meaningful before the river is crossed -- with the old formula anything
+    short of the river clamped to 0 and the push looked stationary until it was already on top of you.
+    """
+    span = max(1e-6, 1.0 - float(front))
+    return min(1.0, max(0.0, (float(y) - float(front)) / span))
+
 # --- opponent SHORT-TERM MEMORY (strategic complement to the reactive identity block) --------------
 OPP_MEMORY_DIM = 8         # width of OpponentMemory.update() -- appended to the obs AFTER the identity block
 _OPP_ELIXIR_NORM = 7.0     # avg-elixir normaliser (cheap-cycle ~2-3 <-> heavy beatdown ~5-7)

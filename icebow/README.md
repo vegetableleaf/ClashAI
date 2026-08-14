@@ -5,7 +5,10 @@
 > calibration → recording → processing the data → training (simulator + imitation + live RL)
 > → letting the bot play. No coding experience needed.
 
-> 🔀 **Current deck: Icebow X-Bow Control (Classic 1v1)** — the standard X-Bow 2.9 control list.
+> 🔀 **Current deck: Icebow X-Bow Control (Classic 1v1)** — the standard Icebow list, a **3.5**
+> avg-elixir cycle deck (NOT 2.9: substantially slower than a standard cycle deck, but it still
+> functions as one — it cannot out-cycle, so defence must be elixir-efficient and banking to ~10
+> for X-Bow(6)+Tesla(4) is correct doctrine).
 > [DECK_SWITCH.md](DECK_SWITCH.md) is the ordered runbook for switching the deck (record → templates → label → train).
 
 A second, **learning** bot (separate from the scripted `../trol` bot). Goal: an
@@ -138,6 +141,114 @@ All tunables in [config/config.yaml](config/config.yaml): `window.region`,
   card/cell Q-function (card values masked to the hand) plus a learned **no-op**
   gate; it saves to
   `train.rl_checkpoint`, which `play` then prefers (`run.py train-rl`).
+  Saves are now **keep-best gated** — see "Reward diagnostics" below.
+- ✅ `sim-view` — visual debugger for the headless sim, rendered from **engine
+  state** at physics resolution (`run.py sim-view [--policy CKPT] [--out FILE]`).
+  It exists because mechanics bugs are invisible in a win-rate curve but obvious in
+  one second of video. Rolling spells now draw their real **forward corridor**
+  (2026-08-11): The Log used to render as a bare cross at the cast point, so it
+  read as a point blast, while `_resolve_roll` had always tested a 9.6-tile
+  corridor — the engine was right and only the picture was wrong.
+
+### Reward diagnostics & the passivity collapse (2026-08-12)
+
+Live RL had been *regressing*: the policy drifted toward making no plays at all,
+ending matches early to stop accruing penalties. This has now happened three
+times (the earlier two are recorded in `config.yaml` next to `cycle_spare_elixir`
+and `counterfactual`), so the tooling to catch it is now permanent. Full
+diagnosis and the remaining plan are in the repo-root `log.txt` under
+**2026-08-12**.
+
+- ✅ **Per-term reward accounting** (`src/clashrl/reward_stats.py`). Every reward
+  term records fires / positives / negatives / totals. `add()` returns its input
+  unchanged, so instrumenting is a pure wrapper. The live env prints a per-match
+  breakdown and appends `data/reward_stats/live_<ts>.jsonl`; `policy-stats`
+  aggregates the sim pool, prints terms **most-negative-first**, and flags any
+  term that fires but **never pays positive** — the action-tax signature that has
+  collapsed every run so far.
+- ✅ **Keep-best gate on `train-rl`.** `policy_rl.pt` (which `play` prefers) is
+  promoted only when the recent window is at least as good as the best window this
+  session; every save still lands in `policy_rl_last.pt`, so nothing is lost.
+  Scored on **win rate, guarded by plays/match** — the collapse *raises* mean
+  episode reward, so a reward-scored gate would have endorsed it. Knobs:
+  `train.rl_keep_best_window`, `train.rl_keep_best_min_play_frac`.
+- ✅ **Symmetric correctness cap.** `correctness_cap` used to bound only the
+  *positive* side. Over a 180–300 decision match that is a slope, not a cap: the
+  bonus saturates while penalties keep growing, making "end the match soonest" the
+  optimal policy. Both signs are now bounded by the same budget.
+- ✅ **Play/wait value decomposition fixed (DDQN).** It was
+  `gate[play] + max_card + max_cell` against `gate[wait]` — three heads against
+  one, all trained on the same TD error, so any negative return on plays pushed
+  all three down and the no-op won *by construction*. The card/cell heads now
+  carry only the relative preference among legal options (dueling-style), so
+  `max(card,cell) Q(play) == gate[play]`. **Existing DDQN gate heads were trained
+  under the old rule and need a fresh sim run; PPO checkpoints are unaffected.**
+- ✅ **Cell-head collapse fixed.** `ppo_explore_floor` only ever protected the
+  10-way *card* head; the 432-way *cell* head had none and shared
+  `ppo_entropy: 0.01`. It collapsed to a constant — measured over 150 greedy
+  matches, **3 distinct cells out of 432, 79% of all plays on one tile**, with six
+  different cards deploying to the identical spot in the left lane regardless of
+  the board (which is also why defenders went down the wrong lane). New
+  `sim.ppo_cell_explore_floor` (0.25) and `sim.ppo_cell_entropy` (0.05); both are
+  rollout-only, so greedy eval and live play stay the pure policy. `policy-stats`
+  now reports `cells_used` / `top_cell_share` as the acceptance metric.
+- ✅ **Live env repaired to have a reachable positive (2026-08-12).** Mirrors the sim's retired
+  branches under live perception: the quiet-board defender penalty is **deleted** (the sim removed
+  its copy at 257 fires / 0 positives; live measured the same shape at 7 pos / 43 neg), the
+  live-only `cycle_plan`/`cycle_waste` are **deleted** (2 pos / 24 neg — the third recorded
+  instance of that term's action-tax shape), **buildings are graded on counter role alone** (a
+  central Tesla against an off-lane wincon is the right play — the sim paid it, live demanded
+  same-lane and paid zero), and a defensive play on a frame the detector could not justify no
+  longer pays the trade term's spend (perception gate; the mass-delta half still applies every
+  step, so the telescoping anti-farm property stands).
+- ✅ **Live decision cadence reconciled (2026-08-12).** The env slept the full `act_period` and
+  then paid the whole vision pipeline on top — measured ~2.2 s/decision against the trained 1.0 s,
+  with the 2x/3x badge template match alone ~0.87 s/step (it only cross-checks the authoritative
+  time clock, so it now runs only near a transition: `elixir.badge_check_window_s`) and
+  spell-impact sampling stalling up to ~3.6 s per cast. The wait is now **paced** to what remains
+  of the period since the last frame grab, and every match prints a per-phase `[cadence]` line
+  (also appended to the reward-stats JSONL), so train/serve cadence stays measured, not inferred.
+
+**Next step — retrain from scratch in the sim and gate on placement spread.** A
+floor *prevents* re-collapse; it does not un-freeze dead weights:
+
+```powershell
+run.py train-sim-ppo --matches 100000 --envs 32
+run.py policy-stats --ckpt data/policy_sim_ppo_best.pt --matches 150
+```
+
+Accept only if `cells_used` moves from 3 into the dozens. Expect win rate to look
+*worse* early (a quarter of training placements are deliberately random) — judge
+spread first, strength second, then anneal the floor toward 0.05–0.10.
+
+(Baseline, measured 2026-08-12: the Hunter-replay **BC init itself** reports `cells_used`
+**1 of 432**, top cell 100% — small-data BC collapsed the cell head to the marginal mode, so
+the init contributes card-choice structure but **zero** placement spread. Spread must come from
+the exploration floor; judge the run against 1, not 3, and check `policy-stats` mid-run rather
+than waiting for the full 100k. `data/policy_stats_bc_init.json` has the full read; caveat: a BC
+checkpoint carries no gate head, so its plays/match and wait rates are not comparable.)
+
+### Planned, not yet implemented
+
+In priority order (details and the measured evidence for each are in `log.txt`):
+
+1. **Rework `elixir_trade` into the sim's two-sided resource potential.** Design finalised in
+   [ELIXIR_TRADE_DESIGN.md](ELIXIR_TRADE_DESIGN.md): a live mirror of the sim's reworked term —
+   a deploy is a *transfer* (bar → board, zero at play time) and only its consequence moves the
+   score, so the spend tax and the ambient-mass misbilling both disappear. Retires the blocking
+   spell-impact sampler (the biggest remaining cadence outlier) and the interim blind-frame
+   spend waiver. Implement as its own gated change.
+2. **Episode-length neutrality** — decide *after* 1; the drift may be gone.
+3. **Regime** — train in the sim, use live only for fine-tuning and evaluation.
+
+**Gates between changes** (on ≥150 sim matches): plays/match must not fall, mean
+elixir must not rise, every retained shaping term must show >0 positive fires, win
+rate flat or better.
+
+**Do not**: add another one-sided "correctness" term (three have collapsed runs);
+add anti-hoarding pressure (icebow is **X-Bow 3.5** — banking to ~10 for X-Bow(6)
++ Tesla(4) is correct doctrine); raise win/loss in isolation (γ discounts it into
+irrelevance); port `counterfactual` to live (needs a real-game deep-copy).
 
 ### Stage 3 — the board object detector (in progress)
 
@@ -177,6 +288,37 @@ it from red pixels. Gated behind `observation.use_detector`; see
 - ✅ `tools/detect/train.py --resume [RUN]` — continue an interrupted run in its own
   folder, keeping its epoch count and `best.pt`. Resume restores every other setting
   from the checkpoint, so you **cannot** lower `--batch` on a resume.
+
+#### Identity block: watches from the bridge (2026-08-11)
+
+The identity block used to only see enemies that had **already crossed the river**
+(`y >= 0.5`), so a win condition at the bridge lit *nothing* — and the instant it
+crossed it lit up at depth ~0, far too late for a defensive building to deploy and
+acquire. That is why a Hog Rider at the bridge drew no Tesla answer even with the
+detector and KB correctly wired in.
+
+`observation.identity_front_y` (0.44 = the deploy line) now sets the watch line,
+and depth is renormalised over the watched span so **depth and approach velocity
+mean something before the river**. Measured: at `y=0.46`, before → `present 0,
+wincon 0`; after → `present 1, wincon 1, depth 0.036, vel 0.119`.
+
+The line was hard-coded in **five** producers; they now all read one shared helper
+(`card_threat.identity_front` / `identity_depth`): live play, the live RL env,
+`sim/view.identity_items`, the mirrored self-play opponent, and the offline
+labeller. Sim/live parity verified at 0 mismatches. `threat_dim` is unchanged at
+52, but the observation *distribution* changed — **a fresh sim run is required.**
+
+#### `train-bc` threat width (2026-08-11)
+
+`train_bc._load_datasets` computed its target threat width without the **tower-HP**
+block that `sim/env.py` and `replay_bc.py` both include, so it silently truncated
+correctly-52-dim replay datasets back to 46 — meaning *every* BC policy came out
+permanently shape-incompatible with the tower-HP-on simulator
+(`train-sim-ppo --init data/policy.pt` → "shape-incompatible"). Fixed to include
+`view.TOWER_DIM` under the same `observation.use_tower_hp` gate.
+
+⚠️ `data/sessions/*` recorded before 2026-08-07 are doubly stale — 3-channel obs
+**and** 46-dim threats. Re-run `label --all` before mixing them with replay data.
 
 ## Recording note
 
@@ -370,6 +512,14 @@ run.py cards-import   # scrape current level-11 stats from the Clash Royale wiki
 - **Curated fields** ([config/cards.yaml](config/cards.yaml)) — elixir, targeting,
   splash, behaviour flags, abilities (e.g. Ronin's Parry), and the deck definition
   — are hand-maintained and always win.
+- **Card levels live in exactly one place** — the `deck:` block in
+  [config/cards.yaml](config/cards.yaml). Everything downstream derives from it at
+  runtime: `CardDB.deck()` / `deck_levels()` scale HP and damage by
+  $1.1^{(\text{level}-11)}$, `sim/engine.build_spec` applies the same scaling, and
+  `sim.fair_eval_level: null` recomputes the fair-eval level from the deck mean. So
+  a level-up is a one-line edit — do **not** hand-edit stats anywhere else.
+  (Most recent: Skeletons 13 → 15 on 2026-08-11, which moved the fair-eval mean
+  13 → 14. `real/config/cards.yaml` is a separate project and has diverged.)
 - **Combat stats** (hitpoints / damage / DPS / hit-speed at level 11) are imported
   by `cards-import` from **clashroyale.fandom.com** (community-maintained, so it
   tracks recent balance changes) into `config/cards_stats.json`, which the curated

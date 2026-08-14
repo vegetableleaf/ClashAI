@@ -166,6 +166,16 @@ class CardSpec:
     ability_cd: float = 0.0
     ability_invis: float = 0.0
     ability_back: float = 0.0
+    # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
+    # card. 0 = fall back to _SPLASH_R.
+    splash_r: float = 0.0
+    # ZAP-PACK REFLECT (Electro Giant, 2026-08-14): a unit that DAMAGES this card from within
+    # reflect_r tiles takes reflect_dmg back (+ reflect_stun seconds). Wiki: 3 tiles, ~120 @ L11,
+    # 0.5 s stun per hit. Ranged attackers outside the radius are untouched -- which is exactly
+    # the ranged-only counter-doctrine this makes learnable.
+    reflect_dmg: float = 0.0
+    reflect_r: float = 0.0
+    reflect_stun: float = 0.0
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
     # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
@@ -190,6 +200,11 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
+    # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
+    # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
+    # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
+    # the upside and would happily learn that Elixir Golem is a bargain.
+    elixir_death: float = 0.0
     # PER-CARD crowd control. These were single global constants, so a Freeze (4s) and an Ice Spirit
     # (1.1s) stunned for the same time and every slow was the same strength -- when the published
     # values run from -15% (Evo Firecracker) to -70% (Ram Rider). 0 = fall back to the global.
@@ -202,6 +217,7 @@ class CardSpec:
     # hit is effectively a different card, and it is the entire reason a charge is worth blocking.
     charge_dmg: float = 0.0
     charge_range: float = 0.0
+    charge_splash_r: float = 0.0  # a charged strike can also WIDEN the blast (Dark Prince 1.25 -> 2.2)
     # MULTI-HIT. `hits_per_attack` is ONE number covering four different mechanics, so the KIND is
     # curated per card and each is modelled (and labelled for sim-view) separately:
     #   chain     -- the bolt arcs to further targets      (electro_dragon 3, electro_wizard 2)
@@ -392,7 +408,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         count=count, flying=db.is_flying(base), attacks_air=db.attacks_air(base),
-        splash=db.has_splash(base), building_only=building_only, siege=siege,
+        # splash: the stats import OR the curated flag. Testing only db.has_splash silently
+        # single-targeted witch (flag curated but unread) and every flag-only splash troop.
+        splash=db.has_splash(base) or ("splash" in set(db.flags(base))),
+        splash_r=float(c.get("splash_radius_tiles") or c.get("splash_radius") or 0.0),
+        reflect_dmg=float(c.get("reflect_damage") or 0.0) * sc,
+        reflect_r=float(c.get("reflect_radius_tiles") or 0.0),
+        reflect_stun=float(c.get("reflect_stun_s") or 0.0),
+        building_only=building_only, siege=siege,
         deploy_anywhere=("deploy_anywhere" in flags),
         kamikaze=("kamikaze" in flags or bool(db.is_kamikaze(base))), lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
@@ -425,6 +448,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
         spawn_dmg=float(c.get("spawn_damage") or 0.0) * sc,
@@ -459,6 +483,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         slow_mult=(1.0 - abs(float(c["slow_pct"])) / 100.0) if c.get("slow_pct") else 0.0,
         charge_dmg=float(c.get("charge_damage") or 0.0) * sc,
         charge_range=float(c.get("charge_range") or 0.0),
+        charge_splash_r=float(c.get("charge_splash_radius_tiles") or 0.0),
         multi_kind=str((db.get(base) or {}).get("multi") or ""),
         multi_hits=int(c.get("hits_per_attack") or 0),
         damage_reduction=dmg_reduc,
@@ -559,6 +584,8 @@ class Unit:
     invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
     ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
     ability_cd_left: float = 0.0  # seconds until the ability can be used again
+    ability_hp_frac: float = 0.0  # HP fraction that triggers the next ability use -- ROLLED per unit
+                                  # (and re-rolled lower after each use) so the trigger timing varies
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -596,6 +623,8 @@ class Tower:
     first_hit: float = 0.8        # delay before the first shot after (re)acquiring a target
     reload_left: float = 0.0      # time until the next shot is ready
     acquired: bool = False        # currently locked onto a target (first-hit bookkeeping)
+    target: object = None         # sticky target lock; closer enemies do not steal aggro mid-fight
+    aggro_reset: bool = False     # stun/freeze breaks the lock; the next shot re-acquires from scratch
     ammo: float = 0.0             # Dagger Duchess: daggers left in the loaded clip
     ammo_max: float = 0.0         # clip size (0 = not a Dagger Duchess)
     empty_hit_speed: float = 0.0  # slower cadence once the clip is empty
@@ -746,6 +775,8 @@ class SimEngine:
         self.cfg = cfg
         self.db = db
         self.rng = rng
+        self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
+                                        # flashes each as a brief AOE circle (~0.15 s), capped at 40
         # Tower Troops: per-troop HP + discrete-hit attack (CR wiki, L15). Your side plays my_tower_troop at
         # my_tower_level; the opponent rolls a troop (weighted) + a ladder level per match (see reset()).
         self.tower_ref_level = int(cfg.get("sim", "my_tower_level", default=15))
@@ -1346,6 +1377,12 @@ class SimEngine:
             if u.spec.ability_invis > 0.0:
                 if u.ability_left < 0:
                     u.ability_left = u.spec.ability_uses
+                    # VARIED TRIGGER (2026-08-14). The threshold was a flat 0.6 -- every Boss
+                    # Bandit vanished at exactly 60% HP, so a policy could learn the one timing
+                    # that games a constant (the user's exact concern). Each unit now rolls its
+                    # own trigger, and each USE re-rolls a meaningfully lower one, spreading the
+                    # two grenades across her HP bar and across matches.
+                    u.ability_hp_frac = self.rng.uniform(0.35, 0.80)
                 u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
                 if u.invis_left > 0.0:
                     u.invis_left -= dt
@@ -1357,11 +1394,12 @@ class SimEngine:
                         u.aggro_reset = True
                     continue                                 # invisible: no walking, no attacking
                 if u.ability_left > 0 and u.ability_cd_left <= 0.0 \
-                        and u.hp < u.spec.hp * 0.6 \
+                        and u.hp < u.spec.hp * u.ability_hp_frac \
                         and self.elixir[u.team] >= u.spec.ability_cost:
                     self.elixir[u.team] -= u.spec.ability_cost
                     u.ability_left -= 1
                     u.invis_left = u.spec.ability_invis
+                    u.ability_hp_frac = self.rng.uniform(0.15, max(0.16, u.ability_hp_frac * 0.75))
                     # The only thing that drops a wind-up, and it is HER OWN doing, not the
                     # defender's -- she vanishes and reappears further back, so there is nothing
                     # left standing there to finish the dash.
@@ -1509,6 +1547,10 @@ class SimEngine:
         for u in self.units:
             if u.hp <= 0:
                 self.kills[1 - u.team] += 1                  # the other team gets the kill credit
+                if u.spec.elixir_death > 0.0:
+                    # ...and, for the Elixir Golem line, the elixir too (capped like every other gain)
+                    foe = 1 - u.team
+                    self.elixir[foe] = min(10.0, self.elixir[foe] + u.spec.elixir_death)
                 self._spawn_cursed_hog(u)
                 self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
@@ -1633,9 +1675,9 @@ class SimEngine:
         dmg = u.spec.hit_dmg * u.dmg_mult * mult
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
         if u.hook_kind == "tower":
-            self._land_hit(u.team, "tower", ref, u.spec, dmg, tower_dmg)
+            self._land_hit(u.team, "tower", ref, u.spec, dmg, tower_dmg, attacker=u)
         elif isinstance(ref, Unit) and ref.hp > 0:
-            self._land_hit(u.team, "unit", ref, u.spec, dmg, tower_dmg)
+            self._land_hit(u.team, "unit", ref, u.spec, dmg, tower_dmg, attacker=u)
         u.charge_dist = 0.0
         u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
         u.hook_mode = u.hook_kind = ""
@@ -1673,13 +1715,21 @@ class SimEngine:
         dmg = s.leap_dmg * u.dmg_mult
         if isinstance(ref, Tower):
             self._damage_tower(ref, dmg, u.team)
-            return
-        if ref.hp <= 0:
-            return
-        self._hurt(ref, dmg)
-        self._apply_status(u.team, s, ref)
-        self._knock(ref, s, u.x, u.y)
-        if s.splash:                                          # Mega Knight lands ON a group
+        elif ref.hp > 0:
+            self._hurt(ref, dmg)
+            self._apply_status(u.team, s, ref)
+            self._knock(ref, s, u.x, u.y)
+        if s.leap_splash > 0.0 or s.splash:                   # Mega Knight lands ON a group
+            # GATE FIXED 2026-08-14: this used to test only the generic `splash` flag, which is
+            # FALSE for Mega Knight (his jump splash is its own leap_splash field) -- so the
+            # landing splash had NEVER fired for the one card it was written for; every MK jump
+            # was silently single-target. The leap's own radius is the authority here.
+            # The slam splashes around the LANDING POINT for BOTH landing kinds (2026-08-14).
+            # It used to run only for unit landings -- a tower-landing returned early, so a jump
+            # onto a tower splashed nothing, and NO landing could touch a second tower. That
+            # erased the real game's MK KING ACTIVATION (bait his jump beside a sleeping king;
+            # the 2.2-tile slam wakes it) -- verified by test before this fix. Tower damage is
+            # routed through _damage_tower so activation-on-damage fires like any other hit.
             rad = s.leap_splash or _SPLASH_R                  # the JUMP has its own, wider radius
             for e in self.units:
                 if e.team != u.team and e is not ref and e.hp > 0 \
@@ -1687,6 +1737,10 @@ class SimEngine:
                     self._hurt(e, dmg)
                     self._apply_status(u.team, s, e)
                     self._knock(e, s, u.x, u.y)
+            for tw in self.towers[1 - u.team]:
+                if tw.alive and tw is not ref \
+                        and _dist(tw.x, tw.y, ref.x, ref.y) <= rad + _body_radius(tw):
+                    self._damage_tower(tw, dmg, u.team)
 
     def _deploy_blast(self, u: "Unit") -> None:
         """Area damage the instant a body finishes appearing -- Mega Knight LANDING, Goblin Drill
@@ -1700,6 +1754,7 @@ class SimEngine:
                 continue
             if _dist(u.x, u.y, e.x, e.y) <= s.spawn_radius + e.spec.radius:
                 self._hurt(e, s.spawn_dmg)
+                self._apply_status(u.team, s, e)             # E-Wiz spawn STUN / Ice Wizard nova SLOW
                 self._knock(e, s, u.x, u.y)                  # radial, out of the landing circle
         if s.spawn_crown_dmg > 0.0:                          # Goblin Drill publishes a reduced crown value
             for tw in self._enemy_towers(u.team):
@@ -1824,10 +1879,12 @@ class SimEngine:
         # CHARGE: a completed run-up REPLACES this hit's damage (Prince 783 vs a ~200 base hit). It
         # is a flat published value, not a multiplier, so it overrides rather than scales -- and it
         # applies to towers too, which is what makes an unblocked Prince so punishing.
+        charged_splash = 0.0
         if u.spec.charge_dmg > 0.0 and u.spec.charge_range > 0.0 \
                 and u.charge_dist >= u.spec.charge_range:
             dmg = u.spec.charge_dmg * u.dmg_mult
             tower_dmg = dmg
+            charged_splash = u.spec.charge_splash_r          # Dark Prince's charged swing blasts wider
         if u.spec.proj_speed > 0.0:                          # the shot has to TRAVEL -- it lands later
             if u.spec.multi_kind == "shotgun" and u.spec.multi_hits > 1:
                 self._shotgun(u, ref, dmg)
@@ -1862,9 +1919,10 @@ class SimEngine:
             picks = [(ref, kind)] + [(e, k) for _, e, k in extra[:u.spec.multi_hits - 1]]
             share = 1.0 / len(picks)
             for tgt, k in picks:
-                self._land_hit(u.team, k, tgt, u.spec, dmg * share, tower_dmg * share)
+                self._land_hit(u.team, k, tgt, u.spec, dmg * share, tower_dmg * share, attacker=u)
             return
-        self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg)
+        self._land_hit(u.team, kind, ref, u.spec, dmg, tower_dmg, attacker=u,
+                       splash_r=charged_splash)
         # MONK'S 3-STRIKE COMBO: "the first 2 attacks deal normal damage, while the 3rd strike deals
         # extra damage and knockback, EVEN IF THE TARGETED TROOP IS NORMALLY IMMUNE TO KNOCKBACK"
         # (hence knockback_all on the card). Only the shove is modelled -- the wiki does not publish
@@ -1892,8 +1950,11 @@ class SimEngine:
         return float(st[idx]) / float(st[0])
 
     def _land_hit(self, team: int, kind: str, ref, spec: CardSpec, dmg: float,
-                  tower_dmg: float) -> None:
-        """Deal one hit that has ARRIVED (either instantly, or as a projectile reaching its target)."""
+                  tower_dmg: float, attacker: "Unit | None" = None,
+                  splash_r: float = 0.0) -> None:
+        """Deal one hit that has ARRIVED (either instantly, or as a projectile reaching its target).
+        ``attacker`` (the swinging unit, when melee/direct) enables the Zap-Pack reflect: damaging a
+        reflect card from inside its radius zaps the attacker back."""
         if kind == "tower":
             # crown towers take the REDUCED per-hit value when the card has one (Miner) -- real CR's
             # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
@@ -1902,13 +1963,23 @@ class SimEngine:
             return
         self._hurt(ref, dmg)
         self._apply_status(team, spec, ref)
+        if (attacker is not None and getattr(ref, "spec", None) is not None
+                and ref.spec.reflect_dmg > 0.0 and attacker.hp > 0
+                and ref.stun_left <= 0.0                       # the Zap Pack is off while frozen/stunned
+                and _dist(attacker.x, attacker.y, ref.x, ref.y) <= ref.spec.reflect_r):
+            self._hurt(attacker, ref.spec.reflect_dmg)
+            if ref.spec.reflect_stun > 0.0:
+                attacker.stun_left = max(attacker.stun_left, ref.spec.reflect_stun)
         if spec.splash:
+            rad = splash_r or spec.splash_r or _SPLASH_R      # charged override, per-card, flat fallback
+            self.splash_events.append((ref.x, ref.y, rad, self.t))
+            del self.splash_events[:-40]
             for e in self.units:
-                if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= _SPLASH_R:
+                if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= rad:
                     self._hurt(e, dmg)
                     self._apply_status(team, spec, e)
             for tw in self._enemy_towers(team):
-                if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= _SPLASH_R:
+                if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= rad:
                     self._damage_tower(tw, tower_dmg, team)
                     self._apply_status(team, spec, tw)
 
@@ -2225,9 +2296,13 @@ class SimEngine:
             e.stun_left = max(getattr(e, "stun_left", 0.0), spec.freeze_dur or self.freeze_dur)
             if isinstance(e, Unit):
                 e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
+            elif hasattr(e, "aggro_reset"):
+                e.aggro_reset = True
         elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
             e.stun_left = max(getattr(e, "stun_left", 0.0), spec.stun_dur or self.stun_dur)
             if isinstance(e, Unit):
+                e.aggro_reset = True
+            elif hasattr(e, "aggro_reset"):
                 e.aggro_reset = True
         if spec.slows:
             if spec.base == "fisherman" and getattr(e, "fisherman_slowed", False):
@@ -2265,12 +2340,23 @@ class SimEngine:
         foes = [e for e in self.units if e.team != team and e.hp > 0 and e.deploy_left <= 0.0
                 and e.invis_left <= 0.0 and not e.hidden and not e.ghost
                 and _gap(tw.x, tw.y, e) <= rng]
+        if tw.aggro_reset:
+            tw.aggro_reset = False
+            tw.acquired = False
+            tw.target = None
         if not foes:
             tw.acquired = False
+            tw.target = None
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
                 tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
             return
+        locked = tw.target if tw.acquired else None
+        valid_locked = (locked in foes)
+        if not valid_locked:
+            tw.target = None
+            tw.acquired = False
         if not tw.acquired:
+            tw.target = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
             tw.acquired = True
             # LOAD TIME on acquiring a target. Keeping this is what reproduces the reference
             # interaction: an L11 Bomber walking into an L11 princess tower lands EXACTLY ONE bomb
@@ -2280,7 +2366,9 @@ class SimEngine:
         tw.reload_left -= eff_dt
         if tw.reload_left > 0.0:
             return
-        tgt = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
+        tgt = tw.target
+        if tgt is None:
+            return
         # Crown towers shoot a real, travelling, TRACKING shot -- so a Princess Tower arrow crossing 7
         # tiles takes about as long as it does on screen, and the debugger can draw it.
         self.projectiles.append(Projectile(

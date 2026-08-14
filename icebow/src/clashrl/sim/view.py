@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from .. import card_threat
+
 _GRASS = (25, 80, 25)      # BGR
 _RIVER = (120, 90, 30)
 _YOU = (230, 90, 60)       # the viewing team = blue
@@ -202,11 +204,13 @@ def threat_vector(engine, threat_dim: int, team: int = 0) -> np.ndarray:
     return v
 
 
-def identity_items(engine, team: int, whitelist) -> "list[tuple[str, float]]":
-    """``(base_card, depth_frac)`` for the OTHER team's units that have crossed onto ``team``'s half
-    (local y >= 0.5), filtered to the RECOGNISED ``whitelist`` -- the ground-truth input to
-    :func:`clashrl.card_threat.identity_threat_vector` (the sim's stand-in for the live detector).
-    depth_frac in [0,1] is how far past the river the unit has advanced toward ``team``'s king."""
+def identity_items(engine, team: int, whitelist,
+                   front: float = card_threat.IDENTITY_FRONT_DEFAULT) -> "list[tuple[str, float]]":
+    """``(base_card, depth_frac)`` for the OTHER team's units at or past the identity WATCH LINE
+    (local y >= ``front``, default the bridge), filtered to the RECOGNISED ``whitelist`` -- the
+    ground-truth input to :func:`clashrl.card_threat.identity_threat_vector` (the sim's stand-in for
+    the live detector). depth_frac in [0,1] is how far past the watch line the unit has advanced
+    toward ``team``'s king, and MUST match the live producer -- see card_threat.identity_depth."""
     if not whitelist:
         return []
     foe = 1 - team
@@ -218,8 +222,8 @@ def identity_items(engine, team: int, whitelist) -> "list[tuple[str, float]]":
         if base is None or base not in whitelist:
             continue
         _lx, ly = to_local(u.x, u.y, team)
-        if ly >= 0.5:
-            items.append((base, (ly - 0.5) / 0.5))
+        if ly >= front:
+            items.append((base, card_threat.identity_depth(ly, front)))
     return items
 
 

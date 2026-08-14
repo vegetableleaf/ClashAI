@@ -13,11 +13,12 @@ import glob
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader, Subset, TensorDataset
 
 from .model import PolicyNet
 from . import card_threat
 from . import interactions
+from .sim import view
 from .threats import THREAT_DIM
 
 
@@ -50,16 +51,24 @@ def _load_datasets(root, target_thr: int = THREAT_DIM):
             grid, deck, len(files))
 
 
-def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
-    root = cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
-    # threat width FOLLOWS the config (Stage-3 gate): 16 base, or + identity/memory when use_detector,
-    # + the interaction block when use_interactions -- so a wide-labelled dataset trains the SAME shape
-    # as the sim policy / live env, and train-bc no longer silently narrows a wide policy back to 16.
+def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None = None,
+             val_frac: float = 0.0, patience: int = 3, seed: int = 0) -> None:
+    # `data` points BC at an alternative dataset root -- notably data/replay_bc, the pro-replay
+    # samples mined by `run.py replay-bc`. Same .npz schema, so nothing else changes.
+    root = cfg.path(data) if data else cfg.path(cfg.get("record", "out_dir", default="data/sessions"))
+    # threat width FOLLOWS the config (Stage-3 gate): 16 base, + identity/memory when use_detector,
+    # + the interaction block when use_interactions, + the per-tower HP block when use_tower_hp -- so a
+    # wide-labelled dataset trains the SAME shape as the sim policy / live env, and train-bc no longer
+    # silently narrows a wide policy back down. The tower term MUST match sim/env.py: without it train-bc
+    # truncated the replay-mined 52-dim threats to 46 and every BC policy came out shape-incompatible
+    # with the (tower-HP-on) simulator, so `train-sim-ppo --init data/policy.pt` could never warm-start.
     target_thr = (THREAT_DIM
                   + ((card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM)
                      if bool(cfg.get("observation", "use_detector", default=False)) else 0)
                   + (interactions.INTERACTION_DIM
-                     if bool(cfg.get("observation", "use_interactions", default=False)) else 0))
+                     if bool(cfg.get("observation", "use_interactions", default=False)) else 0)
+                  + (view.TOWER_DIM
+                     if bool(cfg.get("observation", "use_tower_hp", default=True)) else 0))
     obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root, target_thr)
     if obs is None:
         print("[train-bc] no identity-labeled datasets found. Build hand templates "
@@ -104,9 +113,28 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
     card = torch.from_numpy(acts[:, 0].astype("int64"))
     cell = torch.from_numpy((acts[:, 2] * gw + acts[:, 1]).astype("int64"))  # gy*gw + gx
 
-    loader = DataLoader(TensorDataset(x, hand, nxt, elx, thr, card, cell),
-                        batch_size=int(cfg.get("train", "batch_size", default=64)),
-                        shuffle=True)
+    # --- ANTI-OVERFIT SPLIT ---------------------------------------------------------------------
+    # Mined replay sets are SMALL and detector-noisy, so a big net will happily memorise them and
+    # report a beautiful train accuracy while learning a pro's frames rather than a pro's habits.
+    # A held-out split makes that visible (the train/val gap is printed) and, with early stopping
+    # below, stops the run at the point where the policy still GENERALISES.
+    ds = TensorDataset(x, hand, nxt, elx, thr, card, cell)
+    batch_size = int(cfg.get("train", "batch_size", default=64))
+    val_frac = float(max(0.0, min(0.9, val_frac)))
+    n_val = int(len(ds) * val_frac)
+    if n_val >= 1 and len(ds) - n_val >= 1:
+        g = torch.Generator().manual_seed(int(seed))
+        perm = torch.randperm(len(ds), generator=g).tolist()
+        tr_idx, va_idx = perm[n_val:], perm[:n_val]
+        loader = DataLoader(Subset(ds, tr_idx), batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(Subset(ds, va_idx), batch_size=batch_size, shuffle=False)
+        print(f"[train-bc] split: {len(tr_idx)} train / {len(va_idx)} val "
+              f"({val_frac:.0%} held out, early stop patience {patience})")
+    else:
+        loader, val_loader = DataLoader(ds, batch_size=batch_size, shuffle=True), None
+        if val_frac > 0:
+            print("[train-bc] too few samples to hold out a val split -- training without one "
+                  "(treat the result as a warm start only).")
 
     threat_dim = int(thr.shape[1])
     # BC learns from RECORDED frames, so the image width comes from the DATASET rather than the
@@ -145,7 +173,12 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
         if iterations > 1:
             src = "the --init checkpoint / random init" if it == 1 else f"iteration {it - 1}"
             print(f"[train-bc] === iteration {it}/{iterations} (warm-start from {src}) ===")
-        opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)))
+        # WEIGHT DECAY: the second anti-overfit lever. On a few hundred detector-noisy replay
+        # samples an unregularised net drives train loss to ~0 by memorising individual frames;
+        # decay keeps the weights small enough that it has to find the general rule instead.
+        opt = torch.optim.Adam(net.parameters(), lr=float(cfg.get("train", "lr", default=1e-4)),
+                               weight_decay=float(cfg.get("train", "bc_weight_decay", default=1e-4)))
+        best_val, best_state, bad_epochs = float("inf"), None, 0
         for ep in range(1, epochs + 1):
             net.train()
             tot, sc, cc, n = 0.0, 0, 0, 0
@@ -163,8 +196,45 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1) -> None:
                 sc += (card_logits.argmax(1) == cardb).sum().item()
                 cc += (cell_logits.argmax(1) == cellb).sum().item()
             tag = f"it {it}/{iterations} " if iterations > 1 else ""
-            print(f"[train-bc] {tag}epoch {ep}/{epochs}  loss {tot / n:.3f}  "
-                  f"card_acc {sc / n:.2f}  cell_acc {cc / n:.2f}")
+            line = (f"[train-bc] {tag}epoch {ep}/{epochs}  loss {tot / n:.3f}  "
+                    f"card_acc {sc / n:.2f}  cell_acc {cc / n:.2f}")
+            if val_loader is not None:
+                net.eval()
+                vtot, vsc, vcc, vn = 0.0, 0, 0, 0
+                with torch.no_grad():
+                    for xb, hb, nb, eb, tb, cardb, cellb in val_loader:
+                        xb, hb, nb, eb, tb = (xb.to(device), hb.to(device), nb.to(device),
+                                              eb.to(device), tb.to(device))
+                        cardb, cellb = cardb.to(device), cellb.to(device)
+                        cl, ll = net(xb, hb, nb, eb, tb)
+                        cl = cl.masked_fill(hb < 0.5, float("-inf"))
+                        vtot += (ce(cl, cardb) + ce(ll, cellb)).item() * len(xb)
+                        vn += len(xb)
+                        vsc += (cl.argmax(1) == cardb).sum().item()
+                        vcc += (ll.argmax(1) == cellb).sum().item()
+                vloss = vtot / max(1, vn)
+                line += (f"  |  val {vloss:.3f}  card {vsc / max(1, vn):.2f}  "
+                         f"cell {vcc / max(1, vn):.2f}  gap {vloss - tot / n:+.3f}")
+                print(line)
+                # EARLY STOPPING on the held-out loss: the moment val stops improving the net has
+                # started fitting this footage rather than learning from it, so we keep the best
+                # weights and stop -- the single most important guard when cloning a small set.
+                if vloss < best_val - 1e-4:
+                    best_val, bad_epochs = vloss, 0
+                    best_state = {k: v.detach().clone() for k, v in net.state_dict().items()}
+                else:
+                    bad_epochs += 1
+                    if bad_epochs >= int(patience):
+                        print(f"[train-bc] early stop at epoch {ep} "
+                              f"(val loss has not improved for {patience} epochs; "
+                              f"restoring the best weights, val {best_val:.3f})")
+                        if best_state is not None:
+                            net.load_state_dict(best_state)
+                        break
+            else:
+                print(line)
+        if val_loader is not None and best_state is not None:
+            net.load_state_dict(best_state)      # always ship the best-generalising weights
 
         torch.save({
             "model": net.state_dict(),

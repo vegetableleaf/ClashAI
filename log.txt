@@ -1275,6 +1275,848 @@ Newest entries are at the bottom.
 
 
 ------------------------------------------------------------------------------
+2026-08-11  —  Deck level, The Log's depiction, and the BC/sim threat-width bug
+------------------------------------------------------------------------------
+- DECK: skeletons 13 -> 15 in config/cards.yaml (real account level). Nothing else needed changing:
+  the level lives in ONE place and both the sim and the RL env derive HP/damage from it at runtime
+  via `1.1^(level-11)` (CardDB.deck()/deck_levels(), sim/engine.build_spec), and `fair_eval_level:
+  null` recomputes the fair-eval level from the deck mean (13 -> 14). VERIFIED by loading the KB:
+  skeletons resolves at level 15, hp/damage 119.
+- NB `real/config/cards.yaml` still carries skeletons at level 11. That project is maintained
+  separately and had already diverged, so it was deliberately NOT touched.
+- SIM-VIEW: The Log rendered as a bare cross at the cast point, so in the debugger it read as a
+  POINT BLAST localised to the cast tile. The engine was always correct -- `_resolve_roll` tests a
+  forward CORRIDOR (9.6 tiles forward, 1.0 behind, +/-2.2 half-width, ground-only, knockback) -- only
+  the picture was wrong, which is exactly the class of bug sim_view.py exists to prevent (the Rocket
+  already drew its blast ellipse; the Log drew nothing). sim_view now draws the roll rectangle,
+  oriented forward by team from the same roll_len / back-slop / half-width the engine uses.
+- BUG (train-bc): `train-sim-ppo --init data/policy.pt` reported "shape-incompatible". The mismatch
+  was threat_dim 46 (checkpoint) vs 52 (env) -- the +6 is the TOWER-HP block added in 2819923.
+  The root cause was NOT a stale file: `train_bc._load_datasets` computed its target threat width as
+  16 + identity/memory + interactions and OMITTED the tower term that sim/env.py and replay_bc.py
+  both include, so it TRUNCATED the correctly-52-dim replay datasets back to 46 and every BC policy
+  came out permanently incompatible with the (tower-HP-on) simulator. Fixed to include
+  `view.TOWER_DIM` under the same `observation.use_tower_hp` gate. VERIFIED: target width 52, the
+  four replay_bc sets load as (1182, 52) with no truncation.
+- CAVEAT `data/sessions/*` (2026-08-04) are doubly stale -- 3-channel obs AND 46-dim threats
+  (pre-canvas-flip, pre-tower-HP). Re-run `label --all` before mixing them with replay data.
+
+
+------------------------------------------------------------------------------
+2026-08-11  —  Identity block now watches from the BRIDGE, not the river
+------------------------------------------------------------------------------
+- SYMPTOM: an enemy Hog Rider at the bridge did not trigger a Tesla answer even with the obs canvas
+  on. The detector and KB ARE wired in (policy_rl.pt is threat_dim 52 / in_ch 9, so identity+memory+
+  interactions+tower all load; hog_rider is whitelisted in `detector_cards`; detector_conf 0.35; the
+  KB has hog_rider win_condition=True, building_targeting=True, which is precisely the Tesla cue).
+- ROOT CAUSE: the identity block only looked at units that had ALREADY CROSSED (`y >= 0.5`), so a
+  wincon at the bridge lit NOTHING, and the moment it crossed it lit up at depth ~0 -- the latest
+  possible instant, after which a defensive building can no longer deploy and acquire in time.
+  MEASURED before the fix: y=0.46 -> present 0 / wincon 0; y=0.50 -> wincon 1 but depth 0.00.
+- FIX: new `observation.identity_front_y` (0.44 = the deploy line / bridge approach), with depth
+  RENORMALISED over the watched span so depth AND approach-velocity mean something before the river.
+  MEASURED after: y=0.46 -> present 1, wincon 1, depth 0.036, vel 0.119.
+- The watch line was hard-coded to 0.5 in FIVE separate producers. All now read one shared helper
+  (`card_threat.identity_front` / `identity_depth`): live play, the live RL env, sim/view.identity_items,
+  the mirrored self-play opponent, and the offline labeller. VERIFIED sim/live parity: 0 mismatches.
+- threat_dim is UNCHANGED at 52 (same 10 features, different population), but the observation
+  DISTRIBUTION changed -> a fresh sim run is required before any checkpoint benefits.
+
+
+------------------------------------------------------------------------------
+2026-08-12  —  Passivity collapse: diagnosis, instrumentation, and the first fixes
+------------------------------------------------------------------------------
+SYMPTOM (user, ~10 h of live train-rl): no progress and visible REGRESSION -- the policy drifted
+toward making no plays at all despite a full bar and an active opponent, appearing to end matches
+early to stop accruing penalties.
+
+This is the THIRD instance of the same attractor. The two prior ones are already recorded in
+config.yaml: `cycle_spare_elixir` ("a flat tax on every action ... the policy's answer was to stop
+playing", plays/match 46.8 -> 26.0, winrate 8.3% -> 2.8%) and the `counterfactual` note
+("cycle_plan fired 0 bonuses against 305 penalties and threat_response's quiet-board branch 0
+against 257, and both taught the policy to stop playing").
+
+CAUSES IDENTIFIED (ranked):
+  C1 Positive shaping was capped per match (`correctness_cap`) while penalties were UNCAPPED. Over a
+     180-300 decision match that is not a cap, it is a slope: the bonus saturates, the penalty stream
+     does not, so the highest-value policy is the one that ENDS THE MATCH SOONEST.
+  C2 The outcome compass is invisible: win/loss +/-2.0 discounted by gamma 0.99 over ~200 steps is
+     ~0.27 at match start, against undiscounted per-step penalties. A fast loss costs a BOUNDED -3
+     to -5; surviving under a -0.1/step drift costs -25.
+  C3 ARCHITECTURAL: `play_val = gate[play] + max_card + max_cell` vs `wait_val = gate[wait]` -- three
+     heads against one. All three train on the same TD error, so any systematic negative return on
+     plays pushed all three down together and the no-op won BY CONSTRUCTION, independent of tuning.
+  C4 Positives are perception-conditioned, penalties are not. When the detector misses, defending
+     scored -0.4 (quiet-board branch) while idling scored 0.
+  C5 Doctrine mismatch (icebow is X-Bow 3.5, NOT 2.9 -- it cannot out-cycle, so defence must be
+     elixir-EFFICIENT). cycle_plan/cycle_waste were DELETED from the sim for being one-sided but are
+     still live; the quiet-board penalty punishes pre-placing Tesla, the deck's signature play.
+  C6 Throughput: ~12 matches/hour live is far too little for DQN to improve, but ample to slide into
+     the passivity attractor. Live RL also had NO keep-best gate, so the regression was PERSISTED.
+
+IMPLEMENTED (Batch A -- safety + measurement):
+- NEW `src/clashrl/reward_stats.py` (`RewardTerms`): per-term fires / positive / negative / totals,
+  per match and per session. `add()` returns its input UNCHANGED, so instrumenting a reward assembly
+  is a pure wrapper and cannot alter the number the agent sees.
+- Wired into BOTH envs. The live env prints a per-match breakdown and appends
+  `data/reward_stats/live_<ts>.jsonl`; `policy-stats` aggregates the sim pool, prints terms
+  most-negative-first, and flags any term that fires but NEVER pays positive (genuinely one-signed
+  outcome terms are excluded from that flag).
+- KEEP-BEST GATE for train-rl. `policy_rl.pt` is now promoted only when the recent window is at least
+  as good as the best window this session; every save still lands in `policy_rl_last.pt`, so nothing
+  is lost. Scored on WIN RATE and guarded by plays/match, because the collapse RAISES mean episode
+  reward (a shorter match accrues fewer penalties) -- a reward-scored gate would have ENDORSED it.
+  New knobs: `train.rl_keep_best_window` (10), `train.rl_keep_best_min_play_frac` (0.5).
+
+IMPLEMENTED (Batch B -- structural):
+- C1 fixed: `_bonus` now caps BOTH signs by the same per-match budget, in the live env and the sim.
+- C3 fixed: dueling-style identifiability. The card and cell heads carry only the RELATIVE preference
+  among LEGAL options (advantage <= 0, exactly 0 at their own masked argmax), so max over (card,cell)
+  of Q(play) IS gate[play] and the play/wait decision is ONE head against ONE head. Applied at action
+  selection, the TD target and the DDQN bootstrap -- and in policy_stats, whose DDQN gate rule must
+  stay in lockstep with the trainer (that drift once cost 33pp).
+  VERIFIED Q(play, greedy) == gate[play] to 1e-6; a non-greedy card scores strictly lower;
+  all-masked rows stay finite.
+  CONSEQUENCE: existing DDQN gate heads were trained under the ADDITIVE rule, so their logits mean
+  something different now -- DDQN checkpoints need a fresh sim run. PPO checkpoints are unaffected.
+
+MEASURED AFTERWARDS (this is the important part):
+- SIM, policy_sim_ppo_best.pt, 150 greedy matches: win 11%, 26.2 plays/match. Dominant terms
+  threat_miss_idle -2168.0 (2168 fires, ZERO positive) and wincon_exec +680.6.
+- LIVE, 5 matches (all losses): threat_miss_idle and wincon_exec fire ZERO times -- the sim's two
+  biggest terms are ABSENT live. What remains is negative-only: elixir_trade -22.6 (76 pos/140 neg),
+  threat_response -16.8 (7 pos/43 neg -- defending punished 6:1), cycle_plan -8.8 (2 pos/24 neg).
+  EVERY match totalled between -12 and -23. There is NO reachable positive pathway in the live env.
+  That is the passivity gradient, measured directly.
+- PLACEMENT COLLAPSE (the finding that reorders everything): 3 distinct cells used out of 432, with
+  79.2% of all plays on ONE tile. The counts decompose exactly -- cell 237 (x=0.213, y=0.527, LEFT
+  lane) = X-Bow 801 + Skeletons 787 + Log 785 + Knight 578 + Tesla 115 + Ice Wizard 51; cell 94 =
+  Rocket; cell 280 = Knight Evo. SIX different cards deploy to the identical tile regardless of the
+  board. The cell head is a CONSTANT FUNCTION, not a policy -- which is also why Knight/Ice Wizard
+  are thrown down the wrong lane: with a fixed left-lane cell, a right-lane push cannot be answered.
+- ROOT CAUSE of that collapse: `ppo_explore_floor` was applied to the CARD distribution ONLY; the
+  432-way CELL head had no floor and shared a single `ppo_entropy: 0.01`. Max entropy is ln(10)=2.30
+  vs ln(432)=6.07, so the big head's entropy gradient could not resist collapsing to a delta, and a
+  never-sampled action gets no gradient -- self-reinforcing.
+
+IMPLEMENTED (cell-collapse fix):
+- NEW `sim.ppo_cell_explore_floor` (0.25) -- cell sampling is now (1-floor)*policy +
+  floor*uniform(DEPLOYABLE), mirroring the card floor. The stored log-prob is the MIXTURE's, so the
+  PPO ratio stays exact importance sampling.
+- NEW `sim.ppo_cell_entropy` (0.05) -- the cell head's entropy is weighted separately from
+  gate/card, because one coefficient cannot hold a 10-way and a 432-way categorical at once.
+- `policy-stats` now reports `cells_used` and `top_cell_share` -- the acceptance metric.
+- VERIFIED on a synthetic fully-collapsed head: pure sampling gives 1 distinct cell over 20k draws,
+  the mixture gives 213 (= every deployable cell), 25.0% of samples land off the frozen argmax, the
+  mixture sums to 1.0 and puts ZERO mass outside the deployable mask.
+- Both floors are ROLLOUT-ONLY: the greedy benchmark and live play remain the pure policy.
+- START HIGH, THEN ANNEAL: 0.25 is deliberately noisy; it is the price of repopulating a dead
+  distribution. Walk it to 0.05-0.10 once cells_used recovers.
+
+PLANNED, NOT YET IMPLEMENTED (Batch C onward, in priority order):
+  1. RE-TRAIN FROM SCRATCH IN SIM and gate on placement spread. A floor PREVENTS re-collapse; it does
+     not un-freeze dead weights. ACCEPTANCE: cells_used moves from 3 into the dozens and
+     top_cell_share falls well below 79%. If it does NOT, stop -- suspect the observation is not
+     reaching the cell head at all, which is a deeper problem than exploration.
+  2. GIVE THE LIVE ENV A REACHABLE POSITIVE. Today it has none (see the measurement above). Includes
+     perception-gating the PENALTIES too, so a defensive play is never punished on a frame the
+     detector could not justify, and deleting the live-only cycle_plan/cycle_waste (already gone from
+     the sim) and the quiet-board defender penalty.
+  3. FIX elixir_trade CREDIT ASSIGNMENT. It fires every step (216 fires over 5 live matches) and
+     credits ambient enemy-mass change the agent did not cause -- towers killing things, troops
+     expiring. Replace the immediate spend charge + stochastic kill credit with DELAYED SETTLEMENT:
+     judge a play by what happened in the following N seconds (enemy elixir neutralised / elixir
+     spent; X-Bow seconds-firing-on-tower; tower HP differential), carried back by train.n_step.
+     This is the real architectural rework -- it replaces the hand-written per-play classifiers with
+     one two-sided mechanism that works LIVE (no engine deepcopy, unlike `counterfactual`).
+  4. EPISODE-LENGTH NEUTRALITY (C2). Decide AFTER 2 and 3: if the negative drift is gone there may be
+     nothing to counterweight. If needed, an action-INDEPENDENT per-step constant is safe; raising
+     win/loss alone is not (gamma discounts it into irrelevance).
+  5. RECONCILE LIVE DECISION CADENCE. Timestamps in the live reward_stats show ~2.2 s per decision
+     against the trained `act_period: 1.0` (= the sim's agent_dt). Live reactions are running at
+     roughly half the trained rate -- an unflagged train/serve mismatch.
+  6. REGIME: train in the sim, use live only for fine-tuning and evaluation, and benchmark every
+     change with policy-stats.
+
+GATES between batches (any change must hold ALL of these on >=150 sim matches):
+  plays/match does not fall; mean elixir does not rise; every retained shaping term shows >0 positive
+  fires; win rate flat or better. A term that fires 0 positives gets deleted, per precedent.
+
+DO NOT (each repeats a known failure):
+  - Add another one-sided "correctness" term. Three have now collapsed runs.
+  - Add anti-hoarding pressure. icebow is X-Bow 3.5: banking to ~10 for X-Bow(6) + Tesla(4) is
+    CORRECT doctrine, not a bug.
+  - Raise win/loss in isolation (see C2).
+  - Port `counterfactual` to the live env -- it requires deep-copying a real game.
+
+
+------------------------------------------------------------------------------
+2026-08-12 (evening)  —  Batch C execution: BC-init baseline, live reachable positive,
+                         cadence reconciliation, elixir_trade design
+------------------------------------------------------------------------------
+Context: the from-scratch PPO sim retrain (plan item 1) is RUNNING, initialised from the
+Hunter-CR replay-BC checkpoint (data/policy.pt, via replay-bc -> train-bc). This batch executed
+the work that can land in parallel without touching the running sim's behaviour.
+
+DECK NOTE (user correction, recorded): icebow is a 3.5 avg-elixir CYCLE deck, NOT "X-Bow 2.9" --
+substantially slower than a standard cycle deck but it still functions as one. README's deck
+line said 2.9 and is fixed; C5's doctrine consequences (elixir-efficient defence, banking to ~10
+is correct) already assumed 3.5.
+
+BC-INIT BASELINE (policy-stats --ckpt data/policy.pt --matches 150 -> data/policy_stats_bc_init.json):
+- PLACEMENT: cells_used **1 of 432**, top cell **100.0%**. The replay-BC init's cell head is
+  ALREADY a constant function -- worse than the collapsed PPO checkpoint's 3. Cause is the
+  training data, not exploration: ~1.2k detector-noisy samples against a 432-way softmax, and
+  the loss-minimising solution for a small noisy set is the marginal mode. So the warm start
+  contributes CARD-CHOICE structure (7 of 10 identities played at humanish shares: skeletons
+  20.0%, ice wizard 19.9%, log 19.1%, tornado 15.3%, knight 14.3%) but ZERO placement spread.
+- CONSEQUENCE FOR THE RUNNING RETRAIN: spread recovery rides entirely on sim.ppo_cell_explore_floor
+  (0.25) un-freezing the head -- the exact scenario the plan flagged. Judge the acceptance gate
+  against a baseline of 1, not 3, and run policy-stats MID-run (~a few k matches in): if
+  cells_used is still single-digit there, stop and suspect the obs->cell-head path per the plan.
+- CAVEATS: train-bc saves no gate head, so the baseline's gate was random-init (gate held 0%,
+  forced waits 80%) -- plays/match (37.1) and wait rates are NOT comparable to PPO reads. X-Bow /
+  Rocket / Tesla-Evo were never played under that degenerate gate (win 12% means little).
+
+LIVE ENV: A REACHABLE POSITIVE (plan item 2 -- env.py; sim behaviour untouched):
+- QUIET-BOARD DEFENDER PENALTY DELETED from _threat_response_live, mirroring the sim's retirement
+  (sim: 257 fires / 0 positives; live measured the same one-sided shape, 7 pos / 43 neg over the
+  5-match diagnosis). Live it was doubly wrong: `tid` unlit also covers every frame the DETECTOR
+  could not read, so it punished defending exactly when perception was blind (C4).
+- BUILDING BRANCH ADDED (live/sim parity gap): the sim grades a building on counter role ALONE
+  (a building ATTRACTS -- central Tesla vs an off-lane wincon is the classic right play); live
+  still demanded same-lane intercept, so the deck's signature defensive play earned ZERO live.
+  One of the two missing reachable positives, recovered by mirroring sim/env.py's branch.
+- cycle_plan / cycle_waste DELETED live (assembly, helpers, weights). Sim's copy went at 110
+  fires / 0 positives; the live copy measured 2 pos / 24 neg -- the third recorded instance of
+  the same action-tax shape. config knobs marked INACTIVE (kept for the collapse history),
+  config_edit no longer offers them, sim's dead reads/never-called helper trimmed (no behaviour
+  change; the sim's documented _cycle_plan stub stays).
+- PERCEPTION-GATED SPEND (interim until the trade rework): a defensive play (cy >= 0.5) on a
+  frame where the detector recognised nothing but the coarse mass reads ACTIVE no longer pays
+  the trade term's elixir spend (_perception_blind, alongside the existing forced-spend waiver).
+  The mass-delta half still applies EVERY step, so the telescope/anti-farm property is intact --
+  this waives a tax in unmeasurable states, it does not add a term. Subsumed by the elixir_trade
+  rework when that lands.
+
+LIVE DECISION CADENCE (plan item 5 -- measured, then fixed):
+- MEASURED: the 5-match JSONL gives 3.3-5.5 s/step including nav; per-component bench on a real
+  frame (under PPO-training CPU contention, so upper bounds): clock.update **865 ms** (2x/3x
+  badge = up to 2 templates x 8 scales x whole-frame matchTemplate, EVERY step),
+  recognize_hand 301 ms (large per-card template stacks), detect_state 230 ms, tower-HP OCR
+  40 ms, threats 21 ms, rest <10 ms -- pipeline sum ~1.5 s. Old loop shape = sleep(act_period
+  1.0) THEN pipeline => ~2.2-2.5 s served vs the trained 1.0 s. Spell casts additionally stall
+  up to ~3.6 s sampling the impact frame (and this deck is spell-heavy).
+- FIX 1, badge window (clock.py + elixir.badge_check_window_s 20): the badge NEVER decides the
+  multiplier (the clock is authoritative), so the cross-check now runs only within +-20 s of an
+  expected transition. Zero behaviour change, ~0.87 s/step returned. play.py benefits too -- it
+  was paying clock.update at its 6 Hz poll rate.
+- FIX 2, paced wait (env.py): the act wait is now anchored to the LAST FRAME GRAB -- wait only
+  for what REMAINS of act_period, so the pipeline runs INSIDE the period. Served cadence
+  converges to act_period whenever pipeline+learner fit inside it (and to their sum otherwise),
+  instead of always being their sum plus the period. Event-driven early wake unchanged.
+  (play.py already paced correctly via its poll loop -- no change there.)
+- INSTRUMENTATION: env.step now accounts every phase (loop/wait/spell/grab/vision/hand/threat/
+  obs/act); each match prints a `[cadence]` line and appends the means to the reward-stats JSONL
+  ("cadence" + "decisions" fields), so the trained-vs-served mismatch stays measured. `loop`
+  minus the named phases ~= the trainer's inference+learn share.
+- REMAINING, deliberately not touched: the spell-impact sampler (retired by the elixir_trade
+  rework -- see below); recognize_hand's 301 ms template stack and detect_state's 230 ms
+  multi-template sweep (optimise only after the next live run's [cadence] lines confirm their
+  uncontended share).
+
+ELIXIR_TRADE REWORK: DESIGN COMMITTED, NOT IMPLEMENTED (plan item 3 -> icebow/ELIXIR_TRADE_DESIGN.md):
+- Decision: mirror the SIM's reworked term (a true potential over both sides' board value +
+  elixir bars, where a deploy is a TRANSFER and only consequences move the score) rather than
+  per-play attribution windows, which would re-introduce hand-written classifiers with tunable
+  attribution knobs -- the family that has failed three times. Live sources: own bar = pip read;
+  enemy bar = OpponentElixirEstimator; board value = team-tagged detector tracks x KB elixir
+  (full value until a track dies -- HP is unobservable live; the transfer property makes a
+  missed enemy deploy self-cancelling in the potential). Perception-validity gate: delta-phi
+  only between healthy perception frames, else carried forward (freezes BOTH signs).
+- RETIRES: the blocking spell-impact sampler (the settlement reads consequences off the regular
+  frame stream) and the interim _perception_blind spend waiver. Acceptance gates in the doc;
+  headline: elixir_trade must fire BOTH signs live, and a no-play segment must net ~0 (telescope
+  check). Implement as its own change AFTER the current sim run is judged.
+
+Files: env.py, clock.py, config.yaml, config_edit.py, sim/env.py (dead code only), README.md,
+ELIXIR_TRADE_DESIGN.md (new), data/policy_stats_bc_init.json (new measurement). Reward changes
+are LIVE-ONLY and take effect on the next train-rl; the running train-sim-ppo is unaffected.
+
+
+------------------------------------------------------------------------------
+2026-08-12 (night)  —  wincon_exec farm caught mid-run; repeat-credit gate + Hunter X-Bow doctrine
+------------------------------------------------------------------------------
+MID-RUN DIAGNOSIS (the from-scratch PPO retrain, ~2.7h in). The user flagged a sharp console
+winrate drop. Part of that is structural (selfplay_prob 0.5 ramps over 5k matches and PFSP power
+2.0 over-samples the snapshots the agent LOSES to; the cell floor keeps 25% of placements random),
+but two greedy policy-stats snapshots 105 min apart exposed a real regression:
+- PLACEMENT re-collapsed 16 -> 5 cells (top share 61% -> 76.8%); the mode MIGRATED from a
+  bottom-edge dump tile (0.31, 0.98) to ONE central tile (0.47, 0.65) shared by SIX cards
+  (x_bow 297 / log 275 / skeletons 266 / knight 204 / tesla 77 / knight_evo 64 of its 1188 plays)
+  -- the constant-cell attractor of 2026-08-12 morning, re-formed around a new food source:
+- wincon_exec flipped -100.2 (82+/218-) -> **+687.9 with 374 of 374 fires positive** (~6.2/match,
+  saturating correctness_cap): the X-Bow credit was RENEWABLE BY RE-PLACEMENT, so parking every
+  card on the credited centre tile and re-dropping the bow forever became the reward optimum
+  (59/60 losses; policy_sim_ppo_best stale since 20:09 -- the keep-best gate did its job).
+- Side symptom: ALL 241 rocket plays went to one corner tile outside any aim radius (spell_waste
+  221 fires, never positive) -- consistent with wincon-bank pressure (rocket in hand masks cheap
+  cards at >=3 elixir, so dumping it fastest unfreezes the hand) plus a constant cell head.
+VERDICT: stop the run; do NOT plain-resume (the attractor is reward-geometric); fix the one
+measured exploit; restart from the BC init.
+
+REPEAT-CREDIT GATE (sim/env._wincon_exec + live twin in env._wincon_exec_live):
+- An X-Bow deployed while an allied X-Bow is ALREADY STANDING earns NO placement credit. The gate
+  nulls ONLY the positive side: a misplace while one stands still charges, and a double-bow is
+  neutral, never punished (a real play at triple elixir). SEQUENTIAL re-placement -- the defensive
+  cadence icebow leans on at 2x/3x -- re-credits every time, because the previous bow is dead.
+- Sim: `_ally_xbow_standing` is read PRE-deploy in step() so a just-placed bow cannot gate its own
+  credit. VERIFIED: 1st bow +1.20, 2nd while standing +0.00, 3rd after the first dies +1.20.
+- Live twin: live cannot reliably SEE its own bow, but it KNOWS when it played one -- "standing" =
+  within the KB lifetime (30 s, from cards_stats lifetime_s) of our last X-Bow play. Perception-
+  independent; worst case briefly over-waives a bonus after an early bow death. Reset per match.
+- Self-limit math: at lifetime 30 s a continuous re-placement chain maxes ~10 credits/match, and
+  correctness_cap still bounds the total -- but the chain now requires the previous bow to DIE,
+  which is precisely the consequence-coupling the flat credit lacked.
+
+HUNTER CR X-BOW DOCTRINE, MEASURED (data/replay_bc/*/dataset.npz, 89 X-Bow plays over 4 videos),
+prompted by the user's correction that icebow leans on DEFENSIVE X-Bows far more than other siege:
+- 47 (53%) OFFENSIVE in tower range, mean (0.48, 0.50): behind-bridge spots BOTH lanes
+  (x 0.16/0.27 and 0.79/0.84 at y 0.50) plus central front-row (0.42-0.63, y 0.46-0.53).
+- 22 (25%) DEFENSIVE centre band, mean (0.51, 0.57), tight in x 0.42-0.63 / y 0.56-0.59 --
+  squarely inside env.xbow_defense_front/back (0.52-0.62): the band geometry is validated.
+- 18 (20%) "other" -- but ~10 of those are central FRONT-ROW bows (0.47-0.53, y=0.50) that the
+  SIM scores as in-range via tile_dist (~10.2 tiles <= 11.5) while the LIVE env's isotropic
+  normalized `d <= xbow_range 0.36` calls them out-of-range (misplace!). PARITY BUG, live-side
+  only, noted for a later gated fix: the live range test needs tile-aspect-correct distance.
+- Elixir at play: mean 7.3 (offensive) / 7.0 (defensive) -- he BANKS before committing, exactly
+  the anti-anti-hoarding doctrine already on the do-not list.
+- WHEN, measured (CPU tray-scan, x_bow leaving the hand + 2x/3x badge at each play ->
+  data/analysis/xbow_timing.json; badges verified transferring to this footage, best x2 0.92 /
+  x3 0.88). NB classify the badge by ARGMAX of the two scores -- x3-first priority misread most
+  2x badges as 3x (the small glyphs cross-match at 0.7+).
+  * 76 plays kept over ~143 min of footage, est. ~14 matches -> **~5.4 X-Bow plays/match** --
+    the user's pushback confirmed; the earlier "1-3/match" guess was far too low.
+  * PHASE split: 1x 39 / 2x 32 / 3x 5. Double elixir is only ~40% of a match's clock, so the
+    per-minute X-Bow rate RISES at 2x. Approximate WHERE x WHEN join (order-aligned, directional
+    only): offensive bows 25/21/4 across 1x/2x/3x, defensive-band bows 7/10/1 -- the defensive
+    share grows from ~19% of 1x plays to ~30% of 2x plays. CAVEAT the tray-gone guard discarded
+    226 candidate events (all of video 1's), and discards cluster at match END -- so the true
+    late-game share is likely HIGHER than measured, favouring the same conclusion.
+  * RE-BOW CADENCE: within-match gaps median 24 s, p25 8 s -- FASTER than the 30 s lifetime, so
+    his bows usually DIE early under attack and are re-placed promptly. The SIM gate keys on
+    actual death (engine truth) and credits exactly this. The LIVE twin's 30 s lifetime window
+    is therefore TOO CONSERVATIVE at real icebow cadence (it would waive legitimate re-bows
+    after early deaths) -- flagged: replace with detector death-evidence or a shorter window
+    BEFORE the next live fine-tune. Sim-side training is unaffected.
+  * OBSERVATION for later (not a change): Hunter still throws 21 offensive bows at 2x, while the
+    sim's phase machine calls a forward bow a MISPLACE once 2x arrives without breakthrough
+    (xbow_success_frac flip). The hard flip may be harsher than his real doctrine -- re-measure
+    against match context before touching it.
+  * ACCEPTANCE for the restarted run, calibrated: X-Bow plays/match healthy at ~3-7 (Hunter 5.4);
+    wincon_exec positives must track distinct deployments; offensive:defensive placement mix
+    ~2:1 with the defensive share rising by 2x.
+
+RESTART: stop the running train-sim-ppo (Ctrl+C saves; best@20:09 is preserved), then fresh
+`run.py train-sim-ppo --matches 100000 --envs 32 --init data/policy.pt`. Acceptance per the
+standing gates plus: wincon_exec positive fires must track DISTINCT bow deployments (no standing
+bow), not re-placements; rocket whiff-corner loop should decay; cells_used judged against the
+BC-init baseline of 1 (data/policy_stats_bc_init.json).
+
+DEFENSIVE-RESPONSE DOCTRINE: coverage audit + Hunter's measured response matrix (user directive:
+the X-Bow is not the only thing to mine -- the model must recognise the exact enemy troop, link
+it to a threat class, play the KB-correct counter (Tesla for a wincon, Ice Wizard for a swarm),
+fall back to legitimate MITIGATION when the counter is out of rotation (Ice Wizard + Skeletons vs
+a wincon), and learn the synergies: rocket+nado, ice-wiz+nado, nado-to-king activation on melee,
+nado dragging a troop back into a placed building's aggro. Never grade random cards in random
+places as a "response". Recorded here because parts predate the logs.)
+- ALREADY ENCODED (audited against card_threat.py + sim/env.py):
+  * recognise -> detector whitelist; classify -> identity_threat_vector role flags;
+  * counter -> counters() role table: building-targeter->building (Tesla vs Hog), swarm->splash/
+    spell (Ice Wizard), air->attacks_air, tank->building/DPS>=150, and the BARE-WINCON branch
+    (non-tank wincon -> ANY body) is what makes the Ice-Wiz+Skeletons mitigation stack a CREDITED
+    threat_response, not a threat_miss -- the fallback the user requires is already legal;
+  * holding with NO counter in hand is NOT taxed (threat_miss_idle requires an affordable counter
+    in hand), so "do what you can" never competes with a phantom optimal;
+  * all four tornado synergies live in sim _nado_shaping: clump, >=2-pulled-die combo (the
+    rocket/ice-wiz payoff), king-activation pull, and the retarget drag credit.
+- GAPS (flagged, each its own later change): live env has NO nado execution credits (sim-only,
+  engine truth; the elixir_trade potential rework is the live channel for consequence credit);
+  role table scores Ice Wizard as a NON-counter to a TANK-classed wincon (Giant), where doctrine
+  reads it as legitimate support -- consequence terms (counterfactual/chip) carry that case;
+  rewards.strategy_prior_scale still 0 (priors not yet active).
+- HUNTER'S RESPONSE MATRIX, measured TODAY from the npz threat blocks (each mined play stored the
+  identity block at play time; 1182 plays, 189 (16%) with a recognised threat -- recall-limited
+  on the foreign rendering, so treat as a PRIOR not a census):
+  * vs SWARM (n=76): skeletons 64%, log 11%, ice_wizard 8% -- cheap chaff + splash, placed in the
+    threat lane mid/front (L-mid x21, R-front x12).
+  * vs TANK (n=56): log 21% / knight 18% / skeletons 14% / tesla 12% -- mitigation STACKING.
+  * vs recognised-other (n=41): ice_wizard 68%, centred C-mid -- the universal support/slow.
+  * vs BUILDING-TARGETING WINCON (n=12, mean depth 0.07 = answered AT the bridge): skeletons 33%
+    (distraction), tesla+tesla_evo 25%, ice_wizard 17% -- "Tesla for the wincon" + body fallback,
+    exactly the doctrine chain.
+  The counters() table grades everything above as positive-by-role -- the KB mapping and the
+  pro's actual play AGREE, which is the strongest validation the role table has had.
+- NEXT (queued, detector-gated): after board-25 finishes + (if) promotes, run `mine-replays` over
+  the Hunter videos -> StrategyPriors (placements[threat_bucket][card][zone] + trade stats +
+  rocket conditions); THEN decide rewards.strategy_prior_scale > 0 as its OWN gated change. That
+  is the formal channel by which "where he plays his other cards against which threats" shapes
+  the reward, replacing intuition with his measured priors.
+
+
+------------------------------------------------------------------------------
+2026-08-13  —  board-25 verdict: NO promotion — board-24-5 was never cut off, it early-stopped
+------------------------------------------------------------------------------
+- board-25 (yolo11s / 960 / batch 4 / seed 0 / deterministic, board-24-5's exact recipe on the
+  unchanged dataset) ran 6.4 h and EARLY-STOPPED at epoch 69, best at epoch 39 (patience 30) --
+  the IDENTICAL trajectory and stop as board-24-5, epoch-for-epoch to 3 decimals. best.pt is
+  BITWISE IDENTICAL to the incumbent (499/499 tensors equal). VERDICT: nothing to promote; the
+  detect.weights pin stays on board-24-5. No frozen-subset eval needed -- identity implies
+  identical numbers by construction.
+- The premise behind the run ("board-24 was cut off mid-training and didn't reach its full
+  potential") was WRONG: 24-5 stopped at a genuine 30-epoch plateau. The signature was already
+  in its results.csv (best@39 + patience 30 = stop@69) and was checkable BEFORE spending the
+  GPU-hours -- lesson recorded: read the EarlyStopping line / best-epoch math before re-running
+  a "truncated" training. What the replay DID buy: a hard receipt that training is deterministic
+  and the dataset was unchanged since board-24-5 -- useful, but not worth 6.4 h on purpose.
+- CONSEQUENCE: this recipe+dataset's ceiling IS the epoch-39 model. The levers that can actually
+  move the detector, per the measured 2026-08-07 scaling law + gap list: (1) LABELS -- fireball
+  (12 boxes, 21.6% of meta decks), zap_aoe (0), lightning_aoe (0); `label-queue` ranks the
+  backlog; the annotation-harvest frames from train-rl/record sessions are waiting in
+  images/to_label. (2) A real RECIPE change as its own experiment (yolo11m at batch 2-3 is the
+  candidate; raising patience alone cannot help a genuine plateau; a new seed is noise-level).
+- UNLOCK: `mine-replays` (Hunter strategy priors) no longer waits on a detector generation --
+  the detector didn't change, so it can run on the incumbent whenever the user gives the go
+  (GPU is free again).
+
+
+------------------------------------------------------------------------------
+2026-08-13 (morning)  —  Overnight PPO regression measured: keep-best vindicated, self-play suspect
+------------------------------------------------------------------------------
+- USER flagged policy_sim_ppo_best.pt stale since 23:27 (57 min into the gated restart). Matched
+  150-match policy-stats on BOTH checkpoints (same seed/protocol) settles it -- a GENUINE
+  regression, not gate conservatism:
+    BEST 23:27:  win 19.3% (the strongest sim policy measured to date), 25.3 plays/match,
+                 towers taken 122, wincon_exec 649+/4-, FULL deck in use (tesla 453,
+                 tesla_evo 151, ice_wizard 190) -- but placement narrow: 7 cells, top 85.6%.
+    LAST 07:21:  win 1.3%, towers 2, chip_offence 2478 -> 381 fires, rocket spam back up
+                 (540 plays, spell_waste ~5/match), support cards dying (ice_wizard 35,
+                 tesla_evo 6, tornado 10) -- but SPREAD doubled: 14 cells, top 40.8%.
+- READINGS: (1) The keep-best gate did exactly its job all night -- nothing after 23:27 deserved
+  promotion. (2) SPREAD AND STRENGTH ARE ANTI-CORRELATED across these snapshots: a 7-cell policy
+  hit 19.3% vs the scripted pool, so placement spread is NOT the binding constraint on strength
+  at this stage -- the cell floor (0.25 = a quarter of training placements random) is paying its
+  exploration cost without buying benchmark wins right now. (3) The regression window coincides
+  with the self-play ramp maturing (selfplay_prob -> 0.5, PFSP power 2.0 over-sampling the
+  hardest snapshots): the policy kept optimising against its league while its performance vs the
+  FROZEN SCRIPTED benchmark fell -- classic league drift; the benchmark pool is scripted.
+- ACTION: champion archived as data/policy_sim_ppo_best_20260812_2327_win19.pt (a fresh run's
+  first promotion would otherwise overwrite _best with a weaker policy -- best_wr resets on a
+  non-resume start).
+- RATIFIED (user, 2026-08-13 morning): selfplay_prob 0.5 -> 0.0 in config for the attribution
+  run; the user restarts FROM the champion (--init data/policy_sim_ppo_best_20260812_2327_win19.pt).
+  If the scripted benchmark resumes climbing past 19.3%, the self-play mix was the regressor;
+  reintroduce it softer (0.25 / pfsp_power 1.0) only after scripted-pool strength is banked.
+  ALSO decided: the detector STAYS yolo11s -- live inference speed is a priority (fast in-match
+  decisions; s->m would halve perception_hz for an estimated +1-3pp recall). The detector lever
+  is LABELS (label-queue priorities), not model size. QUEUED BEHIND the attribution run (each
+  its own gated change): anneal
+  ppo_cell_explore_floor 0.25 -> ~0.10 (spread recovered 1 -> 14; the plan says anneal once it
+  does), and the threat_miss_idle x wincon-bank interaction (the bank masks affordable cheap
+  counters while the bar climbs; threat_miss_idle then charges -1/step for the hold the bank
+  itself mandated -- measured -21/match on the CHAMPION, dwarfing the +/-2 outcome signal).
+
+
+------------------------------------------------------------------------------
+2026-08-13 (evening)  —  First live session on the repaired rewards + sim attribution day-read
+------------------------------------------------------------------------------
+LIVE train-rl, ~9 h from the champion (259 matches, real Classic 1v1 ladder):
+- RECORD 1-258. Brutal but informative -- real humans, not the scripted pool. The two collapse
+  signatures the session was watching for did NOT appear: plays/match held flat (15.7 first
+  third -> 16.5 last third; no refusal spiral), and threat_response came out NET POSITIVE live
+  (+139.7; 545 pos / 405 neg) -- the reachable-positive repair works under live perception.
+  elixir_trade remains the largest shaping negative (-2.7/match; the potential rework stays
+  queued), and the keep-best gate correctly never promoted, so policy_rl.pt is STILL the intact
+  champion copy.
+- THE BINDING FAILURE IS SERVING CADENCE, again, with a new culprit: recognize_hand degraded to
+  1.28 s MEAN (1.78 s by day's end) under all-day CPU contention -- the per-card template stacks
+  (~20 variants x 10 identities x 4 slots each step). Full loop 2.5-3.0 s vs the trained 1.0 s;
+  the paced wait sat at 0.00 s (pacing works; the pipeline alone overruns the period 2-3x).
+  QUEUED FIX (own change): slot-change caching -- frame-diff the 4 slot crops (~1 ms) and only
+  re-match a slot that changed; plus cap templates per identity. Validate with verify --hand.
+- X-Bow barely exists live: wincon_exec fired 0.4/match live vs 5.4 in the sim evening read --
+  cadence + sim-to-real gap; revisit after the hand-reader fix.
+- BUG (mine, fixed): the new per-play telemetry was silently LOST all day -- dump_match merges
+  match_summary() after the extra dict, and both used the key "plays", so the int count
+  clobbered the array. Renamed to "play_log"; next session records per-play detail.
+
+SIM attribution run (scripted-only from the champion), day read at ~9.5 h:
+- win 5.0% (07:39, re-init update shock) -> 13.0% (17:14, 100 matches), plays/match 30.9,
+  X-Bow 5.1/match (Hunter band), wincon 543 fires / 0 negative, full deck in use except tornado
+  (greedy never picks it; sim-side note). best.pt banked once at 08:18 and not since --
+  RECOVERING toward the champion, not yet past it.
+- ATTRIBUTION verdict so far: removing self-play STOPPED the decay (last night 19.3 -> 1.3
+  overnight; today monotone recovery all day). Self-play (0.5 + PFSP^2) stands as the regressor.
+  But scripted-only is treading water NEAR champion level rather than surpassing it -> the next
+  queued change is due: anneal ppo_cell_explore_floor 0.25 -> 0.10 (spread has been paid for;
+  13 cells / top 82.8% is the same shape at a quarter random placements' cost) on the next
+  restart from the champion.
+
+DECISIONS RECORDED (user Q&A): optimizer is ALREADY Adam in both trainers (train_sim_ppo Adam
+lr 5e-5 eps 1e-5; train_rl Adam) -- no optimizer change; every measured failure has been reward
+geometry, league dynamics, or serving, never optimisation. An LLM bridge between vision and
+policy: declined as a RUNTIME component (the engineered KB layer already is the semantic bridge,
+at zero latency; an LLM would deepen the exact cadence bottleneck just measured) -- LLM value
+lives OFFLINE here: KB curation, doctrine-from-guides, automated jsonl post-mortems. Adaptive
+opponents: agreed in direction; sequence = gentle self-play reintroduction (0.25 / PFSP 1.0)
+after banking scripted strength, then REACTIVE upgrades to the scripted bots; full ML opponents
+piloting meta decks deferred (per-deck action spaces = a large lift the mirror league avoids).
+
+
+------------------------------------------------------------------------------
+2026-08-13 (night)  —  Hand-reader slot cache + sim round-2 package (floor anneal, gentle selfplay)
+------------------------------------------------------------------------------
+HAND-READER SLOT CACHE (vision.py + hand.cache_diff/cache_ttl_s) -- the fix for the day's live
+cadence killer (recognize_hand 1.28-1.78 s/call):
+- Each tray slot keeps a small COLOUR thumb of its last crop + the matched id; a call re-matches a
+  slot only when (a) the thumb moved >= cache_diff, (b) the previous match was NOT confident
+  (score < match_threshold + 0.15 -- near-threshold results flip between lookalikes on pixel
+  noise and are never cached; they re-match every call, bit-identical to the uncached reader), or
+  (c) the entry is older than cache_ttl_s (4 s hard staleness bound). recognize_next same deal.
+- LESSONS from the equivalence tests: grayscale thumbs slept through hue-only flips (fixed:
+  colour thumbs); the first "mismatches" were on the STALE Aug-04 pre-UI-update recordings where
+  the PLAIN reader itself oscillates across four identities on one slot -- an unstable oracle.
+  VERIFIED on current-UI footage (live overlay clips from the 08-13 session): 300 frames,
+  **0 mismatches**, ~3x faster uncontended -- and the win compounds under load, which is exactly
+  when the uncached reader was being starved to 1.8 s. Expected live loop: ~2.5-3.0 s -> ~1.2-1.5 s
+  (verify with the [cadence] line next session).
+SIM ROUND-2 CONFIG (takes effect on the next train-sim-ppo restart; each knob independently
+revertable for bisection):
+- ppo_cell_explore_floor 0.25 -> 0.10: repopulation phase over (spread 1 -> 13-16 across all
+  post-gate reads; the 19.3% champion is a 7-cell policy -- spread is not the binding constraint,
+  and 25% random placements is pure benchmark drag now).
+- selfplay_prob 0.0 -> 0.15 + selfplay_pfsp_power 2.0 -> 1.0: gentle reintroduction per plan +
+  the user's DECK-RARITY point: icebow is rare on ladder, and the frozen self can ONLY pilot the
+  mirror deck (its card head is our 10 identities; meta-deck ML opponents would need per-deck
+  nets -- deferred). So the mirror stays a ~1-in-7 slice and deck variety lives in the scripted
+  85%: 100 meta decks with adaptive_prob 0.65 of bots reactive (anti-siege / counter-hold /
+  dump-punish / split-push -- that Tier-1 adaptive layer already existed and is ON for training,
+  benchmark frozen non-adaptive).
+- User Q&A recorded: self-play "across several meta decks" is architecturally mirror-only today;
+  the implemented interpretation = small mirror slice + adaptive scripted meta pool.
+RESTART: stop the attribution run when ready, then
+  run.py train-sim-ppo --matches 100000 --envs 32 --init data/policy_sim_ppo_best_20260812_2327_win19.pt
+Gates: benchmark must climb past 19.3% and bank promotions; wincon fires track deployments;
+X-Bow 3-7/match; watch the first checks for any floor-anneal spread regression (>= 13 cells held).
+
+
+------------------------------------------------------------------------------
+2026-08-14  —  Round-2-from-BC failed fast (floor/init mismatch); round 3 from the champion
+------------------------------------------------------------------------------
+- The user restarted round 2 FROM THE BC INIT (policy.pt) rather than the champion. At ~1.9 h the
+  matched 60-match read showed the failure the anneal note warned about, in a sharper form than
+  predicted: cells_used **2** (top cell 90.8%), win 5%, and -- the mechanism -- ALL 332 X-Bow
+  plays on the BC head's frozen tile (0.31, 0.77), off-centre and deep, so wincon_exec charged
+  the misplace on every one (391 fires, 59+/332-, net -175.4). Under floor 0.10 the frozen
+  argmax never repopulated (the 0.25 floor did 1 -> 16 cells in <2 h on the same init a day
+  earlier), so the run was carving "never play X-Bow" into the card head via the placement it
+  could not fix. NOT a self-play effect (signature present from t0, before the ramp matters).
+- LESSON, recorded: the 0.10 anneal is valid only for an ALIVE cell head (champion-class inits).
+  A from-BC restart re-enters the repopulation phase and needs 0.25 until cells_used reaches
+  dozens, THEN the anneal. Floor and init are a PAIR, not independent knobs.
+- ROUND 3 (user chose option 2): failing run stopped; relaunched FROM THE CHAMPION
+  (policy_sim_ppo_best_20260812_2327_win19.pt) under floor 0.10 + selfplay 0.15/pfsp 1.0 --
+  the pairing the anneal was designed for. Launched DETACHED (survives session closes) with
+  stdout/err at data/sim_ppo_r3.log / sim_ppo_r3.err.log. Gates: hold >= champion spread
+  (7 cells / 85.6%), wincon strongly positive again (the 649+/4- signature), best banks past
+  19.3%; league-drift watch as selfplay ramps.
+
+
+------------------------------------------------------------------------------
+2026-08-14 (night)  —  Live smoke test: cadence FIXED; placement collapse root-caused to the
+                       CELL-HEAD ARCHITECTURE (dense readout, no spatial structure)
+------------------------------------------------------------------------------
+LIVE SMOKE TEST (user, ~2 matches on the champion):
+- Cadence fixes VERIFIED in serving: loop 1.26 s (was 2.5-3.0), hand 0.40 s under contention
+  (was 1.28-1.78 -- the slot cache works), wait 0.17 s (pacing active), per-play play_log
+  recording correctly for the first time.
+- Placement: **44/44 plays on ONE tile (0.369, 0.591)** -- seven different cards, including all
+  7 plays with a recognised threat, and including Tornado (which sim-greedy never plays). The
+  user called it: single-tile regardless of the enemy.
+PROBE (champion net, frozen context vectors, only the image varied; 40 live frames from the
+session's overlay clip + 40 sim states):
+  A real RGB + canvas:    1 distinct cell (352)     C real RGB + zero canvas: 1 cell (352, == A)
+  B zero RGB + canvas:    1 distinct cell (232)     D sim obs, frozen vecs:   2 cells (88% top)
+                                                    E sim obs, REAL sim vecs: 1 cell (100%)
+- A == C exactly: the canvas contributes ~nothing to the cell argmax when RGB is present.
+- D/E: the head is near-constant EVEN ON SIM OBSERVATIONS. The champion's "7 cells / 85.6% top"
+  from policy-stats was context-switching between a few fixed tiles, not board-reading; the live
+  obs shift merely RELOCATES the constant (and to a worse tile). Sim-to-real is real but
+  SECONDARY.
+ROOT CAUSE (model.py): `cell_head = nn.Linear(embed, n_cells)` reads 432 placement logits out of
+a GLOBAL embedding whose image half passed through a Linear(64*6*4 -> 256) bottleneck. There is
+NO spatial correspondence between board positions and cell outputs -- "put the Tesla in the
+Hog's lane" requires the trunk to encode exact positions into a global vector and a dense layer
+to decode them back out, which three generations of training provably never learned. The floors
+/entropy work treated the SAMPLING symptom; the function class itself fights board-conditioned
+placement.
+PROPOSED FIX (needs user go; it is an architecture change + fresh training): SPATIAL cell head
+-- keep the conv feature map (12x8 before the flatten), condition it on the context embedding
+(broadcast-concat or FiLM), 1x1 convs -> a logit MAP reshaped/upsampled to the 18x24 grid.
+Placement then inherits translation structure from convolution: threat features at x produce
+logits near x by construction. Fold the CANVAS-ONLY image branch (drop RGB, in_ch 9 -> 6) into
+the same rebuild -- the canvas is rendering-independent, killing the sim-to-real image gap in
+the same retrain. COST: PolicyNet change; old checkpoints incompatible (fresh sim run + BC
+re-init); train_bc/train_rl/train_sim_ppo/play/policy-stats touch the same heads and need a
+coordinated pass. Round-3 keeps running meanwhile (its card/timing learning is still valid
+science; its placement ceiling is now understood).
+
+
+------------------------------------------------------------------------------
+2026-08-14 (late night)  —  SPATIAL CELL HEAD implemented (model.py); retrain path defined
+------------------------------------------------------------------------------
+- PolicyNet's cell head rebuilt as a LOGIT MAP (user go): pre-pool conv feature map (12x8 for the
+  96x64 obs) conditioned on the full context embedding (broadcast-concat) -> 1x1 convs -> 1-ch
+  map -> bilinear resize to the 18x24 grid -> flatten in ActionSpace's row-major order. The
+  global path (pool -> trunk -> card head, RL gate heads) is UNCHANGED in shape and parameter
+  names; embed stays 328; n_cells/n_cards/threat_dim unchanged, so every consumer (train_bc,
+  train_rl, train_sim, train_sim_ppo, play, sim_view, policy_stats) works without edits. The
+  grid is inferred from n_cells ({432:(18,24), 576:(18,32)}; grid_wh param to override).
+- VERIFIED: shapes + embed width; UNTRAINED net's cell argmax already TRACKS a moved blob on
+  both axes (gx 5->17 left->right, gy 3->18 top->bottom) -- the translation structure the dense
+  head could not express and never learned. Old checkpoints fail a strict load (cell_head.* gone)
+  -- deliberate: the head must be retrained.
+- CANVAS-ONLY (drop RGB) SEQUENCED AFTER, not folded in (revised from the first proposal): the
+  zero-RGB probe was confounded (an RGB-trained net sees zero-RGB as OOD), so the honest order is
+  spatial head first, re-run the live A/B probe on its checkpoint, and only flip in_ch 9 -> 6 if
+  RGB still carries the live gap. One architecture change per training cycle.
+- RETRAIN PATH (no re-recording, no re-mining): (1) run.py train-bc --data data/replay_bc
+  --val-frac 0.2 (existing Hunter datasets feed the new head; BC now trains context->PLACE on his
+  pairs, which the map head can actually generalise); (2) stop round-3 (old arch; its weights
+  cannot transfer); (3) run.py train-sim-ppo --matches 100000 --envs 32 --init data/policy.pt.
+  ppo_cell_explore_floor set BACK to 0.25 for this from-BC run per the floor/init pairing rule;
+  anneal to 0.10 after spread + board-conditioning are measured on the new head.
+- PENDING (user to give next steps): DOCTRINE-PRIOR EXPLORATION -- the user's scaffolding idea
+  (guide placements for specific card-vs-threat situations, then remove). Agreed, with the shape
+  that keeps PPO exact and avoids the one-sided-term trap: a sampling MIXTURE like the existing
+  floors (doctrine distribution instead of uniform for the guided share, mixture log-prob stored,
+  rollout-only, annealable to 0, eval/live untouched, acceptance measured with guidance OFF).
+  Their three examples map onto existing live aim-assist helpers the sim never used:
+  xbow_lock_cell (in-range band), tesla_pull_cell (centre pull vs lane wincon), and the
+  defensive intercept spot (body on a ranged attacker's lane at the bridge).
+
+
+------------------------------------------------------------------------------
+2026-08-14 (day)  —  DOCTRINE.md reviewed+corrected; doctrine-prior exploration implemented
+------------------------------------------------------------------------------
+- DOCTRINE.md (57 counters / 10 synergies / 6 standing priors) reviewed by the user; corrections
+  applied and independently confirmed online: #14 anti-EQ Tesla = the "(0-3)" spot (centre, ~3
+  tiles from river -- EQ anchored at the princess's inner corner kills every standard-depth
+  centre Tesla; Theria Tesla guide); #15 Rocket-on-Balloon demoted to LAST resort; #27 skels ON
+  a tower-locked bridge princess; ALL log-vs-air rules purged (The Log cannot touch air -- #19
+  rephrased to the spawned skeletons, #25/#38 IW/pulse only); #41 Firecracker KING-ACTIVATION
+  bait (unit 4 tiles in front of the king, 2 inside the princess; her shrapnel splashes the king
+  -- zleague/TikTok tech, "works with most units"); #49 Mortar = Knight INTO the 3.5-tile blind
+  spot (forces lock loss/retarget; wiki + clash.world) + near-bridge Tesla answers a bridge
+  mortar.
+- IMPLEMENTED sim/doctrine.py (tranche 1) + train_sim_ppo integration + sim.doctrine_frac (0.6):
+  when a rule matches (card, ENGINE state), that share of the CELL FLOOR's mass samples from the
+  doctrine distribution instead of uniform. Rollout-only, mixture log-prob stored (PPO exact),
+  annealable to 0 = the user's "remove the hardcoding". Rules: Tesla band + anti-EQ row flip;
+  X-Bow behind-bridge locks with punish-lane weighting + EDGE column vs rocket decks + defensive
+  centre; Knight body-block / mortar blind-spot walk-in / FC king-bait; skels surround + princess
+  smother + cycle corners; IW depth band; nado king-activation + clump (never a lone tank);
+  ground-only Log paths (HARD air guard); rocket pump / weak-tower / tower+support aims.
+- VERIFIED on synthetic engine states: every rule fires where DOCTRINE.md says, the Log rule
+  returns None on an air-only board, and the anti-EQ Tesla flips to a DISTINCT grid row (14 vs
+  15) -- caught + fixed a QUANTISATION trap: the 24-row grid is 1.33 tiles/row, and the first
+  depth constants landed both Tesla depths in the same row, silently erasing the EQ distinction.
+- LAUNCH SEQUENCE for the spatial-head retrain (everything now in place): stop round-3 (old
+  arch; archive its best if wanted) -> train-bc --data data/replay_bc --val-frac 0.2 -> fresh
+  train-sim-ppo --matches 100000 --envs 32 --init data/policy.pt, which loads: SPATIAL cell head
+  + cell floor 0.25 (from-BC pairing) + doctrine_frac 0.6 + selfplay 0.15/pfsp 1.0 + wincon gate.
+  Gates: spread + BOARD-CONDITIONING (the live/sim A-B probe repeated on the new checkpoint),
+  wincon two-sided, X-Bow 3-7/match; anneal doctrine_frac then the floor as greedy internalises.
+
+
+------------------------------------------------------------------------------
+2026-08-14 (midday)  —  Round-4 @14k evaluated; threat_miss_idle x wincon-bank waiver shipped
+------------------------------------------------------------------------------
+- ROUND-4 (spatial head) at 14k matches, 100-match greedy read: win 12.0% (ON the historical
+  from-BC trajectory -- the user's "extremely low" was the ROLLING TRAINING winrate, which this
+  run's 25% cell floor + doctrine sampling depress by construction). The architecture is
+  delivering: **60 cells used / top 36.3%** (old arch: 5-16 / 61-91%), the board-conditioning
+  probe IMPROVED with training (t0 12 cells/60% top -> 14k: 18 cells/20% top), X-Bow 3.4/match,
+  wincon_exec +494 two-sided, 66 towers taken. Doctrine X-Bow spots audited vs sim tile_dist:
+  ALL in range (10.2 <= 11.5) -- the prior feeds credited placements.
+- THE MEASURED THROTTLE: threat_miss_idle -1595/100 matches (16/match, 3x the next term) + leak
+  -466, on 16.6 plays/match with 57% FORCED waits. Mechanism: the WINCON BANK masks every card
+  under 6 elixir while a wincon is held and the bar climbs from 3 -> the policy is FORBIDDEN its
+  counters, and threat_miss_idle charged -1/step for the hold the bank itself mandated. Also why
+  the support trio starved (ice_wizard 16 / tesla_evo 8 / tornado 1 of 1664 plays -- all live in
+  the masked cost range).
+- FIX (sim/env._threat_miss_idle): "answerable" now means playable UNDER THE SAMPLER'S OWN RULE
+  -- a counter that wincon_bank would mask at this (hand, elixir) does not make the hold a miss.
+  Bank params mirrored into the env (pure function of hand+elixir, scalar form of
+  wincon_bank.apply_wincon_bank). VERIFIED 3-state: banking (tesla+xbow in hand, elixir 5) ->
+  waived; elixir 10 (bank off) -> charges; no wincon in hand -> charges. Live env untouched (no
+  bank exists there). Removes a false penalty; adds nothing -- two-sided-safe by construction.
+- RESTART: --resume (NOT --init policy.pt, which would reset to BC): keeps the 14k spatial-head
+  progress + best_wr. Next checks should show tmi total collapsing, plays/match recovering from
+  16.6 toward the mid-20s, and the support trio reappearing.
+
+
+------------------------------------------------------------------------------
+2026-08-14 (afternoon)  —  Doctrine tranche 2 (midladder S rows) + MK/Boss-Bandit tech verified
+------------------------------------------------------------------------------
+- Round-4 RESUMED with the bank waiver (11:16, --resume: 14k progress intact).
+- DOCTRINE tranche 2 implemented in sim/doctrine.py, all VERIFIED on synthetic states:
+  * KITE rule (#58/#61): knight vs PEKKA/Mega Knight kites CENTRE (0.48, 0.62) instead of
+    body-blocking -- replaces the on-path block for those two.
+  * SPLASH-MELEE placement (#58/#64): skels go BEHIND MK/Valkyrie/Dark Prince (y+0.06), never on
+    top; E-GIANT (#66) skels only at his BACK (y-0.06) -- his zap reflex punishes the front.
+  * SUPPORT-WALL rocket (#63): >=3 troops of cost >=3 inside one blast radius = rocket clump
+    value anywhere on the board, no tower alignment needed (the midladder signature).
+- MK KING ACTIVATION corrected per the user + community confirmation ("5 ways without tornado"):
+  PRIMARY line = skels bait his jump, KNIGHT placed in front of the king timed to the jump; the
+  Tornado pull is the fallback. Both stay L (the sim has no jump-slam splash to activate off).
+- BOSS BANDIT verified (Fandom/RoyaleAPI/Theria): dash window 3.5-6 tiles (0.8s windup, 2x dmg);
+  Getaway Grenade = 1 elixir, 1s invisible, 6-tile BACKWARD teleport, 2 uses/3s cooldown -> she
+  re-dashes the target the teleport put back in her window. COUNTER (user's read confirmed):
+  keep a body INSIDE 3.5 tiles of her post-teleport landing -> no dash triggers. Doc row 65
+  rewritten; teleport-smother is live-only (champion abilities not modeled in sim).
+- WHAT THE REMAINING L ROWS NEED (recorded for planning): (a) MK activation lines (#59/#60) +
+  Boss Bandit teleport-smother (#65): either ENGINE features (jump-slam splash w/ king
+  activation; champion abilities) or a LIVE AIM-ASSIST implementation (the natural home --
+  hardcoded live behaviours like the rocket snap/tesla pull assists, policy decides WHEN);
+  (b) #21/#27/#40-class rows tagged L: detector must NAME the card live (whitelist growth via
+  labelling); (c) #59-class timing sequences additionally need the live act loop's event wake
+  (exists) + sub-second sequencing (two placements ~1s apart -- feasible at the current cadence).
+
+
+------------------------------------------------------------------------------
+2026-08-14 (evening)  —  User corrections cascade: E-Giant AOE, MK jump splash was silently
+                         single-target (latent engine bug), king activation now modeled, BB
+                         ability variability, engine-vs-screen geometry discovered
+------------------------------------------------------------------------------
+- E-GIANT (user correction): his reflect is an AOE RADIUS -- side does not matter. The skels-at-
+  his-back doctrine rule was WRONG and is deleted; vs E-Giant skels get NO spot (corner fallback)
+  and the counter is ranged-only. DOCTRINE.md #66 rewritten.
+- SPLASH-MELEE GEOMETRY (user correction): "skels behind" only exists for DEEP units (y >= 0.60,
+  behind = river-ward). A blocker at our OFFENSIVE bow has its back on the enemy side --
+  undeployable -- so shallow targets get a LATERAL distraction spot instead (buys the bow 2-3
+  shots). doctrine.py fixed + verified both depths.
+- BOSS BANDIT (user: modeled, but fires automatically at a flat 60% HP): trigger is now ROLLED
+  per unit (U[0.35, 0.80]) and RE-ROLLED lower after each use, so the two Getaway Grenades
+  spread across her HP bar and across matches -- the policy cannot learn a constant. VERIFIED:
+  6 seeds -> 6 different thresholds, still fires when crossed. (Spec confirmed vs Fandom: 1
+  elixir, 1s invis, 6-tile back teleport, 2 uses, 3s cd; dash band 3.5-6, 2x dmg.)
+- MEGA KNIGHT: the leap IS modeled (user right) -- and testing the king-activation chain exposed
+  a LATENT BUG: the landing-splash gate tested the generic `splash` flag, which is FALSE for MK
+  (his jump splash is its own leap_splash field). His jump has been silently SINGLE-TARGET in
+  every training run to date. FIXED (gate = leap_splash > 0 or splash) + the tower coupling
+  added: the slam now damages CROWN TOWERS near the landing (both landing kinds; via
+  _damage_tower so activation-on-damage fires). VERIFIED: slam beside the king -> 537 chip +
+  ACTIVE=True; mid-board landing touches no tower; group landing splashes units again.
+  -> #59 MK king activation is now S: sim-learnable, and the doctrine bait spots teach it.
+- GEOMETRY DISCOVERY (the reason every activation test failed at first): the ENGINE's towers sit
+  DEEPER than the live screen anchors (engine king (0.50, 0.906) vs screen 0.72; princesses
+  0.797 vs 0.615). Bridge-relative doctrine spots are unaffected (river = 0.5 both spaces), but
+  KING-RELATIVE spots were ~7 tiles short -- doctrine.py now reads eng.towers[0][2] at runtime
+  for the MK baits and the nado-king destination (VERIFIED: spots land 1.5-4.2 tiles off the
+  real king). FLAGGED, not fixed: the same mismatch warps SIM-to-LIVE placement transfer on our
+  half (a cell learned as "4 tiles from the engine king" taps BEHIND the live screen king) --
+  candidate future fix: align engine tower positions with the action-frame geometry, a
+  significant engine change needing its own gated run.
+- ROLLOUT NOTE: the resumed run (11:16) carries the bank waiver but PREDATES tranche-2 doctrine
+  + these engine fixes. Plan: read the waiver's effect over a few hourly checks, then restart as
+  round 5 to bundle tranche-2 + the MK/BB engine fidelity fixes (they change opponent difficulty
+  -- MK actually splashes now -- so they deserve a marked run boundary anyway).
+
+
+------------------------------------------------------------------------------
+2026-08-14 (night)  —  Fidelity audit (user questions) + EVOLUTIONS.md research/plan
+------------------------------------------------------------------------------
+- AUDITED per user: (1) LOG vs buildings: already correct (corridor damages buildings -- pump
+  1070->695 verified -- plus the tower chip). (2) E-GIANT reflect: NOT implemented (KB has only
+  tank/building_targeting; sim E-Giant is a plain tank -- the ranged-only doctrine is
+  unlearnable in sim until the Zap Pack reflect lands). (3) SPAWN DAMAGE: modeled
+  (_deploy_blast) + curated for MK 430 / Goblin Drill 84 / Ice Wizard 84; full Fandom category
+  sweep queued. (4) MELEE SPLASH: systemic problems found -- dark_prince/executioner/witch/
+  skeleton_king (+ MK's normal swings) are flagged splash=False and fight SINGLE-TARGET in the
+  sim (same bug family as the leap gate), and there is NO per-card splash radius (flat 1.9-tile
+  fallback for everyone). Fix plan in EVOLUTIONS.md §0, incl. the user's sim-view AOE-circle
+  visualisation idea.
+- EVOLUTIONS.md written: all 42 evolutions (41 already stat-imported + the new Season-86 Evo
+  Elite Barbarians: rage javelins at range + a lingering rage TRAIL, cycle 1), each mapped to an
+  engine tier (T0 stat-only / T1 existing primitive / T2 new primitive; icebow's own Knight+Tesla
+  evos already fully modeled), with the phased plan: A = opponents field evos at all (meta_decks
+  evo slot + ScriptedBot evo-cycle via the existing build_spec overlay -- T0 evos work
+  end-to-end), B = mechanics by meta priority behind the §0 fidelity fixes, C = per-evo unit
+  tests + doctrine rows. [verify] tags mark evos whose Fandom pages must be read before coding.
+
+
+------------------------------------------------------------------------------
+2026-08-15  —  Phase A shipped: opponents field evolutions; fidelity fixes (reflect, splash, flash)
+------------------------------------------------------------------------------
+- PHASE A (EVOLUTIONS.md) IMPLEMENTED + VERIFIED: ScriptedBot now fields its deck's ONE evolution
+  (2026 slot rules) -- heuristic pick (first deck card with a loadable `_evo` stat block; KB
+  evolution.cycles, default 2), charge counted per base play, the charged play fields the `_evo`
+  spec through the ordinary build_spec overlay. VERIFIED: a knight deck charges in 2 plays and
+  fields knight_evo on the 3rd (carrying its modeled damage-reduction). SelfPlayOpponent already
+  had full evo machinery (mirrors our deck). T0 stat-evos now work end-to-end vs opponents.
+- E-GIANT ZAP PACK IMPLEMENTED (engine + KB): reflect_damage 120 / radius 3.0 / stun 0.5s (wiki),
+  applied in _land_hit when the ATTACKER (new param, threaded through all 4 direct-attack call
+  sites) damages a reflect card from inside the radius; off while stunned/frozen; spell damage
+  excluded (no attacker position); projectile attackers effectively safe outside the radius --
+  which is the point. VERIFIED: adjacent knight 1766 -> 1286 (4 zaps), ice wizard at 5.8 tiles
+  untouched. The ranged-only doctrine vs E-Giant is now LEARNABLE in sim.
+- SPLASH SYSTEM FIXED: build_spec's splash gate now honours the curated `splash` FLAG (it only
+  read db.has_splash -- witch's curated flag was silently unread, and dark_prince/skeleton_king
+  had none: three real splash troops fought single-target; MK's swings fixed by the same line).
+  NEW per-card `splash_radius_tiles` -> CardSpec.splash_r (flat 1.9 fallback retained): curated
+  MK 1.3 (published), dark_prince 1.1 [verify], skeleton_king 1.5 [verify].
+- SPLASH FLASH (user request): engine records (x, y, radius, t) per splash HIT (capped 40);
+  sim-view draws each as its true AOE ellipse for ~0.15 s at the moment of attack -- radius
+  errors are now visible instead of latent. VERIFIED events record on a valkyrie engagement.
+- cards-import re-run: 41 evolutions re-imported; **elite_barbarians_evo NOT yet on the wiki's
+  scrapeable pages** (Season 86 too new) -- re-run cards-import in a few days; until then Evo
+  E-Barbs stays a [pending-import] row in EVOLUTIONS.md.
+- NOTE: all of today's engine changes (incl. yesterday's MK leap-splash + BB variability) land
+  on the NEXT trainer restart -- the running round-4 resume predates them. Restart as round 5
+  when ready; expect a difficulty step (opponents now field evos AND splash properly).
+
+2026-08-14 -- E-Wiz spawn zap + deploy-blast status + ranged-AOE audit (user request)
+- ELECTRO_WIZARD SPAWN ZAP: curated spawn_damage 115 [verify] + spawn_radius_tiles 3.0 [verify]
+  in cards.yaml (dmg = one zap at L11; import carries NO spawn_damage for him). Rides the
+  existing _deploy_blast path.
+- _deploy_blast now calls _apply_status on every unit it hits: E-Wiz's spawn zap STUNS,
+  ice_wizard's spawn nova now applies his SLOW (both were damage-only before). MK/drill/
+  delivery unaffected (no status flags). VERIFIED: knight next to deploying E-Wiz takes
+  1766->1249 and is stunned when the deploy finishes.
+- RANGED-AOE AUDIT (user asked to integrate ranged splash "the bomber way"): already done --
+  build_spec gives bomber/wizard/princess/sparky/firecracker real projectiles (imported speed)
+  whose impact blast radius = published splash radius (1.5/1.5/2.0/1.8/0.4). No change needed;
+  magic_archer's piercing line remains the T2 exception. Earlier flat-vs-nested projectile-key
+  worry was unfounded.
+- EVOLUTIONS.md 0.1 Table 2 updated (e-wiz row + status note + ranged-AOE audit note). Sweep
+  tables COMPLETE -- awaiting user verification, then round-5 restart.
+
+2026-08-14 -- Dark Prince charged splash (user-verified radii)
+- USER CORRECTION: dark_prince splash is 1.25 tiles base (import said 1.1), widened to 2.2 on a
+  CHARGED strike. Curated splash_radius_tiles 1.25 + charge_splash_radius_tiles 2.2 in
+  cards.yaml (verified: true).
+- ENGINE: new CardSpec.charge_splash_r; a completed run-up now replaces the hit's damage AND
+  its blast radius (_attack passes splash_r override into _land_hit; splash rad resolution is
+  charged-override -> per-card -> 1.9 fallback). Only the direct melee tail widens -- no
+  charging card fires projectiles/split/shotgun.
+- VERIFIED (bare engine, stationary buildings so geometry can't drift): bystander x-bow 2.0
+  tiles from the target takes 0 from a base swing (266) and the full 532 from a charged swing.
+  Status-effects suite still green (4/4).
+- Repo now COMMITTED + PUSHED to main after every change batch (user request, standing rule).
+
+
+------------------------------------------------------------------------------
 Notes / caveats
 ------------------------------------------------------------------------------
 - Reward-shaping changes only take effect after an RL run (`train-rl`) — they

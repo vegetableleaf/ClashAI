@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import glob
 import os
+import time
 
 import cv2
 import numpy as np
@@ -61,6 +62,20 @@ class Vision:
         # its OWN template set under templates/next/ (built the same way, from that slot).
         self._card_tpls = self._load_templates(cards_tpl)
         self._next_tpls = self._load_templates(self.next_templates_dir)
+        # HAND-READER SLOT CACHE (2026-08-13). recognize_hand's cost grows with the per-card
+        # template variants (~20 x 10 identities x 4 slots ~= 800 small matchTemplates per call)
+        # and MEASURED 1.28-1.78 s/call under a training-day CPU load -- the single largest term
+        # in the live decision loop, bigger than the act period itself. A tray slot's pixels only
+        # change when its card changes (play / cycle-in) or its affordability tint shifts, so each
+        # slot caches a small grayscale thumb of its last crop + the matched id, and re-matches
+        # ONLY when the thumb actually moved. Conservative by construction: ANY visible change
+        # (selection glow, affordability tint, mid-slide animation) re-runs the full match for
+        # that slot -- the cache can only skip work on a visually IDENTICAL slot, so accuracy is
+        # unchanged by design. hand.cache_diff <= 0 disables it (the old always-match behaviour).
+        self.cache_diff = float(cfg.get("hand", "cache_diff", default=3.5))
+        self.cache_ttl = float(cfg.get("hand", "cache_ttl_s", default=4.0))   # max staleness; bounds ANY
+        self._slot_cache: dict = {}     # slot index -> (thumb int16, matched id, cached-at time)
+        self._next_cache = None         # (thumb, id, t) for the next-preview slot; same contract
 
     def _load_templates(self, tdir) -> list:
         """[per deck key] BGR templates whose filename stem is the key (or key_<suffix>)."""
@@ -114,13 +129,52 @@ class Vision:
                         best_i, best_s = i, s
         return (best_i if best_s >= self.match_threshold else -1), best_s
 
+    @staticmethod
+    def _thumb(crop: np.ndarray) -> np.ndarray:
+        """Small COLOR fingerprint of a slot crop (change detector for the slot cache).
+        Colour, not grayscale: card art can shift hue with little luminance change, and a
+        grayscale thumb slept through exactly such flips in the equivalence test."""
+        return cv2.resize(crop, (32, 24), interpolation=cv2.INTER_AREA).astype(np.int16)
+
     def recognize_hand(self, frame: np.ndarray) -> list:
         """Identities of the 4 hand cards as deck indices (or -1 if unrecognized).
 
         Needs templates/cards/<deck_key>.png -- build them from a recording with
         `run.py hand-templates` and check with `run.py verify --hand`.
+        Slots whose pixels have not changed since the last call return their cached id
+        (see the slot-cache note in __init__); a changed slot is fully re-matched.
         """
-        return [self.match_card(self.hand_crop(frame, cx, cy))[0] for cx, cy in self.hand_slots]
+        out = []
+        for si, (cx, cy) in enumerate(self.hand_slots):
+            crop = self.hand_crop(frame, cx, cy)
+            if not crop.size:
+                out.append(-1)
+                continue
+            if self.cache_diff <= 0:
+                out.append(self.match_card(crop)[0])
+                continue
+            now = time.time()
+            th = self._thumb(crop)
+            hit = self._slot_cache.get(si)
+            if (hit is not None and hit[0].shape == th.shape
+                    and now - hit[2] < self.cache_ttl
+                    and float(np.abs(hit[0] - th).mean()) < self.cache_diff):
+                out.append(hit[1])
+                continue
+            idx, score = self.match_card(crop)
+            # Cache only CONFIDENT results, and only for cache_ttl seconds. A score hovering near
+            # match_threshold flips between lookalikes on pixel noise (measured: one slot
+            # oscillating across four identities on pre-update footage); caching one of those
+            # noise samples would freeze it. Ambiguous slots therefore re-match on every call --
+            # bit-identical to the uncached reader by determinism -- a clean -1 (no card) caches
+            # safely, and the TTL bounds ANY residual staleness (slow drift the thumb undersees)
+            # at a few seconds regardless.
+            if idx < 0 or score >= self.match_threshold + 0.15:
+                self._slot_cache[si] = (th, idx, now)
+            else:
+                self._slot_cache.pop(si, None)
+            out.append(idx)
+        return out
 
     def hand_multihot(self, hand_ids: list) -> np.ndarray:
         """[n_cards] float multi-hot of which deck cards are currently in hand."""
@@ -152,7 +206,24 @@ class Vision:
         """
         if not self.next_slot or not any(self._next_tpls):
             return -1
-        return self.match_card(self.next_crop(frame), top_frac=self.next_top_frac,
+        crop = self.next_crop(frame)
+        if not crop.size:
+            return -1
+        if self.cache_diff > 0:
+            now = time.time()
+            th = self._thumb(crop)
+            hit = self._next_cache
+            if (hit is not None and hit[0].shape == th.shape
+                    and now - hit[2] < self.cache_ttl
+                    and float(np.abs(hit[0] - th).mean()) < self.cache_diff):
+                return hit[1]
+            idx, score = self.match_card(crop, top_frac=self.next_top_frac, tpls=self._next_tpls)
+            if idx < 0 or score >= self.match_threshold + 0.15:     # confident-only + TTL, as in recognize_hand
+                self._next_cache = (th, idx, now)
+            else:
+                self._next_cache = None
+            return idx
+        return self.match_card(crop, top_frac=self.next_top_frac,
                                tpls=self._next_tpls)[0]
 
     def next_onehot(self, next_id: int) -> np.ndarray:

@@ -53,8 +53,8 @@ def _build_net(cfg, device, n_cards, n_cells, threat_dim=14, in_ch=3):
             self.gate = nn.Linear(self.policy.embed_dim, 2)  # [wait, play]
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
-            z = self.policy.features_vec(x, hand, nxt, elx, thr)
-            return self.policy.card_head(z), self.policy.cell_head(z), self.gate(z)
+            z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
+            return cards, cells, self.gate(z)
 
     return DQN().to(device)
 
@@ -303,11 +303,31 @@ def train_rl(cfg, init: str | None = None) -> None:
         card_id = int(cq.argmax())
         cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
         ceq = ceq.masked_fill(~cmask.unsqueeze(0), float("-inf"))
-        play_val = gq[0, 1] + cq[0].max() + ceq[0].max()
+        play_val = gq[0, 1]
         wait_val = gq[0, 0]
+        # DUELING-STYLE IDENTIFIABILITY. The card and cell heads express only the RELATIVE preference
+        # among LEGAL options (their advantage is <= 0 and exactly 0 at their own argmax), so
+        #     max over (card, cell) of Q(s, play, card, cell) == gate[play]
+        # and the play/wait decision is ONE head against ONE head. It used to be
+        #     play_val = gate[play] + max_card + max_cell   vs   wait_val = gate[wait]
+        # -- three heads against one. All three are trained on the SAME TD error, so any systematic
+        # negative return on plays pushed all three down together and the no-op won by construction,
+        # independently of how the reward was tuned. That is the passivity ratchet; this removes it.
+        # The chosen card/cell are unchanged (still each head's masked argmax).
         if wait_val >= play_val:
             return (0, 0, 0)
         return (1, card_id, int(ceq.argmax()))
+
+    def _masked_max(q, mask):
+        """Max over the ALLOWED entries per row. Rows with nothing allowed return 0 -- their play
+        branch is unused (the agent can only wait there) and a finite value keeps gradients clean."""
+        neg = torch.finfo(q.dtype).min
+        m = q.masked_fill(~mask, neg).max(1).values
+        return torch.where(mask.any(1), m, torch.zeros_like(m))
+
+    def _masked_argmax(q, mask):
+        neg = torch.finfo(q.dtype).min
+        return q.masked_fill(~mask, neg).argmax(1, keepdim=True)
 
     def optimise():
         if len(replay) < max(min_replay, batch_size):
@@ -332,8 +352,18 @@ def train_rl(cfg, init: str | None = None) -> None:
 
         net.train()
         cq, ceq, gq = net(obs, hand, nxt, elx, thr)
+        # CURRENT-state legality, rebuilt exactly as choose() had it at action time, so the greedy
+        # action's advantage is exactly 0 and Q(play, greedy) == gate[play].
+        playable_cur = ~((hand < 0.5) | (afford_costs.unsqueeze(0) > elx * 10.0 + 1e-6))
+        if anywhere_ids_t.numel():
+            any_cur = (card == anywhere_ids_t.view(1, -1)).any(1, keepdim=True)
+        else:
+            any_cur = torch.zeros_like(card, dtype=torch.bool)
+        cellmask_cur = torch.where(any_cur, allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
         q_wait = gq[:, 0]
-        q_play = gq[:, 1] + cq.gather(1, card).squeeze(1) + ceq.gather(1, cell).squeeze(1)
+        q_play = (gq[:, 1]
+                  + (cq.gather(1, card).squeeze(1) - _masked_max(cq, playable_cur))
+                  + (ceq.gather(1, cell).squeeze(1) - _masked_max(ceq, cellmask_cur)))
         q_sa = torch.where(play == 1, q_play, q_wait)
         with torch.no_grad():
             # DOUBLE DQN: the ONLINE net selects the greedy next action (gate / card / cell); the
@@ -346,9 +376,8 @@ def train_rl(cfg, init: str | None = None) -> None:
             # Affordability is a hard constraint just like "in hand", so the bootstrap never values a
             # card the policy couldn't actually cast (consistent with choose(); a row where nothing is
             # playable falls through to the WAIT value, same as the empty-hand case).
-            unplayable = (nhand < 0.5) | (afford_costs.unsqueeze(0) > nelx * 10.0 + 1e-6)
-            cqn = cqn.masked_fill(unplayable, float("-inf"))            # in hand AND affordable
-            sel_card = cqn.argmax(1, keepdim=True)                       # online greedy card
+            playable_next = ~((nhand < 0.5) | (afford_costs.unsqueeze(0) > nelx * 10.0 + 1e-6))
+            sel_card = _masked_argmax(cqn, playable_next)                 # online greedy card
             # cell mask per selected next-card: a your-half-only card can't bootstrap value from an
             # enemy-half cell it could never place on (matches the deployable mask used in choose()).
             if anywhere_ids_t.numel():
@@ -356,14 +385,15 @@ def train_rl(cfg, init: str | None = None) -> None:
             else:
                 any_next = torch.zeros_like(sel_card, dtype=torch.bool)
             cellmask_next = torch.where(any_next, allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
-            ceqn = ceqn.masked_fill(~cellmask_next, float("-inf"))
-            sel_cell = ceqn.argmax(1, keepdim=True)                     # online greedy DEPLOYABLE cell
-            play_next = (gqn[:, 1] + cqn.max(1).values + ceqn.max(1).values) > gqn[:, 0]
+            sel_cell = _masked_argmax(ceqn, cellmask_next)                # online greedy DEPLOYABLE cell
+            # Under the dueling form the greedy play's advantages are 0, so its value IS gate[play].
+            # A state where nothing is affordable can only WAIT -- previously that fell out of the
+            # -inf masking, so it now has to be said explicitly.
+            play_next = playable_next.any(1) & (gqn[:, 1] > gqn[:, 0])
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
-            cq2 = cq2.masked_fill(unplayable, float("-inf"))
-            ceq2 = ceq2.masked_fill(~cellmask_next, float("-inf"))
-            q_play_next = (gq2[:, 1] + cq2.gather(1, sel_card).squeeze(1)
-                           + ceq2.gather(1, sel_cell).squeeze(1))
+            q_play_next = (gq2[:, 1]
+                           + (cq2.gather(1, sel_card).squeeze(1) - _masked_max(cq2, playable_next))
+                           + (ceq2.gather(1, sel_cell).squeeze(1) - _masked_max(ceq2, cellmask_next)))
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action
             y = rew + gpow * v_next * (1.0 - done)                       # n-step: gamma^k bootstrap
         loss = F.smooth_l1_loss(q_sa, y)
@@ -373,9 +403,41 @@ def train_rl(cfg, init: str | None = None) -> None:
         opt.step()
         return float(loss.item())
 
-    def save():
+    # KEEP-BEST GATE. Live RL used to overwrite policy_rl.pt unconditionally every `save_every`
+    # matches -- and play.py PREFERS that file -- so a session that made the policy WORSE silently
+    # became the deployed policy. The gate promotes only when the recent window is at least as good
+    # as the best window seen this session; every save still lands in policy_rl_last.pt, so no work
+    # is ever lost and a promotion can always be done by hand.
+    # SCORED ON WIN RATE, GUARDED BY PLAYS/MATCH. The known failure mode -- the policy stops playing
+    # -- RAISES mean episode reward, because a shorter match accrues fewer per-step penalties, so a
+    # reward-scored gate would actively endorse the collapse. A window whose activity has fallen
+    # below `min_play_frac` of the best window is never promoted however good its win rate looks.
+    keep_window = max(1, int(cfg.get("train", "rl_keep_best_window", default=10)))
+    keep_min_play_frac = float(cfg.get("train", "rl_keep_best_min_play_frac", default=0.5))
+    recent_wins: deque = deque(maxlen=keep_window)
+    recent_plays: deque = deque(maxlen=keep_window)
+    best = {"score": None, "plays": 0.0}
+    last_path = rl_path.with_name(rl_path.stem + "_last" + rl_path.suffix)
+
+    def keep_best_verdict():
+        """(promote?, why) -- should this checkpoint become the DEPLOYED policy_rl.pt?"""
+        if len(recent_wins) < keep_window:
+            return True, f"warm-up ({len(recent_wins)}/{keep_window} matches)"
+        score = sum(recent_wins) / len(recent_wins)
+        pl = sum(recent_plays) / len(recent_plays)
+        if best["score"] is None:
+            best["score"], best["plays"] = score, pl
+            return True, f"first window: {score:.0%} win, {pl:.1f} plays/match"
+        if pl < keep_min_play_frac * best["plays"]:
+            return False, f"activity collapsed: {pl:.1f} plays/match vs best {best['plays']:.1f}"
+        if score < best["score"]:
+            return False, f"win rate {score:.0%} < best {best['score']:.0%}"
+        best["score"], best["plays"] = score, max(best["plays"], pl)
+        return True, f"new best: {score:.0%} win, {pl:.1f} plays/match"
+
+    def save(promote: bool = True, why: str = "") -> None:
         rl_path.parent.mkdir(parents=True, exist_ok=True)
-        torch.save({
+        payload = {
             "model": net.policy.state_dict(),
             "gate": net.gate.state_dict(),
             "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
@@ -383,7 +445,15 @@ def train_rl(cfg, init: str | None = None) -> None:
             "in_ch": in_ch,
             "deck": deck,
             "arena_size": ckpt.get("arena_size", list(cfg.get("observation", "arena_size", default=[64, 96]))),
-        }, rl_path)
+        }
+        torch.save(payload, last_path)          # ALWAYS -- this session's weights are never lost
+        tail = f" ({why})" if why else ""
+        if promote:
+            torch.save(payload, rl_path)
+            print(f"[train-rl] promoted -> {rl_path.name}{tail}")
+        else:
+            print(f"[train-rl] NOT promoted{tail}: {rl_path.name} left as-is; "
+                  f"this session's weights are in {last_path.name}")
 
     print("[train-rl] running. Ctrl+C to stop and save. Make sure Clash Royale is on "
           "the HOME screen; it will queue, play, and re-queue on its own.")
@@ -446,15 +516,17 @@ def train_rl(cfg, init: str | None = None) -> None:
                     print(f"[train-rl] match {match}: {outcome}{cs}{dbg} reward={ep_reward:+.1f} "
                           f"plays={plays} eps={eps:.2f} replay={len(replay)}{ls}  "
                           f"record {wins}W-{losses}L")
+                    recent_wins.append(1.0 if outcome == "win" else 0.0)
+                    recent_plays.append(float(plays))
                     break
             if match % save_every == 0:
-                save()
+                save(*keep_best_verdict())
                 if tl is not None:
                     tl.save()
     except KeyboardInterrupt:
         pass
     finally:
-        save()
+        save(*keep_best_verdict())
         if tl is not None:
             p = tl.save()
             if p is not None:
@@ -464,4 +536,5 @@ def train_rl(cfg, init: str | None = None) -> None:
         if collector is not None and collector.session_count:
             print(f"[train-rl] harvested {collector.session_count} annotation frame(s) -> {collector.root} "
                   f"(re-sync Label Studio Local Storage to pick them up)")
-        print(f"[train-rl] stopped after {match} match(es); saved policy to {rl_path}")
+        print(f"[train-rl] stopped after {match} match(es); deployed policy is {rl_path.name}, "
+              f"this session's final weights are in {last_path.name}")

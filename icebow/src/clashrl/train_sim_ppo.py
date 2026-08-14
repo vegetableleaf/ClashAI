@@ -32,7 +32,9 @@ from pathlib import Path
 
 import numpy as np
 
-from .ppo_monitor import should_intervene
+from .ppo_monitor import should_intervene  # noqa: F401  (kept importable for offline analysis;
+# the automatic stop it used to drive was REMOVED -- it fired far too eagerly on ordinary early-training
+# dips and killed healthy runs. Diagnose plateaus from the printed winrate/eval curve instead.)
 
 _NEG = -1e9   # finite mask value (avoids -inf NaNs through log_softmax / entropy)
 
@@ -97,9 +99,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             self.value = nn.Linear(self.policy.embed_dim, 1)   # V(s) for GAE
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
-            z = self.policy.features_vec(x, hand, nxt, elx, thr)
-            return (self.policy.card_head(z), self.policy.cell_head(z),
-                    self.gate(z), self.value(z).squeeze(-1))
+            z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
+            return cards, cells, self.gate(z), self.value(z).squeeze(-1)
 
     net = PPONet().to(device)
 
@@ -178,6 +179,25 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     gae_lambda = float(cfg.get("sim", "ppo_gae_lambda", default=0.95))
     max_grad = float(cfg.get("sim", "ppo_max_grad_norm", default=0.5))
     gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
+    # CARD-SAMPLING EXPLORATION FLOOR (PPO port of sim.explore_count_based, which only ever fed the
+    # DDQN epsilon path). Mixes the policy's card distribution with a uniform over the PLAYABLE cards
+    # so a card whose probability has collapsed to ~0 keeps being sampled -- measured on the flipped
+    # checkpoint tornado/rocket/tesla_evo were IN HAND thousands of steps yet played 0 times, and a
+    # never-sampled action gets zero policy gradient, so the collapse is self-reinforcing. 0 = off.
+    explore_floor = float(cfg.get("sim", "ppo_explore_floor", default=0.0))
+    # ...and the same protection for the CELL head, which had none (see choose_sample).
+    cell_floor = float(cfg.get("sim", "ppo_cell_explore_floor", default=0.0))
+    # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md; log 2026-08-14): when a doctrine rule matches the
+    # current (card, board), this share of the CELL FLOOR's mass samples from the doctrine
+    # distribution instead of uniform -- known-good placements get their outcomes SEEN early, and
+    # the policy keeps them only if the returns justify it. Rollout-only; the stored log-prob is
+    # the full mixture's, so the PPO ratio stays exact. Anneal to 0 to remove the scaffold.
+    doctrine_frac = float(cfg.get("sim", "doctrine_frac", default=0.0))
+    from .sim.doctrine import doctrine_cells as _doctrine_cells
+    if doctrine_frac > 0.0:
+        print(f"[train-sim-ppo] DOCTRINE prior ON: {doctrine_frac:.0%} of the cell floor samples "
+              f"from DOCTRINE.md placements when a rule matches (rollout-only, annealable)")
+    cell_ent_coef = float(cfg.get("sim", "ppo_cell_entropy", default=ent_coef))
     log_every = int(cfg.get("sim", "log_every_matches", default=25))
     save_every = int(cfg.get("sim", "save_every_matches", default=50))
     opt = torch.optim.Adam(net.parameters(), lr=lr, eps=1e-5)
@@ -221,11 +241,22 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         with torch.no_grad():
             cq, ceq, gq, val = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                    elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
-            cq_m, _, gq_m, _ = masked_logits(cq, ceq, gq, hand_t, elx_t)
+            cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
             lp_g = F.log_softmax(gq_m, dim=1)
             g_samp = torch.multinomial(lp_g.exp(), 1).squeeze(1)
-            lp_c_all = F.log_softmax(cq_m, dim=1)
-            c_samp = torch.multinomial(lp_c_all.exp().clamp_min(1e-12), 1).squeeze(1)
+            # Card sampling from a MIXTURE: (1-floor)*policy + floor*uniform(playable). The STORED
+            # log-prob below is this mixture's (the true behaviour policy mu), so the PPO ratio the
+            # update forms -- pi_new(card)/mu(card), pi_new being the pure softmax it recomputes --
+            # stays exact importance sampling; the entropy bonus still shapes the pure policy. This
+            # keeps every playable card (tornado/rocket/tesla_evo included) receiving gradient.
+            p_c_pure = F.log_softmax(cq_m, dim=1).exp()
+            if explore_floor > 0.0:
+                p_unif = playable.float() / playable.float().sum(1, keepdim=True).clamp_min(1.0)
+                p_c_mix = (1.0 - explore_floor) * p_c_pure + explore_floor * p_unif
+            else:
+                p_c_mix = p_c_pure
+            lp_c_mix = p_c_mix.clamp_min(1e-12).log()
+            c_samp = torch.multinomial(p_c_mix.clamp_min(1e-12), 1).squeeze(1)
             acts, logps = [], []
             for i in range(len(obs_b)):
                 g = int(g_samp[i])
@@ -235,10 +266,38 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 ci = int(c_samp[i])
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
                 ceq_i = ceq[i].masked_fill(~cmask, _NEG)
-                lp_cell = F.log_softmax(ceq_i, dim=0)
-                cell = int(torch.multinomial(lp_cell.exp(), 1))
+                # CELL sampling from the SAME mixture shape as the card head above. Without this the
+                # 432-way cell head had NO anti-collapse protection while the 10-way card head did,
+                # and it collapsed to a constant: MEASURED on policy_sim_ppo_best over 150 matches,
+                # 3 distinct cells out of 432 with 79% of all plays on ONE tile -- six different
+                # cards deploying to the identical spot, in the LEFT lane, regardless of where the
+                # push was. A frozen cell head makes every placement-dependent reward unreachable,
+                # so no amount of reward tuning can move it. The stored log-prob is the MIXTURE's,
+                # so the PPO ratio stays exact importance sampling (same argument as the card floor).
+                p_cell_pure = F.log_softmax(ceq_i, dim=0).exp()
+                if cell_floor > 0.0:
+                    cm = cmask.float()
+                    p_floor = cm / cm.sum().clamp_min(1.0)
+                    if doctrine_frac > 0.0:
+                        # Route part of the floor through the DOCTRINE prior when a rule matches
+                        # (see sim/doctrine.py). Masked to deployable, normalised, and blended so
+                        # the floor keeps a uniform residue -- the scaffold guides, never dictates.
+                        dc = _doctrine_cells(pool[i], ci)
+                        if dc:
+                            prior = torch.zeros_like(p_floor)
+                            for c_j, w_j in dc:
+                                prior[c_j] = w_j
+                            prior = prior * cm
+                            s = prior.sum()
+                            if s > 0:
+                                p_floor = (1.0 - doctrine_frac) * p_floor + doctrine_frac * (prior / s)
+                    p_cell = (1.0 - cell_floor) * p_cell_pure + cell_floor * p_floor
+                else:
+                    p_cell = p_cell_pure
+                lp_cell = p_cell.clamp_min(1e-12).log()
+                cell = int(torch.multinomial(p_cell.clamp_min(1e-12), 1))
                 acts.append((1, ci, cell))
-                logps.append(float(lp_g[i, 1] + lp_c_all[i, ci] + lp_cell[cell]))
+                logps.append(float(lp_g[i, 1] + lp_c_mix[i, ci] + lp_cell[cell]))
         return acts, logps, [float(v) for v in val]
 
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
@@ -416,14 +475,19 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     + play * (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
                               + lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1))
                 ent = -(lp_g.exp() * lp_g).sum(1) \
-                    + play * (-(lp_c.exp() * lp_c).sum(1) - (lp_cell.exp() * lp_cell).sum(1))
+                    + play * (-(lp_c.exp() * lp_c).sum(1))
+                # CELL entropy is weighted SEPARATELY. One shared coefficient cannot hold a 10-way
+                # and a 432-way categorical at once: max entropy is ln(10)=2.30 vs ln(432)=6.07, so
+                # at ent_coef 0.01 the big head's entropy gradient was far too weak to resist a
+                # collapse to a delta -- and it did collapse (3 of 432 cells ever used).
+                cell_ent = play * (-(lp_cell.exp() * lp_cell).sum(1))
                 a_b, r_b, ol_b = adv_f[mb_t], ret_f[mb_t], oldlp_f[mb_t]
                 ratio = (new_lp - ol_b).exp()
                 s1 = ratio * a_b
                 s2 = torch.clamp(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * a_b
                 pl = -torch.min(s1, s2).mean()
                 vl = F.mse_loss(val, r_b)
-                loss = pl + vf_coef * vl - ent_coef * ent.mean()
+                loss = pl + vf_coef * vl - ent_coef * ent.mean() - cell_ent_coef * cell_ent.mean()
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
@@ -440,6 +504,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     ep_r = [0.0] * K
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
+    if explore_floor > 0.0:
+        print(f"[train-sim-ppo] card exploration floor ON: {explore_floor:.0%} of card-sampling mass "
+              f"is uniform over playable cards (anti-collapse; rollouts only, greedy eval is unaffected)")
+    if cell_floor > 0.0:
+        print(f"[train-sim-ppo] CELL exploration floor ON: {cell_floor:.0%} of cell-sampling mass is "
+              f"uniform over deployable cells (the head that collapsed to 3 of {n_cells} cells)")
+    if cell_ent_coef != ent_coef:
+        print(f"[train-sim-ppo] cell entropy coefficient {cell_ent_coef} (gate/card {ent_coef})")
     print(f"[train-sim-ppo] {device}: {K} env(s), horizon {horizon} (batch {horizon * K}), up to "
           f"{matches} matches (cards={n_cards}, cells={n_cells}). Ctrl+C to stop + save.")
     done_n = wins = losses = draws = 0
@@ -447,7 +519,6 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     stats = None
     t0 = time.time()
-    intervention_log: list[tuple[int, str]] = []
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
@@ -483,18 +554,6 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             print(f"[train-sim-ppo] {done_n} matches: winrate={wr:4.0f}% "
                                   f"avg_rew={ar:+.1f} {mps:.1f} m/s total {wins}W-{losses}L-{draws}D{xs}",
                                   flush=True)
-                            should_stop, reason = should_intervene(
-                                winrate=wr,
-                                avg_reward=ar,
-                                recent_winrates=list(win_hist),
-                                recent_rewards=list(rew_hist),
-                                matches=done_n,
-                            )
-                            if should_stop:
-                                intervention_log.append((done_n, reason))
-                                print(f"[train-sim-ppo] intervention trigger at {done_n} matches: {reason}", flush=True)
-                                save()
-                                raise KeyboardInterrupt
                         if done_n % save_every == 0:
                             save()
                         if sp_prob > 0 and done_n % sp_snap_every == 0:
