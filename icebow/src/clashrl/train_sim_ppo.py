@@ -220,6 +220,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
     gae_lambda = float(cfg.get("sim", "ppo_gae_lambda", default=0.95))
     max_grad = float(cfg.get("sim", "ppo_max_grad_norm", default=0.5))
+    head_norm_mult = float(cfg.get("sim", "ppo_head_norm_mult", default=2.0))
+    value_warmup = int(cfg.get("sim", "ppo_value_warmup", default=30))
     gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
     # CARD-SAMPLING EXPLORATION FLOOR (PPO port of sim.explore_count_based, which only ever fed the
     # DDQN epsilon path). Mixes the policy's card distribution with a uniform over the PLAYABLE cards
@@ -243,6 +245,29 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     log_every = int(cfg.get("sim", "log_every_matches", default=25))
     save_every = int(cfg.get("sim", "save_every_matches", default=50))
     opt = torch.optim.Adam(net.parameters(), lr=lr, eps=1e-5)
+    # HEAD SHARPNESS CAP (2026-08-14). Measured: after a head repair the value function is still
+    # calibrated to the OLD policy, advantages spike, and Adam's normalized steps sprint the raw
+    # card logits from +/-2.8 to +/-119 in under ten minutes -- through the grad clip -- freezing
+    # the head at the tanh rails again (x_bow -109 within one autosave). Scale adds SHARPNESS,
+    # not expressiveness: rankings need relative differences only. So the heads' weight norms are
+    # clamped to head_norm_mult x their (healthy, post-guard) startup norms after every step, and
+    # the first value_warmup minibatches on a resume train the VALUE head alone so the critic
+    # recalibrates before it is allowed to shove the policy.
+    _card_ref = float(net.policy.card_head.weight.norm()) or 1.0
+    _cell_ref = float(net.policy.cell_conv[-1].weight.norm()) or 1.0
+    _warm = {"left": value_warmup if (resume and ppo_path.exists()) else 0}
+    if _warm["left"]:
+        print(f"[train-sim-ppo] value warmup: first {_warm['left']} minibatches train the critic only")
+
+    def _clamp_heads():
+        with torch.no_grad():
+            for mod, ref in ((net.policy.card_head, _card_ref), (net.policy.cell_conv[-1], _cell_ref)):
+                n = float(mod.weight.norm())
+                cap_n = head_norm_mult * ref
+                if n > cap_n:
+                    mod.weight.mul_(cap_n / n)
+                    if mod.bias is not None:
+                        mod.bias.mul_(cap_n / n)
 
     def to_obs_t(o):
         return torch.from_numpy(o).float().permute(2, 0, 1).to(device) / 255.0
@@ -529,10 +554,15 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 s2 = torch.clamp(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * a_b
                 pl = -torch.min(s1, s2).mean()
                 vl = F.mse_loss(val, r_b)
-                loss = pl + vf_coef * vl - ent_coef * ent.mean() - cell_ent_coef * cell_ent.mean()
+                if _warm["left"] > 0:
+                    _warm["left"] -= 1
+                    loss = vf_coef * vl                       # critic-only: no policy shove yet
+                else:
+                    loss = pl + vf_coef * vl - ent_coef * ent.mean() - cell_ent_coef * cell_ent.mean()
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
+                _clamp_heads()                                # sharpness cap: heads can rank, not rail
                 with torch.no_grad():
                     tot_pl += float(pl.detach()); tot_vl += float(vl.detach())
                     tot_ent += float(ent.mean().detach())

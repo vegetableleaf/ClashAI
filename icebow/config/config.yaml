@@ -1134,6 +1134,13 @@ sim:
   ppo_vf_coef: 0.5              # value-loss weight
   ppo_gae_lambda: 0.95          # GAE lambda (bias/variance of the advantage estimates)
   ppo_max_grad_norm: 0.5        # gradient clip
+  ppo_head_norm_mult: 2.0       # HEAD SHARPNESS CAP: card/cell head weight norms are clamped to
+                                # this x their healthy startup norms after every optimizer step.
+                                # Measured 2026-08-14: post-repair, advantage spikes sprinted raw
+                                # card logits +/-2.8 -> +/-119 in <10 min (x_bow -109) THROUGH the
+                                # grad clip; scale is sharpness, not expressiveness, so cap it.
+  ppo_value_warmup: 30          # on --resume, the first N minibatches train the CRITIC only, so a
+                                # stale value function recalibrates before it can shove the policy
   # DEPLOY GATE THRESHOLD. The gate head is [wait, play]; the deterministic rule plays when
   # P(play) = sigmoid(play - wait) > this. The old rule was a raw logit compare, i.e. tau 0.5 -- but a
   # card play is RARE per tick, so a well-calibrated gate sits far below 0.5 (measured: median P(play)
