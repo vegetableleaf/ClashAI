@@ -2140,6 +2140,21 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- POST-REPAIR RE-EXPLOSION diagnosed: sharpness cap + value warmup
+- User repaired correctly this time (card 171.7->2.8, cell 224.8->4.5, lift 0,4) and resumed.
+  PROBED the new run's FIRST autosave (~8 min in): raw absmax back at 119, x_bow -109, with a
+  COMPLETELY DIFFERENT sign pattern (skeletons flipped +, rocket +55) -- not the old frozen
+  head: the run RE-EXPLODES from healthy weights in minutes. Mechanism: the value head is
+  still calibrated to the pre-repair policy -> advantage spikes -> Adam's normalized steps
+  sprint the head THROUGH the 0.5 grad clip until tanh saturates. The cap contained the
+  probabilities but nothing bounded the weights.
+- FIXES (e9c2c79): (1) HEAD SHARPNESS CAP -- card/cell head weight norms clamped to 2x their
+  healthy startup norms after EVERY optimizer step (scale is sharpness, not expressiveness;
+  rankings stay free); (2) VALUE WARMUP -- first 30 minibatches of any --resume train the
+  critic alone. (3) Rail guard from 4ac3345 remains the resume backstop.
+- Protocol: stop -> repair --lift 0,4 (from icebow/) -> resume; verify the first autosave
+  probe stays in the linear region and x_bow/tornado appear in the next policy-stats.
+
 2026-08-14 -- DATA-ACCESS UPGRADE (user pointed at github.com/Panniantong/agent-reach)
 - Analyzed agent-reach (agent capability layer: multi-backend fallbacks, Jina Reader proxy,
   per-platform CLIs, cookie/browser-session reuse). ADOPTED the ideas natively, ran none of
