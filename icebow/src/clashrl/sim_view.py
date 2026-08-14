@@ -229,6 +229,11 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
     # 5 tiles/s next to a Musketeer bullet at 16.7 is the clearest way to see that. AREA shots
     # (radius > 0) also show the blast they will make, so you can watch a push walk out of one --
     # and a hollow marker means the shot cannot touch air.
+    # Lumberjack's dropped Rage: magenta ring while the zone is live (arm delay excluded)
+    for (zx, zy, zr, zt, t0, t1, _boost) in getattr(eng, "rage_zones", []):
+        if t0 <= eng.t < t1:
+            cv2.ellipse(img, px(zx, zy), rad_px(zr), 0, 0, 360, (200, 0, 200), 1)
+
     for p in getattr(eng, "projectiles", []):
         c = px(p.x, p.y)
         col = _TEAM[p.team]

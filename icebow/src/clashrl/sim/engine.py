@@ -200,6 +200,18 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
+    # LUMBERJACK: "Upon death, he drops a bottle of Rage" -- an area that boosts friendly move
+    # AND attack speed. Curated from the balance log: radius 3 tiles + 4.5 s (Aug 2025), boost
+    # +30% (Oct 2025, from 35%), 0.5 s deploy timer before it takes effect.
+    rage_r: float = 0.0
+    rage_dur: float = 0.0
+    rage_boost: float = 0.0
+    rage_delay: float = 0.0
+    # PHOENIX: dies -> death blast + drops an EGG once. If the egg survives `egg_hatch` seconds
+    # it hatches a REBORN phoenix at `egg_frac` of the original's hitpoints and damage (7/2/2023
+    # balance); the reborn deals no death damage and drops no second egg.
+    egg_hatch: float = 0.0
+    egg_frac: float = 0.0
     # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
     # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
     # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
@@ -448,6 +460,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
+        rage_r=float((c.get("drops_rage") or {}).get("radius_tiles") or 0.0),
+        rage_dur=float((c.get("drops_rage") or {}).get("duration_s") or 0.0),
+        rage_boost=float((c.get("drops_rage") or {}).get("boost") or 0.0),
+        rage_delay=float((c.get("drops_rage") or {}).get("delay_s") or 0.0),
+        egg_hatch=float((c.get("egg") or {}).get("hatch_s") or 0.0),
+        egg_frac=float((c.get("egg") or {}).get("reborn_frac") or 0.0),
         elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
@@ -514,7 +532,11 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if kind != "spell" and len(comps) > 1:
         subs = []
         total = sum(max(1, int(cm.get("count") or 1)) for cm in comps)
-        for cm in comps:
+        # Per-member BODY radius (cards.yaml `component_collision_tiles`, index-aligned with the
+        # KB component rows). The card-level collision radius is really the BIGGEST member's --
+        # sharing it gave the Rascal girls the boy's 0.75-tile body, twice their real size.
+        comp_r = c.get("component_collision_tiles") or ()
+        for ci, cm in enumerate(comps):
             c_hp = float(cm.get("hitpoints") or 0.0) * sc
             if c_hp <= 0.0:                                   # a half-resolved squad would field
                 subs = []                                     # phantom bodies -- take none of it
@@ -529,6 +551,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
                 spec,
                 count=max(1, int(cm.get("count") or 1)),
                 squad_count=total,
+                radius=(float(comp_r[ci]) if ci < len(comp_r) and comp_r[ci] else spec.radius),
                 hp=c_hp, hit_speed=c_hit, hit_dmg=c_dmg, dps=(c_dmg / c_hit),
                 tower_hit_dmg=c_dmg * ratio,
                 reach=float(cm.get("range_tiles") if cm.get("range_tiles") is not None else reach),
@@ -568,6 +591,10 @@ class Unit:
     pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
     shield_left: float = 0.0     # SHIELD pool remaining -- absorbs damage before hp (init from spec.shield_hp)
     dmg_mult: float = 1.0        # per-unit damage multiplier (Royal Chef pancake buff; 1.0 = normal)
+    hatch_left: float = 0.0      # Phoenix EGG: survives this long -> hatches (0 = not an egg)
+    hatch_frac: float = 1.0      # ...at this fraction of the parent's hp/damage (0.8 since 7/2/2023)
+    hatch_spec: object = None    # ...into this spec (the ORIGINAL phoenix's, so level carries over)
+    from_egg: bool = False       # reborn phoenix: no death blast, no second egg
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
     locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
                                  # targets just because something wandered closer; only an aggro RESET frees it
@@ -776,6 +803,7 @@ class SimEngine:
         self.db = db
         self.rng = rng
         self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
+        self.rage_zones: list = []      # (x, y, r_tiles, team, t_on, t_off, boost) -- Lumberjack's bottle
                                         # flashes each as a brief AOE circle (~0.15 s), capped at 40
         # Tower Troops: per-troop HP + discrete-hit attack (CR wiki, L15). Your side plays my_tower_troop at
         # my_tower_level; the opponent rolls a troop (weighted) + a ladder level per match (see reset()).
@@ -1342,6 +1370,9 @@ class SimEngine:
             if u.spec.lifetime and u.deploy_left <= 0.0:
                 u.hp -= (u.spec.hp / u.spec.lifetime) * dt
         self._tick_spawners(dt)
+        self._tick_hatch(dt)
+        if self.rage_zones:                                  # drop zones whose effect has ended
+            self.rage_zones = [z for z in self.rage_zones if z[5] > self.t]
         # spells land
         landed = []
         for s in self.spells:
@@ -1388,6 +1419,8 @@ class SimEngine:
                     self._pulse(u)
                     u.pulse_cd = u.spec.pulse_interval
             spd = u.slow_mult if u.slow_left > 0 else 1.0
+            if self.rage_zones:
+                spd *= self._rage_mult(u)                   # Lumberjack rage: +30% move AND attack speed
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
             # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
@@ -1571,8 +1604,21 @@ class SimEngine:
                     foe = 1 - u.team
                     self.elixir[foe] = min(10.0, self.elixir[foe] + u.spec.elixir_death)
                 self._spawn_cursed_hog(u)
-                self._death_blast(u)                         # Balloon / Giant Skeleton / Bomb Tower
+                if not u.from_egg:                           # a REBORN phoenix dies quietly
+                    self._death_blast(u)                     # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
+                if u.spec.rage_r > 0.0:                      # Lumberjack: the bottle breaks where he fell
+                    self.rage_zones.append((u.x, u.y, u.spec.rage_r, u.team,
+                                            self.t + u.spec.rage_delay,
+                                            self.t + u.spec.rage_delay + u.spec.rage_dur,
+                                            u.spec.rage_boost))
+                if u.spec.egg_hatch > 0.0 and not u.from_egg:   # Phoenix: drop the egg ONCE
+                    egg = build_spec(self.db, "phoenix_egg", u.spec.level)
+                    ne = Unit(egg, u.team, u.x, u.y, egg.hp)
+                    ne.hatch_left = u.spec.egg_hatch
+                    ne.hatch_frac = u.spec.egg_frac or 1.0
+                    ne.hatch_spec = u.spec
+                    self.units.append(ne)                    # appended mid-cull, same as _spawn_from
                 continue
             alive.append(u)
         self.units = alive
@@ -1804,6 +1850,38 @@ class SimEngine:
         for tw in self._enemy_towers(u.team):
             if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
                 self._damage_tower(tw, s.death_dmg, u.team)
+
+    def _tick_hatch(self, dt: float) -> None:
+        """Phoenix EGG countdown. An egg that SURVIVES its 3.8 s hatches into a reborn phoenix at
+        80% of the original's hitpoints and damage (7/2/2023 balance); the reborn drops no egg and
+        deals no death damage. A killed egg just dies -- no bird. Hatching REMOVES the egg outside
+        the death path, so it triggers none of the on-death machinery."""
+        for u in list(self.units):
+            if u.hatch_left <= 0.0 or u.hp <= 0:
+                continue
+            u.hatch_left -= dt
+            if u.hatch_left > 0.0:
+                continue
+            self.units.remove(u)
+            sp = u.hatch_spec
+            if sp is None:
+                continue
+            nb = Unit(sp, u.team, u.x, u.y, sp.hp * u.hatch_frac)
+            nb.dmg_mult = u.hatch_frac
+            nb.from_egg = True
+            nb.deploy_left = sp.deploy_time
+            nb.pulse_cd = sp.pulse_interval
+            self.units.append(nb)
+
+    def _rage_mult(self, u: "Unit") -> float:
+        """1 + boost when the unit stands in a friendly Rage zone, else 1. Zones do not stack --
+        the strongest active one wins (matches the game: re-raging refreshes, it does not add)."""
+        best = 0.0
+        for (zx, zy, zr, zt, t0, t1, boost) in self.rage_zones:
+            if zt == u.team and t0 <= self.t < t1 \
+                    and _dist(u.x, u.y, zx, zy) <= zr + u.spec.radius:
+                best = max(best, boost)
+        return 1.0 + best
 
     def _tick_spawners(self, dt: float) -> None:
         """Produce troops from spawners (Goblin Hut, Tombstone, Barbarian Hut, Goblin Drill, Furnace,

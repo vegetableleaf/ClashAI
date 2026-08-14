@@ -75,6 +75,13 @@ pattern. magic_archer remains the known exception — his is a piercing LINE (T2
 now available to plumb the same way): balloon 3.0, bomb_tower 3.0, giant_skeleton 3.0,
 goblin_demolisher 2.5, golem 2.0, phoenix 1.5, skeleton_barrel (+evo) 2.0.
 
+**Death mechanics landed (2026-08-14, user-requested):** lumberjack drops a Rage on death
+(3 tiles / 4.5 s / +30% move+attack speed, 0.5 s arm); phoenix drops an egg once (239 hp,
+hatches in 3.8 s → reborn at 80% hp/dmg, no death blast, no second egg); skeleton_barrel
+kamikaze-dives on reaching a building (death blast 145/2.0 + 7 skeletons — no contact damage);
+rascal girls' collision radius 0.45 vs the boy's 0.75 (`component_collision_tiles`). The evo
+barrel's second mid-flight drop stays a Phase-B/T1 row.
+
 ---
 
 ## 1. The 42 evolutions

@@ -737,10 +737,17 @@ cards:
     display: "Skeleton Barrel"
     win_condition: true
     targets: buildings_only
-    # "the barrel drops, dealing area damage, INFLICTING KNOCKBACK, and spawning seven Skeletons"
-    flags: [flying, building_targeting, swarm, knockback]
+    # "Once the Skeleton Barrel reaches a building or is destroyed, the barrel drops, dealing area
+    # damage, INFLICTING KNOCKBACK, and spawning seven Skeletons in a circle." The barrel itself
+    # deals NO contact damage -- the drop IS its death (kamikaze), so reaching the tower and being
+    # shot down produce the same blast (death_damage 145 / 2.0 tiles from the import) + 7 skeletons.
+    # (The imported `damage` row is the spawned skeleton's swing, zeroed here for the barrel body.)
+    flags: [flying, building_targeting, swarm, knockback, kamikaze]
+    damage: 0
+    dps: 0
+    spawns: {unit: skeletons, on_death: 7}
     range: melee
-    verified: false
+    verified: true
 
   goblin_drill:
     display: "Goblin Drill"
@@ -877,6 +884,27 @@ cards:
     deploy_time: 0.2
     evolution: null
     verified: false
+
+  phoenix_egg:                     # the EGG a dying Phoenix leaves behind -- a spawned body, NOT a
+    display: "Phoenix Egg"         # deployable card. Stationary and harmless; its whole job is to
+    elixir: null                   # survive 3.8 s (see phoenix `egg:`). 239 hp at level 11 per the
+    kind: troop                    # wiki. A TROOP (not a building) so The Log shoves it and the
+    rarity: legendary              # Tornado drags it, both as in game.
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 239
+    damage: 0
+    dps: 0
+    hit_speed: 1.0
+    range_tiles: 0.5
+    speed_tiles: 0.0
+    deploy_time: 0.0
+    evolution: null
+    verified: true
 
   golemite:                        # the 2 smaller golems Golem splits into on death (they also deal death damage)
     display: "Golemite"
@@ -1043,7 +1071,10 @@ cards:
   guards: {range: melee, verified: false}
   heal_spirit: {range: melee, verified: false}
   ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
-  lumberjack: {range: melee, verified: false}
+  # LUMBERJACK. "Upon death, he drops a bottle of Rage" boosting friendly troops' AND buildings'
+  # move + attack speed. Balance log: radius 3 tiles + duration 4.5 s (Aug 2025), boost +30%
+  # (10/6/2025, down from 35%), 0.5 s deploy timer before the zone takes effect.
+  lumberjack: {range: melee, drops_rage: {radius_tiles: 3.0, duration_s: 4.5, boost: 0.30, delay_s: 0.5}, verified: true}
   # "If there are ground units between 3.5 and 5 tiles of him, he will stop moving and begin charging
   # a jump attack which takes 0.9 seconds to execute, and will deal double damage, and inflict
   # knockback." Same mechanic as the Bandit's dash, narrower band, no immunity.
@@ -1061,7 +1092,9 @@ cards:
   night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
   pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, flags: [knockback_immune], verified: false}
-  rascals: {range: melee, verified: false}
+  # RASCALS. The girls' body is MUCH smaller than the boy's (user-verified) -- sharing the card-level
+  # 0.75 collision radius made them tank-sized. Index-aligned with the KB component rows: [boy, girls].
+  rascals: {range: melee, component_collision_tiles: [0.75, 0.45], verified: true}
   # ROYAL GHOST. "Upon deployment, he will spawn invisible, and will only turn visible once he
   # attacks. If he is in his invisible state, he will not be targeted by opposing units, but can
   # still be hit by area damage or spells. When he is not fighting any unit for 1.8 seconds, he will
@@ -1086,7 +1119,11 @@ cards:
   # hardcoded falloff produced -- a mechanic fix, not a rebalance.
   hunter: {range: short, attacks: [air, ground], flags: [ranged], multi: shotgun, spread_degrees: 18, verified: true}
   minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
-  phoenix: {range: short, flags: [knockback], verified: false}   # "When defeated, the Phoenix explodes, dealing damage, inflicting knockback"
+  # PHOENIX. "When defeated, the Phoenix explodes, dealing damage, inflicting knockback" (death
+  # blast 163/1.5 from the import) -- AND drops an EGG once. "If the egg is not defeated within
+  # 3.8 seconds, it will hatch into another Phoenix"; since 7/2/2023 the reborn spawns with 80%
+  # of the original's hitpoints and damage, deals NO death damage and drops NO second egg.
+  phoenix: {range: short, flags: [knockback], egg: {hatch_s: 3.8, reborn_frac: 0.8}, verified: true}
   skeleton_dragons: {range: short, verified: false}
   # -- long --
   archer_queen: {range: long, verified: false}
