@@ -166,6 +166,37 @@ cards:
   # three blasts share a hit set. The bounces are how it chips the crown tower from the bridge.
   bomber_evo: {bounces: 2, bounce_tiles: 2.5, verified: true}
 
+  # ---- T1 EVO MECHANICS (2026-08-14 verify sweep; stats flow from the imported _evo rows) ----
+  # EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around it and
+  # knocks back enemy ground troops by 1 tile"; air immune to both. The wiki publishes a Recoil
+  # Damage row but no scrapeable value -- 154 (= half his 307 hit) is curated [verify].
+  royal_giant_evo: {recoil_damage: 154, recoil_radius_tiles: 2.5, verified: false}
+  # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn, for a
+  # maximum total of 8" (cap = living evo skeletons on the team).
+  skeletons_evo: {spawn_on_hit: skeletons_evo, spawn_on_hit_cap: 8, verified: true}
+  # EVO RECRUITS: "AFTER their shield is destroyed, they gain the ability to charge towards their
+  # target after traveling [charge_range, imported 2.5] tiles, dealing 2x damage" -> 266 at L11.
+  royal_recruits_evo: {charge_damage: 266, charge_after_shield: true, verified: true}
+  # EVO BARBARIANS: "every attack, their attack speed and movement speed increases by 30% for
+  # 3 seconds" (3 s since 14/5/2024; 30% since the 6/10/2025 global rage nerf). Does not stack
+  # with other rage. Their +10% hp / 1.4 s hit speed flow from the imported row.
+  barbarians_evo: {hit_rage_s: 3.0, hit_rage_boost: 0.30, verified: true}
+  # EVO VALKYRIE: "every time [she] attacks, a Tornado appears for half a second, pulling all
+  # units towards her" -- 5.5-tile radius, 76 tornado damage, ground AND air (reuses the vortex).
+  valkyrie_evo: {attack_nado_radius_tiles: 5.5, attack_nado_duration_s: 0.5, attack_nado_damage: 76, verified: true}
+  # EVO ZAP: "the ring grows and zaps every target inside 2 more times" -- 3 pulses ~1 s apart at
+  # radii 2.5 -> 3.0 -> 3.5, each a full zap (damage/stun/crown chip from the imported row).
+  zap_evo: {zap_pulses: 3, zap_radius_step_tiles: 0.5, verified: true}
+  # EVO PEKKA: the imported hitpoints 5640 is the OVERHEAL CAP (3760 x 1.5), not deploy hp, and
+  # the damage row is missing -- both re-curated from the base card. Post-rework heal: "each kill
+  # heals the same amount ... always 12.5% of the core HP" = 470 at L11, overheal to 150%.
+  pekka_evo: {hitpoints: 3760, damage: 842, dps: 468, kill_heal: 470, overheal_frac: 1.5, verified: true}
+  # EVO SKEL BARREL: imported count 2 is the BARRELS-carried attribute, not bodies -- one flying
+  # unit with 665 hp (125% of base) and 238 death damage per barrel. First barrel drops at 75%
+  # hp (blast + 7 skeletons); the second on death; both at once if it reaches the tower unspent.
+  # Contact damage zeroed like the base barrel (the imported damage row is the skeleton's swing).
+  skeleton_barrel_evo: {count: 1, damage: 0, dps: 0, mid_drop_frac: 0.75, verified: true}
+
   ice_wizard:
     display: "Ice Wizard"
     elixir: 3

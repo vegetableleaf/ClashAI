@@ -212,6 +212,22 @@ class CardSpec:
     # balance); the reborn deals no death damage and drops no second egg.
     egg_hatch: float = 0.0
     egg_frac: float = 0.0
+    # ---- T1 EVO MECHANICS (2026-08-14 verify sweep; per-mechanic sources in cards.yaml) ----
+    recoil_dmg: float = 0.0      # EVO ROYAL GIANT: every shot also blasts AROUND HIMSELF --
+    recoil_r: float = 0.0        # 2.5 tiles, GROUND only, 1-tile shove (air is immune)
+    spawn_on_hit: str = ""       # EVO SKELETONS: unit key spawned on each landed swing...
+    spawn_on_hit_cap: int = 0    # ...while fewer than this many (same spec.key) are alive on the team
+    charge_after_shield: bool = False  # EVO RECRUITS: the charge only arms once the shield is GONE
+    hit_rage_s: float = 0.0      # EVO BARBARIANS: self-rage refreshed by every swing (3 s)...
+    hit_rage_boost: float = 0.0  # ...at +30% move/attack speed; does NOT stack with rage zones
+    attack_nado_r: float = 0.0   # EVO VALKYRIE: every swing spins up a 0.5 s whirlwind that
+    attack_nado_s: float = 0.0   # pulls ground AND air toward her (5.5 tiles) and deals its
+    attack_nado_dmg: float = 0.0 # damage spread over the duration -- the tornado vortex, reused
+    zap_pulses: int = 0          # EVO ZAP: total pulses (3), ~1 s apart, ring GROWING by
+    zap_step: float = 0.0        # zap_step tiles each pulse (2.5 -> 3.0 -> 3.5)
+    kill_heal: float = 0.0       # EVO PEKKA: flat heal per troop/building KILL (12.5% = 470)...
+    overheal_frac: float = 1.0   # ...overhealing up to this x deploy hp (1.5)
+    mid_drop_frac: float = 0.0   # EVO SKEL BARREL: first barrel drops when hp falls to this frac
     # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
     # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
     # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
@@ -482,6 +498,21 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         rage_delay=float((c.get("drops_rage") or {}).get("delay_s") or 0.0),
         egg_hatch=float((c.get("egg") or {}).get("hatch_s") or 0.0),
         egg_frac=float((c.get("egg") or {}).get("reborn_frac") or 0.0),
+        recoil_dmg=float(c.get("recoil_damage") or 0.0) * sc,
+        recoil_r=float(c.get("recoil_radius_tiles") or 0.0),
+        spawn_on_hit=str(c.get("spawn_on_hit") or ""),
+        spawn_on_hit_cap=int(c.get("spawn_on_hit_cap") or 0),
+        charge_after_shield=bool(c.get("charge_after_shield")),
+        hit_rage_s=float(c.get("hit_rage_s") or 0.0),
+        hit_rage_boost=float(c.get("hit_rage_boost") or 0.0),
+        attack_nado_r=float(c.get("attack_nado_radius_tiles") or 0.0),
+        attack_nado_s=float(c.get("attack_nado_duration_s") or 0.0),
+        attack_nado_dmg=float(c.get("attack_nado_damage") or 0.0) * sc,
+        zap_pulses=int(c.get("zap_pulses") or 0),
+        zap_step=float(c.get("zap_radius_step_tiles") or 0.0),
+        kill_heal=float(c.get("kill_heal") or 0.0) * sc,
+        overheal_frac=float(c.get("overheal_frac") or 1.0),
+        mid_drop_frac=float(c.get("mid_drop_frac") or 0.0),
         elixir_death=float(c.get("elixir_on_death") or 0.0),   # NOT level-scaled: it is a flat refund
         # DEPLOY/SURFACE blast (Mega Knight landing 430 over 1.3 tiles, Goblin Drill surfacing 84).
         # Radius falls back to the card's splash radius, which is the circle the wiki describes.
@@ -613,6 +644,8 @@ class Unit:
     hatch_frac: float = 1.0      # ...at this fraction of the parent's hp/damage (0.8 since 7/2/2023)
     hatch_spec: object = None    # ...into this spec (the ORIGINAL phoenix's, so level carries over)
     from_egg: bool = False       # reborn phoenix: no death blast, no second egg
+    rage_self_left: float = 0.0  # EVO BARBARIANS: seconds of self-rage left (refreshed per swing)
+    mid_drop_done: bool = False  # EVO SKEL BARREL: the 75%-hp barrel has been spent
     attacking: bool = False      # engaged (target in reach) this step -> Evo Knight's damage reduction is OFF
     locked: bool = False         # has ENGAGED its target (got in reach) -- a locked unit does not switch
                                  # targets just because something wandered closer; only an aggro RESET frees it
@@ -691,6 +724,8 @@ class _Spell:
     y: float
     spec: CardSpec
     t: float                      # time remaining until it lands
+    r_override: float = 0.0       # EVO ZAP echo: this pulse's radius (0 = the spec's own)
+    echoes: int = 0               # EVO ZAP: growing-ring pulses still to fire after this one
 
 
 @dataclass
@@ -967,7 +1002,8 @@ class SimEngine:
             if spec.base == "rocket":                      # rocket FLIGHT TIME grows with distance from its
                 oy = 1.0 if team == 0 else 0.0             # launcher -> the policy must LEAD a marching target
                 delay = 0.4 + _dist(x, y, 0.5, oy) / _TILES_Y   # (live-parity physics; ~1.4s at max range)
-            self.spells.append(_Spell(team, x, y, spec, delay))
+            self.spells.append(_Spell(team, x, y, spec, delay,
+                                      echoes=max(0, spec.zap_pulses - 1)))
             return True
         n = max(1, spec.count)
         # TILE SNAP: troops/buildings land on a tile centre, as in the real game (spells stay
@@ -1413,6 +1449,15 @@ class SimEngine:
                 continue
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
+            if u.rage_self_left > 0.0:
+                u.rage_self_left = max(0.0, u.rage_self_left - dt)
+            if (u.spec.mid_drop_frac > 0.0 and not u.mid_drop_done and u.deploy_left <= 0.0
+                    and u.hp <= u.spec.hp * u.spec.mid_drop_frac):
+                # EVO SKELETON BARREL: "one dropped when it reaches 75% hitpoints" -- the first
+                # barrel falls MID-FLIGHT with the same blast + skeleton payload as the death drop.
+                u.mid_drop_done = True
+                self._death_blast(u)
+                self._spawn_from(u, u.spec.spawner_death)
             u.attacking = False                             # default; set True only when engaged (target in reach)
             if u.curse_left > 0.0:
                 u.curse_left = max(0.0, u.curse_left - dt)
@@ -1438,8 +1483,8 @@ class SimEngine:
                     self._pulse(u)
                     u.pulse_cd = u.spec.pulse_interval
             spd = u.slow_mult if u.slow_left > 0 else 1.0
-            if self.rage_zones:
-                spd *= self._rage_mult(u)                   # Lumberjack rage: +30% move AND attack speed
+            if self.rage_zones or u.rage_self_left > 0.0:
+                spd *= self._rage_mult(u)                   # rage: +30% move AND attack speed, no stacking
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
             # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
@@ -1626,6 +1671,11 @@ class SimEngine:
                 if not u.from_egg:                           # a REBORN phoenix dies quietly
                     self._death_blast(u)                     # Balloon / Giant Skeleton / Bomb Tower
                 self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
+                if u.spec.mid_drop_frac > 0.0 and not u.mid_drop_done:
+                    # EVO SKEL BARREL: "if this hitpoints trigger isn't activated before reaching a
+                    # building, the 2 barrels will drop at once" -- second blast + second 7 skels.
+                    self._death_blast(u)
+                    self._spawn_from(u, u.spec.spawner_death)
                 if u.spec.rage_r > 0.0:                      # Lumberjack: the bottle breaks where he fell
                     self.rage_zones.append((u.x, u.y, u.spec.rage_r, u.team,
                                             self.t + u.spec.rage_delay,
@@ -1893,14 +1943,31 @@ class SimEngine:
             self.units.append(nb)
 
     def _rage_mult(self, u: "Unit") -> float:
-        """1 + boost when the unit stands in a friendly Rage zone, else 1. Zones do not stack --
-        the strongest active one wins (matches the game: re-raging refreshes, it does not add)."""
-        best = 0.0
+        """1 + boost when the unit is raged -- by a friendly Rage zone OR its own Evo-Barbarian
+        self-rage. Rage does not stack ("does not stack with another Rage spell, the Lumberjack's
+        dropped Rage, or the Rage effect of the Evolved Barbarians"): the strongest source wins."""
+        best = u.spec.hit_rage_boost if u.rage_self_left > 0.0 else 0.0
         for (zx, zy, zr, zt, t0, t1, boost) in self.rage_zones:
             if zt == u.team and t0 <= self.t < t1 \
                     and _dist(u.x, u.y, zx, zy) <= zr + u.spec.radius:
                 best = max(best, boost)
         return 1.0 + best
+
+    def _recoil_blast(self, u: "Unit") -> None:
+        """EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around
+        it and knocks back enemy ground troops by 1 tile" -- a defensive blast around HIMSELF on
+        each shot. Air is immune to both the damage and the shove; heavies shrug the shove off
+        via the normal knockback-immunity list. This is what makes swarm-on-top a losing answer."""
+        ks = replace(u.spec, knockback=1.0)                  # the shove exists ONLY in this blast --
+        for e in self.units:                                 # his cannonball itself never pushes
+            if e.team == u.team or e.hp <= 0 or e.spec.flying:
+                continue
+            if _dist(u.x, u.y, e.x, e.y) <= u.spec.recoil_r + e.spec.radius:
+                self._hurt(e, u.spec.recoil_dmg)
+                if self._can_knock(e, ks):
+                    self._knock(e, ks, u.x, u.y)
+        self.splash_events.append((u.x, u.y, u.spec.recoil_r, self.t))
+        del self.splash_events[:-40]
 
     def _tick_spawners(self, dt: float) -> None:
         """Produce troops from spawners (Goblin Hut, Tombstone, Barbarian Hut, Goblin Drill, Furnace,
@@ -1989,6 +2056,28 @@ class SimEngine:
         u.hp -= dmg
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
+        # T1 EVO on-swing effects: fire once per ATTACK (the swing), independent of what it lands on
+        if u.spec.recoil_dmg > 0.0:                          # Evo Royal Giant's recoil blast
+            self._recoil_blast(u)
+        if u.spec.attack_nado_s > 0.0:                       # Evo Valkyrie's whirlwind
+            nspec = replace(u.spec, pull_radius=u.spec.attack_nado_r,
+                            pull_duration=u.spec.attack_nado_s, spell_dmg=u.spec.attack_nado_dmg)
+            self.vortices.append(_Vortex(u.team, u.x, u.y, nspec, u.spec.attack_nado_s))
+        if u.spec.hit_rage_s > 0.0:                          # Evo Barbarians rage themselves
+            u.rage_self_left = u.spec.hit_rage_s
+        if u.spec.spawn_on_hit and u.spec.spawn_on_hit_cap > 0:
+            # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn,
+            # for a maximum total of 8" -- the cap counts LIVING bodies of the same evo on this team.
+            alive = sum(1 for e in self.units
+                        if e.team == u.team and e.hp > 0 and e.spec.key == u.spec.key)
+            if alive < u.spec.spawn_on_hit_cap:
+                sp = u.spec if u.spec.spawn_on_hit == u.spec.key \
+                    else build_spec(self.db, u.spec.spawn_on_hit, u.spec.level)
+                fwd = -1.0 if u.team == 0 else 1.0
+                nx, ny = _clamp_xy(u.x, u.y - fwd * (2.0 * u.spec.radius + 0.1) / _TILES_Y, sp.radius)
+                nu = Unit(sp, u.team, nx, ny, sp.hp)
+                nu.deploy_left = 0.2                         # pops out mid-fight, near-instant
+                self.units.append(nu)
         mult = self._ramp_mult(u)
         dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
@@ -1997,7 +2086,9 @@ class SimEngine:
         # applies to towers too, which is what makes an unblocked Prince so punishing.
         charged_splash = 0.0
         if u.spec.charge_dmg > 0.0 and u.spec.charge_range > 0.0 \
-                and u.charge_dist >= u.spec.charge_range:
+                and u.charge_dist >= u.spec.charge_range \
+                and not (u.spec.charge_after_shield and u.shield_left > 0.0):
+            # EVO RECRUITS: "AFTER their shield is destroyed, they gain the ability to charge"
             dmg = u.spec.charge_dmg * u.dmg_mult
             tower_dmg = dmg
             charged_splash = u.spec.charge_splash_r          # Dark Prince's charged swing blasts wider
@@ -2079,6 +2170,12 @@ class SimEngine:
             return
         self._hurt(ref, dmg)
         self._apply_status(team, spec, ref)
+        if (attacker is not None and attacker.hp > 0 and attacker.spec.kill_heal > 0.0
+                and getattr(ref, "spec", None) is not None and ref.hp <= 0):
+            # EVO PEKKA: "each kill heals the same amount ... always 12.5% of the core HP" (the
+            # post-rework flat butterfly, 470 at level 11), overhealing up to 150% of deploy hp.
+            attacker.hp = min(attacker.spec.hp * attacker.spec.overheal_frac,
+                              attacker.hp + attacker.spec.kill_heal)
         if (attacker is not None and getattr(ref, "spec", None) is not None
                 and ref.spec.reflect_dmg > 0.0 and attacker.hp > 0
                 and ref.stun_left <= 0.0                       # the Zap Pack is off while frozen/stunned
@@ -2582,15 +2679,22 @@ class SimEngine:
                 if _dist(tw.x, tw.y, s.x, s.y) <= 1.6:        # tiles: the cast point overlaps the tower
                     self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
             return
+        rad = s.r_override or s.spec.spell_radius
         for e in self.units:
-            if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= s.spec.spell_radius:
+            if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= rad:
                 self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
                 self._apply_status(s.team, s.spec, e)                 # Zap/Freeze stun; slow spells
                 self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
-            if _dist(tw.x, tw.y, s.x, s.y) <= s.spec.spell_radius:
+            if _dist(tw.x, tw.y, s.x, s.y) <= rad:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
                 self._apply_status(s.team, s.spec, tw)
+        if s.echoes > 0:
+            # EVO ZAP: "the ring grows and zaps every target inside 2 more times" -- pulses ~1 s
+            # apart at radii 2.5 -> 3.0 -> 3.5, each a full zap (damage + stun + crown chip).
+            self.spells.append(_Spell(s.team, s.x, s.y, s.spec, 1.0,
+                                      r_override=rad + (s.spec.zap_step or 0.5),
+                                      echoes=s.echoes - 1))
         sp = s.spec.spawn_spec                                # Royal Delivery drops a shielded Royal Recruit here
         for i in range(s.spec.spawn_count if sp is not None else 0):
             ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0   # tiles -> normalised

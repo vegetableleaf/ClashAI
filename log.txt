@@ -2140,6 +2140,32 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- T1 EVO MECHANICS BATCH: all eight, wiki-swept + unit-tested (user request)
+- New suite tests/test_evo_t1.py (8/8 green) pins every number below; stats flow from the
+  imported _evo rows via the overlay fix. Mechanics land on the NEXT sim restart (round 5
+  currently running was restarted by the user before this batch).
+- EVO ROYAL GIANT: every shot blasts 2.5 tiles AROUND HIMSELF, ground only, 1-tile shove
+  (air immune; heavies shrug via knockback_immune). Recoil damage NOT published anywhere
+  scrapeable -- curated 154 (= half his 307 hit) tagged [verify] for the user.
+- EVO SKELETONS: +1 evo skeleton per landed swing, hard cap 8 alive per team (wiki: "maximum
+  total of 8"). VERIFIED population 3->8, never exceeds cap.
+- EVO RECRUITS: charge arms only AFTER the shield breaks (2.5-tile run-up, 2x = 266 at L11).
+  VERIFIED 133 with shield, 266 without. Generic charge_after_shield gate on the charge block.
+- EVO BARBARIANS: self-rage on every swing: +30% move+attack for 3 s (3 s since 14/5/2024,
+  30% since the 6/10/2025 global rage nerf). Shares the no-stacking rage rule with zones.
+- EVO VALKYRIE: every swing spawns a 0.5 s vortex -- 5.5 tiles, pulls ground AND air toward
+  her, 76 damage spread over the spin (reuses the tornado _Vortex machinery via replace()).
+- EVO ZAP: growing triple pulse -- 2.5 -> 3.0 -> 3.5 tiles, ~1 s apart, each a FULL zap
+  (192 dmg / 58 crown / 0.5 stun). _Spell gained r_override + echoes; echo re-queues itself.
+- EVO PEKKA: imported hp 5640 was the OVERHEAL CAP (3760 x 1.5 exactly), not deploy hp, and
+  the damage row was missing -- re-curated 3760/842. Post-rework heal: flat 470 per troop/
+  building kill (12.5% of core hp), overheal to 150%. Hooked at the melee kill site.
+- EVO SKELETON BARREL: KB count 2 = BARRELS CARRIED, not bodies (would have fielded two
+  units) -- re-curated one body, contact damage zeroed like the base. First barrel drops at
+  75% hp mid-flight (238/2.0 blast + 7 skels), second on death, BOTH at once if it reaches
+  the tower unspent. VERIFIED 7 mid + 7 death, and 14-at-once on an untouched arrival.
+- Regression: evo suite 8/8, status effects, death splits, wincon bank, 3 random matches OK.
+
 2026-08-14 -- CRITICAL evo-stats fix + Evo Bomber bounces + Suspicious Bush rebuild (user bugs)
 - SYSTEMIC BUG (user noticed via Evo Bomber): build_spec stripped "_evo" and read only the
   BASE row + curated evolution dict -- the imported `<base>_evo` KB rows (which carry the evo's

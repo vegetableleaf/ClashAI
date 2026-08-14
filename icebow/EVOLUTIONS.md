@@ -166,13 +166,24 @@ buff_mult, multi-hit), **T2** needs a new primitive.
    step (this is the point).
 
 **Phase B — mechanics, by meta priority** (each with a unit test like today's MK/BB tests):
-1. Fidelity prerequisites from §0 (splash flags, per-card radii, E-Giant reflect, spawn sweep).
-2. T1 batch 1 (common ladder evos): Evo RG recoil, Evo Skeletons spawn-on-kill, Evo Recruits
-   charge, Evo Barbarians self-rage, Evo Valkyrie pull, Evo Zap double-hit, Evo PEKKA heal.
-3. [verify] sweep: read each pending evo's Fandom page, fill the table, re-tier.
+1. ~~Fidelity prerequisites from §0~~ **DONE 2026-08-14** (splash flags, radii, E-Giant, spawn
+   sweep, plus the critical evo-stat-overlay fix above).
+2. ~~T1 batch 1~~ **DONE 2026-08-14** — all eight, wiki-swept and unit-tested
+   (`tests/test_evo_t1.py`): **Evo RG** recoil blast (2.5 t around himself per shot, 1-tile
+   shove, air immune; recoil damage 154 curated **[verify]** — the wiki publishes the row but
+   no scrapeable value); **Evo Skeletons** +1 evo skeleton per landed swing, hard cap 8 alive;
+   **Evo Recruits** shield-gated charge (arms after 2.5 t once the shield is GONE, 2× = 266);
+   **Evo Barbarians** self-rage per swing (+30% move/attack for 3 s, no stacking with rage
+   zones); **Evo Valkyrie** whirlwind per swing (0.5 s vortex, 5.5 t, pulls ground AND air,
+   76 dmg — reuses the tornado machinery); **Evo Zap** growing triple pulse (2.5→3.0→3.5 t,
+   ~1 s apart, full damage+stun+crown each); **Evo PEKKA** flat 470 kill-heal with overheal to
+   150% (imported hp 5640 was the CAP — deploy hp re-curated 3760, damage row restored);
+   **Evo Skeleton Barrel** first barrel at 75% hp, second on death, both at once on an unspent
+   arrival (KB `count: 2` was barrels-carried, re-curated to one body).
+3. [verify] sweep for the REMAINING pending evos: read each Fandom page, fill the table, re-tier.
 4. T2 primitives, in order of reuse: piercing projectile (Musketeer+Archers), lingering ground
-   effect (Firecracker sparks + **Evo E-Barbs rage trail**), projectile continuation (Bomber),
-   decoy (Goblin Barrel).
+   effect (Firecracker sparks + **Evo E-Barbs rage trail** — the rage-zone system is most of
+   this), ~~projectile continuation (Bomber)~~ **DONE** (bouncing bombs), decoy (Goblin Barrel).
 5. Evo E-Barbs specifically (midladder-hot per the user's 10k context): javelin = ranged attack
    with tower damage + the rage-trail ground effect; DOCTRINE.md will need a counter row once
    its behavior is testable.
