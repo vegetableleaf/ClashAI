@@ -3,9 +3,9 @@
   "level": 11,
   "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
   "generated": "2026-08-14",
-  "count": 163,
+  "count": 164,
   "champions": 8,
-  "evolutions": 41
+  "evolutions": 42
  },
  "cards": {
   "archer_queen": {
@@ -753,6 +753,11 @@
     "ground"
    ],
    "deploy_time": 1.0
+  },
+  "elite_barbarians_evo": {
+   "display": "Evo Elite Barbarians",
+   "evolution": true,
+   "base": "elite_barbarians"
   },
   "elixir_collector": {
    "display": "Elixir Collector",
