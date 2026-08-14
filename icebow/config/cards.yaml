@@ -197,6 +197,48 @@ cards:
   # Contact damage zeroed like the base barrel (the imported damage row is the skeleton's swing).
   skeleton_barrel_evo: {count: 1, damage: 0, dps: 0, mid_drop_frac: 0.75, verified: true}
 
+  # ---- PHASE B EVO MECHANICS (2026-08-14 sweep 2) ----
+  # EVO MUSKETEER: "gains 3 infinite-range attacks that target the closest troop or building from
+  # anywhere in the Arena in front of her, dealing 1.8x the damage of her normal attacks" (1.5x at
+  # the Nov-2024 launch; the page's current figure is 1.8). "She cannot snipe Crown Towers", and
+  # "will only expend her sniper shots when she is not in range of her regular attacks."
+  musketeer_evo: {sniper_shots: 3, sniper_mult: 1.8, verified: true}
+  # EVO ARCHERS: "if there are units between 4 and 6 tiles ... they will shoot their Power Shot,
+  # which deals 50% bonus damage"; their reach is 6 (one further than base) via the imported row.
+  archers_evo: {power_mult: 1.5, power_min: 4.0, verified: true}
+  # EVO FIRECRACKER: "both the initial and small shrapnel will leave sparks behind, which will
+  # deal damage every 0.25 seconds and slow down enemy troops on them, similar to a Poison" --
+  # 15% slow (imported slow_pct -15; Theria's "does not slow" prose loses to the attributes
+  # table), small-spark duration 2.5 s (May 2025 balance). Tick damage is NOT published anywhere
+  # scrapeable: 12 per 0.25 s tick (48 dps in-zone, poison-class) is curated [verify].
+  firecracker_evo: {spark_tick_damage: 12, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: false}
+  # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
+  # curated from the announcement; cards-import will supersede the stats when the page lands):
+  # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at
+  # "an enemy troop or Crown Tower", and "the javelins create a glowing Rage trail" that buffs
+  # any friendly inside. Base-stat copies + evo_cycles 1 from the announcement; deltas [verify].
+  elite_barbarians_evo:
+    display: "Evo Elite Barbarians"
+    elixir: 6
+    kind: troop
+    rarity: common
+    base: elite_barbarians
+    evolution: true
+    evo_cycles: 1
+    hitpoints: 1341
+    damage: 384
+    hit_speed: 1.4
+    dps: 274
+    count: 2
+    movement: ground
+    speed_tiles: 1.5
+    range_tiles: 1.2
+    attacks: [ground]
+    deploy_time: 1.0
+    javelin_damage: 284
+    javelin_cd_s: 5.0
+    verified: false
+
   ice_wizard:
     display: "Ice Wizard"
     elixir: 3
@@ -638,6 +680,9 @@ cards:
     damage: null
     hit_speed: null
 
+  # GOBLIN BARREL (base-card bug found during Phase B): the sim resolved it as a bare 120-damage
+  # blast that spawned NOTHING -- the imported damage row is the GOBLIN's swing, and the real
+  # barrel drops 3 Goblins with ZERO impact damage. Every logbait deck in the pool was toothless.
   goblin_barrel:
     display: "Goblin Barrel"
     elixir: 3
@@ -655,8 +700,46 @@ cards:
     evolution: null
     verified: true
     hitpoints: null
-    damage: null
+    damage: 0
+    dps: 0
     hit_speed: null
+    spawns_troop: {unit: goblins, count: 3}
+
+  # EVO GOBLIN BARREL: "a second Goblin Barrel is launched alongside the first one, which lands
+  # on its mirroring tile in the other lane. Once [it] has hit the ground, it spawns three Decoy
+  # Goblins" -- dual-lane pressure, indistinguishable in the air.
+  goblin_barrel_evo: {decoy_mirror: goblin_barrel_decoy, verified: true}
+
+  goblin_barrel_decoy:             # the mirrored DECOY barrel -- a spawned spell, NOT a card
+    display: "Decoy Goblin Barrel"
+    elixir: null
+    kind: spell
+    rarity: epic
+    radius_tiles: 1.5
+    damage: 0
+    dps: 0
+    count: 3
+    spawns_troop: {unit: decoy_goblin, count: 3}
+    verified: true
+
+  decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops with
+    display: "Decoy Goblin"        # very low hitpoints and high damage" -- hp curated [verify],
+    elixir: null                   # swing = the goblin's own
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 32
+    damage: 120
+    hit_speed: 1.1
+    range_tiles: 0.5
+    speed_tiles: 2.0
+    deploy_time: 1.0
+    verified: false
 
   # ---- pre-filled win conditions + siege (2026-07-26) -----------------------------
   # STRATEGIC TAGS ONLY (win_condition/targets/flags); combat stats come from
