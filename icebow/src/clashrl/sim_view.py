@@ -232,6 +232,10 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
     for p in getattr(eng, "projectiles", []):
         c = px(p.x, p.y)
         col = _TEAM[p.team]
+        if p.label.endswith("_spark"):                    # Firecracker shrapnel: 5 per volley --
+            w = getattr(p, "width", 0.0) or 0.4           # tiny corridor circle, no label spam
+            cv2.ellipse(img, c, rad_px(w), 0, 0, 360, col, 1)
+            continue
         if p.radius > 0:
             cv2.ellipse(img, c, rad_px(p.radius), 0, 0, 360, col, 1)
         if p.pierce:                                      # keeps going past its target

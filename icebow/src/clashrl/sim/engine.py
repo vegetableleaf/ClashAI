@@ -1000,6 +1000,25 @@ class SimEngine:
         return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden and not e.ghost \
             and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
+    def _march_gap(self, u: Unit, ref) -> float:
+        """Distance in tiles to an enemy building/tower the way this unit actually TRAVELS:
+        through its own lane's bridge whenever the river is in between.
+
+        Plain euclidean had a genuine pathology the moment a princess tower died: from a deep
+        back spawn in the towerless lane the OTHER princess is straight-line nearer than the
+        King (~25 vs ~26.5 tiles), so a Lava Hound / Giant placed there marched diagonally
+        across the whole map -- where the real game sends it up its lane to the King. Selection
+        routes through the SAME bridge the movement code picks (nearest deck to u.x), so what a
+        unit targets and where it walks can never disagree. AIR flies straight once committed,
+        but its TARGET choice follows the same lane rule -- a back-lane Balloon/Lava Hound in an
+        empty lane heads for the King, not the far princess."""
+        if (u.y - _RIVER) * (ref.y - _RIVER) >= 0.0:
+            return _gap(u.x, u.y, ref)                   # same side of the river: straight line
+        bx = min(_BRIDGES, key=lambda b: abs(u.x - b))
+        leg1 = math.hypot((bx - u.x) * _TILES_X, (_RIVER - u.y) * _TILES_Y)
+        leg2 = math.hypot((ref.x - bx) * _TILES_X, (ref.y - _RIVER) * _TILES_Y)
+        return max(0.0, leg1 + leg2 - _body_radius(ref))
+
     def _acquire(self, u: Unit):
         """(kind, ref) this unit heads for.
 
@@ -1048,11 +1067,11 @@ class SimEngine:
             for e in self.units:
                 if e.team != u.team and e.hp > 0 and e.spec.kind == "building" \
                         and self._valid_foe(u, e):
-                    g = _gap(u.x, u.y, e)
+                    g = self._march_gap(u, e)                 # lane-aware: see _march_gap
                     if g < best_gap:
                         best, best_gap, best_kind = e, g, "unit"
             for tw in towers:                                 # crown towers are buildings too
-                g = _gap(u.x, u.y, tw)
+                g = self._march_gap(u, tw)
                 if g < best_gap:
                     best, best_gap, best_kind = tw, g, "tower"
             u.target = best
@@ -1127,7 +1146,7 @@ class SimEngine:
         if cur_ok:
             return (cur_kind, t)
         if towers:                                            # nothing in sight -> march at a tower
-            tw = min(towers, key=lambda t: _gap(u.x, u.y, t))
+            tw = min(towers, key=lambda t: self._march_gap(u, t))   # lane-aware, same as wincons
             u.target, u.locked = tw, False
             return ("tower", tw)
         u.target = None
@@ -2137,6 +2156,14 @@ class SimEngine:
 
     def _impact(self, p: Projectile) -> None:
         spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
+        if spark:
+            # The rocket is only the CARRIER. Firecracker's published damage is PER SHRAPNEL --
+            # "each shard deals 64, totaling 320 if all shards hit the same target" -- so the
+            # burst is the entire payload and the rocket itself hurts nothing. The original
+            # target still takes up to all 5 bolts: they spawn on its centre and pierce out
+            # through its hitbox.
+            self._spark_burst(p)
+            return
         if p.radius > 0.0:                            # AREA shot: explodes where it landed, hit or miss
             for e in self.units:
                 if e.team == p.team or e.hp <= 0:
@@ -2151,8 +2178,6 @@ class SimEngine:
                 if _gap(p.x, p.y, tw) <= p.radius:
                     self._damage_tower(tw, p.tower_dmg, p.team)
                     self._apply_status(p.team, p.spec, tw)
-            if spark:
-                self._spark_burst(p)              # ...and THEN it splits into shrapnel
             return
         ref = p.target
         if ref is None:
@@ -2217,28 +2242,44 @@ class SimEngine:
     def _spark_burst(self, p: Projectile) -> None:
         """Firecracker: the rocket hits its target, THEN splits into shrapnel.
 
-        Per the wiki: "once it hits its target, splits into 5 ADDITIONAL shrapnel, which continue to
-        travel, while piercing through enemies". Three things that matters for:
-          * the rocket deals its OWN area damage on impact (projectile radius 0.4) -- the sparks are
-            extra, not a replacement for it;
-          * the sparks PIERCE rather than explode, so each one damages everything along its path;
-          * they radiate from the LANDING POINT, which is why the card punishes a clump behind the
-            body it aimed at rather than just that body.
+        Wiki + guide mechanics ("once it hits its target, splits into 5 ADDITIONAL shrapnel,
+        which continue to travel, while piercing through enemies"; spread "between the leftmost
+        and rightmost small projectiles is 70 degrees ... between any two adjacent small
+        projectiles is 17.5 degrees"):
+          * the bolts spray FORWARD from the landing point in a 70-degree cone centred on the
+            rocket's flight heading -- not a radial ring;
+          * each bolt PIERCES, damaging everything along its corridor (published projectile
+            radius 0.4 tiles) -- her damage stat is PER BOLT, the carrier deals nothing;
+          * total projectile range is 11 tiles from the FIRING position ("she can even damage
+            the Princess towers when at the bridge, not unlike a Magic Archer"), so the bolts
+            fly whatever is LEFT of that budget past the impact point.
+        The old model sprayed 5 bolts in a full circle with no heading vector, and a piercing
+        projectile moves along dirx/diry -- unset, so they sat motionless on the impact point.
         """
         s = p.spec
         n = s.multi_hits
         if s.multi_kind != "spark" or n < 2:
             return
+        flown = _dist(p.ox, p.oy, p.x, p.y)
+        left = max(1.0, (s.proj_range or (flown + _SPARK_TILES)) - flown)
+        hx, hy = (p.x - p.ox) * _TILES_X, (p.y - p.oy) * _TILES_Y
+        d = math.hypot(hx, hy)
+        if d < 1e-9:                                   # point-blank burst: spray toward the enemy side
+            hx, hy = 0.0, (1.0 if p.team == 1 else -1.0)
+        else:
+            hx, hy = hx / d, hy / d
+        base = math.atan2(hy, hx)
         for i in range(n):
-            ang = 2.0 * math.pi * i / n
-            ex = p.x + math.cos(ang) * _SPARK_TILES / _TILES_X
-            ey = p.y + math.sin(ang) * _SPARK_TILES / _TILES_Y
-            ex, ey = _clamp_xy(ex, ey, 0.0)
+            ang = base + math.radians(-35.0 + 70.0 * i / (n - 1))
+            cx, cy = math.cos(ang), math.sin(ang)
             self.projectiles.append(Projectile(
-                label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y, tx=ex, ty=ey, target=None,
-                spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=s.proj_radius,
-                speed=max(s.proj_speed, 8.0), left=_SPARK_TILES,
-                ground_only=not s.attacks_air, pierce=True, ox=p.x, oy=p.y))
+                label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y,
+                tx=p.x + cx * left / _TILES_X, ty=p.y + cy * left / _TILES_Y, target=None,
+                spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=0.0,
+                speed=max(s.proj_speed, 8.0), left=left,
+                ground_only=not s.attacks_air, pierce=True,
+                width=s.proj_radius or 0.4,
+                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y))
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
         """Whether `spec`'s pushback moves THIS body at all.
