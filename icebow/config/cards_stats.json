@@ -2,7 +2,7 @@
  "meta": {
   "level": 11,
   "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
-  "generated": "2026-08-10",
+  "generated": "2026-08-14",
   "count": 163,
   "champions": 8,
   "evolutions": 41
@@ -556,7 +556,7 @@
    "damage": 266,
    "hit_speed": 1.3,
    "dps": 205,
-   "shield_hp": 240.0,
+   "shield_hp": 256.0,
    "charge_damage": 532.0,
    "count": 1,
    "movement": "ground",
@@ -1168,7 +1168,7 @@
     "speed_tiles": 1.5,
     "hit_speed": 1.1
    },
-   "evo_cycles": 1,
+   "evo_cycles": 2,
    "evolution": true,
    "base": "goblin_cage"
   },
@@ -2611,8 +2611,8 @@
    "kind": "troop",
    "hitpoints": 3164,
    "damage": 307,
-   "hit_speed": 1.7,
-   "dps": 181,
+   "hit_speed": 1.8,
+   "dps": 171,
    "count": 1,
    "movement": "ground",
    "speed_tiles": 0.75,
@@ -2971,7 +2971,7 @@
    "display": "Spirit Empress",
    "rarity": "legendary",
    "kind": "troop",
-   "hitpoints": 1697,
+   "hitpoints": 1798,
    "damage": 309,
    "count": 1,
    "movement": "air",
