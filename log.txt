@@ -2140,6 +2140,30 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- CRITICAL evo-stats fix + Evo Bomber bounces + Suspicious Bush rebuild (user bugs)
+- SYSTEMIC BUG (user noticed via Evo Bomber): build_spec stripped "_evo" and read only the
+  BASE row + curated evolution dict -- the imported `<base>_evo` KB rows (which carry the evo's
+  own stats top-level) were NEVER merged. ALL 41 imported evos fielded base stats in Phase A.
+  Fix: evo row overlays base before parsing (evolution/base/display/rarity excluded so curated
+  mechanic dicts -- our Knight DR / Tesla pulse -- still apply). VERIFIED bomber_evo 304->332,
+  knight_evo damage_reduction 0.60 intact.
+- EVO BOMBER (user: "coded as single-target melee" -- it was ranged splash all along, but with
+  base hp and no evo mechanic): BOUNCING BOMBS implemented -- after the initial blast the bomb
+  bounces TWICE, 2.5 tiles apart along the flight heading (5/3/2024 balance, from 3), same
+  damage/area each blast; enemies hit only ONCE per attack (16/12/2024) via a hit set shared
+  across the chain. This is the T2 "projectile continuation" primitive from EVOLUTIONS 2.
+  VERIFIED: bodies at 0/+2.5/+5 tiles each take exactly one 225 blast.
+- SUSPICIOUS BUSH (user: no goblins on defeat, should be invisible + tower-targeting + never
+  attack, stats completely off): the imported row had the BUSH GOBLINS' stats (304/256) pinned
+  on the parent. Rebuilt: bush = 81 hp (skeleton-tier), damage 0, medium speed,
+  building_targeting, ghost-invisible for LIFE (reuses Royal Ghost machinery -- refade keys on
+  fighting and it never fights; troops AND towers ignore it, splash/spells still hit),
+  kamikaze on reaching a building; on arrival OR defeat spawns 2 BUSH GOBLINS (new pseudo-card:
+  304 hp / 227 dmg / 1.4s / melee, from wiki + import spawn_unit_stats). VERIFIED: enemy knight
+  never targets it, it never targets troops, crosses the board untouched, breaks at the tower
+  into exactly 2 goblins, zero tower damage from the bush itself.
+- Regression: all 3 suites OK, 3 random matches clean. Lands on next sim restart (still pending).
+
 2026-08-14 -- Death mechanics: Lumberjack rage, Phoenix egg, Skeleton Barrel dive, rascal
              hitboxes (user requests)
 - LUMBERJACK: drops a Rage zone where he dies -- radius 3 tiles, 4.5 s, +30% move AND attack

@@ -230,6 +230,11 @@ class CardSpec:
     charge_dmg: float = 0.0
     charge_range: float = 0.0
     charge_splash_r: float = 0.0  # a charged strike can also WIDEN the blast (Dark Prince 1.25 -> 2.2)
+    # EVO BOMBER: "the bomb will bounce twice, 2.5 tiles apart in a straight line, dealing the same
+    # damage ... as the initial hit"; since 16/12/2024 "enemies hit by Evolved Bomber's attack would
+    # only take damage once" -- the three blasts share one hit set.
+    bounce_n: int = 0
+    bounce_tiles: float = 0.0
     # MULTI-HIT. `hits_per_attack` is ONE number covering four different mechanics, so the KIND is
     # curated per card and each is modelled (and labelled for sim-view) separately:
     #   chain     -- the bolt arcs to further targets      (electro_dragon 3, electro_wizard 2)
@@ -330,6 +335,17 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     base = key[:-4] if key.endswith("_evo") else key
     is_evo = key.endswith("_evo")
     c = db.get(base) or {}
+    if is_evo:
+        # The import writes each evolution as its OWN `<base>_evo` row whose top-level fields ARE
+        # the evo's stats (hp/damage/cycles/...). This function only ever read the BASE row plus a
+        # curated `evolution:` dict -- so every imported evo silently fielded BASE stats (Evo
+        # Bomber 304 hp instead of 332, and so on for all 41). Merge the evo row over the base;
+        # `evolution` itself is excluded so a curated mechanics dict (our Knight/Tesla) still
+        # applies through the overlay below.
+        ev_row = db.get(key) or {}
+        if ev_row:
+            c = {**c, **{k: v for k, v in ev_row.items()
+                         if v is not None and k not in ("evolution", "base", "display", "rarity")}}
     flags = set(db.flags(base))
     kind = c.get("kind", "troop")
     elixir = int(c.get("elixir") or db.elixir(base) or 4)
@@ -502,6 +518,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         charge_dmg=float(c.get("charge_damage") or 0.0) * sc,
         charge_range=float(c.get("charge_range") or 0.0),
         charge_splash_r=float(c.get("charge_splash_radius_tiles") or 0.0),
+        bounce_n=int(c.get("bounces") or 0),
+        bounce_tiles=float(c.get("bounce_tiles") or 0.0),
         multi_kind=str((db.get(base) or {}).get("multi") or ""),
         multi_hits=int(c.get("hits_per_attack") or 0),
         damage_reduction=dmg_reduc,
@@ -728,6 +746,7 @@ class Projectile:
     ox: float = 0.0            # where it was fired from -- the BOOMERANG flies back to here
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
+    bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -2101,7 +2120,8 @@ class SimEngine:
             ground_only=not spec.attacks_air,
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
-            pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y))
+            pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
+            bounces_left=spec.bounce_n))
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -2243,19 +2263,48 @@ class SimEngine:
             self._spark_burst(p)
             return
         if p.radius > 0.0:                            # AREA shot: explodes where it landed, hit or miss
+            chain = p.bounces_left > 0 or bool(p.hit)  # a BOUNCE chain damages each enemy once per attack
             for e in self.units:
                 if e.team == p.team or e.hp <= 0:
                     continue
                 if p.ground_only and e.spec.flying:
                     continue
                 if _dist(p.x, p.y, e.x, e.y) <= p.radius + e.spec.radius:
+                    if chain:
+                        if id(e) in p.hit:
+                            continue
+                        p.hit.add(id(e))
                     self._hurt(e, p.dmg)
                     self._apply_status(p.team, p.spec, e)
                     self._knock(e, p.spec, p.x, p.y)      # area shot: radial from where it landed
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
+                    if chain:
+                        if id(tw) in p.hit:
+                            continue
+                        p.hit.add(id(tw))
                     self._damage_tower(tw, p.tower_dmg, p.team)
                     self._apply_status(p.team, p.spec, tw)
+            if p.bounces_left > 0:
+                # EVO BOMBER: the bomb BOUNCES on past the blast, 2.5 tiles along its flight
+                # heading, and explodes again with the same damage and area -- twice. From the
+                # bridge that is what lets it reach the crown tower. The continuation shares this
+                # projectile's `hit` set (once-per-attack rule, 16/12/2024).
+                hx, hy = (p.x - p.ox) * _TILES_X, (p.y - p.oy) * _TILES_Y
+                d = math.hypot(hx, hy)
+                if d < 1e-9:
+                    hx, hy = 0.0, (1.0 if p.team == 1 else -1.0)
+                else:
+                    hx, hy = hx / d, hy / d
+                step = p.spec.bounce_tiles or 2.5
+                nx, ny = _clamp_xy(p.x + hx * step / _TILES_X, p.y + hy * step / _TILES_Y, 0.0)
+                nb = Projectile(
+                    label=f"{p.spec.base}_bounce", team=p.team, x=p.x, y=p.y, tx=nx, ty=ny,
+                    target=None, spec=p.spec, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=p.radius,
+                    speed=p.speed, left=step * 1.5, ground_only=p.ground_only,
+                    ox=p.x, oy=p.y, bounces_left=p.bounces_left - 1)
+                nb.hit = p.hit
+                self.projectiles.append(nb)
             return
         ref = p.target
         if ref is None:

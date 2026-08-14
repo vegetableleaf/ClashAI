@@ -82,6 +82,17 @@ kamikaze-dives on reaching a building (death blast 145/2.0 + 7 skeletons — no 
 rascal girls' collision radius 0.45 vs the boy's 0.75 (`component_collision_tiles`). The evo
 barrel's second mid-flight drop stays a Phase-B/T1 row.
 
+**CRITICAL FIX (2026-08-14): imported `_evo` stat rows were never read.** `build_spec` stripped
+the `_evo` suffix and read only the BASE row plus a curated `evolution:` dict — so every
+Phase-A T0 evo silently fielded **base stats** (Evo Bomber 304 hp instead of 332, all 41
+affected). The evo row now overlays the base before parsing; curated mechanic dicts (our
+Knight/Tesla) still apply on top. Phase A's "T0 stat-evos work end-to-end" is only true from
+this fix onward. Also landed: **Evo Bomber bouncing bombs** (T2 projectile-continuation
+primitive: 2 bounces, 2.5 tiles apart along the heading, same blast, once-per-attack dedup per
+16/12/2024) and **Suspicious Bush** rebuilt (81 hp ghost — invisible for life, building-only,
+never attacks, breaks into 2 Bush Goblins 304 hp / 227 dmg on arrival or death; the imported
+row had pinned the goblins' stats on the parent).
+
 ---
 
 ## 1. The 42 evolutions

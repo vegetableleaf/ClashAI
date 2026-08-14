@@ -159,6 +159,13 @@ cards:
     damage: null
     hit_speed: null
 
+  # EVO BOMBER: still the same ranged splash bomber (stats overlay from the imported bomber_evo
+  # row, 332 hp), plus BOUNCING BOMBS: "After the initial throw, the bomb will bounce twice,
+  # 2.5 tiles apart in a straight line, dealing the same damage as the initial hit" (2.5 since
+  # 5/3/2024, from 3). Since 16/12/2024 enemies hit by the attack take damage only ONCE -- the
+  # three blasts share a hit set. The bounces are how it chips the crown tower from the bridge.
+  bomber_evo: {bounces: 2, bounce_tiles: 2.5, verified: true}
+
   ice_wizard:
     display: "Ice Wizard"
     elixir: 3
@@ -1108,7 +1115,46 @@ cards:
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
   rune_giant: {range: melee, verified: false}
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
-  suspicious_bush: {range: melee, verified: false}
+  # SUSPICIOUS BUSH. The imported row was the BUSH GOBLINS' stats pinned on the parent -- the bush
+  # itself has 81 hp (skeleton-tier), never attacks, and "spawns invisible as it moves towards the
+  # nearest building ... invisible to troops, like the Royal Ghost" (towers ignore ghosts too;
+  # splash and spells still connect). "Once the Suspicious Bush either reaches a building or is
+  # defeated, it will spawn two Bush Goblins" -- kamikaze arrival, same shape as Skeleton Barrel.
+  # It stays invisible for life because the ghost refade rule keys on fighting, and it never fights.
+  suspicious_bush:
+    display: "Suspicious Bush"
+    targets: buildings_only
+    flags: [building_targeting, kamikaze]
+    invisibility_time_s: 1.8
+    hitpoints: 81
+    damage: 0
+    dps: 0
+    hit_speed: 1.4
+    range: melee
+    range_tiles: 0.5
+    speed_tiles: 1.0
+    spawns: {unit: bush_goblin, on_death: 2}
+    verified: true
+
+  bush_goblin:                     # the two goblins the bush breaks into -- a spawned body, NOT a
+    display: "Bush Goblin"         # deployable card. Wiki: 304 hp / 227 damage at level 11,
+    elixir: null                   # single-target melee ground troops; cadence + reach + speed
+    kind: troop                    # from the import's spawn_unit_stats row (1.4s / 0.8t / 1.0t-s).
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 304
+    damage: 227
+    hit_speed: 1.4
+    range_tiles: 0.8
+    speed_tiles: 1.0
+    deploy_time: 0.2
+    evolution: null
+    verified: true
   # -- short --
   electro_spirit: {range: short, multi: chain, hits_per_attack: 9, verified: false}
   # HUNTER: 10 pellets of 84 (published as "84 x10"), each an individual hit, scattered across a
