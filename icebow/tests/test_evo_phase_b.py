@@ -66,7 +66,8 @@ class EvoPhaseBTests(unittest.TestCase):
     def test_firecracker_spark_zones(self):
         eng = _make_engine()
         fc = build_spec(eng.db, "firecracker_evo", 11)
-        self.assertGreater(fc.spark_tick, 0)
+        self.assertAlmostEqual(fc.spark_dps_big, 192.0, delta=1)     # carrier's LARGE spark (user-verified)
+        self.assertAlmostEqual(fc.spark_dps_small, 60.0, delta=1)    # shrapnel's SMALL sparks
         self.assertEqual(fc.spark_dur, 2.5)
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(0, build_spec(eng.db, "x_bow", 11), 0.45, 0.55))

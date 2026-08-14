@@ -168,9 +168,9 @@ cards:
 
   # ---- T1 EVO MECHANICS (2026-08-14 verify sweep; stats flow from the imported _evo rows) ----
   # EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around it and
-  # knocks back enemy ground troops by 1 tile"; air immune to both. The wiki publishes a Recoil
-  # Damage row but no scrapeable value -- 154 (= half his 307 hit) is curated [verify].
-  royal_giant_evo: {recoil_damage: 154, recoil_radius_tiles: 2.5, verified: false}
+  # knocks back enemy ground troops by 1 tile"; air immune to both. Recoil damage 81 at level 11
+  # (USER-VERIFIED 2026-08-14 -- the wiki publishes the row but no scrapeable value).
+  royal_giant_evo: {recoil_damage: 81, recoil_radius_tiles: 2.5, verified: true}
   # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn, for a
   # maximum total of 8" (cap = living evo skeletons on the team).
   skeletons_evo: {spawn_on_hit: skeletons_evo, spawn_on_hit_cap: 8, verified: true}
@@ -211,7 +211,9 @@ cards:
   # 15% slow (imported slow_pct -15; Theria's "does not slow" prose loses to the attributes
   # table), small-spark duration 2.5 s (May 2025 balance). Tick damage is NOT published anywhere
   # scrapeable: 12 per 0.25 s tick (48 dps in-zone, poison-class) is curated [verify].
-  firecracker_evo: {spark_tick_damage: 12, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: false}
+  # USER-VERIFIED 2026-08-14: LARGE spark (carrier trail) 192 dps, SMALL sparks (shrapnel
+  # trails) 60 dps, at level 11.
+  firecracker_evo: {spark_dps_large: 192, spark_dps_small: 60, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: true}
   # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
   # curated from the announcement; cards-import will supersede the stats when the page lands):
   # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at
@@ -722,9 +724,9 @@ cards:
     spawns_troop: {unit: decoy_goblin, count: 3}
     verified: true
 
-  decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops with
-    display: "Decoy Goblin"        # very low hitpoints and high damage" -- hp curated [verify],
-    elixir: null                   # swing = the goblin's own
+  decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops" --
+    display: "Decoy Goblin"        # USER-VERIFIED 2026-08-14: 81 hp / 89 damage at level 11,
+    elixir: null                   # goblin hit speed (1.1 s)
     kind: troop
     rarity: epic
     attacks: [ground]
@@ -733,13 +735,13 @@ cards:
     splash: false
     count: 1
     win_condition: false
-    hitpoints: 32
-    damage: 120
+    hitpoints: 81
+    damage: 89
     hit_speed: 1.1
     range_tiles: 0.5
     speed_tiles: 2.0
     deploy_time: 1.0
-    verified: false
+    verified: true
 
   # ---- pre-filled win conditions + siege (2026-07-26) -----------------------------
   # STRATEGIC TAGS ONLY (win_condition/targets/flags); combat stats come from

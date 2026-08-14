@@ -236,9 +236,10 @@ class CardSpec:
                                  # She can never snipe a crown tower.
     power_mult: float = 0.0      # EVO ARCHERS: POWER SHOT -- swings at gap >= power_min tiles
     power_min: float = 0.0       # (4.0) deal power_mult x damage (1.5); their reach is 6.
-    spark_tick: float = 0.0      # EVO FC: shots leave LINGERING SPARK ZONES along their paths --
-    spark_dur: float = 0.0       # damage every 0.25 s + 15% move slow, zone lives spark_dur (2.5 s)
-    spark_r: float = 0.0
+    spark_dps_big: float = 0.0   # EVO FC: shots leave LINGERING SPARK ZONES along their paths --
+    spark_dps_small: float = 0.0 # the CARRIER trails LARGE sparks (192 dps), the shrapnel SMALL
+    spark_dur: float = 0.0       # ones (60 dps); tick every 0.25 s + 15% move slow, zone lives
+    spark_r: float = 0.0         # spark_dur (2.5 s). Values USER-VERIFIED at level 11.
     javelin_dmg: float = 0.0     # EVO E-BARBS: rage-tipped spear at the current target (troop OR
     javelin_cd: float = 0.0      # crown tower) every javelin_cd seconds, leaving a rage TRAIL
     decoy_mirror: str = ""       # EVO GOBLIN BARREL: also throw this spell at the MIRRORED tile
@@ -549,7 +550,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         sniper_mult=float(c.get("sniper_mult") or 0.0),
         power_mult=float(c.get("power_mult") or 0.0),
         power_min=float(c.get("power_min") or 0.0),
-        spark_tick=float(c.get("spark_tick_damage") or 0.0) * sc,
+        spark_dps_big=float(c.get("spark_dps_large") or 0.0) * sc,
+        spark_dps_small=float(c.get("spark_dps_small") or 0.0) * sc,
         spark_dur=float(c.get("spark_duration_s") or 0.0),
         spark_r=float(c.get("spark_radius_tiles") or 0.0),
         javelin_dmg=float(c.get("javelin_damage") or 0.0) * sc,
@@ -828,6 +830,8 @@ class Projectile:
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
     bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
     trail_next: float = 0.75   # EVO FC: tiles of flight until the next lingering spark zone drops
+    trail_dmg: float = 0.0     # EVO FC: per-0.25s tick damage of the zones THIS shot drops
+                               # (carrier = large spark 192 dps; shrapnel = small 60 dps; 0 = none)
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -2347,7 +2351,8 @@ class SimEngine:
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
-            bounces_left=spec.bounce_n))
+            bounces_left=spec.bounce_n,
+            trail_dmg=spec.spark_dps_big * 0.25))    # Evo FC carrier drops LARGE sparks
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -2440,12 +2445,12 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            if p.spec.spark_tick > 0.0:              # Evo FC: "both the initial and small shrapnel
+            if p.trail_dmg > 0.0:                    # Evo FC: "both the initial and small shrapnel
                 p.trail_next -= step                 # will leave sparks behind" along their flight
                 if p.trail_next <= 0.0:
                     p.trail_next = 1.25
                     self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
-                                             self.t + p.spec.spark_dur, p.spec.spark_tick, self.t])
+                                             self.t + p.spec.spark_dur, p.trail_dmg, self.t])
                     del self.spark_zones[:-60]
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
@@ -2639,7 +2644,8 @@ class SimEngine:
                 speed=max(s.proj_speed, 8.0), left=left,
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
-                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y))
+                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
+                trail_dmg=s.spark_dps_small * 0.25))  # Evo FC shrapnel drops SMALL sparks
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
         """Whether `spec`'s pushback moves THIS body at all.

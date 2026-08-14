@@ -20,7 +20,7 @@ class EvoT1Tests(unittest.TestCase):
     def test_royal_giant_recoil(self):
         eng = _make_engine()
         rg = build_spec(eng.db, "royal_giant_evo", 11)
-        self.assertAlmostEqual(rg.recoil_dmg, 154.0, delta=1)
+        self.assertAlmostEqual(rg.recoil_dmg, 81.0, delta=1)   # USER-VERIFIED at level 11
         self.assertEqual(rg.recoil_r, 2.5)
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(1, rg, 0.50, 0.55))
@@ -35,9 +35,9 @@ class EvoT1Tests(unittest.TestCase):
         for _ in range(160):                       # 8 s: he walks at the tower and fires
             pk, pa = kn.hp, air.hp
             eng.advance(0.05)
-            if pk - kn.hp > 100:
+            if pk - kn.hp > 60:                    # recoil blast is 81 (user-verified)
                 drops_kn += 1
-            if pa - air.hp > 100:
+            if pa - air.hp > 60:
                 drops_air += 1
         self.assertGreaterEqual(drops_kn, 1, "ground knight must eat recoil blasts")
         self.assertEqual(drops_air, 0, "air is immune to the recoil")
