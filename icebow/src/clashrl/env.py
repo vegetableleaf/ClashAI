@@ -407,7 +407,8 @@ class LiveMatchEnv:
         if not self.use_canvas:
             return img
         from . import detect_obs
-        ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1])
+        ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1],
+                                           warp=self.actions.warp)
         stack = self._canvas_stack.push(detect_obs.channels_to_uint8(ch), time.time())
         return np.concatenate([img, stack], axis=2)
 

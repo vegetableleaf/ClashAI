@@ -16,6 +16,79 @@ to the visible grass corners for the tightest alignment.
 from __future__ import annotations
 
 
+class BoardWarp:
+    """Tower-anchored PIECEWISE-LINEAR mapping between BOARD-normalized coordinates (the sim
+    engine's space: my princess row = 1 - 6.5/32 = 0.797, my king = 0.906) and FRAME-normalized
+    screen coordinates (the capture: my princess measured at ~0.615, king ~0.72).
+
+    WHY (measured 2026-08-14): the screen renders the arena with PERSPECTIVE -- the measured
+    frame-per-board slope is ~0.87 near the enemy side, ~0.69 mid-board and ~0.96 near our king
+    -- so the single-affine `arena_box` cannot be right anywhere except where it was eyeballed.
+    A sim-trained placement 'at my princess' tapped ~3-4 tiles DEEP everywhere on our half, and
+    the detector canvas painted units the same 3-4 tiles off vs the sim's board-true training
+    canvas. Placements collapsed toward the clamped edges live while the sim spread was healthy.
+
+    Anchors come from the config's own measured tower positions (env.my_towers/enemy_towers) +
+    the sim board's tile geometry, so no new calibration is needed; segments interpolate
+    linearly between anchors and extrapolate with the edge slopes (clamped to [0, 1]). If the
+    anchor lists are missing, both directions degrade to the plain arena-box affine."""
+
+    def __init__(self, cfg, bx0, by0, bx1, by1):
+        self.bx0, self.by0, self.bx1, self.by1 = bx0, by0, bx1, by1
+        mt = cfg.get("env", "my_towers", default=None)
+        et = cfg.get("env", "enemy_towers", default=None)
+        b = dict(cfg.get("sim", "board", default=None) or {})
+        tx, ty = float(b.get("tiles_x", 18.0)), float(b.get("tiles_y", 32.0))
+        pt = list(b.get("princess_tile", [3.5, 6.5]))
+        kt = list(b.get("king_tile", [9.0, 3.0]))
+        self.ok = bool(mt and et and len(mt) >= 3 and len(et) >= 3)
+        if not self.ok:
+            return
+        # y anchors: (board_y, frame_y), ordered top (enemy) -> bottom (mine)
+        ek_b, ep_b = kt[1] / ty, pt[1] / ty                    # enemy king 0.094, princess 0.203
+        mp_b, mk_b = 1.0 - pt[1] / ty, 1.0 - kt[1] / ty        # mine 0.797, 0.906
+        ep_f = (float(et[0][1]) + float(et[1][1])) / 2.0
+        mp_f = (float(mt[0][1]) + float(mt[1][1])) / 2.0
+        self.ya = [(ek_b, float(et[2][1])), (ep_b, ep_f), (mp_b, mp_f), (mk_b, float(mt[2][1]))]
+        # x anchors: princess columns + the king column (average of both sides' measurements)
+        lx_b, rx_b = pt[0] / tx, 1.0 - pt[0] / tx              # 0.194 / 0.806
+        lx_f = (float(mt[0][0]) + float(et[0][0])) / 2.0
+        rx_f = (float(mt[1][0]) + float(et[1][0])) / 2.0
+        kx_f = (float(mt[2][0]) + float(et[2][0])) / 2.0
+        self.xa = [(lx_b, lx_f), (0.5, kx_f), (rx_b, rx_f)]
+
+    @staticmethod
+    def _pw(v, anchors):
+        """Piecewise-linear through `anchors` [(a, b), ...] sorted by a; edge-slope extrapolation."""
+        if v <= anchors[0][0]:
+            (a0, b0), (a1, b1) = anchors[0], anchors[1]
+        elif v >= anchors[-1][0]:
+            (a0, b0), (a1, b1) = anchors[-2], anchors[-1]
+        else:
+            for i in range(len(anchors) - 1):
+                if anchors[i][0] <= v <= anchors[i + 1][0]:
+                    (a0, b0), (a1, b1) = anchors[i], anchors[i + 1]
+                    break
+        t = (v - a0) / max(1e-9, a1 - a0)
+        return b0 + t * (b1 - b0)
+
+    def board_to_frame(self, nx: float, ny: float):
+        if not self.ok:
+            return (self.bx0 + nx * (self.bx1 - self.bx0),
+                    self.by0 + ny * (self.by1 - self.by0))
+        return (min(max(self._pw(nx, self.xa), 0.0), 1.0),
+                min(max(self._pw(ny, self.ya), 0.0), 1.0))
+
+    def frame_to_board(self, fx: float, fy: float):
+        if not self.ok:
+            return ((fx - self.bx0) / max(1e-9, self.bx1 - self.bx0),
+                    (fy - self.by0) / max(1e-9, self.by1 - self.by0))
+        inv_x = [(f, b) for b, f in self.xa]
+        inv_y = [(f, b) for b, f in self.ya]
+        return (min(max(self._pw(fx, inv_x), 0.0), 1.0),
+                min(max(self._pw(fy, inv_y), 0.0), 1.0))
+
+
 class ActionSpace:
     def __init__(self, cfg):
         self.slots = cfg.get("hand", "slots", default=[])
@@ -36,12 +109,14 @@ class ActionSpace:
         self.princess_half = cfg.get("action", "princess_avoid_half", default=[0.06, 0.05])
         self.n_slots = len(self.slots)
         self.n_cells = int(self.gw) * int(self.gh)
+        # Tower-anchored perspective warp (see BoardWarp). In the SIM the tower overrides are
+        # board-true, so all anchors are identity points and the warp is exactly the identity.
+        self.warp = BoardWarp(cfg, self.bx0, self.by0, self.bx1, self.by1)
 
     def cell_center(self, gx: int, gy: int):
         """Grid cell -> normalized (nx, ny) tap at the cell's centre, mapped over the arena box
         (so columns/rows 0..gw-1 / 0..gh-1 span the playfield, not the whole frame)."""
-        nx = self.bx0 + (gx + 0.5) / self.gw * (self.bx1 - self.bx0)
-        ny = self.by0 + (gy + 0.5) / self.gh * (self.by1 - self.by0)
+        nx, ny = self.warp.board_to_frame((gx + 0.5) / self.gw, (gy + 0.5) / self.gh)
         nx = min(max(nx, 0.02), 0.98)
         ny = min(max(ny, self.a_top), self.a_bot)   # safety: keep placements off the card tray
         if self.chat_box:                            # never tap the emote/chat icon (it stalls the bot)

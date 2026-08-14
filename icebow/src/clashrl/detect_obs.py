@@ -152,13 +152,17 @@ def _channel_of(d: Detection, db) -> int:
     return 1 if p.flying else 0                      # enemy air vs ground
 
 
-def detection_channels(dets: List[Detection], db, oh: int, ow: int) -> np.ndarray:
+def detection_channels(dets: List[Detection], db, oh: int, ow: int, warp=None) -> np.ndarray:
     """Render detections into an [oh, ow, N_CHANNELS] float32 map: each unit a filled ellipse of its
     confidence in its channel; overlaps take the max."""
     ch = np.zeros((oh, ow, N_CHANNELS), np.float32)
     for d in dets:
         k = _channel_of(d, db)
-        cx, cy = int(d.cx * ow), int(d.gy * oh)   # flyers rasterized at their SHADOW (true ground tile)
+        if warp is not None:                       # live: frame coords -> BOARD coords, so the
+            bx, by = warp.frame_to_board(d.cx, d.gy)   # canvas matches the sim's board-true one
+        else:
+            bx, by = d.cx, d.gy
+        cx, cy = int(bx * ow), int(by * oh)   # flyers rasterized at their SHADOW (true ground tile)
         rx, ry = max(1, int(d.w * ow / 2)), max(1, int(d.h * oh / 2))
         layer = np.zeros((oh, ow), np.float32)
         cv2.ellipse(layer, (cx, cy), (rx, ry), 0, 0, 360, float(min(1.0, d.conf)), -1)

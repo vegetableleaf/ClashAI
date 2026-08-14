@@ -54,10 +54,14 @@ def _board_action_space(cfg) -> ActionSpace:
     pt = list(b.get("princess_tile", [3.5, 6.5]))
     kt = list(b.get("king_tile", [9.0, 3.0]))
     py, ky = 1.0 - pt[1] / ty, 1.0 - kt[1] / ty                 # YOUR side (bottom)
+    epy, eky = pt[1] / ty, kt[1] / ty                           # THEIR side (top), board-true
     return ActionSpace(_BoardCfg(cfg, {
         ("action", "arena_box"): [0.0, 0.0, 1.0, 1.0],
         ("action", "deploy_top"): float(b.get("deploy_top", 0.5)),   # the river
         ("env", "my_towers"): [[pt[0] / tx, py], [(tx - pt[0]) / tx, py], [kt[0] / tx, ky]],
+        # board-true enemy anchors too, so BoardWarp's anchor pairs are identity points in the
+        # sim and the warp exactly reduces to the identity mapping there
+        ("env", "enemy_towers"): [[pt[0] / tx, epy], [(tx - pt[0]) / tx, epy], [kt[0] / tx, eky]],
     }))
 
 

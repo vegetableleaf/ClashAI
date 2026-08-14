@@ -2140,6 +2140,30 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- SIM->LIVE PLACEMENT WARP fixed (tower-anchored perspective mapping)
+- LIVE RUN ANALYZED (live_20260814_192738.jsonl, 1 match): 39/47 plays in GRID COLUMN 0 (the
+  far-left edge, cells 198/306/324), the_log x22 -- the reported live edge-collapse,
+  quantified. (Phi trade term itself behaved: 118 fires, net -0.30, both signs.)
+- ROOT CAUSE: the screen renders the arena with PERSPECTIVE. Measured frame-per-board slope
+  from the config's own tower anchors: ~0.87 enemy side / 0.69 mid-board / 0.96 near our king.
+  The single-affine action.arena_box [0.03,0.10,0.97,0.86] therefore tapped ~3-4 tiles DEEP
+  across our whole half (princess-row intent 0.797 -> frame 0.706 vs the true 0.615), and
+  detect_obs painted detections onto the policy canvas with the same error vs the sim's
+  board-true training canvas -- warped perception + warped action = live edge attractor while
+  the sim spread stayed healthy.
+- FIX: actions.BoardWarp -- PIECEWISE-LINEAR mapping through the measured tower anchors
+  (env.my_towers/enemy_towers + sim.board geometry; no new calibration needed), both
+  directions: board_to_frame for cell_center taps, frame_to_board for the detector canvas
+  (detect_obs.detection_channels gains warp=; live env passes actions.warp). The SIM overrides
+  its anchors board-true (incl. NEW enemy_towers override), so the sim warp is exactly the
+  identity -- sim behavior untouched, suites prove it.
+- MEASURED CORRECTION at doctrine spots: bridge bow / tesla / IW / princess-row taps move
+  dy = +0.071..+0.088 frame-y shallower (3-4 tiles), x onto the true columns.
+- NO RETRAIN NEEDED: sim training always was board-true; live now lands where sim intent
+  meant. Residuals noted: the RGB obs channel is not perspective-remapped (canvas channels
+  are the load-bearing spatial signal); threat watch-lines stay frame-calibrated on purpose
+  (they were tuned live in frame space). tests/test_board_warp.py 5/5 + all suites green.
+
 2026-08-14 -- X-BOW REWARD LEDGER REPAIR implemented (user-directed; tests/test_xbow_rewards.py)
 - Implements the audited design (findings earlier today): the bow's value is DELAYED and
   INSTRUMENTAL, but the ledger paid geometry once (+w) and billed the death (-0.6 Phi) while
