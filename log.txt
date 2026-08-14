@@ -2140,6 +2140,31 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- LIVE elixir_trade REWORK: the do-nothing exploit is real; Phi implemented
+             (user diagnosis + ELIXIR_TRADE_DESIGN.md, implemented as its own gated change)
+- USER DIAGNOSIS CONFIRMED, and worse: _trade_reward = clip(enemy-mass killed) - spend/norm.
+  Playing ALWAYS billed the spend immediately; idling billed nothing -- and the mass half paid
+  the agent for AMBIENT kills, so our own towers shooting an incoming push CREDITED the policy
+  for standing still. leak fired only at exactly-full elixir; threat_miss_idle needs a
+  recognised+answerable threat, which a back-build often is not yet. Passivity was the
+  reward-optimal answer to a building push.
+- FIX (mirrors the sim's 2026-08-12 rework): Phi = [(E_mine + V_mine) - (E_theirs +
+  V_theirs)] / value_norm; reward = w x clip(dPhi, +/-trade_cap). E_mine from the bar read,
+  E_theirs from the OpponentElixirEstimator (obs mem[5]), V_* from team-tagged detector tracks
+  valued at KB elixir (one track = one card). A deploy is a TRANSFER (zero at play time);
+  opponent deploys net zero; a CAPPED bar vs their regen is a falling potential (the leak
+  gradient); a push that lands settles as damage. Telescopes -> no farming either direction.
+- Validity gate: dPhi only between healthy perception frames (phi_max_age_s 0.6); blind frames
+  carry Phi forward. Per-match re-anchor in reset(). No detector -> term silent (was: the old
+  shape; diagnostic-only runs lose nothing that was sane).
+- DELETED with it (subsumed): _perception_blind spend waiver, _forced_expensive_spend waiver,
+  and the SPELL-IMPACT FRAME SAMPLER (blocking wait up to ~3.6 s -- the worst cadence outlier;
+  config spell_effect_reward marked INACTIVE). Rocket aim/lead assists kept (control, not
+  reward). rw_stats name stays elixir_trade; weights/caps unchanged (sim units transfer).
+- Sim side untouched. ACCEPTANCE (next live session, >=5 matches, per the design doc): trade
+  fires both signs; no longer the most-negative term; quiet no-play segments net ~0
+  (telescope); plays/match not down, mean elixir not up; [cadence] shows the spell phase gone.
+
 2026-08-14 -- PHASE B: special shots, spark trails, decoy barrel, javelins + GOBLIN BARREL
              base-card fix (user request; tests/test_evo_phase_b.py 6/6)
 - GOBLIN BARREL (found during the sweep): the sim resolved it as a bare 120-damage blast that

@@ -646,7 +646,10 @@ env:
   # its SIGNED per-step change (clipped +/-defeat_cap) drives the elixir-trade term (potential-based ->
   # idling can't farm it). A spell's effect frame is grabbed at its predicted impact (rocket travel grows
   # ~linearly with distance from rocket_origin at rocket_travel_rate + rocket_base_time; tornado ~ tornado_time).
-  spell_effect_reward: true      # gate: sample frames around a spell's impact for the post-cast state read
+  spell_effect_reward: true      # INACTIVE (2026-08-14): the spell-impact sampler was deleted with the
+                                 # trade-potential rework (ELIXIR_TRADE_DESIGN.md 5) -- consequences
+                                 # settle from the ordinary frame stream; the blocking wait is gone.
+  phi_max_age_s: 0.6             # trade potential validity gate: max perception age for a Phi read
   arena_region: [0.03, 0.10, 0.97, 0.86]
   defeat_cap: 0.15               # 'full push' enemy-mass scale / per-step clip for the trade term
   spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)

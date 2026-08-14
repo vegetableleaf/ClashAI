@@ -138,7 +138,8 @@ class LiveMatchEnv:
         # cards played only to REACT to a threat (defenders + Royal Delivery / Tornado); on a QUIET board they're premature.
         self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids | self.tornado_ids
         # --- perception geometry the reward + spell-impact timing still use ---
-        self.spell_effect = bool(cfg.get("env", "spell_effect_reward", default=True))   # gate: sample frames at spell impact
+        # (spell_effect_reward is RETIRED: the spell-impact frame sampler was deleted with the
+        # trade-potential rework -- consequences settle from the ordinary frame stream.)
         self.spell_eval_time = float(cfg.get("env", "spell_eval_time", default=2.4))
         self.spell_aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
         # rocket / spell IMPACT timing -- predict when to grab the effect frame (see _impact_time)
@@ -226,7 +227,12 @@ class LiveMatchEnv:
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
         self.card_elixir = [(db.elixir(k) or db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
-                            for k in self.vision.deck_keys]   # per-card elixir cost (the trade-term spend)
+                            for k in self.vision.deck_keys]   # per-card elixir cost (telemetry + waiver logic)
+        self._db = db                                     # KB costs for the trade-potential board read
+        self._phi_prev = None                             # trade potential carried between valid frames
+        self._opp_est = 0.0                               # last enemy-elixir estimate (normalized [0,1])
+        self._last_dets_age = 999.0                       # perception age of _last_dets_all (validity gate)
+        self.phi_max_age = float(cfg.get("env", "phi_max_age_s", default=0.6))
         self._detector = None
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
@@ -372,6 +378,7 @@ class LiveMatchEnv:
         # Slot 5 carries the current opponent-elixir estimate (normalized), inferred from symmetric
         # elixir accounting + detected enemy plays; keeps model width unchanged.
         mem[5] = self._opp_elixir.update(self.elixir, dets, now)
+        self._opp_est = float(mem[5])                    # the trade potential reads the same estimate
         self._replay_rec.update(self._last_dets_all)     # overlay replay: newest boxes for the clip
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
@@ -415,6 +422,7 @@ class LiveMatchEnv:
             dets, age = self._ploop.snapshot()
             if age <= 2.0:                                # healthy loop -> use the snapshot
                 self._last_dets_all = dets
+                self._last_dets_age = float(age)          # trade-potential validity gate reads this
                 return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
         try:
             dets = self._detector.detect(frame, conf=self.detector_conf)
@@ -424,6 +432,7 @@ class LiveMatchEnv:
         self._team_tracker.set_towers(self.tower.mine_alive, self.tower.enemy_alive)
         self._team_tracker.tag(dets, time.time())     # evidence-fused team (plays/motion/bars/pockets)
         self._last_dets_all = dets                    # kept for the interaction block (both teams)
+        self._last_dets_age = 0.0                     # synchronous pass: fresh by construction
         return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
 
     # -- episode lifecycle --------------------------------------------
@@ -485,6 +494,7 @@ class LiveMatchEnv:
                 self._prev_my_hp = float(sum(self.tower_hp.my_hp))
                 self._prev_chip_prog = 0.0        # convex enemy-tower chip progress (offense)
                 self._prev_chip_prog_def = 0.0    # convex own-tower chip progress (defense)
+                self._phi_prev = None             # trade potential re-anchors per match
                 return self._last_obs
             self._nav.handle(frame, state)   # robust menu nav: located buttons + MATCH_END escalation + popup watchdog + logging
 
@@ -702,49 +712,59 @@ class LiveMatchEnv:
                 return self.w_wincon
         return 0.0
 
-    def _perception_blind(self, cur_mass: float) -> bool:
-        """True when the coarse mass read says the board is ACTIVE but the detector recognised
-        nothing -- a frame whose threat the identity block cannot justify judging. The sim never has
-        such frames (ground truth), so this is live's one principled divergence: a defensive play on
-        a blind frame has its trade-term SPEND waived, because billing it taught the policy that
-        defending is wrong exactly when perception fails (diagnosis C4: defending was punished 6:1
-        while idling scored 0). The mass-delta half of the trade term still applies every step, so
-        the telescoping anti-farm property is untouched. Without a detector wired, live keeps the
-        sim's plain spend semantics."""
+    def _trade_potential_live(self, cur_elixir: float):
+        """Two-sided resource potential (ELIXIR_TRADE_DESIGN.md, mirrors the sim's reworked term):
+
+            Phi = [ (E_mine + V_mine) - (E_theirs + V_theirs) ] / value_norm
+
+        E from the elixir bar (mine: pips read; theirs: the mirrored-spend estimator already
+        feeding obs slot mem[5]); V from the team-tagged detector tracks, each valued at its base
+        card's KB elixir (one track = one card's worth -- the honest resolution the detector has).
+        Returns None on a frame perception cannot justify (validity gate): the caller carries Phi
+        forward unchanged, so the telescope survives blind frames.
+
+        Why this replaces the old `killed-mass minus spend` shape: the spend half was a flat tax
+        on ACTING (measured -22.6/match live, the largest term), and the mass half paid the agent
+        for ambient kills it did not cause -- our own towers shooting an incoming push credited
+        the policy for standing still. Under Phi a deploy is a TRANSFER (bar -> board, net zero at
+        play time), the opponent's deploys also net zero, idling at a CAPPED bar while the
+        opponent regens is itself a falling potential (the leak gradient the user asked for), and
+        letting a push snowball settles as damage when it lands. This SUBSUMES the interim
+        forced-spend and blind-frame waivers, both deleted with it."""
         if self._detector is None:
-            return False
-        tid = self._threat_id
-        unlit = tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5
-        return unlit and cur_mass >= self.quiet_frac
+            return None                                    # no board read -> the term stays silent
+        dets = self._last_dets_all
+        if dets is None or self._last_dets_age > self.phi_max_age:
+            return None
+        v_mine = v_theirs = 0.0
+        for d in dets:
+            team = getattr(d, "team", None)
+            if team not in ("mine", "enemy"):
+                continue
+            base = str(getattr(d, "base", "") or "")
+            if base.endswith("_evo"):
+                base = base[:-4]
+            cost = float(self._db.elixir(base) or 0.0)
+            if team == "mine":
+                v_mine += cost
+            else:
+                v_theirs += cost
+        e_theirs = float(self._opp_est) * 10.0             # estimator is normalized [0, 1]
+        return ((float(cur_elixir) + v_mine) - (e_theirs + v_theirs)) / self.value_norm
 
-    def _trade_reward(self, mass_delta: float, spent: float) -> float:
-        """(2) ELIXIR-TRADE: potential-based enemy-mass change (clipped to a 'full push' fraction so it
-        telescopes -> idling can't farm it) MINUS the elixir committed this step. Trading up -> +,
-        overspending / whiffing -> -."""
-        killed = float(np.clip(mass_delta / self.defeat_cap, -1.0, 1.0))
-        return (killed - spent / self.value_norm) * self.w_elixir_trade
-
-    def _forced_expensive_spend(self, card_id: int, cy: float) -> bool:
-        """A defensive spend is FORCED (waive its elixir-trade penalty) when a threat is recognised, the
-        play is on your defensive half, and NO CHEAPER card in hand or the NEXT slot could counter it --
-        e.g. rocket the hogs/balloon, or centre X-Bow to pull a wincon, when Tesla is too deep in the cycle.
-        Overspending when a cheaper answer WAS immediately available is NOT waived."""
-        if cy < 0.5:
-            return False                                  # offensive placements pay their spend normally
-        tid = self._threat_id
-        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            return False
-        if not (0 <= card_id < self.n_cards):
-            return False
-        my_elix = self.card_elixir[card_id]
-        avail = [c for c in self.hand_ids if 0 <= c < self.n_cards]
-        if 0 <= self.next_id < self.n_cards:
-            avail.append(self.next_id)                    # the NEXT (preview) card counts as immediately available
-        for c in avail:
-            if (c != card_id and self.card_elixir[c] < my_elix
-                    and card_threat.counters(self._deck_profiles[c], tid)):
-                return False                             # a cheaper counter was in hand / next -> not forced
-        return True
+    def _trade_reward(self, cur_elixir: float) -> float:
+        """(2) ELIXIR-TRADE: clipped per-step delta of the two-sided potential. Telescopes --
+        neither idling nor spamming can farm it -- and settles consequences (a killed push, a
+        landed hit, a leaked bar) when they appear in perception."""
+        phi = self._trade_potential_live(cur_elixir)
+        if phi is None:
+            return 0.0                                     # carried forward; next valid frame settles
+        if self._phi_prev is None:
+            self._phi_prev = phi
+            return 0.0
+        d = float(np.clip(phi - self._phi_prev, -self.trade_cap, self.trade_cap))
+        self._phi_prev = phi
+        return d * self.w_elixir_trade
 
     def _chip_progress(self, hp_list, full: float) -> float:
         """Convex chip 'progress' over a side's princess towers: sum of (damage_fraction ** chip_power) so
@@ -819,32 +839,15 @@ class LiveMatchEnv:
             self._cad["loop"] += now - self._last_step_t
             self._cad_n += 1
         self._last_step_t = now
-        eval_spell = bool(play) and card_id in self.spell_ids and self.spell_effect
-        is_rocket = card_id in self.rocket_ids
-        is_rd = card_id in self.royal_delivery_ids
         t0 = time.time()
         self._execute(action)
         self._cad["act"] += time.time() - t0
-        spell_samples = []
-        if eval_spell:
-            # Predict the impact time (rocket travel ~ distance; tornado ~immediate) and
-            # sample a short window around it, so troops are caught in the radius whatever
-            # the target distance is. NB this stalls the loop up to ~spell_eval_time + 0.6s --
-            # the single biggest cadence outlier; it shows up under `spell` in the [cadence] line.
-            t0 = time.time()
-            gx, gy = cell % self.gw, cell // self.gw
-            cx, cy = self.actions.cell_center(gx, gy)
-            it = self._impact_time(cx, cy, is_rocket, is_rd)
-            prev = 0.0
-            for off in (max(0.4, it - 0.7), it, it + 0.6):
-                time.sleep(max(0.0, off - prev))
-                prev = off
-                f = self._grab()
-                if f is not None:
-                    spell_samples.append(f)
-            frame = spell_samples[-1] if spell_samples else self._grab()
-            self._cad["spell"] += time.time() - t0
-        else:
+        # The spell-impact frame sampler is DELETED (ELIXIR_TRADE_DESIGN.md 5): under the
+        # potential-based trade term a spell's consequence settles from the ordinary frame
+        # stream (dead enemy tracks disappear over the next frames), and the sampler's blocking
+        # wait -- up to ~spell_eval_time + 0.6 s -- was the single biggest cadence outlier this
+        # deck had. The rocket aim/lead assists stay: they are control, not reward.
+        if True:
             # PACED WAIT, anchored to the PREVIOUS OBSERVATION. The old form slept the full
             # act_period and THEN paid the whole pipeline (grab + vision + OCR + detector + tap), so
             # the served cadence was act_period + pipeline -- measured ~2.2 s/decision against the
@@ -919,19 +922,17 @@ class LiveMatchEnv:
             # --- CORRECTNESS score (mirrors the sim; from live perception) ---
             gx, gy = cell % self.gw, cell // self.gw
             cx, cy = self.actions.cell_center(gx, gy)
-            spent = float(self.card_elixir[card_id]) if (play and 0 <= card_id < self.n_cards) else 0.0
-            if play and self._forced_expensive_spend(card_id, cy):
-                spent = 0.0            # forced defensive counter (no cheaper answer available) -> waive its spend
-            elif play and cy >= 0.5 and self._perception_blind(cur_mass):
-                spent = 0.0            # perception gate: defence on a frame the detector could not justify is not billed
             tr = wc = tmi = lk = 0.0
             if play:
                 tr = self.rw_stats.add("threat_response", self._bonus(self._threat_response_live(card_id, cx, cy)))   # (1) counter the assessed threat
                 wc = self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec_live(card_id, cx, cy)))            # (3) win-condition executed right
             else:
                 tmi = self.rw_stats.add("threat_miss_idle", self._threat_miss_idle_live(cur_mass))                     # (1) ignored an ANSWERABLE threat
-            # (2) ELIXIR-TRADE: potential-based enemy-mass change (telescopes, anti-farm) minus the elixir spent.
-            trd = self.rw_stats.add("elixir_trade", self._trade_reward(self._prev_mass - cur_mass, spent))
+            # (2) ELIXIR-TRADE: clipped delta of the two-sided resource potential (bar + board,
+            # both sides). A deploy is a TRANSFER (zero at play time); consequences settle when
+            # perception sees them. The old spend-tax + ambient-mass shape paid the policy for
+            # idling under a building push -- ELIXIR_TRADE_DESIGN.md, implemented 2026-08-14.
+            trd = self.rw_stats.add("elixir_trade", self._trade_reward(cur_elixir))
             if not play and cur_elixir >= self.full_elixir:
                 lk = self.rw_stats.add("leak", self.w_leak)                                                            # (5) leaking at capacity
             reward += tr + wc + tmi + trd + lk
@@ -951,7 +952,6 @@ class LiveMatchEnv:
                                      else str(card_id)),
                                cell=int(cell), x=round(float(cx), 3), y=round(float(cy), 3),
                                raw_cell=int(raw_cell), cost=round(cost, 1),
-                               waived=int(cost > 0.0 and spent == 0.0),   # forced-counter or blind-frame spend waiver
                                tr=round(float(tr), 3), wc=round(float(wc), 3))
                 else:
                     rec["tmi"] = round(float(tmi), 2)
