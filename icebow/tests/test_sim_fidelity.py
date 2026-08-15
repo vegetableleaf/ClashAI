@@ -452,3 +452,37 @@ class RocketRefereeTests(unittest.TestCase):
         env._threat_credits = 0
         r = env._threat_response(env.deck_keys.index("knight"), tx, 0.60)
         self.assertLess(r, 0.0, "a ground-only troop against a flying threat stays a misread")
+
+
+class RocketValueTests(unittest.TestCase):
+    """The pull toward good rockets, end-to-end (real env.step -> flight -> deaths ->
+    ledger): meaty clumps pay big, swarms pay little, nothing punishes the attempt."""
+
+    def _scene(self, victims, card_key, seed):
+        env = _quiet(seed=seed)
+        _silence_towers(env)
+        slot = env.slot_of[env.deck_keys.index(card_key)]
+        env.cycle.remove(slot)
+        env.cycle.insert(0, slot)                        # force the card into hand
+        for vk, vx, vy in victims:
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, vk, 11), vx, vy)
+        env.step((False, 0, 0))
+        env.eng.elixir[0] = 10.0
+        env.step((True, env.deck_keys.index(card_key), 13 * 18 + 9))
+        _tick(env, 5)
+        t = env.rw_stats.run.get("elixir_trade")
+        m = env.rw_stats.run.get("threat_response")
+        return (t.total if t else 0.0), (m.total if m else 0.0)
+
+    def test_rocket_on_meaty_clump_pays_big(self):
+        tr, miss = self._scene([("three_musketeers", 0.50, 0.57)], "rocket", 21)
+        self.assertGreater(tr, 0.7, "9 elixir of musketeers under one rocket = a ton of value")
+        self.assertGreaterEqual(miss, 0.0, "and the referee never bills the attempt")
+
+    def test_rocket_on_swarm_pays_little(self):
+        tr_big, _ = self._scene([("three_musketeers", 0.50, 0.57)], "rocket", 22)
+        tr_swarm, _ = self._scene([("skeleton_army", 0.50, 0.57)], "rocket", 23)
+        self.assertLess(tr_swarm, tr_big * 0.4,
+                        "skarmy under a rocket is a fraction of the clump payout — "
+                        "the log/ice-wiz opportunity cost does the rest")

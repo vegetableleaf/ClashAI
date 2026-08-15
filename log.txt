@@ -2760,3 +2760,11 @@ Notes / caveats
   Medium (60). Curated targets: buildings_only; verified she ignores a knight parked on her
   (0 damage, tower lock). Per the user: not restart-worthy alone (3.8% of decks) -- lands
   with the next natural restart. 128/128.
+
+2026-08-15 — Verified: the trade ledger PULLS toward good rockets (user check)
+- End-to-end through env.step (flight -> deaths -> spell-kill attribution): rocket on
+  golem+wiz+witch +1.00 (cap), on three musketeers +0.90, log on skarmy +0.16, rocket on
+  skarmy +0.08. threat_response 0.00 and spell_waste 0.00 across all four -- the exemption
+  holds through the full path. Meaty clumps pay ~11x the swarm rocket; the log wins swarms
+  on coverage before even counting the 2-vs-6 tempo cost. Gradient pinned in
+  RocketValueTests. 130/130.
