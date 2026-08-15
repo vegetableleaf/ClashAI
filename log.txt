@@ -2768,3 +2768,18 @@ Notes / caveats
   holds through the full path. Meaty clumps pay ~11x the swarm rocket; the log wins swarms
   on coverage before even counting the 2-vs-6 tempo cost. Gradient pinned in
   RocketValueTests. 130/130.
+
+2026-08-15 — "X-Bow collapse" diagnosis: stale eval default + a real 100% bow tax (fixed)
+- User's policy-stats (cells 23, x_bow 0) came from data/policy_sim_best.pt — an Aug 7
+  FOSSIL: the bare policy-stats default reached back through old filenames. Default now
+  resolves policy_sim_ppo.pt first. The CURRENT checkpoint is actually improving on every
+  axis: cells 19->44, top-share 0.47->0.29, rocket 0->21 plays (referee fix visible same
+  day), full-ladder winrate 5.0->8.3%, placements shifted forward (mean_row 19->16).
+  Difficulty 0.5-0.7 = the damped controller sitting at its predicted equilibrium.
+- REAL finding underneath: wincon_exec taxed 32/32 bow plays at -1.00 (20-match spy probe).
+  Two causes: xbow_defense_back 0.66 ended the centre band a row above the canonical
+  defensive bow spot (row 17, y~0.73), and OFF-CENTRE bows at defensive depth fell off the
+  `central` cliff to frac 0 = full misplace. Fix: band back 0.66->0.74, and a lane-bow
+  softening (xbow_lane_frac 0.35, band+0.10 only — corner dumps still miss in full).
+  Verdicts after: +0.42 x24, +1.05 x10, 0.00 x2. The bow tax that was slowly deleting the
+  win condition is gone. 130/130. Restart-worthy: the running trainer still taxes bows.

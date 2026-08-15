@@ -48,8 +48,15 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
         if not ck_path.is_absolute():
             ck_path = cfg.path(ckpt)
     else:
-        best = data_dir / "policy_sim_best.pt"
-        ck_path = best if best.exists() else data_dir / "policy_sim.pt"
+        # DEFAULT TO THE LIVE PPO LINEAGE (2026-08-15). The old default reached back to
+        # data/policy_sim_best.pt -- an Aug 7 fossil from a previous architecture era -- and a
+        # bare `policy-stats` run silently evaluated THAT: the user saw "cell spread 23,
+        # x_bow 0" and nearly diagnosed a healthy run as collapsed.
+        for name in ("policy_sim_ppo.pt", "policy_sim_ppo_best.pt",
+                     "policy_sim_best.pt", "policy_sim.pt"):
+            ck_path = data_dir / name
+            if ck_path.exists():
+                break
     if not ck_path.exists():
         print(f"[policy-stats] checkpoint not found: {ck_path}")
         return

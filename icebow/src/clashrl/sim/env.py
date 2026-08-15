@@ -256,6 +256,7 @@ class SimMatchEnv:
         self.xbow_front = float(cfg.get("sim", "xbow_defense_front", default=0.56))     # normalised y band
         self.xbow_back = float(cfg.get("sim", "xbow_defense_back", default=0.66))
         self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
+        self.xbow_lane_frac = float(cfg.get("rewards", "xbow_lane_frac", default=0.35))
         self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
@@ -709,6 +710,16 @@ class SimMatchEnv:
             in_band = central and self.xbow_front <= ny <= self.xbow_back
             behind = central and ny > self.xbow_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
+            if frac == 0.0 and self.xbow_front <= ny <= self.xbow_back + 0.10:
+                # LANE-BOW SOFTENING (2026-08-15): an off-centre bow at defensive depth is a
+                # SUBOPTIMAL spot, not a thrown-away card -- but it fell off the `central`
+                # cliff to frac 0 and ate the full w_wincon_mis. MEASURED: 32/32 bow plays
+                # (rows 15-18, mostly lane-side) scored -1.00 in a 20-match probe -- a 100%
+                # tax on the deck's win condition that xbow_lock/chip_linear (+0.07/match)
+                # could never repay. Same doctrine as xbow_deep_frac: soft fraction, so the
+                # gradient still points at the centre band without deleting the card. True
+                # dumps (enemy half unreachable, back corners) still miss in full.
+                frac = self.xbow_lane_frac
             # PUNISH OVERRIDE, checked BEFORE the phase gate. An opponent who has just overcommitted
             # cannot answer a siege before it starts firing, and that is worth breaking defensive
             # posture for -- "immediately punish" is conditional on the ELIXIR RACE, not on the matchup
