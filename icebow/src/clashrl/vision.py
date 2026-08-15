@@ -349,22 +349,44 @@ class Vision:
         elixir-trade needs identifying the cards they play). Coordinates/HSV come
         from the `elixir` config, reused from the trol calibration.
         """
+        return int(self.read_elixir_frac(frame) + 1e-9)
+
+    def read_elixir_frac(self, frame: np.ndarray) -> float:
+        """Elixir as a FRACTIONAL amount (0.0-10.0) from the bar's FILL LENGTH.
+
+        The old reader sampled a 7x7 patch at each of ten hand-eyeballed `pip_xs` and counted
+        the pink ones. MEASURED against the bar's real geometry (2026-08-15, from the 19:11
+        timelapse): the configured centres sit ~0.015 left of the true ones with irregular
+        spacing (0.057-0.075 against a true pitch of 0.0687), and the elixir DROPLET ICON and
+        its white count text sit over the bar's left end -- so the first pip read 0.00 coverage
+        while pips 1-5 read 0.67 and the whole bar came back ONE LOW. Under-reading never
+        refuses a placement, but it hides the full bar: a leaking 10 reads 9, `leak` never
+        fires, and the policy is taught to hoard (user's observation).
+
+        The fill's RIGHT EDGE is immune to both the icon and the digits (they are left of the
+        bar), so measure that instead: `elixir = (right_edge - bar_x0) / pip_pitch`. Validated
+        on 446 frames -- the right edge quantises to 0.2797 + n*0.0687 for n = 1..10 with a
+        consistent -0.09 pip bias (hence the +0.1 nudge), and a mid-fill pip lands between
+        integers, which is exactly the resolution the old counter could not express.
+        """
         work = self._work(frame)
         h, w = work.shape[:2]
         hsv = cv2.cvtColor(work, cv2.COLOR_BGR2HSV)
         lo = np.array(self.cfg.get("elixir", "filled_hsv_lower", default=[140, 60, 120]))
         hi = np.array(self.cfg.get("elixir", "filled_hsv_upper", default=[175, 255, 255]))
-        bar_y = float(self.cfg.get("elixir", "bar_y", default=0.965))
-        xs = self.cfg.get("elixir", "pip_xs", default=[])
+        bar_y = float(self.cfg.get("elixir", "bar_y", default=0.971))
+        x0 = float(self.cfg.get("elixir", "bar_x0", default=0.2797))
+        x1 = float(self.cfg.get("elixir", "bar_x1", default=0.9672))
         py = int(bar_y * h)
-        count = 0
-        for nx in xs:
-            px = int(nx * w)
-            patch = hsv[max(0, py - 3):py + 4, max(0, px - 3):px + 4]
-            if patch.size == 0:
-                continue
-            if float(cv2.inRange(patch, lo, hi).mean()) > 60.0:
-                count += 1
-        return min(count, 10)
+        band = hsv[max(0, py - 3):py + 4, int(x0 * w):int(x1 * w)]
+        if band.size == 0:
+            return 0.0
+        cols = cv2.inRange(band, lo, hi).mean(axis=0) / 255.0
+        lit = np.nonzero(cols > 0.4)[0]
+        if lit.size == 0:
+            return 0.0                                  # nothing pink INSIDE the bar = empty
+        pitch = (x1 - x0) / 10.0
+        frac = ((lit.max() + 1) / w) / pitch + 0.1      # +0.1: measured right-edge bias
+        return float(min(10.0, max(0.0, frac)))
 
 

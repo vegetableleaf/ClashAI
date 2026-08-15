@@ -2963,3 +2963,23 @@ Notes / caveats
   0.08 -> 0.15 s. Cost: 310 ms per play against a 1.0 s act period. New knobs play.move_dwell
   / play.tap_hold. Telemetry: the play log now records `elixir_pre` alongside the post read,
   so the next run's failure rate is a one-line check instead of an inference.
+
+2026-08-15 — Elixir bar read one LOW: the full-bar / leak signal was invisible (user insight)
+- User: "under-reading won't cause a refused placement, but it could mask the full elixir bar
+  signal -- it would read 9 when the bar is full, so it saves elixir longer than it should."
+  Correct, and measured: with the old reader the value NEVER reached 10, so the `leak` penalty
+  (fires at cur_elixir >= full_elixir) could not fire at all and the policy was taught that
+  hoarding is free.
+- Root cause, measured off 446 frames of the 19:11 timelapse: the ten `pip_xs` were eyeballed
+  -- ~0.015 left of the true centres with irregular spacing (0.057-0.075 vs a true pitch of
+  0.0687) -- and the elixir DROPLET ICON plus its white count text sit over the bar's left
+  end, so pip 0 measured 0.00 coverage while pips 1-5 read 0.67. Net: one low, always.
+- FIX: read the fill's LENGTH, not per-pip samples. The right edge of the pink run is immune
+  to the icon and the digits (both left of the bar), so
+  elixir = (right_edge - bar_x0) / pitch. Geometry measured, not guessed: the right edge
+  quantises to 0.2797 + n*0.0687 for n = 1..10 (bar_x0 0.2797, bar_x1 0.9672, +0.1 pip bias).
+  read_elixir_frac() also exposes the FRACTIONAL value, which the pip counter could not.
+- VALIDATED on the full match: readings now span 0.0-10.0 (never reached 10 before), regen
+  rises have a +1.00 median, drops land on exactly 1/2/3/4/5/6 = the deck's card costs, and
+  the bar is FULL in 21% of samples -- that is the leak signal that was previously invisible.
+  148/148 (1 skipped).

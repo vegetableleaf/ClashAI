@@ -54,6 +54,13 @@ hand:
 # affordability, not a full elixir trade. Counts filled (magenta) pips.
 elixir:
   bar_y: 0.971
+  # BAR GEOMETRY (2026-08-15, measured off 446 frames of timelapse_20260815_191158): the fill's
+  # right edge quantises to bar_x0 + n*(bar_x1-bar_x0)/10 for n=1..10. read_elixir measures that
+  # LENGTH instead of sampling pip centres -- the droplet icon and its white count text sit over
+  # the bar's left end and made the old per-pip counter read one LOW (a full bar read 9, so the
+  # leak penalty never fired and the policy learned to hoard). pip_xs is kept only for reference.
+  bar_x0: 0.2797
+  bar_x1: 0.9672
   pip_xs: [0.312, 0.369, 0.440, 0.506, 0.577, 0.635, 0.708, 0.775, 0.850, 0.917]
   filled_hsv_lower: [140, 60, 120]
   filled_hsv_upper: [175, 255, 255]
