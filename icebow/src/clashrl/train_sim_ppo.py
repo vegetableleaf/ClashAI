@@ -60,7 +60,7 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float):
 
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
                   init: str | None = None, device: str | None = None,
-                  reset_gate: bool = False) -> None:
+                  reset_gate: bool = False, workers: int = 0) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -77,8 +77,25 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     from .sim.opponents import SelfPlayOpponent, make_opponent
 
     K = max(1, int(envs if envs is not None else cfg.get("sim", "envs", default=8)))
-    pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
-    e0 = pool[0]
+    workers = int(workers if workers else cfg.get("sim", "rollout_workers", default=0))
+    remote = workers > 1
+    if remote:
+        # SUBPROCESS ENGINE SHARDS (2026-08-14): the pure-Python engine is one core per process,
+        # so rollouts run in `workers` child processes while this process keeps the batched
+        # action selection + PPO updates. The parent pins its own torch threads low -- the old
+        # 16-thread pool burned ~7 cores of churn on these tiny tensors (measured).
+        import torch as _t
+        _t.set_num_threads(max(2, 4))
+        from .sim.remote_pool import RemotePool
+        rpool = RemotePool(K, workers, seed=seed)
+        pool = []                                   # rollout envs live in the workers
+        e0 = SimMatchEnv(cfg, seed=seed + 10_000)   # local metadata/mask twin (never stepped)
+        print(f"[train-sim-ppo] ROLLOUT WORKERS: {len(rpool.procs)} processes x "
+              f"~{K // max(1, len(rpool.procs))} envs (K={K}); learner stays in-parent")
+    else:
+        rpool = None
+        pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
+        e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
     in_ch = int(e0.obs_shape[2])      # 3 (RGB) or 3 + the semantic canvas (observation.use_detector_canvas)
     gw, gh = e0.gw, e0.gh
@@ -349,7 +366,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         # Route part of the floor through the DOCTRINE prior when a rule matches
                         # (see sim/doctrine.py). Masked to deployable, normalised, and blended so
                         # the floor keeps a uniform residue -- the scaffold guides, never dictates.
-                        dc = _doctrine_cells(pool[i], ci)
+                        dc = rpool.doctrine(i, ci) if remote else _doctrine_cells(pool[i], ci)
                         if dc:
                             prior = torch.zeros_like(p_floor)
                             for c_j, w_j in dc:
@@ -441,9 +458,19 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             return SelfPlayOpponent(cfg, env, pick, env.rng)
         return make_opponent(cfg, env.db, env.rng, env.meta_pool, adaptive=True)
 
-    if sp_prob > 0:
+    _curr = {"d": float(cfg.get("sim", "curriculum_start", default=0.3))}
+    full_wr = float(cfg.get("sim", "curriculum_full_wr", default=35.0))
+
+    def opponent_provider_cur(env):
+        # CURRICULUM: below-ladder tier while the winrate is on the floor (0/40 measured --
+        # no wins means no win signal at all). Difficulty follows the recent training winrate.
+        if env.rng.random() > _curr["d"]:
+            return make_opponent(cfg, env.db, env.rng, env.meta_pool, level=11, adaptive=False)
+        return opponent_provider(env)
+
+    if sp_prob > 0 or True:
         for e in pool:
-            e.opponent_provider = opponent_provider
+            e.opponent_provider = opponent_provider_cur
         if (resume and ppo_path.exists()) or init:
             sd = snapshot()
             if keep_best:
@@ -570,9 +597,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         return tot_pl / nb, tot_vl / nb, tot_ent / nb, tot_clip / nb
 
     # -- main loop: collect a horizon of experience across K envs, then one PPO update -------------
-    cobs = [e.reset() for e in pool]
-    chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
-    celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
+    if remote:
+        cobs = rpool.reset_all()
+        chand = [p["hand"] for p in rpool.last]; cnxt = [p["nxt"] for p in rpool.last]
+        celx = [p["elx"] for p in rpool.last]; cthr = [p["thr"] for p in rpool.last]
+    else:
+        cobs = [e.reset() for e in pool]
+        chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
+        celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
     ep_r = [0.0] * K
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
@@ -604,19 +636,35 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["thr"].append([t.copy() for t in cthr])
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
                 rew_row, done_row = [], []
-                for i, env in enumerate(pool):
-                    nobs, reward, done, info = env.step(acts[i])
+                if remote:
+                    step_out = rpool.step_all(acts)
+                else:
+                    step_out = None
+                for i in range(K):
+                    if remote:
+                        pay = step_out[i]
+                        nobs, reward, done = pay["obs"], pay["rew"], pay["done"]
+                        info = {"outcome": pay["outcome"], "pfsp": pay["pfsp"]}
+                        env = None
+                    else:
+                        env = pool[i]
+                        nobs, reward, done, info = env.step(acts[i])
                     rew_row.append(float(reward)); done_row.append(1.0 if done else 0.0)
                     ep_r[i] += reward
                     if done:
                         oc = info.get("outcome")
-                        opp = getattr(env, "opponent", None)   # PFSP attribution (before reset)
-                        if isinstance(opp, SelfPlayOpponent) and hasattr(opp.net, "_pfsp"):
-                            opp.net._pfsp.append(1.0 if oc == "win" else (0.5 if oc == "draw" else 0.0))
+                        if remote:
+                            pj = info.get("pfsp")
+                            if pj is not None and 0 <= pj < len(snaps) and hasattr(snaps[pj], "append"):
+                                pass                     # sd-list league: PFSP history kept parent-side below
+                        else:
+                            opp = getattr(env, "opponent", None)   # PFSP attribution (before reset)
+                            if isinstance(opp, SelfPlayOpponent) and hasattr(opp.net, "_pfsp"):
+                                opp.net._pfsp.append(1.0 if oc == "win" else (0.5 if oc == "draw" else 0.0))
                         wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
                         win_hist.append(1 if oc == "win" else 0); rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0
-                        cobs[i] = env.reset()
+                        cobs[i] = nobs if remote else env.reset()   # workers auto-reset
                         if done_n % log_every == 0:
                             wr = 100.0 * sum(win_hist) / max(1, len(win_hist))
                             ar = sum(rew_hist) / max(1, len(rew_hist))
@@ -630,6 +678,16 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             save()
                         if sp_prob > 0 and done_n % sp_snap_every == 0:
                             snapshot()
+                            if remote:
+                                _snaps = list(league)
+                                if keep_best and _best_snap.get("net") is not None:
+                                    _snaps.append(_best_snap["net"])
+                                try:
+                                    w_l = (list(pfsp_weights(_snaps, pfsp_power))
+                                           if (pfsp_on and len(_snaps) > 1) else [])
+                                except Exception:
+                                    w_l = []
+                                rpool.set_league(_snaps, w_l, sp_prob_now())
                         if eval_every > 0 and done_n % eval_every == 0:
                             wr = evaluate(fair=False)
                             if wr is not None:
@@ -654,12 +712,24 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                           f"saved {best_path.name}", flush=True)
                     else:
                         cobs[i] = nobs
-                    chand[i], cnxt[i] = env.hand_vec.copy(), env.next_vec.copy()
-                    celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
+                    if remote:
+                        chand[i], cnxt[i] = pay["hand"], pay["nxt"]
+                        celx[i], cthr[i] = pay["elx"], pay["thr"]
+                    else:
+                        chand[i], cnxt[i] = env.hand_vec.copy(), env.next_vec.copy()
+                        celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
                 roll["rew"].append(np.asarray(rew_row, np.float32))
                 roll["done"].append(np.asarray(done_row, np.float32))
             if not roll["rew"]:
                 break
+            if len(win_hist) >= 20:
+                d_new = min(1.0, max(0.15, (100.0 * sum(win_hist) / len(win_hist)) / full_wr))
+                if abs(d_new - _curr["d"]) > 0.05:
+                    _curr["d"] = d_new
+                    if remote:
+                        rpool.set_difficulty(d_new)
+                    print(f"[train-sim-ppo] curriculum difficulty -> {d_new:.2f} "
+                          f"(recent winrate {100.0 * sum(win_hist) / len(win_hist):.0f}%)")
             with torch.no_grad():                              # bootstrap values for the final states
                 net.eval()
                 _, _, _, bv = net(torch.stack([to_obs_t(o) for o in cobs]),

@@ -2140,6 +2140,33 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- SIM STALL DIAGNOSED (2% WR flat @2500) + THROUGHPUT REBUILD (user directive:
+             use the whole machine)
+- EVAL @2500 (40 matches): 0/40 wins; tornado + x_bow re-suppressed to 0; wait_forced 70%;
+  leak -63.6 (318 fires); spell_waste -54 (rocket spam 21% usage); sim elixir_trade 4927
+  fires of +-churn. THREE compounding traps:
+  1. BANK TRAP: wincon_bank held elixir for a wincon the policy will not play -> forced
+     waits + leak + rocket funnel. FIXED: wincon_bank_floor -> 0 (the x-bow LEDGER carries
+     the incentive now; the bank was a crutch for the old reward).
+  2. DIFFICULTY CLIFF: opponents rolled levels 13-16 (+33..61% stats) + adaptive + full evo
+     pool -> zero wins -> no win signal. FIXED: winrate-adaptive CURRICULUM -- difficulty
+     scalar starts 0.3 (70% easy tier: same meta decks at OUR level 11, no adaptive),
+     follows recent training WR, full ladder at curriculum_full_wr 35%. Smoke: 12% WR in
+     the first 25 matches vs 0/40 before.
+  3. TRADE NOISE: sim potential fired ~123x/match; sim_trade_deadband 0.05 added (flicker
+     is not a trade).
+- THROUGHPUT: new sim/remote_pool.py -- ROLLOUT WORKER PROCESSES (engine shards). The pure-
+  Python engine measured ~6.5k matches/h/core while 15 cores idled and torch's 16-thread
+  pool burned ~7 cores of churn on tiny tensors. Parent keeps batched action selection +
+  PPO updates (torch threads pinned); workers step engines, auto-reset, ship obs/vectors +
+  DOCTRINE CELLS per hand + self-play attribution; league snapshots + difficulty broadcast
+  on change. --workers N / sim.rollout_workers (default 12). Verified end-to-end (worker
+  AND classic paths both train + save; rail guard fired on resume and caught the running
+  trainer's cell-head drift at raw 26-29 -- defense-in-depth working).
+- RESTART: stop the old trainer, repair --lift 0,4, then:
+    run.py train-sim-ppo --resume --matches 200000 --envs 96 --workers 12 --size 432 --device cpu
+  Expected: 10-20x match throughput; wins from the curriculum tier immediately.
+
 2026-08-14 -- LIVE TRADE v3.1: RESPONSE TIMING (user insight: quick answers pay, late ones
              don't -- a tesla 10 s after the hog locked is not a defense)
 - Each enemy track now records WHEN it crossed onto our half (timestamp rides the

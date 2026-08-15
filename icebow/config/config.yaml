@@ -398,6 +398,7 @@ action:
 # the counter it needs next), NOT for winning. The block below is one coherent score of a
 # few bounded sub-terms; the sim (ground truth) and the live env (perception) share it.
 rewards:
+  sim_trade_deadband: 0.05 # sim trade potential: |dPhi| under this is hp-tick flicker, not a trade
   # ============================================================================================
   # CORRECTNESS-FIRST reward. Winning is NOT the objective -- PLAYING THE GAME CORRECTLY is. One
   # coherent score of a few bounded sub-terms (below) replaces the old ~40 patchwork rewards. The
@@ -932,7 +933,10 @@ sim:
   # (0.3%) -- the policy spends at ~2.5 elixir, so the bar seldom even reached the floor. 3.0 leaves
   # the 0-3 range free for ordinary cheap defence and commits the climb from there.
   # Set 0 to disable (the original always-affordable mask).
-  wincon_bank_floor: 3.0
+  wincon_bank_floor: 0      # OFF (2026-08-14): with x_bow suppressed the bank held elixir
+                             # hostage for a wincon the policy would not play -> 70% forced
+                             # waits + 318 leak fires/40 matches + rocket spam. The x-bow
+                             # LEDGER now carries the incentive; freedom beats the straitjacket
   agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir: single -> DOUBLE at (regulation-60s); double CONTINUES through
@@ -1049,6 +1053,11 @@ sim:
   # Benchmark eval: every N matches, run the GREEDY policy vs the FIXED scripted meta pool and print the
   # win-rate. Unlike the self-play win-rate (which hovers ~50%), this is a STABLE plateau signal -- watch
   # it flatten to judge when DDQN has topped out (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
+  rollout_workers: 12        # engine shards (subprocesses); 0 = classic single-process. The
+                             # engine is pure Python -- this is how the other 15 cores get used
+  curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
+                             # (same meta decks at OUR level 11, no adaptive counter-play)
+  curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %
   eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
   eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
   eval_envs: 8                  # vectorized eval envs (capped at --envs)

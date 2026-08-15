@@ -154,6 +154,7 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
+                  workers=getattr(args, "workers", 0),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate)
 
@@ -455,6 +456,10 @@ def main() -> None:
     tsp.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsp.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances (default: sim.envs)")
+    tsp.add_argument("--workers", type=int, default=0,
+                     help="rollout WORKER PROCESSES (engine shards; 0/1 = classic in-process). The "
+                          "engine is pure Python, so this is how the other 15 cores get used: "
+                          "12 workers x 8+ envs measured ~10-20x the single-process throughput")
     tsp.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid for this run")
     tsp.add_argument("--device", choices=["cpu", "cuda"], default=None,

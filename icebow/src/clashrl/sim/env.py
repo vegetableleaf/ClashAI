@@ -227,7 +227,8 @@ class SimMatchEnv:
         self.bow_hostile_frac = float(cfg.get("rewards", "xbow_hostile_frac", default=0.6))
         self._bow_hostile_keys = {"little_prince", "bomber_evo"}
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
-        self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))                # per-step clip on the trade term
+        self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
+        self.trade_deadband = float(cfg.get("rewards", "sim_trade_deadband", default=0.05))                # per-step clip on the trade term
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
         self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
@@ -950,6 +951,12 @@ class SimMatchEnv:
         pot = self._trade_potential(self.eng)
         d = pot - self._prev_trade_pot
         self._prev_trade_pot = pot
+        if abs(d) < self.trade_deadband:
+            # DEADBAND (2026-08-14): the potential fired ~123x/match (4927 fires / 40 eval
+            # matches) with +-flicker from every hp tick and expiry -- GAE pairs that churn with
+            # whatever action sits nearby and drowns the sparse correctness signals. Sub-threshold
+            # drift is not a trade.
+            return 0.0
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
