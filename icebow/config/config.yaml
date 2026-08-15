@@ -197,11 +197,21 @@ observation:
   use_predictive_canvas: true
   predictive_canvas_dt_s: 1.0
   eta_horizon_s: 8.0
-  # TROOP HP CHANNELS (2026-08-15, same break, in_ch 12 -> 14): ellipse intensity = HP
-  # fraction. Sim = engine truth (with the canvas's presence dropout); live = the coloured
-  # bar above damaged units (no bar / unreadable -> 1.0, so noise degrades toward today's
-  # no-information baseline, never below it).
-  use_hp_canvas: true
+  # TROOP HP CHANNELS -- BUILT, MEASURED, AND TURNED OFF (2026-08-15). The sim half is exact
+  # (engine hp/max_hp) but the LIVE half cannot be read reliably yet, so enabling it would
+  # feed the policy a channel that is truthful in training and garbage at inference -- the
+  # exact sim2real trap the play.py warp bug just cost us a live run over.
+  # MEASURED on real Hunter frames (detector boxes + the reader): the pink arena floor has
+  # the same hue/sat as a red bar (H~176 S~110 V~155), bars sit anywhere from -0.042 to
+  # +0.025 of frame height relative to the box top (sometimes INSIDE the box), the "empty"
+  # half is a SATURATED dark team colour (not the desaturated grey the reader assumed), and
+  # a level badge sits at the bar's left end. A badge-anchored version reads some bars
+  # correctly (0.55 / 0.92 / 0.99 verified) but misses most and produced a FALSE 0.02 on a
+  # healthy X-Bow -- inventing damage, which the design forbids.
+  # To finish this properly: add hp-bar classes to the YOLO detector (structure, not colour
+  # thresholds) or template-match the bar's dark outline, with labelled ground truth. The
+  # code + synthetic-bar tests stay in place behind this flag.
+  use_hp_canvas: false
   # --- CANVAS STACK: the MOTION half of the observation (default OFF = 1 slice) ---------------
   # A single canvas is a SNAPSHOT -- it says where every unit IS, never where it is GOING, so the
   # policy cannot learn to lead a push or pre-place against one. >1 appends the canvas as it looked

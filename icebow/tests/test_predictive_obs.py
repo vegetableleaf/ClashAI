@@ -57,9 +57,11 @@ class ArchitectureTests(unittest.TestCase):
     def test_obs_widened_to_twelve_channels(self):
         cfg = Config.load()
         self.assertTrue(detect_obs.predictive_enabled(cfg))
-        self.assertEqual(detect_obs.obs_in_channels(cfg), 14, "3 RGB + 6 semantic + 3 predictive + 2 HP")
+        expect = 12 + (detect_obs.N_HP if detect_obs.hp_enabled(cfg) else 0)
+        self.assertEqual(detect_obs.obs_in_channels(cfg), expect,
+                         "3 RGB + 6 semantic + 3 predictive (+2 HP when enabled)")
         env = SimMatchEnv(cfg, seed=3)
-        self.assertEqual(env.reset().shape, (96, 64, 14))
+        self.assertEqual(env.reset().shape, (96, 64, expect))
 
     def test_predicted_slice_leads_the_semantic_slice(self):
         from clashrl.sim.engine import build_spec
@@ -84,6 +86,8 @@ class HpChannelTests(unittest.TestCase):
     def test_hp_intensity_tracks_the_fraction(self):
         from clashrl.sim.engine import build_spec
         cfg = Config.load()
+        if not detect_obs.hp_enabled(cfg):
+            self.skipTest("HP canvas disabled (live bar reader not calibrated -- see config)")
         env = SimMatchEnv(cfg, seed=7)
         env.reset()
         env.opponent.act = lambda eng: None

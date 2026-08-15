@@ -2840,3 +2840,27 @@ Notes / caveats
   5-row band around it. Wide search, narrow measurement.
 - Tests now read the same 40/60 bar at three heights (14px above / 6px above / 6px INSIDE
   the box top); all three return ~0.66. 138/138.
+
+2026-08-15 — HP CHANNELS MEASURED ON REAL FOOTAGE -> DISABLED (in_ch back to 12)
+- User asked whether the in-flight replay-bc run was still valid. Measured the mined output:
+  it is 14-channel (structurally fine) but the HP channels are DEAD -- 99.9% of lit pixels
+  at exactly 255, i.e. every bar read defaulted to full. That prompted a real calibration
+  pass against Hunter frames (detector boxes + crops), which found the reader's assumptions
+  wrong on every axis:
+    * the PINK ARENA FLOOR shares the red bar's hue/sat/val (H~176 S~110 V~155) -- the
+      row-localizer locked onto the floor, not the bar;
+    * bars sit anywhere from -0.042 to +0.025 of frame height off the box top, often INSIDE
+      the box (confirmed visually on x_bow/knight/ice_wizard crops);
+    * the "empty" half of a bar is a SATURATED DARK team colour (navy / maroon), not the
+      desaturated grey the reader looked for;
+    * a level badge sits at the bar's left end (same hue family + gold digits).
+  A badge-anchored rewrite read some bars correctly (0.55 / 0.92 / 0.99) but missed most and
+  returned a FALSE 0.02 on a healthy X-Bow. Inventing damage is exactly what the design
+  forbids, and a channel that is truthful in sim but garbage live is the sim2real trap that
+  just cost a live run (play.py warp).
+- DECISION: observation.use_hp_canvas: false -> in_ch 12 (predictive canvas only, which IS
+  verified on both sides). Reader code + synthetic tests stay behind the flag; the HP test
+  now skips when disabled. To finish it properly: hp-bar CLASSES in the YOLO detector
+  (structure over colour thresholds) or outline template matching, with labelled ground
+  truth -- a real CV sub-project, not a threshold tweak.
+- CONSEQUENCE: the running 14-channel mine must be restarted at 12 channels.
