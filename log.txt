@@ -2140,6 +2140,26 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- LIVE TRADE v3: attributed EVENT LEDGER (v2 gates measured too coarse -- user's
+             20:34 run STARTED AFTER the v2 commit and still fired 87x/+15.2)
+- The aggregate potential cannot be saved live: at aggregate level a tower kill, a dropped
+  track and a real defensive kill are the same -V_theirs, and the participation gate passes
+  whenever ANYTHING of ours is alive. Moved to the design doc's sanctioned fallback,
+  "disappearances partitioned", at track granularity (_trade_events_live):
+  * enemy track vanishes AND stays gone (2-frame confirmation kills flicker) -> credited ONLY
+    if it died within trade_kill_radius_tiles (4.0) of one of OUR living unit tracks;
+  * our track vanishing (same confirmation) -> debited unconditionally;
+  * elixir bars OUT of the term (leak owns our cap; their bar was estimator noise);
+  * frame-to-frame matching per base key by nearest neighbour (trade_match_radius_tiles 2.5;
+    the detector has no stable ids); blind-on-active frames hold all snapshots.
+  Events are chunky (>= 1 elixir) -> a handful of fires per match instead of ~100.
+  tests/test_trade_events.py 5/5 drives the stubbed logic: attributed kill +0.7, tower kill
+  far from units 0, one-frame flicker 0, own loss -0.3, blind frames hold.
+- THREAT_RESPONSE budget HYSTERESIS: detector gaps unlight the tid for a frame mid-push and
+  the instant reset re-armed the budget for the SAME push -- an episode now ends only after
+  3 s of sustained quiet.
+- REQUIRES A FRESH live session (python does not hot-reload).
+
 2026-08-14 -- LIVE REWARD REWORK: elixir_trade + threat_response (user-directed; measured on
              live_20260814_201643.jsonl)
 - MEASURED mis-credits: match 2 = TWO plays in 42 steps yet elixir_trade fired 28x for +7.90
