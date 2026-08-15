@@ -599,3 +599,51 @@ class BuildingStackTests(unittest.TestCase):
         _tick(env, 8)
         skels = [u for u in env.eng.units if u.team == 1 and u.spec.base == "skeletons"]
         self.assertTrue(skels, "the tombstone must still produce skeletons")
+
+
+    def _submerged_tesla(self, seed):
+        env = _quiet(seed=seed)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "tesla", 11), 0.50, 0.70)
+        tes = [u for u in env.eng.units if u.team == 0][-1]
+        for _ in range(30):
+            env.eng.advance(0.1)                     # nothing to shoot -> it retracts
+        assert tes.hidden, "the tesla should be submerged with no enemies around"
+        return env, tes
+
+    def test_troops_deploy_onto_and_walk_over_a_submerged_tesla(self):
+        from clashrl.sim.engine import _dist
+        env, tes = self._submerged_tesla(101)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.50, 0.70)
+        kn = [u for u in env.eng.units if u.spec.base == "knight"][-1]
+        self.assertLess(_dist(kn.x, kn.y, tes.x, tes.y), kn.spec.radius + tes.spec.radius,
+                        "underground: the placement is NOT snapped away")
+        for _ in range(10):
+            env.eng.advance(0.1)
+        self.assertLess(_dist(kn.x, kn.y, tes.x, tes.y), kn.spec.radius + tes.spec.radius,
+                        "and the collision pass does not shove it off either")
+
+    def test_a_second_building_still_snaps_off_a_submerged_tesla(self):
+        from clashrl.sim.engine import _dist
+        env, tes = self._submerged_tesla(102)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "tesla", 11), 0.50, 0.70)
+        t2 = [u for u in env.eng.units if u.spec.base == "tesla"][-1]
+        self.assertGreaterEqual(_dist(t2.x, t2.y, tes.x, tes.y), 2 * tes.spec.radius - 1e-6,
+                                "the ground is still occupied for another STRUCTURE")
+
+    def test_a_risen_tesla_blocks_normally(self):
+        from clashrl.sim.engine import _dist
+        env, tes = self._submerged_tesla(103)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.50, 0.60)
+        for _ in range(20):
+            env.eng.advance(0.1)                     # an enemy is near -> it pops up
+        self.assertFalse(tes.hidden, "an enemy in range brings the tesla up")
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), tes.x, tes.y)
+        kn = [u for u in env.eng.units if u.team == 0 and u.spec.base == "knight"][-1]
+        self.assertGreaterEqual(_dist(kn.x, kn.y, tes.x, tes.y),
+                                kn.spec.radius + tes.spec.radius - 1e-6,
+                                "above ground it blocks placement like any building")

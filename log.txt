@@ -2927,3 +2927,14 @@ Notes / caveats
   skeletons, phoenix egg) construct Units directly and never pass through _place -- they are
   MEANT to pop out at their spawner and walk off, and the ordinary separation handles them.
   Pinned by a test. 145/145 (1 skipped).
+
+2026-08-15 — Exception to the footprint rule: a SUBMERGED Tesla does not block troops
+- User: "the one exception ... is for the tesla when it's hidden, since it's in the ground so
+  troops can be placed and walk over it. Otherwise, no."
+- Both halves implemented: _structure_overlap skips a hidden building when the thing being
+  placed is a TROOP (so the deploy is not snapped away), and _separate skips troop-vs-hidden
+  pairs (so a walking troop passes straight over the retracted tile instead of being shoved
+  round it). A hidden Tesla still blocks another BUILDING -- the ground is occupied -- and
+  the moment it rises it blocks normally again.
+- Tests: troop deploys onto + walks over a submerged tesla; a second tesla still snaps clear
+  of it; once an enemy brings it up, it blocks placement like any building. 148/148 (1 skip).

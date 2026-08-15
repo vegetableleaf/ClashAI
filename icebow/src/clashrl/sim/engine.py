@@ -1335,6 +1335,11 @@ class SimEngine:
         for e in self.units:
             if e.hp <= 0 or e.spec.kind != "building":
                 continue
+            if e.hidden and spec.kind != "building":
+                # SUBMERGED TESLA (2026-08-15, user): while retracted it is UNDERGROUND -- troops
+                # deploy onto and walk straight over its tile. It still blocks another BUILDING
+                # (the ground is occupied), and it blocks normally the moment it pops up.
+                continue
             if _dist(x, y, e.x, e.y) < spec.radius + e.spec.radius:
                 return True
         for side in (0, 1):
@@ -1707,6 +1712,9 @@ class SimEngine:
                 b = us[j]
                 if a.spec.flying != b.spec.flying:
                     continue
+                if ((a.hidden and b.spec.kind != "building")
+                        or (b.hidden and a.spec.kind != "building")):
+                    continue                          # a retracted Tesla is underground: walk over it
                 dx, dy = (a.x - b.x) * _TILES_X, (a.y - b.y) * _TILES_Y   # TILES
                 d = math.hypot(dx, dy)
                 mind = a.spec.radius + b.spec.radius
