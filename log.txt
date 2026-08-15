@@ -2588,3 +2588,25 @@ Notes / caveats
   _broadcast_league() now fires at startup too.
 - Verified end-to-end: RemotePool smoke (2 workers, sp_prob 1.0) — broadcast, worker net
   rebuild, 4 self-play matches to completion, pfsp indices [0,0,0,0]. Suite 90/90.
+
+2026-08-14 — FIX: deploy mask permitted river/enemy-side taps after the warp (live freeze)
+- Symptom: live bot hovers over the hand, cards get selected, nothing deploys ("shuffle").
+  MEASURED from data/reward_stats/live_20260814_*.jsonl: 23/70 plays (33%) in the 20:16
+  session tapped ROW 11 at frame y=0.40 (knight/ice_wizard/skeletons...), and 17 more across
+  20:34/20:51 tapped ROW 12 at y=0.42 (tesla/knight/ice_wizard). The tower-anchored warp puts
+  the real river (board 0.5) at frame 0.410 -- row 11 taps land on the ENEMY side, row 12
+  inside the water band. Troop taps there are refused by the game; the card stays selected.
+  The 22:49 session the user watched barely stepped at all (11 steps / 2 match records).
+- Root cause: deployable_mask/deploy_clamp derived the first legal row from
+  row_at(deploy_top) -- an AFFINE frame->row mapping -- while cell taps go through the WARP.
+  Pre-warp the two agreed by construction; the warp broke the agreement exactly at the river.
+- Fix: the rule now lives in BOARD space, where the river actually is: action.deploy_board
+  (default 0.53125 = river bottom, 0.5 + one 1/32 game tile) -> min_own_gy = first row whose
+  center is on your land (row 13 at gh=24). Warp-independent, so sim (identity warp) and live
+  (measured warp) allow the SAME rows by construction. Row 13's warped tap lands at 0.453,
+  0.04 below the river line.
+- Consequence for the sim: the trainer masks with this same function, so rows 11-12 (which
+  the sim ENGINE accepted but the real game refuses) leave the training action space on the
+  next restart; bridge placements re-normalize to row 13, the true bridge row.
+- Tests: tests/test_deploy_rows.py (4: first legal row >= 13, every legal tap below the
+  warped river line, clamp lands on a deployable row, sim/live row sets identical). 94/94.

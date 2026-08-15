@@ -96,6 +96,20 @@ class ActionSpace:
         self.a_top = float(cfg.get("label", "arena_top", default=0.10))
         self.a_bot = float(cfg.get("label", "arena_bottom", default=0.86))
         self.deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
+        # FIRST LEGAL TROOP ROW, decided in BOARD space (2026-08-14). deploy_top is a FRAME-y
+        # line tuned in the affine era; converting it to a row with the affine row_at() while
+        # the actual taps go through the WARP let the mask permit rows whose taps land on the
+        # river or the enemy side. MEASURED on the 2026-08-14 evening live sessions: 33% of one
+        # session's plays (23/70) tapped row 11 at frame y=0.40 -- enemy side of the real river
+        # (warp puts board 0.5 at frame 0.410) -- and 17 more hit row 12 inside the water band;
+        # every such troop tap is refused in-game, the card just sits selected, and the bot
+        # 'shuffles' without deploying. The river is a BOARD fact, so the rule lives in board
+        # space (bottom of the water band = 0.5 + one 1/32 game tile) and is warp-independent:
+        # sim and live agree on the same rows by construction.
+        self.deploy_board = float(cfg.get("action", "deploy_board", default=0.53125))
+        _gh = int(cfg.get("action", "grid", default=[18, 32])[1])
+        _c = self.deploy_board * _gh - 0.5               # first row whose CENTER is on your land
+        self.min_own_gy = min(_gh - 1, max(0, int(_c) + (1 if _c > int(_c) else 0)))
         # arena PLAYFIELD rectangle (normalized frame corners) the tile grid is anchored to;
         # defaults to env.arena_region so the grid lines up with the board, not the whole frame.
         bx = cfg.get("action", "arena_box", default=None) or \
@@ -163,7 +177,7 @@ class ActionSpace:
             return cell
         gw = int(self.gw)
         gx, gy = cell % gw, cell // gw
-        min_gy = self.row_at(self.deploy_top)       # first grid row on your side of the river
+        min_gy = self.min_own_gy                    # first grid row on your side of the river (board-space)
         if gy < min_gy:
             gy = min_gy
         # A troop can't be deployed ON your king tower (centre-back): the place-tap is a no-op
@@ -194,7 +208,7 @@ class ActionSpace:
         gw, gh = int(self.gw), int(self.gh)
         if anywhere:
             return [True] * (gw * gh)
-        min_gy = self.row_at(self.deploy_top)
+        min_gy = self.min_own_gy                    # board-space river rule (see __init__)
         kx, ky = self.king_xy
         khx, khy = self.king_half
         phx, phy = self.princess_half
