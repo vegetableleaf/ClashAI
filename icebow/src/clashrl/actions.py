@@ -16,22 +16,40 @@ to the visible grass corners for the tightest alignment.
 from __future__ import annotations
 
 
-# RIVER-BANK LEDGES (2026-08-14, from the user's annotated screenshot + frame forensics): the
-# CR field is NOT a rectangle. At the river, the outermost ~1.4 columns on each side are raised
-# decorative ledge tiles (heart emblems in this skin) spanning one tile above the water band to
-# one tile below it. They render exactly like floor tiles but REFUSE placement -- "some tiles
-# look like you can place cards there, but in reality you can't". Board-space band: y in
-# [14/32, 18/32]; columns {0, 1} and {gw-2, gw-1} (the notch is ~1.4 columns deep; both
-# outermost cell CENTERS fall inside it).
+# THE FIELD IS NOT A RECTANGLE (2026-08-14, user-verified geometry). Three board-space rules:
+#  * RIVER-BANK POCKETS: the outermost SINGLE column on each side, from one tile above the
+#    water band to one tile below it, is a raised decorative ledge (heart emblems in this
+#    skin) that renders like floor but refuses placement.
+#  * BACK ROWS: the row behind each king tower is playable ONLY in the 1x6 strip centered on
+#    the king (board x 1/3..2/3); the corners of that row are walkway decor.
+#  * KING PLATFORMS: the 6-wide x 3-deep platform each king stands on (rows 1..3 from the
+#    back edge) is a structure, not floor.
 LEDGE_Y0, LEDGE_Y1 = 14.0 / 32.0, 18.0 / 32.0
-LEDGE_X_FRAC = 2.0 / 18.0
+LEDGE_X_FRAC = 1.0 / 18.0
+KING_STRIP_X0, KING_STRIP_X1 = 1.0 / 3.0, 2.0 / 3.0
+KING_Y0, KING_Y1 = 1.0 / 32.0, 4.0 / 32.0        # enemy platform band; ours mirrors at 1-y
 
 
 def ledge_blocked(gx: int, gy: int, gw: int, gh: int) -> bool:
     """True if placement-grid cell (gx, gy) sits on a river-bank ledge (unplaceable decor)."""
-    if gx not in (0, 1, gw - 2, gw - 1):
+    if gx not in (0, gw - 1):
         return False
     return LEDGE_Y0 <= (gy + 0.5) / gh <= LEDGE_Y1
+
+
+def unplayable(gx: int, gy: int, gw: int, gh: int) -> bool:
+    """Board-truth: True if the cell is OUTSIDE the game's actually-placeable field shape.
+    One predicate for every referee -- the live mask, the sim mask and the engine snap all
+    derive from it, so no trainer can ever field a card where the real game could not."""
+    if ledge_blocked(gx, gy, gw, gh):
+        return True
+    cx, cy = (gx + 0.5) / gw, (gy + 0.5) / gh
+    in_strip = KING_STRIP_X0 < cx < KING_STRIP_X1
+    if (gy == 0 or gy == gh - 1) and not in_strip:
+        return True                                   # back-row corners: walkway decor
+    if in_strip and (KING_Y0 <= cy <= KING_Y1 or 1.0 - KING_Y1 <= cy <= 1.0 - KING_Y0):
+        return True                                   # ON a king platform
+    return False
 
 
 class BoardWarp:
@@ -226,24 +244,23 @@ class ActionSpace:
         min_gy = self.min_own_gy                    # first grid row on your side of the river (board-space)
         if gy < min_gy:
             gy = min_gy
-        if ledge_blocked(gx, gy, gw, int(self.gh)):
-            gx = 2 if gx < gw // 2 else gw - 3      # off the river-bank ledge, onto real tiles
-        # A troop can't be deployed ON your king tower (centre-back): the place-tap is a no-op
-        # and the card just 'shuffles'. If the cell sits on the king's footprint, pull it to the
-        # row just in FRONT of the king (toward the river), where it actually deploys.
-        kx, ky = self.king_xy
-        khx, khy = self.king_half
+        gh = int(self.gh)
+        if unplayable(gx, gy, gw, gh):
+            cx = (gx + 0.5) / gw
+            if KING_STRIP_X0 < cx < KING_STRIP_X1 and gy != gh - 1:
+                gy = max(min_gy, int((1.0 - KING_Y1) * gh) - 1)   # off your KING PLATFORM -> row in front
+            elif ledge_blocked(gx, gy, gw, gh):
+                gx = 1 if gx == 0 else gw - 2       # off the river-bank ledge, onto real tiles
+            else:
+                gy = gh - 2                         # back-row corner decor -> the row in front of it
+        # A cell on a PRINCESS tower footprint (front-left / front-right) is undeployable too
+        # -> pull it to the row just in FRONT of that tower.
         nx, ny = self.cell_center(gx, gy)
-        if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
-            gy = max(min_gy, self.row_at(ky - khy) - 1)
-        else:
-            # ...and each of the two PRINCESS towers (front-left / front-right): a cell on a princess
-            # footprint is undeployable too -> pull it to the row just in FRONT of that tower.
-            phx, phy = self.princess_half
-            for px, py in self.princess_xy:
-                if abs(nx - px) <= phx and abs(ny - py) <= phy:
-                    gy = max(min_gy, self.row_at(py - phy) - 1)
-                    break
+        phx, phy = self.princess_half
+        for px, py in self.princess_xy:
+            if abs(nx - px) <= phx and abs(ny - py) <= phy:
+                gy = max(min_gy, self.row_at(py - phy) - 1)
+                break
         return gy * gw + gx
 
     def deployable_mask(self, anywhere: bool) -> "list[bool]":
@@ -257,19 +274,15 @@ class ActionSpace:
         if anywhere:
             return [True] * (gw * gh)
         min_gy = self.min_own_gy                    # board-space river rule (see __init__)
-        kx, ky = self.king_xy
-        khx, khy = self.king_half
         phx, phy = self.princess_half
 
         def _ok(c: int) -> bool:
             gy = c // gw
             if gy < min_gy:
                 return False                          # enemy half
-            if ledge_blocked(c % gw, gy, gw, gh):
-                return False                          # river-bank ledge: decorative, unplaceable
+            if unplayable(c % gw, gy, gw, gh):
+                return False                          # ledge / back-row decor / your KING platform
             nx, ny = self.cell_center(c % gw, gy)
-            if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
-                return False                          # your KING tower footprint (undeployable)
             return not any(abs(nx - px) <= phx and abs(ny - py) <= phy
                            for px, py in self.princess_xy)   # your PRINCESS tower footprints
 

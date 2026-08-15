@@ -2655,3 +2655,20 @@ Notes / caveats
 - Known approximation, logged for later: princess/king tower anchors are sprite-biased
   (~40px above their ground lines), so mid-land taps sit up to ~half a tile high. All legal
   land regardless -- accuracy polish, not refusals. Fix = re-anchor towers at platform BASES.
+
+2026-08-15 — REFINE: field shape corrected per user verification (pockets 1 col; back rows 1x6)
+- User corrections to the 2026-08-14 shape: the river-bank pockets extend ONE tile inward
+  (not two), and each back row is playable ONLY in the 1x6 strip centered behind its king --
+  the back-row corners are walkway decor. Also implies the behind-king strip itself IS
+  placeable, which the old frame-box king footprint wrongly blocked.
+- actions.unplayable(gx, gy, gw, gh): single board-truth predicate = 1-col ledges + back-row
+  corners + king PLATFORMS (6 wide x 3 deep, both sides; the row BEHIND stays open). The
+  frame-box king test in deployable_mask/deploy_clamp is replaced by it (princess frame
+  boxes unchanged). Clamp routing: platform pick -> row in front; ledge pick -> 1 column in;
+  back-corner pick -> row in front of it.
+- engine.deploy(): same predicate continuously for non-spell deploys, mirrored for BOTH
+  teams (opponents can no longer field units on their platform/corners/ledges either).
+- sim_view: playable border updated -- king strips reach the back edge, corners step in one
+  game row, single-column river notches. Full board rectangle unchanged.
+- Tests: 11 in test_deploy_rows (pockets 1-deep, back-row strip open/corners closed, platform
+  closed/row-behind open, clamp+engine snaps incl. behind-king untouched). 101/101 green.

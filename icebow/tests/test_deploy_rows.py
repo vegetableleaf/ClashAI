@@ -49,25 +49,42 @@ class DeployRowTests(unittest.TestCase):
 
 
 class RiverLedgeTests(unittest.TestCase):
-    """The field is not a rectangle: the outer ~2 columns at the river rows are decorative
-    ledges (heart tiles) the game refuses -- excluded everywhere, sim and live alike."""
+    """The field is not a rectangle (user-verified): the outermost SINGLE column at the river
+    rows is decorative ledge, each back row is playable only in the 1x6 strip behind its king,
+    and the king platforms are structures -- excluded everywhere, sim and live alike."""
 
     def setUp(self):
         self.cfg = Config.load()
         self.live = ActionSpace(self.cfg)
 
-    def test_ledge_cells_are_masked(self):
+    def test_ledge_cells_are_masked_one_column_deep(self):
         gw = int(self.live.gw)
         m = self.live.deployable_mask(False)
-        for gx in (0, 1, gw - 2, gw - 1):
+        for gx in (0, gw - 1):
             self.assertFalse(m[13 * gw + gx], "ledge cell (%d, 13) must be unplaceable" % gx)
-        self.assertTrue(m[13 * gw + 2], "the first real tile past the ledge stays placeable")
+        self.assertTrue(m[13 * gw + 1], "the pocket is ONE tile deep: column 1 is real floor")
+
+    def test_back_row_is_the_king_strip_only(self):
+        gw, gh = int(self.live.gw), int(self.live.gh)
+        m = self.live.deployable_mask(False)
+        for gx in (6, 8, 11):
+            self.assertTrue(m[(gh - 1) * gw + gx], "behind-the-king strip cell (%d) is real" % gx)
+        for gx in (0, 3, 5, 12, 14, 17):
+            self.assertFalse(m[(gh - 1) * gw + gx], "back-row corner (%d) is walkway decor" % gx)
+
+    def test_king_platform_blocked_but_row_behind_open(self):
+        gw = int(self.live.gw)
+        m = self.live.deployable_mask(False)
+        self.assertFalse(m[22 * gw + 8], "row 22 center is ON your king's platform")
+        self.assertFalse(m[21 * gw + 8], "row 21 center is ON your king's platform")
+        self.assertTrue(m[20 * gw + 8], "the row in FRONT of the platform is placeable")
+        self.assertTrue(m[22 * gw + 3], "BESIDE the platform is placeable")
 
     def test_clamp_snaps_off_the_ledge(self):
         gw = int(self.live.gw)
         cell = self.live.deploy_clamp(False, 13 * gw + 0)
         self.assertEqual(cell // gw, 13)
-        self.assertGreaterEqual(cell % gw, 2, "clamp must move a ledge pick onto real tiles")
+        self.assertEqual(cell % gw, 1, "clamp moves a ledge pick one column in, onto real floor")
 
     def test_engine_snaps_scripted_deploys_inward(self):
         from clashrl.sim.env import SimMatchEnv
@@ -77,7 +94,23 @@ class RiverLedgeTests(unittest.TestCase):
         env.eng.elixir[1] = 10.0
         assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.03, 0.5)
         foe = [u for u in env.eng.units if u.team == 1][-1]
-        self.assertGreater(foe.x, 2.0 / 18.0, "an opponent's ledge deploy lands on real tiles")
+        self.assertGreater(foe.x, 1.0 / 18.0, "an opponent's ledge deploy lands on real tiles")
+
+    def test_engine_snaps_back_corner_and_platform(self):
+        from clashrl.sim.env import SimMatchEnv
+        from clashrl.sim.engine import build_spec
+        env = SimMatchEnv(self.cfg, seed=8)
+        env.reset()
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.05, 0.99)
+        corner = [u for u in env.eng.units if u.team == 0][-1]
+        self.assertLess(corner.y, 31.0 / 32.0, "a back-row CORNER deploy pulls forward")
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.5, 0.9)
+        plat = [u for u in env.eng.units if u.team == 0][-1]
+        self.assertLess(plat.y, 1.0 - 4.0 / 32.0, "a king-PLATFORM deploy lands in front of it")
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.5, 0.99)
+        behind = [u for u in env.eng.units if u.team == 0][-1]
+        self.assertGreater(behind.y, 31.0 / 32.0, "BEHIND the king (center strip) is legal, untouched")
 
     def test_warp_anchors_stay_monotonic(self):
         for anchors in (self.live.warp.ya, self.live.warp.xa):

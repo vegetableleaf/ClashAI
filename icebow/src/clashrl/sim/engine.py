@@ -1139,17 +1139,25 @@ class SimEngine:
         if self.done or not self.can_afford(team, spec):
             return False
         if spec.kind != "spell":
-            # RIVER-BANK LEDGES (2026-08-14): the real field is not a rectangle -- the outer
-            # ~2 columns beside the water are decorative ledges the game refuses. The agent's
-            # mask (actions.ledge_blocked) already forbids them; scripted opponents snap
-            # inward here so the sim never fields a unit where the live game could not.
-            from ..actions import LEDGE_X_FRAC, LEDGE_Y0, LEDGE_Y1
+            # FIELD SHAPE (2026-08-14, user-verified): same board-truth as the mask
+            # (actions.unplayable) -- the outermost SINGLE column beside the water is ledge
+            # decor, the back rows exist only in the 1x6 strip behind each king, and the king
+            # platforms are structures. Scripted opponents snap inward/forward here so the
+            # sim never fields a unit where the live game could not.
+            from ..actions import (KING_STRIP_X0, KING_STRIP_X1, KING_Y0, KING_Y1,
+                                   LEDGE_X_FRAC, LEDGE_Y0, LEDGE_Y1)
+            half_col, half_row = 0.5 / _TILES_X, 0.5 / _TILES_Y
             if LEDGE_Y0 <= y <= LEDGE_Y1:
-                half_col = 0.5 / _TILES_X
                 if x < LEDGE_X_FRAC:
                     x = LEDGE_X_FRAC + half_col
                 elif x > 1.0 - LEDGE_X_FRAC:
                     x = 1.0 - LEDGE_X_FRAC - half_col
+            if not (KING_STRIP_X0 < x < KING_STRIP_X1):
+                y = min(max(y, KING_Y0 + half_row), 1.0 - KING_Y0 - half_row)   # back-row corners are decor
+            elif KING_Y0 <= y <= KING_Y1:
+                y = KING_Y1 + half_row                     # off the enemy king's platform, in front
+            elif 1.0 - KING_Y1 <= y <= 1.0 - KING_Y0:
+                y = 1.0 - KING_Y1 - half_row               # off YOUR king's platform, in front
         self.elixir[team] -= spec.elixir
         self.last_deploy[team] = (spec, x, y, self.t)
         if spec.kind == "spell":
