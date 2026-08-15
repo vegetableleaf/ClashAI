@@ -2714,3 +2714,8 @@ Notes / caveats
   before charging (and galloping) again. Matters doubly since tonight's gallop change made
   an armed charge 2x speed. Tests: log-hit disarm (sampled around the roll landing -- he
   starts re-earning tiles immediately, which is itself the mechanic) + zap disarm. 125/125.
+
+2026-08-15 — Royal Giant verified + pinned (user's final overnight check)
+- Already correct in-engine: ranged (5.0) building-only wincon -- stops at gap 4.94, shells
+  the tower with projectiles, ignores troops standing on him (knight took 0). Added a
+  regression pin (test_sim_fidelity.RoyalGiantPin) since RG decks are ladder-popular. 126/126.

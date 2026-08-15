@@ -396,3 +396,26 @@ class ChargeResetTests(unittest.TestCase):
         _tick(env, 2)
         self.assertLess(pr.charge_dist, pr.spec.charge_range,
                         "a stun resets the run-up, same as knockback")
+
+
+class RoyalGiantPin(unittest.TestCase):
+    """User check 2026-08-15: RG is a RANGED building-targeting wincon in popular ladder
+    decks. Verified correct in-engine (stops at 4.94 vs reach 5.0, shells the tower, ignores
+    a knight standing on him) -- pinned here so it can never silently regress."""
+
+    def test_rg_shells_towers_from_range_and_ignores_troops(self):
+        from clashrl.sim.engine import _gap
+        env = _quiet(seed=80)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "royal_giant", 11), 0.30, 0.55)
+        rg = [u for u in env.eng.units if u.team == 1][-1]
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.30, 0.58)
+        kn = [u for u in env.eng.units if u.team == 0][-1]
+        tw = env.eng.towers[0][0]
+        hp0 = tw.hp
+        _tick(env, 14)
+        self.assertGreater(_gap(rg.x, rg.y, tw), 3.0,
+                           "he sieges from RANGE, never walks to the wall")
+        self.assertLess(tw.hp, hp0 - 900, "and the cannon shots land on the tower")
+        self.assertAlmostEqual(kn.hp, kn.spec.hp, delta=1.0,
+                               msg="a troop standing ON him takes nothing: buildings only")
