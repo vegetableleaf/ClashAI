@@ -113,6 +113,7 @@ def _cmd_replay_bc(args) -> None:
         print(f"[replay-bc] OpenCV/NumPy are required ({exc}).")
         return
     build_replay_bc(Config.load(args.config), replays=args.replays, weights=args.weights,
+                    jobs=getattr(args, "jobs", 1),
                     conf=args.conf, stride=args.stride, out=args.out, min_hand=args.min_hand,
                     limit=args.limit, preview=args.preview)
 
@@ -411,6 +412,10 @@ def main() -> None:
                           "'which card AMONG THESE', which needs a real hand (default 2)")
     rbc.add_argument("--limit", type=int, default=0, metavar="N",
                      help="stop after N samples per video (0 = no cap; handy for a quick trial)")
+    rbc.add_argument("--jobs", type=int, default=1, metavar="N",
+                     help="mine N VIDEOS concurrently, one process each (default 1). Videos are "
+                          "independent and one video's pipeline is ~one core, so this is close to "
+                          "linear wall-clock speedup up to the video count.")
     rbc.add_argument("--preview", action="store_true",
                      help="also save annotated frames of each mined play so you can EYEBALL what "
                           "was recovered before training on it")

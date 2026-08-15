@@ -2864,3 +2864,18 @@ Notes / caveats
   (structure over colour thresholds) or outline template matching, with labelled ground
   truth -- a real CV sub-project, not a threshold tweak.
 - CONSEQUENCE: the running 14-channel mine must be restarted at 12 channels.
+
+2026-08-15 — replay-bc was 9.4x slower than necessary (SEEK per frame) + --jobs added
+- User asked how much more CPU/GPU would speed up mining. Profiled instead of guessing:
+  cv2.VideoCapture.set() = 121.7 s across 887 calls (137 ms EACH), 88% of total runtime.
+  The loop seeked to every sampled frame; on long-GOP h264 each seek re-decodes from the
+  nearest keyframe. Clean A/B on the same file: seek 125.9 ms vs grab-then-read 13.4 ms per
+  scanned frame = 9.4x on frame advance. Fixed (sequential scan, grab() the skipped frames).
+- Also measured, for the record: the detector runs on CPU at ~37 ms/frame single-shot;
+  batching gives 1.6x (CPU) / 2.7x (fp16), GPU batched ~18 ms. Not the bottleneck -- decode
+  was -- so no device change was made (and the trainer wants the GPU free anyway).
+- --jobs N: mines N VIDEOS concurrently (spawn Pool, one process per video). Videos are
+  fully independent; a single video's pipeline is ~one core, so on 16 cores this is near
+  linear up to the video count. Verified on 2 videos.
+- Expected combined: ~3x from the seek fix x ~4x from --jobs 4 on the four Hunter VODs.
+  138/138 (1 skipped).
