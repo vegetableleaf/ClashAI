@@ -1037,17 +1037,24 @@ class SimMatchEnv:
                 t_cross = prev[3] if prev else None
                 if t_cross is None and u.y >= 0.5:
                     t_cross = now
-                cur_en[id(u)] = (share, u.x, u.y, t_cross)
+                cur_en[id(u)] = (share, u.x, u.y, t_cross, u.last_unit_hit_t)
             else:
                 cur_own[id(u)] = (share, u.x, u.y)
         own_pos = [(v[1], v[2]) for v in cur_own.values()]             + [(v[1], v[2]) for v in self._ev_own.values()]   # prev too: a mutual kill still attributes
-        for uid, (share, x, y, t_cross) in self._ev_enemy.items():
+        for uid, (share, x, y, t_cross, last_hit) in self._ev_enemy.items():
             if uid in cur_en:
                 continue                                     # still alive
             near_own = any(tile_dist(x, y, ox, oy) <= self.trade_kill_r for ox, oy in own_pos)
             near_spell = any(tile_dist(x, y, sx, sy) <= sr + 1.0 and now - st <= 3.0
                              for (sx, sy, sr, st) in self._ev_spells)
-            if not (near_own or near_spell):
+            # COMBAT ATTRIBUTION (2026-08-15): a LONG-RANGE defender kills from far beyond the
+            # 4-tile proximity radius -- a lone defensive X-Bow (reach 11.5) shredding a push
+            # earned ZERO trade credit, hollowing out exactly the doctrine's defensive-bow
+            # value. The engine knows who fought: any enemy that took damage from one of our
+            # UNITS (never tower fire -- _TOWER_SHOT is excluded at the stamp) within its last
+            # 2.5 s attributes, at any range. Tower-only kills and walk-offs still pay nothing.
+            in_combat = (now - last_hit) <= 2.5
+            if not (near_own or near_spell or in_combat):
                 continue                                     # the towers' kill / walk-off / expiry
             scale = 1.0
             if t_cross is not None:

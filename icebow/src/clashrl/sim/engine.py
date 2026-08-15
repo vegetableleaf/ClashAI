@@ -838,6 +838,9 @@ class Unit:
     parry_ready_t: float = 0.0   # RONIN: engine time when the next parry is available
     enraged: bool = False        # GOBLIN DEMOLISHER: dynamite lit (spec swapped, fuse burning)
     fuse_left: float = 0.0
+    last_unit_hit_t: float = -999.0   # engine time this body last took damage from an enemy
+                                      # UNIT (never tower fire) -- the trade ledger's combat
+                                      # attribution for LONG-RANGE defenders (X-Bow at 11.5)
     lowspawn_cd: float = 0.0     # EVO GOBLIN GIANT: next passive low-hp spawn
     ramp_hold: float = 0.0       # EVO INFERNO D: stage kept alive this long after a kill
     relocate_next: float = 0.75  # EVO DRILL: next hp fraction that triggers a resurface
@@ -2802,6 +2805,8 @@ class SimEngine:
             return
         self._hurt(ref, dmg)
         self._apply_status(team, spec, ref)
+        if spec.kind != "tower" and getattr(ref, "spec", None) is not None:
+            ref.last_unit_hit_t = self.t          # combat stamp: a UNIT (not a tower) hit it
         if (attacker is not None and attacker.hp > 0 and attacker.spec.kill_heal > 0.0
                 and getattr(ref, "spec", None) is not None and ref.hp <= 0):
             # EVO PEKKA: "each kill heals the same amount ... always 12.5% of the core HP" (the
@@ -2823,6 +2828,8 @@ class SimEngine:
                 if e.team != team and e is not ref and _dist(e.x, e.y, ref.x, ref.y) <= rad:
                     self._hurt(e, dmg)
                     self._apply_status(team, spec, e)
+                    if spec.kind != "tower":
+                        e.last_unit_hit_t = self.t
             for tw in self._enemy_towers(team):
                 if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= rad:
                     self._damage_tower(tw, tower_dmg, team)

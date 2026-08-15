@@ -65,8 +65,8 @@ class TradeLedgerTests(unittest.TestCase):
         foe = [u for u in env.eng.units if u.team == 1][-1]
         env.step((False, 0, 0))
         # rewrite the ledger so the crossing happened 15 s ago: the answer is ELEVEN+ seconds late
-        env._ev_enemy = {uid: (sh, x, y, (tc - 15.0 if tc is not None else None))
-                         for uid, (sh, x, y, tc) in env._ev_enemy.items()}
+        env._ev_enemy = {uid: (sh, x, y, (tc - 15.0 if tc is not None else None), lh)
+                         for uid, (sh, x, y, tc, lh) in env._ev_enemy.items()}
         base = _total(env, "elixir_trade")
         _kill(env, foe)
         env.step((False, 0, 0))
@@ -110,6 +110,30 @@ class TradeLedgerTests(unittest.TestCase):
             if env._ev_spells:
                 break
         self.assertTrue(env._ev_spells, "a fielded damage spell must be recorded for attribution")
+
+
+class RangedDefenderAttributionTests(unittest.TestCase):
+    def test_lone_defensive_bow_kill_credits_at_range(self):
+        """A defensive X-Bow kills from ~6 tiles -- far outside the 4-tile proximity radius.
+        Before combat attribution this earned ZERO trade credit; the doctrine's defensive-bow
+        value was invisible to the ledger."""
+        env = SimMatchEnv(Config.load(), seed=31)
+        env.reset()
+        env.opponent.act = lambda eng: None
+        for side in (0, 1):
+            for tw in env.eng.towers[side]:
+                tw.stun_left = 999.0
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "x_bow", 11), 0.50, 0.73)
+        assert env.eng.deploy(1, build_spec(env.eng.db, "dart_goblin", 11), 0.50, 0.55)
+        for _ in range(12):
+            env.step((False, 0, 0))
+            if not any(u.team == 1 for u in env.eng.units):
+                break
+        env.step((False, 0, 0))
+        t = env.rw_stats.run.get("elixir_trade")
+        self.assertGreater(t.total if t else 0.0, 0.05,
+                           "the bow FOUGHT it (combat stamp), so the kill credits at any range")
 
 
 class ThreatTimingTests(unittest.TestCase):

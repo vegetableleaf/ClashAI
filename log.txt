@@ -2783,3 +2783,20 @@ Notes / caveats
   softening (xbow_lane_frac 0.35, band+0.10 only — corner dumps still miss in full).
   Verdicts after: +0.42 x24, +1.05 x10, 0.00 x2. The bow tax that was slowly deleting the
   win condition is gone. 130/130. Restart-worthy: the running trainer still taxes bows.
+
+2026-08-15 — Defensive bow value: combat attribution for ranged defenders (user doctrine check)
+- Question: does defensive-bow support damage flow into the reward? Audit found a real hole:
+  the trade ledger attributed kills only within 4 tiles of our units (melee-defender
+  assumption) -- a lone defensive X-Bow kills from up to 11.5 tiles, so its push-shredding
+  earned ZERO trade credit. Exactly the doctrine's defensive-bow value, invisible.
+- Fix (sim ground truth): every enemy body now carries last_unit_hit_t, stamped in _land_hit
+  whenever a UNIT (never _TOWER_SHOT) damages it, direct or splash. The ledger attributes a
+  death if our units were fighting it within its last 2.5 s -- at ANY range. Tower-only
+  kills, walk-offs, expiries still pay nothing. Live keeps proximity (a detector cannot see
+  damage sources); one more place the sim referee is strictly better than the live one.
+- Where defensive-bow value now flows: (1) wincon_exec placement credit (band fixed today);
+  (2) trade-ledger kill credits at range (this fix); (3) SHRINKING chip_defence -- that term
+  is the penalty for OUR tower damage, so a bow that guts the push cuts the bill; (4) the
+  counterfactual fork. xbow_lock/chip_linear remain offensive-only by design.
+- Test: lone bow at (0.5, 0.73) kills a dart goblin ~6 tiles out with no other friendly in
+  range -> trade credit fires (was exactly 0). 131/131.
