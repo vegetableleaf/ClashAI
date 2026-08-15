@@ -2546,3 +2546,30 @@ Notes / caveats
   per-deck templates built from your own recordings (`hand-templates`).
 - Model weights (data/*.pt) and recordings (data/sessions/) are intentionally
   NOT committed — they are large and regenerable. Retrain to reproduce.
+
+2026-08-14 — SIM PORT: elixir_trade v3 event ledger + threat_response timing (sim/env.py)
+- The live v3.1 reworks are now modeled in the sim, where the model actually learns. The sim
+  version is STRONGER than live because the engine gives ground truth: exact unit identities
+  (no nearest-neighbour matching, no flicker confirmation needed), exact river-crossing times
+  (eng.t stamped when an enemy troop first reaches y>=0.5), and spell-kill attribution the
+  detector can't see (enemy deaths within blast range of our damage-spell cast <=3s old credit
+  as OUR kill — rocket/log value now flows through the trade term).
+- elixir_trade: replaced the two-sided potential with the attributed event ledger. Credits:
+  enemy TROOP dies within trade_kill_radius_tiles (4.0) of our living unit OR inside a recent
+  spell blast, scaled by response timing (full within trade_grace_s 3.0 of crossing, linear to
+  0 at trade_late_s 10.0; deaths on their half undiscounted). Debits: our troop deaths,
+  unconditional. Excluded: tower kills far from our units, walk-offs, expiries, enemy
+  spells/buildings vanishing, hp ticks. Our buildings excluded from debit (bow/tesla expiry is
+  card-normal; the X-Bow ledger prices bow outcomes). Measured on a random policy: 19.8
+  fires/match (was ~123 churn), 9.5+/10.2-, net -1.51/match — random play SHOULD lose trades.
+- threat_response: ported the depth window (threat_min_depth 0.12 <= tid[7] <= threat_max_depth
+  0.65 — premature AND already-on-tower both score 0), building defensive-geometry band
+  (0.50<=ny<=0.80 on top of the role test), and the per-episode credit budget
+  (threat_credit_budget 2) with 3s sustained-quiet hysteresis on ENGINE time in _observe.
+  Measured: 2.9 fires/match.
+- Same config keys as live (env: trade_kill_radius_tiles/trade_grace_s/trade_late_s/
+  threat_min_depth/threat_max_depth/threat_credit_budget) — one doctrine, two referees.
+- Tests: tests/test_trade_events_sim.py (9: prompt kill credits, tower kill pays nothing, late
+  kill decays to zero via backdated crossing, own loss debits, spell kill without nearby troop,
+  cast recording through step(), depth window, budget+hysteresis refill, building geometry).
+  Full suite 90/90 green. sim_trade_deadband is now unused (ledger replaced the potential).

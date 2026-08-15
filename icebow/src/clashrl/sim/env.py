@@ -228,7 +228,15 @@ class SimMatchEnv:
         self._bow_hostile_keys = {"little_prince", "bomber_evo"}
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
-        self.trade_deadband = float(cfg.get("rewards", "sim_trade_deadband", default=0.05))                # per-step clip on the trade term
+        self.trade_deadband = float(cfg.get("rewards", "sim_trade_deadband", default=0.05))  # (v3 ledger: unused)
+        self.trade_kill_r = float(cfg.get("env", "trade_kill_radius_tiles", default=4.0))
+        self.trade_grace_s = float(cfg.get("env", "trade_grace_s", default=3.0))
+        self.trade_late_s = float(cfg.get("env", "trade_late_s", default=10.0))
+        self.threat_min_depth = float(cfg.get("env", "threat_min_depth", default=0.12))
+        self.threat_max_depth = float(cfg.get("env", "threat_max_depth", default=0.65))
+        self.threat_credit_budget = int(cfg.get("env", "threat_credit_budget", default=2))
+        self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []
+        self._threat_credits, self._tid_unlit_t = 0, None                # per-step clip on the trade term
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
         self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
@@ -361,6 +369,15 @@ class SimMatchEnv:
             self.db, prev_depth=self._prev_ident_depth_true, dt=self.agent_dt,
             horizon=self.predict_horizon)
         self._prev_ident_depth_true = float(self._threat_id_true[7])
+        # THREAT-CREDIT HYSTERESIS: the budget refills only after 3 s of SUSTAINED quiet -- a
+        # one-step gap between two waves of the same push must not hand out fresh credits.
+        if self._threat_id_true[0] < 0.5:
+            if self._tid_unlit_t is None:
+                self._tid_unlit_t = self.eng.t
+            elif self.eng.t - self._tid_unlit_t >= 3.0:
+                self._threat_credits = 0
+        else:
+            self._tid_unlit_t = None
         mem = self._opp_mem.update(
             view.apply_detector_noise(view.opponent_memory_items(self.eng, 0, self.detector_cards),
                                       self.det_recall, self.det_precision, self.rng, self.detector_cards,
@@ -412,6 +429,9 @@ class SimMatchEnv:
         self._ally_xbow_standing = False  # pre-deploy read for the wincon repeat-credit gate
         self._bow_ledger = {}             # id(bow) -> {ids, cost, lock}: overcommit + uptime ledgers
         self._enemy_seen = set()          # enemy spec.keys fielded this match (context modifiers)
+        self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []   # trade event ledger
+        self._threat_credits = 0          # threat-response credits paid this episode (budgeted)
+        self._tid_unlit_t = None          # engine-time stamp of sustained threat quiet (hysteresis)
         # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
         # "turtle" half is the my_c >= 1 flip in step(), so the matchup lock here only needs to cover
         # decks that STRUCTURALLY blank a siege. A SPLIT-LANE deck (Royal Recruits / Royal Hogs) does:
@@ -555,6 +575,15 @@ class SimMatchEnv:
             # cycle play really did cost a tower, the chip and crown terms bill it -- with the actual
             # damage, at the actual time, instead of a prior. Keeping both charged it twice, once wrong.
             return 0.0
+        # DEPTH WINDOW + EPISODE BUDGET (2026-08-14, ported from live). Below min depth the push
+        # is still building -- pre-committing is wrong; ABOVE max depth the threat is already on
+        # our tower, and crediting the late answer teaches slow defense (same timing doctrine as
+        # the trade ledger's grace window). At most threat_credit_budget positive credits pay per
+        # threat episode (a real defense is 1-2 cards, not 4); the budget refills only after 3 s
+        # of sustained quiet, engine-timed in _observe -- a flickering assessment cannot refill it.
+        dpt = float(tid[7]) if len(tid) > 7 else 0.5
+        deep_ok = self.threat_min_depth <= dpt <= self.threat_max_depth
+        budget_ok = self._threat_credits < self.threat_credit_budget
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
         if prof.kind == "building":
@@ -570,7 +599,10 @@ class SimMatchEnv:
             # Graded on the counter role alone here; WHERE it went is settled by what follows -- the
             # chip/crown terms bill the damage it failed to prevent, and the counterfactual fork
             # compares against having held it. Same reasoning that retired the quiet-board branch.
-            return self.w_threat_response if card_threat.counters(prof, tid) else 0.0
+            if not (card_threat.counters(prof, tid) and 0.50 <= ny <= 0.80 and deep_ok and budget_ok):
+                return 0.0                # right role but wrong geometry/timing, or budget spent
+            self._threat_credits += 1
+            return self.w_threat_response
         if prof.pull:
             # A PULL spell is not a role counter and must not be graded as one. Its payoff is the CLUMP --
             # ice-wizard splash landing on everything, a centre Rocket hitting the whole push, a wincon
@@ -582,7 +614,10 @@ class SimMatchEnv:
             # punished by spell_waste, so this is not a free pass.
             return 0.0
         if card_threat.counters(prof, tid):
-            return self.w_threat_response if intercept else 0.0          # right counter; full only if it intercepts
+            if not (intercept and deep_ok and budget_ok):
+                return 0.0
+            self._threat_credits += 1
+            return self.w_threat_response                                # right counter, placed AND timed right
         return self.w_threat_miss if intercept else 0.0                  # wrong role dropped as a defence = a misread
 
     def _threat_miss_idle(self) -> float:
@@ -948,15 +983,61 @@ class SimMatchEnv:
         instead of contradicting each other. The cap stays as a guard against a single freak step;
         it bit 1 step in 7991 before and should be rarer now that deploys cancel.
         """
-        pot = self._trade_potential(self.eng)
-        d = pot - self._prev_trade_pot
-        self._prev_trade_pot = pot
-        if abs(d) < self.trade_deadband:
-            # DEADBAND (2026-08-14): the potential fired ~123x/match (4927 fires / 40 eval
-            # matches) with +-flicker from every hp tick and expiry -- GAE pairs that churn with
-            # whatever action sits nearby and drowns the sparse correctness signals. Sub-threshold
-            # drift is not a trade.
+        # ---- v3-SIM (2026-08-14): ATTRIBUTED EVENT LEDGER, ported from the live env with the
+        # engine's GROUND-TRUTH advantages. The potential above had the same agency hole live
+        # measured: tower kills, expiries and every hp tick moved it (~123 fires/match of churn),
+        # and a LATE defense collected the same credit as a prompt one. Events now:
+        #   * an ENEMY TROOP dying within trade_kill_radius_tiles of one of OUR living units, OR
+        #     within blast range of one of OUR damage-spell casts (<= 3 s old), is CREDITED at
+        #     its per-body elixir share -- scaled by RESPONSE TIMING: full inside trade_grace_s
+        #     of the troop CROSSING onto our half, decaying linearly to zero at trade_late_s
+        #     (engine-exact crossing times; deaths on their half carry no timing discount);
+        #   * one of OUR TROOPS dying is DEBITED unconditionally (buildings excluded: a bow or
+        #     tesla expiring is card-normal, and the X-Bow ledger prices bow outcomes);
+        #   * everything else (tower kills with no unit of ours near, walk-offs, expiries,
+        #     enemy spells/buildings vanishing, their deploys, hp ticks) moves NOTHING.
+        # Unit identity is engine-exact (id()), so there is no matching heuristic at all --
+        # the live version's nearest-neighbour tracks and flicker confirmation are unnecessary.
+        eng = self.eng
+        now = eng.t
+        credit = debit = 0.0
+        cur_en, cur_own = {}, {}
+        for u in eng.units:
+            if u.hp <= 0 or u.spec.kind != "troop":
+                continue
+            share = float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count)
+            if u.team == 1:
+                prev = self._ev_enemy.get(id(u))
+                t_cross = prev[3] if prev else None
+                if t_cross is None and u.y >= 0.5:
+                    t_cross = now
+                cur_en[id(u)] = (share, u.x, u.y, t_cross)
+            else:
+                cur_own[id(u)] = (share, u.x, u.y)
+        own_pos = [(v[1], v[2]) for v in cur_own.values()]             + [(v[1], v[2]) for v in self._ev_own.values()]   # prev too: a mutual kill still attributes
+        for uid, (share, x, y, t_cross) in self._ev_enemy.items():
+            if uid in cur_en:
+                continue                                     # still alive
+            near_own = any(tile_dist(x, y, ox, oy) <= self.trade_kill_r for ox, oy in own_pos)
+            near_spell = any(tile_dist(x, y, sx, sy) <= sr + 1.0 and now - st <= 3.0
+                             for (sx, sy, sr, st) in self._ev_spells)
+            if not (near_own or near_spell):
+                continue                                     # the towers' kill / walk-off / expiry
+            scale = 1.0
+            if t_cross is not None:
+                late = now - t_cross
+                if late > self.trade_grace_s:
+                    span = max(0.1, self.trade_late_s - self.trade_grace_s)
+                    scale = max(0.0, 1.0 - (late - self.trade_grace_s) / span)
+            credit += share * scale
+        for uid, (share, x, y) in self._ev_own.items():
+            if uid not in cur_own:
+                debit += share
+        self._ev_enemy, self._ev_own = cur_en, cur_own
+        self._ev_spells = [sp for sp in self._ev_spells if now - sp[3] <= 3.0]
+        if credit == 0.0 and debit == 0.0:
             return 0.0
+        d = (credit - debit) / self.value_norm
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
@@ -1060,6 +1141,9 @@ class SimMatchEnv:
                 placed_id = card_id
                 reward += self.rw_stats.add("threat_response", self._bonus(self._threat_response(card_id, nx, ny)))   # (1) counter to the assessed threat
                 reward += self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec(card_id, nx, ny)))           # (3) win-condition executed right
+                if card_id in self.damage_spell_ids:
+                    # trade ledger: enemy deaths near this cast within 3 s credit as OUR kill
+                    self._ev_spells.append((nx, ny, float(spec.spell_radius or 2.0), self.eng.t))
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.rw_stats.add("spell_waste", self.w_spell_waste)                                    # (soft) damage spell cast into emptiness
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
