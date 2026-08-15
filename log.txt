@@ -2691,3 +2691,18 @@ Notes / caveats
 - Tests: tests/test_sim_fidelity.py (11 scenario tests incl. falsification cases). Suite
   112/112. Random-policy smoke: 20 matches, 423 steps/s, no crashes. The RUNNING overnight
   trainer was never touched; everything lands on the next restart.
+
+2026-08-15 — FIDELITY BATCH 2 (user-directed, pre-dawn; details in icebow/SIM_FIDELITY.md)
+- Bomber Evo: investigated the reported revert -- engine-side NOT regressed (ranged 4.5,
+  splash, bounces; stop-gap 4.9 measured); what reads as melee is a marching target closing
+  the gap itself. Pinned with regression tests.
+- Movement/collision: walkers steer around STOPPED allies (river-safe dodge points, bridge
+  chokes hold); stopped attackers are walls to similar-mass allies; ally pushing power now
+  scales with speed surplus (Hog shoves Ice Golem, Goblin can't, Bandit capped behind Golem).
+- Battle Ram: charge 573 after 3 tiles, kamikaze connect, breaks into 2 real Barbarians.
+- Armed charges gallop at 2x pace. Evo Cannon volley re-mechanized as 9 simultaneous impact
+  RINGS (damage-once across overlaps, 1-tile knockback) landing ~1s after placement.
+- Death bombs fused 3s (Balloon/GS/Bomb Tower) with knockback via the spell path; GS bomb
+  x2 vs crown towers; Goblin Demolisher's "lifetime" was his FUSE -- no HP bleed, <50%
+  enrage into a very-fast building-charging kamikaze (10s fuse). Wall Breakers blast is
+  area 1.5 hitting bystander troops. All numbers wiki-verified. 123/123 tests.

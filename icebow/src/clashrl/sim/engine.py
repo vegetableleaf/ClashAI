@@ -288,6 +288,17 @@ class CardSpec:
     # RONIN (wiki): "can block the attack of opposing melee troops and deal double the
     # damage to them every 3.5 seconds" -- the blocked swing lands nothing.
     parry_cd_s: float = 0.0
+    # DELAYED DEATH BOMBS (wiki): Balloon / Giant Skeleton / Bomb Tower drop "a bomb which
+    # explodes after 3 seconds"; the Giant Skeleton's deals DOUBLE against Crown Towers.
+    death_delay_s: float = 0.0
+    death_crown_mult: float = 1.0
+    # GOBLIN DEMOLISHER (wiki attr row: 50% || Very Fast (120) || 10 sec || Melee 0.5 || 2.5):
+    # below enrage_frac he lights the dynamite -- very fast, melee, building-targeting,
+    # detonating on connect or when the fuse runs out.
+    enrage_frac: float = 0.0
+    enrage_fuse_s: float = 0.0
+    enrage_speed: float = 0.0
+    enrage_reach: float = 0.0
     deploy_volley: int = 0       # EVO CANNON: cannonball fan on deployment (9 in 2 rows)
     volley_dmg: float = 0.0      # 304 per ball; crown towers take volley_crown (89)
     volley_crown: float = 0.0
@@ -662,6 +673,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         zone_spawn_gap_s=float(c.get("zone_spawn_gap_s") or 0.0),
         zone_spawn_edge=bool(c.get("zone_spawn_edge")),
         parry_cd_s=float(c.get("parry_cd_s") or 0.0),
+        death_delay_s=float(c.get("death_delay_s") or 0.0),
+        death_crown_mult=float(c.get("death_crown_mult") or 1.0),
+        enrage_frac=float(c.get("enrage_frac") or 0.0),
+        enrage_fuse_s=float(c.get("enrage_fuse_s") or 0.0),
+        enrage_speed=float(c.get("enrage_speed") or 0.0),
+        enrage_reach=float(c.get("enrage_reach") or 0.0),
         deploy_volley=int(c.get("deploy_volley") or 0),
         volley_dmg=float(c.get("volley_damage") or 0.0) * sc,
         volley_crown=float(c.get("volley_crown_damage") or 0.0) * sc,
@@ -819,6 +836,8 @@ class Unit:
     poison_left: float = 0.0     # EVO DART GOBLIN: DoT seconds remaining on THIS unit
     poison_take: float = 0.0     # ...at this dps
     parry_ready_t: float = 0.0   # RONIN: engine time when the next parry is available
+    enraged: bool = False        # GOBLIN DEMOLISHER: dynamite lit (spec swapped, fuse burning)
+    fuse_left: float = 0.0
     lowspawn_cd: float = 0.0     # EVO GOBLIN GIANT: next passive low-hp spawn
     ramp_hold: float = 0.0       # EVO INFERNO D: stage kept alive this long after a kill
     relocate_next: float = 0.75  # EVO DRILL: next hp fraction that triggers a resurface
@@ -1109,6 +1128,7 @@ class SimEngine:
         self.vortices: List[_Vortex] = []        # landed tornadoes (active pull areas)
         self.zones: List[_Zone] = []             # lingering areas: Poison / Void / Graveyard
         self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
+        self._volleys: list = []                 # (land_t, team, x, y, spec): Evo Cannon barrage rings
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -1314,24 +1334,12 @@ class SimEngine:
         if spec.ghost_life_s > 0.0:                   # LJ ghost: vanishes silently after its time
             u.hatch_left = spec.ghost_life_s          # (hatch with no hatch_spec = timed removal)
         if spec.deploy_volley > 0:
-            # EVO CANNON: "after deployment, [it] shoots 9 cannonballs in 2 rows, 5 on the top
-            # row and 4 on the bottom, which deals area damage and inflicts knockback."
-            fwdv = -1.0 if team == 0 else 1.0
-            vspec = replace(spec, knockback=1.0, splash=False, multi_kind="", multi_hits=1)
-            k = 0
-            for row_n, row_d in ((5, 5.0), (4, 3.5)):
-                for i in range(row_n):
-                    if k >= spec.deploy_volley:
-                        break
-                    k += 1
-                    bx = cx + (i - (row_n - 1) / 2.0) * 1.4 / _TILES_X
-                    by = cy + fwdv * row_d / _TILES_Y
-                    bx, by = _clamp_xy(bx, by, 0.0)
-                    self.projectiles.append(Projectile(
-                        label=f"{spec.base}_volley", team=team, x=cx, y=cy, tx=bx, ty=by,
-                        target=None, spec=vspec, dmg=spec.volley_dmg,
-                        tower_dmg=spec.volley_crown or spec.volley_dmg,
-                        radius=1.0, speed=8.0, left=row_d + 1.0, ground_only=True, ox=cx, oy=cy))
+            # EVO CANNON "Deploy Barrage" (2026-08-15, RoyaleAPI/wiki): NOT projectiles -- nine
+            # impact RINGS appear at placement (5 across the front, 4 flanking the sides) and
+            # land together a beat later, each dealing area damage in a 2.5-tile radius with a
+            # 1-tile knockback; a target inside overlapping rings is damaged ONCE. Landing
+            # delay curated at 1.0 s [verify].
+            self._volleys.append((self.t + 1.0, team, cx, cy, spec))
         # ROYAL GHOST: "upon deployment, he will spawn INVISIBLE" -- stealth is his resting state,
         # not something he earns, so he arrives already faded and the first thing anyone sees is him
         # swinging. It is also why he cannot kite: he re-fades and the chaser forgets him.
@@ -1585,12 +1593,20 @@ class SimEngine:
             else:
                 tx, ty = u.x, ty                             # on the deck -> straight across
         tx, ty = self._steer_around_towers(u, tx, ty)        # towers are solid -> walk around them
+        tx, ty = self._steer_around_allies(u, tx, ty)        # ...and STOPPED allies get walked around
         # step in TILES, then convert back per axis (one normalised unit != one tile on both axes)
         dxt, dyt = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
         d = math.hypot(dxt, dyt)
         if d < 1e-6:
             return
-        step = min(u.spec.speed * spd_mult * dt, d)
+        spd = u.spec.speed
+        if (u.spec.charge_dmg > 0.0 and u.spec.charge_range > 0.0
+                and u.charge_dist >= u.spec.charge_range
+                and not (u.spec.charge_after_shield and u.shield_left > 0.0)):
+            # CHARGE GALLOP (wiki, Prince): "With his increased speed and damage while
+            # charging" -- an ARMED charge runs at double pace until the hit spends it.
+            spd *= 2.0
+        step = min(spd * spd_mult * dt, d)
         u.charge_dist += step                                # tiles covered without swinging -> arms a charge
         if step > 1e-9 and u.ramp_shots:
             u.ramp_shots = 0                                 # Little Prince: MOVING resets the ramp
@@ -1649,10 +1665,31 @@ class SimEngine:
                 overlap = mind - d
                 a_anch = a.spec.kind == "building"
                 b_anch = b.spec.kind == "building"
+                if a.team == b.team and not (a_anch or b_anch):
+                    # ALLY PUSH RULES (2026-08-15, user-verified). A STOPPED attacker is a
+                    # WALL to similar-or-lighter allies -- the walker behind gets stuck
+                    # instead of bulldozing the whole mass into whatever it is shooting.
+                    # Only a clearly heavier body still displaces it (a Golem really does
+                    # shove your Musketeer aside).
+                    a_stop = a.attacking or a.locked
+                    b_stop = b.attacking or b.locked
+                    if a_stop and not b_stop and _push_mass(b.spec) <= _push_mass(a.spec) * 1.4:
+                        a_anch = True
+                    elif b_stop and not a_stop and _push_mass(a.spec) <= _push_mass(b.spec) * 1.4:
+                        b_anch = True
                 if a_anch and b_anch:
                     continue
                 am = 0.0 if a_anch else _push_mass(a.spec)
                 bm = 0.0 if b_anch else _push_mass(b.spec)
+                if (a.team == b.team and am > 0.0 and bm > 0.0
+                        and not (a.attacking or a.locked or b.attacking or b.locked)):
+                    # Both WALKING: "the large disparity in speed makes up for the small
+                    # disparity in mass" (wiki mass notes) -- a fast heavy pusher (Hog) shoves
+                    # a slow mini-tank (Ice Golem) up the lane, while an equally-fast but tiny
+                    # Goblin barely moves it. Speed surplus scales ALLY pushing power only; an
+                    # enemy wall holding up a tank stays pure volume.
+                    am *= 1.0 + max(0.0, a.spec.speed - b.spec.speed)
+                    bm *= 1.0 + max(0.0, b.spec.speed - a.spec.speed)
                 s = am + bm
                 if s <= 0:
                     continue
@@ -1690,6 +1727,12 @@ class SimEngine:
                 self._pending = [p for p in self._pending if p[0] > self.t]
                 for _, tm_, sp_, px_, py_ in due:
                     self._finish_deploy(tm_, sp_, px_, py_)
+        if self._volleys:
+            landing = [v for v in self._volleys if v[0] <= self.t]
+            if landing:
+                self._volleys = [v for v in self._volleys if v[0] > self.t]
+                for _, tm_, vx_, vy_, sp_ in landing:
+                    self._resolve_barrage(tm_, vx_, vy_, sp_)
         # elixir
         rate = self.elixir_rate()
         for team in (0, 1):
@@ -1710,7 +1753,9 @@ class SimEngine:
         # needed. This is what makes chip damage finish a building EARLY, and it is why the decay --
         # not a separate age check -- is what ends a building's life.
         for u in self.units:
-            if u.spec.lifetime and u.deploy_left <= 0.0:
+            if u.spec.lifetime and u.deploy_left <= 0.0 and u.spec.kind == "building":
+                # BUILDINGS ONLY (2026-08-15): the Goblin Demolisher's wiki "life 10" is his
+                # lit-dynamite FUSE, not a lifetime -- his HP must not bleed from deploy.
                 u.hp -= (u.spec.hp / u.spec.lifetime) * dt
         self._tick_spawners(dt)
         self._tick_zones(dt)
@@ -1758,6 +1803,25 @@ class SimEngine:
                 u.rage_self_left = max(0.0, u.rage_self_left - dt)
             if u.iframes_left > 0.0:
                 u.iframes_left = max(0.0, u.iframes_left - dt)
+            if (u.spec.enrage_frac > 0.0 and not u.enraged and u.hp > 0.0
+                    and u.hp <= u.spec.hp * u.spec.enrage_frac):
+                # GOBLIN DEMOLISHER (wiki): "When his hitpoints are lowered below 50%, he
+                # changes into a very fast, building-targeting troop that charges toward the
+                # nearest building" -- one spec swap and every downstream system just works;
+                # kamikaze makes the connect ITSELF the detonation (death blast + knockback).
+                u.enraged = True
+                u.fuse_left = u.spec.enrage_fuse_s
+                u.spec = replace(u.spec, building_only=True, kamikaze=True,
+                                 speed=(u.spec.enrage_speed or u.spec.speed * 2.0),
+                                 reach=(u.spec.enrage_reach or u.spec.reach),
+                                 proj_speed=0.0, splash=False)
+                u.aggro_reset = True
+                u.locked = False
+                u.target = None
+            if u.enraged and u.fuse_left > 0.0:
+                u.fuse_left -= dt
+                if u.fuse_left <= 0.0:
+                    u.hp = -1.0                              # the fuse wins: detonate in place
             if u.poison_left > 0.0:                          # Evo Dart Goblin's poison ticks
                 u.poison_left = max(0.0, u.poison_left - dt)
                 u.hp -= u.poison_take * dt                   # DoT bypasses shields (spell-like)
@@ -2319,6 +2383,18 @@ class SimEngine:
         s = u.spec
         if s.death_dmg <= 0.0 or s.death_radius <= 0.0:
             return
+        if s.death_delay_s > 0.0:
+            # FUSED BOMB (wiki): Balloon / Giant Skeleton / Bomb Tower "drop a bomb which
+            # explodes after 3 seconds". Walking out of it is the counterplay, so the delay
+            # is the mechanic. Resolved through the generic spell path, which also applies
+            # the knockback these bombs carry.
+            bomb = replace(s, spell_dmg=s.death_dmg, spell_radius=s.death_radius,
+                           spell_tower_dmg=s.death_dmg * s.death_crown_mult,
+                           pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
+                           spawn_count=0, decoy_mirror=False, zap_pulses=0,
+                           death_delay_s=0.0)
+            self.spells.append(_Spell(u.team, u.x, u.y, bomb, s.death_delay_s))
+            return
         for e in self.units:
             if e.team == u.team or e.hp <= 0:
                 continue
@@ -2331,7 +2407,7 @@ class SimEngine:
                 self._knock(e, s, u.x, u.y)
         for tw in self._enemy_towers(u.team):
             if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
-                self._damage_tower(tw, s.death_dmg, u.team)
+                self._damage_tower(tw, s.death_dmg * s.death_crown_mult, u.team)
 
     def _tick_hatch(self, dt: float) -> None:
         """Phoenix EGG countdown. An egg that SURVIVES its 3.8 s hatches into a reborn phoenix at
@@ -3276,6 +3352,8 @@ class SimEngine:
             return
         rad = s.r_override or s.spec.spell_radius
         for e in self.units:
+            if s.spec.ground_only and e.spec.flying:
+                continue                                     # a ground bomb can't reach flyers
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= rad:
                 self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
                 self._apply_status(s.team, s.spec, e)                 # Zap/Freeze stun; slow spells
@@ -3338,6 +3416,79 @@ class SimEngine:
                 if e.locked and e.target is not None \
                         and _gap(e.x, e.y, e.target) > e.spec.reach + e.reach_extra:
                     e.aggro_reset = True
+
+    def _resolve_barrage(self, team: int, cx: float, cy: float, spec: CardSpec) -> None:
+        """Evo Cannon's nine rings land: 5 in a row ~2.5 tiles ahead, 4 flanking the mount
+        [verify layout]. Damage radius 2.5 per ring, each victim hit ONCE, shoved 1 tile from
+        the nearest ring centre; crown towers take volley_crown once."""
+        fwd = -1.0 if team == 0 else 1.0
+        rings = [(cx + ox / _TILES_X, cy + fwd * 2.5 / _TILES_Y)
+                 for ox in (-4.4, -2.2, 0.0, 2.2, 4.4)]
+        rings += [(cx + ox / _TILES_X, cy + fwd * 0.5 / _TILES_Y)
+                  for ox in (-3.3, -1.1, 1.1, 3.3)]
+        R = 2.5
+        kspec = replace(spec, knockback=1.0, knockback_all=False)
+        for e in self.units:
+            if e.team == team or e.hp <= 0 or e.spec.flying or e.hidden:
+                continue
+            hits = [rg for rg in rings if _dist(e.x, e.y, rg[0], rg[1]) <= R + e.spec.radius]
+            if not hits:
+                continue
+            near = min(hits, key=lambda rg: _dist(e.x, e.y, rg[0], rg[1]))
+            self._hurt(e, spec.volley_dmg)
+            self._knock(e, kspec, near[0], near[1])
+        for tw in self._enemy_towers(team):
+            if tw.alive and any(_gap(rg[0], rg[1], tw) <= R for rg in rings):
+                self._damage_tower(tw, spec.volley_crown or spec.volley_dmg, team)
+
+    @staticmethod
+    def _ground_pos_ok(x: float, y: float, r_tiles: float) -> bool:
+        """Can a GROUND body legally stand here? Inside the side edges, and never in the
+        water unless on a bridge deck -- vetoes ally-dodge points at the bridge choke."""
+        if not (r_tiles / _TILES_X <= x <= 1.0 - r_tiles / _TILES_X):
+            return False
+        if abs(y - _RIVER) * _TILES_Y < 1.0 + r_tiles:
+            return any(abs(x - bx) * _TILES_X <= _BRIDGE_HALF for bx in _BRIDGES)
+        return True
+
+    def _steer_around_allies(self, u: Unit, tx: float, ty: float):
+        """A walker paths AROUND a STOPPED ally (attacking / locked / still deploying)
+        instead of shoving it -- the user-reported bug was a melee unit bulldozing its own
+        firing ranged support into the enemy. Marching same-direction pushes are untouched
+        (that is a real mechanic; see _separate). The dodge point must be legal ground, so
+        nobody sidesteps into the river at a bridge choke."""
+        if u.spec.flying:
+            return tx, ty
+        ux, uy = (tx - u.x) * _TILES_X, (ty - u.y) * _TILES_Y
+        d = math.hypot(ux, uy)
+        if d <= 1e-6:
+            return tx, ty
+        ux, uy = ux / d, uy / d
+        best = None
+        for a in self.units:
+            if (a is u or a.team != u.team or a.hp <= 0 or a.spec.flying
+                    or not (a.attacking or a.locked or a.deploy_left > 0.0)):
+                continue
+            axt, ayt = (a.x - u.x) * _TILES_X, (a.y - u.y) * _TILES_Y
+            along = axt * ux + ayt * uy                      # tiles ahead along the path
+            if along <= 0.0 or along > 2.5:
+                continue
+            lat = -axt * uy + ayt * ux                       # signed lateral offset
+            block = u.spec.radius + a.spec.radius + 0.1
+            if abs(lat) >= block:
+                continue
+            if best is None or along < best[0]:
+                best = (along, a, lat, block)
+        if best is None:
+            return tx, ty
+        _along, a, lat, block = best
+        side = 1.0 if lat > 0.0 else -1.0                    # round the shoulder it already leans to
+        px, py = -uy * side, ux * side                       # lateral unit vector toward the ally
+        m = block + 0.15
+        nx_, ny_ = a.x - px * m / _TILES_X, a.y - py * m / _TILES_Y
+        if not u.spec.river_jump and not self._ground_pos_ok(nx_, ny_, u.spec.radius):
+            return tx, ty                                    # no legal dodge: stay put behind it
+        return nx_, ny_
 
     def _tick_zones(self, dt: float) -> None:
         for z in self.zones:

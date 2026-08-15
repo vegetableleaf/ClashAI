@@ -750,6 +750,10 @@ cards:
     range: melee
     splash: true
     count: 1
+    # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds" --
+    # walking out of the bomb is the counterplay. Knockback on the blast [verify tiles].
+    death_delay_s: 3.0
+    knockback_tiles: 1.0
     win_condition: true
     targets: buildings_only
     flags: [flying, building_targeting, splash, death_damage]
@@ -981,21 +985,34 @@ cards:
     range: melee
     verified: false
 
+  # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds."
+  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 1.0, verified: true}
+
   battle_ram:
     display: "Battle Ram"
     win_condition: true
     targets: buildings_only
-    flags: [building_targeting, charge]
+    # 2026-08-15 wiki: "After it travels 3 tiles, it will begin to charge ... deals double
+    # damage (573 @11) if it hits whilst charging. Once it reaches a building or it is
+    # destroyed, it will break and reveal the two Barbarians underneath." kamikaze = the
+    # connect IS the break; the barbs come out via the death-spawn path either way.
+    flags: [building_targeting, charge, kamikaze]
+    charge_damage: 573
+    charge_range: 3.0
+    spawns: {unit: barbarians, on_death: 2}
     range: melee
-    verified: false
+    verified: true
 
   wall_breakers:
     display: "Wall Breakers"
     win_condition: true
     targets: buildings_only
-    flags: [building_targeting, kamikaze]
+    # 2026-08-15 wiki attr row: "area-damage ... 1.5" -- the barrel blast is AREA (radius
+    # 1.5), so troops standing beside the building it connects with are damaged too.
+    flags: [building_targeting, kamikaze, splash]
+    splash_radius_tiles: 1.5
     range: melee
-    verified: false
+    verified: true
 
   goblin_giant:
     display: "Goblin Giant"
@@ -1155,6 +1172,7 @@ cards:
     win_condition: true
     targets: any
     flags: [splash, siege]
+    splash_radius_tiles: 2.0  # wiki attr: shell area radius 2
     # 2026-08-15 wiki sweep: attr table publishes "3.5-11.5" range, 3.5 s deploy, 30 s life,
     # 5 s hit speed. The range table carried 3.5 -- the DEAD-ZONE minimum, not the reach --
     # so an opponent Mortar could never actually siege; a whole ladder archetype was a dud.
@@ -1400,7 +1418,8 @@ cards:
     hook_time_s: 1.3
     hook_speed_tiles: 13.33
     verified: true
-  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune], verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
+  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune],
+                   death_delay_s: 3.0, death_crown_mult: 2.0, verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
   goblins: {range: melee, verified: false}
   goblin_gang: {range: melee, verified: false}
   golden_knight: {range: melee, verified: false}
@@ -1612,7 +1631,12 @@ cards:
   # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
   furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
-  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage, knockback], verified: false}   # "dealing high damage and inflicting knockback after defeat"
+  # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
+  # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
+  # he sprints at the nearest building and detonates on connect or when the fuse runs out.
+  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage, knockback],
+                      enrage_frac: 0.5, enrage_fuse_s: 10.0, enrage_speed: 2.0, enrage_reach: 0.5,
+                      verified: true}
   # STILL NOT MODELLED, and why:
   #   mega_knight  -- his JUMP blast (jump_damage 537 / jump_time_s 0.9) needs a leap mechanic; his
   #                   LANDING blast IS modelled (spawn_damage)

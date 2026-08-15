@@ -72,3 +72,42 @@ said blobs refund 1 each; the wiki says golem 1 / golemites & blobs 0.5 — memo
 - `tests/test_sim_fidelity.py`: 11 scenario tests, one per mechanic, including the
   falsification cases (swarm under Lightning untouched; Mortar blind spot can't fight back;
   void tier collapse when the crowd dies).
+
+---
+
+# Batch 2 — user-directed fixes (2026-08-15, pre-dawn)
+
+Seven reports + two follow-ups, all wiki/RoyaleAPI-verified before landing:
+
+1. **Bomber Evo "reverted"** — investigated, NOT regressed: spec is ranged (4.5), splash, 2
+   bounces, and the measured stop-gap vs a stationary target is 4.9 tiles. What reads as
+   "melee" is a WALKING target (a marching Giant) closing the distance itself — real CR,
+   since ranged units don't kite backward. Pinned with two regression tests.
+2. **Collision/pathing** — walkers now steer AROUND stopped allies (attacking/locked/
+   deploying) with the same shoulder-rounding as towers; the dodge point is vetoed unless it
+   is legal ground (never into the river at a bridge choke — walker just waits behind).
+   In `_separate`, a stopped attacker is a WALL to similar-or-lighter allies (≤1.4× mass);
+   only a clearly heavier body still shoves it. Marching same-direction pushes stay.
+3. **Push tiers** — per the wiki's hidden-mass notes ("large disparity in speed makes up for
+   the small disparity in mass"): ally pushing power now scales with speed surplus, so a Hog
+   shoves an Ice Golem up the lane while an equally-fast Goblin barely moves it, and a
+   Bandit behind a Golem is pace-capped. Enemy body-blocking stays pure volume. Air-air and
+   ground-ground both covered (the separator already pairs same-medium only).
+4. **Battle Ram** — charge 573 (=2× 286) after 3 tiles, kamikaze on connect, and the break
+   reveals 2 real Barbarians (670/191) via the death-spawn path, on connect OR on death.
+5. **Charge gallop** — an armed charge (Prince/Dark Prince/Ram/…) now runs at double pace
+   until the hit spends it ("with his increased speed and damage while charging").
+6. **Evo Cannon barrage** — no longer projectiles: nine impact rings (5 front, 2.5 tiles
+   ahead; 4 flanking) land together ~1 s after placement [verify timing/layout], each a
+   2.5-tile damage area with 1-tile knockback, any victim damaged ONCE across overlaps.
+7. **Fused death bombs** — Balloon / Giant Skeleton / Bomb Tower drop a bomb that explodes
+   after 3 s (wiki-exact) through the spell path, with knockback; walking out is the
+   counterplay (test proved a walking Knight escapes it). GS bomb deals DOUBLE to crown
+   towers (688→1376). Goblin Demolisher stays instant + knockback.
+8. **Goblin Demolisher rework** — his "life 10" was bleeding HP from deploy; it is the lit
+   FUSE. Below 50% he swaps spec: very fast, melee (0.5), building-only, kamikaze — sprints
+   at the nearest building and detonates on connect or when the 10 s fuse runs out.
+9. **Wall Breakers** — the barrel blast is AREA (radius 1.5, wiki attr row): troops beside
+   the building take it too.
+
+Tests: 11 more in test_sim_fidelity.py (33 total there). Suite 123/123. Smoke 584 steps/s.

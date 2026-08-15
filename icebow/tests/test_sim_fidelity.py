@@ -27,6 +27,12 @@ def _tick(env, seconds):
         env.step((False, 0, 0))
 
 
+def _silence_towers(env):
+    for side in (0, 1):
+        for tw in env.eng.towers[side]:
+            tw.stun_left = 999.0
+
+
 class SiegeTests(unittest.TestCase):
     def test_xbow_windup_delays_first_shot(self):
         env = _quiet()
@@ -184,6 +190,177 @@ class CombatQuirkTests(unittest.TestCase):
         env.eng.advance(0.3)
         self.assertEqual(sum(1 for u in env.eng.units if u.team == 0), 1,
                          "the tap lands ~0.25 s later, like the live pipeline")
+
+
+class BomberEvoPin(unittest.TestCase):
+    """User report 2026-08-15: 'the bomber evo fix seems to have been reverted, acting like a
+    single-target melee troop'. Engine-level it is NOT (spec: reach 4.5, splash, 2 bounces;
+    measured stop-gap 4.9 tiles) -- these pins make sure it can never silently regress."""
+
+    def test_bomber_evo_is_ranged_splash_with_bounces(self):
+        env = _quiet(seed=70)
+        b = build_spec(env.eng.db, "bomber_evo", 11)
+        self.assertGreaterEqual(b.reach, 4.0, "ranged, not melee")
+        self.assertTrue(b.splash, "area damage")
+        self.assertGreaterEqual(b.bounce_n, 2, "the evo bomb bounces on")
+        self.assertGreater(b.proj_speed, 0.0, "thrown bomb, not a sword")
+
+    def test_bomber_evo_attacks_from_range(self):
+        from clashrl.sim.engine import _gap
+        env = _quiet(seed=71)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        # vs a STATIONARY building: a walking target (e.g. a Giant marching past him) will
+        # close the distance ITSELF and end up point-blank -- that is real CR, and it is
+        # probably what read as "melee" in the sim view. His own stop distance is ranged.
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bomb_tower", 11), 0.70, 0.55)
+        g = [u for u in env.eng.units if u.team == 1][-1]
+        assert env.eng.deploy(0, build_spec(env.eng.db, "bomber_evo", 11), 0.70, 0.78)
+        b = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 8)
+        self.assertGreater(_gap(b.x, b.y, g), 3.0,
+                           "he stands off and throws; a melee bomber would be at ~1 tile")
+        self.assertLess(g.hp, g.spec.hp - 200, "and the bombs land from out there")
+
+
+class Batch2Tests(unittest.TestCase):
+    def test_battle_ram_breaks_into_barbarians_with_charge_damage(self):
+        env = _quiet(seed=60)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bomb_tower", 11), 0.30, 0.60)
+        bt = [u for u in env.eng.units if u.team == 1][-1]
+        assert env.eng.deploy(0, build_spec(env.eng.db, "battle_ram", 11), 0.30, 0.78)
+        hp0 = bt.hp
+        _tick(env, 6)
+        barbs = [u for u in env.eng.units if u.team == 0 and u.spec.base == "barbarians"]
+        ram = [u for u in env.eng.units if u.team == 0 and u.spec.base == "battle_ram"]
+        self.assertEqual(len(barbs), 2, "the break reveals the two Barbarians underneath")
+        self.assertEqual(len(ram), 0, "the ram is spent on the connect")
+        self.assertLess(bt.hp, hp0 - 500, "a charged connect lands 573")
+
+    def test_charge_gallop_doubles_pace(self):
+        env = _quiet(seed=61)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "prince", 11), 0.30, 0.62)
+        pr = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 2)
+        y_a = pr.y
+        _tick(env, 1)                                    # still walking (run-up not armed)
+        walk_rate = (y_a - pr.y) * 32.0
+        _tick(env, 2)                                    # armed by now
+        y_b = pr.y
+        _tick(env, 1)
+        gallop_rate = (y_b - pr.y) * 32.0
+        self.assertGreater(gallop_rate, walk_rate * 1.5,
+                           "an armed charge runs at double pace (%.2f vs %.2f t/s)"
+                           % (gallop_rate, walk_rate))
+
+    def test_balloon_bomb_fuses_three_seconds_and_knocks(self):
+        env = _quiet(seed=62)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.50, 0.62)
+        kn = [u for u in env.eng.units if u.team == 1][-1]
+        kn.stun_left = 9.0                               # pinned under the bomb; a WALKING unit
+        assert env.eng.deploy(0, build_spec(env.eng.db, "balloon", 11), 0.50, 0.60)   # escapes it
+        loon = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 2)
+        loon.x, loon.y = kn.x, kn.y - 0.02               # shot down right over the knight
+        loon.hp = -1.0                                   # shot down over the knight
+        _tick(env, 1)
+        self.assertGreater(kn.hp, kn.spec.hp - 60, "no damage while the fuse burns")
+        y0 = kn.y
+        _tick(env, 3)
+        self.assertLess(kn.hp, kn.spec.hp - 180, "the 240 bomb lands after ~3 s")
+        self.assertGreater(abs(kn.y - y0), 0.004, "and shoves the victim away")
+
+    def test_giant_skeleton_bomb_doubles_on_towers(self):
+        env = _quiet(seed=63)
+        env.eng.elixir[0] = 10.0
+        tw = env.eng.towers[1][0]
+        hp0 = tw.hp
+        assert env.eng.deploy(0, build_spec(env.eng.db, "giant_skeleton", 11), tw.x, tw.y + 0.02)
+        gs = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 1)
+        gs.hp = -1.0
+        _tick(env, 4)
+        self.assertLess(tw.hp, hp0 - 1200, "688 doubles to 1376 against a crown tower")
+
+    def test_demolisher_keeps_hp_then_enrages_and_detonates(self):
+        env = _quiet(seed=64)
+        _silence_towers(env)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "goblin_demolisher", 11), 0.70, 0.30)
+        dm = [u for u in env.eng.units if u.team == 1][-1]
+        _tick(env, 4)
+        self.assertAlmostEqual(dm.hp, dm.spec.hp, delta=1.0,
+                               msg="no lifetime bleed before the dynamite is lit")
+        dm.hp = dm.spec.hp * 0.45
+        hp0 = env.eng.towers[0][0].hp
+        _tick(env, 1)
+        self.assertTrue(dm.enraged, "below half he lights the fuse")
+        self.assertTrue(dm.spec.building_only and dm.spec.kamikaze,
+                        "and becomes a building-charging bomb")
+        _tick(env, 12)
+        self.assertLessEqual(dm.hp, 0.0, "connect or fuse: either way he detonates")
+        self.assertLess(min(env.eng.towers[0][0].hp, env.eng.towers[0][1].hp), hp0,
+                        "the run ends on whichever of our towers was nearest")
+
+    def test_wall_breaker_blast_splashes_troops(self):
+        env = _quiet(seed=65)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bomb_tower", 11), 0.30, 0.60)
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.315, 0.615)
+        kn = [u for u in env.eng.units if u.team == 1][-1]
+        assert env.eng.deploy(0, build_spec(env.eng.db, "wall_breakers", 11), 0.30, 0.72)
+        _tick(env, 8)
+        self.assertLess(kn.hp, kn.spec.hp - 250,
+                        "the barrel blast is AREA (1.5): bystanders take it too")
+
+    def test_evo_cannon_barrage_rings_land_once(self):
+        env = _quiet(seed=66)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.50, 0.43)
+        kn = [u for u in env.eng.units if u.team == 0][-1]
+        assert env.eng.deploy(1, build_spec(env.eng.db, "cannon_evo", 11), 0.50, 0.35)
+        env.eng.advance(0.5)
+        self.assertAlmostEqual(kn.hp, kn.spec.hp, delta=1.0, msg="rings are still in the air")
+        env.eng.advance(0.7)
+        loss = kn.spec.hp - kn.hp
+        self.assertGreater(loss, 250, "the barrage lands ~1 s after placement")
+        self.assertLess(loss, 400, "overlapping rings damage a target ONCE (304, not 608)")
+
+    def test_walker_paths_around_stopped_ally(self):
+        env = _quiet(seed=67)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bomb_tower", 11), 0.50, 0.42)
+        assert env.eng.deploy(0, build_spec(env.eng.db, "musketeer", 11), 0.50, 0.60)
+        mk = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 3)                                    # she settles in and starts firing
+        y_firing = mk.y
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.50, 0.66)
+        _tick(env, 4)
+        self.assertLess(abs(mk.y - y_firing), 0.012,
+                        "the knight walks AROUND her instead of bulldozing her forward")
+
+    def test_hog_pushes_ice_golem_but_bandit_cannot_push_golem(self):
+        env = _quiet(seed=68)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "ice_golem", 11), 0.30, 0.60)
+        solo = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 4)
+        solo_prog = 0.60 - solo.y
+        env2 = _quiet(seed=68)
+        env2.eng.elixir[0] = 10.0
+        assert env2.eng.deploy(0, build_spec(env2.eng.db, "ice_golem", 11), 0.30, 0.60)
+        ig = [u for u in env2.eng.units if u.team == 0][-1]
+        assert env2.eng.deploy(0, build_spec(env2.eng.db, "hog_rider", 11), 0.30, 0.66)
+        _tick(env2, 4)
+        pushed_prog = 0.60 - ig.y
+        self.assertGreater(pushed_prog, solo_prog * 1.1,
+                           "a fast heavy Hog shoves the Ice Golem up the lane")
 
 
 if __name__ == "__main__":
