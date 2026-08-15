@@ -2573,3 +2573,18 @@ Notes / caveats
   kill decays to zero via backdated crossing, own loss debits, spell kill without nearby troop,
   cast recording through step(), depth window, budget+hysteresis refill, building geometry).
   Full suite 90/90 green. sim_trade_deadband is now unused (ledger replaced the potential).
+
+2026-08-14 — FIX: remote-pool league broadcast crashed at match 1000 (unpicklable nets)
+- The first self-play snapshot broadcast shipped NET OBJECTS over the worker pipes; the DQN
+  class is local to train_rl._build_net, so instances don't pickle -> AttributeError killed
+  the run at exactly sp_snap_every (1000). Now the parent ships plain state_dicts
+  ({model, gate}) and each worker rebuilds with the same _build_net (in_ch from obs_shape[2]
+  — it's (H, W, C)) and caches per league entry, clearing on each new league.
+- Second latent bug behind it: the remote PFSP-attribution branch referenced an out-of-scope
+  `snaps` (NameError the first time a self-play match finished) and recorded nothing. The
+  parent now keeps the broadcast nets index-aligned (_bcast) and appends each reported
+  outcome to the right snapshot's _pfsp history.
+- Also: on --resume the league seeds instantly but workers idled empty until match 1000;
+  _broadcast_league() now fires at startup too.
+- Verified end-to-end: RemotePool smoke (2 workers, sp_prob 1.0) — broadcast, worker net
+  rebuild, 4 self-play matches to completion, pfsp indices [0,0,0,0]. Suite 90/90.

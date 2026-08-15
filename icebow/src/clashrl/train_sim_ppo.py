@@ -468,6 +468,31 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             return make_opponent(cfg, env.db, env.rng, env.meta_pool, level=11, adaptive=False)
         return opponent_provider(env)
 
+    _bcast = {"nets": []}                # nets index-aligned with the last shipped league
+
+    def _broadcast_league():
+        # NET OBJECTS CANNOT CROSS THE PIPE: the DQN class is local to _build_net, so its
+        # instances do not pickle (measured: AttributeError "Can't get local object
+        # '_build_net.<locals>.DQN'" at the FIRST snapshot broadcast, match 1000, killing the
+        # run). Ship plain state_dicts; each worker rebuilds with the same _build_net and
+        # caches per league entry. PFSP weights still come from the parent's net objects
+        # (their _pfsp histories live here), and _bcast keeps those nets index-aligned with
+        # the shipped list so a worker's outcome report can find its snapshot again.
+        if not remote:
+            return
+        nets = list(league)
+        if keep_best and _best_snap.get("net") is not None:
+            nets.append(_best_snap["net"])
+        if not nets:
+            return
+        try:
+            w_l = list(pfsp_weights(nets, pfsp_power)) if (pfsp_on and len(nets) > 1) else []
+        except Exception:  # noqa: BLE001
+            w_l = []
+        sds = [{"model": n.policy.state_dict(), "gate": n.gate.state_dict()} for n in nets]
+        _bcast["nets"] = nets
+        rpool.set_league(sds, w_l, sp_prob_now())
+
     if sp_prob > 0 or True:
         for e in pool:
             e.opponent_provider = opponent_provider_cur
@@ -475,6 +500,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             sd = snapshot()
             if keep_best:
                 _best_snap["net"] = sd
+        _broadcast_league()              # remote workers start with the seeded league, not empty
         print(f"[train-sim-ppo] self-play ON: prob {sp_prob:.2f} (ramp {sp_ramp}), snapshot every "
               f"{sp_snap_every}, league {sp_league_size}"
               + (", +best-self" if keep_best else "") + (f", PFSP p={pfsp_power:g}" if pfsp_on else ""))
@@ -654,9 +680,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     if done:
                         oc = info.get("outcome")
                         if remote:
-                            pj = info.get("pfsp")
-                            if pj is not None and 0 <= pj < len(snaps) and hasattr(snaps[pj], "append"):
-                                pass                     # sd-list league: PFSP history kept parent-side below
+                            pj = info.get("pfsp")          # index into the last broadcast league
+                            if pj is not None and 0 <= pj < len(_bcast["nets"]):
+                                n_ = _bcast["nets"][pj]
+                                if hasattr(n_, "_pfsp"):   # parent-side PFSP ledger
+                                    n_._pfsp.append(1.0 if oc == "win" else (0.5 if oc == "draw" else 0.0))
                         else:
                             opp = getattr(env, "opponent", None)   # PFSP attribution (before reset)
                             if isinstance(opp, SelfPlayOpponent) and hasattr(opp.net, "_pfsp"):
@@ -678,16 +706,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             save()
                         if sp_prob > 0 and done_n % sp_snap_every == 0:
                             snapshot()
-                            if remote:
-                                _snaps = list(league)
-                                if keep_best and _best_snap.get("net") is not None:
-                                    _snaps.append(_best_snap["net"])
-                                try:
-                                    w_l = (list(pfsp_weights(_snaps, pfsp_power))
-                                           if (pfsp_on and len(_snaps) > 1) else [])
-                                except Exception:
-                                    w_l = []
-                                rpool.set_league(_snaps, w_l, sp_prob_now())
+                            _broadcast_league()
                         if eval_every > 0 and done_n % eval_every == 0:
                             wr = evaluate(fair=False)
                             if wr is not None:
