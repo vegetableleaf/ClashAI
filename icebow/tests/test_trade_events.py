@@ -39,6 +39,9 @@ def _stub():
     e.trade_cap = 1.0
     e.w_elixir_trade = 1.0
     e.phi_max_age = 0.6
+    e.trade_grace_s = 3.0
+    e.trade_late_s = 10.0
+    e._last_frame_t = 100.0
     e._tr_prev_enemy = []
     e._tr_prev_mine = []
     e._tr_pend_en = []
@@ -98,6 +101,50 @@ class TradeEventTests(unittest.TestCase):
         r = _step(e, [])                                  # detector blind on an ACTIVE board
         self.assertEqual(r, 0.0)
         self.assertEqual(e._tr_prev_enemy[0][0], "pekka", "snapshots held through the blind frame")
+
+
+class ResponseTimingTests(unittest.TestCase):
+    def test_prompt_defense_pays_full(self):
+        e = _stub()
+        own = _Det("mine", "knight", 0.50, 0.60)
+        foe = _Det("enemy", "pekka", 0.52, 0.62)          # on OUR half from first sight (t=100)
+        _step(e, [own, foe])
+        e._last_frame_t = 101.0
+        _step(e, [own])                                   # dies fast...
+        e._last_frame_t = 102.0
+        r = _step(e, [own])                               # ...2 s after crossing: inside the grace
+        self.assertAlmostEqual(r, 0.7, delta=1e-6, msg="a prompt kill pays in full")
+
+    def test_late_defense_pays_nothing(self):
+        e = _stub()
+        foe = _Det("enemy", "pekka", 0.52, 0.62)
+        _step(e, [foe])                                   # crosses at t=100, NO answer from us...
+        for t in (103.0, 106.0, 109.0):
+            e._last_frame_t = t
+            _step(e, [foe])                               # ...it just sits on our half
+        own = _Det("mine", "tesla", 0.51, 0.61)
+        e._last_frame_t = 111.0
+        _step(e, [own, foe])                              # the answer arrives ELEVEN seconds late
+        e._last_frame_t = 112.0
+        _step(e, [own])
+        e._last_frame_t = 112.5
+        r = _step(e, [own])
+        self.assertAlmostEqual(r, 0.0, delta=1e-6,
+                               msg="a kill >= trade_late_s after the crossing credits nothing")
+
+    def test_half_late_defense_pays_half(self):
+        e = _stub()
+        foe = _Det("enemy", "pekka", 0.52, 0.62)
+        _step(e, [foe])                                   # crosses at t=100
+        own = _Det("mine", "knight", 0.50, 0.60)
+        e._last_frame_t = 105.0
+        _step(e, [own, foe])
+        e._last_frame_t = 106.0
+        _step(e, [own])
+        e._last_frame_t = 106.5
+        r = _step(e, [own])                               # dies 6.5 s after crossing: half-way decay
+        self.assertGreater(r, 0.2)
+        self.assertLess(r, 0.6)
 
 
 if __name__ == "__main__":

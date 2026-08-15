@@ -236,12 +236,15 @@ class LiveMatchEnv:
         self.phi_max_age = float(cfg.get("env", "phi_max_age_s", default=0.6))
         self.trade_deadband = float(cfg.get("env", "trade_deadband", default=0.02))  # (v3: unused)
         self.trade_kill_r = float(cfg.get("env", "trade_kill_radius_tiles", default=4.0))
+        self.trade_grace_s = float(cfg.get("env", "trade_grace_s", default=3.0))
+        self.trade_late_s = float(cfg.get("env", "trade_late_s", default=10.0))
         self.trade_match_r = float(cfg.get("env", "trade_match_radius_tiles", default=2.5))
         self._tr_prev_enemy = []
         self._tr_prev_mine = []
         self._tr_pend_en = []
         self._tr_pend_own = []
         self.threat_min_depth = float(cfg.get("env", "threat_min_depth", default=0.12))
+        self.threat_max_depth = float(cfg.get("env", "threat_max_depth", default=0.65))
         self.threat_credit_budget = int(cfg.get("env", "threat_credit_budget", default=2))
         self._threat_credits = 0                          # positives granted this threat episode
         self._detector = None
@@ -675,7 +678,11 @@ class LiveMatchEnv:
         # watch line is not yet answerable -- pre-committing a counter is the WRONG play (the
         # doctrine says wait), so nothing positive is graded until the threat is genuinely
         # coming (identity depth beyond threat_min_depth toward our king).
-        deep = float(getattr(self, "_prev_ident_depth", 0.0)) >= self.threat_min_depth
+        dpt = float(getattr(self, "_prev_ident_depth", 0.0))
+        # DEPTH WINDOW: below min = premature (the push is still building -- wait); above max =
+        # TOO LATE (the threat is already on our tower; the response should have come sooner and
+        # crediting it teaches slow defense -- same timing doctrine as the trade ledger).
+        deep = self.threat_min_depth <= dpt <= self.threat_max_depth
         # PER-EPISODE CREDIT BUDGET: one push used to pay every role-matching card thrown at it
         # (+1.0 x4 across 18 s, measured). A real defense is 1-2 cards; further matches add no
         # information. The budget resets when the threat episode ends (tid unlights in
@@ -768,27 +775,21 @@ class LiveMatchEnv:
         return 0.0
 
     def _trade_events_live(self):
-        """ELIXIR-TRADE v3 (2026-08-14): an ATTRIBUTED EVENT LEDGER over detector tracks.
+        """ELIXIR-TRADE v3.1 (2026-08-14): attributed event ledger WITH RESPONSE TIMING.
 
-        The aggregate potential (v2, ELIXIR_TRADE_DESIGN.md) could not be saved live: at the
-        aggregate level a tower kill, a dropped track and a real defensive kill are the same
-        "-V_theirs", so even participation-gated Phi paid +15/match while the policy defended
-        almost nothing (measured 20:34 run: 87 fires, +15.2, gates active). This is the design
-        doc's own sanctioned fallback -- "per-play windows ... with disappearances partitioned"
-        -- implemented at track granularity:
+        v3 attributed enemy deaths to our nearby units, which fixed the tower-kill and flicker
+        payouts -- but it still paid FULL credit for a LATE defense: a tesla dropped ten seconds
+        after the hog crossed, after several tower hits, still collected the kill (user report).
+        Timing is now a factor, exactly as the doctrine wants it: each enemy track records WHEN
+        it crossed onto our half; an attributed kill pays full credit only if our engagement was
+        prompt -- scale 1.0 inside trade_grace_s (3 s) of the crossing, decaying linearly to 0
+        at trade_late_s (10 s). A death on THEIR half (our push trading) has no timing discount.
 
-          * an ENEMY track that vanishes and STAYS gone (2-frame confirmation, so detector
-            flicker cancels) is CREDITED only if its last position was within kill_r tiles of
-            one of OUR living unit tracks -- our towers' kills, expiries and walk-offs pay
-            nothing;
-          * one of OUR tracks vanishing (same confirmation) is DEBITED unconditionally -- our
-            losses are ours whatever killed them;
-          * elixir bars are OUT of the term entirely (the leak term owns our cap; their bar
-            was estimator noise).
-
-        Tracks are matched frame-to-frame per base key by nearest-neighbour within match_r
-        tiles (the detector has no stable ids). Events are chunky (>= 1 elixir), so the term
-        fires a handful of times per match instead of ~100."""
+        Mechanics preserved from v3: 2-frame vanish confirmation (flicker cancels), kill
+        attribution within trade_kill_radius_tiles of a living unit of ours, unconditional
+        debit for our own losses, elixir bars excluded, blind-on-active frames hold snapshots.
+        Track continuity is nearest-neighbour per base key (trade_match_radius_tiles); the
+        crossing timestamp rides the match so it survives drift."""
         if self._detector is None:
             return 0.0
         dets = self._last_dets_all
@@ -796,9 +797,11 @@ class LiveMatchEnv:
                  or (not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac))
         if blind:
             return 0.0                                   # hold the snapshots; no events this frame
-        tx, ty = 18.0, 32.0                              # tile aspect for distances (board-normalized)
+        now = float(getattr(self, "_last_frame_t", None) or time.time())
+        tx, ty = 18.0, 32.0                              # tile aspect for distances
+        HALF = 0.48                                      # our half begins here (frame-y, warped board)
 
-        def _tracks(team):
+        def _fresh(team):
             out = []
             for d in dets:
                 if getattr(d, "team", None) != team:
@@ -808,33 +811,58 @@ class LiveMatchEnv:
                     base = base[:-4]
                 cost = float(self._db.elixir(base) or 0.0)
                 if cost > 0.0:
-                    out.append([base, float(d.cx), float(d.gy), cost])
+                    t_cross = now if float(d.gy) >= HALF else None
+                    out.append([base, float(d.cx), float(d.gy), cost, t_cross])
             return out
 
         def _dist(a1, b1):
             return (((a1[1] - b1[1]) * tx) ** 2 + ((a1[2] - b1[2]) * ty) ** 2) ** 0.5
 
-        cur_en, cur_own = _tracks("enemy"), _tracks("mine")
         credit = debit = 0.0
-        for side, cur, pend_key in (("enemy", cur_en, "_tr_pend_en"), ("mine", cur_own, "_tr_pend_own")):
+        cur_by_side = {}
+        for side in ("enemy", "mine"):
             prev = getattr(self, "_tr_prev_" + side, [])
+            cur = _fresh(side)
+            # MATCH cur against prev (nearest neighbour per base): carry the crossing time so a
+            # track keeps its history as it drifts; unmatched prev entries become vanish pendings.
+            taken = set()
+            for c in cur:
+                best_i, best_d = -1, self.trade_match_r
+                for i, t in enumerate(prev):
+                    if i in taken or t[0] != c[0]:
+                        continue
+                    dd = _dist(c, t)
+                    if dd <= best_d:
+                        best_i, best_d = i, dd
+                if best_i >= 0:
+                    taken.add(best_i)
+                    if prev[best_i][4] is not None:
+                        c[4] = prev[best_i][4]           # inherited crossing time wins (earliest)
+            vanished = [t for i, t in enumerate(prev) if i not in taken]
+            cur_by_side[side] = cur
+            setattr(self, "_tr_cur_" + side, cur)
+            setattr(self, "_tr_van_" + side, vanished)
+        for side, pend_key in (("enemy", "_tr_pend_en"), ("mine", "_tr_pend_own")):
+            cur = cur_by_side[side]
             pend = getattr(self, pend_key, [])
-            # resolve pending vanishes: reappeared nearby -> flicker (drop); still gone -> event
-            still = []
-            for pv in pend:
+            for pv in pend:                              # resolve last frame's pendings
                 if any(t[0] == pv[0] and _dist(t, pv) <= self.trade_match_r for t in cur):
                     continue                             # came back: flicker, no event
                 if side == "enemy":
-                    near_own = any(_dist(o, pv) <= self.trade_kill_r for o in cur_own + getattr(self, "_tr_prev_mine", []))
-                    if near_own:
-                        credit += pv[3]                  # died where OUR units are fighting
+                    near_own = any(_dist(o, pv) <= self.trade_kill_r
+                                   for o in cur_by_side["mine"] + getattr(self, "_tr_prev_mine", []))
+                    if not near_own:
+                        continue                         # the tower's kill / walked out / expired
+                    scale = 1.0
+                    if pv[4] is not None:                # died on OUR half: was the answer PROMPT?
+                        late = now - float(pv[4])
+                        if late > self.trade_grace_s:
+                            span = max(0.1, self.trade_late_s - self.trade_grace_s)
+                            scale = max(0.0, 1.0 - (late - self.trade_grace_s) / span)
+                    credit += pv[3] * scale
                 else:
                     debit += pv[3]                       # our unit is gone, whoever did it
-            # new vanishes this frame -> pending for one confirmation frame
-            for t in prev:
-                if not any(c[0] == t[0] and _dist(c, t) <= self.trade_match_r for c in cur):
-                    still.append(t)
-            setattr(self, pend_key, still)
+            setattr(self, pend_key, getattr(self, "_tr_van_" + side))
             setattr(self, "_tr_prev_" + side, cur)
         if credit == 0.0 and debit == 0.0:
             return 0.0

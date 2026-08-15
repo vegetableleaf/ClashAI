@@ -2140,6 +2140,19 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- LIVE TRADE v3.1: RESPONSE TIMING (user insight: quick answers pay, late ones
+             don't -- a tesla 10 s after the hog locked is not a defense)
+- Each enemy track now records WHEN it crossed onto our half (timestamp rides the
+  nearest-neighbour match, surviving drift). An attributed kill's credit scales by response
+  latency: full within trade_grace_s (3 s) of the crossing, linear to ZERO at trade_late_s
+  (10 s). Deaths on THEIR half (our push trading) have no timing discount.
+- THREAT_RESPONSE gains the matching DEPTH CEILING (threat_max_depth 0.65): the window is now
+  [min 0.12, max 0.65] -- premature (back build) AND too-late (already on our tower) both
+  score nothing.
+- tests/test_trade_events.py 8/8: prompt kill full, 11-s-late kill zero, 6.5-s kill ~half,
+  plus the v3 cases (attribution/flicker/blind/own-loss) unchanged.
+- REQUIRES a fresh live session, as always.
+
 2026-08-14 -- LIVE TRADE v3: attributed EVENT LEDGER (v2 gates measured too coarse -- user's
              20:34 run STARTED AFTER the v2 commit and still fired 87x/+15.2)
 - The aggregate potential cannot be saved live: at aggregate level a tower kill, a dropped

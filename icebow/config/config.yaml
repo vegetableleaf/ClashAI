@@ -659,6 +659,13 @@ env:
                                  # settle from the ordinary frame stream; the blocking wait is gone.
   phi_max_age_s: 0.6             # trade potential validity gate: max perception age for a Phi read
   trade_deadband: 0.02           # |dPhi| below this is detector flicker, not a trade -- not scored
+  trade_grace_s: 3.0             # attributed kills pay FULL credit if the enemy died within this
+                                 # many seconds of crossing onto our half (prompt defense)...
+  trade_late_s: 10.0             # ...decaying linearly to ZERO here: a tesla dropped after the
+                                 # hog already locked and hit the tower credits nothing
+  threat_max_depth: 0.65         # threat_response depth CEILING: a counter placed once the threat
+                                 # is already on our tower is TOO LATE to credit (window with
+                                 # threat_min_depth; same timing doctrine as the trade ledger)
   threat_min_depth: 0.12         # threat_response positives require the threat PAST the watch line
                                  # (identity depth toward our king) -- pre-committing vs a back
                                  # build is the wrong play and now scores nothing
