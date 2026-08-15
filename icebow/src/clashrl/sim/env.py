@@ -107,6 +107,9 @@ class SimMatchEnv:
         # ago, so the conv trunk can read MOTION off the channel deltas instead of seeing a snapshot.
         self.canvas_stack_n = detect_obs.canvas_stack_len(cfg)
         self._canvas_stack = detect_obs.CanvasStack(self.canvas_stack_n, detect_obs.canvas_stack_dt(cfg))
+        self.use_pred_canvas = detect_obs.predictive_enabled(cfg)
+        self.pred_dt = detect_obs.predictive_dt(cfg)
+        self.pred_horizon = detect_obs.eta_horizon(cfg)
         self.obs_shape = (int(oh), int(ow), detect_obs.obs_in_channels(cfg))
         # Stage 3: identity-grounded threat block (KB roles of RECOGNISED enemy cards). When on, the
         # threat vector grows by card_threat.IDENTITY_DIM; the sim reads it from GROUND TRUTH but only
@@ -390,6 +393,13 @@ class SimMatchEnv:
             return img
         ch = view.semantic_channels(self.eng, oh, ow, team=0, rng=self.rng,
                                     presence_recall=self.canvas_presence_recall)
+        if self.use_pred_canvas:
+            # PREDICTIVE slice from the SAME noised unit view the interaction vector reads --
+            units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
+                                                         self.det_recall, self.det_recall_by_card)
+            pred = detect_obs.predictive_channels(units, mine_t, en_t, self.db, oh, ow,
+                                                  dt_s=self.pred_dt, horizon_s=self.pred_horizon)
+            ch = np.concatenate([ch, detect_obs.channels_to_uint8(pred)], axis=2)
         # detector missed this frame is absent from this slice only.
         return np.concatenate([img, self._canvas_stack.push(ch, self.eng.t)], axis=2)
 
