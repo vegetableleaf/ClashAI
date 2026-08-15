@@ -41,6 +41,24 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
     state = {"league": [], "weights": [], "sp_prob": 0.0, "difficulty": 1.0}
     rng = random.Random(seed0 * 7919 + 13)
 
+    sp_cache = {}
+
+    def _sp_net(sd):
+        # League entries arrive as plain STATE_DICTS -- the DQN class is local to _build_net,
+        # so net objects cannot cross the pipe. Rebuild here, cache per entry (the cache is
+        # cleared when a new league lands, so stale snapshots are freed).
+        n = sp_cache.get(id(sd))
+        if n is None:
+            from clashrl.train_rl import _build_net
+            e0 = envs[0]
+            n = _build_net(cfg, "cpu", e0.n_cards, e0.n_cells, e0.threat_dim,
+                           int(e0.obs_shape[2]))       # obs_shape is (H, W, C): channels last
+            n.policy.load_state_dict(sd["model"])
+            n.gate.load_state_dict(sd["gate"])
+            n.policy.eval(); n.gate.eval()
+            sp_cache[id(sd)] = n
+        return n
+
     def provider(env):
         # CURRICULUM (2026-08-14): at 0/40 wins the full ladder pool (levels 13-16 + adaptive
         # + evos) gives the policy literally no win signal. The difficulty scalar follows the
@@ -53,8 +71,8 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
                 sd = rng.choices(state["league"], weights=state["weights"], k=1)[0]
             else:
                 sd = rng.choice(state["league"])
-            opp = SelfPlayOpponent(cfg, env, sd, env.rng)
-            opp._src_sd = sd
+            opp = SelfPlayOpponent(cfg, env, _sp_net(sd), env.rng)
+            opp._src_sd = sd             # identity key into state["league"] for PFSP reporting
             return opp
         return make_opponent(cfg, env.db, env.rng, env.meta_pool, adaptive=True)
 
@@ -99,6 +117,7 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
                 state["league"] = msg[1]
                 state["weights"] = msg[2]
                 state["sp_prob"] = float(msg[3])
+                sp_cache.clear()
                 conn.send("ok")
             elif kind == "difficulty":
                 state["difficulty"] = float(msg[1])
