@@ -349,6 +349,9 @@ class SelfPlayOpponent:
         # Own canvas history: the opponent is rebuilt each env.reset(), so this starts empty per match.
         self._canvas_stack = detect_obs.CanvasStack(detect_obs.canvas_stack_len(cfg),
                                                     detect_obs.canvas_stack_dt(cfg))
+        self.use_pred_canvas = detect_obs.predictive_enabled(cfg)
+        self.pred_dt = detect_obs.predictive_dt(cfg)
+        self.pred_horizon = detect_obs.eta_horizon(cfg)
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
@@ -418,6 +421,12 @@ class SelfPlayOpponent:
         if self.use_canvas:                                       # mirrored semantic canvas for team 1
             ch = view.semantic_channels(eng, oh, ow, team=1, rng=self.rng,
                                         presence_recall=self.canvas_presence_recall)
+            if self.use_pred_canvas:                              # ...and the mirrored FORECAST slice
+                units, mine_t, en_t = view.interaction_state(eng, 1, self.detector_cards, self.rng,
+                                                             self.det_recall, self.det_recall_by_card)
+                pred = detect_obs.predictive_channels(units, mine_t, en_t, self.db, oh, ow,
+                                                      dt_s=self.pred_dt, horizon_s=self.pred_horizon)
+                ch = np.concatenate([ch, detect_obs.channels_to_uint8(pred)], axis=2)
             obs = np.concatenate([obs, self._canvas_stack.push(ch, eng.t)], axis=2)
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():

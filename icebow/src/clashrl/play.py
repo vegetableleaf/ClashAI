@@ -23,6 +23,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
+from . import detect_obs
 from . import interactions
 from . import card_threat
 from .cycle import CycleTracker
@@ -402,8 +403,30 @@ def play(cfg) -> None:
         if want_tower:                        # crown-tower HP -- appended LAST, matching sim/view + env
             threat_vec = np.concatenate([threat_vec, _tower_frac()]).astype(np.float32)
         if _use_canvas:                       # semantic channels from the SAME detections as the threat blocks
-            ch = channels_to_uint8(detection_channels(_last_dets["all"], _db,
-                                                      obs.shape[0], obs.shape[1]))
+            # WARP FIX (2026-08-15): this painter never passed the board warp, so `play`
+            # showed the policy a FRAME-space canvas while training (sim board-true, env
+            # warped) never did -- an out-of-distribution image on every single frame, and
+            # the likely driver of the single-tile live collapse. Warped now, like env.py.
+            chf = detection_channels(_last_dets["all"], _db, obs.shape[0], obs.shape[1],
+                                     warp=actions.warp)
+            if detect_obs.predictive_enabled(cfg):
+                w = actions.warp
+                my_t = [(*w.frame_to_board(ax, ay), bool(tower_tracker.mine_alive[i]))
+                        for i, (ax, ay) in enumerate(tower_tracker.mine_a[:3])]
+                en_t = [(*w.frame_to_board(ax, ay), bool(tower_tracker.enemy_alive[i]))
+                        for i, (ax, ay) in enumerate(tower_tracker.enemy_a[:3])]
+                units, confs = [], []
+                for d in _last_dets["all"]:
+                    if d.team in ("mine", "enemy") and d.base in detector_cards:
+                        bx, by = w.frame_to_board(d.cx, d.gy)
+                        units.append((d.team, d.base, bx, by))
+                        confs.append(min(1.0, float(d.conf)))
+                pred = detect_obs.predictive_channels(units, my_t, en_t, _db,
+                                                      obs.shape[0], obs.shape[1], confs,
+                                                      dt_s=detect_obs.predictive_dt(cfg),
+                                                      horizon_s=detect_obs.eta_horizon(cfg))
+                chf = np.concatenate([chf, pred], axis=2)
+            ch = channels_to_uint8(chf)
             obs = np.concatenate([obs, _canvas_stack.push(ch, time.time())], axis=2)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
         hv = torch.from_numpy(hand_vec).unsqueeze(0).to(device)

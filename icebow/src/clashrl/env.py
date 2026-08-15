@@ -448,6 +448,26 @@ class LiveMatchEnv:
         from . import detect_obs
         ch = detect_obs.detection_channels(self._last_dets_all, self.db, img.shape[0], img.shape[1],
                                            warp=self.actions.warp)
+        if detect_obs.predictive_enabled(self.cfg):
+            # PREDICTIVE slice, board-true like the canvas: units and tower anchors warped
+            # frame -> board, then the SAME mover_forecast the sim paints.
+            w = self.actions.warp
+            mine_a, enemy_a, _ = _anchors(self.cfg)
+            my_t = [(*w.frame_to_board(ax, ay), bool(self.tower.mine_alive[i]))
+                    for i, (ax, ay) in enumerate(mine_a[:3])]
+            en_t = [(*w.frame_to_board(ax, ay), bool(self.tower.enemy_alive[i]))
+                    for i, (ax, ay) in enumerate(enemy_a[:3])]
+            units, confs = [], []
+            for d in self._last_dets_all:
+                if d.team in ("mine", "enemy") and d.base in self.detector_cards:
+                    bx, by = w.frame_to_board(d.cx, d.gy)
+                    units.append((d.team, d.base, bx, by))
+                    confs.append(min(1.0, float(d.conf)))
+            pred = detect_obs.predictive_channels(units, my_t, en_t, self.db,
+                                                  img.shape[0], img.shape[1], confs,
+                                                  dt_s=detect_obs.predictive_dt(self.cfg),
+                                                  horizon_s=detect_obs.eta_horizon(self.cfg))
+            ch = np.concatenate([ch, pred], axis=2)
         stack = self._canvas_stack.push(detect_obs.channels_to_uint8(ch), time.time())
         return np.concatenate([img, stack], axis=2)
 

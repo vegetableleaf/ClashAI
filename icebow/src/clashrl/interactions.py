@@ -95,6 +95,42 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
     return out
 
 
+def mover_forecast(units: Sequence[Unit], my_towers: Sequence[Tower],
+                   enemy_towers: Sequence[Tower], db,
+                   dt_s: float = 1.0, horizon_s: float = 8.0) -> List[Tuple[float, float, float]]:
+    """Per-unit short-term forecast from the SAME deterministic targeting rules:
+    ``(px, py, urgency)`` -- the unit dead-reckoned ``dt_s`` seconds along the line to its
+    predicted target at its KB speed (clamped at the target), and urgency in [0, 1] =
+    ``1 - eta/horizon_s`` (how soon it reaches what it is heading for). Spells, buildings and
+    idle units forecast in place with urgency 0. Dual-source: the same pure function runs on
+    the sim's ground-truth units and on live detector tracks -- prediction the policy does
+    not have to learn from pixels."""
+    out: List[Tuple[float, float, float]] = []
+    for (team, base, x, y), (kind, k, dist) in zip(units, predict_targets(units, my_towers,
+                                                                          enemy_towers, db)):
+        p = card_threat.profile(db, base)
+        c = db.get(base) or {}
+        spd = _SPEED.get(c.get("speed"), 1.0)
+        if kind is None or p.spell or p.kind == "building" or spd <= 0.0:
+            out.append((x, y, 0.0))
+            continue
+        if kind == "unit":
+            tx, ty = units[k][2], units[k][3]
+        else:
+            tw = (enemy_towers if team == "mine" else my_towers)[k]
+            tx, ty = tw[0], tw[1]
+        dxt, dyt = (tx - x) * _TILES_X, (ty - y) * _TILES_Y
+        d = math.hypot(dxt, dyt)
+        step = min(d, spd * dt_s)
+        if d > 1e-6:
+            px, py = x + (dxt / d) * step / _TILES_X, y + (dyt / d) * step / _TILES_Y
+        else:
+            px, py = x, y
+        eta = dist / max(1e-6, spd)
+        out.append((px, py, max(0.0, 1.0 - eta / max(1e-3, horizon_s))))
+    return out
+
+
 def interaction_vector(units: Sequence[Unit], my_towers: Sequence[Tower],
                        enemy_towers: Sequence[Tower], db,
                        value_norm: float = 8.0, eta_norm: float = 10.0) -> np.ndarray:

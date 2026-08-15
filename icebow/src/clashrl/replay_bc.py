@@ -35,6 +35,14 @@ from typing import Dict, List, Optional, Tuple
 import cv2
 import numpy as np
 
+
+def _bc_towers(cfg):
+    """Static config tower anchors as interactions.Tower tuples (alive=True): the replay
+    labeler does not track tower falls, so the forecast assumes standing towers."""
+    mt = [(float(a[0]), float(a[1]), True) for a in (cfg.get("env", "my_towers") or [])[:3]]
+    et = [(float(a[0]), float(a[1]), True) for a in (cfg.get("env", "enemy_towers") or [])[:3]]
+    return mt, et, None
+
 from . import card_threat
 from . import detect_obs
 from .actions import ActionSpace
@@ -353,9 +361,18 @@ def build_replay_bc(cfg, replays=None, weights=None, conf=None, stride=None, out
             t_now = fi / fps
             dets = detector.detect(frame, conf)
             if use_canvas:                                    # keep the motion history warm every frame
-                canvas_stack.push(
-                    detect_obs.channels_to_uint8(detect_obs.detection_channels(dets, db, int(oh), int(ow))),
-                    t_now)
+                chf = detect_obs.detection_channels(dets, db, int(oh), int(ow))
+                if detect_obs.predictive_enabled(cfg):
+                    # Replay footage has no measured warp; frame space approximates board
+                    # space here (the 18:32 aspect assumption interactions already makes).
+                    mt, et, _k = _bc_towers(cfg)
+                    units = [((d.team if d.team in ("mine", "enemy") else "enemy"), d.base,
+                              d.cx, d.gy) for d in dets if d.team in ("mine", "enemy")]
+                    pred = detect_obs.predictive_channels(units, mt, et, db, int(oh), int(ow),
+                                                          dt_s=detect_obs.predictive_dt(cfg),
+                                                          horizon_s=detect_obs.eta_horizon(cfg))
+                    chf = np.concatenate([chf, pred], axis=2)
+                canvas_stack.push(detect_obs.channels_to_uint8(chf), t_now)
             fresh = tracker.update(dets, t_now)               # geometry-tagged teams + real appearances
             hand_ids = vision.recognize_hand(frame)           # the PRO's real tray (same card art)
             hand_watch.observe(t_now, hand_ids)               # ...before gating, so `present` is current

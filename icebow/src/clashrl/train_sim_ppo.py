@@ -144,8 +144,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # image width (3 -> 9), so an older checkpoint's conv1 cannot load -- and because the watchdog
     # relaunches this trainer with --resume, a hard failure here would crash-loop instead of
     # training. Fall through to a fresh run and say so.
+    _ck_probe = torch.load(ppo_path, map_location="cpu") if (resume and ppo_path.exists()) else {}
     stale_resume = (resume and ppo_path.exists()
-                    and int(torch.load(ppo_path, map_location="cpu").get("in_ch", 3)) != in_ch)
+                    and (int(_ck_probe.get("in_ch", 3)) != in_ch
+                         or int(_ck_probe.get("threat_dim", threat_dim)) != threat_dim))
     if stale_resume:
         print(f"[train-sim-ppo] {ppo_path.name} was trained with a different observation width "
               f"(in_ch != {in_ch}) -- the obs-canvas gate changed, so it CANNOT be resumed. "

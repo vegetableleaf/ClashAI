@@ -2800,3 +2800,20 @@ Notes / caveats
   counterfactual fork. xbow_lock/chip_linear remain offensive-only by design.
 - Test: lone bow at (0.5, 0.73) kills a dart goblin ~6 tiles out with no other friendly in
   range -> trade credit fires (was exactly 0). 131/131.
+
+2026-08-15 — PREDICTIVE-OBS ARCHITECTURE BREAK (user-greenlit after live single-tile collapse)
+- Live collapse context: everything played into one tile behind the king from a checkpoint
+  that spreads 44 cells in sim = the sim->live obs gap. TWO responses shipped together:
+  (1) BUG FIX: play.py's canvas was painted WITHOUT the board warp (env.py warps, play.py
+  didn't) -- `play` showed the policy a frame-space canvas it never trained on, on every
+  frame. The likely direct driver of the collapse. Now warped identically to env.py.
+  (2) THE BATCH (in_ch 9 -> 12): +3 mechanics-derived channels per canvas slice --
+  enemy_predicted / my_predicted (units dead-reckoned predictive_canvas_dt_s=1.0s along the
+  line to their rule-predicted targets at KB speeds, interactions.mover_forecast) and
+  enemy_urgency (1 - eta/eta_horizon_s=8). Same pure function on sim ground truth and live
+  tracks; painted in all FIVE obs producers: sim env, SelfPlayOpponent mirror, live env,
+  play.py, replay_bc (frame-space approximation, static towers). stale_resume now also
+  gates on threat_dim. Tests: test_predictive_obs (5). 136/136.
+- CONSEQUENCE: every existing checkpoint is invalid under the new config. Full pipeline
+  restart: archive old ckpts -> train-bc (reuses replays/labels) -> train-sim-ppo --init
+  data/policy.pt (fresh) -> reseed policy_rl.pt from the new champion -> train-rl.

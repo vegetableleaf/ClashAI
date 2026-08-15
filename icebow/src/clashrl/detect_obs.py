@@ -27,6 +27,14 @@ from .replay_mine import Detection, load_detector
 # Semantic channels fed to the policy -- the ORDER is the channel index.
 CHANNELS = ("enemy_ground", "enemy_air", "enemy_building", "my_ground", "my_building", "spell")
 N_CHANNELS = len(CHANNELS)
+# PREDICTIVE CANVAS (2026-08-15, the obs architecture break): three extra channels per slice
+# derived from the game's DETERMINISTIC mechanics (interactions.mover_forecast) rather than
+# learned from pixels -- enemy units at their dead-reckoned t+dt positions, ours likewise,
+# and an enemy URGENCY map (intensity = how soon each unit reaches its predicted target).
+# A human reads exactly this at a glance; painting it saves the conv trunk from having to
+# rediscover per-card speeds and targeting from experience.
+PRED_CHANNELS = ("enemy_predicted", "my_predicted", "enemy_urgency")
+N_PRED = len(PRED_CHANNELS)
 
 
 def canvas_enabled(cfg) -> bool:
@@ -37,6 +45,21 @@ def canvas_enabled(cfg) -> bool:
     the card's name -- that is what the separate identity block is for).
     """
     return bool(cfg.get("observation", "use_detector_canvas", default=False))
+
+
+def predictive_enabled(cfg) -> bool:
+    """Is the mechanics-derived PREDICTIVE canvas (see PRED_CHANNELS) part of the image?
+    Requires the semantic canvas itself -- prediction extends it, never replaces it."""
+    return canvas_enabled(cfg) and bool(cfg.get("observation", "use_predictive_canvas",
+                                                default=False))
+
+
+def predictive_dt(cfg) -> float:
+    return max(1e-3, float(cfg.get("observation", "predictive_canvas_dt_s", default=1.0)))
+
+
+def eta_horizon(cfg) -> float:
+    return max(0.5, float(cfg.get("observation", "eta_horizon_s", default=8.0)))
 
 
 def canvas_stack_len(cfg) -> int:
@@ -71,7 +94,8 @@ def obs_in_channels(cfg) -> int:
     Every PolicyNet construction site reads this so sim, live play and all three trainers agree;
     the value is also stamped into each checkpoint as `in_ch` so `play` rebuilds the right net.
     """
-    return 3 + (N_CHANNELS * canvas_stack_len(cfg) if canvas_enabled(cfg) else 0)
+    per_slice = N_CHANNELS + (N_PRED if predictive_enabled(cfg) else 0)
+    return 3 + (per_slice * canvas_stack_len(cfg) if canvas_enabled(cfg) else 0)
 
 
 class CanvasStack:
@@ -170,6 +194,35 @@ def detection_channels(dets: List[Detection], db, oh: int, ow: int, warp=None) -
     return ch
 
 
+def predictive_channels(units, my_towers, enemy_towers, db, oh: int, ow: int,
+                        confs=None, dt_s: float = 1.0, horizon_s: float = 8.0) -> np.ndarray:
+    """Render interactions.mover_forecast into [oh, ow, N_PRED] float32: channel 0 = enemy
+    units at their PREDICTED t+dt positions, 1 = ours likewise, 2 = enemy URGENCY painted at
+    the CURRENT position (brightness = closeness-in-time to its target). ``units`` are
+    interactions.Unit tuples ALREADY in this canvas's coordinate space (board-true for
+    sim/live, frame for BC replays), with towers in the same space."""
+    from . import interactions
+    ch = np.zeros((oh, ow, N_PRED), np.float32)
+    if not units:
+        return ch
+    fc = interactions.mover_forecast(units, my_towers, enemy_towers, db,
+                                     dt_s=dt_s, horizon_s=horizon_s)
+    rx, ry = max(1, int(ow / 18.0 * 0.55)), max(1, int(oh / 32.0 * 0.7))
+    for i, ((team, base, x, y), (px, py, urg)) in enumerate(zip(units, fc)):
+        conf = float(confs[i]) if confs is not None else 1.0
+        k = 1 if team == "mine" else 0
+        layer = np.zeros((oh, ow), np.float32)
+        cv2.ellipse(layer, (int(px * ow), int(py * oh)), (rx, ry), 0, 0, 360,
+                    float(min(1.0, conf)), -1)
+        ch[:, :, k] = np.maximum(ch[:, :, k], layer)
+        if team != "mine" and urg > 0.0:
+            layer = np.zeros((oh, ow), np.float32)
+            cv2.ellipse(layer, (int(x * ow), int(y * oh)), (rx, ry), 0, 0, 360,
+                        float(min(1.0, urg * conf)), -1)
+            ch[:, :, 2] = np.maximum(ch[:, :, 2], layer)
+    return ch
+
+
 def board_channels(frame, detector, db, oh: int, ow: int, conf: float = 0.3) -> np.ndarray:
     """Run the detector on a frame -> semantic channels (zeros if the detector is unavailable, so
     callers degrade gracefully to the image-only observation)."""
@@ -179,6 +232,7 @@ def board_channels(frame, detector, db, oh: int, ow: int, conf: float = 0.3) -> 
 
 
 def channels_to_bgr(channels: np.ndarray) -> np.ndarray:
+    channels = channels[:, :, :N_CHANNELS]          # preview draws the semantic 6 only
     """Composite the semantic channels into one BGR image for a human preview."""
     oh, ow = channels.shape[:2]
     out = np.zeros((oh, ow, 3), np.float32)

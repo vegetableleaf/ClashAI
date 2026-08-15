@@ -189,6 +189,14 @@ observation:
   # 3-channel policy still loads and plays -- `play` feeds the canvas only when the checkpoint asks
   # for it, which is why promoting the detector does not strand the current policy.
   use_detector_canvas: true
+  # PREDICTIVE CANVAS (2026-08-15 architecture break, in_ch 9 -> 12): +3 mechanics-derived
+  # channels per slice -- enemy/my units dead-reckoned predictive_canvas_dt_s ahead along the
+  # line to their rule-predicted targets at KB speeds, plus an enemy URGENCY map
+  # (1 - eta/eta_horizon_s). The short-term-outcome read a human makes at a glance, painted
+  # instead of learned. Flipping this invalidates every checkpoint (stale_resume gates it).
+  use_predictive_canvas: true
+  predictive_canvas_dt_s: 1.0
+  eta_horizon_s: 8.0
   # --- CANVAS STACK: the MOTION half of the observation (default OFF = 1 slice) ---------------
   # A single canvas is a SNAPSHOT -- it says where every unit IS, never where it is GOING, so the
   # policy cannot learn to lead a push or pre-place against one. >1 appends the canvas as it looked
