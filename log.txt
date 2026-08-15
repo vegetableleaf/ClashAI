@@ -2610,3 +2610,20 @@ Notes / caveats
   next restart; bridge placements re-normalize to row 13, the true bridge row.
 - Tests: tests/test_deploy_rows.py (4: first legal row >= 13, every legal tap below the
   warped river line, clamp lands on a deployable row, sim/live row sets identical). 94/94.
+
+2026-08-14 — FIX: BoardWarp edge+river anchors (tesla-below-the-field refusals)
+- After the deploy-row fix the live bot's remaining refusals moved DOWN: tesla attempts at
+  row 23 tapped frame y=0.790 — measured on timelapse_20260814_230750 frames, the field's
+  last tile edge is 0.772, so those taps landed on the decorative GRASS below the field
+  (the red ENEMY overlay frame caught mid-drag confirms the invalid-placement UI). Root
+  cause: the warp had only tower anchors; board 1.0 was edge-slope EXTRAPOLATION (0.810 vs
+  real 0.772). Same disease at the other extremes: board 0.0 extrapolated to 0.033 vs real
+  0.099 (rocket taps in the trophy UI), and the linear ep->mp segment put the river at 0.410
+  vs real 0.4425, so row-13 taps grazed the water's bottom edge.
+- Fix: env.board_edges {top 0.099, river 0.4425, bottom 0.772, left 0.059, right 0.947},
+  measured off the timelapse, added as warp anchors — every board->frame lookup is now
+  INTERPOLATION between measured lines. Verified by overlaying the new warp on a real frame:
+  river line through the water band, row-13 on the first land row, row-23 on the back tile
+  strip (king footprint masks its center columns), row-0 on the enemy back row, edge columns
+  inside the field. Sim overrides the edges board-true; its warp stays identity (max err 1e-17).
+- Re-measure the five numbers if the capture window's aspect/layout changes. 94/94 tests.

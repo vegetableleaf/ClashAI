@@ -62,6 +62,8 @@ def _board_action_space(cfg) -> ActionSpace:
         # board-true enemy anchors too, so BoardWarp's anchor pairs are identity points in the
         # sim and the warp exactly reduces to the identity mapping there
         ("env", "enemy_towers"): [[pt[0] / tx, epy], [(tx - pt[0]) / tx, epy], [kt[0] / tx, eky]],
+        # ...and board-true field edges/river, so the edge anchors are identity points too
+        ("env", "board_edges"): {"top": 0.0, "river": 0.5, "bottom": 1.0, "left": 0.0, "right": 1.0},
     }))
 
 

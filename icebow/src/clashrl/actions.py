@@ -56,6 +56,28 @@ class BoardWarp:
         rx_f = (float(mt[1][0]) + float(et[1][0])) / 2.0
         kx_f = (float(mt[2][0]) + float(et[2][0])) / 2.0
         self.xa = [(lx_b, lx_f), (0.5, kx_f), (rx_b, rx_f)]
+        # FIELD-EDGE + RIVER ANCHORS (2026-08-14). Tower anchors alone leave the board's edges
+        # and the river to EXTRAPOLATION, and the measured screen refuses to be linear there:
+        # frame-measured (timelapse 23:07) the field bottom sits at 0.772 where the edge-slope
+        # extrapolation said 0.810 -- row-23 taps landed on the DECORATIVE GRASS below the field
+        # (tesla refused, 'card shuffle'); the river's true center is 0.4425 where the linear
+        # ep->mp segment said 0.410 -- row-13 taps grazed the water's bottom edge; and board 0.0
+        # extrapolated to 0.033, parking rocket taps in the trophy UI. env.board_edges pins
+        # board 0/0.5/1 to their MEASURED frame lines so every lookup interpolates; the sim
+        # overrides them board-true (0/0.5/1), keeping its warp exactly the identity.
+        edges = dict(cfg.get("env", "board_edges", default=None) or {})
+        if "top" in edges:
+            self.ya.insert(0, (0.0, float(edges["top"])))
+        if "river" in edges:
+            self.ya.append((0.5, float(edges["river"])))
+        if "bottom" in edges:
+            self.ya.append((1.0, float(edges["bottom"])))
+        if "left" in edges:
+            self.xa.append((0.0, float(edges["left"])))
+        if "right" in edges:
+            self.xa.append((1.0, float(edges["right"])))
+        self.ya.sort()
+        self.xa.sort()
 
     @staticmethod
     def _pw(v, anchors):
