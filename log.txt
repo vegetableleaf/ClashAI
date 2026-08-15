@@ -2914,3 +2914,16 @@ Notes / caveats
   pairs; a Tesla dropped ON a princess tower snaps clear (gap 2.00 = 0.5 + 1.5 exactly);
   stacked X-Bows behind the river all stay on our side. Tests: BuildingStackTests (3).
   143/143 (1 skipped).
+
+2026-08-15 — ...and troops cannot be deployed inside a building either (same report)
+- A troop dropped on a building DID eventually get shoved out by _separate, but only after
+  its ~1 s deploy freeze (that pass skips still-spawning bodies), so it spent a second
+  standing inside the footprint -- shielded, mid-structure, which never happens in game.
+- _snap_building generalised to _snap_structure and now runs for EVERY card placement, troop
+  or building: overlap against buildings (either team) + alive crown towers, ring search
+  outward, same-side-of-river and legal-ground rules. Verified: a knight and a 3-skeleton
+  squad dropped exactly on a Tesla all spawn clear of its footprint.
+- Deliberately unchanged: spawner children (hut goblins, tombstone skeletons, graveyard
+  skeletons, phoenix egg) construct Units directly and never pass through _place -- they are
+  MEANT to pop out at their spawner and walk off, and the ordinary separation handles them.
+  Pinned by a test. 145/145 (1 skipped).

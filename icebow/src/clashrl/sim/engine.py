@@ -1328,9 +1328,10 @@ class SimEngine:
             self._place(spec, team, cx, cy)
         return True
 
-    def _building_overlap(self, spec: CardSpec, x: float, y: float) -> bool:
-        """Would a building of `spec` centred at (x, y) overlap an existing STRUCTURE?
-        Buildings collide with other buildings (either team) and with crown towers."""
+    def _structure_overlap(self, spec: CardSpec, x: float, y: float) -> bool:
+        """Would a body of `spec` centred at (x, y) overlap an existing STRUCTURE?
+        Structures are buildings (either team) and alive crown towers. Troops collide with
+        them too -- nothing can be deployed inside a footprint."""
         for e in self.units:
             if e.hp <= 0 or e.spec.kind != "building":
                 continue
@@ -1342,19 +1343,25 @@ class SimEngine:
                     return True
         return False
 
-    def _snap_building(self, spec: CardSpec, x: float, y: float) -> "tuple[float, float]":
-        """Real CR refuses to stack structures: dragging a building onto an occupied footprint
-        SNAPS the placement to the nearest free tile. The sim had no such rule -- unit-vs-unit
-        separation explicitly skips building/building pairs (they are both anchored), so two
-        Teslas dropped on one tile simply co-existed inside each other, doubling the DPS of a
-        single footprint (user report, 2026-08-15).
+    def _snap_structure(self, spec: CardSpec, x: float, y: float) -> "tuple[float, float]":
+        """Real CR refuses to place anything inside an existing footprint: dragging onto an
+        occupied spot SNAPS the placement to the nearest free tile. The sim had no such rule --
+        unit-vs-unit separation explicitly skips building/building pairs (they are both
+        anchored), so two Teslas dropped on one tile simply co-existed inside each other,
+        doubling the DPS of a single footprint (user report, 2026-08-15).
+
+        TROOPS are snapped too (2026-08-15, same report). A troop dropped on a building did
+        eventually get shoved out by _separate -- but only AFTER its ~1 s deploy freeze, since
+        that pass skips still-spawning bodies. In game it never overlaps at all: it spawns
+        beside the structure. Spawner children (hut goblins, tombstone skeletons) do NOT come
+        through here; they are meant to pop out at their spawner and walk off.
 
         Search outward a tile at a time from the requested spot, nearest first, and take the
         first free legal tile. Sideways beats forward/back at equal distance, matching the
         game's own bias. If nothing within `rings` is free the original point is returned --
         placement still happens (never silently swallow a paid card), just overlapped.
         """
-        if not self._building_overlap(spec, x, y):
+        if not self._structure_overlap(spec, x, y):
             return x, y
         step_x, step_y = 1.0 / _TILES_X, 1.0 / _TILES_Y
         cands = []
@@ -1372,15 +1379,14 @@ class SimEngine:
                     continue                          # never snap a building across the river
                 if not self._ground_pos_ok(nx_, ny_, spec.radius):
                     continue                          # stay on legal ground (no water/edges)
-                if not self._building_overlap(spec, nx_, ny_):
+                if not self._structure_overlap(spec, nx_, ny_):
                     return nx_, ny_
             cands = []
         return x, y
 
     def _place(self, spec: CardSpec, team: int, cx: float, cy: float) -> None:
         """Put ONE body on the board, already positioned. Shared by the swarm and mixed-squad paths."""
-        if spec.kind == "building":
-            cx, cy = self._snap_building(spec, cx, cy)   # structures never stack (see _snap_building)
+        cx, cy = self._snap_structure(spec, cx, cy)   # nothing deploys inside a footprint
         u = Unit(spec, team, cx, cy, spec.hp)
         u.deploy_left = spec.deploy_time              # ~1s before it can act (you can't instant-block)
         u.pulse_cd = spec.pulse_interval              # Evo Tesla: first area-shock after one interval

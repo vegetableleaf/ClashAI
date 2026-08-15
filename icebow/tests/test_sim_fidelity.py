@@ -575,3 +575,27 @@ class BuildingStackTests(unittest.TestCase):
             assert env.eng.deploy(0, xbow, 0.50, 0.53)       # just behind the river, stacked
         for u in [x for x in env.eng.units if x.team == 0]:
             self.assertGreater(u.y, 0.5, "a snap must never push a building across the river")
+
+
+    def test_troops_never_spawn_inside_a_building(self):
+        from clashrl.sim.engine import _dist
+        env = _quiet(seed=98)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "tesla", 11), 0.50, 0.70)
+        tes = [u for u in env.eng.units if u.team == 0][-1]
+        for card in ("knight", "skeletons"):
+            env.eng.elixir[0] = 10.0
+            assert env.eng.deploy(0, build_spec(env.eng.db, card, 11), 0.50, 0.70)  # right ON it
+            for u in [x for x in env.eng.units if x.spec.base == card]:
+                self.assertGreaterEqual(_dist(u.x, u.y, tes.x, tes.y),
+                                        u.spec.radius + tes.spec.radius - 1e-6,
+                                        "%s spawned inside the tesla's footprint" % card)
+
+    def test_spawner_children_still_pop_out_at_their_spawner(self):
+        env = _quiet(seed=99)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "tombstone", 11), 0.30, 0.40)
+        ts = [u for u in env.eng.units if u.team == 1][-1]
+        _tick(env, 8)
+        skels = [u for u in env.eng.units if u.team == 1 and u.spec.base == "skeletons"]
+        self.assertTrue(skels, "the tombstone must still produce skeletons")
