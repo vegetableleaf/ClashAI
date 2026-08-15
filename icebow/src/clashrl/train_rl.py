@@ -176,6 +176,24 @@ def train_rl(cfg, init: str | None = None) -> None:
     save_every = int(cfg.get("train", "save_every_matches", default=1))
 
     opt = torch.optim.Adam(net.parameters(), lr=lr)
+    # HEAD RAIL GUARD + SHARPNESS CAP (2026-08-14, ported from train_sim_ppo). The live trainer
+    # had NEITHER: policy_rl.pt was fine-tuned all morning with unbounded head weights, and the
+    # session's cell head sat railed at one edge column (63/69 live plays in grid column 0).
+    # Weight-space guard here (no env probe available pre-loop): if the head weight norms are
+    # far beyond a healthy scale, rescale; then clamp every step like the sim trainer.
+    _card_ref = float(net.policy.card_head.weight.norm()) or 1.0
+    _cell_ref = float(net.policy.cell_conv[-1].weight.norm()) or 1.0
+    _HEAD_NORM_MULT = float(cfg.get("sim", "ppo_head_norm_mult", default=2.0))
+
+    def _clamp_heads():
+        with torch.no_grad():
+            for mod, ref in ((net.policy.card_head, _card_ref), (net.policy.cell_conv[-1], _cell_ref)):
+                n = float(mod.weight.norm())
+                cap_n = _HEAD_NORM_MULT * ref
+                if n > cap_n:
+                    mod.weight.mul_(cap_n / n)
+                    if mod.bias is not None:
+                        mod.bias.mul_(cap_n / n)
     replay: deque = deque(maxlen=replay_size)
 
     class _NStep:
@@ -401,6 +419,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         loss.backward()
         torch.nn.utils.clip_grad_norm_(net.parameters(), grad_clip)     # cap noisy TD gradients
         opt.step()
+        _clamp_heads()                                   # heads can rank, not rail (see above)
         return float(loss.item())
 
     # KEEP-BEST GATE. Live RL used to overwrite policy_rl.pt unconditionally every `save_every`

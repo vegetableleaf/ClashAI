@@ -2140,6 +2140,32 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- LIVE COLLAPSE, LAYER 2: stale checkpoint lineage + whole-frame RGB (user
+             report: still column-0 spam AFTER the warp fix; live_20260814_195358.jsonl shows
+             63/69 plays in grid column 0, raw_cell == cell -> the POLICY chooses the edge)
+- DIAGNOSIS (stacked causes, in order of weight):
+  1. LIVE LINEAGE NEVER SAW TODAY'S REPAIRS: live RL loads policy_rl.pt (last written 03:33,
+     pre-cap/pre-repair; play.py auto-prefers it) -- all head surgery happened on
+     policy_sim_ppo.pt. train_rl ALSO had no rail guard and no sharpness cap, so the morning
+     live session fine-tuned unbounded heads; a railed cell head = constant argmax = edge.
+  2. WHOLE-FRAME RGB: vision.observe resized the ENTIRE capture (UI bars included, board
+     squashed into ~60% of the canvas) while the sim's RGB is a board-true render filling it --
+     permanent train/serve OOD on 3 of 9 channels.
+  3. (fixed earlier) tap/canvas affine warp.
+- REPAIRS:
+  * policy_rl.pt backed up (policy_rl_backup_20260814.pt) and SEEDED from the current repaired
+    sim checkpoint (architecture-compatible by design; play.py deploys it as-is).
+  * train_rl gains the SHARPNESS CAP (heads clamped to 2x startup norms after every step,
+    same knob as the sim trainer).
+  * vision.set_board_warp + observe() now cv2.remap the frame through BoardWarp so the live
+    RGB is BOARD-TRUE (per-pixel sampling at warped positions; cached maps; identity warps
+    short-circuit). VERIFIED: a band painted at the measured princess frame row lands at
+    board y 0.797 in the observation.
+  * CANVAS LIVENESS guard: detector yielding nothing for >5 s on an active board prints a
+    loud warning (an empty semantic canvas never exists in sim training).
+- All warp tests 7/7 + suites green. Next live session must be launched fresh (new code +
+  the seeded policy_rl.pt).
+
 2026-08-14 -- SIM->LIVE PLACEMENT WARP fixed (tower-anchored perspective mapping)
 - LIVE RUN ANALYZED (live_20260814_192738.jsonl, 1 match): 39/47 plays in GRID COLUMN 0 (the
   far-left edge, cells 198/306/324), the_log x22 -- the reported live edge-collapse,

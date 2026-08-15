@@ -229,6 +229,8 @@ class LiveMatchEnv:
         self.card_elixir = [(db.elixir(k) or db.elixir(k[:-4] if k.endswith("_evo") else k) or 0)
                             for k in self.vision.deck_keys]   # per-card elixir cost (telemetry + waiver logic)
         self._db = db                                     # KB costs for the trade-potential board read
+        self.vision.set_board_warp(self.actions.warp)     # RGB obs becomes BOARD-TRUE (sim-matched)
+        self._blind_since = None                          # canvas-liveness guard state
         self._phi_prev = None                             # trade potential carried between valid frames
         self._opp_est = 0.0                               # last enemy-elixir estimate (normalized [0,1])
         self._last_dets_age = 999.0                       # perception age of _last_dets_all (validity gate)
@@ -379,6 +381,20 @@ class LiveMatchEnv:
         # elixir accounting + detected enemy plays; keeps model width unchanged.
         mem[5] = self._opp_elixir.update(self.elixir, dets, now)
         self._opp_est = float(mem[5])                    # the trade potential reads the same estimate
+        # CANVAS LIVENESS: a detector that silently yields nothing while the board is ACTIVE
+        # feeds the policy an EMPTY semantic canvas -- a state that never exists in sim training
+        # and a proven driver of degenerate placement. Say so loudly, once a stretch.
+        if self._detector is not None:
+            import time as _t
+            if not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac:
+                if self._blind_since is None:
+                    self._blind_since = _t.time()
+                elif _t.time() - self._blind_since > 5.0:
+                    print("[env] WARNING: detector returned NOTHING for >5s on an active board -- "
+                          "the semantic canvas is empty and placements are untrustworthy")
+                    self._blind_since = _t.time()
+            else:
+                self._blind_since = None
         self._replay_rec.update(self._last_dets_all)     # overlay replay: newest boxes for the clip
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                        # predicted tower pressure from ALL tagged detections
@@ -902,6 +918,7 @@ class LiveMatchEnv:
                     reward += self.w_lose
                     self.rw_stats.add("lose_own_tower", self.w_lose)
             cur_mass = enemy_mass(frame, self.cfg)
+            self._last_mass = cur_mass
             my_hp = float(sum(self.tower_hp.my_hp))
             cur_elixir = self.vision.read_elixir(frame)
             new_mult = self.clock.update(frame)                  # 2x/3x elixir clock (time + optional badge)

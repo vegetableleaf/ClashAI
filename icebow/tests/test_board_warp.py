@@ -73,5 +73,37 @@ class BoardWarpTests(unittest.TestCase):
         self.assertLess(abs(ny - true_fy), 0.025, "tap lands within a tile of the true row")
 
 
+class RgbWarpTests(unittest.TestCase):
+    def test_live_rgb_is_board_true(self):
+        import numpy as np
+        from clashrl.vision import Vision
+        cfg = Config.load()
+        sp = ActionSpace(cfg)
+        v = Vision(cfg)
+        v.set_board_warp(sp.warp)
+        frame = np.zeros((1000, 500, 3), np.uint8)
+        mt = cfg.get("env", "my_towers")
+        fy = int(((mt[0][1] + mt[1][1]) / 2.0) * 999)
+        frame[fy - 4:fy + 5, :] = 255                 # thick band at the TRUE princess frame row
+        obs = v.observe(frame)
+        row = int(np.argmax(obs[:, :, 0].sum(axis=1)))
+        self.assertLess(abs(row / obs.shape[0] - (1.0 - 6.5 / 32.0)), 0.03,
+                        "the princess band must land at BOARD y 0.797 in the observation")
+
+    def test_identity_warp_matches_center(self):
+        import numpy as np
+        from clashrl.vision import Vision
+        from clashrl.sim.env import SimMatchEnv
+        cfg = Config.load()
+        env = SimMatchEnv(cfg, seed=2)
+        v = Vision(cfg)
+        v.set_board_warp(env.actions.warp)            # identity anchors
+        frame = np.zeros((1000, 500, 3), np.uint8)
+        frame[496:505, :] = 255
+        obs = v.observe(frame)
+        row = int(np.argmax(obs[:, :, 0].sum(axis=1)))
+        self.assertLess(abs(row / obs.shape[0] - 0.5), 0.03)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

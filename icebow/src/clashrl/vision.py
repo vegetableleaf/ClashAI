@@ -93,10 +93,40 @@ class Vision:
         return tpls
 
     # ---- policy observation ------------------------------------------
+    def set_board_warp(self, warp) -> None:
+        """Install the tower-anchored BoardWarp so the RGB observation is BOARD-TRUE.
+
+        Without it the whole frame (UI bars included) was resized into the canvas, so the board
+        occupied ~60% of the image, squashed and shifted, while the SIM's RGB is a board-true
+        render filling the canvas -- a permanent train/serve mismatch on the RGB channels and a
+        driver of the live cell-head collapse (2026-08-14). The remap grid is cached per frame
+        size; identity warps (the sim) short-circuit to the plain resize."""
+        self._board_warp = warp
+        self._warp_maps = None
+
     def observe(self, frame: np.ndarray) -> np.ndarray:
-        """BGR frame -> HxWx3 uint8 observation at observation.arena_size (w, h)."""
+        """BGR frame -> HxWx3 uint8 observation at observation.arena_size (w, h). With a board
+        warp installed, each output pixel samples the frame at the warped BOARD position, so the
+        image is geometrically the same picture the sim renders."""
         ow, oh = self.arena_size
-        return cv2.resize(frame, (int(ow), int(oh)), interpolation=cv2.INTER_AREA)
+        warp = getattr(self, "_board_warp", None)
+        if warp is None or not getattr(warp, "ok", False):
+            return cv2.resize(frame, (int(ow), int(oh)), interpolation=cv2.INTER_AREA)
+        h, w = frame.shape[:2]
+        maps = getattr(self, "_warp_maps", None)
+        if maps is None or maps[0].shape != (int(oh), int(ow)):
+            xs = np.empty((int(oh), int(ow)), np.float32)
+            ys = np.empty((int(oh), int(ow)), np.float32)
+            for r in range(int(oh)):
+                by = (r + 0.5) / oh
+                for c in range(int(ow)):
+                    fx, fy = warp.board_to_frame((c + 0.5) / ow, by)
+                    xs[r, c] = fx * (w - 1)
+                    ys[r, c] = fy * (h - 1)
+            self._warp_maps = (xs, ys)
+            maps = self._warp_maps
+        return cv2.remap(frame, maps[0], maps[1], interpolation=cv2.INTER_AREA,
+                         borderMode=cv2.BORDER_REPLICATE)
 
     # ---- hand-card recognition ---------------------------------------
     def hand_crop(self, frame: np.ndarray, cx: float, cy: float) -> np.ndarray:
