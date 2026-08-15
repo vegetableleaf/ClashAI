@@ -489,6 +489,7 @@ cards:
     targets: any
     flags: [melee, parry, reflect, stun]
     ability: {name: "Parry", effect: "reflects the next MELEE attack: takes no damage, stuns the attacker, deals 200% of its attack damage back", cooldown_s: 3.5}
+    parry_cd_s: 3.5           # 2026-08-15: wires the ability above into the engine (_land_hit)
     counters: [prince, dark_prince, bandit, boss_bandit, pekka, mini_pekka, mega_knight]
     evolution: null
     verified: true
@@ -801,11 +802,33 @@ cards:
 
   # "When used, it can STUN enemies in its radius for 0.5 seconds" -- Lightning's stun was not
   # modelled at all (no stun_duration_s in the import), so it was pure damage.
-  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, verified: true}
+  # LIGHTNING (2026-08-15 wiki): "the three troops that are targeted are always the three
+  # that have the highest hitpoints within its radius" + 0.5 s stun. It was resolving as a
+  # radius BLAST, nuking the swarms real Lightning ignores. Radius 3.5 (was KB-default 2.9).
+  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
+              radius_tiles: 3.5, verified: true}
   # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
   # crowd-control modelled either. Duration is not published, so it falls back to the global
   # sim.freeze_duration rather than being invented here.
-  vines: {kind: spell, flags: [freeze], verified: true}
+  # VINES (2026-08-15 wiki): "freeze the troop in place ... for 2.5 seconds. The three troops
+  # that are targeted are always the three that have the highest hitpoints within its radius."
+  # dmg 153 x2 hits collapsed to one application (306, crown 39 x2 = 78): total right, the
+  # 1.25 s split between the two ticks is below the sim's decision resolution.
+  vines: {kind: spell, flags: [stun], stun_duration_s: 2.5, top_n_targets: 3,
+          damage: 306, crown_tower_damage: 78, radius_tiles: 2.5, verified: true}
+  # POISON (2026-08-15 wiki): "low damage that is dealt every second for 8 seconds ...
+  # decreases the movement speed of enemy troops by 15%". It was resolving as a ONE-TIME
+  # 92-damage blast -- 12% of its real output, in 10% of ladder decks. KB's per-tick values
+  # (92 troop / 23 crown at 11) are already per-second, so the zone uses them directly.
+  poison: {kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
+           radius_tiles: 3.5, verified: true}
+
+  # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
+  # targets share the zone -- 1 target: 696/97 crown; 2-3: 294/51; 4+: 153/35 (level 11).
+  # "dealing more damage to them the fewer there are inside its radius".
+  void: {kind: spell, zone_s: 4.0, zone_tick_s: 1.333, radius_tiles: 2.5,
+         zone_tiers: [[1, 696, 97], [3, 294, 51], [99, 153, 35]], verified: true}
+
   zap:
     display: "Zap"
     elixir: 2
@@ -1054,7 +1077,21 @@ cards:
     win_condition: true
     targets: null
     flags: [spawner, swarm]
-    verified: false
+    # 2026-08-15 wiki: "After 2.2 seconds, it spawns a single Skeleton ... every 0.5 seconds
+    # for 9 seconds on the edge of the spell's radius" (x12, radius 4). It was resolving as
+    # an 81-damage BLAST that spawned NOTHING -- the classic siege-killing archetype simply
+    # did not exist in training.
+    kind: spell
+    radius_tiles: 4.0
+    damage: 0                 # the spell itself deals no damage; the Skeletons do
+    crown_tower_damage: 0
+    zone_s: 9.0
+    zone_spawn_n: 12
+    zone_spawn_start_s: 2.2
+    zone_spawn_gap_s: 0.5
+    zone_spawn_edge: true
+    spawn_unit: skeletons     # per-body stats (81/81 @11, the card's hp/dmg ARE per body)
+    verified: true
 
   the_log:
     display: "The Log"
@@ -1110,15 +1147,22 @@ cards:
     targets: any
     flags: [ranged, siege]
     range: long
-    verified: false
+    deploy_time_s: 3.5        # wiki attr table: 0.3s hit / 0.3s load / 3.5s DEPLOY / 30s life
+    verified: true            # 2026-08-15 wiki sweep (range 11.5, lifetime 30 already correct)
 
   mortar:
     display: "Mortar"
     win_condition: true
     targets: any
     flags: [splash, siege]
+    # 2026-08-15 wiki sweep: attr table publishes "3.5-11.5" range, 3.5 s deploy, 30 s life,
+    # 5 s hit speed. The range table carried 3.5 -- the DEAD-ZONE minimum, not the reach --
+    # so an opponent Mortar could never actually siege; a whole ladder archetype was a dud.
     range: long
-    verified: false
+    range_tiles: 11.5
+    min_range_tiles: 3.5      # the blind spot: "preventing it from attacking enemies inside it"
+    deploy_time_s: 3.5
+    verified: true
 
   three_musketeers:
     display: "Three Musketeers"
