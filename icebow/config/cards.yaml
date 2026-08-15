@@ -1461,7 +1461,11 @@ cards:
   # issue where an invisible Royal Ghost was not receiving splash damage".
   royal_ghost: {range: melee, splash: true, flags: [splash], invisibility_time_s: 1.8, verified: true}
   royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
-  rune_giant: {range: melee, verified: false}
+  # 2026-08-15 wiki: "a slow, single-target, BUILDING-TARGETING, melee, ground troop" (attr
+  # row: Medium (60) / Melee: Medium (1.2) / Building). The thin KB import had no targeting
+  # data, so the sim's Rune Giant was brawling troops on the way in. Her ally damage-buff
+  # ability stays unmodeled (documented in SIM_FIDELITY.md deferrals).
+  rune_giant: {range: melee, targets: buildings_only, flags: [building_targeting], verified: true}
   skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
   # SUSPICIOUS BUSH. The imported row was the BUSH GOBLINS' stats pinned on the parent -- the bush
   # itself has 81 hp (skeleton-tier), never attacks, and "spawns invisible as it moves towards the
