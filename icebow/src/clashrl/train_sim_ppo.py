@@ -742,13 +742,28 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             if not roll["rew"]:
                 break
             if len(win_hist) >= 20:
-                d_new = min(1.0, max(0.15, (100.0 * sum(win_hist) / len(win_hist)) / full_wr))
-                if abs(d_new - _curr["d"]) > 0.05:
+                wr_now = 100.0 * sum(win_hist) / len(win_hist)
+                # DAMPED CONTROLLER (2026-08-15). MEASURED on the overnight run: W_easy 37.5%
+                # vs W_hard 5.0% -- a 32.5-point spread puts the proportional map's slope at
+                # ~-0.93, and the 50-match window refreshes almost fully every rollout (a near-
+                # memoryless sensor), so binomial noise (+-7pp at n=50) bounced the difficulty
+                # +-0.2 per update -- the all-night thrash the user watched, each swing shifting
+                # the training mixture and re-baselining the critic for nothing. Two dampers:
+                # an EMA over the window means (the sensor keeps memory across rollouts), and an
+                # ASYMMETRIC rate limit -- climb up to +0.10 per update, back off at most -0.05
+                # -- so the trend passes and the bounce dies. The equilibrium itself is healthy
+                # and unchanged: d* solves WR(d) = full_wr * d (~0.55 -> ~19% mixed WR, exactly
+                # the 18.2% gate the run had found).
+                ema = _curr.get("wr_ema")
+                _curr["wr_ema"] = wr_now if ema is None else 0.7 * ema + 0.3 * wr_now
+                d_tgt = min(1.0, max(0.15, _curr["wr_ema"] / full_wr))
+                d_new = min(_curr["d"] + 0.10, max(_curr["d"] - 0.05, d_tgt))
+                if abs(d_new - _curr["d"]) > 0.02:
                     _curr["d"] = d_new
                     if remote:
                         rpool.set_difficulty(d_new)
                     print(f"[train-sim-ppo] curriculum difficulty -> {d_new:.2f} "
-                          f"(recent winrate {100.0 * sum(win_hist) / len(win_hist):.0f}%)")
+                          f"(winrate ema {_curr['wr_ema']:.0f}%, window {wr_now:.0f}%)")
             with torch.no_grad():                              # bootstrap values for the final states
                 net.eval()
                 _, _, _, bv = net(torch.stack([to_obs_t(o) for o in cobs]),

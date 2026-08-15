@@ -2719,3 +2719,19 @@ Notes / caveats
 - Already correct in-engine: ranged (5.0) building-only wincon -- stops at gap 4.94, shells
   the tower with projectiles, ignores troops standing on him (knight took 0). Added a
   regression pin (test_sim_fidelity.RoyalGiantPin) since RG decks are ladder-popular. 126/126.
+
+2026-08-15 — MORNING: curriculum thrash diagnosed + damped controller shipped
+- Overnight run: 13k matches, difficulty oscillating all night. Measured the two tiers on the
+  current checkpoint (NEW engine): W_easy 37.5% (15/40) vs W_hard 5.0% (3/60) -> 32.5-point
+  spread, proportional-map slope ~-0.93, and the 50-match sensor refreshes ~fully per rollout,
+  so +-7pp binomial noise bounced d by +-0.2 per update. The equilibrium itself is healthy:
+  d* ~ 0.55 -> ~19% mixed WR = exactly the 18.2% best gate the run found. The thrash costs
+  SAMPLE EFFICIENCY (mixture/critic churn), not match throughput (13k/night is learner-bound).
+- Fix: damped controller in train_sim_ppo (EMA over window means + asymmetric rate limit
+  +0.10/-0.05 per update, deadband 0.02). Simulated at the measured tier winrates:
+  d stdev 0.303 -> 0.047. Suite 126/126.
+- Checkpoint health: card head fully sane (all mean logits +-0.05 -- no repair/lift needed);
+  X-Bow 3.3 plays/match, tornado 2.1, 32 plays/match. WATCH: rocket 0 plays in 60 greedy
+  matches -- not head suppression (probe clean), an economic habit; expect rocket-cycle to
+  emerge with late-game learning. Evals ran on the UPGRADED engine; the still-running trainer
+  is on pre-fidelity code, so numbers aren't directly comparable to its console winrate.
