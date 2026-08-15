@@ -352,6 +352,7 @@ class SelfPlayOpponent:
         self.use_pred_canvas = detect_obs.predictive_enabled(cfg)
         self.pred_dt = detect_obs.predictive_dt(cfg)
         self.pred_horizon = detect_obs.eta_horizon(cfg)
+        self.use_hp_canvas = detect_obs.hp_enabled(cfg)
         self.sight_range = env.sight_range
         self.agent_dt = env.agent_dt
         self.predict_horizon = env.predict_horizon
@@ -427,6 +428,10 @@ class SelfPlayOpponent:
                 pred = detect_obs.predictive_channels(units, mine_t, en_t, self.db, oh, ow,
                                                       dt_s=self.pred_dt, horizon_s=self.pred_horizon)
                 ch = np.concatenate([ch, detect_obs.channels_to_uint8(pred)], axis=2)
+            if self.use_hp_canvas:                            # mirrored HP truth for team 1
+                hp = detect_obs.hp_channels(view.hp_state(eng, 1, self.rng,
+                                                          self.canvas_presence_recall), oh, ow)
+                ch = np.concatenate([ch, detect_obs.channels_to_uint8(hp)], axis=2)
             obs = np.concatenate([obs, self._canvas_stack.push(ch, eng.t)], axis=2)
         hand = np.zeros(self.n_cards, np.float32)
         for i in self._hand_ids():

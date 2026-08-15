@@ -2817,3 +2817,16 @@ Notes / caveats
 - CONSEQUENCE: every existing checkpoint is invalid under the new config. Full pipeline
   restart: archive old ckpts -> train-bc (reuses replays/labels) -> train-sim-ppo --init
   data/policy.pt (fresh) -> reseed policy_rl.pt from the new champion -> train-rl.
+
+2026-08-15 — TROOP HP CHANNELS (user-greenlit, same architecture break: in_ch 12 -> 14)
+- Two channels (enemy_hp / my_hp): ellipse INTENSITY = the unit's HP fraction. Sim = engine
+  truth via view.hp_state (same presence dropout as the semantic canvas); live/play/BC = a
+  new bar reader (detect_obs.read_hp_frac) on the coloured bar CR draws above damaged units.
+  Read failures and absent bars return 1.0 -- noise degrades toward today's no-information
+  baseline, never invents damage. Bar geometry: fill is left-anchored (CR drains rightward),
+  backing capped at a plausible bar width so dark scenery cannot masquerade as an empty bar
+  (the naive reader read a 0.66 bar as 0.39 on a dark background -- test-caught).
+- All five obs producers painted; stale_resume unchanged (in_ch gate catches 12 -> 14). The
+  in-flight 12-ch replay mine was killed pre-output; the user re-runs replay-bc.
+- Tests: HP intensity tracks fraction (40% knight -> ~89/255), synthetic bar reads ~0.66,
+  no-bar defaults to full. 138/138.

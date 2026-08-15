@@ -116,6 +116,7 @@ class SimMatchEnv:
         self.use_pred_canvas = detect_obs.predictive_enabled(cfg)
         self.pred_dt = detect_obs.predictive_dt(cfg)
         self.pred_horizon = detect_obs.eta_horizon(cfg)
+        self.use_hp_canvas = detect_obs.hp_enabled(cfg)
         self.obs_shape = (int(oh), int(ow), detect_obs.obs_in_channels(cfg))
         # Stage 3: identity-grounded threat block (KB roles of RECOGNISED enemy cards). When on, the
         # threat vector grows by card_threat.IDENTITY_DIM; the sim reads it from GROUND TRUTH but only
@@ -415,6 +416,10 @@ class SimMatchEnv:
             pred = detect_obs.predictive_channels(units, mine_t, en_t, self.db, oh, ow,
                                                   dt_s=self.pred_dt, horizon_s=self.pred_horizon)
             ch = np.concatenate([ch, detect_obs.channels_to_uint8(pred)], axis=2)
+        if self.use_hp_canvas:
+            hp = detect_obs.hp_channels(view.hp_state(self.eng, 0, self.rng,
+                                                      self.canvas_presence_recall), oh, ow)
+            ch = np.concatenate([ch, detect_obs.channels_to_uint8(hp)], axis=2)
         # Each slice keeps its OWN independent presence dropout, which is what live does: a unit the
         # detector missed this frame is absent from this slice only.
         return np.concatenate([img, self._canvas_stack.push(ch, self.eng.t)], axis=2)

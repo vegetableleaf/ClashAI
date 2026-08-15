@@ -468,6 +468,15 @@ class LiveMatchEnv:
                                                   dt_s=detect_obs.predictive_dt(self.cfg),
                                                   horizon_s=detect_obs.eta_horizon(self.cfg))
             ch = np.concatenate([ch, pred], axis=2)
+        if detect_obs.hp_enabled(self.cfg):
+            w = self.actions.warp
+            items = []
+            for d in self._last_dets_all:
+                if d.team in ("mine", "enemy"):
+                    bx, by = w.frame_to_board(d.cx, d.gy)
+                    items.append((d.team, d.base, bx, by, detect_obs.read_hp_frac(frame, d)))
+            ch = np.concatenate(
+                [ch, detect_obs.hp_channels(items, img.shape[0], img.shape[1])], axis=2)
         stack = self._canvas_stack.push(detect_obs.channels_to_uint8(ch), time.time())
         return np.concatenate([img, stack], axis=2)
 

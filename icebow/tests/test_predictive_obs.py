@@ -57,9 +57,9 @@ class ArchitectureTests(unittest.TestCase):
     def test_obs_widened_to_twelve_channels(self):
         cfg = Config.load()
         self.assertTrue(detect_obs.predictive_enabled(cfg))
-        self.assertEqual(detect_obs.obs_in_channels(cfg), 12, "3 RGB + 6 semantic + 3 predictive")
+        self.assertEqual(detect_obs.obs_in_channels(cfg), 14, "3 RGB + 6 semantic + 3 predictive + 2 HP")
         env = SimMatchEnv(cfg, seed=3)
-        self.assertEqual(env.reset().shape, (96, 64, 12))
+        self.assertEqual(env.reset().shape, (96, 64, 14))
 
     def test_predicted_slice_leads_the_semantic_slice(self):
         from clashrl.sim.engine import build_spec
@@ -78,6 +78,40 @@ class ArchitectureTests(unittest.TestCase):
             cy_pred = pred.max(axis=1).argmax()
             self.assertGreaterEqual(cy_pred, cy_now,
                                     "the forecast blob is at or beyond the current blob")
+
+
+class HpChannelTests(unittest.TestCase):
+    def test_hp_intensity_tracks_the_fraction(self):
+        from clashrl.sim.engine import build_spec
+        cfg = Config.load()
+        env = SimMatchEnv(cfg, seed=7)
+        env.reset()
+        env.opponent.act = lambda eng: None
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.50, 0.55)
+        kn = [u for u in env.eng.units if u.team == 1][-1]
+        kn.hp = kn.spec.hp * 0.40
+        mx = 0
+        for _ in range(4):                                  # ride out the presence dropout
+            obs, *_ = env.step((False, 0, 0))
+            mx = max(mx, int(obs[:, :, 12].max()))
+        self.assertGreater(mx, 80, "a 40%% knight paints a dim blob")
+        self.assertLess(mx, 140, "and never a full-HP one")
+
+    def test_bar_reader_measures_fill_and_defaults_to_full(self):
+        import types
+        import cv2
+        frame = np.zeros((400, 300, 3), np.uint8)
+        # a 60px bar: 40px red fill + 20px dark backing, above a 'unit' at (0.5, 0.5)
+        cv2.rectangle(frame, (120, 172), (180, 178), (40, 40, 40), -1)
+        cv2.rectangle(frame, (120, 172), (160, 178), (40, 40, 230), -1)
+        d = types.SimpleNamespace(cx=0.5, gy=0.5, w=0.25, h=0.05)
+        frac = detect_obs.read_hp_frac(frame, d)
+        self.assertGreater(frac, 0.5)
+        self.assertLess(frac, 0.85, "40/60 filled reads ~0.66")
+        empty = types.SimpleNamespace(cx=0.5, gy=0.9, w=0.2, h=0.05)
+        self.assertEqual(detect_obs.read_hp_frac(frame, empty), 1.0,
+                         "no bar found = undamaged = full")
 
 
 if __name__ == "__main__":

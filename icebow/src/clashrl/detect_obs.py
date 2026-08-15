@@ -35,6 +35,12 @@ N_CHANNELS = len(CHANNELS)
 # rediscover per-card speeds and targeting from experience.
 PRED_CHANNELS = ("enemy_predicted", "my_predicted", "enemy_urgency")
 N_PRED = len(PRED_CHANNELS)
+# TROOP HP CHANNELS (2026-08-15, same architecture break): ellipse INTENSITY = the unit's HP
+# fraction. Sim reads engine truth; live reads the coloured bar the game draws above any
+# DAMAGED unit (no bar = undamaged = 1.0, so read failures degrade toward full HP, never
+# below today's information).
+HP_CHANNELS = ("enemy_hp", "my_hp")
+N_HP = len(HP_CHANNELS)
 
 
 def canvas_enabled(cfg) -> bool:
@@ -52,6 +58,11 @@ def predictive_enabled(cfg) -> bool:
     Requires the semantic canvas itself -- prediction extends it, never replaces it."""
     return canvas_enabled(cfg) and bool(cfg.get("observation", "use_predictive_canvas",
                                                 default=False))
+
+
+def hp_enabled(cfg) -> bool:
+    """Are the troop-HP channels (see HP_CHANNELS) part of the image? Requires the canvas."""
+    return canvas_enabled(cfg) and bool(cfg.get("observation", "use_hp_canvas", default=False))
 
 
 def predictive_dt(cfg) -> float:
@@ -94,7 +105,8 @@ def obs_in_channels(cfg) -> int:
     Every PolicyNet construction site reads this so sim, live play and all three trainers agree;
     the value is also stamped into each checkpoint as `in_ch` so `play` rebuilds the right net.
     """
-    per_slice = N_CHANNELS + (N_PRED if predictive_enabled(cfg) else 0)
+    per_slice = (N_CHANNELS + (N_PRED if predictive_enabled(cfg) else 0)
+                 + (N_HP if hp_enabled(cfg) else 0))
     return 3 + (per_slice * canvas_stack_len(cfg) if canvas_enabled(cfg) else 0)
 
 
@@ -221,6 +233,68 @@ def predictive_channels(units, my_towers, enemy_towers, db, oh: int, ow: int,
                         float(min(1.0, urg * conf)), -1)
             ch[:, :, 2] = np.maximum(ch[:, :, 2], layer)
     return ch
+
+
+def hp_channels(items, oh: int, ow: int) -> np.ndarray:
+    """Render per-unit HP into [oh, ow, N_HP] float32: channel 0 = enemy units, 1 = ours,
+    each an ellipse whose INTENSITY is the unit's HP fraction. ``items`` are
+    (team_label, base, x, y, hp_frac) tuples in this canvas's coordinate space --
+    sim ground truth (view.hp_state) or live detections + bar reads, same painter."""
+    ch = np.zeros((oh, ow, N_HP), np.float32)
+    rx, ry = max(1, int(ow / 18.0 * 0.55)), max(1, int(oh / 32.0 * 0.7))
+    for team, _base, x, y, frac in items:
+        k = 1 if team == "mine" else 0
+        layer = np.zeros((oh, ow), np.float32)
+        cv2.ellipse(layer, (int(x * ow), int(y * oh)), (rx, ry), 0, 0, 360,
+                    float(max(0.02, min(1.0, frac))), -1)   # 0.02 floor: present-but-dying stays visible
+        ch[:, :, k] = np.maximum(ch[:, :, k], layer)
+    return ch
+
+
+def read_hp_frac(frame, d) -> float:
+    """Read the coloured HP bar the game draws ABOVE a damaged unit's box; 1.0 when no bar
+    is found (undamaged units draw none, and an unreadable bar must never invent damage).
+    The bar is a short horizontal strip -- team-coloured fill from the left over a dark
+    backing -- so the fraction is coloured-columns / (coloured + dark backing) columns."""
+    try:
+        fh, fw = frame.shape[:2]
+        top = d.gy - d.h                                # box top (gy is the unit's ground line)
+        y0 = int(max(0.0, top - 0.030) * fh)
+        y1 = int(max(0.0, top + 0.004) * fh)
+        x0 = int(max(0.0, d.cx - d.w * 0.7) * fw)
+        x1 = int(min(1.0, d.cx + d.w * 0.7) * fw)
+        if y1 - y0 < 2 or x1 - x0 < 6:
+            return 1.0
+        strip = frame[y0:y1, x0:x1]
+        hsv = cv2.cvtColor(strip, cv2.COLOR_BGR2HSV)
+        h, sat, val = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+        fill = ((sat > 110) & (val > 110)
+                & (((h > 95) & (h < 135)) | (h < 12) | (h > 168)))   # blue fill or red fill
+        back = (sat < 90) & (val < 110)                              # the dark bar backing
+        cols_fill = (fill.sum(axis=0) >= max(1, fill.shape[0] // 3))
+        cols_back = (back.sum(axis=0) >= max(1, back.shape[0] // 2)) & ~cols_fill
+        bar = cols_fill | cols_back
+        if int(cols_fill.sum()) == 0:
+            return 1.0                                   # no coloured fill -> no bar -> undamaged
+        # The BAR is one contiguous run (fill from the left, dark backing to its right); any
+        # other dark columns in the strip are scenery, not backing -- counting them dragged a
+        # 0.66 bar down to 0.39 on a dark background. Measure only the run containing the fill.
+        # CR bars FILL FROM THE LEFT and drain rightward, so the fill's left edge IS the
+        # bar's left edge -- never extend left into scenery. Rightward, the dark backing can
+        # be seamlessly contiguous with dark scenery, so the run is capped at a plausible
+        # bar width (~0.62 of the crop, i.e. ~0.87x the unit box) [verify on live frames].
+        lo = int(np.argmax(cols_fill))
+        hi = lo
+        max_hi = min(len(bar) - 1, lo + max(8, int(len(bar) * 0.62)) - 1)
+        while hi + 1 <= max_hi and bar[hi + 1]:
+            hi += 1
+        n_fill = int(cols_fill[lo:hi + 1].sum())
+        run = hi - lo + 1
+        if run < 8:
+            return 1.0                                   # too short to be a real bar
+        return max(0.05, min(1.0, n_fill / float(run)))
+    except Exception:  # noqa: BLE001
+        return 1.0
 
 
 def board_channels(frame, detector, db, oh: int, ow: int, conf: float = 0.3) -> np.ndarray:

@@ -372,6 +372,12 @@ def build_replay_bc(cfg, replays=None, weights=None, conf=None, stride=None, out
                                                           dt_s=detect_obs.predictive_dt(cfg),
                                                           horizon_s=detect_obs.eta_horizon(cfg))
                     chf = np.concatenate([chf, pred], axis=2)
+                if detect_obs.hp_enabled(cfg):
+                    items = [((d.team if d.team in ("mine", "enemy") else "enemy"), d.base,
+                              d.cx, d.gy, detect_obs.read_hp_frac(frame, d))
+                             for d in dets if d.team in ("mine", "enemy")]
+                    chf = np.concatenate(
+                        [chf, detect_obs.hp_channels(items, int(oh), int(ow))], axis=2)
                 canvas_stack.push(detect_obs.channels_to_uint8(chf), t_now)
             fresh = tracker.update(dets, t_now)               # geometry-tagged teams + real appearances
             hand_ids = vision.recognize_hand(frame)           # the PRO's real tray (same card art)

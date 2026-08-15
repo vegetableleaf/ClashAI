@@ -426,6 +426,15 @@ def play(cfg) -> None:
                                                       dt_s=detect_obs.predictive_dt(cfg),
                                                       horizon_s=detect_obs.eta_horizon(cfg))
                 chf = np.concatenate([chf, pred], axis=2)
+            if detect_obs.hp_enabled(cfg):
+                w = actions.warp
+                items = []
+                for d in _last_dets["all"]:
+                    if d.team in ("mine", "enemy"):
+                        bx, by = w.frame_to_board(d.cx, d.gy)
+                        items.append((d.team, d.base, bx, by, detect_obs.read_hp_frac(frame, d)))
+                chf = np.concatenate(
+                    [chf, detect_obs.hp_channels(items, obs.shape[0], obs.shape[1])], axis=2)
             ch = channels_to_uint8(chf)
             obs = np.concatenate([obs, _canvas_stack.push(ch, time.time())], axis=2)
         x = torch.from_numpy(obs).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0

@@ -126,6 +126,22 @@ def _canvas_channel(u, team: int) -> int:
     return 1 if u.spec.flying else 0                 # enemy air vs ground
 
 
+def hp_state(engine, team: int = 0, rng=None, presence_recall: float = 1.0):
+    """Per-unit HP for the HP canvas, in ``team``'s local frame: a list of
+    (team_label, base, x, y, hp_frac) with the same presence dropout the semantic canvas
+    applies -- live, a unit the detector missed has no bar to read either."""
+    out = []
+    for u in engine.units:
+        if u.hp <= 0 or u.deploy_left > 0:
+            continue
+        if presence_recall < 1.0 and rng is not None and rng.random() > presence_recall:
+            continue
+        lx, ly = to_local(u.x, u.y, team)
+        out.append(("mine" if u.team == team else "enemy", u.spec.base, lx, ly,
+                    max(0.0, min(1.0, u.hp / max(1.0, u.spec.hp)))))
+    return out
+
+
 def semantic_channels(engine, oh: int, ow: int, team: int = 0, rng=None,
                       presence_recall: float = 1.0) -> np.ndarray:
     """The sim's stand-in for the live detector's semantic CANVAS, in ``team``'s local frame.
