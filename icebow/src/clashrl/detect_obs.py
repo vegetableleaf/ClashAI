@@ -259,8 +259,12 @@ def read_hp_frac(frame, d) -> float:
     try:
         fh, fw = frame.shape[:2]
         top = d.gy - d.h                                # box top (gy is the unit's ground line)
-        y0 = int(max(0.0, top - 0.030) * fh)
-        y1 = int(max(0.0, top + 0.004) * fh)
+        # WIDE SCAN BAND (2026-08-15, user calibration): the bar's height varies by unit --
+        # sometimes it sits well ABOVE the box (flyers, tall sprites), sometimes INSIDE its
+        # top edge. Scan generously, then ROW-LOCALIZE: find the strongest coloured row and
+        # measure only a thin band around it, so the wide crop never dilutes the thresholds.
+        y0 = int(max(0.0, top - 0.045) * fh)
+        y1 = int(max(0.0, min(1.0, top + 0.025)) * fh)
         x0 = int(max(0.0, d.cx - d.w * 0.7) * fw)
         x1 = int(min(1.0, d.cx + d.w * 0.7) * fw)
         if y1 - y0 < 2 or x1 - x0 < 6:
@@ -271,6 +275,12 @@ def read_hp_frac(frame, d) -> float:
         fill = ((sat > 110) & (val > 110)
                 & (((h > 95) & (h < 135)) | (h < 12) | (h > 168)))   # blue fill or red fill
         back = (sat < 90) & (val < 110)                              # the dark bar backing
+        row_fill = fill.sum(axis=1)
+        r = int(np.argmax(row_fill))
+        if int(row_fill[r]) < 4:
+            return 1.0                                   # nothing bar-like anywhere in the band
+        r0, r1 = max(0, r - 2), min(fill.shape[0], r + 3)
+        fill, back = fill[r0:r1], back[r0:r1]
         cols_fill = (fill.sum(axis=0) >= max(1, fill.shape[0] // 3))
         cols_back = (back.sum(axis=0) >= max(1, back.shape[0] // 2)) & ~cols_fill
         bar = cols_fill | cols_back

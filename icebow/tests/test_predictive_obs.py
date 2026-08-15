@@ -101,14 +101,17 @@ class HpChannelTests(unittest.TestCase):
     def test_bar_reader_measures_fill_and_defaults_to_full(self):
         import types
         import cv2
-        frame = np.zeros((400, 300, 3), np.uint8)
-        # a 60px bar: 40px red fill + 20px dark backing, above a 'unit' at (0.5, 0.5)
-        cv2.rectangle(frame, (120, 172), (180, 178), (40, 40, 40), -1)
-        cv2.rectangle(frame, (120, 172), (160, 178), (40, 40, 230), -1)
-        d = types.SimpleNamespace(cx=0.5, gy=0.5, w=0.25, h=0.05)
-        frac = detect_obs.read_hp_frac(frame, d)
-        self.assertGreater(frac, 0.5)
-        self.assertLess(frac, 0.85, "40/60 filled reads ~0.66")
+        # the bar's height above the box VARIES by unit (user calibration): test it far
+        # above the box top, at the old nominal spot, and tucked INSIDE the box edge
+        for dy_px in (-14, -6, +6):
+            frame = np.zeros((400, 300, 3), np.uint8)
+            yb = 180 + dy_px                             # box top for this unit sits at y=180
+            cv2.rectangle(frame, (120, yb - 4), (180, yb + 2), (40, 40, 40), -1)
+            cv2.rectangle(frame, (120, yb - 4), (160, yb + 2), (40, 40, 230), -1)
+            d = types.SimpleNamespace(cx=0.5, gy=0.5, w=0.25, h=0.05)
+            frac = detect_obs.read_hp_frac(frame, d)
+            self.assertGreater(frac, 0.5, "bar at offset %d px must be found" % dy_px)
+            self.assertLess(frac, 0.85, "40/60 filled reads ~0.66 (offset %d)" % dy_px)
         empty = types.SimpleNamespace(cx=0.5, gy=0.9, w=0.2, h=0.05)
         self.assertEqual(detect_obs.read_hp_frac(frame, empty), 1.0,
                          "no bar found = undamaged = full")

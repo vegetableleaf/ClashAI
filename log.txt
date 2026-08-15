@@ -2830,3 +2830,13 @@ Notes / caveats
   in-flight 12-ch replay mine was killed pre-output; the user re-runs replay-bc.
 - Tests: HP intensity tracks fraction (40% knight -> ~89/255), synthetic bar reads ~0.66,
   no-bar defaults to full. 138/138.
+
+2026-08-15 — HP bar reader: wide scan band + row localization (user calibration)
+- User: "the health bar isn't always right above the bounding box, sometimes somewhat INSIDE
+  the box and sometimes FAR above." The first band was too tight for both (-0.030 to +0.004
+  of frame height = ~35px above, ~5px inside). Widened to -0.045 .. +0.025 (~52px above to
+  ~29px inside), and -- because a taller crop dilutes the row thresholds -- the reader now
+  ROW-LOCALIZES first: find the strongest coloured row, then measure fill/backing in a
+  5-row band around it. Wide search, narrow measurement.
+- Tests now read the same 40/60 bar at three heights (14px above / 6px above / 6px INSIDE
+  the box top); all three return ~0.66. 138/138.
