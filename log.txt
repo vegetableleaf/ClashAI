@@ -2898,3 +2898,19 @@ Notes / caveats
 - Result: ram's first tower hit and the 2 Barbarians now land on the SAME tick (t=3.0,
   uncharged 286 dmg), which is the requested behaviour. Giant Skeleton can hit towers too.
   Tests: TowerContactTests (2). 140/140 (1 skipped).
+
+2026-08-15 — Buildings could be stacked inside each other (user report) -- deploy-time snap
+- _separate() explicitly skips building/building pairs (both anchored, nothing to push), so
+  two Teslas dropped on one tile simply co-existed inside each other -- one footprint with
+  double the DPS and double the effective HP, on BOTH sides. Real CR refuses: dragging a
+  building onto an occupied footprint SNAPS the placement to the nearest free tile.
+- Fix: _snap_building() at _place() time (covers agent plays, scripted opponents and any
+  spawned structure). Overlap = centre distance < r1 + r2 against other BUILDINGS (either
+  team) and against alive CROWN TOWERS. Search rings outward one tile at a time, nearest
+  first with a sideways bias (the game's own), rejecting spots that cross the river or land
+  on illegal ground (reuses _ground_pos_ok). If nothing within 5 rings is free the original
+  point is kept -- a paid card is never silently swallowed.
+- Verified: 4 Teslas deployed at one point land on 4 distinct footprints, zero overlapping
+  pairs; a Tesla dropped ON a princess tower snaps clear (gap 2.00 = 0.5 + 1.5 exactly);
+  stacked X-Bows behind the river all stay on our side. Tests: BuildingStackTests (3).
+  143/143 (1 skipped).

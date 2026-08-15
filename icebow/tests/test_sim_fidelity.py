@@ -535,3 +535,43 @@ class TowerContactTests(unittest.TestCase):
         for _ in range(60):
             env.eng.advance(0.1)
         self.assertLess(tw.hp, hp0, "a body pressed against the tower must be able to swing")
+
+
+class BuildingStackTests(unittest.TestCase):
+    """2026-08-15 (user report): buildings could be placed inside each other -- unit separation
+    explicitly skips building/building pairs (both are anchored), so two Teslas on one tile
+    co-existed and doubled a single footprint's DPS. Real CR snaps the placement instead."""
+
+    def test_repeat_placements_never_overlap(self):
+        from clashrl.sim.engine import _dist
+        env = _quiet(seed=95)
+        tesla = build_spec(env.eng.db, "tesla", 11)
+        pts = []
+        for _ in range(4):
+            env.eng.elixir[0] = 10.0
+            assert env.eng.deploy(0, tesla, 0.50, 0.70)      # the SAME spot every time
+            u = [x for x in env.eng.units if x.team == 0][-1]
+            pts.append((u.x, u.y))
+        for i in range(len(pts)):
+            for j in range(i + 1, len(pts)):
+                self.assertGreaterEqual(_dist(*pts[i], *pts[j]), 2 * tesla.radius - 1e-6,
+                                        "two buildings must never share a footprint")
+
+    def test_building_snaps_off_a_crown_tower(self):
+        from clashrl.sim.engine import _dist
+        env = _quiet(seed=96)
+        tesla = build_spec(env.eng.db, "tesla", 11)
+        tw = env.eng.towers[0][0]
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, tesla, tw.x, tw.y)          # right on top of our princess
+        u = [x for x in env.eng.units if x.team == 0][-1]
+        self.assertGreaterEqual(_dist(u.x, u.y, tw.x, tw.y), tesla.radius + tw.radius - 1e-6)
+
+    def test_snap_stays_on_its_own_side_of_the_river(self):
+        env = _quiet(seed=97)
+        xbow = build_spec(env.eng.db, "x_bow", 11)
+        for _ in range(3):
+            env.eng.elixir[0] = 10.0
+            assert env.eng.deploy(0, xbow, 0.50, 0.53)       # just behind the river, stacked
+        for u in [x for x in env.eng.units if x.team == 0]:
+            self.assertGreater(u.y, 0.5, "a snap must never push a building across the river")
