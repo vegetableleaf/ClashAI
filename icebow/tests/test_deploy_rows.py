@@ -48,5 +48,43 @@ class DeployRowTests(unittest.TestCase):
                          self.sim.deployable_mask(False).index(True))
 
 
+class RiverLedgeTests(unittest.TestCase):
+    """The field is not a rectangle: the outer ~2 columns at the river rows are decorative
+    ledges (heart tiles) the game refuses -- excluded everywhere, sim and live alike."""
+
+    def setUp(self):
+        self.cfg = Config.load()
+        self.live = ActionSpace(self.cfg)
+
+    def test_ledge_cells_are_masked(self):
+        gw = int(self.live.gw)
+        m = self.live.deployable_mask(False)
+        for gx in (0, 1, gw - 2, gw - 1):
+            self.assertFalse(m[13 * gw + gx], "ledge cell (%d, 13) must be unplaceable" % gx)
+        self.assertTrue(m[13 * gw + 2], "the first real tile past the ledge stays placeable")
+
+    def test_clamp_snaps_off_the_ledge(self):
+        gw = int(self.live.gw)
+        cell = self.live.deploy_clamp(False, 13 * gw + 0)
+        self.assertEqual(cell // gw, 13)
+        self.assertGreaterEqual(cell % gw, 2, "clamp must move a ledge pick onto real tiles")
+
+    def test_engine_snaps_scripted_deploys_inward(self):
+        from clashrl.sim.env import SimMatchEnv
+        from clashrl.sim.engine import build_spec
+        env = SimMatchEnv(self.cfg, seed=7)
+        env.reset()
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.03, 0.5)
+        foe = [u for u in env.eng.units if u.team == 1][-1]
+        self.assertGreater(foe.x, 2.0 / 18.0, "an opponent's ledge deploy lands on real tiles")
+
+    def test_warp_anchors_stay_monotonic(self):
+        for anchors in (self.live.warp.ya, self.live.warp.xa):
+            for (a0, b0), (a1, b1) in zip(anchors, anchors[1:]):
+                self.assertLess(a0, a1)
+                self.assertLess(b0, b1, "frame values must rise with board values")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

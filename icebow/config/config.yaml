@@ -629,17 +629,18 @@ env:
   enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.48, 0.11]]
   my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]]
   # FIELD-EDGE + RIVER anchors for BoardWarp (frame-normalized; measured 2026-08-14 from
-  # timelapse_20260814_230750). Tower anchors alone left board 0 / 0.5 / 1 to extrapolation:
-  # the field bottom is really 0.772 (extrapolation said 0.810 -> row-23 taps hit the grass
-  # below the field, tesla refused), the river center is 0.4425 (linear segment said 0.410 ->
-  # row-13 taps grazed the water), board-top is 0.099 (said 0.033 -> rockets in the trophy UI).
-  # Re-measure these five if the capture window's aspect/layout ever changes.
+  # timelapse_20260814_230750, REFINED same night from the user's placeable-area outline).
+  # Tower anchors alone left board 0 / 0.5 / 1 to extrapolation, and the first measurement
+  # mistook the decorative APRONS for the grid: the raised back WALKWAY strip (one tile of
+  # floor-looking rim behind each back row) and the river-bank heart LEDGES render exactly
+  # like placeable tiles but refuse placement. These five lines are the TRUE grid edges,
+  # walkway/ledge excluded. Re-measure if the capture window's aspect/layout ever changes.
   board_edges:
-    top: 0.099       # field's top tile edge  (board y 0.0)
-    river: 0.4425    # water-band center      (board y 0.5); band spans ~0.433-0.453
-    bottom: 0.772    # last tile edge behind your king (board y 1.0)
-    left: 0.059      # field's left tile edge (board x 0.0)
-    right: 0.947     # field's right tile edge (board x 1.0)
+    top: 0.129       # first tile row's top edge, BELOW the back walkway (board y 0.0)
+    river: 0.4425    # water-band center (board y 0.5); band spans ~0.433-0.459
+    bottom: 0.762    # last tile edge above the bottom walkway (board y 1.0)
+    left: 0.048      # field's left tile edge on land rows (board x 0.0)
+    right: 0.950     # field's right tile edge on land rows (board x 1.0)
   # Chip-damage reward: read each princess tower's printed HP with a digit CNN
   # and reward *partial* HP loss (rocket chip, etc.) even when the tower survives.
   # HP is piecewise-constant + monotonic, so a value is only accepted after it

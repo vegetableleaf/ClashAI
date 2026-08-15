@@ -1138,6 +1138,18 @@ class SimEngine:
     def deploy(self, team: int, spec: CardSpec, x: float, y: float) -> bool:
         if self.done or not self.can_afford(team, spec):
             return False
+        if spec.kind != "spell":
+            # RIVER-BANK LEDGES (2026-08-14): the real field is not a rectangle -- the outer
+            # ~2 columns beside the water are decorative ledges the game refuses. The agent's
+            # mask (actions.ledge_blocked) already forbids them; scripted opponents snap
+            # inward here so the sim never fields a unit where the live game could not.
+            from ..actions import LEDGE_X_FRAC, LEDGE_Y0, LEDGE_Y1
+            if LEDGE_Y0 <= y <= LEDGE_Y1:
+                half_col = 0.5 / _TILES_X
+                if x < LEDGE_X_FRAC:
+                    x = LEDGE_X_FRAC + half_col
+                elif x > 1.0 - LEDGE_X_FRAC:
+                    x = 1.0 - LEDGE_X_FRAC - half_col
         self.elixir[team] -= spec.elixir
         self.last_deploy[team] = (spec, x, y, self.t)
         if spec.kind == "spell":

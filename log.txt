@@ -2627,3 +2627,31 @@ Notes / caveats
   strip (king footprint masks its center columns), row-0 on the enemy back row, edge columns
   inside the field. Sim overrides the edges board-true; its warp stays identity (max err 1e-17).
 - Re-measure the five numbers if the capture window's aspect/layout changes. 94/94 tests.
+
+2026-08-14 — FIX: the field is not a rectangle (walkway aprons + river-bank ledges)
+- User insight (annotated screenshot): the CR placeable area excludes tiles that RENDER like
+  floor. Frame forensics on timelapse_20260814_230750 confirmed and measured two classes:
+  (1) the raised back WALKWAY strip (~1 tile of floor-looking rim behind each back row) --
+  the earlier board_edges measurement had anchored board 0/1 on the walkway edges, not the
+  grid; (2) the river-bank heart LEDGES: the outermost ~1.4 columns per side, one tile above
+  the water to one tile below (board y 14/32..18/32), refuse placement.
+- Fixes:
+  * board_edges re-measured to the TRUE grid: top 0.099->0.129, bottom 0.772->0.762,
+    left 0.059->0.048, right 0.947->0.950 (river 0.4425 unchanged).
+  * BoardWarp drops the enemy-king ya anchor when edges are present: the tower anchor is the
+    TEMPLATE MATCH point (the crown), ~40px above the platform's ground line -- above the true
+    grid top, i.e. non-monotonic with it. Ground-measured lines win over sprite anchors.
+    (Anchor-monotonicity is now tested.)
+  * actions.ledge_blocked(gx, gy, gw, gh) + LEDGE_Y0/Y1/X_FRAC constants: cols {0,1,gw-2,gw-1}
+    at rows overlapping the ledge band. Excluded in deployable_mask (sim trainer + live share
+    it); deploy_clamp snaps ledge picks inward to col 2 / gw-3.
+  * sim engine deploy(): non-spell deploys in the ledge band snap inward too, so scripted
+    OPPONENTS can never field a unit where the live game could not.
+  * sim_view: the full board rectangle stays; a second orange border (_PLAYABLE) traces the
+    actually-placeable area with the river notches.
+- Verified on the real frame: blocked-cell markers sit exactly on the heart ledges, row-23
+  taps land on the last tile row above the walkway (877 vs edge 888), row-0 on the first row
+  below the top walkway, grid-bottom line at the floor/walkway boundary. 98/98 tests.
+- Known approximation, logged for later: princess/king tower anchors are sprite-biased
+  (~40px above their ground lines), so mid-land taps sit up to ~half a tile high. All legal
+  land regardless -- accuracy polish, not refusals. Fix = re-anchor towers at platform BASES.

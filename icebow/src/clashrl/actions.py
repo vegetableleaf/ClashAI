@@ -16,6 +16,24 @@ to the visible grass corners for the tightest alignment.
 from __future__ import annotations
 
 
+# RIVER-BANK LEDGES (2026-08-14, from the user's annotated screenshot + frame forensics): the
+# CR field is NOT a rectangle. At the river, the outermost ~1.4 columns on each side are raised
+# decorative ledge tiles (heart emblems in this skin) spanning one tile above the water band to
+# one tile below it. They render exactly like floor tiles but REFUSE placement -- "some tiles
+# look like you can place cards there, but in reality you can't". Board-space band: y in
+# [14/32, 18/32]; columns {0, 1} and {gw-2, gw-1} (the notch is ~1.4 columns deep; both
+# outermost cell CENTERS fall inside it).
+LEDGE_Y0, LEDGE_Y1 = 14.0 / 32.0, 18.0 / 32.0
+LEDGE_X_FRAC = 2.0 / 18.0
+
+
+def ledge_blocked(gx: int, gy: int, gw: int, gh: int) -> bool:
+    """True if placement-grid cell (gx, gy) sits on a river-bank ledge (unplaceable decor)."""
+    if gx not in (0, 1, gw - 2, gw - 1):
+        return False
+    return LEDGE_Y0 <= (gy + 0.5) / gh <= LEDGE_Y1
+
+
 class BoardWarp:
     """Tower-anchored PIECEWISE-LINEAR mapping between BOARD-normalized coordinates (the sim
     engine's space: my princess row = 1 - 6.5/32 = 0.797, my king = 0.906) and FRAME-normalized
@@ -67,6 +85,12 @@ class BoardWarp:
         # overrides them board-true (0/0.5/1), keeping its warp exactly the identity.
         edges = dict(cfg.get("env", "board_edges", default=None) or {})
         if "top" in edges:
+            # The enemy-king anchor is the TEMPLATE MATCH point (the crown), which sits ~40px
+            # ABOVE where the platform meets the ground -- above the measured grid-top edge,
+            # which would make the anchor list non-monotonic. The measured floor line is
+            # ground truth; the sprite anchor loses. (In the sim both are identity points, so
+            # dropping it changes nothing there.)
+            self.ya = [a for a in self.ya if a[0] != ek_b]
             self.ya.insert(0, (0.0, float(edges["top"])))
         if "river" in edges:
             self.ya.append((0.5, float(edges["river"])))
@@ -202,6 +226,8 @@ class ActionSpace:
         min_gy = self.min_own_gy                    # first grid row on your side of the river (board-space)
         if gy < min_gy:
             gy = min_gy
+        if ledge_blocked(gx, gy, gw, int(self.gh)):
+            gx = 2 if gx < gw // 2 else gw - 3      # off the river-bank ledge, onto real tiles
         # A troop can't be deployed ON your king tower (centre-back): the place-tap is a no-op
         # and the card just 'shuffles'. If the cell sits on the king's footprint, pull it to the
         # row just in FRONT of the king (toward the river), where it actually deploys.
@@ -239,6 +265,8 @@ class ActionSpace:
             gy = c // gw
             if gy < min_gy:
                 return False                          # enemy half
+            if ledge_blocked(c % gw, gy, gw, gh):
+                return False                          # river-bank ledge: decorative, unplaceable
             nx, ny = self.cell_center(c % gw, gy)
             if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
                 return False                          # your KING tower footprint (undeployable)

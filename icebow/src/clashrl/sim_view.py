@@ -61,6 +61,7 @@ _STUN = (60, 220, 240)
 _SLOW = (240, 200, 120)
 _GRID = (58, 118, 64)          # faint cell lines
 _GRID_EDGE = (80, 150, 88)     # arena_box border + the deploy line
+_PLAYABLE = (60, 170, 235)     # the ACTUALLY-placeable area's border (river-ledge notches)
 _TILE_G = (46, 104, 52)        # the board's REAL 18x32 tile lattice (under the action grid)
 
 _HUD_TOP = 54
@@ -137,6 +138,15 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.putText(img, f"grid {acts.gw}x{acts.gh} / tiles {int(_TILES_X)}x{int(_TILES_Y)}",
                     (px(bx0, by1)[0] + 3, px(bx0, by1)[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _GRID_EDGE, 1)
+    # --- PLAYABLE-AREA border (2026-08-14) -----------------------------------------------------
+    # The real CR field is NOT a rectangle: at the river the outermost ~2 columns per side are
+    # raised decorative ledges the game refuses (actions.ledge_blocked / engine deploy snap).
+    # The full rectangle above IS the board and stays; this second border traces where cards
+    # can actually be placed.
+    from .actions import LEDGE_X_FRAC as _LX, LEDGE_Y0 as _LY0, LEDGE_Y1 as _LY1
+    _pb = [(0, 0), (0, _LY0), (_LX, _LY0), (_LX, _LY1), (0, _LY1), (0, 1), (1, 1), (1, _LY1),
+           (1 - _LX, _LY1), (1 - _LX, _LY0), (1, _LY0), (1, 0)]
+    cv2.polylines(img, [np.array([px(a, b) for a, b in _pb], np.int32)], True, _PLAYABLE, 1)
     cv2.line(img, (int(0.5 * W), _HUD_TOP), (int(0.5 * W), _HUD_TOP + BH), _LINE, 1)
 
     # --- vortices (under everything: they are a ground effect) ---------------------------------
