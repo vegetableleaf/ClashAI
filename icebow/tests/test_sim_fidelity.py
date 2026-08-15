@@ -365,3 +365,34 @@ class Batch2Tests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)
+
+
+class ChargeResetTests(unittest.TestCase):
+    def test_log_hit_disarms_a_charging_prince(self):
+        env = _quiet(seed=72)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "prince", 11), 0.30, 0.70)
+        pr = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 5)                                    # well past 2.5 tiles: armed and galloping
+        self.assertGreaterEqual(pr.charge_dist, pr.spec.charge_range, "run-up armed")
+        assert env.eng.deploy(1, build_spec(env.eng.db, "the_log", 11), pr.x, max(0.52, pr.y - 0.08))
+        dists = []
+        for _ in range(3):                               # sample around the roll landing: he starts
+            _tick(env, 1)                                # RE-EARNING tiles immediately, so the dip
+            dists.append(pr.charge_dist)                 # below charge_range is the reset itself
+        self.assertLess(min(dists), pr.spec.charge_range,
+                        "a Log hit drops the charge: back to walking pace, tiles earned again")
+
+    def test_zap_class_stun_disarms_a_charge_too(self):
+        env = _quiet(seed=73)
+        _silence_towers(env)
+        env.eng.elixir[0] = env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "prince", 11), 0.30, 0.70)
+        pr = [u for u in env.eng.units if u.team == 0][-1]
+        _tick(env, 5)
+        self.assertGreaterEqual(pr.charge_dist, pr.spec.charge_range)
+        assert env.eng.deploy(1, build_spec(env.eng.db, "zap", 11), pr.x, pr.y)
+        _tick(env, 2)
+        self.assertLess(pr.charge_dist, pr.spec.charge_range,
+                        "a stun resets the run-up, same as knockback")

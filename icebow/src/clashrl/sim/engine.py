@@ -3186,6 +3186,9 @@ class SimEngine:
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
         e.ramp_shots = 0                                 # displacement resets the Little Prince ramp too
+        e.charge_dist = 0.0                              # ...and DISARMS a charge (2026-08-15): a Log/
+                                                         # Snowball hit drops a Prince/Ram back to walking
+                                                         # pace; the run-up tiles must be earned again
 
     def _apply_status(self, team: int, spec: CardSpec, e) -> None:
         if spec.poison_dps > 0.0 and isinstance(e, Unit):
@@ -3208,12 +3211,14 @@ class SimEngine:
             e.stun_left = max(getattr(e, "stun_left", 0.0), spec.freeze_dur or self.freeze_dur)
             if isinstance(e, Unit):
                 e.aggro_reset = True          # RESET CARDS: a stun/freeze breaks the target lock -- that is the
+                e.charge_dist = 0.0           # ...and disarms a charge, same as knockback
             elif hasattr(e, "aggro_reset"):
                 e.aggro_reset = True
         elif spec.stuns:                  # whole point of an Ice/Electro Spirit or a Zap on a locked attacker
             e.stun_left = max(getattr(e, "stun_left", 0.0), spec.stun_dur or self.stun_dur)
             if isinstance(e, Unit):
                 e.aggro_reset = True
+                e.charge_dist = 0.0           # a Zap under a charging Prince resets the run-up too
             elif hasattr(e, "aggro_reset"):
                 e.aggro_reset = True
         if spec.slows:
@@ -3563,6 +3568,9 @@ class SimEngine:
                     e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
                                                                # where it LANDS, so a Log can pull a locked
                                                                # attacker onto whatever is now nearest
+                    e.charge_dist = 0.0                        # ...and DISARMS a charge (2026-08-15): a
+                                                               # logged Prince/Ram drops to walking pace and
+                                                               # must re-earn the run-up tiles
         if s.spec.carry_roll:
             # EVO SNOWBALL'S SNOW BOWLING: "the affected troops get pulled into it and [it] rolls
             # for 4.5 tiles ... when it finishes its roll, the troops are freed" -- every ground
@@ -3581,6 +3589,7 @@ class SimEngine:
                     e.slow_left = max(e.slow_left, s.spec.slow_dur or self.slow_dur)
                     e.slow_mult = s.spec.slow_mult or self.slow_factor
                     e.aggro_reset = True
+                    e.charge_dist = 0.0                        # being bowled certainly resets a run-up
                     k += 1
         for tw in self._enemy_towers(s.team):
             dy = (tw.y - s.y) * fdir * _TILES_Y

@@ -2706,3 +2706,11 @@ Notes / caveats
   x2 vs crown towers; Goblin Demolisher's "lifetime" was his FUSE -- no HP bleed, <50%
   enrage into a very-fast building-charging kamikaze (10s fuse). Wall Breakers blast is
   area 1.5 hitting bystander troops. All numbers wiki-verified. 123/123 tests.
+
+2026-08-15 — Charge resets on crowd control (user request, final overnight item)
+- _knock (Fireball/Snowball/Rocket/death bombs), the Log's rolling corridor, the Evo
+  Snowball carry, and stun/freeze (_apply_status) now all ZERO charge_dist: a logged or
+  zapped Prince/Ram drops from gallop back to walking pace and must re-earn the full run-up
+  before charging (and galloping) again. Matters doubly since tonight's gallop change made
+  an armed charge 2x speed. Tests: log-hit disarm (sampled around the roll landing -- he
+  starts re-earning tiles immediately, which is itself the mechanic) + zap disarm. 125/125.
