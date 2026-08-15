@@ -2056,6 +2056,17 @@ class SimEngine:
             # could only answer out to 8.0 of its own -- he took ZERO damage and landed 25 hits.
             # Dart Goblin (6.5) sieged untouched too. Neither can do that in game.
             slop = 0.0 if isinstance(ref, Tower) else _REACH_SLOP
+            if isinstance(ref, Tower) and not u.spec.flying:
+                # TOUCHING IS IN RANGE (2026-08-15). `reach` is published attacker-CENTRE to
+                # target-EDGE, but _separate_towers holds a ground body at exactly its own
+                # radius from the tower's edge -- so a unit whose reach is SHORTER than its
+                # body can never satisfy the test and parks against the tower forever.
+                # MEASURED: Battle Ram (reach 0.50, radius 0.75) stalled at gap 0.75 and never
+                # struck the crown tower at all -- it only broke into Barbarians when the tower
+                # eventually killed it (user report). Giant Skeleton (0.80 vs 1.00) had the same
+                # hole. It never mattered against building UNITS because those get _REACH_SLOP.
+                # A body pressed against the tower is in contact; let it swing.
+                reach = max(reach, u.spec.radius + 0.02)
             if gap <= reach + slop:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now

@@ -486,3 +486,52 @@ class RocketValueTests(unittest.TestCase):
         self.assertLess(tr_swarm, tr_big * 0.4,
                         "skarmy under a rocket is a fraction of the clump payout — "
                         "the log/ice-wiz opportunity cost does the rest")
+
+
+class TowerContactTests(unittest.TestCase):
+    """2026-08-15 (user report): the Battle Ram connected to a crown tower and just sat there
+    until the tower killed it. Cause: reach is published attacker-CENTRE to target-EDGE, but
+    tower separation holds a ground body at its OWN radius -- so any unit with radius > reach
+    could never satisfy the range test against a tower (ram 0.50 vs 0.75, giant skeleton 0.80
+    vs 1.00). Building UNITS hid it because they grant _REACH_SLOP."""
+
+    def _ram_scene(self, seed):
+        env = _quiet(seed=seed)
+        _silence_towers(env)
+        env.eng.elixir[1] = 10.0
+        tw = env.eng.towers[0][0]
+        assert env.eng.deploy(1, build_spec(env.eng.db, "battle_ram", 11), tw.x, 0.68)
+        return env, tw
+
+    def test_ram_breaks_on_its_FIRST_tower_hit(self):
+        env, tw = self._ram_scene(91)
+        hp0 = tw.hp
+        hit_t = barb_t = None
+        for _ in range(90):
+            env.eng.advance(0.1)
+            if hit_t is None and tw.hp < hp0:
+                hit_t = env.eng.t
+            if barb_t is None and any(u.team == 1 and u.spec.base == "barbarians"
+                                      for u in env.eng.units):
+                barb_t = env.eng.t
+            if hit_t and barb_t:
+                break
+        self.assertIsNotNone(hit_t, "the ram must actually strike the crown tower")
+        self.assertIsNotNone(barb_t, "and break open when it does")
+        self.assertAlmostEqual(barb_t, hit_t, delta=0.15,
+                               msg="Barbarians drop ON the first hit, not when the ram dies")
+        self.assertFalse(any(u.team == 1 and u.spec.base == "battle_ram" for u in env.eng.units),
+                         "the ram is spent on the connect")
+        self.assertEqual(sum(1 for u in env.eng.units
+                             if u.team == 1 and u.spec.base == "barbarians"), 2)
+
+    def test_giant_skeleton_can_hit_a_tower(self):
+        env = _quiet(seed=92)
+        _silence_towers(env)
+        env.eng.elixir[1] = 10.0
+        tw = env.eng.towers[0][0]
+        hp0 = tw.hp
+        assert env.eng.deploy(1, build_spec(env.eng.db, "giant_skeleton", 11), tw.x, 0.68)
+        for _ in range(60):
+            env.eng.advance(0.1)
+        self.assertLess(tw.hp, hp0, "a body pressed against the tower must be able to swing")

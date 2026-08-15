@@ -2879,3 +2879,22 @@ Notes / caveats
   linear up to the video count. Verified on 2 videos.
 - Expected combined: ~3x from the seek fix x ~4x from --jobs 4 on the four Hunter VODs.
   138/138 (1 skipped).
+
+2026-08-15 — Battle Ram never actually hit crown towers (user report) -- contact-range fix
+- Report: "the ram connects to the tower but stays there until the tower defeats it, THEN the
+  barbarians come out." Traced it: the ram was not attacking AT ALL. `reach` is published
+  attacker-CENTRE to target-EDGE, but _separate_towers parks a ground body at exactly its own
+  radius from the tower's edge -- so a unit whose radius EXCEEDS its reach can never satisfy
+  `gap <= reach` against a tower. MEASURED: ram stalled at gap 0.75 with reach 0.50, tower HP
+  untouched for the whole match. Building UNITS hid the bug because they grant _REACH_SLOP
+  (0.6); the slop is deliberately zero for crown towers.
+- Affected (ground, radius > reach): battle_ram (0.50 vs 0.75) and giant_skeleton (0.80 vs
+  1.00). Balloon and skeleton_barrel also qualify numerically but FLY, and tower separation
+  skips flyers, so they were always fine.
+- Fix: against a crown tower a non-flying attacker's effective reach is max(reach, radius +
+  0.02) -- a body pressed against the tower is in contact, so let it swing. Nothing else
+  changes: the anti-siege "no slop vs towers" rule and every ranged calibration are untouched
+  (they all have reach >> radius).
+- Result: ram's first tower hit and the 2 Barbarians now land on the SAME tick (t=3.0,
+  uncharged 286 dmg), which is the requested behaviour. Giant Skeleton can hit towers too.
+  Tests: TowerContactTests (2). 140/140 (1 skipped).
