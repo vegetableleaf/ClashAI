@@ -2938,3 +2938,28 @@ Notes / caveats
   the moment it rises it blocks normally again.
 - Tests: troop deploys onto + walks over a submerged tesla; a second tesla still snaps clear
   of it; once an enemy brings it up, it blocks placement like any building. 148/148 (1 skip).
+
+2026-08-15 — "MODEL HOVERS OVER CARDS AND NEVER PLACES": 24% of taps were being dropped
+- User report + measurement. Built a reliable detector for the failure: a play that LANDED
+  shows the post-action elixir read fall by the card's cost; one the game ignored shows no
+  drop at all. On live_20260815_191157.jsonl: 8 of 33 plays (24%) never placed.
+- RULED OUT, with evidence:
+  * cell legality -- every logged play was on a mask-legal cell (rows 13-23, no illegals);
+  * geometry/calibration -- board_edges/river/row-13/row-23 still line up on a CURRENT frame;
+  * affordability -- my first pass flagged 5 "unaffordable" plays, but the logged elixir is
+    read AFTER the action (the frame is re-grabbed post-tap), so those were SUCCESSFUL plays
+    whose elixir correctly dropped. The `read == cost` pattern in the failures is sampling
+    bias: a trained policy plays as soon as it can afford, so most attempts sit exactly at
+    cost. Corrected before it became a wrong fix.
+  * elixir reader -- it does have a real flaw (pip 0 is misaligned: measured 0.00 coverage
+    while pips 1-5 read 0.67, so it UNDER-counts by one), but under-reading cannot cause a
+    refused placement. Logged as a separate [verify] item, not the cause here.
+- CAUSE: the input gesture. controller.play_card used pyautogui.click() twice with
+  pyautogui.PAUSE = 0 -- move+down+up with no dwell anywhere. Google Play Games synthesises
+  TOUCHES from mouse events and drops a press that arrives in the same event batch as the
+  move. Failures were spread across positions and elixir levels, which fits an input race and
+  nothing else.
+- FIX: each tap is now move -> dwell(30 ms) -> down -> hold(50 ms) -> up, and select_delay
+  0.08 -> 0.15 s. Cost: 310 ms per play against a 1.0 s act period. New knobs play.move_dwell
+  / play.tap_hold. Telemetry: the play log now records `elixir_pre` alongside the post read,
+  so the next run's failure rate is a one-line check instead of an inference.

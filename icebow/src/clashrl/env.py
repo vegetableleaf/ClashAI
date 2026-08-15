@@ -940,6 +940,8 @@ class LiveMatchEnv:
 
     def step(self, action: Action):
         play, card_id, cell = action
+        pre_elixir = float(self.elixir)           # what the DECISION saw (the post-action read
+                                                  # overwrites self.elixir at the end of this step)
         raw_cell = cell                           # the model's ATTEMPTED cell, before aim + deploy-clamp
         if play:                                  # rocket / offensive miner -> aim the weaker enemy princess tower
             pre_aim = cell
@@ -1086,8 +1088,13 @@ class LiveMatchEnv:
             # name the guilty TERM but not the guilty HABIT. Pure telemetry: values are the exact
             # numbers already added to `reward` above, recorded after the fact.
             if play or tmi != 0.0:
+                # `elixir` is the POST-action read; `elixir_pre` is what the decision saw.
+                # A play that LANDED shows pre - cost (+ regen); one that was ignored by the
+                # game shows no drop at all -- which is how the 24% tap-failure rate was
+                # measured, and how the next run's rate can be checked in one line.
                 rec = {"t": round(time.time() - self._match_t0, 1), "play": int(bool(play)),
                        "trade": round(float(trd), 3), "elixir": round(float(cur_elixir), 1),
+                       "elixir_pre": round(float(pre_elixir), 1),
                        "mult": int(self.elixir_mult), "mass": round(float(cur_mass), 4)}
                 if play:
                     cost = float(self.card_elixir[card_id]) if 0 <= card_id < self.n_cards else 0.0

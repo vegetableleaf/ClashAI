@@ -797,7 +797,15 @@ play:
                                  # A flat 10-15Hz act loop is deliberately NOT used: the policy's value landscape
                                  # (per-step rewards, gamma horizon, n-step) is trained at agent_dt 1.0s, and the
                                  # detector (121ms) + tap (~0.2s) cap the real pipeline anyway.
-  select_delay: 0.08             # delay between selecting a card and placing it
+  # TAP GESTURE (2026-08-15). MEASURED from the 19:11 live match by checking whether each
+  # play's elixir actually dropped: 8 of 33 plays (24%) never placed -- card selected, arena
+  # tap ignored -- across every position and with elixir to spare, i.e. an INPUT failure, not
+  # geometry and not affordability. Google Play Games synthesises touches from mouse events
+  # and drops a press that arrives in the same batch as the move, so each tap is now
+  # move -> dwell -> down -> hold -> up, and the two taps are further apart.
+  select_delay: 0.15             # delay between selecting a card and placing it (was 0.08)
+  move_dwell: 0.03               # let the pointer position land before pressing
+  tap_hold: 0.05                 # press duration -- a 0-length click is not a touch
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
   in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
                                  # of the last positive IN_MATCH read, play HOLDS in-match (keeps acting)
