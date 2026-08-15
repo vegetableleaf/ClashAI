@@ -2140,6 +2140,34 @@ science; its placement ceiling is now understood).
 - NOTE: round 5 restarted 12:51 predates these two fixes -- needs ANOTHER restart to pick
   them up (run is minutes old, cheap).
 
+2026-08-14 -- LIVE REWARD REWORK: elixir_trade + threat_response (user-directed; measured on
+             live_20260814_201643.jsonl)
+- MEASURED mis-credits: match 2 = TWO plays in 42 steps yet elixir_trade fired 28x for +7.90
+  (tower kills + dropped tracks + blind-detector frames all read as our gain); threat_response
+  paid +1.0 to a FRONT-half tesla (y 0.396) vs a back-building push, and one push farmed
+  +1.0 x4 across 18 s. Placement spread itself RECOVERED after layer 2 (14 columns, center
+  mass) -- the remaining rot was the reward, exactly as the user called it.
+- ELIXIR_TRADE (live Phi) gains three gates:
+  * BLIND-ON-ACTIVE: empty detections while the mass read says the board is busy = failed
+    perception pass -> Phi carried (this was paying a fake positive precisely when a push was
+    being missed -- the WARNING-at-match-end frames).
+  * PARTICIPATION: positive dPhi requires at least one LIVING unit of ours on the board;
+    towers defending while we idle is not the policy's work. Negatives always count; idling
+    cannot farm (fielding units costs elixir).
+  * DEADBAND 0.02: flicker-scale churn (70-110 fires/match of +-noise) no longer scored.
+- THREAT_RESPONSE gains:
+  * DEPTH GATE (threat_min_depth 0.12): nothing positive until the identity depth says the
+    threat is genuinely COMING (past the watch line) -- pre-committing vs a back build is the
+    wrong play and now scores 0.
+  * BUILDING GEOMETRY: buildings keep the no-same-lane physics but must be DEFENSIVE
+    (0.50 <= y <= 0.80) -- the front-half tesla dump no longer credits.
+  * PER-EPISODE BUDGET (2): credits per threat episode capped; budget resets when the
+    identity unlights.
+- Sim side untouched (ground-truth perception; its trade term keeps the pure potential). Live
+  env has no headless unit-test path -- verification is the next live session's JSONL: expect
+  elixir_trade fires to drop ~5x with positives only during actual engagements, and
+  threat_response positives only on deep threats, <= 2 per push.
+
 2026-08-14 -- LIVE COLLAPSE, LAYER 2: stale checkpoint lineage + whole-frame RGB (user
              report: still column-0 spam AFTER the warp fix; live_20260814_195358.jsonl shows
              63/69 plays in grid column 0, raw_cell == cell -> the POLICY chooses the edge)

@@ -658,6 +658,12 @@ env:
                                  # trade-potential rework (ELIXIR_TRADE_DESIGN.md 5) -- consequences
                                  # settle from the ordinary frame stream; the blocking wait is gone.
   phi_max_age_s: 0.6             # trade potential validity gate: max perception age for a Phi read
+  trade_deadband: 0.02           # |dPhi| below this is detector flicker, not a trade -- not scored
+  threat_min_depth: 0.12         # threat_response positives require the threat PAST the watch line
+                                 # (identity depth toward our king) -- pre-committing vs a back
+                                 # build is the wrong play and now scores nothing
+  threat_credit_budget: 2        # positive threat_response credits per threat episode (a real
+                                 # defense is 1-2 cards; the 4th role-match adds no information)
   arena_region: [0.03, 0.10, 0.97, 0.86]
   defeat_cap: 0.15               # 'full push' enemy-mass scale / per-step clip for the trade term
   spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)

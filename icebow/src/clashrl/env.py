@@ -235,6 +235,10 @@ class LiveMatchEnv:
         self._opp_est = 0.0                               # last enemy-elixir estimate (normalized [0,1])
         self._last_dets_age = 999.0                       # perception age of _last_dets_all (validity gate)
         self.phi_max_age = float(cfg.get("env", "phi_max_age_s", default=0.6))
+        self.trade_deadband = float(cfg.get("env", "trade_deadband", default=0.02))
+        self.threat_min_depth = float(cfg.get("env", "threat_min_depth", default=0.12))
+        self.threat_credit_budget = int(cfg.get("env", "threat_credit_budget", default=2))
+        self._threat_credits = 0                          # positives granted this threat episode
         self._detector = None
         self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
@@ -381,6 +385,9 @@ class LiveMatchEnv:
         # elixir accounting + detected enemy plays; keeps model width unchanged.
         mem[5] = self._opp_elixir.update(self.elixir, dets, now)
         self._opp_est = float(mem[5])                    # the trade potential reads the same estimate
+        tid_now = self._threat_id
+        if tid_now is None or len(tid_now) == 0 or float(tid_now[0]) < 0.5:
+            self._threat_credits = 0                     # threat episode over -> fresh response budget
         # CANVAS LIVENESS: a detector that silently yields nothing while the board is ACTIVE
         # feeds the policy an EMPTY semantic canvas -- a state that never exists in sim training
         # and a proven driver of degenerate placement. Say so loudly, once a stretch.
@@ -651,19 +658,38 @@ class LiveMatchEnv:
             # covers every frame the DETECTOR simply could not read, so it punished defending
             # exactly when perception was blind while idling scored 0 (diagnosis C4).
             return 0.0
+        # DEPTH GATE (2026-08-14 rework; measured: +1.0 for a FRONT-half tesla at y 0.396 while
+        # the push was still BUILDING in their back). A threat that has not advanced past the
+        # watch line is not yet answerable -- pre-committing a counter is the WRONG play (the
+        # doctrine says wait), so nothing positive is graded until the threat is genuinely
+        # coming (identity depth beyond threat_min_depth toward our king).
+        deep = float(getattr(self, "_prev_ident_depth", 0.0)) >= self.threat_min_depth
+        # PER-EPISODE CREDIT BUDGET: one push used to pay every role-matching card thrown at it
+        # (+1.0 x4 across 18 s, measured). A real defense is 1-2 cards; further matches add no
+        # information. The budget resets when the threat episode ends (tid unlights in
+        # _update_threat).
+        budget_ok = self._threat_credits < self.threat_credit_budget
         if prof.kind == "building":
-            # A building ATTRACTS, it does not intercept -- a building-targeter is pulled to the
-            # nearest BUILDING, so the classic central Tesla against an off-lane wincon is the RIGHT
-            # play and a same-lane test is the wrong physics. The sim grades buildings on counter
-            # role alone (sim/env._threat_response); live still demanded same-lane, so the deck's
-            # signature defensive play earned ZERO here -- one of the missing reachable positives.
-            return self.w_threat_response if card_threat.counters(prof, tid) else 0.0
+            # A building ATTRACTS, it does not intercept -- central pull vs an off-lane wincon is
+            # right physics, so no same-lane test. But it must actually be a DEFENSIVE building:
+            # our half, not shoved to the bridge (the front-half tesla is a dump, not a pull).
+            if not (0.50 <= cy <= 0.80 and deep and card_threat.counters(prof, tid)):
+                return 0.0
+            if not budget_ok:
+                return 0.0
+            self._threat_credits += 1
+            return self.w_threat_response
         if prof.pull:
             return 0.0        # PULL spells are graded by their delayed clump payoff, not by role match
                               # (see sim/env._threat_response; live bills an empty cast via the trade spend)
         intercept = self._same_lane(cx) and cy >= 0.5
         if card_threat.counters(prof, tid):
-            return self.w_threat_response if intercept else 0.0
+            if not (intercept and deep):
+                return 0.0
+            if not budget_ok:
+                return 0.0
+            self._threat_credits += 1
+            return self.w_threat_response
         return self.w_threat_miss if intercept else 0.0
 
     def _threat_miss_idle_live(self, cur_mass: float) -> float:
@@ -753,6 +779,12 @@ class LiveMatchEnv:
         dets = self._last_dets_all
         if dets is None or self._last_dets_age > self.phi_max_age:
             return None
+        if not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac:
+            # BLIND-ON-ACTIVE (measured 2026-08-14, match with the liveness WARNINGs): the
+            # detector returning NOTHING while the mass read says the board is busy is a failed
+            # perception pass, not an empty board. Computing Phi here zeroes V_theirs and pays a
+            # large fake positive exactly when a push is being missed. Carry Phi instead.
+            return None
         v_mine = v_theirs = 0.0
         for d in dets:
             team = getattr(d, "team", None)
@@ -767,6 +799,7 @@ class LiveMatchEnv:
             else:
                 v_theirs += cost
         e_theirs = float(self._opp_est) * 10.0             # estimator is normalized [0, 1]
+        self._own_on_board = v_mine > 0.0                  # participation: do WE have living units?
         return ((float(cur_elixir) + v_mine) - (e_theirs + v_theirs)) / self.value_norm
 
     def _trade_reward(self, cur_elixir: float) -> float:
@@ -781,6 +814,15 @@ class LiveMatchEnv:
             return 0.0
         d = float(np.clip(phi - self._phi_prev, -self.trade_cap, self.trade_cap))
         self._phi_prev = phi
+        if abs(d) < self.trade_deadband:
+            return 0.0                                     # flicker-scale churn teaches nothing
+        if d > 0.0 and not getattr(self, "_own_on_board", False):
+            # PARTICIPATION GATE (measured: 28 fires / +7.9 in a 42-step match with TWO plays).
+            # Enemy value that disappears while we field NOTHING was killed by our towers, walked
+            # out, expired, or was a dropped track -- none of it is the policy's doing. Positive
+            # deltas require at least one living unit of ours on the board; the costs (negative
+            # side) always count. Idling cannot farm this: fielding units costs elixir.
+            return 0.0
         return d * self.w_elixir_trade
 
     def _chip_progress(self, hp_list, full: float) -> float:
