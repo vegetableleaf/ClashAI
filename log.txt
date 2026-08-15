@@ -2735,3 +2735,21 @@ Notes / caveats
   matches -- not head suppression (probe clean), an economic habit; expect rocket-cycle to
   emerge with late-game learning. Evals ran on the UPGRADED engine; the still-running trainer
   is on pre-fidelity code, so numbers aren't directly comparable to its console winrate.
+
+2026-08-15 — ROCKET AT 0 PLAYS: referee bug found + fixed (plus a balloon-matrix bug)
+- User re-confirmed rocket at 0 plays at the newest checkpoint while every other card is
+  abundant. Head probe was clean (+-0.05), so the discouragement was LEARNED. Probe: a
+  defensive rocket dropped ON a golem push at perfect intercept was charged threat_miss
+  (-1.0) EVERY time -- the counter matrix only role-validates spells vs swarms, so the
+  deck's get-out-of-jail card was punished exactly when it is the right play, while its real
+  payoffs (trade-ledger spell kills, chip) are sparser. Fix: damage spells are exempt from
+  the misread penalty in BOTH referees (sim + live), same double-billing logic as the
+  pull-spell exemption that saved tornado; spell_waste still bills empty casts, and the
+  swarm-positive path is unchanged.
+- Bonus bug caught by the regression test: the bare-win-condition counter branch never
+  checked the FLYING bit ("not air" was in the docstring, not the code) -- a ground Knight
+  "answering" a Balloon collected +1.0 for a block that cannot touch it. Now excluded; a
+  flying wincon is only answerable through the air-defence branch.
+- Tests: RocketRefereeTests (rocket-on-tank = 0.0, wrong-role troop still -1.0 vs balloon).
+  128/128. Restart to pick up: rocket should recover via sampling (row is neutral, not
+  buried -- no lift needed).

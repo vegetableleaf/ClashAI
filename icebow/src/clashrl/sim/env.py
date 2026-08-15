@@ -621,6 +621,18 @@ class SimMatchEnv:
                 return 0.0
             self._threat_credits += 1
             return self.w_threat_response                                # right counter, placed AND timed right
+        if prof.spell:
+            # DAMAGE SPELLS ARE NEVER A "MISREAD" (2026-08-15). A defensive Rocket dropped ON a
+            # golem push at intercept was charged w_threat_miss (-1.0) EVERY time -- the counter
+            # matrix only role-validates spells against swarms, so the deck's get-out-of-jail
+            # card was punished at exactly the moment it is the right play. Same double-billing
+            # the pull-spell exemption removed: a damage spell's defensive worth is already
+            # priced to the elixir by the trade ledger's spell-kill attribution (blast + 3 s)
+            # and the chip terms, with spell_waste still billing an EMPTY cast. MEASURED before
+            # this change: rocket at 0 plays across 60 greedy eval matches (twice, a day apart)
+            # while every other card saw abundant use, with a clean +-0.05 logit row -- the
+            # behaviour was learned from this penalty, not from head damage.
+            return 0.0
         return self.w_threat_miss if intercept else 0.0                  # wrong role dropped as a defence = a misread
 
     def _threat_miss_idle(self) -> float:

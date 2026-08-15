@@ -419,3 +419,36 @@ class RoyalGiantPin(unittest.TestCase):
         self.assertLess(tw.hp, hp0 - 900, "and the cannon shots land on the tower")
         self.assertAlmostEqual(kn.hp, kn.spec.hp, delta=1.0,
                                msg="a troop standing ON him takes nothing: buildings only")
+
+
+class RocketRefereeTests(unittest.TestCase):
+    """2026-08-15: rocket sat at 0 plays across two greedy evals with a clean logit row --
+    the referee was charging threat_miss (-1.0) for every defensive rocket on a non-swarm
+    push. Damage spells are exempt from the misread penalty (their worth is priced by the
+    trade ledger + chip; spell_waste still bills empty casts), same logic as the pull-spell
+    exemption that saved tornado."""
+
+    def test_defensive_rocket_on_tank_push_is_not_a_misread(self):
+        from clashrl.sim.engine import build_spec
+        env = _quiet(seed=5)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "golem", 11), 0.30, 0.55)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "musketeer", 11), 0.32, 0.52)
+        env.step((False, 0, 0))
+        tx, _ = env._threat_pos()
+        env._threat_credits = 0
+        r = env._threat_response(env.deck_keys.index("rocket"), tx, 0.60)
+        self.assertEqual(r, 0.0, "a damage spell is judged by the trade ledger, never -1.0")
+
+    def test_wrong_role_troop_is_still_a_misread(self):
+        from clashrl.sim.engine import build_spec
+        env = _quiet(seed=8)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "balloon", 11), 0.30, 0.55)
+        env.step((False, 0, 0))
+        env._threat_id_true[7] = 0.40                    # inside the depth window
+        tx, _ = env._threat_pos()
+        env._threat_credits = 0
+        r = env._threat_response(env.deck_keys.index("knight"), tx, 0.60)
+        self.assertLess(r, 0.0, "a ground-only troop against a flying threat stays a misread")

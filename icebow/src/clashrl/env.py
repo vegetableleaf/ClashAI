@@ -709,6 +709,12 @@ class LiveMatchEnv:
                 return 0.0
             self._threat_credits += 1
             return self.w_threat_response
+        if prof.spell:
+            # DAMAGE SPELLS ARE NEVER A "MISREAD" (2026-08-15, mirrors the sim): the matrix only
+            # role-validates spells vs swarms, so a defensive Rocket on a tank push was charged
+            # -1.0 at intercept. Its worth is priced by the trade/chip terms; empty casts still
+            # pay spell_waste. Measured: rocket at 0 plays while its logit row sat clean.
+            return 0.0
         return self.w_threat_miss if intercept else 0.0
 
     def _threat_miss_idle_live(self, cur_mass: float) -> float:

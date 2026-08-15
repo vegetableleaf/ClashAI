@@ -346,7 +346,12 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
     # therefore never reaches this function, so a branch for it would be dead code. Answering it --
     # e.g. a Tesla at the bridge, which outranges nothing but sits close enough to shell the bow --
     # requires the threat block to see ACROSS the river first.
-    if threat_id[5] >= 0.5 and threat_id[1] < 0.5 and threat_id[4] < 0.5:
+    if (threat_id[5] >= 0.5 and threat_id[1] < 0.5 and threat_id[4] < 0.5
+            and threat_id[3] < 0.5):
+        # ...and NOT FLYING (2026-08-15): the docstring above always said "not air", but the
+        # code never checked the bit -- so a ground Knight dropped "against" a Balloon was
+        # credited +1.0 for a body-block that cannot touch it. A flying bare win condition is
+        # answered by the air-defence branch at the top, nothing else.
         return play.kind == "troop" or (play.building and not play.siege)
     return False
 
