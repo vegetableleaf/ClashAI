@@ -231,6 +231,7 @@ class SimMatchEnv:
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
         self.trade_deadband = float(cfg.get("rewards", "sim_trade_deadband", default=0.05))  # (v3 ledger: unused)
+        self.action_latency = float(cfg.get("sim", "action_latency_s", default=0.25))
         self.trade_kill_r = float(cfg.get("env", "trade_kill_radius_tiles", default=4.0))
         self.trade_grace_s = float(cfg.get("env", "trade_grace_s", default=3.0))
         self.trade_late_s = float(cfg.get("env", "trade_late_s", default=10.0))
@@ -1139,7 +1140,8 @@ class SimMatchEnv:
             # (the repeat-credit gate in _wincon_exec keys off this flag).
             self._ally_xbow_standing = any(
                 u.team == 0 and u.spec.base == "x_bow" and u.hp > 0 for u in self.eng.units)
-            if self.eng.deploy(0, spec, nx, ny):               # affordable + placed
+            if self.eng.deploy(0, spec, nx, ny,
+                               delay_s=self.action_latency):   # affordable + placed (lands when the live tap would)
                 placed_id = card_id
                 reward += self.rw_stats.add("threat_response", self._bonus(self._threat_response(card_id, nx, ny)))   # (1) counter to the assessed threat
                 reward += self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec(card_id, nx, ny)))           # (3) win-condition executed right

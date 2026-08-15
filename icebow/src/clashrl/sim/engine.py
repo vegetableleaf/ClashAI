@@ -268,6 +268,26 @@ class CardSpec:
     poison_dps: float = 0.0      # EVO DART GOBLIN: darts poison; stronger the longer he lives
     poison_stages: tuple = ()    # ...3-stage dps (51/115/307 by time alive, wiki vardefines)
     poison_s: float = 0.0
+    # SIEGE DEAD ZONE (2026-08-15, wiki): the Mortar "has a blind spot, preventing it from
+    # attacking enemies inside it" -- published range "3.5-11.5". Units closer than min_range
+    # can neither be acquired nor shelled; rushing the Mortar IS its counterplay.
+    min_range: float = 0.0
+    # TOP-N SPELLS (wiki, Lightning & Vines): "the three troops that are targeted are always
+    # the three that have the highest hitpoints within its radius" -- never the swarm.
+    top_n_targets: int = 0
+    # LINGERING ZONES: Poison ("low damage dealt every second for 8 seconds", move -15%),
+    # Void (3 count-tiered hits over 4 s), Graveyard (timed edge spawns). One system.
+    zone_s: float = 0.0
+    zone_tick_s: float = 0.0
+    zone_move_slow: float = 0.0
+    zone_tiers: tuple = ()        # Void: ((max_targets, dmg, crown_dmg), ...) per tick
+    zone_spawn_n: int = 0         # Graveyard: "a single Skeleton ... every 0.5 seconds
+    zone_spawn_start_s: float = 0.0   # for 9 seconds on the edge of the spell's radius",
+    zone_spawn_gap_s: float = 0.0     # first at 2.2 s, 12 total (x12, wiki attr table)
+    zone_spawn_edge: bool = False
+    # RONIN (wiki): "can block the attack of opposing melee troops and deal double the
+    # damage to them every 3.5 seconds" -- the blocked swing lands nothing.
+    parry_cd_s: float = 0.0
     deploy_volley: int = 0       # EVO CANNON: cannonball fan on deployment (9 in 2 rows)
     volley_dmg: float = 0.0      # 304 per ball; crown towers take volley_crown (89)
     volley_crown: float = 0.0
@@ -491,7 +511,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
     hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
     sight = float(db.sight_range_tiles(base))                  # per-troop aggro radius, TILES (from the KB)
-    deploy_time = 0.0 if kind == "spell" else 1.0             # troops/buildings take ~1s to appear; spells use spell_delay
+    # SIEGE WIND-UP (2026-08-15, wiki attr tables): X-Bow and Mortar publish a 3.5 s deploy
+    # time where everything else takes 1 s -- that window is the whole counterplay to an
+    # offensive siege placement, and the sim was giving defenders 2.5 s less than the game.
+    deploy_time = 0.0 if kind == "spell" else float(c.get("deploy_time_s") or 1.0)
     hit_dmg = dps * hit                                        # DPS delivered as one discrete hit every `hit` seconds
     ct = db.crown_tower_damage(base)                           # troops with a reduced crown value (Miner) hit towers softer
     tower_hit_dmg = float(ct) * sc if ct is not None else hit_dmg
@@ -505,6 +528,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     # blast and spawned NOTHING -- the damage row is the GOBLIN's swing, and the barrel drops
     # 3 goblins with zero impact damage. Every logbait deck in the pool was toothless.
     st = c.get("spawns_troop") or {}
+    if spawn_spec is None and c.get("spawn_unit"):
+        spawn_spec = build_spec(db, str(c["spawn_unit"]), level)   # Graveyard -> a single Skeleton
     if spawn_spec is None and st.get("unit") and st["unit"] != base:
         try:
             spawn_spec = build_spec(db, st["unit"], level)
@@ -625,6 +650,18 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         poison_dps=float(c.get("poison_dps") or 0.0) * sc,
         poison_stages=tuple(float(v) * sc for v in (c.get("poison_stages") or ())),
         poison_s=float(c.get("poison_s") or 0.0),
+        min_range=float(c.get("min_range_tiles") or 0.0),
+        top_n_targets=int(c.get("top_n_targets") or 0),
+        zone_s=float(c.get("zone_s") or 0.0),
+        zone_tick_s=float(c.get("zone_tick_s") or 0.0),
+        zone_move_slow=float(c.get("zone_move_slow") or 0.0),
+        zone_tiers=tuple((int(t[0]), float(t[1]) * sc, float(t[2]) * sc)
+                         for t in (c.get("zone_tiers") or ())),
+        zone_spawn_n=int(c.get("zone_spawn_n") or 0),
+        zone_spawn_start_s=float(c.get("zone_spawn_start_s") or 0.0),
+        zone_spawn_gap_s=float(c.get("zone_spawn_gap_s") or 0.0),
+        zone_spawn_edge=bool(c.get("zone_spawn_edge")),
+        parry_cd_s=float(c.get("parry_cd_s") or 0.0),
         deploy_volley=int(c.get("deploy_volley") or 0),
         volley_dmg=float(c.get("volley_damage") or 0.0) * sc,
         volley_crown=float(c.get("volley_crown_damage") or 0.0) * sc,
@@ -781,6 +818,7 @@ class Unit:
     iframes_used: bool = False
     poison_left: float = 0.0     # EVO DART GOBLIN: DoT seconds remaining on THIS unit
     poison_take: float = 0.0     # ...at this dps
+    parry_ready_t: float = 0.0   # RONIN: engine time when the next parry is available
     lowspawn_cd: float = 0.0     # EVO GOBLIN GIANT: next passive low-hp spawn
     ramp_hold: float = 0.0       # EVO INFERNO D: stage kept alive this long after a kill
     relocate_next: float = 0.75  # EVO DRILL: next hp fraction that triggers a resurface
@@ -878,6 +916,18 @@ class _Vortex:
     y: float
     spec: CardSpec
     left: float                   # active seconds remaining
+
+
+@dataclass
+class _Zone:
+    """A lingering AREA effect pinned to the ground: Poison's 8 s damage-over-time field,
+    Void's count-tiered pulses, Graveyard's timed skeleton ring. Ticks in advance()."""
+
+    def __init__(self, team: int, x: float, y: float, spec: CardSpec, left: float):
+        self.team, self.x, self.y, self.spec, self.left = team, x, y, spec, left
+        self.tick_in = spec.zone_tick_s if spec.zone_tick_s > 0.0 else (left + 1.0)
+        self.age = 0.0
+        self.spawned = 0
 
 
 @dataclass
@@ -1057,6 +1107,8 @@ class SimEngine:
         self.units: List[Unit] = []
         self.spells: List[_Spell] = []
         self.vortices: List[_Vortex] = []        # landed tornadoes (active pull areas)
+        self.zones: List[_Zone] = []             # lingering areas: Poison / Void / Graveyard
+        self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -1135,9 +1187,17 @@ class SimEngine:
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
 
-    def deploy(self, team: int, spec: CardSpec, x: float, y: float) -> bool:
+    def deploy(self, team: int, spec: CardSpec, x: float, y: float,
+               delay_s: float = 0.0) -> bool:
         if self.done or not self.can_afford(team, spec):
             return False
+        # REAL-GAME TILE SNAP (2026-08-15): the game quantizes every placement -- troop or
+        # spell reticle -- to the tile the tap lands in. The sim placed at the continuous
+        # action-cell centre, a systematic half-tile disagreement with what the same action
+        # does live. Same quantization here, BEFORE the field-shape rules (which move whole
+        # tiles and so stay tile-aligned).
+        x = (min(int(_TILES_X) - 1, max(0, int(x * _TILES_X))) + 0.5) / _TILES_X
+        y = (min(int(_TILES_Y) - 1, max(0, int(y * _TILES_Y))) + 0.5) / _TILES_Y
         if spec.kind != "spell":
             # FIELD SHAPE (2026-08-14, user-verified): same board-truth as the mask
             # (actions.unplayable) -- the outermost SINGLE column beside the water is ledge
@@ -1160,6 +1220,17 @@ class SimEngine:
                 y = 1.0 - KING_Y1 - half_row               # off YOUR king's platform, in front
         self.elixir[team] -= spec.elixir
         self.last_deploy[team] = (spec, x, y, self.t)
+        if delay_s > 0.0:
+            # ACTION LATENCY (2026-08-15): live, a decision becomes a tap becomes a game event
+            # ~0.25 s later; the sim applied it instantly, so the sim policy never had to LEAD.
+            # Elixir is committed at decision time (matches the live bar), the effect lands
+            # when the tap would. Opponent scripts pass no delay -- their cadence already
+            # models a player's decision rate, not our tap pipeline.
+            self._pending.append((self.t + delay_s, team, spec, x, y))
+            return True
+        return self._finish_deploy(team, spec, x, y)
+
+    def _finish_deploy(self, team: int, spec: CardSpec, x: float, y: float) -> bool:
         if spec.kind == "spell":
             delay = spec.spell_delay
             if spec.base == "rocket":                      # rocket FLIGHT TIME grows with distance from its
@@ -1285,6 +1356,8 @@ class SimEngine:
         #   hidden     -- a retracted Tesla: "its underground mechanic prevents spell responses"
         # "The Royal Ghost will ignore an opposing Royal Ghost, a Suspicious Bush, a hidden Tesla,
         # or an invisible Archer Queen and bypass them" -- one rule, all four cases.
+        if u.spec.min_range > 0.0 and _gap(u.x, u.y, e) < u.spec.min_range:
+            return False                       # SIEGE DEAD ZONE: too close to shell (Mortar)
         return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden and not e.ghost \
             and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
 
@@ -1611,6 +1684,12 @@ class SimEngine:
         self.t += dt
         self.chip = {0: 0.0, 1: 0.0}
         self.kills = {0: 0, 1: 0}
+        if self._pending:                                    # action-latency queue (see deploy)
+            due = [p for p in self._pending if p[0] <= self.t]
+            if due:
+                self._pending = [p for p in self._pending if p[0] > self.t]
+                for _, tm_, sp_, px_, py_ in due:
+                    self._finish_deploy(tm_, sp_, px_, py_)
         # elixir
         rate = self.elixir_rate()
         for team in (0, 1):
@@ -1634,6 +1713,7 @@ class SimEngine:
             if u.spec.lifetime and u.deploy_left <= 0.0:
                 u.hp -= (u.spec.hp / u.spec.lifetime) * dt
         self._tick_spawners(dt)
+        self._tick_zones(dt)
         self._tick_hatch(dt)
         if self.rage_zones:                                  # drop zones whose effect has ended
             self.rage_zones = [z for z in self.rage_zones if z[5] > self.t]
@@ -2474,6 +2554,12 @@ class SimEngine:
             u.iframes_left = u.spec.first_hit_immune_s
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
+        if u.spec.min_range > 0.0 and _gap(u.x, u.y, ref) < u.spec.min_range:
+            # SIEGE DEAD ZONE: the target slipped under the barrel -- drop the lock so the
+            # next acquisition picks something it CAN shell (or idles, exactly like the game).
+            u.locked = False
+            u.target = None
+            return
         # T1 EVO on-swing effects: fire once per ATTACK (the swing), independent of what it lands on
         if u.spec.recoil_dmg > 0.0:                          # Evo Royal Giant's recoil blast
             self._recoil_blast(u)
@@ -2628,6 +2714,15 @@ class SimEngine:
             # crown-tower damage reduction; most troops have no reduced value so this equals hit_dmg
             self._damage_tower(ref, tower_dmg, team)
             self._apply_status(team, spec, ref)
+            return
+        if (attacker is not None and getattr(ref, "spec", None) is not None
+                and ref.spec.parry_cd_s > 0.0 and ref.hp > 0 and ref.stun_left <= 0.0
+                and self.t >= ref.parry_ready_t and attacker.spec.reach <= 2.0):
+            # RONIN PARRY (wiki): "can block the attack of opposing melee troops and deal
+            # double the damage to them every 3.5 seconds". The blocked swing lands NOTHING;
+            # the counter is 2x Ronin's own hit. Ranged/spell damage is not parryable.
+            ref.parry_ready_t = self.t + ref.spec.parry_cd_s
+            self._hurt(attacker, 2.0 * ref.spec.hit_dmg * ref.dmg_mult)
             return
         self._hurt(ref, dmg)
         self._apply_status(team, spec, ref)
@@ -3155,6 +3250,30 @@ class SimEngine:
                 if _dist(tw.x, tw.y, s.x, s.y) <= 1.6:        # tiles: the cast point overlaps the tower
                     self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
             return
+        if s.spec.zone_s > 0.0:
+            # LINGERING ZONE (Poison / Void / Graveyard): nothing lands at cast -- the field
+            # does the work over its lifetime in _tick_zones.
+            self.zones.append(_Zone(s.team, s.x, s.y, s.spec, s.spec.zone_s))
+            return
+        if s.spec.top_n_targets > 0:
+            # LIGHTNING / VINES: hit only the N HIGHEST-HP targets in the radius (towers
+            # rank by hp among them) -- a swarm under the bolt is untouched, which is the
+            # entire counterplay economics of these spells.
+            rad = s.r_override or s.spec.spell_radius
+            pool = [(e.hp, "unit", e) for e in self.units
+                    if e.team != s.team and e.hp > 0 and not e.hidden
+                    and _dist(e.x, e.y, s.x, s.y) <= rad]
+            pool += [(tw.hp, "tower", tw) for tw in self._enemy_towers(s.team)
+                     if _dist(tw.x, tw.y, s.x, s.y) <= rad]
+            for _hp, k, ref in sorted(pool, key=lambda p: -p[0])[:s.spec.top_n_targets]:
+                if k == "unit":
+                    self._hurt(ref, s.spec.spell_dmg, s.spec.hits_hidden)
+                    self._apply_status(s.team, s.spec, ref)
+                    self._knock(ref, s.spec, s.x, s.y)
+                else:
+                    self._damage_tower(ref, s.spec.spell_tower_dmg, s.team)
+                    self._apply_status(s.team, s.spec, ref)
+            return
         rad = s.r_override or s.spec.spell_radius
         for e in self.units:
             if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= rad:
@@ -3219,6 +3338,58 @@ class SimEngine:
                 if e.locked and e.target is not None \
                         and _gap(e.x, e.y, e.target) > e.spec.reach + e.reach_extra:
                     e.aggro_reset = True
+
+    def _tick_zones(self, dt: float) -> None:
+        for z in self.zones:
+            z.left -= dt
+            z.age += dt
+            sp = z.spec
+            # timed SPAWNS (Graveyard): one Skeleton per gap on the radius edge, wiki-exact
+            # ("a single Skeleton ... every 0.5 seconds ... on the edge of the spell's
+            # radius", first at 2.2 s, 12 total).
+            if sp.zone_spawn_n > 0 and sp.spawn_spec is not None:
+                while (z.spawned < sp.zone_spawn_n
+                       and z.age >= sp.zone_spawn_start_s + z.spawned * sp.zone_spawn_gap_s):
+                    ang = self.rng.uniform(0.0, 6.283185)
+                    rr = sp.spell_radius if sp.zone_spawn_edge else sp.spell_radius * self.rng.random()
+                    ss = sp.spawn_spec
+                    sx, sy = _clamp_xy(z.x + math.cos(ang) * rr / _TILES_X,
+                                       z.y + math.sin(ang) * rr / _TILES_Y, ss.radius)
+                    nu = Unit(ss, z.team, sx, sy, ss.hp)
+                    nu.deploy_left = ss.deploy_time
+                    self.units.append(nu)
+                    z.spawned += 1
+            if sp.zone_tick_s <= 0.0:
+                continue
+            z.tick_in -= dt
+            if z.tick_in > 0.0:
+                continue
+            z.tick_in += sp.zone_tick_s
+            foes = [e for e in self.units if e.team != z.team and e.hp > 0
+                    and not e.hidden and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
+            tws = [tw for tw in self._enemy_towers(z.team)
+                   if _dist(tw.x, tw.y, z.x, z.y) <= sp.spell_radius]
+            dmg, crown = sp.spell_dmg, sp.spell_tower_dmg
+            if sp.zone_tiers:
+                # VOID: "dealing more damage to them the fewer there are inside its radius"
+                # -- count-tiered per-tick damage (1 / 2-3 / 4+ targets, wiki vardefines).
+                n = len(foes) + len(tws)
+                dmg, crown = sp.zone_tiers[-1][1], sp.zone_tiers[-1][2]
+                for cap, d_, c_ in sp.zone_tiers:
+                    if n <= cap:
+                        dmg, crown = d_, c_
+                        break
+            for e in foes:
+                self._hurt(e, dmg)
+                if sp.zone_move_slow > 0.0 and (e.slow_left <= 0.0
+                                                or e.slow_mult > 1.0 - sp.zone_move_slow):
+                    # POISON: "decreases the movement speed of enemy troops by 15%" -- never
+                    # overriding a STRONGER slow already on the unit (Ice Wizard's 35%).
+                    e.slow_mult = 1.0 - sp.zone_move_slow
+                    e.slow_left = max(e.slow_left, sp.zone_tick_s + 0.1)
+            for tw in tws:
+                self._damage_tower(tw, crown, z.team)
+        self.zones = [z for z in self.zones if z.left > 0.0]
 
     def _resolve_roll(self, s: _Spell) -> None:
         """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK

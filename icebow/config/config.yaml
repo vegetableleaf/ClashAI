@@ -1066,6 +1066,10 @@ sim:
   # Benchmark eval: every N matches, run the GREEDY policy vs the FIXED scripted meta pool and print the
   # win-rate. Unlike the self-play win-rate (which hovers ~50%), this is a STABLE plateau signal -- watch
   # it flatten to judge when DDQN has topped out (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
+  action_latency_s: 0.25     # SIM-ONLY (2026-08-15): our decisions reach the board this much
+                             # later, modelling the live decide->tap->game pipeline so the sim
+                             # policy has to LEAD the same way the live one does. Elixir is
+                             # committed at decision time. Opponent scripts are unaffected.
   rollout_workers: 12        # engine shards (subprocesses); 0 = classic single-process. The
                              # engine is pure Python -- this is how the other 15 cores get used
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier

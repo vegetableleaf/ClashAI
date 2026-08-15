@@ -2672,3 +2672,22 @@ Notes / caveats
   game row, single-column river notches. Full board rectangle unchanged.
 - Tests: 11 in test_deploy_rows (pockets 1-deep, back-row strip open/corners closed, platform
   closed/row-behind open, clamp+engine snaps incl. behind-king untouched). 101/101 green.
+
+2026-08-15 — OVERNIGHT SIM-FIDELITY BATCH (full write-up: icebow/SIM_FIDELITY.md)
+- Audited the engine against real CR with a data-driven filter (card frequency across the
+  1000-deck opponent pool), wiki-verifying every stat via api.php before landing it.
+- Implemented: Mortar real siege range 11.5 + 3.5 dead zone + 3.5s deploy (was reach 3.5 --
+  a whole ladder archetype could never siege); X-Bow 3.5s wind-up (was 1s); Poison as a true
+  8s DoT zone (was a single 92 blast = 12% of real damage); Lightning/Vines top-3-highest-HP
+  targeting (+0.5s stun / 2.5s root); Void count-tiered zone (696/294/153 per tick, was a
+  no-op); Graveyard 12-skeleton edge ring over 9s (was a blast that spawned nothing); Ronin
+  parry (documented in curation, never wired); game-exact TILE SNAP on all deploys; and a
+  0.25s ACTION-LATENCY queue on our side only (sim.action_latency_s) so the sim policy must
+  lead like the live one. Berserker (23% of decks) audited -- already correct.
+- Deliberately NOT changed: obs/action spaces (overnight checkpoint resumes cleanly),
+  champion actives, unit first-attack loads (would break the engine's reference-interaction
+  calibrations). Wiki lesson of the night: Elixir Blobs refund 0.5 each (golem 1) -- my
+  memory said 1; the user's verify-online rule caught it.
+- Tests: tests/test_sim_fidelity.py (11 scenario tests incl. falsification cases). Suite
+  112/112. Random-policy smoke: 20 matches, 423 steps/s, no crashes. The RUNNING overnight
+  trainer was never touched; everything lands on the next restart.
