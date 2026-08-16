@@ -311,13 +311,46 @@ def train_rl(cfg, init: str | None = None) -> None:
               "any timeout" % (advisor.model, 1000 * advisor.timeout))
 
     def _situation(env) -> str:
-        """The board in words, from the identity-threat block the reward terms already use.
+        """The board in words, from the DETECTOR -- named cards, lanes and depths.
 
-        Roles rather than raw numbers, because roles are what the deck doctrine is written in --
-        "a tank win condition 60% of the way in" is something a card guide can answer, a 52-float
-        vector is not. Empty when nothing is recognised, which is honest: the advisor should know
-        it is being asked about a quiet board.
+        The first version used only the identity-threat block: roles and a depth number. That is
+        what the reward terms need, but it is thin for an advisor -- "a tank threat 60% in" cannot
+        distinguish a Golem from a Giant Skeleton, and says nothing about what YOU already have
+        defending, which is where every synergy in this deck lives. `_last_dets_all` already
+        carries per-unit team, card name, position and confidence, and the same BoardWarp the
+        observation canvas uses converts those to board coordinates -- so the advisor can be told
+        the same thing the canvas shows the network.
+
+        Falls back to the role summary when detections are unavailable, so a detector hiccup
+        degrades the description instead of breaking the call.
         """
+        dets = getattr(env, "_last_dets_all", None) or []
+        groups, mine = {}, {}
+        try:
+            w = env.actions.warp
+            for d in dets:
+                if d.team not in ("mine", "enemy"):
+                    continue
+                bx, by = w.frame_to_board(d.cx, d.gy)
+                name = str(d.base).replace("_", " ")
+                if d.team == "mine":
+                    mine[name] = mine.get(name, 0) + 1
+                    continue
+                where = ("deep in your half" if by > 0.66 else
+                         "in your half" if by > 0.52 else
+                         "at the bridge" if by > 0.44 else "on their side")
+                lane = "left" if bx < 0.42 else "right" if bx > 0.58 else "centre"
+                k = (name, where, lane)
+                groups[k] = groups.get(k, 0) + 1
+        except Exception:  # noqa: BLE001
+            groups = {}
+        if groups or mine:
+            en = "; ".join("%s%s %s (%s lane)" % (n, " x%d" % c if c > 1 else "", wh, ln)
+                           for (n, wh, ln), c in list(groups.items())[:5]) or "nothing"
+            ours = ", ".join("%s%s" % (n, " x%d" % c if c > 1 else "")
+                             for n, c in mine.items()) or "nothing"
+            return "ENEMY on the board: %s\nYOUR units already out: %s" % (en, ours)
+        # fallback: the role block the reward terms use
         tid = getattr(env, "_threat_id", None)
         if tid is None or len(tid) < 10 or tid[0] < 0.5:
             return "ENEMY: nothing recognised on your half."
@@ -353,8 +386,21 @@ def train_rl(cfg, init: str | None = None) -> None:
                     idx = card_names.index(pick)
                     if idx in playable:
                         c = idx
-            if c is None:
-                c = random.choice(playable)
+            if c is not None:
+                # EXPLORE THE CARD, EXPLOIT THE PLACEMENT. Once the advisor has chosen WHAT to
+                # play, a uniform-random tile throws the suggestion away -- at epsilon 0.4 that
+                # was most of the session's plays, and it is why an advisor-chosen rocket still
+                # landed nowhere useful. The cell head is trained and already knows where a card
+                # wants to go, so exploration is confined to the card axis, which is the axis the
+                # advisor actually improves.
+                net.eval()
+                with torch.no_grad():
+                    _, ceq_e, _ = net(obs_to_tensor(obs), hand_to_tensor(hand_vec),
+                                      hand_to_tensor(next_vec), hand_to_tensor(elixir_vec),
+                                      hand_to_tensor(threat_vec))
+                emask = allcells_mask if c in anywhere_ids else yourhalf_mask
+                return (1, c, int(ceq_e.masked_fill(~emask.unsqueeze(0), float("-inf")).argmax()))
+            c = random.choice(playable)
             cells = anywhere_cells if c in anywhere_ids else (yourhalf_cells or anywhere_cells)
             return (1, c, random.choice(cells))
         net.eval()
