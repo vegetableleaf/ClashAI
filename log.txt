@@ -3101,3 +3101,25 @@ Notes / caveats
   flip off it. (Repaired a decorator collision introduced en route: the new @property split the
   existing @property from multiplier(), which unit tests would not have caught -- verified by
   hand at t=119/121/179/181/239/241 s.) 148/148 (1 skipped).
+
+2026-08-15 — THE LIVE IMAGE BRANCH WAS STILL REAL PIXELS (sim2real gap, found via column-0 dumping)
+- User: "tornado and log use appear quite random, fired into empty ground away from any enemy
+  pushes." Traced it and found something bigger. In the live log, 28% of ALL plays went to
+  COLUMN 0 (37% to columns 0-1); the aim assists were not responsible (they moved 4 of 164
+  cells). Ran the SAME checkpoint through policy-stats in the sim: column 0 usage is ZERO --
+  placements concentrate on columns 3/9/14 (lanes + centre). Same weights, opposite behaviour,
+  so the difference is the INPUT.
+- Cause: three code paths, three different RGB sources. Sim trains on view.render_obs (a
+  SYNTHETIC canonical board); replay-BC deliberately rebuilds the same canonical view from
+  detections ("feeding the pro's pixels into the image branch transfers badly. So we never
+  do."); but the LIVE env fed vision.observe -- the REAL game pixels, merely warped. Measured
+  channel means: sim [5, 74, 4], live-raw [131, 141, 139]. The policy has never once seen that
+  distribution. (Not new today; the canvas was added to work AROUND it. It is the same class of
+  bug as the play.py warp and the elixir reader -- train/serve divergence.)
+- FIX: live rebuilds channels 0-2 with replay_bc.canonical_render from OUR detections, warped
+  to board space so the RGB agrees with the semantic + predictive channels of the same frame.
+  New means [30, 80, 29] against the sim's [5, 74, 4], and the rendered board is structurally
+  identical (green field, red/blue tower squares, river line). Shape unchanged (3 channels), so
+  every checkpoint stays valid. Knob: observation.canonical_rgb_live (default true) to A/B.
+- Still open (next): the detector FLICKER the user reported, and whether tornado/log placement
+  improves once the image branch is in-distribution. 148/148 (1 skipped).

@@ -36,6 +36,7 @@ from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from . import card_threat
 from . import interactions
+from . import replay_bc
 from .cycle import CycleTracker
 from .opponent_elixir import OpponentElixirEstimator
 from .tower_hp import TowerHpTracker
@@ -46,6 +47,21 @@ Action = Tuple[int, int, int]  # (play 0/1, card_id, cell)
 # Crown-tower HP block width -- mirrors sim/view.TOWER_DIM: (L princess, R princess, king) x (mine, theirs).
 # Kept as a local constant (not imported from sim.view) so the live path never drags in the sim engine.
 _TOWER_DIM = 6
+
+
+class _BoardDet:
+    """A Detection re-expressed in BOARD coordinates for the canonical renderer (which reads
+    .cx/.gy/.team). The live detector reports FRAME coords; the sim renders board-true."""
+
+    __slots__ = ("cx", "gy", "team", "base", "cls", "w", "h", "conf")
+
+    def __init__(self, d, bx, by):
+        self.cx, self.gy, self.team = bx, by, d.team
+        self.base, self.cls = d.base, getattr(d, "cls", d.base)
+        self.w, self.h, self.conf = d.w, d.h, d.conf
+
+
+_RIVER_BOARD_Y = 0.5            # board-true river (the canonical render is drawn in board space)
 
 
 class LiveMatchEnv:
@@ -265,6 +281,7 @@ class LiveMatchEnv:
             deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
         # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
+        self.canonical_rgb = bool(cfg.get("observation", "canonical_rgb_live", default=True))
         # TOWER-HP block: fed to the policy exactly as the sim feeds it (sim/view.tower_vector). The sim
         # trains WITH it (threat_dim 46 -> 52) but the live env used to build the vector WITHOUT it, so a
         # sim/PPO checkpoint's threat_fc (52 wide) could not multiply the live 46-wide vector. Same
@@ -442,7 +459,28 @@ class LiveMatchEnv:
         produced for this frame -- so it costs NO extra detector pass. Both callers run
         ``_update_threat`` first, which is what keeps the two in sync.
         """
-        img = self.vision.observe(frame)
+        if self.canonical_rgb:
+            # CANONICAL RGB (2026-08-15). The image branch was the last piece of the observation
+            # still fed REAL GAME PIXELS live while the policy trains on the sim's SYNTHETIC
+            # top-down render -- the exact transfer failure replay_bc's design note calls out
+            # ("image-BC clones pixels->action, so feeding the pro's pixels into the image branch
+            # transfers badly. So we never do.") and which the BC path already avoids by
+            # rebuilding the arena from detections.
+            # MEASURED on the same checkpoint: in the SIM it never uses column 0 (placements
+            # concentrate on the lane/centre columns 3, 9, 14); LIVE it dumped 28% of plays into
+            # column 0 and 37% into columns 0-1. Same weights, so the difference is the input.
+            # Rebuilt from OUR detections in the sim's own palette, board-warped so the RGB and
+            # the semantic/predictive channels of a frame all agree. Shape is unchanged (3
+            # channels), so checkpoints stay valid.
+            w = self.actions.warp
+            dets = []
+            for d in (self._last_dets_all or []):
+                bx, by = w.frame_to_board(d.cx, d.gy)
+                dets.append(_BoardDet(d, bx, by))
+            oh, ow = self.obs_shape[0], self.obs_shape[1]
+            img = replay_bc.canonical_render(dets, self.cfg, int(oh), int(ow), _RIVER_BOARD_Y)
+        else:
+            img = self.vision.observe(frame)
         if not self.use_canvas:
             return img
         from . import detect_obs
