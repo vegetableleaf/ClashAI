@@ -33,7 +33,7 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
 
     from clashrl.config import Config
     from clashrl.sim.env import SimMatchEnv
-    from clashrl.sim.doctrine import doctrine_cells
+    from clashrl.sim.doctrine import doctrine_cells, doctrine_cards
     from clashrl.sim.opponents import SelfPlayOpponent, make_opponent
 
     cfg = Config.load()
@@ -85,6 +85,9 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
             "obs": obs, "hand": env.hand_vec.copy(), "nxt": env.next_vec.copy(),
             "elx": env.elixir_vec.copy(), "thr": env.threat_vec.copy(),
             "dc": {int(ci): doctrine_cells(env, int(ci)) for ci in hand},
+            # WHICH card to nominate, not just where to put it -- the rocket was never SELECTED,
+            # so its (already generous) placement prior and rewards were both unreachable.
+            "dcard": doctrine_cards(env),
             "rew": float(rew), "done": bool(done), "outcome": outcome, "pfsp": pfsp,
         }
 
@@ -191,6 +194,9 @@ class RemotePool:
     def doctrine(self, i: int, ci: int):
         p = self.last[i]
         return (p or {}).get("dc", {}).get(int(ci)) or []
+
+    def doctrine_card(self, i: int):
+        return (self.last[i] or {}).get("dcard") or {}
 
     def close(self):
         for c in self.conns:
