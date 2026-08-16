@@ -874,6 +874,15 @@ play:
   select_delay: 0.15             # delay between selecting a card and placing it (was 0.08)
   move_dwell: 0.03               # let the pointer position land before pressing
   tap_hold: 0.05                 # press duration -- a 0-length click is not a touch
+  ensure_focus: true             # bring the game window to the foreground before a card tap.
+                                 # Windows gives the first click on an unfocused window to the
+                                 # focus change, so that tap selects nothing and the placement
+                                 # lands empty-handed. MEASURED 2026-08-16: 48% of plays never
+                                 # moved the elixir bar, and taps after a >3 s idle failed
+                                 # 63-82% against 17% for taps within 1.5 s of the previous one
+                                 # -- consecutive taps keep the window hot, the first after a
+                                 # gap is spent re-focusing.
+  focus_settle_s: 0.06           # pause after taking focus, before the card tap
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
   in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
                                  # of the last positive IN_MATCH read, play HOLDS in-match (keeps acting)

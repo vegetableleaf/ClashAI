@@ -3211,3 +3211,24 @@ Notes / caveats
   episodes (304 s / 296 s / 308 s -- all three ran into overtime), UNKNOWN down to 11 samples
   (match transitions), MATCH_END still detected at 316/622/940 s. detect_state 93 -> 43.2 ms
   average including overtime frames (22 ms on a regulation frame). 158/158 (1 skipped).
+
+2026-08-16 — TAP FAILURES: the window was never focused (48% of plays never landed)
+- Asked whether agent_dt can drop to 0.5 s. Measured the live budget first: act-loop work is now
+  46.6 ms (detect_state 29, read_elixir 12.5, mass 2.9, hand 1.5, tower+HP 0.6, obs build 0.1)
+  against ~750 ms this morning, so speed is NO LONGER the constraint. But checking the new
+  elixir_pre telemetry to confirm the tap fix worked turned up something worse.
+- 48% of plays in the newest run never moved the elixir bar (70% / 59% / 48% across the three
+  runs). The split says what it is: a tap within 1.5 s of the previous play fails 17% of the
+  time; a tap after a >3 s idle fails 63-82%. Consecutive taps keep the window HOT -- the first
+  tap after a gap is consumed by Windows re-focusing the window, so no card is selected and the
+  arena tap lands empty-handed. Nothing in controller.py or capture.py ever asked for focus,
+  and the CR window was indeed not foreground when checked.
+  (My first pass at this measurement used too tight a threshold and reported 72-89%; corrected
+  by reading the raw pre/post values, where a failure shows delta EXACTLY 0.0 and the model
+  retries the same card a second later -- e.g. ice_wizard at t=21.0 fails, t=22.0 succeeds.)
+- FIX: Controller.ensure_focus() -- cached HWND, returns immediately when already foreground,
+  otherwise SW_RESTORE + SetForegroundWindow + a 60 ms settle before the card tap.
+  play.ensure_focus / play.focus_settle_s.
+- NB this is a HYPOTHESIS CONFIRMED BY PATTERN, not yet by a live A/B: the idle-gap correlation
+  and the absence of any focus call are strong, but the proof is the next run's dropped-tap
+  rate. That number is one line from the logs now.
