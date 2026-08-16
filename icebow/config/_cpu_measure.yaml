@@ -97,7 +97,7 @@ states:
       - "in_match.png"
       - "in_match_v2.png"
       - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
-  match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
+  match_end:  {templates: ["match_end_exit.png", "match_end_ok.png"], threshold: 0.80}
 
 nav:
   poll_hz: 6                     # how often play() re-checks the screen state

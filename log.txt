@@ -3044,3 +3044,27 @@ Notes / caveats
   (b) the detect_state reorder that checks in_match FIRST (-44 ms), which needs several
   endings to prove in_match cannot co-fire with the results screen. Draws are not needed
   (statistically negligible in CR, per the user).
+
+2026-08-15 — Templates RENAMED + detect_state reordered on the new recording's evidence
+- User correction: both end screens (OK button / Exit+Play Again) are valid CLASSIC 1v1
+  endings and which appears is chance -- neither has anything to do with a disconnect, so the
+  "_dc" name was simply wrong. Renamed: match_end.png -> match_end_exit.png,
+  match_end_dc.png -> match_end_ok.png (git mv; config + _cpu_measure.yaml updated). BOTH are
+  kept -- dropping either loses whichever screen it covers.
+- New recording (data/sessions/20260815_222309, 15.8 min, 3 match endings) settled the two
+  questions the earlier footage could not:
+  * IN_MATCH NEVER co-fires with a results screen: 0 conflicts across 33 end frames here,
+    plus 2 in the 2026-08-04 session = 35 end frames over 4 endings. That is the safety proof
+    the earlier attempt lacked (that footage contained no endings at all).
+  * in_match.png fires on ZERO of 757 sampled frames; in_match_v2.png carries all 424 hits.
+- Applied: (a) detect_state checks IN_MATCH FIRST, so an in-match decision no longer pays for
+  both end-screen whole-frame searches before reaching its answer; (b) the in_match template
+  list is ordered by what actually fires (v2, then the cheap region-limited OT banner, then
+  the dead v1, kept for older client builds).
+- VALIDATED against an independent re-implementation of the OLD order over 946 frames spanning
+  the whole recording: 0 state mismatches. detect_state on IN-MATCH frames: 93 -> 22.0 ms.
+  (Whole-recording average 92.1 -> 70.2 ms; menu/UNKNOWN frames still pay the full scan, which
+  is fine -- the act loop only runs in-match.) 148/148 (1 skipped).
+- LIVE PER-DECISION BUDGET after today: hand 300 -> ~2 ms, tower-HP OCR 42.5 -> 13.2 ms,
+  detect_state 93 -> 22 ms. Pipeline work ~0.75 s -> ~0.33 s; with the 0.31 s tap gesture the
+  floor is now ~0.64 s (was ~1.06 s). A 0.5 s act_period is within reach if the tap shrinks.

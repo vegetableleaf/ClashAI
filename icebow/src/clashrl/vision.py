@@ -355,9 +355,18 @@ class Vision:
         (state-level threshold, whole-frame search) and dict entries with their OWN
         ``threshold``/``region`` -- used to keep a risky auxiliary template (the strict
         OVERTIME banner) isolated from the proven primary one."""
+        # IN_MATCH IS CHECKED FIRST (2026-08-15). A state returns on its first hit, so the old
+        # order made every in-match decision -- the overwhelmingly common case -- pay for BOTH
+        # end-screen whole-frame searches before reaching its own answer: 93 ms per decision,
+        # the largest item left in the live vision budget.
+        # The reorder is only safe if in_match can never fire on the results screen, so it was
+        # MEASURED rather than assumed: across 4 match endings in two recordings (35 end frames
+        # in data/sessions/20260815_222309 + 20260804_192006), in_match co-fired ZERO times.
+        # An earlier attempt at this was rejected precisely because the footage then available
+        # contained no endings at all -- an inconclusive test, not a proof.
         checks = [
-            (GameState.MATCH_END, "match_end"),
             (GameState.IN_MATCH, "in_match"),
+            (GameState.MATCH_END, "match_end"),
             (GameState.PARTY, "party_menu"),
             (GameState.HOME, "home_menu"),
         ]
