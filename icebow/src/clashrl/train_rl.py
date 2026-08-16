@@ -302,6 +302,9 @@ def train_rl(cfg, init: str | None = None) -> None:
 
     # ---- LLM exploration advisor (train.llm_advisor; OFF unless switched on) ----------------
     card_names = list(deck) if deck and len(deck) == n_cards else ["card%d" % i for i in range(n_cards)]
+    # Everything our own side can possibly be, evolutions folded onto their base -- the sanity
+    # check for detections tagged "mine" (see _situation).
+    own_cards = set(card_names) | {_base_key(k) for k in card_names}
     advisor = None
     advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
     if bool(cfg.get("train", "llm_advisor", default=False)):
@@ -345,7 +348,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         degrades the description instead of breaking the call.
         """
         dets = getattr(env, "_last_dets_all", None) or []
-        groups, mine = {}, {}
+        groups, mine, dropped = {}, {}, []
         try:
             w = env.actions.warp
             for d in dets:
@@ -354,6 +357,16 @@ def train_rl(cfg, init: str | None = None) -> None:
                 bx, by = w.frame_to_board(d.cx, d.gy)
                 name = str(d.base).replace("_", " ")
                 if d.team == "mine":
+                    # A unit of OURS can only be a card from OUR deck. The detector's team tag is
+                    # not reliable: a live session reported "YOUR units already out: goblin cage"
+                    # and "... earthquake", neither of which is in this deck, and the earthquake
+                    # was most likely our own king tower (user, 2026-08-16). Telling the advisor
+                    # that is worse than telling it nothing -- it then reasons about a board that
+                    # does not exist. Deck membership is a HARD constraint, so anything failing it
+                    # is a misclassification and gets dropped rather than reported.
+                    if str(d.base) not in own_cards:
+                        dropped.append(str(d.base))
+                        continue
                     mine[name] = mine.get(name, 0) + 1
                     continue
                 where = ("deep in your half" if by > 0.66 else
@@ -369,7 +382,10 @@ def train_rl(cfg, init: str | None = None) -> None:
                            for (n, wh, ln), c in list(groups.items())[:5]) or "nothing"
             ours = ", ".join("%s%s" % (n, " x%d" % c if c > 1 else "")
                              for n, c in mine.items()) or "nothing"
-            return "ENEMY on the board: %s\nYOUR units already out: %s" % (en, ours)
+            note = ("" if not dropped else
+                    "  [dropped %d impossible ally detection(s): %s]"
+                    % (len(dropped), ", ".join(sorted(set(dropped))[:4])))
+            return "ENEMY on the board: %s\nYOUR units already out: %s%s" % (en, ours, note)
         # fallback: the role block the reward terms use
         tid = getattr(env, "_threat_id", None)
         if tid is None or len(tid) < 10 or tid[0] < 0.5:
