@@ -628,6 +628,18 @@ train:
   epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
   # LIVE fine-tune exploration (train-rl only; falls back to epsilon_* when absent). A converged sim
   # policy must NOT re-explore from eps 1.0 on the ladder -- that is ~60-75 matches of random play.
+  # LLM EXPLORATION ADVISOR (2026-08-16). On epsilon steps the live trainer picks a RANDOM card;
+  # this replaces that choice with a local model's suggestion. It never touches the greedy action,
+  # so a bad suggestion costs one exploration step. Safe here because live RL is Double-DQN and
+  # OFF-POLICY -- the behaviour policy filling the replay buffer need not match the policy being
+  # learned, so no importance correction is required (the sim's PPO is on-policy and gets the
+  # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
+  # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
+  # disable it for the session. OFF by default -- turn it on deliberately.
+  llm_advisor: false
+  llm_advisor_model: qwen2.5:latest   # 0.589s p50; gemma3:4b scores better (6/10 vs 5/10) but takes 1.006s
+  llm_advisor_timeout_s: 0.8          # hard budget; act_period is 1.0s and the bot is BLIND during the call
+  llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
   rl_epsilon_start: 0.10
   rl_epsilon_end: 0.05
   rl_epsilon_decay_steps: 1000

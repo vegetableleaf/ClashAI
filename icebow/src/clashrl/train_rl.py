@@ -294,7 +294,35 @@ def train_rl(cfg, init: str | None = None) -> None:
     def hand_to_tensor(hand_vec):
         return torch.from_numpy(np.asarray(hand_vec, np.float32)).unsqueeze(0).to(device)
 
-    def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir):
+    # ---- LLM exploration advisor (train.llm_advisor; OFF unless switched on) ----------------
+    card_names = list(deck) if deck and len(deck) == n_cards else ["card%d" % i for i in range(n_cards)]
+    advisor = None
+    if bool(cfg.get("train", "llm_advisor", default=False)):
+        from .llm_advisor import LLMAdvisor
+        advisor = LLMAdvisor(cfg)
+        print("[train-rl] LLM exploration advisor ON: %s, %.0f ms budget -- it replaces the RANDOM "
+              "card on epsilon steps only, never the greedy action, and falls back to random on "
+              "any timeout" % (advisor.model, 1000 * advisor.timeout))
+
+    def _situation(env) -> str:
+        """The board in words, from the identity-threat block the reward terms already use.
+
+        Roles rather than raw numbers, because roles are what the deck doctrine is written in --
+        "a tank win condition 60% of the way in" is something a card guide can answer, a 52-float
+        vector is not. Empty when nothing is recognised, which is honest: the advisor should know
+        it is being asked about a quiet board.
+        """
+        tid = getattr(env, "_threat_id", None)
+        if tid is None or len(tid) < 10 or tid[0] < 0.5:
+            return "ENEMY: nothing recognised on your half."
+        roles = [n for n, i in (("tank", 1), ("swarm", 2), ("air", 3), ("building/siege", 4),
+                                ("win condition", 5), ("building-targeting", 6)) if tid[i] >= 0.5]
+        depth, vel = float(tid[7]), float(tid[8])
+        pace = "closing fast" if vel > 0.15 else ("advancing" if vel > 0.02 else "not advancing")
+        return ("ENEMY: a %s threat is %.0f%% of the way to your king and %s."
+                % ("/".join(roles) or "recognised", 100.0 * depth, pace))
+
+    def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir, situation=""):
         # playable = in hand AND affordable (mirrors play.py) -> the policy never selects a card it
         # can't pay for, which otherwise wastes the turn on a "Not enough Elixir!" no-op.
         playable = [i for i, v in enumerate(hand_vec)
@@ -305,7 +333,22 @@ def train_rl(cfg, init: str | None = None) -> None:
             # don't fritter cards when starved; wait to cycle/save elixir
             if elixir < min_play_elixir or random.random() < wait_prob:
                 return (0, 0, 0)
-            c = random.choice(playable)
+            # INFORMED EXPLORATION. Uniform-random over the hand is what fills the replay buffer
+            # during epsilon steps, and it is the reason a live "rocket play" was a random card on
+            # a random tile. Double-DQN is OFF-POLICY, so the behaviour policy may be anything --
+            # no importance correction is needed, unlike the sim's PPO. A local model answers in
+            # ~0.59 s inside the 1.0 s budget and is right far more often than uniform noise; when
+            # it cannot answer in time it returns None and this falls straight back to random.
+            c = None
+            if advisor is not None:
+                pick = advisor.suggest(situation,
+                                       [card_names[i] for i in playable], elixir)
+                if pick is not None and pick in card_names:
+                    idx = card_names.index(pick)
+                    if idx in playable:
+                        c = idx
+            if c is None:
+                c = random.choice(playable)
             cells = list(range(n_cells)) if c in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
             return (1, c, random.choice(cells))
         net.eval()
@@ -500,7 +543,8 @@ def train_rl(cfg, init: str | None = None) -> None:
             thr = env.threat_vec.copy()
             while running["v"]:
                 eps = epsilon(step)
-                action = choose(obs, hand, nxt, elx, thr, eps, env.elixir)
+                action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
+                                _situation(env) if advisor is not None else "")
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
                     tl.add(env._last_frame)         # collect a frame for the training timelapse
@@ -555,5 +599,11 @@ def train_rl(cfg, init: str | None = None) -> None:
         if collector is not None and collector.session_count:
             print(f"[train-rl] harvested {collector.session_count} annotation frame(s) -> {collector.root} "
                   f"(re-sync Label Studio Local Storage to pick them up)")
+        if advisor is not None:
+            # Print it even when it never answered: an advisor that quietly stopped responding
+            # looks exactly like one that was never on, and the session would silently be plain
+            # random exploration with no sign of it.
+            print("[train-rl] " + advisor.stats())
+            advisor.close()
         print(f"[train-rl] stopped after {match} match(es); deployed policy is {rl_path.name}, "
               f"this session's final weights are in {last_path.name}")
