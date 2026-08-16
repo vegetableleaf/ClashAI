@@ -325,7 +325,16 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
     """
     if threat_id is None or len(threat_id) < IDENTITY_DIM or threat_id[0] < 0.5:
         return False
-    if threat_id[3] >= 0.5 and (play.attacks_air or play.flying):      # flying threat -> air defence
+    if threat_id[3] >= 0.5 and not (play.attacks_air or play.flying):
+        # YOU CANNOT COUNTER WHAT YOU CANNOT TOUCH (2026-08-16). Only the air-defence branch
+        # below used to test the flying bit, so every LATER branch could still credit a
+        # ground-only card against an air threat -- and the swarm branch (splash OR spell) did
+        # exactly that for THE LOG against a flying swarm: counters(the_log, flying swarm)
+        # returned True, so the referee PAID for logging minions/bats. That is the "model logs
+        # air cards" behaviour the user reported, taught directly by this table.
+        # One guard up front, so no branch can ever credit an unreachable threat.
+        return False
+    if threat_id[3] >= 0.5:                                            # flying threat -> air defence
         return True
     if threat_id[2] >= 0.5 and (play.splash or play.spell):            # swarm -> splash / spell
         return True

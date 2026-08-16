@@ -810,7 +810,7 @@ cards:
   # that have the highest hitpoints within its radius" + 0.5 s stun. It was resolving as a
   # radius BLAST, nuking the swarms real Lightning ignores. Radius 3.5 (was KB-default 2.9).
   lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
-              radius_tiles: 3.5, verified: true}
+              radius_tiles: 3.5, attacks: [air, ground], verified: true}
   # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
   # crowd-control modelled either. Duration is not published, so it falls back to the global
   # sim.freeze_duration rather than being invented here.
@@ -824,8 +824,11 @@ cards:
   # decreases the movement speed of enemy troops by 15%". It was resolving as a ONE-TIME
   # 92-damage blast -- 12% of its real output, in 10% of ladder decks. KB's per-tick values
   # (92 troop / 23 crown at 11) are already per-second, so the zone uses them directly.
+  # attacks: the wiki calls both "air-targeting" spells; the imported KB rows had them as
+  # ground-only, which (with the 2026-08-16 air guard in card_threat.counters) would have made
+  # them look like non-counters against any flying threat.
   poison: {kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
-           radius_tiles: 3.5, verified: true}
+           radius_tiles: 3.5, attacks: [air, ground], verified: true}
 
   # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
   # targets share the zone -- 1 target: 696/97 crown; 2-3: 294/51; 4+: 153/35 (level 11).

@@ -883,6 +883,14 @@ play:
                                  # -- consecutive taps keep the window hot, the first after a
                                  # gap is spent re-focusing.
   focus_settle_s: 0.06           # pause after taking focus, before the card tap
+  elixir_safety_margin: 0.25     # pips subtracted before deciding a card is AFFORDABLE. The bar
+                                 # cannot be read finely enough to separate 2.99 pips from 3.00
+                                 # and the game demands the full amount, so "exactly affordable"
+                                 # plays are routinely refused: MEASURED 61% of them never moved
+                                 # the bar, against 22% for plays with any spare elixir -- and
+                                 # 63% of all plays were made at exactly-affordable. Costs ~0.7s
+                                 # of tempo at 1x (0.35s at 2x); the observation and the leak
+                                 # test still use the TRUE reading.
   epsilon: 0.0                   # random-action rate while playing (0 = greedy)
   in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
                                  # of the last positive IN_MATCH read, play HOLDS in-match (keeps acting)

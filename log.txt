@@ -3232,3 +3232,35 @@ Notes / caveats
 - NB this is a HYPOTHESIS CONFIRMED BY PATTERN, not yet by a live A/B: the idle-gap correlation
   and the absence of any focus call are strong, but the proof is the next run's dropped-tap
   rate. That number is one line from the logs now.
+
+2026-08-16 — DROPPED TAPS: the real cause was EXACTLY-AFFORDABLE plays, not focus
+- Focus fix verification: dropped-tap rate 48% -> 44%. Barely moved, so the focus hypothesis
+  was wrong (or marginal). Kept anyway -- an unfocused window is a guaranteed failure mode and
+  ensure_focus() is a no-op when already foreground.
+- The real signal was in the raw pre/post values: EVERY failure had elixir_pre EXACTLY equal to
+  the card's cost, and the model then replayed the same card a second later and succeeded.
+  Quantified over the last two runs (110 plays):
+      slack 0 (exactly affordable): 69 plays, 61% dropped
+      slack >= 1:                   41 plays, 22% dropped
+  and 63% of ALL plays were made at slack 0. The bar cannot be read finely enough to separate
+  2.99 pips from 3.00 and the game demands the full amount, so the reader says "affordable",
+  the tap selects a card that never places, and the referee scores a play that did not happen.
+- FIX: play.elixir_safety_margin (0.25 pips) subtracted before the affordability decision.
+  env.elixir is now the conservative FLOOR (what the mask may trust) while env.elixir_frac keeps
+  the true reading for the observation and the leak test. A 3-cost card now waits until ~3.24
+  pips: ~0.7 s of tempo at 1x, 0.35 s at 2x, against a 61% wasted-tap rate.
+- MY FIRST MEASUREMENT WAS WRONG and I corrected it mid-investigation: the initial rule
+  (post > pre - cost + 0.75) reported 72-89% by counting successful plays whose regen offset the
+  spend. Reading the raw values showed failures have delta EXACTLY 0.0, which is the rule now used.
+
+2026-08-16 — "THE MODEL LOGS AIR TROOPS" -- the counter table was telling it to
+- card_threat.counters() tested the flying bit ONLY in its air-defence branch, so every later
+  branch could credit a ground-only card against an air threat. The SWARM branch (splash OR
+  spell) did exactly that: counters(the_log, flying swarm) returned True, so threat_response
+  PAID for logging minions/bats. That is the reported behaviour, taught directly by the table.
+- FIX: one guard at the top -- a flying threat is not counterable by anything that cannot reach
+  air. Verified: log now False vs flying swarm, still True vs ground swarm; tornado/rocket/
+  ice_wizard/tesla still cover air; knight/skeletons/x_bow never do.
+- Also fixed the DATA: lightning and poison are air-targeting spells per the wiki, but the
+  imported rows had them ground-only -- with the new guard they would have stopped counting as
+  counters against anything flying. Tests: AirReachabilityTests (5). 163/163 (1 skipped).

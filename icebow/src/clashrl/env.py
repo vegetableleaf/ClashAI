@@ -243,6 +243,8 @@ class LiveMatchEnv:
         # thresholds the correctness terms use
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))       # 'quiet board' enemy-mass gate
         self.full_elixir = int(cfg.get("env", "elixir_full", default=10))               # leak / cycle threshold
+        self.elixir_frac = 0.0          # last TRUE bar reading (obs + leak); self.elixir is floored
+        self.elixir_margin = float(cfg.get("play", "elixir_safety_margin", default=0.25))
         self.defeat_cap = float(cfg.get("env", "defeat_cap", default=0.15))             # 'full push' mass scale for the trade term
         self._prev_mass = 0.0
         self._prev_my_hp = 0.0
@@ -1132,7 +1134,20 @@ class LiveMatchEnv:
             cur_mass = enemy_mass(frame, self.cfg)
             self._last_mass = cur_mass
             my_hp = float(sum(self.tower_hp.my_hp))
-            cur_elixir = self.vision.read_elixir(frame)
+            # CONSERVATIVE AFFORDABILITY (2026-08-16). The bar cannot be read finely enough to
+            # tell 2.99 pips from 3.00, and the GAME requires the full amount -- so a card the
+            # reader calls "exactly affordable" is often refused, the tap is spent selecting a
+            # card that never places, and the referee scores a play that did not happen.
+            # MEASURED over the last two live runs (110 plays with elixir_pre telemetry):
+            #     slack 0 (exactly affordable): 69 plays, 61% never moved the bar
+            #     slack >= 1:                   41 plays, 22%
+            # and 63% of ALL plays were made at slack 0, which is why ~half of every run's taps
+            # were being thrown away. `elixir` is therefore the FLOOR of the measured amount
+            # minus a safety margin -- what the affordability mask can trust -- while
+            # elixir_frac keeps the true reading for the observation and the leak test, which
+            # both want accuracy rather than caution.
+            cur_frac = self.vision.read_elixir_frac(frame)
+            cur_elixir = int(max(0.0, cur_frac - self.elixir_margin))
             new_mult = self.clock.update(frame)                  # 2x/3x elixir clock (time + optional badge)
             if new_mult != self.elixir_mult:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
@@ -1170,7 +1185,7 @@ class LiveMatchEnv:
             # perception sees them. The old spend-tax + ambient-mass shape paid the policy for
             # idling under a building push -- ELIXIR_TRADE_DESIGN.md, implemented 2026-08-14.
             trd = self.rw_stats.add("elixir_trade", self._trade_reward(cur_elixir))
-            if not play and cur_elixir >= self.full_elixir:
+            if not play and cur_frac >= self.full_elixir:      # leak: the TRUE bar, not the floored one
                 lk = self.rw_stats.add("leak", self.w_leak)                                                            # (5) leaking at capacity
             reward += tr + wc + tmi + trd + lk
             self.rw_stats.step(bool(play))
@@ -1204,8 +1219,9 @@ class LiveMatchEnv:
                     self._play_log.append(rec)
             self._prev_mass = cur_mass
             self._prev_my_hp = my_hp
-            self.elixir = cur_elixir
-            self.elixir_vec = np.asarray([cur_elixir / 10.0], dtype=np.float32)
+            self.elixir = cur_elixir                          # decisions: conservative
+            self.elixir_frac = float(cur_frac)                # observation/leak: accurate
+            self.elixir_vec = np.asarray([cur_frac / 10.0], dtype=np.float32)
             t0 = time.time()
             self._read_hand(frame)
             self._cad["hand"] += time.time() - t0

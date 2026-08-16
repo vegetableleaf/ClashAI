@@ -647,3 +647,45 @@ class BuildingStackTests(unittest.TestCase):
         self.assertGreaterEqual(_dist(kn.x, kn.y, tes.x, tes.y),
                                 kn.spec.radius + tes.spec.radius - 1e-6,
                                 "above ground it blocks placement like any building")
+
+
+class AirReachabilityTests(unittest.TestCase):
+    """2026-08-16 (user report): "the model tried logging air cards". The counter table said
+    that was correct -- only the air-defence branch tested the flying bit, so the SWARM branch
+    (splash OR spell) credited THE LOG against a flying swarm. The referee was paying for it."""
+
+    def setUp(self):
+        import numpy as np
+        from clashrl import card_threat
+        self.ct = card_threat
+        self.env = _quiet(seed=120)
+        self.flying = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self.flying[0] = self.flying[2] = self.flying[3] = 1.0     # present, swarm, FLYING
+        self.ground = self.flying.copy()
+        self.ground[3] = 0.0
+
+    def _prof(self, key):
+        return self.env._deck_profiles[self.env.deck_keys.index(key)]
+
+    def test_log_does_not_counter_a_flying_swarm(self):
+        self.assertFalse(self.ct.counters(self._prof("the_log"), self.flying),
+                         "the log cannot touch air and must never be credited against it")
+
+    def test_log_still_counters_a_ground_swarm(self):
+        self.assertTrue(self.ct.counters(self._prof("the_log"), self.ground),
+                        "skeletons/goblins on the ground are exactly what the log is for")
+
+    def test_air_capable_cards_still_counter_air(self):
+        for key in ("tornado", "rocket", "ice_wizard", "tesla"):
+            self.assertTrue(self.ct.counters(self._prof(key), self.flying),
+                            "%s reaches air and must still count" % key)
+
+    def test_ground_only_troops_never_counter_air(self):
+        for key in ("knight", "skeletons", "x_bow"):
+            self.assertFalse(self.ct.counters(self._prof(key), self.flying),
+                             "%s cannot hit air" % key)
+
+    def test_lightning_and_poison_are_air_capable(self):
+        for key in ("lightning", "poison"):
+            self.assertTrue(self.ct.profile(self.env.db, key).attacks_air,
+                            "%s is an air-targeting spell (wiki); the imported row said otherwise" % key)
