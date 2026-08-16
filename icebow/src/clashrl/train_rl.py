@@ -306,9 +306,28 @@ def train_rl(cfg, init: str | None = None) -> None:
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor
         advisor = LLMAdvisor(cfg)
-        print("[train-rl] LLM exploration advisor ON: %s, %.0f ms budget -- it replaces the RANDOM "
-              "card on epsilon steps only, never the greedy action, and falls back to random on "
-              "any timeout" % (advisor.model, 1000 * advisor.timeout))
+        # A REACHABILITY CHECK, not just a banner. The advisor is meant to fail silently to random
+        # during a match, which is right for the live loop and useless at startup: a dead Ollama, a
+        # model that was never pulled, or a wrong name would all look identical to "it is working"
+        # until the session ended. So ask it one question now, while there is someone watching.
+        print("[train-rl] LLM exploration advisor ON: %s, %.0f ms budget -- replaces the RANDOM "
+              "card on epsilon steps only, never the greedy action."
+              % (advisor.model, 1000 * advisor.timeout))
+        t_warm = time.time()
+        probe = advisor.warmup()          # loads the model NOW, not on the first exploration step
+        if probe is None:
+            print("[train-rl]   WARNING: the advisor did not answer even with a long warm-up (%s). "
+                  "Every epsilon step will silently fall back to a random card. Check `ollama list` "
+                  "and that train.llm_advisor_model names a pulled model."
+                  % (advisor.last_error or "no reason given"))
+        else:
+            print("[train-rl]   warmed up in %.1fs (answered %r); in-match calls run against the "
+                  "%.0f ms budget" % (time.time() - t_warm, probe, 1000 * advisor.timeout))
+    else:
+        # Say so explicitly. "No line at all" is ambiguous between OFF and BROKEN, and that
+        # ambiguity cost a debugging round (user, 2026-08-16).
+        print("[train-rl] LLM exploration advisor OFF (set train.llm_advisor: true to enable); "
+              "epsilon steps pick a random card")
 
     def _situation(env) -> str:
         """The board in words, from the DETECTOR -- named cards, lanes and depths.

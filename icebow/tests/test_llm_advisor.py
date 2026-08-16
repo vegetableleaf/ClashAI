@@ -87,3 +87,17 @@ class ContractTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WarmupTests(unittest.TestCase):
+    def test_warmup_restores_the_match_budget_and_clears_counters(self):
+        """The warm-up must not leave a long timeout behind, nor colour the session stats."""
+        a = LLMAdvisor(model="qwen2.5:latest", timeout=0.4, port=1)   # unreachable: fails fast
+        a.warmup(seconds=0.5)
+        self.assertAlmostEqual(a.timeout, 0.4, places=6, msg="in-match budget must be restored")
+        self.assertEqual((a.calls, a.hits, a.fails), (0, 0, 0))
+        self.assertFalse(a.disabled, "a failed warm-up must not leave the advisor tripped")
+
+    def test_warmup_returns_none_when_unreachable(self):
+        a = LLMAdvisor(model="qwen2.5:latest", timeout=0.3, port=1)
+        self.assertIsNone(a.warmup(seconds=0.5))

@@ -156,6 +156,33 @@ class LLMAdvisor:
         if self._streak >= self.max_consecutive_fails:
             self.disabled = True
 
+    def warmup(self, seconds: float = 60.0):
+        """Force the model into VRAM before the match starts, and report reachability.
+
+        The FIRST call to a cold model pays its load -- seconds for a 4.7 GB 7B -- which is far
+        past the in-match budget. Without this the opening exploration steps of every session all
+        time out, and five of them in a row would trip the circuit breaker and disable the advisor
+        for the rest of the run: it would look exactly like a broken advisor while being nothing
+        but a cold one. Measured: a startup probe at the 0.9 s in-match budget FAILED against a
+        model that answers in 0.59 s once resident.
+
+        Returns the answer, or None if the model really is unreachable. Session counters are reset
+        afterwards so the warm-up does not colour the stats.
+        """
+        keep, self.timeout = self.timeout, float(seconds)
+        self._reset()                     # the pooled connection carries the old, short timeout
+        try:
+            got = self.suggest("ENEMY: nothing recognised on your half.",
+                               ["skeletons", "the_log"], 10)
+        finally:
+            self.timeout = keep
+            self._reset()
+            self.calls = self.hits = self.fails = 0
+            self.total_s = 0.0
+            self._streak = 0
+            self.disabled = False
+        return got
+
     # -- reporting ------------------------------------------------------
     def stats(self) -> str:
         if not self.calls:
