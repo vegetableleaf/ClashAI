@@ -20,6 +20,8 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
+from .engine import _TORNADO_RADIUS
+
 # ---- geometry helpers -------------------------------------------------------
 
 def _add_spot(w: Dict[int, float], env, x: float, y: float, weight: float = 3.0,
@@ -58,43 +60,54 @@ def _opp_cards(env) -> set:
     return set(getattr(env.opponent, "cards", []) or [])
 
 
-# Tornado offsets from OUR king, in TILES, that actually wake it -- (left lane, right lane).
-# MEASURED 2026-08-16 by sweeping a 9x7 half-tile grid per troop per lane against this engine
-# (tools note: scratchpad/king_offsets.py). Not copied from the placement guides, because the
-# engine and the guides disagree and only the engine is what the policy is graded against.
+# ---- Tornado king activation ------------------------------------------------
 #
-# Miner and Balloon were first recorded as impossible; that was a MEASUREMENT error, not an engine
-# limit. The sweep marched every troop up the lane from y=0.46, which is not how either card
-# arrives -- a Miner tunnels and surfaces AT the tower, and a Balloon is placed onto it. Re-run
-# with the real arrival they activate readily (Balloon on 20 of 49 offsets, Miner on 4).
+# WHY THE WINDOW IS ALWAYS SMALL. Our princess tower centre is 6.52 tiles from the king's, an
+# attacker standing on the arena side of it is ~8 tiles out, and the pull radius is 5.5 -- so the
+# cast has to sit near the king AND still reach the attacker, which is the user's rule that the
+# troop wants to be near the EDGE of the pull. The mechanic itself is the retarget: dragging a
+# unit off what it was hitting breaks its lock (see _tick_zones), and it re-picks the king if the
+# king has become the nearest building. It does NOT have to be dragged onto the king.
 #
-# What genuinely does NOT activate is the heavy building-targeters on a lane march (Giant, Golem,
-# Battle Ram). That matches the guides rather than contradicting them: for those you first need a
-# building "in the 4-3 placement to pull them closer to the centre", then Tornado -- a two-card
-# setup this table does not try to express.
-#
-# The geometry is why every window is small. Our princess tower centre is 6.52 tiles from the
-# king's, an attacker standing on the arena side of it is ~8 tiles out, and it has to be brought
-# within king.radius + its own reach (2.1-3.2 tiles) to land a hit. That is a ~5-tile drag against
-# a 5.5-tile pull radius, so the cast has to sit near the king AND still reach the attacker --
-# which is exactly the user's rule that the troop should be near the EDGE of the pull.
-_KING_SPOTS = {
-    "hog_rider": ((-1.0, -4.5), (0.5, -4.5)),
-    "royal_hogs": ((-1.5, -4.0), (0.5, -4.0)),
-    "miner": ((-3.0, -3.0), (2.0, -3.0)),
-    "balloon": ((-1.5, -3.5), (1.0, -3.0)),
-}
-# NB the lanes are NOT mirror images -- the right-lane Miner spot is +2.0, not +3.0, and mirroring
-# it simply failed. Both sides are measured independently for that reason.
+# Heavy building-targeters on a lane march (Giant, Golem, Battle Ram) still do not activate, and
+# that agrees with the guides rather than contradicting them: those want a building "in the 4-3
+# placement" pulling them centre first, a two-card setup no single cast expresses.
+def _king_spots(env, u):
+    """Candidate Tornado casts that drag ``u`` into our king. MIRRORED BY CONSTRUCTION.
 
+    The arena is exactly symmetric -- left and right princess x sum to 1.000000 = 2 x king.x, and
+    the 18-column grid mirrors exactly -- so any rule that comes out asymmetric is a bug in the
+    rule. An earlier version stored a measured per-lane table and looked asymmetric for two
+    compounding reasons, both mine:
 
-def _king_spot(u):
-    """The measured activation offset for this attacker, or None if it cannot be activated."""
-    base = u.spec.base if hasattr(u.spec, "base") else None
-    pair = _KING_SPOTS.get(base)
-    if pair is None:
-        return None
-    return pair[0] if u.x < 0.5 else pair[1]
+      * the sweep grid ran dx from -3.0 to +1.0, which covers the left lane's working region but
+        CLIPS the right lane's, and
+      * whole- and half-tile offsets land exactly on tile boundaries, where the snap's floor()
+        breaks ties the same way on both sides -- so mirrored inputs land on non-mirrored tiles
+        and the measurement showed a consistent half-tile bias.
+
+    Re-swept on a symmetric grid the two sides agree: the same number of working spots, the same
+    depth, and a single mirrored |dx| = 0.5 activates from either lane. So the offset is stored
+    once and its sign taken from which side of the king the attacker is on.
+
+    Two candidates are offered, not one. The FRONT-OF-KING spot is where a marching attacker gets
+    caught; the ON-LINE spot -- on the segment from the attacker to the king -- is what works for
+    troops that arrive AT the tower (Miner, Balloon) and generalises to any melee attacker,
+    including the non-win-condition ones, which is the whole point of computing it rather than
+    tabulating win conditions.
+    """
+    kt = env.eng.towers[0][2]
+    side = -1.0 if u.x < kt.x else 1.0
+    out = [(kt.x + side * 0.5 / 18.0, kt.y - 4.5 / 32.0)]
+    dxt, dyt = (u.x - kt.x) * 18.0, (u.y - kt.y) * 32.0
+    d = (dxt * dxt + dyt * dyt) ** 0.5
+    if d > 1e-6:
+        # as close to the king as the pull can still reach the attacker from, capped where the
+        # calibration sweep showed activations (3.0-4.0 tiles for tower-arrivals)
+        stand = min(4.0, max(3.0, d - _TORNADO_RADIUS + 0.3))
+        if d - stand <= _TORNADO_RADIUS:
+            out.append((kt.x + (dxt / d) * stand / 18.0, kt.y + (dyt / d) * stand / 32.0))
+    return out
 
 
 def _pull_resistant(u) -> bool:
@@ -252,14 +265,13 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
             # left princess tower sits 6.5 tiles from the king, past the 5.5-tile pull radius,
             # so a cast centred on the king never even catches it. The working offsets sit ~4.5
             # tiles IN FRONT of the king and slightly toward the lane.
+            # ANY pullable attacker will do it, not just the win conditions -- the user's note, and
+            # the reason this is computed per unit. Prefer the one already deepest into our half.
+            # ANY pullable attacker will do it, not just the win conditions -- the user's note, and
+            # why the spots are computed per unit. Prefer the one deepest into our half.
             deep = max(bound, key=lambda u: u.y)
-            spot = _king_spot(deep)
-            if spot is not None:
-                dx, dy = spot
-                _add_spot(w, env, kt.x + dx / 18.0, kt.y + dy / 32.0, 5.0, 1.5)
-            else:
-                _add_spot(w, env, kt.x + (-1.0 if deep.x < kt.x else 0.5) / 18.0,
-                          kt.y - 4.25 / 32.0, 4.0, 1.5)
+            for i, (sx, sy) in enumerate(_king_spots(env, deep)):
+                _add_spot(w, env, sx, sy, 5.0 if i == 0 else 4.0, 1.5)
         clump = [u for u in enemies if u.y > 0.42 and not _pull_resistant(u)]
         if len(clump) >= 2:
             cx = sum(u.x for u in clump) / len(clump)
