@@ -108,13 +108,41 @@ def propose(model, env, timeout=120):
     return None if got in (None, "wait") else got
 
 
-# ---------------------------------------------------------------- the engine's verdict
-def _replay(cfg, seed, steps, card_id, horizon=8):
-    """Fast-forward a match to `steps`, play `card_id` (or wait), return the reward that follows."""
+def _walk(cfg, seed, steps, play_rate):
+    """Fast-forward a match, ACTUALLY PLAYING some of the time.
+
+    The first version only ever waited, and that quietly wrecked the sampling: waiting fills the
+    elixir bar, so every sampled state sat at 7-10 elixir and the board stayed sparse. Measured,
+    it reached 61 distinct buckets out of 400 requests, and every rule it produced was elx_10 or
+    elx_7 -- a table about a corner of the game. Playing at a realistic rate spreads the walk over
+    the elixir range and puts troops on the board, which is where the interesting decisions are.
+    """
+    import random
+    rng = random.Random(seed * 7919 + 11)
     env = SimMatchEnv(cfg, seed=seed)
     env.reset()
     for _ in range(steps):
-        env.step((False, 0, 0))
+        hand = [c for c in env._hand_ids()
+                if c >= 0 and env.eng.elixir[0] >= env.specs[c].elixir]
+        if hand and rng.random() < play_rate:
+            act = (True, rng.choice(hand), rng.randrange(env.n_cells))
+        else:
+            act = (False, 0, 0)
+        _, _, done, _ = env.step(act)
+        if done:
+            env.reset()
+    return env, rng
+
+
+# ---------------------------------------------------------------- the engine's verdict
+def _replay(cfg, seed, steps, card_id, play_rate, horizon=8):
+    """Re-walk to the SAME state, play `card_id` (or wait), return the reward that follows.
+
+    The walk must match the one the proposal was made against, seed and play-rate included --
+    verifying a suggestion against a different board than the model was shown would make the whole
+    gate meaningless while still looking like it worked.
+    """
+    env, _ = _walk(cfg, seed, steps, play_rate)
     total = 0.0
     if card_id is None:
         _, r, done, _ = env.step((False, 0, 0))
@@ -136,12 +164,12 @@ def _replay(cfg, seed, steps, card_id, horizon=8):
     return total
 
 
-def verify(cfg, seed, steps, card_id, trials=3, margin=0.15):
+def verify(cfg, seed, steps, card_id, play_rate, trials=3, margin=0.15):
     """Does playing this beat holding, repeatably? Same bar the hand-written rules had to clear."""
     play, hold = [], []
     for k in range(trials):
-        play.append(_replay(cfg, seed + k * 1013, steps, card_id))
-        hold.append(_replay(cfg, seed + k * 1013, steps, None))
+        play.append(_replay(cfg, seed + k * 1013, steps, card_id, play_rate))
+        hold.append(_replay(cfg, seed + k * 1013, steps, None, play_rate))
     gain = statistics.mean(play) - statistics.mean(hold)
     wins = sum(1 for a, b in zip(play, hold) if a > b)
     return gain, wins, trials
@@ -154,6 +182,12 @@ def main(argv) -> int:
     ap.add_argument("--trials", type=int, default=3)
     ap.add_argument("--margin", type=float, default=0.15)
     ap.add_argument("--seed", type=int, default=101)
+    ap.add_argument("--play-rate", type=float, default=0.10,
+                    help="how often the sampling walk plays a card. TUNED, not guessed: measured "
+                         "distinct buckets at elixir>=4 (the states where a rule is worth having) "
+                         "over 300 walks -- 0.00 reaches 64, 0.10 reaches 119, 0.20 reaches 59, "
+                         "0.30 reaches 27. Waiting only fills the bar and leaves the board empty; "
+                         "playing hard drains it and never affords anything. 0.10 is the peak")
     ap.add_argument("--write", action="store_true")
     a = ap.parse_args(argv)
 
@@ -161,16 +195,17 @@ def main(argv) -> int:
     kept, tested, t0 = {}, 0, time.time()
     print("proposer %s | %d states | engine gate: mean gain > %.2f and >= 2/%d trials\n"
           % (a.model, a.states, a.margin, a.trials))
+    seen_keys = set()
     for i in range(a.states):
         seed = a.seed + i * 37
         steps = 6 + (i * 7) % 90                    # spread across the match clock
-        env = SimMatchEnv(cfg, seed=seed)
-        env.reset()
-        for _ in range(steps):
-            env.step((False, 0, 0))
+        env, rng = _walk(cfg, seed, steps, a.play_rate)
         key = state_key(env)
-        if key in kept:
+        # Skip anything already DECIDED, kept or rejected -- re-rolling the same bucket burns a
+        # ~4.4 s proposal to re-answer a question the engine has already ruled on.
+        if key in kept or key in seen_keys:
             continue
+        seen_keys.add(key)
         name = propose(a.model, env)
         if name is None:
             continue
@@ -179,7 +214,7 @@ def main(argv) -> int:
         except ValueError:
             continue
         tested += 1
-        gain, wins, n = verify(cfg, seed, steps, cid, a.trials, a.margin)
+        gain, wins, n = verify(cfg, seed, steps, cid, a.play_rate, a.trials, a.margin)
         ok = gain > a.margin and wins >= max(2, n - 1)
         print("  %-42s -> %-12s gain %+6.2f (%d/%d)  %s"
               % (key, name, gain, wins, n, "KEEP" if ok else "reject"))
