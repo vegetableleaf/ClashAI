@@ -1,67 +1,282 @@
 {
  "meta": {
-  "kept": 11,
+  "kept": 54,
   "margin": 0.15,
   "model": "gemma3:4b",
   "note": "engine-verified; a proposal that did not beat holding was dropped",
-  "tested": 22,
+  "tested": 119,
   "trials": 3
  },
  "rules": {
   "x1|king_asleep|deep_0|worth_0|elx_10": {
-   "card": "rocket",
-   "gain": 0.933,
+   "card": "tesla",
+   "gain": 1.941,
    "wins": "2/3"
   },
-  "x1|king_asleep|deep_0|worth_2|elx_10": {
-   "card": "rocket",
-   "gain": 1.0,
+  "x1|king_asleep|deep_0|worth_0|elx_4": {
+   "card": "tornado",
+   "gain": 3.175,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_0|elx_7": {
+   "card": "tornado",
+   "gain": 2.631,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_0|worth_1|elx_4": {
+   "card": "knight",
+   "gain": 0.445,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_1|elx_6": {
+   "card": "tesla",
+   "gain": 2.817,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_2|elx_7": {
+   "card": "knight",
+   "gain": 0.682,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_3|elx_7": {
+   "card": "tesla",
+   "gain": 1.623,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_4|elx_5": {
+   "card": "the_log",
+   "gain": 0.197,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_0|elx_4": {
+   "card": "tesla",
+   "gain": 2.532,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_1|worth_0|elx_7": {
+   "card": "tornado",
+   "gain": 1.343,
    "wins": "2/3"
   },
   "x1|king_asleep|deep_1|worth_1|elx_10": {
-   "card": "rocket",
-   "gain": 3.833,
-   "wins": "3/3"
+   "card": "ice_wizard",
+   "gain": 0.633,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_1|elx_6": {
+   "card": "knight",
+   "gain": 1.422,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_1|elx_8": {
+   "card": "tesla",
+   "gain": 2.34,
+   "wins": "2/3"
   },
   "x1|king_asleep|deep_1|worth_2|elx_10": {
+   "card": "tesla",
+   "gain": 3.615,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_2|elx_4": {
+   "card": "the_log",
+   "gain": 0.459,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_3|elx_1": {
+   "card": "the_log",
+   "gain": 1.75,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_1|worth_3|elx_8": {
    "card": "tornado",
-   "gain": 0.983,
+   "gain": 0.99,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_4|elx_7": {
+   "card": "tornado",
+   "gain": 0.693,
    "wins": "2/3"
   },
   "x1|king_asleep|deep_2|worth_1|elx_7": {
-   "card": "rocket",
-   "gain": 5.179,
+   "card": "tornado",
+   "gain": 0.795,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_2|worth_2|elx_1": {
+   "card": "tornado",
+   "gain": 1.176,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_2|worth_2|elx_3": {
+   "card": "tornado",
+   "gain": 3.033,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_2|worth_2|elx_7": {
+   "card": "knight",
+   "gain": 1.968,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_2|worth_4|elx_4": {
+   "card": "tesla",
+   "gain": 0.23,
    "wins": "2/3"
   },
   "x1|king_asleep|deep_3|worth_2|elx_10": {
-   "card": "the_log",
-   "gain": 0.667,
-   "wins": "2/3"
-  },
-  "x1|king_asleep|deep_3|worth_3|elx_10": {
-   "card": "the_log",
-   "gain": 1.333,
-   "wins": "3/3"
-  },
-  "x1|king_asleep|deep_3|worth_4|elx_10": {
    "card": "tornado",
-   "gain": 1.207,
+   "gain": 0.865,
    "wins": "2/3"
   },
-  "x1|king_awake|deep_0|worth_1|elx_10": {
+  "x1|king_asleep|deep_3|worth_2|elx_5": {
+   "card": "tesla",
+   "gain": 2.365,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_3|worth_2|elx_7": {
    "card": "rocket",
-   "gain": 1.1,
+   "gain": 2.113,
    "wins": "2/3"
   },
-  "x1|king_awake|deep_1|worth_1|elx_10": {
-   "card": "the_log",
-   "gain": 1.016,
+  "x1|king_asleep|deep_3|worth_3|elx_8": {
+   "card": "tornado",
+   "gain": 2.031,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_3|worth_3|elx_9": {
+   "card": "tesla",
+   "gain": 1.447,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_0|worth_0|elx_3": {
+   "card": "tesla",
+   "gain": 1.875,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_0|worth_0|elx_7": {
+   "card": "x_bow",
+   "gain": 1.995,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_0|worth_1|elx_9": {
+   "card": "tesla",
+   "gain": 0.854,
    "wins": "3/3"
   },
-  "x1|king_awake|deep_3|worth_1|elx_10": {
-   "card": "the_log",
-   "gain": 0.833,
+  "x1|king_awake|deep_0|worth_2|elx_3": {
+   "card": "tornado",
+   "gain": 2.014,
    "wins": "3/3"
+  },
+  "x1|king_awake|deep_0|worth_3|elx_7": {
+   "card": "the_log",
+   "gain": 1.222,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_0|worth_4|elx_5": {
+   "card": "rocket",
+   "gain": 1.448,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_1|worth_0|elx_10": {
+   "card": "tornado",
+   "gain": 2.904,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_1|worth_0|elx_3": {
+   "card": "ice_wizard",
+   "gain": 1.333,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_1|worth_0|elx_7": {
+   "card": "tesla",
+   "gain": 4.113,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_1|worth_1|elx_7": {
+   "card": "tesla",
+   "gain": 1.733,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_1|worth_2|elx_10": {
+   "card": "tesla",
+   "gain": 1.494,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_1|worth_3|elx_4": {
+   "card": "the_log",
+   "gain": 0.43,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_1|worth_3|elx_6": {
+   "card": "tesla",
+   "gain": 1.621,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_2|worth_1|elx_10": {
+   "card": "knight",
+   "gain": 0.443,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_2|worth_1|elx_4": {
+   "card": "tornado",
+   "gain": 0.907,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_2|worth_1|elx_7": {
+   "card": "tornado",
+   "gain": 0.694,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_2|worth_1|elx_9": {
+   "card": "rocket",
+   "gain": 2.121,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_2|worth_2|elx_9": {
+   "card": "tesla",
+   "gain": 3.299,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_2|worth_4|elx_7": {
+   "card": "tesla",
+   "gain": 1.211,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_3|worth_1|elx_8": {
+   "card": "tornado",
+   "gain": 1.072,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_3|worth_2|elx_8": {
+   "card": "tornado",
+   "gain": 1.805,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_3|worth_2|elx_9": {
+   "card": "knight",
+   "gain": 1.176,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_3|worth_3|elx_10": {
+   "card": "tornado",
+   "gain": 0.872,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_3|worth_4|elx_10": {
+   "card": "the_log",
+   "gain": 2.851,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_3|worth_4|elx_6": {
+   "card": "tornado",
+   "gain": 0.387,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_3|worth_4|elx_7": {
+   "card": "tesla",
+   "gain": 2.054,
+   "wins": "2/3"
   }
  }
 }

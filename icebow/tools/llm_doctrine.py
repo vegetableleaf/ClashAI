@@ -82,13 +82,34 @@ def propose(model, env, timeout=120):
     names = [env.deck_keys[i] for i in hand]
     if not names:
         return None
+    # EVERY card gets a line, and they are ROLES rather than "play this when". An earlier prompt
+    # described only X-Bow, Tornado, Log and Rocket -- and the model then picked from exactly
+    # those four: measured over 40 states, tornado 94% of the times it was offered, log 71%,
+    # rocket 67%, while skeletons, ice wizard and tesla were chosen ZERO times out of 40 offers
+    # between them. Those three are the deck's whole defensive core, so the table would have
+    # taught an all-spell playstyle that never defends. A model picks what it has been told
+    # exists, so an omission in this string is a hole in the doctrine it can propose.
     prompt = (
-        "You are an expert Clash Royale player on an ICEBOW deck (X-Bow control). Key doctrine: "
-        "the X-Bow is the win condition but a bow planted into an already-committed push just "
-        "dies; buildings pull and survive. Tornado pulls enemies together, can drag an attacker "
-        "into your own King Tower to wake it, and does NOT move heavy units like Giant or Golem. "
-        "The Log clears cheap ground swarms. Rocket is worth it on 4+ elixir support, on a fresh "
-        "Elixir Collector, or to chip the weaker enemy tower in overtime -- not on cheap bodies.\n\n"
+        "You are an expert Clash Royale player on an ICEBOW deck (X-Bow control). The eight cards "
+        "and what each is FOR:\n"
+        "- x_bow (6): the win condition. Lock it onto a tower from your side. A bow planted into "
+        "an already-committed push just dies.\n"
+        "- tesla (4): the main defensive building. It pulls attackers off your towers and "
+        "survives; centre placement covers both lanes.\n"
+        "- ice_wizard (3): cheap ranged support that SLOWS everything it hits; melts swarms and "
+        "buys your buildings time.\n"
+        "- knight (3): cheap mini-tank. Bodies-block a push, absorb hits, protect a bow or a "
+        "ranged support.\n"
+        "- skeletons (1): one elixir. Distract and reset a charging unit, kite a tank, or cycle "
+        "back to a key card.\n"
+        "- the_log (2): rolls through cheap GROUND swarms, resets charges, knocks back. Cannot "
+        "touch air.\n"
+        "- rocket (6): big damage. Worth it on 4+ elixir support, a fresh Elixir Collector, or "
+        "chipping the weaker enemy tower in overtime -- not on cheap bodies.\n"
+        "- tornado (3): pulls enemies together for splash, drags an attacker into your own King "
+        "Tower to wake it, pulls defenders off your bow. Barely moves Giant or Golem.\n\n"
+        "Defence usually wins this deck the game: answering a push with the right cheap card is "
+        "as good a play as any attack.\n\n"
         "SITUATION:\n%s\n\nYOUR HAND: %s\nYOUR ELIXIR: %d/10\n\n"
         "Pick the single best card to play now, or \"wait\" to hold elixir."
         % (describe(env), ", ".join(names), int(env.eng.elixir[0]))
