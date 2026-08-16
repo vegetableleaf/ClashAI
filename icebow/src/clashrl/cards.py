@@ -148,12 +148,36 @@ class CardDB:
             self.stats_meta = gen.get("meta", {})
             for k, v in (gen.get("cards") or {}).items():
                 merged[k] = dict(v)
+        # (it never publishes mass, sight range, collision radius or weapon load time), but still
+        # deliberate correction to it. Only the structural constants are imported -- see
+        # tools/import_mechanics.py for why hitpoints/damage are pointedly not.
+        mech_path = self.path.parent / "card_mechanics.json"
+        self.mechanics_meta: dict = {}
+        if mech_path.exists():
+            mech = json.loads(mech_path.read_text(encoding="utf-8"))
+            self.mechanics_meta = mech.get("meta", {})
+            for k, v in (mech.get("cards") or {}).items():
+                base = merged.setdefault(k, {})
+                for kk, vv in v.items():
+                    if vv is not None and kk != "character" and not kk.startswith("_"):
+                        base[kk] = vv
         for k, v in curated.items():
             base = merged.setdefault(k, {})
             for kk, vv in v.items():
                 if vv is not None:
                     base[kk] = vv
         self.cards: Dict[str, dict] = merged
+
+    def mass(self, name: str) -> Optional[float]:
+        """
+
+        treat a missing mass as weightless.
+        """
+        c = self.get(name) or {}
+        if c.get("mass") is not None:
+            return float(c["mass"])
+        b = self._base_card(name)                     # an Evolution shoves like its base card
+        return float(b["mass"]) if b.get("mass") is not None else None
 
     # -- lookups -------------------------------------------------------
     def get(self, name: Optional[str]) -> Optional[dict]:
