@@ -58,6 +58,31 @@ def _opp_cards(env) -> set:
     return set(getattr(env.opponent, "cards", []) or [])
 
 
+# Tornado offsets from OUR king, in TILES, that actually wake it -- (left lane, right lane).
+# MEASURED 2026-08-16 by sweeping a 9x7 half-tile grid per troop per lane against this engine
+# (tools note: scratchpad/king_offsets.py). Not copied from the placement guides, because the
+# engine and the guides disagree and only the engine is what the policy is graded against.
+#
+# FIDELITY GAP worth its own fix: real Clash Royale activates the king off a Miner, a Balloon,
+# a Battle Ram and (with a building pulling them centre first) the giants -- the guides call
+# Miner activation "easy". In this engine ONLY the two hog-type troops activate at all; every
+# other card tested came back zero across all 63 offsets. That is an engine limitation, not a
+# doctrine one, so no rule pretends otherwise.
+_KING_SPOTS = {
+    "hog_rider": ((-1.0, -4.5), (0.5, -4.5)),
+    "royal_hogs": ((-1.5, -4.0), (0.5, -4.0)),
+}
+
+
+def _king_spot(u):
+    """The measured activation offset for this attacker, or None if it cannot be activated."""
+    base = u.spec.base if hasattr(u.spec, "base") else None
+    pair = _KING_SPOTS.get(base)
+    if pair is None:
+        return None
+    return pair[0] if u.x < 0.5 else pair[1]
+
+
 def _pull_resistant(u) -> bool:
     """Units a Tornado barely moves, so no rule should aim a pull at one.
 
@@ -205,8 +230,22 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         bound = [u for u in enemies if (u.spec.building_only or u.y > 0.55) and u.hp > 0
                  and not _pull_resistant(u)]
         if king_asleep and any(u.y > 0.52 for u in bound):
-            kt = eng.towers[0][2]                             # pull TO the ENGINE king's doorstep
-            _add_spot(w, env, kt.x, kt.y - 1.5 / 32.0, 5.0, 1.0)
+            kt = eng.towers[0][2]
+            # PER-TROOP KING-ACTIVATION SPOTS, MEASURED against this engine rather than
+            # transcribed from a guide's tile pictures -- the engine is what the policy has to
+            # satisfy, and the two do not agree (see the fidelity note in _KING_SPOTS).
+            # The old single spot (king.x, king.y - 1.5 tiles) activates NOTHING: a hog on the
+            # left princess tower sits 6.5 tiles from the king, past the 5.5-tile pull radius,
+            # so a cast centred on the king never even catches it. The working offsets sit ~4.5
+            # tiles IN FRONT of the king and slightly toward the lane.
+            deep = max(bound, key=lambda u: u.y)
+            spot = _king_spot(deep)
+            if spot is not None:
+                dx, dy = spot
+                _add_spot(w, env, kt.x + dx / 18.0, kt.y + dy / 32.0, 5.0, 1.5)
+            else:
+                _add_spot(w, env, kt.x + (-1.0 if deep.x < kt.x else 0.5) / 18.0,
+                          kt.y - 4.25 / 32.0, 4.0, 1.5)
         clump = [u for u in enemies if u.y > 0.42 and not _pull_resistant(u)]
         if len(clump) >= 2:
             cx = sum(u.x for u in clump) / len(clump)
