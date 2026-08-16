@@ -85,8 +85,6 @@ class ContractTests(unittest.TestCase):
         self.assertFalse(bool(cfg.get("train", "llm_advisor", default=False)))
 
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 class WarmupTests(unittest.TestCase):
@@ -101,3 +99,7 @@ class WarmupTests(unittest.TestCase):
     def test_warmup_returns_none_when_unreachable(self):
         a = LLMAdvisor(model="qwen2.5:latest", timeout=0.3, port=1)
         self.assertIsNone(a.warmup(seconds=0.5))
+
+
+if __name__ == "__main__":
+    unittest.main()
