@@ -373,6 +373,12 @@ class CardSpec:
     multi_hits: int = 0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
+    # WEAPON LOAD TIME: the wind-up between acquiring a target and the FIRST hit landing
+    # (game-file `load_time`; Archer 0.4 s, Knight 0.7 s, Musketeer 1.0 s). Subsequent hits then
+    # come every hit_speed. Units used to hit the instant they entered reach, which quietly made
+    # every defensive placement land its damage up to a second early -- the exact margin a
+    # defence is judged on. 0 = fire immediately.
+    load_time: float = 0.0
     radius: float = 0.64      # collision radius, TILES (soft body-block)
     deploy_anywhere: bool = False   # KB flag: tunnels/drills to ANY tile (Miner, Goblin Drill) -- it does not
                                     # walk the lane, so it is placed straight onto the defender's tower
@@ -611,6 +617,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # either the curated flag OR the game files' ignore_pushback (imported as a plain field)
         knockback_immune=("knockback_immune" in flags) or bool(c.get("knockback_immune")),
         mass=db.mass(base),
+        load_time=float(c.get("load_time_s") or 0.0),
         roll_len=(float(c.get("roll_tiles") or _LOG_ROLL_LEN) if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
@@ -844,6 +851,9 @@ class Unit:
     reach_extra: float = 0.0     # siege sees far (big engage range) even if it hits from reach
     target: object = None        # locked target (Unit or Tower) -- commitment; re-acquired when it dies / leashes
     cooldown: float = 0.0        # time until this unit's next discrete hit
+    loaded: bool = False         # weapon is raised: the load_time wind-up has already been paid
+                                 # for the CURRENT engagement. Cleared on losing reach, so a unit
+                                 # that gets kited or knocked back has to wind up again.
     deploy_left: float = 0.0     # deploy delay remaining (can't act while > 0)
     slow_left: float = 0.0       # SLOW status timer (halved move + attack speed)
     stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
@@ -1111,6 +1121,17 @@ class SimEngine:
         # Tower Troops: per-troop HP + discrete-hit attack (CR wiki, L15). Your side plays my_tower_troop at
         # my_tower_level; the opponent rolls a troop (weighted) + a ladder level per match (see reset()).
         self.tower_ref_level = int(cfg.get("sim", "my_tower_level", default=15))
+        # WEAPON LOAD TIME -- implemented, data imported for 83 cards, DEFAULT OFF. It is a real
+        # mechanic (a Valkyrie's first swing lands 1.4 s after she engages, not instantly), and
+        # switching it on is a one-line config change. It is off because turning it on surfaced a
+        # PRE-EXISTING bug rather than a clean improvement: a unit sitting exactly at the edge of
+        # its reach flickers in and out of engagement, and while it was firing on the tick it
+        # arrived that flicker was invisible. Add a wind-up and the unit spends the gap unlocked,
+        # drifts forward, re-acquires, and repeats -- a Musketeer holding station against a Bomb
+        # Tower oscillated over ~0.5 tiles with no enemy touching her. The honest fix is reach
+        # hysteresis (engage at `reach`, disengage only past `reach + margin`), which is a real
+        # change to targeting and wants its own measured run rather than a late-night default.
+        self.load_time_on = bool(cfg.get("sim", "load_time", default=False))
         self.my_tower_troop = str(cfg.get("sim", "my_tower_troop", default="princess"))
         self.tower_first_hit = float(cfg.get("sim", "tower_first_hit", default=0.8))
         self.tower_troops = dict(cfg.get("sim", "tower_troops", default=None) or _DEFAULT_TOWER_TROOPS)
@@ -1984,7 +2005,13 @@ class SimEngine:
                 u.mid_drop_done = True
                 self._death_blast(u)
                 self._spawn_from(u, u.spec.spawner_death)
+            was_engaged = u.attacking
             u.attacking = False                             # default; set True only when engaged (target in reach)
+            if not was_engaged:
+                # Out of reach this tick -> the weapon is lowered again. This is what makes kiting
+                # and knockback cost the attacker real time: it has to pay the wind-up afresh when
+                # it re-engages, rather than resuming mid-swing.
+                u.loaded = False
             if u.curse_left > 0.0:
                 u.curse_left = max(0.0, u.curse_left - dt)
                 if u.curse_left <= 0.0:
@@ -2196,6 +2223,14 @@ class SimEngine:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
+                if self.load_time_on and not u.loaded and u.spec.load_time > 0.0:
+                    # WEAPON WIND-UP, paid once per engagement. A Musketeer that has just walked
+                    # into range does not fire on the same tick she arrives; she takes her
+                    # load_time first. Charged here rather than at deploy because it is the
+                    # TARGET that starts the clock -- a unit that walks the lane unopposed and
+                    # then meets a defender still pays it.
+                    u.loaded = True
+                    u.cooldown = max(u.cooldown, u.spec.load_time / spd)
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.charge_dist = 0.0                      # the charge is SPENT (and stopping cancels a run-up)

@@ -1107,6 +1107,12 @@ sim:
                                 # near BANK, not 0.5 (=16/32, the river's centre line)
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
+  # WEAPON WIND-UP before a unit's FIRST hit on a new target (game-file load_time; Archer 0.4 s,
+  # Knight 0.7 s, Valkyrie 1.4 s). Real, and imported for 83 cards -- but OFF because enabling it
+  # exposes a pre-existing engagement flicker at the edge of a unit's reach: with no wind-up the
+  # unit fired on the tick it arrived and the flicker never showed, and with one it drifts,
+  # re-acquires, and repeats. Turn on together with reach hysteresis, and measure. See engine.py.
+  load_time: false
   # CROWN TOWER REACH, in tiles, measured from the tower's CENTRE to the target's body EDGE
   # (engine._gap). DERIVED FROM THE BOARD, not a nominal figure: the defender's end of the bridge
   # sits 8.50 tiles from a princess tower's centre (tower 6.5 tiles off the back wall, the river's

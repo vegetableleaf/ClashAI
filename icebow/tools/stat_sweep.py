@@ -71,6 +71,17 @@ EXPECTED = {
 }
 
 
+# EVOLUTIONS repeat the shape problem on their own pages: the headline hp_11/dmg_11 belong to
+# whatever the card SPAWNS, and the evolved body hides behind a prefix. Verified 2026-08-16 by
+# reading each page's own table headers rather than assuming the base card's layout carries over.
+EVO_FIELDS = {
+    "battle_ram_evo": ("ram_hp_11", "ram_dmg_11"),      # hp_11 737 is the Barbarians
+    "goblin_drill_evo": ("drill_hp_11", None),          # hp_11 202 is the Goblin it spawns
+    "skeleton_barrel_evo": ("hp_11", None),             # the barrel does not attack; dmg is the skeletons'
+    "witch_evo": ("hp_11", "dmg_11"),                   # maks_hp_11 1039 is the OVERHEAL CAP, not hp
+}
+
+
 def page_for(key: str) -> str:
     if key in PREFIXED:
         return PREFIXED[key][0]
@@ -92,7 +103,9 @@ def main(argv) -> int:
     cards = set(env.deck_keys)
     for d in env.meta_pool:
         cards.update(d if isinstance(d, (list, tuple)) else d.get("cards", []))
-    cards = sorted(c for c in cards if not c.endswith("_evo"))
+    base_cards = sorted(c for c in cards if not c.endswith("_evo"))
+    evos = sorted(k for k in env.db.cards if k.endswith("_evo")) if "--evo" in argv else []
+    cards = base_cards + evos
 
     bad, unmapped, checked = [], [], 0
     for key in cards:
@@ -100,7 +113,13 @@ def main(argv) -> int:
             spec = E.build_spec(env.db, key, 11)
         except Exception:  # noqa: BLE001
             continue
-        page, hf, df = PREFIXED.get(key, (page_for(key), "hp_11", "dmg_11"))
+        if key.endswith("_evo"):
+            base = key[:-4]
+            disp = (env.db.get(base) or {}).get("display") or page_for(base)
+            page = "%s/Evolution" % disp
+            hf, df = EVO_FIELDS.get(key, ("hp_11", "dmg_11"))
+        else:
+            page, hf, df = PREFIXED.get(key, (page_for(key), "hp_11", "dmg_11"))
         st = cr_web.card_stats(page)
         if not st:
             unmapped.append("%s (no vardefines on %r)" % (key, page))

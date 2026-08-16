@@ -86,8 +86,12 @@ class EvoWave3Tests(unittest.TestCase):
         for sk in skels:
             sk.hp = 0.0
         eng.advance(0.1)
-        self.assertGreaterEqual(witch.hp, min(witch.spec.hp * 1.3, hp0 + 3 * 109) - 1,
-                                "109 per friendly skeleton death, overheal to +30%")
+        # Re-sourced 2026-08-16 from the Evolution page's own vardefines, whose table headers name
+        # them: heal_11 76 is "Skeleton Death Heal" (we carried 109) and maks_hp_11 1039 is "Max
+        # Hitpoints", i.e. 1039/839 = +23.8% overheal, not the +30% that had been read off a stale
+        # RoyaleAPI blurb. The old base of 796 was itself back-derived from that stale 30%.
+        self.assertGreaterEqual(witch.hp, min(witch.spec.hp * 1.238, hp0 + 3 * 76) - 1,
+                                "76 per friendly skeleton death, overheal to +23.8%")
 
     def test_minion_horde_iframes(self):
         eng = _make_engine()
