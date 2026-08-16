@@ -491,7 +491,11 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     reach = float(db.attack_range_tiles(base))                 # TILES, attacker centre -> target EDGE
     # Move speed: the wiki publishes an exact rating per card ("Very Fast (120)", 60 units = 1 tile/s),
     # imported as `speed_tiles`. The categorical bucket is only a fallback for cards that parse missed.
-    speed = db.speed_tiles(base) or _SPEED.get(c.get("speed"), _SPEED["medium"])   # TILES/s
+    # `or` would have been wrong here: a speed of 0.0 is falsy, so a card declared STATIONARY fell
+    # straight through to the "medium" default and walked. That is not a hypothetical -- the Phoenix
+    # Egg's own KB comment said "stationary and harmless" while it strolled 2.9 tiles across the lane.
+    _sp = db.speed_tiles(base)
+    speed = _sp if _sp is not None else _SPEED.get(c.get("speed"), _SPEED["medium"])   # TILES/s
     count = int(c.get("count") or 1)
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     siege = "siege" in flags
