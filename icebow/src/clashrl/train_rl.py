@@ -143,8 +143,14 @@ def train_rl(cfg, init: str | None = None) -> None:
     _acts = ActionSpace(cfg)
     anywhere_ids = {i for i, k in enumerate(deck) if _base_key(k) in ("rocket", "miner")} if deck else set()
     yourhalf_mask = torch.tensor(_acts.deployable_mask(False), dtype=torch.bool, device=device)  # [n_cells]
-    allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
+    # "Anywhere" is NOT every cell: it excludes the enemy king keep-out. Rocketing their king is a
+    # self-inflicted penalty -- six elixir to hand them a third defensive tower -- so it is masked
+    # out of SELECTION rather than merely priced badly, for the greedy action and for exploration
+    # alike. This used to be torch.ones(), which is how a raised epsilon put a rocket on the king
+    # within minutes (user, 2026-08-16).
+    allcells_mask = torch.tensor(_acts.deployable_mask(True), dtype=torch.bool, device=device)
     yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
+    anywhere_cells = [c for c in range(n_cells) if bool(allcells_mask[c])]
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
 
     net = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
@@ -349,7 +355,7 @@ def train_rl(cfg, init: str | None = None) -> None:
                         c = idx
             if c is None:
                 c = random.choice(playable)
-            cells = list(range(n_cells)) if c in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
+            cells = anywhere_cells if c in anywhere_ids else (yourhalf_cells or anywhere_cells)
             return (1, c, random.choice(cells))
         net.eval()
         hv = hand_to_tensor(hand_vec)

@@ -173,8 +173,13 @@ def play(cfg) -> None:
     # YOUR half. Applied before the cell argmax so play never taps an enemy-half cell that can't
     # deploy (the 'impossible coordinate' that made the bot look inactive).
     yourhalf_mask = torch.tensor(actions.deployable_mask(False), dtype=torch.bool, device=device)
-    allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
+    # ...except the enemy KING keep-out: a spell that reaches their king wakes it, which buys
+    # them a third defensive tower for the rest of the match and is worth far more to them than
+    # the chip is to us. Masked out of selection so it cannot be chosen at all, greedily or
+    # while exploring (user, 2026-08-16).
+    allcells_mask = torch.tensor(actions.deployable_mask(True), dtype=torch.bool, device=device)
     yourhalf_cells = [c for c in range(n_cells) if bool(yourhalf_mask[c])]
+    anywhere_cells = [c for c in range(n_cells) if bool(allcells_mask[c])]
     # Connect each hand-card identity to its ELIXIR COST from the card DB, so play never taps a card
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
@@ -463,7 +468,7 @@ def play(cfg) -> None:
         if random.random() < eps:
             choices = [i for i in range(n_cards) if not bool(torch.isinf(card_logits[0, i]))]
             card_id = random.choice(choices)
-            cells = list(range(n_cells)) if card_id in anywhere_ids else (yourhalf_cells or list(range(n_cells)))
+            cells = anywhere_cells if card_id in anywhere_ids else (yourhalf_cells or anywhere_cells)
             cell = random.choice(cells)
         else:
             card_id = int(card_logits.argmax(1).item())

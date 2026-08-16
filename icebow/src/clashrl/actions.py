@@ -185,6 +185,13 @@ class ActionSpace:
         self.king_half = cfg.get("action", "king_avoid_half", default=[0.09, 0.06])
         self.princess_xy = [list(t) for t in _my_towers[:2]] if len(_my_towers) >= 2 else [[0.245, 0.615], [0.745, 0.615]]
         self.princess_half = cfg.get("action", "princess_avoid_half", default=[0.06, 0.05])
+        # ENEMY KING keep-out for spells that may target anywhere (see no_king_mask).
+        _b = dict(cfg.get("sim", "board", default=None) or {})
+        _tx, _ty = float(_b.get("tiles_x", 18.0)), float(_b.get("tiles_y", 32.0))
+        _kt = list(_b.get("king_tile", [9.0, 3.0]))
+        self.king_tiles = (_tx, _ty)
+        self.king_xy = (_kt[0] / _tx, _kt[1] / _ty)      # THEIR king: their side is board y ~0
+        self.king_clear = float(cfg.get("action", "king_clear_tiles", default=2.6))
         self.n_slots = len(self.slots)
         self.n_cells = int(self.gw) * int(self.gh)
         # Tower-anchored perspective warp (see BoardWarp). In the SIM the tower overrides are
@@ -263,6 +270,25 @@ class ActionSpace:
                 break
         return gy * gw + gx
 
+    def no_king_mask(self) -> "list[bool]":
+        """Every cell EXCEPT those whose spell blast would clip the enemy king tower.
+
+        The clearance is the rocket's blast radius plus a margin, matching the sim's own king-clip
+        test in _pump_rocket (`<= _ROCKET_RADIUS + 0.6`). It costs 12 of 432 cells -- 2.8% of the
+        board -- and none of them is a placement anyone wants: a spell that reaches the king wakes
+        it, which is worth more to the opponent than the chip is worth to us.
+        """
+        gw, gh = int(self.gw), int(self.gh)
+        tx, ty = self.king_tiles
+        kx, ky = self.king_xy
+        clear = self.king_clear
+        out = []
+        for c in range(gw * gh):
+            cx, cy = self.cell_center(c % gw, c // gw)
+            d = ((cx - kx) * tx) ** 2 + ((cy - ky) * ty) ** 2
+            out.append(d > clear * clear)
+        return out
+
     def deployable_mask(self, anywhere: bool) -> "list[bool]":
         """Per-cell deployability over the placement grid: True where a card of this kind can actually
         be placed. ``anywhere`` (rocket / miner) -> every cell; otherwise only YOUR half (rows at/below
@@ -272,7 +298,14 @@ class ActionSpace:
         would just clamp/no-op -- the 'impossible coordinate' the model otherwise keeps trying."""
         gw, gh = int(self.gw), int(self.gh)
         if anywhere:
-            return [True] * (gw * gh)
+            # ANYWHERE still excludes the enemy KING. Waking it early is not a bad play the policy
+            # should be allowed to weigh -- it is a self-inflicted penalty: six elixir spent to
+            # hand the opponent a third defensive tower for the rest of the match. The sim already
+            # prices it as a misplace (_pump_rocket returns w_wincon_mis on a king clip), but live
+            # exploration picks uniformly over every cell, so a rocket landed on the king within
+            # minutes of raising epsilon (user, 2026-08-16). A reward cannot stop a random choice;
+            # only a mask can.
+            return self.no_king_mask()
         min_gy = self.min_own_gy                    # board-space river rule (see __init__)
         phx, phy = self.princess_half
 

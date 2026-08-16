@@ -121,3 +121,46 @@ class RiverLedgeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)
+
+
+class KingKeepOutTests(unittest.TestCase):
+    """A spell must not be able to select the enemy KING tower.
+
+    Waking their king early is not a bad play to be priced -- it is a self-inflicted penalty that
+    hands the opponent a third defensive tower for the rest of the match. The sim already charged
+    it as a misplace, but live exploration picked uniformly over every cell, so raising epsilon
+    put a rocket on the king within minutes (user, 2026-08-16). A reward cannot restrain a random
+    choice; only a mask can.
+    """
+
+    def setUp(self):
+        from clashrl.config import Config
+        from clashrl.actions import ActionSpace
+        self.acts = ActionSpace(Config.load())
+
+    def test_king_cell_is_not_selectable_by_anywhere_cards(self):
+        m = self.acts.deployable_mask(True)
+        gx, gy = self.acts.coords_to_grid(*self.acts.king_xy)
+        self.assertFalse(m[gy * self.acts.gw + gx], "their king's own cell must be masked out")
+
+    def test_keep_out_has_real_clearance(self):
+        import math
+        m = self.acts.deployable_mask(True)
+        tx, ty = self.acts.king_tiles
+        kx, ky = self.acts.king_xy
+        closest = min(math.hypot((self.acts.cell_center(c % self.acts.gw, c // self.acts.gw)[0] - kx) * tx,
+                                 (self.acts.cell_center(c % self.acts.gw, c // self.acts.gw)[1] - ky) * ty)
+                      for c in range(self.acts.gw * self.acts.gh) if m[c])
+        self.assertGreaterEqual(closest, self.acts.king_clear,
+                                "every legal cell must clear the king by the configured margin")
+
+    def test_the_keep_out_is_small(self):
+        """It must cost a handful of cells, not a region -- the enemy half is still rocket country."""
+        m = self.acts.deployable_mask(True)
+        blocked = len(m) - sum(m)
+        self.assertGreater(blocked, 0)
+        self.assertLess(blocked, 0.10 * len(m), "keep-out should be a few percent of the board")
+
+    def test_your_half_mask_is_unaffected(self):
+        own = self.acts.deployable_mask(False)
+        self.assertGreater(sum(own), 0, "troop placement must be untouched by the king keep-out")

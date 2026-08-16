@@ -72,10 +72,17 @@ class ContractTests(unittest.TestCase):
         got = a.suggest(SIT, HAND, 7)
         self.assertTrue(got is None or got in HAND)
 
-    def test_off_by_default_in_config(self):
+    def test_absent_setting_means_off(self):
+        """Opt-IN, so a config that never mentions the advisor must not get one.
+
+        This deliberately tests the CODE's default rather than the value in config.yaml -- that
+        file is the user's live setting and they may turn the advisor on whenever they like;
+        asserting on it would make a test fail for the user's preference rather than for a bug.
+        """
         from clashrl.config import Config
-        self.assertFalse(bool(Config.load().get("train", "llm_advisor", default=False)),
-                         "the live advisor must be opt-in")
+        cfg = Config.load()
+        cfg.data.get("train", {}).pop("llm_advisor", None)
+        self.assertFalse(bool(cfg.get("train", "llm_advisor", default=False)))
 
 
 if __name__ == "__main__":
