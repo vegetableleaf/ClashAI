@@ -136,8 +136,16 @@ class LLMAdvisor:
             "- tornado: bunch enemies for splash, drag an attacker into your own King Tower to wake "
             "it, or pull defenders off your bow. It barely moves a Giant or Golem -- if a TANK is "
             "in front of a Hog, use ROCKET, not tornado.\n\n"
-            "%s\nHAND: %s\nELIXIR: %.0f/10\n\nPick the single best card to play now."
-            % (situation, ", ".join(hand), elixir)
+            "Counters are rarely one card for one card: a tank with support behind it wants a "
+            "building for the tank AND something for the support. Read the enemy push as a whole.\n"
+            "BUT WHEN THERE IS NOTHING TO COUNTER, DO NOT COUNTER. On an empty board a spell hits "
+            "nothing and a defensive building is wasted. Tornado, The Log, Rocket and Ice Wizard "
+            "are ANSWERS -- they need something on the board to answer. With an empty enemy board "
+            "and 6+ elixir the play is the X-Bow; otherwise cycle the cheapest card or hold.\n\n"
+            "%s\nHAND: %s\nELIXIR: %.0f/10\n\n%s"
+            % (situation, ", ".join(hand), elixir,
+               "List the cards to play IN ORDER, one if one is enough." if plan
+               else "Pick the single best card to play now.")
         )
         schema = ({"type": "object",
                    "properties": {"cards": {"type": "array", "minItems": 1, "maxItems": 3,

@@ -308,6 +308,7 @@ def train_rl(cfg, init: str | None = None) -> None:
     advisor = None
     advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
     plan: list = []          # the advisor's remaining ordered cards for this board
+    advisor_plan = bool(cfg.get("train", "llm_advisor_plan", default=False))
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor
         advisor = LLMAdvisor(cfg)
@@ -423,15 +424,27 @@ def train_rl(cfg, init: str | None = None) -> None:
                 # that must land FIRST rather than the one that scores best alone (a Knight in
                 # front only makes sense if the Log is coming behind it), which a per-decision
                 # single-card question can never express.
-                while plan and (card_names.index(plan[0]) not in playable):
-                    plan.pop(0)              # cycled away or unaffordable -> that step is spent
-                if not plan:
-                    plan[:] = advisor.suggest_plan(
-                        situation, [card_names[i] for i in playable], elixir) or []
-                    if plan and advisor_log:
-                        print("[train-rl]   plan: %s" % " -> ".join(plan))
-                if plan:
-                    idx = card_names.index(plan.pop(0))
+                if advisor_plan:
+                    # MULTI-CARD MODE, off by default. The longer answer costs ~150 ms more
+                    # (582 -> 735 ms mean) against a 900 ms budget, which pushed the TAIL past the
+                    # timeout and made nearly every call fall back to random -- the advisor looked
+                    # dead and play went back to noise. And it bought nothing: qwen2.5 7B returns a
+                    # single card even when asked for a sequence. Paying latency for a capability
+                    # the model does not use is the worst of both, so the fast single-card path is
+                    # the default until a model actually produces sequences.
+                    while plan and (card_names.index(plan[0]) not in playable):
+                        plan.pop(0)          # cycled away or unaffordable -> that step is spent
+                    if not plan:
+                        plan[:] = advisor.suggest_plan(
+                            situation, [card_names[i] for i in playable], elixir) or []
+                        if plan and advisor_log:
+                            print("[train-rl]   plan: %s" % " -> ".join(plan))
+                    pick = plan.pop(0) if plan else None
+                else:
+                    pick = advisor.suggest(situation,
+                                           [card_names[i] for i in playable], elixir)
+                if pick is not None and pick in card_names:
+                    idx = card_names.index(pick)
                     if idx in playable:
                         c = idx
             if c is None and advisor is not None and advisor_log:
