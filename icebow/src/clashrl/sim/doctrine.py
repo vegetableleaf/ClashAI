@@ -121,7 +121,12 @@ def llm_state_key(env) -> str:
     eng = env.eng
     foes = [u for u in eng.units if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
     deep = sum(1 for u in foes if u.y > 0.52)
-    worth = sum(u.spec.elixir for u in foes)
+    # PER-BODY SHARE, not the card price per body. Summing the full cost for every unit made a
+    # Goblin Gang read as 15 elixir and a Skeleton Army as 45, and since the bucket saturates at
+    # worth_4 every swarm board looked identical to a genuine heavy push -- so a rule learned
+    # against three Skeletons would be served up against a Golem. Same accounting the trade
+    # ledger uses.
+    worth = sum(float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count) for u in foes)
     return "|".join([
         "ot" if eng.t >= env._double_time else ("x2" if eng.t >= 120 else "x1"),
         "king_%s" % ("asleep" if not eng.towers[0][2].active else "awake"),

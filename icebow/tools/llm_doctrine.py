@@ -55,25 +55,54 @@ def describe(env) -> str:
     bits = []
     foes = [u for u in eng.units if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
     if not foes:
-        bits.append("The enemy has nothing on the board.")
+        bits.append("nothing")
     else:
-        for u in sorted(foes, key=lambda u: -u.y)[:5]:
+        # GROUPED BY CARD. Listing bodies made a Goblin Gang appear as five separate 3-elixir
+        # cards, which reads as a 15-elixir push; the model was being told a swarm was a monster.
+        groups = {}
+        for u in sorted(foes, key=lambda u: -u.y):
             where = ("deep in your half" if u.y > 0.66 else
                      "in your half" if u.y > 0.52 else
                      "at the bridge" if u.y > 0.44 else "on their side")
             lane = "left" if u.x < 0.42 else "right" if u.x > 0.58 else "centre"
-            name = str(u.spec.base).replace("_", " ")
-            bits.append("%s %s (%s lane, %d elixir)" % (name, where, lane, u.spec.elixir))
+            k = (str(u.spec.base).replace("_", " "), where, lane, int(u.spec.elixir))
+            groups[k] = groups.get(k, 0) + 1
+        for (name, where, lane, cost), n in list(groups.items())[:5]:
+            bits.append("%s%s %s (%s lane, %d elixir card)"
+                        % (name, " x%d" % n if n > 1 else "", where, lane, cost))
+    # YOUR OWN UNITS. Omitting these made every synergy unreachable: a model that cannot see its
+    # own Tesla holding a push cannot reason that Skeletons would buy that Tesla another second,
+    # and a model that cannot see its own bow cannot know it needs protecting. The first version
+    # described only the enemy, which is why the proposals read as isolated card picks.
+    allies = [u for u in eng.units if u.team == 0 and u.hp > 0]
+    by = {}
+    for u in allies:
+        nm = str(u.spec.base).replace("_", " ")
+        by[nm] = by.get(nm, 0) + 1
+    mine_txt = (", ".join("%s%s" % (k, " x%d" % v if v > 1 else "") for k, v in by.items())
+                if by else "nothing")
     king = "ASLEEP" if not eng.towers[0][2].active else "awake"
     mine = [t.hp / max(1.0, t.max_hp) for t in eng.towers[0][:2] if t.alive]
     theirs = [t.hp / max(1.0, t.max_hp) for t in eng.towers[1][:2] if t.alive]
     phase = "overtime" if eng.t >= env._double_time else (
         "double elixir" if eng.t >= 120 else "single elixir")
-    return ("Enemy board: %s\nYour king tower is %s. Phase: %s.\n"
+    return ("ENEMY on the board: %s\n"
+            "YOUR units already out: %s\n"
+            "Your king tower is %s. Phase: %s.\n"
             "Your towers at %s of full; theirs at %s."
-            % ("; ".join(bits), king, phase,
+            % ("; ".join(bits), mine_txt, king, phase,
                "/".join("%d%%" % (100 * h) for h in mine) or "-",
                "/".join("%d%%" % (100 * h) for h in theirs) or "-"))
+
+
+def _next_card(env) -> str:
+    """The card cycling in after the current hand. Combos are two cards, so whether the second
+    half is about to arrive is part of choosing the first -- holding Tornado for a Rocket that is
+    four cards away is a different decision from holding it for one that is next."""
+    try:
+        return env.deck_keys[env._slot_card_id(env.cycle[4])]
+    except Exception:  # noqa: BLE001
+        return "unknown"
 
 
 # ---------------------------------------------------------------- the model
@@ -92,8 +121,10 @@ def propose(model, env, timeout=120):
     prompt = (
         "You are an expert Clash Royale player on an ICEBOW deck (X-Bow control). The eight cards "
         "and what each is FOR:\n"
-        "- x_bow (6): the win condition. Lock it onto a tower from your side. A bow planted into "
-        "an already-committed push just dies.\n"
+        "- x_bow (6): THE WIN CONDITION and your main source of tower damage -- when you can "
+        "afford it and the lane is not already full of enemies, putting the bow down is usually "
+        "the strongest play in the deck. The one caveat: do not plant it INTO a push that is "
+        "already committed, because it dies before it fires.\n"
         "- tesla (4): the main defensive building. It pulls attackers off your towers and "
         "survives; centre placement covers both lanes.\n"
         "- ice_wizard (3): cheap ranged support that SLOWS everything it hits; melts swarms and "
@@ -108,25 +139,57 @@ def propose(model, env, timeout=120):
         "chipping the weaker enemy tower in overtime -- not on cheap bodies.\n"
         "- tornado (3): pulls enemies together for splash, drags an attacker into your own King "
         "Tower to wake it, pulls defenders off your bow. Barely moves Giant or Golem.\n\n"
-        "Defence usually wins this deck the game: answering a push with the right cheap card is "
-        "as good a play as any attack.\n\n"
-        "SITUATION:\n%s\n\nYOUR HAND: %s\nYOUR ELIXIR: %d/10\n\n"
-        "Pick the single best card to play now, or \"wait\" to hold elixir."
-        % (describe(env), ", ".join(names), int(env.eng.elixir[0]))
+        "\nThis deck wins on COMBINATIONS, not on single cards. A card is often the right play "
+        "BECAUSE of what is already on the board:\n"
+        "- Skeletons are rarely the whole answer, but they distract a tank so your Tesla or Ice "
+        "Wizard gets extra free seconds on it, they add the last damage onto something your "
+        "defence is already chewing through, they reset a charge, and they cycle you back to a "
+        "key card for 1 elixir.\n"
+        "- Tornado + Rocket: the pull bunches a push so one Rocket hits all of it.\n"
+        "- Tornado + Ice Wizard: bunch them, then the slow lands on the whole group at once.\n"
+        "- Tornado + Tesla: drag a building-targeting attacker into your Tesla's range.\n"
+        "- Tornado + X-Bow: pull enemy defenders OFF your bow so it locks onto the tower.\n"
+        "- Knight + The Log: the Knight bodies the front of a push, the Log clears the swarm "
+        "behind it.\n"
+        "- Knight or Skeletons in front of Ice Wizard / Tesla: cheap bodies keep the ranged "
+        "damage alive.\n"
+        "- Tesla or Knight next to an offensive X-Bow: the bow does nothing if it dies first.\n"
+        "- Rocket + The Log: finishing chip on a tower that is nearly down.\n\n"
+        "Defence usually wins this deck the game, and defence is usually TWO cards, not one. "
+        "Prefer the card that combines with what you already have out.\n\n"
+        "SITUATION:\n%s\n\nYOUR HAND: %s\nNEXT CARD AFTER THIS: %s\nYOUR ELIXIR: %d/10\n\n"
+        "List up to THREE cards worth playing right now, BEST FIRST. Include a card if it is a "
+        "reasonable play, even if you are unsure -- another system tests each one and keeps only "
+        "what actually works, so a wrong candidate costs nothing and a missing one costs a rule. "
+        "Use \"wait\" only if holding elixir genuinely beats every card in hand."
+        % (describe(env), ", ".join(names), _next_card(env), int(env.eng.elixir[0]))
     )
+    # A RANKED SHORTLIST, not one pick. Tuning the prompt toward any single card just moved the
+    # probability mass around -- pushing X-Bow from 6% to 18% pulled Ice Wizard from 31% to 8% and
+    # the Log to zero -- because "name the one best card" forces the model to spend all its
+    # confidence in one place. Asking for three candidates converts a CALIBRATION problem the
+    # model is bad at into a COVERAGE problem it is good at: it only has to include the right card
+    # somewhere in three, and the engine decides which of them actually wins. Measured against the
+    # gate, the model's single pick disagreed badly with the engine (it proposed the bow 6% of the
+    # time in states where a bow cleared the gate 88% of the time).
     schema = {"type": "object",
-              "properties": {"card": {"type": "string", "enum": names + ["wait"]}},
-              "required": ["card"]}
+              "properties": {"cards": {"type": "array", "minItems": 1, "maxItems": 3,
+                                       "items": {"type": "string", "enum": names + ["wait"]}}},
+              "required": ["cards"]}
     body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
                        "format": schema, "stream": False,
                        "options": {"temperature": 0.0, "num_predict": 32}}).encode()
     req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
-            got = json.loads(json.loads(r.read())["message"]["content"]).get("card")
+            got = json.loads(json.loads(r.read())["message"]["content"]).get("cards") or []
     except Exception:  # noqa: BLE001
-        return None
-    return None if got in (None, "wait") else got
+        return []
+    out = []
+    for c in got:                       # keep order, drop "wait" and duplicates
+        if c != "wait" and c in names and c not in out:
+            out.append(c)
+    return out
 
 
 def _walk(cfg, seed, steps, play_rate):
@@ -227,20 +290,32 @@ def main(argv) -> int:
         if key in kept or key in seen_keys:
             continue
         seen_keys.add(key)
-        name = propose(a.model, env)
-        if name is None:
-            continue
-        try:
-            cid = env.deck_keys.index(name)
-        except ValueError:
+        shortlist = propose(a.model, env)
+        if not shortlist:
             continue
         tested += 1
-        gain, wins, n = verify(cfg, seed, steps, cid, a.play_rate, a.trials, a.margin)
-        ok = gain > a.margin and wins >= max(2, n - 1)
-        print("  %-42s -> %-12s gain %+6.2f (%d/%d)  %s"
-              % (key, name, gain, wins, n, "KEEP" if ok else "reject"))
-        if ok:
-            kept[key] = {"card": name, "gain": round(gain, 3), "wins": "%d/%d" % (wins, n)}
+        # Test every candidate and keep the BEST that clears the bar -- the model supplies breadth,
+        # the engine supplies the ranking. This is the point of asking for a shortlist: the model's
+        # own ordering was measurably poor (it named the bow 6% of the time in states where a bow
+        # cleared the gate 88% of the time), but its top three usually CONTAIN the right card.
+        best = None
+        for name in shortlist:
+            try:
+                cid = env.deck_keys.index(name)
+            except ValueError:
+                continue
+            gain, wins, n = verify(cfg, seed, steps, cid, a.play_rate, a.trials, a.margin)
+            if gain > a.margin and wins >= max(2, n - 1) and (best is None or gain > best[1]):
+                best = (name, gain, wins, n)
+        if best is None:
+            print("  %-42s -> %-28s all rejected" % (key, "/".join(shortlist)))
+        else:
+            name, gain, wins, n = best
+            rank = shortlist.index(name) + 1
+            print("  %-42s -> %-12s gain %+6.2f (%d/%d)  KEEP (their #%d of %d)"
+                  % (key, name, gain, wins, n, rank, len(shortlist)))
+            kept[key] = {"card": name, "gain": round(gain, 3), "wins": "%d/%d" % (wins, n),
+                         "rank": rank}
 
     print("\ntested %d proposals in %.0fs, kept %d" % (tested, time.time() - t0, len(kept)))
     payload = {"meta": {"model": a.model, "margin": a.margin, "trials": a.trials,
