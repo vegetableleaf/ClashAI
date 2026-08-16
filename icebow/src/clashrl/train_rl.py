@@ -303,6 +303,7 @@ def train_rl(cfg, init: str | None = None) -> None:
     # ---- LLM exploration advisor (train.llm_advisor; OFF unless switched on) ----------------
     card_names = list(deck) if deck and len(deck) == n_cards else ["card%d" % i for i in range(n_cards)]
     advisor = None
+    advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor
         advisor = LLMAdvisor(cfg)
@@ -405,6 +406,11 @@ def train_rl(cfg, init: str | None = None) -> None:
                     idx = card_names.index(pick)
                     if idx in playable:
                         c = idx
+            if c is None and advisor is not None and advisor_log:
+                # The fallback is invisible otherwise, and "the plays look random" is exactly what
+                # a silent fallback produces. Say which it was.
+                print("[train-rl]   explore: advisor gave nothing (%s) -> RANDOM card"
+                      % (advisor.last_error or "no suggestion"))
             if c is not None:
                 # EXPLORE THE CARD, EXPLOIT THE PLACEMENT. Once the advisor has chosen WHAT to
                 # play, a uniform-random tile throws the suggestion away -- at epsilon 0.4 that
@@ -418,7 +424,16 @@ def train_rl(cfg, init: str | None = None) -> None:
                                       hand_to_tensor(next_vec), hand_to_tensor(elixir_vec),
                                       hand_to_tensor(threat_vec))
                 emask = allcells_mask if c in anywhere_ids else yourhalf_mask
-                return (1, c, int(ceq_e.masked_fill(~emask.unsqueeze(0), float("-inf")).argmax()))
+                cell = int(ceq_e.masked_fill(~emask.unsqueeze(0), float("-inf")).argmax())
+                if advisor_log:
+                    # WHAT it chose and WHERE it went, so "the plays look random" becomes a thing
+                    # that can be read rather than guessed at. The card comes from the advisor; the
+                    # cell from the trained head -- if the cards read sensibly and the cells do not,
+                    # the placement head is the problem, and vice versa.
+                    print("[train-rl]   explore: %-11s -> cell %3d (col %2d,row %2d) | %s"
+                          % (card_names[c], cell, cell % gw, cell // gw,
+                             situation.replace("\n", " | ")[:90]))
+                return (1, c, cell)
             c = random.choice(playable)
             cells = anywhere_cells if c in anywhere_ids else (yourhalf_cells or anywhere_cells)
             return (1, c, random.choice(cells))
