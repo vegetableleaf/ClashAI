@@ -373,6 +373,33 @@ class Batch2Tests(unittest.TestCase):
                         "%d bats took %.2fs; a per-kill wind-up would cost ~%.2fs more"
                         % (n0, clear, (n0 - 1) * tw.first_hit))
 
+    def test_bomb_tower_shots_do_not_shove_only_its_death_bomb(self):
+        """Its shells land for area damage; the shove belongs to the bomb it drops on death.
+
+        One knockback_tiles field drove both, so every lobbed shell pushed the push back and the
+        tower defended far better than the real one (user, 2026-08-16).
+        """
+        env = _quiet(seed=5)
+        spec = build_spec(env.eng.db, "bomb_tower", 11)
+        self.assertEqual(spec.knockback, 0.0, "shots must not carry knockback")
+        self.assertGreater(spec.death_knockback, 0.0, "the death bomb must still shove")
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bomb_tower", 11), 0.50, 0.42)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, build_spec(env.eng.db, "knight", 11), 0.50, 0.50)
+        kn = [u for u in env.eng.units if u.team == 0][-1]
+        for _ in range(20):
+            env.eng.advance(0.1)
+        shoves, prev = 0, kn.y
+        for _ in range(80):
+            env.eng.advance(0.1)
+            if kn.hp <= 0:
+                break
+            if kn.y - prev > 0.004:          # pushed AWAY from the tower
+                shoves += 1
+            prev = kn.y
+        self.assertEqual(shoves, 0, "bomb-tower shells must not push the knight back")
+
     def test_hog_pushes_ice_golem_but_bandit_cannot_push_golem(self):
         env = _quiet(seed=68)
         env.eng.elixir[0] = 10.0

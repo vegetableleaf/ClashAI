@@ -212,6 +212,11 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
+    # Knockback carried by the DEATH blast alone, when it differs from the card's ordinary one.
+    # The Bomb Tower is the case: its shots do not shove, only the bomb it drops when it dies
+    # does. 0 = no separate value, so the death blast reuses `knockback` (Golem, Giant Skeleton
+    # and the rest, whose shove is the same either way).
+    death_knockback: float = 0.0
     # LUMBERJACK: "Upon death, he drops a bottle of Rage" -- an area that boosts friendly move
     # AND attack speed. Curated from the balance log: radius 3 tiles + 4.5 s (Aug 2025), boost
     # +30% (Oct 2025, from 35%), 0.5 s deploy timer before it takes effect.
@@ -617,6 +622,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # coded 1.6 tiles for the Log -- its CURRENT value is 0.7 (7/2/2023 balance, down from 1),
         # so a defensive Log was shoving a push 2.3x too far up the arena.
         knockback=knockback_tiles,
+        death_knockback=float(c.get("death_knockback_tiles") or 0.0),
         knockback_all=("knockback_all" in flags),
         # either the curated flag OR the game files' ignore_pushback (imported as a plain field)
         knockback_immune=("knockback_immune" in flags) or bool(c.get("knockback_immune")),
@@ -2600,6 +2606,8 @@ class SimEngine:
         s = u.spec
         if s.death_dmg <= 0.0 or s.death_radius <= 0.0:
             return
+        # The blast may shove harder than -- or, for the Bomb Tower, INSTEAD of -- the card's shots.
+        blast_knock = s.death_knockback or s.knockback
         if s.death_delay_s > 0.0:
             # FUSED BOMB (wiki): Balloon / Giant Skeleton / Bomb Tower "drop a bomb which
             # explodes after 3 seconds". Walking out of it is the counterplay, so the delay
@@ -2609,7 +2617,7 @@ class SimEngine:
                            spell_tower_dmg=s.death_dmg * s.death_crown_mult,
                            pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
                            spawn_count=0, decoy_mirror=False, zap_pulses=0,
-                           death_delay_s=0.0)
+                           knockback=blast_knock, death_delay_s=0.0)
             self.spells.append(_Spell(u.team, u.x, u.y, bomb, s.death_delay_s))
             return
         for e in self.units:
@@ -2621,7 +2629,7 @@ class SimEngine:
                 self._hurt(e, s.death_dmg)
                 # DEATH BLASTS SHOVE TOO -- Golem, Giant Skeleton, Phoenix, Skeleton Barrel and
                 # Goblin Demolisher all state it in their lead paragraph. Radial from the corpse.
-                self._knock(e, s, u.x, u.y)
+                self._knock(e, replace(s, knockback=blast_knock), u.x, u.y)
         for tw in self._enemy_towers(u.team):
             if tw.alive and _gap(u.x, u.y, tw) <= s.death_radius:
                 self._damage_tower(tw, s.death_dmg * s.death_crown_mult, u.team)
