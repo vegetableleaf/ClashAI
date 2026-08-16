@@ -3186,3 +3186,28 @@ Notes / caveats
 - STILL OPEN: in_match_ot.png does not fire. If the debounce log shows repeated unrecognised
   frames at overtime, the OT banner template needs re-cutting from an overtime frame (must be
   cut in _work() space, work_width 480 -- see the play_again.png lesson).
+
+2026-08-16 — OVERTIME BLINDNESS FIXED (root cause of the live "shut down at overtime")
+- The user's newest record session has an overtime match (the first one), which reproduced the
+  bug exactly: state went UNKNOWN at t=184 s and stayed unrecognised for the whole 131 s of
+  overtime, then MATCH_END at 315 s. With the debounce added earlier the match would survive,
+  but the board was still invisible -- so the real fix was needed.
+- CAUSE: regulation draws a black "Time left:" box (what in_match_v2.png matches); OVERTIME
+  REPLACES it with a red "Overtime" banner in gold. The regulation templates simply cannot see
+  an overtime board. in_match_ot.png exists for this but was stale -- 0 hits in ~1250 sampled
+  frames. Re-cut it from an overtime frame (in _work() space, work_width 480 -- the same lesson
+  as play_again.png), cropping the WORD only so the changing timer digits are excluded.
+- REGRESSION CAUGHT BEFORE SHIPPING: the OT banner is still drawn behind the results overlay --
+  on ALL SIX end frames of that match, match_end_ok AND in_match_ot both fire. Leaving the OT
+  template inside the in_match list (which detect_state checks FIRST) would therefore have
+  MASKED the end of every overtime match and hung nav on the results screen. Overtime is now
+  its own state entry checked AFTER match_end: regulation still answers on the first template,
+  and only overtime pays the extra (cheap, region-limited) search.
+- Also region-limited the two end-screen BUTTON templates to the bottom band. Measured: they
+  match at y 0.886..0.941 on all four recorded endings across two sessions and two window
+  sizes; searching the whole frame for them cost ~44 ms on every frame not answered by the
+  first in_match template -- i.e. every overtime frame. Padded to 0.82..1.00 for safety.
+- RESULT on the full session (473 samples): all three matches are now continuous IN_MATCH
+  episodes (304 s / 296 s / 308 s -- all three ran into overtime), UNKNOWN down to 11 samples
+  (match transitions), MATCH_END still detected at 316/622/940 s. detect_state 93 -> 43.2 ms
+  average including overtime frames (22 ms on a regulation frame). 158/158 (1 skipped).

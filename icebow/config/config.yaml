@@ -129,15 +129,36 @@ states:
     # arena skins may still need it) but is now tried last.
     templates:
       - "in_match_v2.png"
-      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
       - "in_match.png"
+  # OVERTIME is a SEPARATE state entry, checked AFTER match_end (see vision.detect_state).
+  # The "Time left:" box that in_match_v2 keys on is REPLACED by a red "Overtime" banner, so
+  # regulation templates cannot see an overtime board -- measured on the overtime match in
+  # data/sessions/20260815_222309, the board went UNKNOWN at t=184 s and stayed unrecognised
+  # for the whole 131 s of overtime, which is what stopped the bot acting.
+  # It cannot ride in the in_match list because that list is checked FIRST: the banner is still
+  # on screen behind the results overlay (measured: all 6 end frames of that match fire BOTH
+  # the OK button and this banner), so an in_match-first hit would MASK the match end and hang
+  # nav on the results screen forever.
+  in_match_ot:
+    templates:
+      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
   # RENAMED 2026-08-15 (was match_end.png / match_end_dc.png). Both are post-match BUTTONS and
   # BOTH are valid 1v1 endings -- which of the two screens appears is chance, per the user, and
   # neither has anything to do with a disconnect. The old "_dc" name nearly got the OK template
   # deleted as 2v2 dead weight; it is in fact the one that detected every ending in the
   # 2026-08-04 session (3/3 frames, while Exit matched 0/3). Keep BOTH: dropping either loses
   # whichever screen it covers and leaves nav hanging on its timeout for those matches.
-  match_end:  {templates: ["match_end_ok.png", "match_end_exit.png"], threshold: 0.80}
+  # REGION-LIMITED (2026-08-15). Both are BUTTONS on the results screen and they only ever
+  # appear in the bottom band: MEASURED at y 0.886..0.941 on all four recorded endings across
+  # two sessions and two window sizes. Searching the whole frame for them cost ~44 ms on every
+  # decision that is not answered by the first in_match template -- which is EVERY overtime
+  # frame, since overtime replaces the "Time left:" box the regulation template keys on.
+  # The band is padded generously (0.82..1.00) so a differently sized window cannot slip out.
+  match_end:
+    threshold: 0.80
+    templates:
+      - {template: "match_end_ok.png", region: [0.00, 0.82, 1.00, 1.00]}
+      - {template: "match_end_exit.png", region: [0.00, 0.82, 1.00, 1.00]}
 
 nav:
   poll_hz: 6                     # how often play() re-checks the screen state

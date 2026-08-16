@@ -367,9 +367,20 @@ class Vision:
         checks = [
             (GameState.IN_MATCH, "in_match"),
             (GameState.MATCH_END, "match_end"),
+            (GameState.IN_MATCH, "in_match_ot"),   # AFTER match_end -- see below
             (GameState.PARTY, "party_menu"),
             (GameState.HOME, "home_menu"),
         ]
+        # WHY OVERTIME IS CHECKED LAST (2026-08-15). Regulation shows a "Time left:" box, which
+        # is what in_match_v2 matches; OVERTIME replaces it with a red "Overtime" banner, so the
+        # regulation templates go blind -- measured on the overtime match in
+        # data/sessions/20260815_222309, the board read UNKNOWN from t=184 s for the whole 131 s
+        # of overtime, which is exactly why the bot stopped acting there.
+        # But that banner is STILL DRAWN behind the results overlay: on all 6 end frames of that
+        # match the OK button and the banner both matched. Putting the banner in the in_match
+        # list (checked first) would therefore mask the end of every overtime match and hang nav
+        # on the results screen. Checked after match_end it costs nothing in regulation (the
+        # first entry hits) and only adds one cheap region-limited search during overtime.
         for state, key in checks:
             spec = self.cfg.get("states", key, default=None)
             if not spec:
