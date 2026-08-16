@@ -98,3 +98,40 @@ class XbowRewardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)
+
+class BowOvercommitAttributionTests(unittest.TestCase):
+    """Only elixir the opponent SPENT to answer the bow counts as drawn."""
+
+    def test_troops_already_committed_do_not_count(self):
+        """Planting a bow on top of an existing push must not book that push as 'drawn'.
+
+        The ledger counted any enemy whose current target was the bow. Drop a bow into a push that
+        is already committed and every body retargets it, so the whole push booked as drawn, the
+        bow died, and the overcommit credit paid out -- rewarding exactly the habit seen in sim
+        view (user, 2026-08-16). Troops on the board before the bow existed were paid for before
+        the bow existed.
+        """
+        env = _quiet_env(seed=5)
+        env.eng.elixir[1] = 10.0
+        env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.30, 0.45)
+        early = env.eng.units[-1]
+        for _ in range(30):
+            env.eng.advance(0.1)
+        env.eng.elixir[0] = 10.0
+        env.eng.deploy(0, build_spec(env.eng.db, "x_bow", 11), 0.31, 0.56)
+        bow = env.eng.units[-1]
+        for _ in range(10):
+            env.eng.advance(0.1)
+        env.eng.elixir[1] = 10.0
+        env.eng.deploy(1, build_spec(env.eng.db, "musketeer", 11), 0.31, 0.42)
+        late = env.eng.units[-1]
+        for _ in range(10):
+            env.eng.advance(0.1)
+        self.assertGreater(early.age, bow.age,
+                           "the pre-existing pusher must be OLDER than the bow")
+        self.assertLess(late.age, bow.age,
+                        "the answer played after the bow must be YOUNGER than it")
+        # the predicate the ledger uses
+        # the predicate the ledger uses: STRICTLY older than the bow is excluded
+        self.assertFalse(early.age <= bow.age, "an already-committed troop must not count as drawn")
+        self.assertTrue(late.age <= bow.age, "a troop spent to answer the bow must count as drawn")

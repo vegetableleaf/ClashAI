@@ -1343,8 +1343,21 @@ class SimMatchEnv:
             bid = id(u)
             bow_alive.add(bid)
             led = self._bow_ledger.setdefault(bid, {"ids": set(), "cost": 0.0, "lock": 0.0})
-            for e in self.eng.units:                      # enemies COMMITTED to answering this bow
-                if e.team == 1 and e.hp > 0 and e.target is u and id(e) not in led["ids"]:
+            for e in self.eng.units:                      # enemies the opponent SPENT to answer this bow
+                # `e.age < u.age` = deployed AFTER the bow. Without it the term counted any enemy
+                # whose current target happened to be the bow, which is not the same thing at all:
+                # drop a bow into a push that is already committed and every body in it retargets,
+                # so the whole push's elixir booked as "drawn to answer the bow", the bow died, and
+                # the overcommit credit paid out. That rewarded planting bows on top of big pushes
+                # -- exactly the behaviour seen in sim view (user, 2026-08-16) -- and it is the one
+                # X-Bow habit no amount of further training would unlearn, because the gradient
+                # pointed at it. Troops already on the board were paid for before the bow existed.
+                # `<=`, not `<`: an answer deployed in the SAME tick as the bow is still an answer
+                # (and the opponent model can act on the step the bow lands), so only a body that
+                # is strictly OLDER than the bow -- i.e. already marching before it existed --
+                # is excluded.
+                if (e.team == 1 and e.hp > 0 and e.target is u and id(e) not in led["ids"]
+                        and e.age <= u.age):
                     led["ids"].add(id(e))
                     led["cost"] += float(e.spec.elixir) / max(1, e.spec.squad_count or e.spec.count)
             if (u.deploy_left <= 0.0 and u.attacking and hasattr(u.target, "king")
