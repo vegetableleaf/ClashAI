@@ -58,6 +58,21 @@ def _opp_cards(env) -> set:
     return set(getattr(env.opponent, "cards", []) or [])
 
 
+def _pull_resistant(u) -> bool:
+    """Units a Tornado barely moves, so no rule should aim a pull at one.
+
+    "Be aware that some units are very resistant to the pull from Tornado, such as charging Princes
+    and heavy units such as Giant and Golem" (X-Bow Ice Wizard Control guide). The same page is
+    blunt about the failure mode this prevents -- against a Hog with a tank in front, "DO NOT
+    attempt to Tornado ... instead use Rocket". Heft is now sourced (game-file `mass`), so this
+    reads the real number rather than guessing from a name list.
+    """
+    if getattr(u.spec, "knockback_immune", False):
+        return True
+    m = getattr(u.spec, "mass", None)
+    return bool(m and m >= 12)
+
+
 # ---- the rule table ---------------------------------------------------------
 
 def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
@@ -187,14 +202,31 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         # #3/#16: king activation -- a tower-bound unit past our princess line while the king
         # sleeps (air INCLUDED: balloon pulls). #52/#37: clump >=2 enemies to the centre band.
         # Never a rule for a LONE tank (DOCTRINE.md niche note).
-        bound = [u for u in enemies if (u.spec.building_only or u.y > 0.55) and u.hp > 0]
+        bound = [u for u in enemies if (u.spec.building_only or u.y > 0.55) and u.hp > 0
+                 and not _pull_resistant(u)]
         if king_asleep and any(u.y > 0.52 for u in bound):
             kt = eng.towers[0][2]                             # pull TO the ENGINE king's doorstep
             _add_spot(w, env, kt.x, kt.y - 1.5 / 32.0, 5.0, 1.0)
-        clump = [u for u in enemies if u.y > 0.42]
+        clump = [u for u in enemies if u.y > 0.42 and not _pull_resistant(u)]
         if len(clump) >= 2:
             cx = sum(u.x for u in clump) / len(clump)
             _add_spot(w, env, 0.48 + (cx - 0.48) * 0.5, 0.55, 3.0, 1.0)
+        # THE SNEAKY LOCK (icebow guide): "Tornado units out of X-Bow range for a sneaky lock",
+        # and explicitly "if they play a Knight near their tower and they don't have anything else
+        # on the arena, Tornado the Knight out of X-Bow range to get it on tower". The bow retargets
+        # the TOWER once its defender is dragged off, which is how a lock happens without a tank.
+        bow = next((u for u in eng.units
+                    if u.team == 0 and u.spec.base == "x_bow" and u.hp > 0), None)
+        if bow is not None:
+            for u in enemies:
+                if _pull_resistant(u) or u.spec.kind != "troop":
+                    continue
+                if abs(u.x - bow.x) + abs(u.y - bow.y) < 0.22:   # close enough to be its target
+                    # aim BEYOND the defender, away from the bow: the pull drags it off the bow's line
+                    dx, dy = u.x - bow.x, u.y - bow.y
+                    n = max(1e-6, abs(dx) + abs(dy))
+                    _add_spot(w, env, u.x + dx / n * 0.05, u.y + dy / n * 0.05, 4.0, 1.0)
+                    break
         if not w:
             return None
 
@@ -202,8 +234,15 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         # #22/#23/#28: GROUND swarms / charge units, our half or bridge. HARD air guard: if every
         # candidate flies, there is NO log rule (the Log cannot touch air -- user correction).
         ground = [u for u in enemies if not u.spec.flying and 0.38 <= u.y]
+        # THE TOMBSTONE RULE (icebow guide, verbatim): "always Log a Tombstone at half hp -- it'll
+        # destroy it and the death skeletons". Two cards' worth of value from a 2-elixir spell, and
+        # it is a BUILDING, so the generic ground-swarm rule above never proposed it.
+        tomb = next((u for u in enemies if u.spec.base == "tombstone" and u.hp > 0
+                     and u.hp <= u.spec.hp * 0.55), None)
+        if tomb is not None:
+            _add_spot(w, env, tomb.x, tomb.y, 4.5, 1.0)
         if not ground:
-            return None
+            return None if not w else list(w.items())
         tgt = max(ground, key=lambda u: u.y)
         _add_spot(w, env, tgt.x, max(0.46, min(tgt.y, 0.62)), 3.5, 1.0)
 
@@ -303,17 +342,68 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     annealable to nothing via sim.doctrine_frac.
     """
     eng = env.eng
-    rocket_ids = _deck_ids(env, "rocket")
-    if not rocket_ids:
-        return None
-    rid = next(iter(rocket_ids))
-    if rid not in set(env._hand_ids()) or eng.elixir[0] < env.specs[rid].elixir:
-        return None                                  # not holdable/affordable: nothing to nominate
     enemies = _enemies(env)
+    hand = set(env._hand_ids())
     w: Dict[int, float] = {}
 
+    def _holdable(*bases):
+        for i in _deck_ids(env, *bases):
+            if i in hand and eng.elixir[0] >= env.specs[i].elixir:
+                return i
+        return None
+
+    def _bump(card_id, v):
+        if card_id is not None:
+            w[card_id] = max(w.get(card_id, 0.0), float(v))
+
+    # ---- TORNADO ----------------------------------------------------------------------------
+    nid = _holdable("tornado")
+    if nid is not None:
+        king_asleep = not eng.towers[0][2].active
+        pullable = [u for u in enemies if u.spec.kind == "troop" and not _pull_resistant(u)]
+        # KING ACTIVATION. "Tornado any Miners or Hog Riders to the King Tower for an easy
+        # activation" -- a third defensive tower for the rest of the match is the biggest single
+        # payoff this card has.
+        if king_asleep and any(u.y > 0.52 for u in pullable):
+            _bump(nid, 5.0)
+        # THE DEPLOY-TIMER WINDOW, which is the whole timing skill: "deploy the Tornado one second
+        # before you think their tank will spawn; you want the Tornado to be pulling while the tank
+        # is in its deploy timer, since it won't be walking against (and resisting) its pull", and
+        # "the Tornado only lasts for one second, so the timing is a bit strict". A unit still in
+        # its deploy delay is exactly that window, and nothing in the sim was aiming at it.
+        if any(getattr(u, "deploy_left", 0.0) > 0.0 for u in pullable):
+            _bump(nid, 4.5)
+        # CLUMP for the Ice Wizard / Rocket to punish.
+        if len([u for u in pullable if u.y > 0.42]) >= 2:
+            _bump(nid, 3.5)
+        # THE SNEAKY LOCK: our bow is up and something is sitting on it.
+        bow = next((u for u in eng.units if u.team == 0 and u.spec.base == "x_bow" and u.hp > 0), None)
+        if bow is not None and any(abs(u.x - bow.x) + abs(u.y - bow.y) < 0.22 for u in pullable):
+            _bump(nid, 4.0)
+
+    # ---- THE LOG ----------------------------------------------------------------------------
+    lid = _holdable("the_log")
+    if lid is not None:
+        ground = [u for u in enemies if not u.spec.flying and u.spec.kind == "troop" and u.y >= 0.42]
+        swarm = [u for u in ground if u.spec.elixir <= 3]
+        if len(swarm) >= 3:
+            _bump(lid, 4.0)                          # what the card is FOR
+        elif len(ground) >= 1 and any(u.spec.charge_range for u in ground):
+            _bump(lid, 3.5)                          # resets a charge (Battle Ram / Prince / Ram Rider)
+        if any(u.spec.base == "tombstone" and u.hp <= u.spec.hp * 0.55 for u in enemies):
+            _bump(lid, 4.5)                          # kills the hut AND its death skeletons
+        # CYCLE USE: "Log at the bridge (if Tornado is in hand)" -- the Log is the cheap cycle card,
+        # but only while the Tornado is still there to answer a swarm. Quiet board only.
+        if not ground and nid is not None and eng.elixir[0] >= 8.0:
+            _bump(lid, 2.0)
+
+    # ---- ROCKET -----------------------------------------------------------------------------
+    rid = _holdable("rocket")
+    if rid is None:
+        return w or None
+
     def bump(v):
-        w[rid] = max(w.get(rid, 0.0), float(v))
+        _bump(rid, v)
 
     # 1. FRESH PUMP. An unanswered Elixir Collector out-economies a control deck; the reward
     #    already pays full win-condition credit for killing one inside its window.

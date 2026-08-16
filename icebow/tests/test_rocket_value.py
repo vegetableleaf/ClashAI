@@ -145,5 +145,75 @@ class RocketPriorTests(unittest.TestCase):
         self.assertIsNone(doctrine_cards(env))
 
 
+def _into_hand(env, key):
+    """Rotate a card's slot to the front of the cycle so it is genuinely holdable.
+
+    The prior only ever nominates a card that is IN HAND and affordable -- nominating one the
+    player cannot play would be a bug, so the tests have to set that up rather than bypass it.
+    """
+    slot = env.slot_of[env.deck_keys.index(key)]
+    env.cycle = [slot] + [s for s in env.cycle if s != slot]
+
+
+class TornadoLogDoctrineTests(unittest.TestCase):
+    """Tornado / Log rules recovered from the icebow deck guides (2026-08-16)."""
+
+    def test_tornado_nominated_during_the_deploy_timer(self):
+        """The timing skill: pull WHILE the unit is still deploying, so it cannot resist.
+
+        "deploy the Tornado one second before you think their tank will spawn ... it won't be
+        walking against (and resisting) its pull" -- the sim had no notion of that window.
+        """
+        env = _env()
+        _into_hand(env, "tornado")
+        env.eng.elixir[0] = 10.0
+        env.eng.elixir[1] = 10.0
+        env.eng.deploy(1, build_spec(env.db, "hog_rider", 11), 0.5, 0.45)
+        u = env.eng.units[-1]
+        self.assertGreater(u.deploy_left, 0.0, "the unit must still be deploying for this test")
+        got = doctrine_cards(env) or {}
+        nid = env.deck_keys.index("tornado")
+        self.assertIn(nid, got)
+
+    def test_tornado_not_aimed_at_pull_resistant_units(self):
+        from clashrl.sim.doctrine import _pull_resistant
+        env = _env()
+        for key, resistant in (("golem", True), ("giant", True), ("hog_rider", False),
+                               ("musketeer", False)):
+            spec = build_spec(env.db, key, 11)
+            self.assertEqual(_pull_resistant(spec_holder(spec)), resistant, key)
+
+    def test_log_nominated_for_a_half_dead_tombstone(self):
+        """"always Log a Tombstone at half hp -- it'll destroy it and the death skeletons"."""
+        env = _env()
+        _into_hand(env, "the_log")
+        env.eng.elixir[0] = 10.0
+        env.eng.elixir[1] = 10.0
+        env.eng.deploy(1, build_spec(env.db, "tombstone", 11), 0.5, 0.42)
+        tomb = env.eng.units[-1]
+        tomb.hp = tomb.spec.hp * 0.4
+        got = doctrine_cards(env) or {}
+        self.assertIn(env.deck_keys.index("the_log"), got)
+
+    def test_log_nominated_for_a_ground_swarm(self):
+        env = _env()
+        _into_hand(env, "the_log")
+        env.eng.elixir[0] = 10.0
+        for dx in (-0.02, 0.0, 0.02):
+            env.eng.elixir[1] = 10.0
+            env.eng.deploy(1, build_spec(env.db, "goblins", 11), 0.5 + dx, 0.55)
+        got = doctrine_cards(env) or {}
+        self.assertIn(env.deck_keys.index("the_log"), got)
+
+
+class _Holder:
+    def __init__(self, spec):
+        self.spec = spec
+
+
+def spec_holder(spec):
+    return _Holder(spec)
+
+
 if __name__ == "__main__":
     unittest.main()
