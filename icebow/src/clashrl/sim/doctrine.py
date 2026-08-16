@@ -63,15 +63,29 @@ def _opp_cards(env) -> set:
 # (tools note: scratchpad/king_offsets.py). Not copied from the placement guides, because the
 # engine and the guides disagree and only the engine is what the policy is graded against.
 #
-# FIDELITY GAP worth its own fix: real Clash Royale activates the king off a Miner, a Balloon,
-# a Battle Ram and (with a building pulling them centre first) the giants -- the guides call
-# Miner activation "easy". In this engine ONLY the two hog-type troops activate at all; every
-# other card tested came back zero across all 63 offsets. That is an engine limitation, not a
-# doctrine one, so no rule pretends otherwise.
+# Miner and Balloon were first recorded as impossible; that was a MEASUREMENT error, not an engine
+# limit. The sweep marched every troop up the lane from y=0.46, which is not how either card
+# arrives -- a Miner tunnels and surfaces AT the tower, and a Balloon is placed onto it. Re-run
+# with the real arrival they activate readily (Balloon on 20 of 49 offsets, Miner on 4).
+#
+# What genuinely does NOT activate is the heavy building-targeters on a lane march (Giant, Golem,
+# Battle Ram). That matches the guides rather than contradicting them: for those you first need a
+# building "in the 4-3 placement to pull them closer to the centre", then Tornado -- a two-card
+# setup this table does not try to express.
+#
+# The geometry is why every window is small. Our princess tower centre is 6.52 tiles from the
+# king's, an attacker standing on the arena side of it is ~8 tiles out, and it has to be brought
+# within king.radius + its own reach (2.1-3.2 tiles) to land a hit. That is a ~5-tile drag against
+# a 5.5-tile pull radius, so the cast has to sit near the king AND still reach the attacker --
+# which is exactly the user's rule that the troop should be near the EDGE of the pull.
 _KING_SPOTS = {
     "hog_rider": ((-1.0, -4.5), (0.5, -4.5)),
     "royal_hogs": ((-1.5, -4.0), (0.5, -4.0)),
+    "miner": ((-3.0, -3.0), (2.0, -3.0)),
+    "balloon": ((-1.5, -3.5), (1.0, -3.0)),
 }
+# NB the lanes are NOT mirror images -- the right-lane Miner spot is +2.0, not +3.0, and mirroring
+# it simply failed. Both sides are measured independently for that reason.
 
 
 def _king_spot(u):

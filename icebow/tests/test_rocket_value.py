@@ -193,7 +193,11 @@ class TornadoLogDoctrineTests(unittest.TestCase):
         engine, so this test plays the doctrine's own top-weighted cell and demands a wake-up.
         """
         from clashrl.sim.doctrine import doctrine_cells
-        for troop, lane in (("hog_rider", 0.28), ("hog_rider", 0.72), ("royal_hogs", 0.28)):
+        MARCHERS = (("hog_rider", 0.28), ("hog_rider", 0.72), ("royal_hogs", 0.28))
+        # Miner and Balloon arrive AT the tower, not up the lane. Sweeping them as marchers is what
+        # first (wrongly) recorded them as impossible to activate with.
+        SURFACERS = (("miner", 0), ("miner", 1), ("balloon", 0), ("balloon", 1))
+        for troop, lane in MARCHERS:
             env = _env(seed=5)
             king = env.eng.towers[0][2]
             env.eng.elixir[1] = 10.0
@@ -215,6 +219,32 @@ class TornadoLogDoctrineTests(unittest.TestCase):
                     break
             self.assertTrue(woke, "%s in lane %.2f: doctrine's top cell must wake the king"
                             % (troop, lane))
+
+        for troop, side in SURFACERS:
+            env = _env(seed=5)
+            king = env.eng.towers[0][2]
+            prin = env.eng.towers[0][side]
+            env.eng.elixir[1] = 10.0
+            env.eng.deploy(1, build_spec(env.db, troop, 11), prin.x, prin.y - 2.0 / 32.0)
+            u = env.eng.units[-1]
+            for _ in range(15):
+                env.eng.advance(0.1)
+            dc = doctrine_cells(env, env.deck_keys.index("tornado")) or []
+            self.assertTrue(dc, "%s: a king-activation rule must fire" % troop)
+            top = max(dc, key=lambda t: t[1])[0]
+            x, y = env.actions.cell_center(top % env.gw, top // env.gw)
+            env.eng.elixir[0] = 10.0
+            env.eng.deploy(0, build_spec(env.db, "tornado", 11), x, y)
+            woke = False
+            for _ in range(45):
+                env.eng.advance(0.1)
+                if king.active:
+                    woke = True
+                    break
+                if u.hp <= 0:
+                    break
+            self.assertTrue(woke, "%s on tower %d: doctrine's top cell must wake the king"
+                            % (troop, side))
 
     def test_log_nominated_for_a_half_dead_tombstone(self):
         """"always Log a Tombstone at half hp -- it'll destroy it and the death skeletons"."""

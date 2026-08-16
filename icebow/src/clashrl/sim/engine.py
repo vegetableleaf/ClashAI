@@ -1088,6 +1088,38 @@ def _push_mass(spec) -> float:
     return float(m) if m else float(spec.radius) ** 3 * 48.0   # 48: volume->mass at the 0.5/6 anchor
 
 
+_PULL_MASS_REF = 4.0     # mass that gets the FULL pull; heavier units scale down from here
+
+
+def _pull_resist(spec) -> float:
+    """How much of the Tornado's pull this body actually takes, from its MASS.
+
+    The wiki states it plainly -- "the Tornado's pull strength is also affected by mass", and the
+    Tornado guides that "a Hog Rider, Lumberjack, or Mini P.E.K.K.A are relatively light, so the
+    Tornado will displace them further than a Valkyrie, Giant, or Golem", with Knight and Valkyrie
+    "much more resilient".
+
+    WHAT THIS REPLACES WAS DEAD CODE. The rule was `0.5 if radius >= _TANK_RADIUS else 1.0`, and
+    _TANK_RADIUS is 0.9 while the LARGEST troop radius in the game is 0.75 (Giant / Golem /
+    P.E.K.K.A). The branch could never fire, so every unit from a 1-mass Skeleton to a 20-mass
+    Golem was hauled at the identical 11.2 tiles/s -- a Golem vortexed exactly as far as a
+    Skeleton. It also repeated the collision-radius-as-heft mistake that `_push_mass` used to
+    make: six units share a 0.5 radius with masses from 1 to 6.
+
+    Inverse-linear in mass, which reproduces the ordering the guides describe: light swarm at the
+    full pull, Knight/Valkyrie about two thirds, Giant/Golem/P.E.K.K.A about a fifth. The floor
+    keeps a heavy unit from being perfectly immovable, since the Tornado does still shift them.
+
+    SPEED RESISTANCE IS NOT ADDED HERE. "Any unit that is moving in the opposite direction ... will
+    resist the pull" -- but units keep walking under their own power while the vortex is active, so
+    that opposition is already in the simulation. Modelling it again would double-count it.
+    """
+    m = getattr(spec, "mass", None)
+    if not m:
+        return 0.5 if spec.radius >= 0.7 else 1.0    # pre-2023-dump cards: fall back on size
+    return max(0.1, min(1.0, _PULL_MASS_REF / float(m)))
+
+
 def _gap(ax: float, ay: float, ref) -> float:
     """Distance in TILES from (ax, ay) to ``ref``'s hitbox EDGE.
 
@@ -3592,7 +3624,7 @@ class SimEngine:
             if e.spec.kind == "building":
                 continue
             if d > 1e-6:
-                pull = step * (0.5 if e.spec.radius >= _TANK_RADIUS else 1.0)   # tanks resist
+                pull = step * _pull_resist(e.spec)
                 if pull >= d:
                     e.x, e.y = v.x, v.y                       # reached the centre (clumped)
                 else:
