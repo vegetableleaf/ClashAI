@@ -345,6 +345,34 @@ class Batch2Tests(unittest.TestCase):
         self.assertLess(abs(mk.y - y_firing), 0.012,
                         "the knight walks AROUND her instead of bulldozing her forward")
 
+    def test_tower_windup_is_paid_once_not_per_kill(self):
+        """A tower's opening delay is the weapon coming UP, not a per-corpse tax.
+
+        The lock breaks when a target dies, and re-acquiring used to reset reload_left to the full
+        first_hit -- discarding whatever cooldown had already elapsed. Because the tower fires a
+        TRAVELLING shot, the body dies ~0.25 s after the shot is loosed, so every kill threw away
+        that quarter second: five Bats cost the tower a full extra second, and it read as much
+        slower than the real princess (user-reported 2026-08-16). Real behaviour is that once the
+        weapon is up it stays up while there is anything in range.
+        """
+        env = _quiet(seed=91)
+        tw = env.eng.towers[0][0]
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "bats", 11), tw.x, tw.y - 5.0 / 32.0)
+        n0 = len([u for u in env.eng.units if u.team == 1])
+        self.assertGreaterEqual(n0, 4, "need a real swarm for this test")
+        t0 = env.eng.t
+        for _ in range(1200):
+            env.eng.advance(0.05)
+            if not [u for u in env.eng.units if u.team == 1 and u.hp > 0]:
+                break
+        clear = env.eng.t - t0
+        # wind-up once + (n0-1) ordinary shots + flight, with slack for deploy and travel
+        budget = tw.first_hit + (n0 - 1) * tw.hit_speed + 2.2
+        self.assertLess(clear, budget,
+                        "%d bats took %.2fs; a per-kill wind-up would cost ~%.2fs more"
+                        % (n0, clear, (n0 - 1) * tw.first_hit))
+
     def test_hog_pushes_ice_golem_but_bandit_cannot_push_golem(self):
         env = _quiet(seed=68)
         env.eng.elixir[0] = 10.0

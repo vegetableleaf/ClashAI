@@ -940,9 +940,11 @@ class Tower:
     troop: str = "princess"
     hit_dmg: float = 158.0        # damage per shot (= dps * hit_speed, level-scaled)
     hit_speed: float = 0.8        # seconds between shots
-    first_hit: float = 0.8        # delay before the first shot after (re)acquiring a target
+    first_hit: float = 0.8        # delay before the first shot after ENGAGING (see `engaged`)
     reload_left: float = 0.0      # time until the next shot is ready
     acquired: bool = False        # currently locked onto a target (first-hit bookkeeping)
+    engaged: bool = False         # had a target LAST tick -- the weapon is already up, so swapping
+                                  # targets does not pay the wind-up again. Only an idle gap does.
     target: object = None         # sticky target lock; closer enemies do not steal aggro mid-fight
     aggro_reset: bool = False     # stun/freeze breaks the lock; the next shot re-acquires from scratch
     ammo: float = 0.0             # Dagger Duchess: daggers left in the loaded clip
@@ -3483,6 +3485,7 @@ class SimEngine:
         if not foes:
             tw.acquired = False
             tw.target = None
+            tw.engaged = False                                   # weapon lowered -> the NEXT engage pays the wind-up
             if tw.ammo_max > 0.0:                                # reload the dagger clip while there's no target
                 tw.ammo = min(tw.ammo_max, tw.ammo + dt / tw.ammo_regen_s)
             return
@@ -3494,11 +3497,22 @@ class SimEngine:
         if not tw.acquired:
             tw.target = min(foes, key=lambda e: _gap(tw.x, tw.y, e))
             tw.acquired = True
-            # LOAD TIME on acquiring a target. Keeping this is what reproduces the reference
-            # interaction: an L11 Bomber walking into an L11 princess tower lands EXACTLY ONE bomb
-            # before dying. Firing the instant a target appears kills it ~0.8 s sooner and the bomb
-            # never lands, so the tower's opening delay is real and load-bearing, not padding.
-            tw.reload_left = tw.first_hit
+            # LOAD TIME on ENGAGING -- not on every retarget. Keeping it for the first target is
+            # what reproduces the reference interaction: an L11 Bomber walking into an L11 princess
+            # tower lands EXACTLY ONE bomb before dying. Firing the instant a target appears kills
+            # it ~0.8 s sooner and the bomb never lands, so the opening delay is load-bearing.
+            #
+            # But it was being charged again EVERY time the lock broke, and a lock breaks when the
+            # target DIES. Against a swarm the princess one-shots -- Bats or Skeletons at the
+            # bridge -- the tower paid the 0.8 s wind-up before every single body, so five Bats cost
+            # it ~4 s of firing instead of ~0.8 s plus four normal shots, and the tower read as far
+            # slower than the real one (user-reported 2026-08-16). In the game the wind-up is the
+            # weapon coming up: once it is up it stays up while there is anything to shoot, and the
+            # cadence between kills is the ordinary hit speed. `engaged` is that "weapon already up"
+            # state, cleared only by an idle tick with no foes in range at all.
+            if not tw.engaged:
+                tw.reload_left = tw.first_hit
+        tw.engaged = True
         tw.reload_left -= eff_dt
         if tw.reload_left > 0.0:
             return
