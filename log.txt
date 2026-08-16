@@ -2983,3 +2983,27 @@ Notes / caveats
   rises have a +1.00 median, drops land on exactly 1/2/3/4/5/6 = the deck's card costs, and
   the bar is FULL in 21% of samples -- that is the leak signal that was previously invisible.
   148/148 (1 skipped).
+
+2026-08-15 — LIVE PIPELINE: batched card matching (32 ms -> 0.63 ms per slot)
+- Goal: make live able to SERVE a faster cadence, the prerequisite for lowering sim.agent_dt.
+  Measured floor before this: 0.75 s of pipeline work + 0.31 s tap = ~1.06 s per decision, so
+  training at 0.5 s would have been a train/serve mismatch (act_period could not follow).
+- Vision.match_card ran ~190 cv2.matchTemplate calls per slot (10 deck cards x ~19 art
+  variants) AND re-ran the identical cv2.resize of the crop inside every one of them, because
+  every template in a set is the same 80x64. Since the sizes match, TM_CCOEFF_NORMED is just a
+  normalised dot product, so the whole set collapses to ONE matrix multiply against a crop
+  resized and centred once.
+- EXACTNESS: the win came with a correctness trap -- centring by a GLOBAL mean gave a 7.2e-3
+  score error (enough to flip a borderline match against match_threshold). OpenCV centres per
+  CHANNEL; _center_pc does the same and the error drops to float32 noise. Validated over 100
+  slot-matches spanning both timelapses INCLUDING the top_frac path used by the next-card
+  preview: 0 identity mismatches, worst score delta 4.1e-06.
+- MEASURED: match_card 32.0 -> 0.63 ms (51x); a cold 4-slot recognize_hand 129.4 -> 3.2 ms
+  (40x); the live `hand` cadence bucket was 0.30 s/decision. New per-decision floor ~0.77 s.
+- NOT DONE, deliberately: detect_state still costs 92.6 ms because it runs four whole-frame
+  template searches and checks match_end FIRST, so every in-match frame pays for the
+  end-screen templates before reaching its answer. A half-resolution search is 4.2x faster but
+  shifts scores by 0.043 against a 0.8 threshold -- too close to risk missing a match end. The
+  reorder (check the expected state first) tested SAFE on 144 frames, but those frames
+  contained ZERO end-screen samples, so that is an inconclusive test, not a proof. Needs a
+  capture that includes a real match end before it can land. 148/148 (1 skipped).

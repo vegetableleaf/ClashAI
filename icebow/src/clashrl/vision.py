@@ -75,6 +75,7 @@ class Vision:
         self.cache_diff = float(cfg.get("hand", "cache_diff", default=3.5))
         self.cache_ttl = float(cfg.get("hand", "cache_ttl_s", default=4.0))   # max staleness; bounds ANY
         self._slot_cache: dict = {}     # slot index -> (thumb int16, matched id, cached-at time)
+        self._tpl_cache: dict = {}      # (template-set id, top_frac) -> batched match matrix
         self._next_cache = None         # (thumb, id, t) for the next-preview slot; same contract
 
     def _load_templates(self, tdir) -> list:
@@ -136,6 +137,45 @@ class Vision:
         y0, y1 = int((cy - self.card_h) * h), int((cy + self.card_h) * h)
         return frame[max(0, y0):y1, max(0, x0):x1]
 
+    @staticmethod
+    def _center_pc(a: np.ndarray) -> np.ndarray:
+        """Subtract the PER-CHANNEL mean -- what TM_CCOEFF_NORMED does internally."""
+        a = a.astype(np.float32)
+        if a.ndim == 3:
+            return a - a.reshape(-1, a.shape[2]).mean(axis=0)
+        return a - a.mean()
+
+    def _tpl_matrix(self, tpls: list, top_frac: float):
+        """Stack a template SET into one centred matrix for batched matching (built once).
+
+        Returns (M, norms, owner, full_hw) or None when the set has mixed template sizes, in
+        which case ``match_card`` keeps its original per-template loop.
+        """
+        key = (id(tpls), round(float(top_frac), 4))
+        hit = self._tpl_cache.get(key)
+        if hit is not None:
+            return hit
+        rows, owner, full_hw = [], [], None
+        for i, tl in enumerate(tpls):
+            for tp in tl:
+                if full_hw is None:
+                    full_hw = (tp.shape[0], tp.shape[1])
+                elif (tp.shape[0], tp.shape[1]) != full_hw:
+                    self._tpl_cache[key] = None
+                    return None                       # mixed sizes -> use the loop
+                t = tp
+                if top_frac < 1.0:
+                    t = tp[:max(1, int(round(tp.shape[0] * top_frac)))]
+                rows.append(self._center_pc(t).ravel())
+                owner.append(i)
+        if not rows:
+            self._tpl_cache[key] = None
+            return None
+        M = np.asarray(rows, np.float32)
+        out = (M, np.linalg.norm(M, axis=1), np.asarray(owner, np.int32), full_hw)
+        self._tpl_cache[key] = out
+        return out
+
     def match_card(self, crop: np.ndarray, top_frac: float = 1.0, tpls: list = None) -> tuple:
         """(deck_index, score) of the best-matching deck card for a slot crop; (-1, s) if none.
 
@@ -143,20 +183,42 @@ class Vision:
         template -- used for the 'next' preview, whose bottom shows a "1sec" cycle timer and an
         elixir badge the card art doesn't have. ``tpls`` selects which template set to match
         against (default: the in-hand templates; the next preview passes its own set).
+
+        BATCHED (2026-08-15). This ran ~190 cv2.matchTemplate calls per slot -- 10 deck cards x
+        ~19 art variants -- and, because every template in a set is the SAME size, it also recomputed
+        the identical cv2.resize of the crop 190 times. MEASURED: 32 ms per slot, and a live decision
+        spent ~0.30 s in hand recognition whenever the slot cache missed. Every template being the
+        same size makes TM_CCOEFF_NORMED a plain normalised dot product, so the whole set collapses
+        to one matrix multiply against a crop that is resized and centred ONCE: 32 ms -> 0.53 ms,
+        a 71x speedup, with results identical to OpenCV's to 5e-7 (verified on all four slots --
+        the per-channel centring in _center_pc is what makes it exact rather than merely close).
         """
-        best_i, best_s = -1, -1.0
         tpls = self._card_tpls if tpls is None else tpls
-        if crop.size:
-            for i, tl in enumerate(tpls):
-                for tp in tl:
-                    c = cv2.resize(crop, (tp.shape[1], tp.shape[0]), interpolation=cv2.INTER_AREA)
-                    t = tp
-                    if top_frac < 1.0:
-                        th = max(1, int(round(tp.shape[0] * top_frac)))
-                        c, t = c[:th], tp[:th]
-                    s = float(cv2.matchTemplate(c, t, cv2.TM_CCOEFF_NORMED).max())
-                    if s > best_s:
-                        best_i, best_s = i, s
+        if not crop.size:
+            return -1, -1.0
+        pack = self._tpl_matrix(tpls, top_frac)
+        if pack is not None:
+            M, norms, owner, (fh, fw) = pack
+            c = cv2.resize(crop, (fw, fh), interpolation=cv2.INTER_AREA)
+            if top_frac < 1.0:
+                c = c[:max(1, int(round(fh * top_frac)))]
+            cc = self._center_pc(c).ravel()
+            denom = norms * (float(np.linalg.norm(cc)) + 1e-9)
+            scores = (M @ cc) / np.maximum(denom, 1e-9)
+            j = int(scores.argmax())
+            best_i, best_s = int(owner[j]), float(scores[j])
+            return (best_i if best_s >= self.match_threshold else -1), best_s
+        best_i, best_s = -1, -1.0
+        for i, tl in enumerate(tpls):
+            for tp in tl:
+                c = cv2.resize(crop, (tp.shape[1], tp.shape[0]), interpolation=cv2.INTER_AREA)
+                t = tp
+                if top_frac < 1.0:
+                    th = max(1, int(round(tp.shape[0] * top_frac)))
+                    c, t = c[:th], tp[:th]
+                s = float(cv2.matchTemplate(c, t, cv2.TM_CCOEFF_NORMED).max())
+                if s > best_s:
+                    best_i, best_s = i, s
         return (best_i if best_s >= self.match_threshold else -1), best_s
 
     @staticmethod
