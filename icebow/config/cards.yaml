@@ -999,7 +999,11 @@ cards:
     verified: false
 
   # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds."
-  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 1.0, verified: true}
+  # Its SHOTS do not shove -- only the bomb it drops when it dies does (user, 2026-08-16). The
+  # single knockback_tiles field applied to both, so every lobbed shell was pushing the push back
+  # and the tower defended far better than the real one. Split: 0 on the attack, 1.0 on the death
+  # blast, which is the "drops a bomb which explodes after 3 seconds" the wiki describes.
+  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 0, death_knockback_tiles: 1.0, verified: true}
 
   battle_ram:
     display: "Battle Ram"
