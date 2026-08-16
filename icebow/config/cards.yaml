@@ -1566,10 +1566,13 @@ cards:
   # 17/11/2023), and ANY movement or displacement (knockback/stun shove) resets it (14/12/2023
   # fix). The Guardian ability itself remains unmodeled (champion abilities are out of scope).
   little_prince:
+    # 2026-08-16 wiki sweep: hp_11 698 / dmg_11 104. The curated row carried 653/98 -- one
+    # scaling step low, because CHAMPIONS start at level 11 while the import treated the row as
+    # a common-card base. dps follows from 104/1.2.
     range: long
-    hitpoints: 653
-    damage: 98
-    dps: 82
+    hitpoints: 698
+    damage: 104
+    dps: 87
     hit_speed: 1.2
     charge_damage: 0
     attack_ramp: {per_stage: 3, mults: [1.0, 1.5, 3.0]}

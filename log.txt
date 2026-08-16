@@ -3289,3 +3289,20 @@ Notes / caveats
   0.6 s in-engine, and a spell cast inside it hits nothing at all.
 - Three legacy tests needed their timings updated (barrels genuinely resolve later now), each
   annotated with WHY rather than just bumped. Tests: BarrelTimingTests (4). 167/167 (1 skipped).
+
+2026-08-16 — FULL STAT SWEEP against the live wiki (now that cr_web can reach it)
+- Cross-checked all 94 meta-pool cards that publish a #vardefine table: hp / damage / hit speed
+  at level 11, flagging >2% (stats) or >0.05 s (speed).
+- 18 flags, 17 of them FALSE POSITIVES of my own sweep -- for MULTI-BODY cards the wiki's
+  hp_11 is not the card's main body: goblin_hut 133 is the spear goblin (hut 1228), tombstone
+  81 is a skeleton (tombstone 529), goblin_drill 202 is the goblin, battle_ram 670 is the
+  barbarians (the ram is a separate ram_hp_11 967, which we already match), goblin_cage 1080 is
+  the brawler inside (the cage is cage_hp_11 780, exactly ours). Checked each rather than
+  bulk-applying; a naive sweep would have corrupted nine cards.
+- ONE GENUINE ERROR: little_prince carried 653 hp / 98 dmg against the wiki's 698 / 104 -- one
+  scaling step low, because CHAMPIONS start at level 11 while the import treated the row as a
+  common-card base. Corrected (dps 87 follows from 104/1.2).
+- 28 cards have no vardefine table under their derived page name (archers, arrows, fireball,
+  golem, minions, pekka, poison, ...). Those pages exist but format their stats differently;
+  worth a second pass with per-card page/field mapping rather than guessing. Logged, not
+  invented. 167/167 (1 skipped).
