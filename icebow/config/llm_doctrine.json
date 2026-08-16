@@ -1,0 +1,67 @@
+{
+ "meta": {
+  "kept": 11,
+  "margin": 0.15,
+  "model": "gemma3:4b",
+  "note": "engine-verified; a proposal that did not beat holding was dropped",
+  "tested": 22,
+  "trials": 3
+ },
+ "rules": {
+  "x1|king_asleep|deep_0|worth_0|elx_10": {
+   "card": "rocket",
+   "gain": 0.933,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_0|worth_2|elx_10": {
+   "card": "rocket",
+   "gain": 1.0,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_1|worth_1|elx_10": {
+   "card": "rocket",
+   "gain": 3.833,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_1|worth_2|elx_10": {
+   "card": "tornado",
+   "gain": 0.983,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_2|worth_1|elx_7": {
+   "card": "rocket",
+   "gain": 5.179,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_3|worth_2|elx_10": {
+   "card": "the_log",
+   "gain": 0.667,
+   "wins": "2/3"
+  },
+  "x1|king_asleep|deep_3|worth_3|elx_10": {
+   "card": "the_log",
+   "gain": 1.333,
+   "wins": "3/3"
+  },
+  "x1|king_asleep|deep_3|worth_4|elx_10": {
+   "card": "tornado",
+   "gain": 1.207,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_0|worth_1|elx_10": {
+   "card": "rocket",
+   "gain": 1.1,
+   "wins": "2/3"
+  },
+  "x1|king_awake|deep_1|worth_1|elx_10": {
+   "card": "the_log",
+   "gain": 1.016,
+   "wins": "3/3"
+  },
+  "x1|king_awake|deep_3|worth_1|elx_10": {
+   "card": "the_log",
+   "gain": 0.833,
+   "wins": "3/3"
+  }
+ }
+}

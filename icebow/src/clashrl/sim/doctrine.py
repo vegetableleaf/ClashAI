@@ -110,6 +110,56 @@ def _king_spots(env, u):
     return out
 
 
+def llm_state_key(env) -> str:
+    """Coarse bucket an LLM-proposed rule generalises over.
+
+    Deliberately lossy: a rule should cover a FAMILY of boards, not one frame, and the table stays
+    small enough to read. Shared with tools/llm_doctrine.py so the key that was verified is exactly
+    the key that gets looked up -- if these two ever drift, every verified rule silently stops
+    matching, which is the failure mode a shared function exists to prevent.
+    """
+    eng = env.eng
+    foes = [u for u in eng.units if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
+    deep = sum(1 for u in foes if u.y > 0.52)
+    worth = sum(u.spec.elixir for u in foes)
+    return "|".join([
+        "ot" if eng.t >= env._double_time else ("x2" if eng.t >= 120 else "x1"),
+        "king_%s" % ("asleep" if not eng.towers[0][2].active else "awake"),
+        "deep_%d" % min(3, deep),
+        "worth_%d" % min(4, int(worth // 4)),
+        "elx_%d" % min(10, int(eng.elixir[0])),
+    ])
+
+
+_LLM_RULES = None
+
+
+def _llm_rules(env):
+    """Engine-verified LLM proposals, loaded once. Empty when the file is absent or disabled.
+
+    Every entry in this file beat "hold the card" in the engine over repeated seeds before it was
+    written -- see tools/llm_doctrine.py. Nothing a model merely asserted gets in, which matters
+    because the best local model scored 6/10 on this project's own doctrine eval and every model
+    tested made the same X-Bow-into-a-committed-push mistake the reward ledger was separately
+    found to be paying for.
+    """
+    global _LLM_RULES
+    if _LLM_RULES is None:
+        _LLM_RULES = {}
+        try:
+            if env.cfg.get("sim", "llm_doctrine", default=True):
+                import json
+                from pathlib import Path
+                # parents[3], not [2]: this module sits at src/clashrl/sim/, one deeper than
+                # cards.py, so [2] resolves to src/ and the file is silently never found.
+                p = Path(__file__).resolve().parents[3] / "config" / "llm_doctrine.json"
+                if p.exists():
+                    _LLM_RULES = json.loads(p.read_text(encoding="utf-8")).get("rules") or {}
+        except Exception:  # noqa: BLE001
+            _LLM_RULES = {}
+    return _LLM_RULES
+
+
 def _pull_resistant(u) -> bool:
     """Units a Tornado barely moves, so no rule should aim a pull at one.
 
@@ -461,6 +511,18 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         # but only while the Tornado is still there to answer a swarm. Quiet board only.
         if not ground and nid is not None and eng.elixir[0] >= 8.0:
             _bump(lid, 2.0)
+
+    # ---- LLM-PROPOSED, ENGINE-VERIFIED ------------------------------------------------------
+    # Weighted BELOW the hand-written rules on purpose. Those were derived from the deck guides
+    # and checked against the engine by hand; these cleared an automated gate, which is a lower
+    # bar. Where both fire, the hand-written rule should win the sampler.
+    rules = _llm_rules(env)
+    if rules:
+        hit = rules.get(llm_state_key(env))
+        if hit:
+            cid = _holdable(str(hit.get("card", "")))
+            if cid is not None:
+                _bump(cid, 2.5)
 
     # ---- ROCKET -----------------------------------------------------------------------------
     rid = _holdable("rocket")

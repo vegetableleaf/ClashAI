@@ -1121,6 +1121,14 @@ sim:
                                 # tiles, i.e. IN THE WATER.
     deploy_top: 0.53125         # troops deploy on your half only, and NOT in the river: 17/32 = the
                                 # near BANK, not 0.5 (=16/32, the river's centre line)
+  # LLM-PROPOSED DOCTRINE (2026-08-16). config/llm_doctrine.json holds card suggestions a local
+  # model made for coarse board buckets, each one REPLAYED IN THE ENGINE and kept only if it beat
+  # holding the card over repeated seeds -- regenerate with tools/llm_doctrine.py. It is a
+  # proposer, not an oracle: scored on tools/llm_eval.py the best local model manages 6/10 on this
+  # project's own doctrine cases, and every model tested made the same X-Bow-into-a-push mistake
+  # the reward ledger was separately found to be paying for. The gate is the whole value; on the
+  # first run it rejected half the proposals. false = ignore the file entirely.
+  llm_doctrine: true
   my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
   my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
   # WEAPON WIND-UP before a unit's FIRST hit on a new target (game-file load_time; Archer 0.4 s,
