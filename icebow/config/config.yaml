@@ -77,6 +77,11 @@ elixir:
   # and overtime is exactly when a 6-cost win condition becomes affordable, so the phase the policy
   # banks for was mistimed. The on-screen x2/x3 badge cross-checks this; the CLOCK wins a tie.
   triple_time_s: 240           # elapsed seconds when TRIPLE elixir starts (last minute of overtime)
+  overtime_time_s: 180         # elapsed seconds when OVERTIME begins. NOT derivable from the elixir
+                               # badge: overtime's first minute is still DOUBLE (triple only at 240),
+                               # so the 3x badge would report overtime a full minute late. The icebow
+                               # offence -> defence phase flip keys off THIS (2026-08-15 doctrine:
+                               # hold the siege through double elixir, turtle only once OT starts).
   x2_template: elixir_2x.png   # optional PNG in templates/ for the on-screen "x2" badge (null => time only)
   x3_template: elixir_3x.png   # optional PNG in templates/ for the on-screen "x3" badge
   badge_threshold: 0.7         # min template-match score to accept a badge

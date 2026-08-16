@@ -282,7 +282,13 @@ class SimMatchEnv:
         self.w_nado_combo = r("nado_combo", 0.6)           # >=2 pulled enemies dead shortly after (splash/rocket payoff)
         self.w_nado_king = r("nado_king_activate", 0.5)    # pull activated your sleeping king (once/match)
         self.w_nado_retarget = r("nado_retarget", 0.4)     # dragged a tower-locked wincon off your tower
-        self._double_time = float(cfg.get("sim", "regulation_s", default=180.0)) - 60.0  # 2x elixir start
+        # SIEGE WINDOW (2026-08-15, user doctrine): the offensive phase now runs until OVERTIME
+        # begins, not until double elixir does. Flipping at 2x (regulation - 60 s) surrendered
+        # the siege a full minute early -- exactly the minute where DOUBLE elixir makes a
+        # 6-cost bow affordable to re-place and defend, which is when a lock is most winnable.
+        # A match that reaches overtime still gets its whole overtime for defence + rocket
+        # cycling, which is what that phase is actually for.
+        self._double_time = float(cfg.get("sim", "regulation_s", default=180.0))   # OVERTIME start
         self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
                                                default=["royal_recruits", "royal_hogs"]))
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
@@ -1250,7 +1256,7 @@ class SimMatchEnv:
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.rw_stats.add("leak", self.w_leak)
         self.rw_stats.step(placed_id >= 0)
-        # OFFENSIVE -> DEFENSIVE phase (icebow): once you've TAKEN a tower (defend the lead), OR double elixir
+        # OFFENSIVE -> DEFENSIVE phase (icebow): once you've TAKEN a tower (defend the lead), OR OVERTIME
         # arrives and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a tower),
         # flip to defence -- rocket-cycle becomes the tower damage; the X-Bow reward moves to back-centre.
         my_c, op_c = self.eng.crowns(0), self.eng.crowns(1)

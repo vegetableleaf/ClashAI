@@ -3087,3 +3087,17 @@ Notes / caveats
   unmeasured. Also unseen in 1v1: the Exit button -- after the IN_MATCH-first reorder, keeping
   match_end_exit.png costs nothing in-match (end templates are only searched when in_match
   misses), so it stays as free insurance.
+
+2026-08-15 — X-Bow phase flip moved from 2x elixir to OVERTIME (user doctrine)
+- Was: offence -> defence the moment DOUBLE elixir arrived (regulation - 60 s). That threw away
+  the exact minute in which double elixir makes re-placing and defending a 6-cost bow easiest,
+  i.e. when a lock is most winnable. Now the siege holds until OVERTIME begins; a match that
+  reaches OT still gets its whole overtime for defence + rocket cycling, which is that phase's
+  actual purpose. Taking a tower still flips to defence immediately, as before.
+- Sim: _double_time = regulation_s (180) instead of regulation_s - 60.
+- Live: needed a real overtime signal -- the elixir badge CANNOT provide one, because OT's first
+  minute is still DOUBLE (triple only at 240 s), so `elixir_mult >= 3` would report overtime a
+  minute late. Added ElixirClock.overtime (elixir.overtime_time_s, 180 s) and keyed the live
+  flip off it. (Repaired a decorator collision introduced en route: the new @property split the
+  existing @property from multiplier(), which unit tests would not have caught -- verified by
+  hand at t=119/121/179/181/239/241 s.) 148/148 (1 skipped).

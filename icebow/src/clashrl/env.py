@@ -1060,7 +1060,14 @@ class LiveMatchEnv:
             # beatdown-punish need the opponent's cards, so they wait on the detector / Stage 3.)
             self._enemy_chip_total += max(0.0, self.tower_hp.last_enemy_chip)
             took_tower = any(prev_enemy[i] and not self.tower.enemy_alive[i] for i in range(len(prev_enemy)))
-            if not self._defensive and (took_tower or (self.elixir_mult >= 2
+            # OVERTIME, not 2x elixir (2026-08-15, user doctrine -- mirrors sim/env). elixir_mult
+            # hits 2 a minute before regulation ends; giving the siege up then threw away the
+            # minute in which double elixir makes re-placing and defending a 6-cost bow easiest.
+            # The clock reports 3x only in overtime's last minute, so overtime is detected from
+            # the match clock when available and from the 3x flip as a fallback.
+            in_overtime = (self.clock.overtime if hasattr(self.clock, "overtime")
+                           else self.elixir_mult >= 3)
+            if not self._defensive and (took_tower or (in_overtime
                     and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac)):
                 self._defensive = True
                 print("[env] phase -> DEFENSIVE (X-Bow back-centre + rocket-cycle)")

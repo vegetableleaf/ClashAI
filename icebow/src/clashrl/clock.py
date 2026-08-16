@@ -51,7 +51,12 @@ class ElixirClock:
         self.cfg = cfg
         self.vision = vision
         self.double_t = float(cfg.get("elixir", "double_time_s", default=120.0))
-        self.triple_t = float(cfg.get("elixir", "triple_time_s", default=180.0))
+        self.triple_t = float(cfg.get("elixir", "triple_time_s", default=240.0))
+        # OVERTIME START (2026-08-15). Regulation is 180 s; overtime's FIRST minute is still
+        # DOUBLE elixir (triple only arrives at 240 s -- see the four-phase schedule in
+        # sim/engine.elixir_rate), so the 3x badge cannot be used to detect that overtime has
+        # begun: it is a minute late. The icebow phase machine flips offence -> defence here.
+        self.ot_t = float(cfg.get("elixir", "overtime_time_s", default=180.0))
         self.x2_tpl = cfg.get("elixir", "x2_template", default="elixir_2x.png")
         self.x3_tpl = cfg.get("elixir", "x3_template", default="elixir_3x.png")
         self.badge_threshold = float(cfg.get("elixir", "badge_threshold", default=0.7))
@@ -120,6 +125,11 @@ class ElixirClock:
             print(f"[clock] icon reads x{b} but the clock reads x{t} -> using the clock (x{t})")
         self._mult = t                                   # the clock is authoritative on any disagreement
         return self._mult
+
+    @property
+    def overtime(self) -> bool:
+        """Has the match reached OVERTIME? (elapsed >= elixir.overtime_time_s)"""
+        return (time.time() - self._start) >= self.ot_t
 
     @property
     def multiplier(self) -> int:
