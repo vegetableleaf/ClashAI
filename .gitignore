@@ -46,3 +46,4 @@ _push_worktree/
 *.pt
 
 # Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png
+data/webcache/

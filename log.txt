@@ -3140,3 +3140,25 @@ Notes / caveats
   observation.sim_detector_presence_recall and it was already 0.85 (15% dropout). So the sim
   was already training against MORE perception noise than live now has (9%), which is the safe
   direction; left as-is rather than tightened. A duplicate key I had added was removed.
+
+2026-08-15 — Scrapling integrated: CR sources that used to block us now fetch (user side-task)
+- Problem it solves: Fandom card PAGES answer 402 to a scripted GET (the api.php workaround
+  covers the wiki only), and RoyaleAPI / Deck Shop / StatsRoyale sit behind Cloudflare -- so
+  every stat outside the wiki (balance changes, matchup tables, meta usage) had to be curated
+  by hand, which is exactly where wrong numbers come from.
+- src/clashrl/cr_web.py wraps scrapling[fetchers] with what research actually needs:
+  ESCALATION (TLS-impersonated HTTP first; a real browser via StealthyFetcher only if that is
+  blocked -- and MEASURED, all three sources succeed on the cheap path, so the browser binaries
+  from `scrapling install` are not even required yet), an on-disk cache under data/webcache
+  (re-reading the same page while refining a question must not hammer a community site), and
+  the api.php wikitext route kept as its own path.
+- TRAP FOUND: Scrapling parses EVERYTHING it fetches as an HTML document, so a JSON endpoint
+  comes back wrapped (`<html><body><p>{...`) with entities re-encoded -- api.php's wikitext came
+  out corrupted and json.loads failed. Raw/JSON fetches therefore take a stdlib path
+  (fetch_raw); Scrapling is reserved for the HTML pages that actually need it. API endpoints
+  were never the blocked things anyway.
+- VERIFIED: fandom /wiki/Hog_Rider 200 (was 402), royaleapi.com 200, deckshop.pro 200 -- all
+  via the cheap route; card_stats("Hog Rider") returns hp_11 1697 / dmg_11 317, matching our KB
+  exactly; RoyaleAPI meta usage figures now parse. Install is light (lxml/orjson/curl_cffi/
+  playwright shims) and the training stack is untouched (torch 2.11, cv2 5.0, ultralytics
+  8.4.107 all still import; sim env still steps). Tests skip themselves offline. 154/154.
