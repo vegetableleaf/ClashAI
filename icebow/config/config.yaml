@@ -199,6 +199,19 @@ observation:
   # column 0 in the sim (placements sat on columns 3/9/14) but dumped 28% of live plays there.
   # Shape is unchanged (3 channels) so checkpoints stay valid; set false to A/B against raw pixels.
   canonical_rgb_live: true
+  # DETECTOR FLICKER (2026-08-15). Measured over 72 consecutive frames of
+  # data/sessions/20260815_222309 (tracks matched by card within 0.06): a unit that is genuinely
+  # on the board is MISSING from 31% of the frames in its own lifespan, 1.71 vanish-and-return
+  # events per track. That is the blinking the user saw in the overlay, and the policy sees the
+  # same gaps in the semantic + predictive canvases. A 0.45 s hold (env._DetHold) bridges them:
+  # measured dropout 31% -> 9%, vanish-return events 12 -> 4.
+  # NB the sim ALREADY models canvas dropout at sim_detector_presence_recall 0.85 (15%) further
+  # down this file -- so after the hold the LIVE canvas (9%) is now cleaner than what the policy
+  # trains against, which is the safe direction. Left as-is rather than tightened to match.
+  det_hold_s: 0.45               # live: how long a vanished detection is re-emitted at its last
+                                 # position. Long enough to bridge the measured 1-3 frame gaps,
+                                 # short enough that a killed unit stays dead (the trade ledger's
+                                 # vanish accounting is delayed by this much and no more).
   # --- OBS-CANVAS FLIP (Stage-3c) ---------------------------------------------------------------
   # When ON, the policy's IMAGE branch stops being just the 64x96 arena render: detect_obs's SEMANTIC
   # CHANNELS are stacked on top of it (enemy ground/air/building, my ground/building, spell), so

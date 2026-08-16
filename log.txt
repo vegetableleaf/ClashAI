@@ -3123,3 +3123,20 @@ Notes / caveats
   every checkpoint stays valid. Knob: observation.canonical_rgb_live (default true) to A/B.
 - Still open (next): the detector FLICKER the user reported, and whether tornado/log placement
   improves once the image branch is in-distribution. 148/148 (1 skipped).
+
+2026-08-15 — Detector FLICKER measured and bridged (user report)
+- MEASURED on 72 consecutive frames of data/sessions/20260815_222309, tracks matched by card
+  within 0.06: a unit genuinely on the board is MISSING from 31% of the frames in its own
+  lifespan, 1.71 vanish-and-return events per track (gaps of 1-7 frames). That is the blinking
+  in the overlay -- and the same gaps punch holes in the semantic + predictive canvases.
+- FIX: env._DetHold re-emits a vanished detection at its last position for det_hold_s (0.45 s)
+  and drops it the moment a fresher sighting of the same card lands nearby. Applied on BOTH
+  detection paths (perception-loop snapshot and the synchronous fallback), cleared per match.
+  MEASURED after: dropout 31% -> 9%, vanish-return events 12 -> 4.
+  The hold is deliberately short: a killed body stays gone after 0.45 s, so the trade ledger's
+  vanish accounting is delayed by that much and no more.
+- CORRECTION to my own first reading: I checked cfg.get("sim","canvas_presence_recall") and got
+  1.0, and briefly believed the sim rendered a PERFECT canvas. Wrong key path -- it is
+  observation.sim_detector_presence_recall and it was already 0.85 (15% dropout). So the sim
+  was already training against MORE perception noise than live now has (9%), which is the safe
+  direction; left as-is rather than tightened. A duplicate key I had added was removed.

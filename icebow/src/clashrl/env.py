@@ -49,6 +49,46 @@ Action = Tuple[int, int, int]  # (play 0/1, card_id, cell)
 _TOWER_DIM = 6
 
 
+class _DetHold:
+    """Short-lived memory of recent detections, to smooth DETECTOR FLICKER.
+
+    MEASURED on data/sessions/20260815_222309 (72 consecutive frames, tracks matched by card
+    within 0.06): a unit that is genuinely on the board is MISSING from 31% of the frames in
+    its own lifespan, with 1.71 vanish-and-return events per track (gaps of 1-7 frames). The
+    user sees this as boxes blinking in the overlay; the policy sees it as units popping out of
+    the semantic + predictive canvases -- while the SIM trains on a perfect canvas
+    (canvas_presence_recall was 1.0), so it never learned to cope with the gaps.
+
+    A detection therefore survives `hold_s` seconds past its last sighting, re-emitted at its
+    last known position, and is dropped the moment a fresher sighting of the same card lands
+    nearby. The hold is deliberately SHORT: long enough to bridge the measured 1-3 frame gaps,
+    far too short to keep a dead unit alive (a killed body stays gone after hold_s, so the trade
+    ledger's vanish accounting is delayed by that much and no more).
+    """
+
+    def __init__(self, hold_s: float = 0.45, radius: float = 0.06):
+        self.hold_s = float(hold_s)
+        self.radius = float(radius)
+        self._held: list = []          # [Detection, last_seen_t]
+
+    def reset(self) -> None:
+        self._held = []
+
+    def merge(self, dets: list, now: float) -> list:
+        fresh = list(dets or [])
+        keep = []
+        for d, t in self._held:
+            if now - t > self.hold_s:
+                continue                                  # expired -- let it go
+            if any(f.base == d.base
+                   and abs(f.cx - d.cx) + abs(f.gy - d.gy) <= self.radius for f in fresh):
+                continue                                  # seen again this frame: the fresh one wins
+            keep.append((d, t))
+        out = fresh + [d for d, _ in keep]
+        self._held = [(d, now) for d in fresh] + keep
+        return out
+
+
 class _BoardDet:
     """A Detection re-expressed in BOARD coordinates for the canonical renderer (which reads
     .cx/.gy/.team). The live detector reports FRAME coords; the sim renders board-true."""
@@ -289,6 +329,7 @@ class LiveMatchEnv:
         self.use_tower_obs = bool(cfg.get("observation", "use_tower_hp", default=True))
         self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
         self._last_dets_all = []                         # every tagged detection this frame (both teams)
+        self._det_hold = _DetHold(float(cfg.get("observation", "det_hold_s", default=0.45)))
         # PUMP PUNISH (elixir collector -> rocket): sighting state for the reward + the aim assist
         self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))
         self.pump_aim_radius = float(cfg.get("env", "pump_aim_radius", default=0.10))
@@ -528,6 +569,7 @@ class LiveMatchEnv:
             self._ploop.set_towers(self.tower.mine_alive, self.tower.enemy_alive)  # pocket gating stays fresh
             dets, age = self._ploop.snapshot()
             if age <= 2.0:                                # healthy loop -> use the snapshot
+                dets = self._det_hold.merge(dets, time.time())   # bridge detector flicker
                 self._last_dets_all = dets
                 self._last_dets_age = float(age)          # trade-potential validity gate reads this
                 return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
@@ -538,6 +580,7 @@ class LiveMatchEnv:
         # a fallen princess opens the deploy POCKET in front of it -> void the side prior for that lane
         self._team_tracker.set_towers(self.tower.mine_alive, self.tower.enemy_alive)
         self._team_tracker.tag(dets, time.time())     # evidence-fused team (plays/motion/bars/pockets)
+        dets = self._det_hold.merge(dets, time.time())   # bridge detector flicker (see _DetHold)
         self._last_dets_all = dets                    # kept for the interaction block (both teams)
         self._last_dets_age = 0.0                     # synchronous pass: fresh by construction
         return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
@@ -552,7 +595,8 @@ class LiveMatchEnv:
         self.stopped = False
         self.tower.reset()
         self.tower_hp.reset()
-        self._canvas_stack.reset()        # motion history must never bridge two matches
+        self._canvas_stack.reset()
+        self._det_hold.reset()                        # flicker memory must not bridge two matches        # motion history must never bridge two matches
         self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
         self._xbow_play_t = None          # wincon repeat-credit window must not bridge two matches
