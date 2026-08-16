@@ -3025,3 +3025,22 @@ Notes / caveats
   enough to stake match-end detection on, so detect_state (~93 ms, four whole-frame searches
   with match_end checked FIRST) is left alone. What would settle it: a capture that runs
   through several match endings, including a disconnect/draw if possible.
+
+2026-08-15 — Which match-end template actually fires (user assumption corrected)
+- User: "in classic 1v1, match_end_dc does not exist since there's no teammate to disconnect."
+  Reasonable from the filename, but the footage says the OPPOSITE. On the only real ending in
+  data/sessions (20260804_192006, frames 2061-2063), match_end_dc.png fired on all three and
+  match_end.png fired on NONE. Dumping the templates explains why: they are BUTTONS --
+  match_end.png is "Exit", match_end_dc.png is "OK" -- and the 1v1 results screen shows OK.
+  So the "_dc" template is the one detecting the end of every ladder match; deleting it as
+  dead 2v2 weight would have silently disabled end detection and left nav hanging on its
+  timeout every match. Documented in config so the name can't mislead again.
+- match_end.png ("Exit") fired on 0 of 619 sampled frames across all four available videos and
+  is now the deletion candidate (a 19 ms whole-frame search every decision), pending the
+  user's multi-ending recording. The two are also reordered so the template that actually
+  fires is tried first -- no cost during a match (both are searched when neither hits) but it
+  ends the scan sooner on the frame that matters.
+- STILL PENDING on that recording: (a) drop match_end.png if it never fires in 1v1 (-19 ms),
+  (b) the detect_state reorder that checks in_match FIRST (-44 ms), which needs several
+  endings to prove in_match cannot co-fire with the results screen. Draws are not needed
+  (statistically negligible in CR, per the user).

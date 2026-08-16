@@ -121,7 +121,15 @@ states:
       - "in_match.png"
       - "in_match_v2.png"
       - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
-  match_end:  {templates: ["match_end.png", "match_end_dc.png"], threshold: 0.80}
+  # NAMES MISLEAD (verified 2026-08-15 against data/sessions/20260804_192006, frames 2061-2063):
+  # match_end.png is an "Exit" BUTTON and match_end_dc.png is an "OK" BUTTON. The 1v1 results
+  # screen shows OK, so match_end_dc.png is the template that ACTUALLY detects the end of every
+  # ladder match -- despite the "_dc" suffix suggesting a 2v2 disconnect. Do NOT drop it as
+  # dead weight for a mode we don't play; that would silently disable end detection and hang
+  # nav on its timeout every match. match_end.png fired on 0 of 619 sampled frames across all
+  # available footage and is the DELETION CANDIDATE (it costs a 19 ms whole-frame search every
+  # decision), pending a recording that covers several endings -- see log.txt.
+  match_end:  {templates: ["match_end_dc.png", "match_end.png"], threshold: 0.80}
 
 nav:
   poll_hz: 6                     # how often play() re-checks the screen state
