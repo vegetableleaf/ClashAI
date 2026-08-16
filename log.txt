@@ -3068,3 +3068,22 @@ Notes / caveats
 - LIVE PER-DECISION BUDGET after today: hand 300 -> ~2 ms, tower-HP OCR 42.5 -> 13.2 ms,
   detect_state 93 -> 22 ms. Pipeline work ~0.75 s -> ~0.33 s; with the 0.31 s tap gesture the
   floor is now ~0.64 s (was ~1.06 s). A 0.5 s act_period is within reach if the tap shrinks.
+
+2026-08-15 — play_again.png was STALE: nav had silently fallen back to fixed coords
+- Checking the new recording's three endings for the "OK only" vs "Play Again + OK" variants
+  turned up a different problem: all three endings ARE the two-button variant, but
+  play_again.png scored 0.291 against its 0.8 threshold on every one -- the template is an
+  older ORANGE button and the live one is gold. So nav's _locate() has been missing on every
+  match end and quietly using the FIXED coordinate. That still works (0.335, 0.905 lands on a
+  button whose real centre is 0.348, 0.914) but it is exactly the layout/window-drift
+  robustness the template exists to provide, and it was gone.
+- Re-cut from this recording. NB the first attempt failed at 0.301 because templates must be
+  cut in _work() SPACE (vision resizes every frame to work_width 480 before matching) -- a raw
+  656-wide crop cannot match a 480-wide working frame. Cut in work space: scores 1.000 on all
+  three endings of the new session AND 0.984 on the 2026-08-04 session's ending (a differently
+  sized window), 0 false hits on 8 mid-match frames.
+- Still unconfirmed: the "OK only, centered" variant. All 4 recorded endings so far show Play
+  Again + OK. nav already handles it (results_ok_center + the alternating escalation), just
+  unmeasured. Also unseen in 1v1: the Exit button -- after the IN_MATCH-first reorder, keeping
+  match_end_exit.png costs nothing in-match (end templates are only searched when in_match
+  misses), so it stays as free insurance.
