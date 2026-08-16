@@ -27,6 +27,7 @@ on win/loss + destruction rewards alone.
 from __future__ import annotations
 
 import pathlib
+import time as _time
 from typing import Dict, List, Optional, Tuple
 
 import cv2
@@ -229,6 +230,19 @@ class TowerHpTracker:
         self.last_enemy_frac = 0.0     # raw enemy-tower HP fraction removed last step() (rocket damage)
         self.enemy_boxes, self.my_boxes = _boxes(cfg)
         self.reader = reader if reader is not None else (DigitReader() if self.enabled else None)
+        # OCR CACHE (2026-08-15). The digit CNN runs once per tower box per decision --
+        # MEASURED 174 ms/decision on a live-sized frame, the single largest item in the
+        # vision budget. Crown-tower HP text only changes when a tower is damaged, so an
+        # unchanged crop can reuse its last read. Two guards make that safe:
+        #   * the diff distributions OVERLAP (unchanged crops: median 0.22 / p90 2.84;
+        #     changed: min 0.26 / median 14.91 over 816 sampled pairs), so a threshold alone
+        #     could mask a real change PERMANENTLY -- the cached crop would keep matching;
+        #   * hence a TTL: every box re-reads at least this often regardless. A masked change
+        #     is therefore delayed by at most hp_cache_ttl, never lost, and the reward is a
+        #     delta against the tracker's stored hp[] so the full amount still lands late.
+        self._ocr_cache: dict = {}
+        self.cache_diff = float(cfg.get("env", "hp_cache_diff", default=0.5)) if cfg else 0.5
+        self.cache_ttl = float(cfg.get("env", "hp_cache_ttl", default=1.0)) if cfg else 1.0
         if not (self.reader and self.reader.ok):
             self.enabled = False
         self.reset()
@@ -241,11 +255,26 @@ class TowerHpTracker:
         self._my_cand: List[Tuple[Optional[int], int]] = [(None, 0)] * len(self.my_boxes)
         self._my_applied = [0.0] * len(self.my_boxes)   # defence penalty already charged per my tower
 
+    def _read_cached(self, key, crop):
+        """reader.read(crop) with the unchanged-crop cache described in __init__."""
+        if self.cache_diff <= 0.0:
+            return self.reader.read(crop)
+        now = _time.time()
+        hit = self._ocr_cache.get(key)
+        if (hit is not None and hit[0].shape == crop.shape
+                and now - hit[3] < self.cache_ttl
+                and float(np.abs(hit[0].astype(np.int16) - crop.astype(np.int16)).mean())
+                < self.cache_diff):
+            return hit[1], hit[2]
+        val, conf = self.reader.read(crop)
+        self._ocr_cache[key] = (crop.copy(), val, conf, now)
+        return val, conf
+
     def _update_side(self, frame, boxes, hp, cand, full: float) -> float:
         """Enemy OFFENCE chip: + fraction of a tower's HP lost since the last confirmed read."""
         reward = 0.0
         for i, box in enumerate(boxes):
-            val, conf = self.reader.read(_crop(frame, box))
+            val, conf = self._read_cached(("e", i), _crop(frame, box))
             if val is None or conf < self.min_conf:
                 continue
             cv, cc = cand[i]
@@ -262,7 +291,7 @@ class TowerHpTracker:
         ``lose_mag`` per tower (absolute reward units, independent of hp_scale)."""
         reward = 0.0
         for i, box in enumerate(self.my_boxes):
-            val, conf = self.reader.read(_crop(frame, box))
+            val, conf = self._read_cached(("m", i), _crop(frame, box))
             if val is None or conf < self.min_conf:
                 continue
             cv, cc = self._my_cand[i]

@@ -3007,3 +3007,21 @@ Notes / caveats
   reorder (check the expected state first) tested SAFE on 144 frames, but those frames
   contained ZERO end-screen samples, so that is an inconclusive test, not a proof. Needs a
   capture that includes a real match end before it can land. 148/148 (1 skipped).
+
+2026-08-15 — LIVE PIPELINE part 2: tower-HP OCR cache (42.5 -> 13.2 ms/step)
+- The digit CNN ran once per tower box per decision. Crown-tower HP text only changes when a
+  tower is damaged, so an unchanged crop can reuse its last read -- but the diff distributions
+  OVERLAP (unchanged crops median 0.22 / p90 2.84; changed min 0.26 / median 14.91 over 816
+  sampled pairs from data/sessions), so a threshold ALONE could mask a real change forever:
+  the cached crop would keep matching it. Guarded with a TTL (hp_cache_ttl 1.0 s) so every box
+  re-reads regardless; a masked change is delayed at most 1 s, never lost, and since the reward
+  is a delta against the tracker's stored hp[] the full amount still lands late.
+- VALIDATED cached vs uncached over 100 consecutive session frames: 0 reward-mismatch steps,
+  identical cumulative reward (0.2619) and identical final tower HP. 3.2x faster.
+- SESSIONS FOLDER VERDICT (user asked): the two recordings are 2.9 and 3.7 min of IN_MATCH
+  footage and contain exactly TWO MATCH_END frames between them (one match ends, the other
+  recording stops mid-match). On those two frames in_match did NOT co-fire, which is
+  consistent with the detect_state reorder being safe -- but two frames from one ending is not
+  enough to stake match-end detection on, so detect_state (~93 ms, four whole-frame searches
+  with match_end checked FIRST) is left alone. What would settle it: a capture that runs
+  through several match endings, including a disconnect/draw if possible.
