@@ -288,6 +288,14 @@ class CardSpec:
     # RONIN (wiki): "can block the attack of opposing melee troops and deal double the
     # damage to them every 3.5 seconds" -- the blocked swing lands nothing.
     parry_cd_s: float = 0.0
+    # SKELETON BARREL (wiki 2026-08-16): "the player must account for the 0.5 second animation
+    # where NEITHER THE BARREL NOR THE SKELETONS are considered as entities; if the spell is
+    # cast during this phase, it will not affect the Skeletons." The death blast + knockback
+    # land at once; the bodies arrive after this delay. That gap IS the log-timing skill.
+    death_spawn_delay_s: float = 0.0
+    # GOBLIN BARREL: thrown from the caster's KING TOWER, so its flight time grows with the
+    # distance thrown -- the same physics the rocket already uses.
+    lobbed: bool = False
     # DELAYED DEATH BOMBS (wiki): Balloon / Giant Skeleton / Bomb Tower drop "a bomb which
     # explodes after 3 seconds"; the Giant Skeleton's deals DOUBLE against Crown Towers.
     death_delay_s: float = 0.0
@@ -673,6 +681,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         zone_spawn_gap_s=float(c.get("zone_spawn_gap_s") or 0.0),
         zone_spawn_edge=bool(c.get("zone_spawn_edge")),
         parry_cd_s=float(c.get("parry_cd_s") or 0.0),
+        death_spawn_delay_s=float(c.get("death_spawn_delay_s") or 0.0),
+        lobbed=bool(c.get("lobbed")),
         death_delay_s=float(c.get("death_delay_s") or 0.0),
         death_crown_mult=float(c.get("death_crown_mult") or 1.0),
         enrage_frac=float(c.get("enrage_frac") or 0.0),
@@ -1132,6 +1142,7 @@ class SimEngine:
         self.zones: List[_Zone] = []             # lingering areas: Poison / Void / Graveyard
         self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
         self._volleys: list = []                 # (land_t, team, x, y, spec): Evo Cannon barrage rings
+        self._late_spawns: list = []             # (due_t, spec, team, x, y, n): barrel-limbo bodies
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -1256,8 +1267,13 @@ class SimEngine:
     def _finish_deploy(self, team: int, spec: CardSpec, x: float, y: float) -> bool:
         if spec.kind == "spell":
             delay = spec.spell_delay
-            if spec.base == "rocket":                      # rocket FLIGHT TIME grows with distance from its
-                oy = 1.0 if team == 0 else 0.0             # launcher -> the policy must LEAD a marching target
+            if spec.base == "rocket" or spec.lobbed:
+                # FLIGHT TIME grows with distance from the launcher. The rocket is fired from
+                # your side; the GOBLIN BARREL is thrown from the King's Tower (wiki), and its
+                # shadow crossing the arena is what a defender reads to time the counter --
+                # "deploy the Mega Knight right as the Goblin Barrel's SHADOW crosses the
+                # river". A flat 0.4 s delay gave the defender no such window to read.
+                oy = 1.0 if team == 0 else 0.0
                 delay = 0.4 + _dist(x, y, 0.5, oy) / _TILES_Y   # (live-parity physics; ~1.4s at max range)
             self.spells.append(_Spell(team, x, y, spec, delay,
                                       echoes=max(0, spec.zap_pulses - 1)))
@@ -1795,6 +1811,22 @@ class SimEngine:
                 self._pending = [p for p in self._pending if p[0] > self.t]
                 for _, tm_, sp_, px_, py_ in due:
                     self._finish_deploy(tm_, sp_, px_, py_)
+        if self._late_spawns:
+            # SKELETON BARREL LIMBO: the bodies were promised when the barrel broke and only
+            # arrive now. Nothing exists in between -- which is exactly why a spell cast during
+            # the animation hits nothing, and why the log has to be timed to LAND here.
+            due = [q for q in self._late_spawns if q[0] <= self.t]
+            if due:
+                self._late_spawns = [q for q in self._late_spawns if q[0] > self.t]
+                for _t, sp_, tm_, px_, py_, n_ in due:
+                    for i in range(n_):
+                        ang = 2.0 * math.pi * (i / max(1, n_))
+                        rr = sp_.radius * 2.0 + 0.25
+                        sx, sy = _clamp_xy(px_ + math.cos(ang) * rr / _TILES_X,
+                                           py_ + math.sin(ang) * rr / _TILES_Y, sp_.radius)
+                        nu = Unit(sp_, tm_, sx, sy, sp_.hp)
+                        nu.deploy_left = sp_.deploy_time
+                        self.units.append(nu)
         if self._volleys:
             landing = [v for v in self._volleys if v[0] <= self.t]
             if landing:
@@ -2226,7 +2258,12 @@ class SimEngine:
                 self._spawn_cursed_hog(u)
                 if not u.from_egg:                           # a REBORN phoenix dies quietly
                     self._death_blast(u)                     # Balloon / Giant Skeleton / Bomb Tower
-                self._spawn_from(u, u.spec.spawner_death)    # death burst (Tombstone's 4, the Drill's 2)
+                if u.spec.death_spawn_delay_s > 0.0 and u.spec.spawner_spec is not None:
+                    self._late_spawns.append((self.t + u.spec.death_spawn_delay_s,
+                                              u.spec.spawner_spec, u.team, u.x, u.y,
+                                              int(u.spec.spawner_death)))   # barrel limbo
+                else:
+                    self._spawn_from(u, u.spec.spawner_death)  # death burst (Tombstone's 4, Drill's 2)
                 if u.spec.mid_drop_frac > 0.0 and not u.mid_drop_done:
                     # EVO SKEL BARREL: "if this hitpoints trigger isn't activated before reaching a
                     # building, the 2 barrels will drop at once" -- second blast + second 7 skels.

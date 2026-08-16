@@ -883,6 +883,12 @@ cards:
     display: "Goblin Barrel"
     elixir: 3
     kind: spell
+    # 2026-08-16 wiki: thrown from the King's Tower, so the FLIGHT scales with the throw
+    # distance (`lobbed`, the rocket's physics) instead of a flat 0.4 s -- the shadow crossing
+    # the arena is what a defender times against. The Goblins then take their own deploy time
+    # (balance log: "Goblins' spawn time to 1.1 seconds"), which is the window a log is thrown
+    # into. Base card deals NO impact damage (removed 4/7/2016; the Evo's "Cannonball!" adds it).
+    lobbed: true
     rarity: epic
     attacks: [ground]
     movement: none
@@ -1072,9 +1078,16 @@ cards:
     # deals NO contact damage -- the drop IS its death (kamikaze), so reaching the tower and being
     # shot down produce the same blast (death_damage 145 / 2.0 tiles from the import) + 7 skeletons.
     # (The imported `damage` row is the spawned skeleton's swing, zeroed here for the barrel body.)
+    # 2026-08-16 wiki: "the player must account for the 0.5 SECOND ANIMATION where neither the
+    # Barrel nor the Skeletons are considered as entities; if the spell is cast during this
+    # phase, it will not affect the Skeletons." The blast + knockback land when the barrel
+    # breaks; the seven bodies arrive 0.5 s later. That gap is the whole timing skill: a log
+    # thrown AT the falling barrel hits nothing, so it must be timed to land after the split.
+    # (Tornado can still displace the barrel during the animation -- not modelled.)
     flags: [flying, building_targeting, swarm, knockback, kamikaze]
     damage: 0
     dps: 0
+    death_spawn_delay_s: 0.5
     spawns: {unit: skeletons, on_death: 7}
     range: melee
     verified: true

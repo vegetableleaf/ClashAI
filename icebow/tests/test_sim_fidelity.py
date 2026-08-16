@@ -689,3 +689,70 @@ class AirReachabilityTests(unittest.TestCase):
         for key in ("lightning", "poison"):
             self.assertTrue(self.ct.profile(self.env.db, key).attacks_air,
                             "%s is an air-targeting spell (wiki); the imported row said otherwise" % key)
+
+
+class BarrelTimingTests(unittest.TestCase):
+    """The two barrels work differently and both reward log timing (2026-08-16, user request).
+
+    GOBLIN BARREL is a SPELL: the barrel is a projectile with no hitbox or health in flight,
+    thrown from the King's Tower, and the Goblins only exist once it lands (+ their deploy).
+    SKELETON BARREL is an air TROOP that flies at a building and breaks on arrival or death --
+    and the wiki is explicit that for 0.5 s afterwards "neither the Barrel nor the Skeletons are
+    considered as entities", so a spell cast into that window hits nothing at all."""
+
+    def test_goblin_barrel_flight_scales_with_throw_distance(self):
+        prev = 0.0
+        for ty in (0.30, 0.55, 0.80):
+            env = _quiet(seed=210)
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, "goblin_barrel", 11), 0.30, ty)
+            flight = env.eng.spells[-1].t
+            self.assertGreater(flight, prev, "a barrel thrown further must take longer to land")
+            prev = flight
+        self.assertGreater(prev, 0.5, "and the far throw is a real, readable window")
+
+    def test_goblin_barrel_goblins_do_not_exist_during_the_flight(self):
+        env = _quiet(seed=211)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "goblin_barrel", 11), 0.25, 0.72)
+        env.eng.advance(0.2)
+        self.assertEqual(sum(1 for u in env.eng.units if u.spec.base == "goblins"), 0,
+                         "in flight the barrel is a projectile -- nothing to hit yet")
+        for _ in range(20):
+            env.eng.advance(0.1)
+        self.assertEqual(sum(1 for u in env.eng.units if u.spec.base == "goblins"), 3,
+                         "and three Goblins arrive once it lands")
+
+    def test_a_log_thrown_too_early_misses_the_goblins(self):
+        def trial(delay):
+            env = _quiet(seed=212)
+            _silence_towers(env)
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, "goblin_barrel", 11), 0.25, 0.70)
+            t0, thrown = env.eng.t, False
+            for _ in range(60):
+                env.eng.advance(0.1)
+                if not thrown and env.eng.t - t0 >= delay:
+                    env.eng.elixir[0] = 10.0
+                    env.eng.deploy(0, build_spec(env.eng.db, "the_log", 11), 0.25, 0.76)
+                    thrown = True
+            return sum(1 for u in env.eng.units if u.spec.base == "goblins" and u.hp > 0)
+        self.assertEqual(trial(0.3), 3, "logging while the barrel is still high hits nothing")
+        self.assertEqual(trial(0.9), 0, "timed to land as they spawn, it clears all three")
+
+    def test_skeleton_barrel_has_a_limbo_where_nothing_is_hittable(self):
+        env = _quiet(seed=213)
+        _silence_towers(env)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeleton_barrel", 11), 0.30, 0.60)
+        barrel = [u for u in env.eng.units if u.team == 1][-1]
+        barrel.hp = -1.0                                  # shot down
+        env.eng.advance(0.1)
+        self.assertFalse(any(u.spec.base == "skeleton_barrel" for u in env.eng.units),
+                         "the barrel is gone")
+        self.assertEqual(sum(1 for u in env.eng.units if u.spec.base == "skeletons"), 0,
+                         "and for 0.5s NOTHING exists -- a spell cast here affects nothing")
+        for _ in range(6):
+            env.eng.advance(0.1)
+        self.assertEqual(sum(1 for u in env.eng.units if u.spec.base == "skeletons"), 7,
+                         "then seven Skeletons appear in a circle")

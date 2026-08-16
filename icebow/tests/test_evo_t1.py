@@ -194,7 +194,10 @@ class EvoT1Tests(unittest.TestCase):
         self.assertEqual(n_mid, 7, "the 75% barrel drops 7 skeletons mid-flight")
         self.assertTrue(barrel.mid_drop_done)
         barrel.hp = 0.0
-        eng.advance(0.1)
+        # +0.5 s LIMBO (2026-08-16, wiki): after the barrel breaks, "neither the Barrel nor the
+        # Skeletons are considered as entities" -- the death drop's seven arrive only after it.
+        for _ in range(8):
+            eng.advance(0.1)
         n_all = sum(1 for u in eng.units if u.team == 1 and u.spec.base == "skeletons")
         self.assertEqual(n_all, 14, "death drops the second 7")
         # (b) untouched to the tower -> BOTH barrels at once
@@ -207,6 +210,8 @@ class EvoT1Tests(unittest.TestCase):
             if b2.hp <= 0:
                 break
         self.assertLessEqual(b2.hp, 0.0, "must kamikaze on the tower")
+        for _ in range(8):        # +0.5 s LIMBO (2026-08-16) before the bodies exist
+            eng2.advance(0.1)
         n2 = sum(1 for u in eng2.units if u.team == 1 and u.spec.base == "skeletons")
         self.assertEqual(n2, 14, "unspent trigger -> both barrels drop at once")
 

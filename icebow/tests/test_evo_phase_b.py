@@ -101,7 +101,9 @@ class EvoPhaseBTests(unittest.TestCase):
         self.assertTrue(eng.deploy(0, build_spec(eng.db, "knight", 11), 0.50, 0.70))
         kn = [u for u in eng.units if u.team == 0][-1]
         hp0 = kn.hp
-        for _ in range(10):
+        # LOBBED (2026-08-16): the barrel is thrown from the King's Tower and its flight scales
+        # with the throw distance (~1.1 s to y=0.70) where it used to resolve after a flat 0.4 s.
+        for _ in range(22):
             eng.advance(0.1)
         gobs = [u for u in eng.units if u.team == 1 and u.spec.base == "goblins"]
         self.assertEqual(len(gobs), 3, "the barrel drops three goblins")
@@ -113,7 +115,7 @@ class EvoPhaseBTests(unittest.TestCase):
         self.assertEqual(gb.decoy_mirror, "goblin_barrel_decoy")
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(1, gb, 0.35, 0.70))
-        for _ in range(10):
+        for _ in range(22):        # LOBBED flight (2026-08-16): wait for the barrel to land
             eng.advance(0.1)
         mains = [u for u in eng.units if u.team == 1 and u.spec.base == "goblins"]
         decoys = [u for u in eng.units if u.team == 1 and u.spec.base == "decoy_goblin"]

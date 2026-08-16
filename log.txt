@@ -3264,3 +3264,28 @@ Notes / caveats
 - Also fixed the DATA: lightning and poison are air-targeting spells per the wiki, but the
   imported rows had them ground-only -- with the new guard they would have stopped counting as
   counters against anything flying. Tests: AirReachabilityTests (5). 163/163 (1 skipped).
+
+2026-08-16 — THE TWO BARRELS: flight, limbo, and why log timing now matters (user request)
+- Researched via the new cr_web access (wiki + Liquipedia + Deck Shop, all previously blocked):
+  * GOBLIN BARREL is a SPELL -- the barrel is a projectile with no hitbox or health in flight,
+    thrown FROM THE KING'S TOWER, and the base card deals NO impact damage (removed 4/7/2016;
+    the Evo's "Cannonball!" adds it back). Goblins spawn 1.1 s after landing (balance log).
+    The wiki's own counterplay is written in terms of the SHADOW -- "deploy the Mega Knight
+    right as the Goblin Barrel's shadow crosses the river", "when the shadow is 2 tiles above
+    the Crown Tower" -- i.e. the flight IS the readable window. The sim resolved it after a
+    flat 0.4 s, so there was no window to read and no timing to learn.
+  * SKELETON BARREL is an air TROOP that flies at the nearest building and breaks on arrival or
+    death, dealing 145 area damage + knockback and dropping 7 skeletons. Crucially the wiki is
+    explicit: "the player must account for the 0.5 SECOND ANIMATION where neither the Barrel
+    nor the Skeletons are considered as entities; if the spell is cast during this phase, it
+    will not affect the Skeletons." The sim spawned them instantly, so that whole skill was
+    invisible.
+- IMPLEMENTED: `lobbed` (goblin barrel) reuses the rocket's distance-scaled flight -- measured
+  0.72 s to y=0.30 and 1.20 s to y=0.80; and `death_spawn_delay_s` (0.5) defers the barrel's
+  bodies through a limbo where nothing is hittable.
+- VERIFIED the skill now exists: a log thrown 0.3 s after the goblin barrel kills NOTHING (the
+  goblins do not exist yet), while one thrown at 0.9 s -- barrel still in the air -- lands as
+  they spawn and clears all three. For the skeleton barrel, the break-to-bodies gap measures
+  0.6 s in-engine, and a spell cast inside it hits nothing at all.
+- Three legacy tests needed their timings updated (barrels genuinely resolve later now), each
+  annotated with WHY rather than just bumped. Tests: BarrelTimingTests (4). 167/167 (1 skipped).
