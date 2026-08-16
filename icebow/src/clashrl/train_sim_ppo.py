@@ -257,6 +257,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # the full mixture's, so the PPO ratio stays exact. Anneal to 0 to remove the scaffold.
     doctrine_frac = float(cfg.get("sim", "doctrine_frac", default=0.0))
     from .sim.doctrine import doctrine_cells as _doctrine_cells
+    from .sim.doctrine import doctrine_cards as _doctrine_cards
     if doctrine_frac > 0.0:
         print(f"[train-sim-ppo] DOCTRINE prior ON: {doctrine_frac:.0%} of the cell floor samples "
               f"from DOCTRINE.md placements when a rule matches (rollout-only, annealable)")
@@ -338,6 +339,29 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             p_c_pure = F.log_softmax(cq_m, dim=1).exp()
             if explore_floor > 0.0:
                 p_unif = playable.float() / playable.float().sum(1, keepdim=True).clamp_min(1.0)
+                if doctrine_frac > 0.0:
+                    # WHICH-CARD prior, the mirror of the cell one below. The cell prior already
+                    # knew where a rocket should go and the reward already paid 2.4 for the
+                    # tower + support 2-for-1, but neither was reachable: the card head never
+                    # selected the rocket at all (0 plays in 14,300 matches and four evals). A
+                    # card that is never sampled gets no gradient, so this nominates it in the
+                    # situations that are actually rocket situations. Uniform residue kept, so
+                    # the scaffold guides rather than dictates, and doctrine_frac -> 0 removes it.
+                    p_floor_c = p_unif.clone()
+                    for i in range(p_unif.shape[0]):
+                        dcard = rpool.doctrine_card(i) if remote else _doctrine_cards(pool[i])
+                        if not dcard:
+                            continue
+                        prior = torch.zeros_like(p_unif[i])
+                        for c_j, w_j in dcard.items():
+                            if 0 <= int(c_j) < prior.numel():
+                                prior[int(c_j)] = float(w_j)
+                        prior = prior * playable[i].float()   # never nominate an unplayable card
+                        s = prior.sum()
+                        if s > 0:
+                            p_floor_c[i] = ((1.0 - doctrine_frac) * p_unif[i]
+                                            + doctrine_frac * (prior / s))
+                    p_unif = p_floor_c
                 p_c_mix = (1.0 - explore_floor) * p_c_pure + explore_floor * p_unif
             else:
                 p_c_mix = p_c_pure

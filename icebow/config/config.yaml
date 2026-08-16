@@ -513,6 +513,15 @@ rewards:
   xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
                            #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
+  # CONDITIONAL ROCKET VALUE (2026-08-16). A rocket is worth wildly different amounts depending on
+  # the board and the clock, and pricing it flat is why it went unplayed for 14,300 matches. All of
+  # these multiply wincon_exec (3.0), so an X-Bow played correctly scores 3.0 for comparison.
+  rocket_nado_mult: 3.0    # TORNADO -> ROCKET: the pull manufactures the clump this deck otherwise never sees
+  rocket_chip_behind: 1.2  # tower chip while LOSING/level on the tiebreak -- in overtime this IS the win condition
+  rocket_chip_ahead: 0.35  # ...same chip while already ahead on the race: optional, elixir better held for defence
+  rocket_chip_early: 0.25  # ...during regulation, while the bow is still the plan
+  rocket_emergency: 0.8    # a heavy threat is over the river and nothing else in hand answers it
+  rocket_waste_mult: 0.5   # x wincon_misplace when 6 elixir lands on cheap bodies a 1-3 cost card handles
   # PUNISH WINDOW: an offensive X-Bow is a gamble when the opponent can still answer it, but a PUNISH
   # once they have overcommitted and cannot -- the siege starts firing before their answer is affordable.
   # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
@@ -1016,7 +1025,7 @@ detect:
   # non-destructive (new trl_* stems, flat folder that survives detect-import). Re-sync Label Studio
   # Local Storage to pick them up. `record` only harvests IN_MATCH frames -- it reads the screen state
   # once per capture_every_s so menus and result screens never reach the queue.
-  capture_during_train: false    # set false to disable the harvest during train-rl / record
+  capture_during_train: true    # set false to disable the harvest during train-rl / record
   capture_every_s: 5.0           # one frame every N seconds of match play
   capture_per_match: 20          # cap frames per match
   capture_session_max: 500       # cap frames for the whole train-rl / record session

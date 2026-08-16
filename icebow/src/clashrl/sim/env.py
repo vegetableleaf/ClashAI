@@ -266,6 +266,17 @@ class SimMatchEnv:
         self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
         self.rocket_combo_radius = float(cfg.get("sim", "rocket_combo_tiles", default=3.5))   # support near the aimed tower
         self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))  # rocket the pump within this of its deploy
+        # CONDITIONAL ROCKET VALUE (see _rocket_value). A rocket is not worth a fixed amount: the
+        # same cast is a game-winning tiebreak chip or six elixir thrown at three Skeletons
+        # depending entirely on the board and the clock.
+        self.rocket_min_worth = float(cfg.get("env", "rocket_min_worth", default=4.0))   # elixir in the blast to count as VALUE
+        self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))   # tornado-bundled rocket = 2-for-1 class
+        self.rocket_nado_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))      # combo timing window
+        self.rocket_chip_behind = float(cfg.get("rewards", "rocket_chip_behind", default=1.2))  # losing/level the tiebreak race
+        self.rocket_chip_ahead = float(cfg.get("rewards", "rocket_chip_ahead", default=0.35))   # already ahead on it
+        self.rocket_chip_early = float(cfg.get("rewards", "rocket_chip_early", default=0.25))   # regulation, bow still the plan
+        self.rocket_emergency = float(cfg.get("rewards", "rocket_emergency", default=0.8))      # only answer left in hand
+        self.rocket_waste_mult = float(cfg.get("rewards", "rocket_waste_mult", default=0.5))    # x wincon_misplace for cheap bodies
         self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
         self.spell_aim_radius = float(cfg.get("sim", "spell_tower_aim_tiles", default=3.8))
         # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
@@ -780,14 +791,7 @@ class SimMatchEnv:
                 val = 0.0
             return val
         if card_id in self.rocket_ids:
-            pr = self._pump_rocket(nx, ny)                   # PUMP PUNISH: rocket the fresh elixir collector
-            if pr != 0.0:
-                return pr
-            if self._rocket_combo(nx, ny):                   # rocket a princess tower + a valuable support = 2-for-1
-                return self.w_wincon * self.combo_mult
-            if self._defensive and d <= self.spell_aim_radius:
-                return self.w_wincon * 0.6                   # rocket-cycle chip = sanctioned tower damage once defensive
-            return 0.0
+            return self._rocket_value(nx, ny, d)
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
             if king.alive and tile_dist(nx, ny, king.x, king.y) <= 2.9:
@@ -824,6 +828,108 @@ class SimMatchEnv:
             both = any(t.alive and tile_dist(nx, ny, t.x, t.y) <= R + 0.3
                        for t in self.eng.towers[1][:2])
             return self.w_wincon * (self.combo_mult if both else 1.0)
+        return 0.0
+
+    def _rocket_blast(self, nx: float, ny: float):
+        """Enemy TROOPS a rocket at (nx, ny) would cover, and the elixir they are worth."""
+        hit = [u for u in self.eng.units
+               if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
+               and tile_dist(nx, ny, u.x, u.y) <= _ROCKET_RADIUS + 0.3]
+        worth = sum(float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count) for u in hit)
+        return hit, worth
+
+    def _tiebreak_gap(self) -> float:
+        """(our lowest princess HP) - (their lowest princess HP), as a fraction of a full tower.
+
+        NEGATIVE means we are LOSING the tiebreak -- our weakest tower is the lower one, so a draw
+        at time-out hands them the win. This is the quantity an icebow match in overtime is really
+        being played for, and nothing in the reward saw it before.
+        """
+        ours = [t for t in self.eng.towers[0][:2] if t.alive]
+        theirs = [t for t in self.eng.towers[1][:2] if t.alive]
+        if not ours or not theirs:
+            return 0.0
+        full = max(1.0, float(self.eng.towers[0][0].max_hp))
+        return (min(t.hp for t in ours) - min(t.hp for t in theirs)) / full
+
+    def _rocket_value(self, nx: float, ny: float, d: float) -> float:
+        """What THIS rocket is worth, conditionally -- the card's value is entirely situational.
+
+        The old branch was three flat cases (pump / 2-for-1 / any chip once defensive, else zero),
+        which priced a rocket by WHERE it landed and never by what the match needed. Rebuilt
+        2026-08-16 from the user's doctrine plus published Rocket guides, in priority order,
+        because several of these can be true at once and the best reading should win:
+
+          PUMP        an unanswered Elixir Collector out-economies a control deck (unchanged).
+          TORNADO     the deck's signature combo. A rocket-sized bundle almost never forms by
+                      itself -- the Tornado MAKES one, and the rocket is the second half. Guides
+                      are blunt that it is a timing play ("place both cards fast or the Rocket
+                      will miss"), so this only pays while a cast is still gathering.
+          2-FOR-1     tower chip + a 4-6 elixir support kill in one blast (unchanged).
+          TIEBREAK    the win condition an icebow match in overtime actually has. Chip is worth
+                      most when our weakest tower is the lower one, because that is the game we
+                      lose on a draw; it is worth much less when we are already ahead on the
+                      race and the elixir is better kept for defence.
+          EMERGENCY   a heavy threat is across the river and nothing else in hand answers it.
+                      An inefficient answer beats taking the whole push.
+          WASTE       six elixir spent on cheap bodies a 1-3 cost card would have handled.
+                      Guides call out "lone tanks" and single low-value units; the user names
+                      Skeletons and Goblins. Priced as a misplace, not merely as zero.
+        """
+        pr = self._pump_rocket(nx, ny)                       # PUMP PUNISH: fresh elixir collector
+        if pr != 0.0:
+            return pr
+        hit, worth = self._rocket_blast(nx, ny)
+        on_tower = d <= self.spell_aim_radius
+
+        nado = None                                          # TORNADO -> ROCKET
+        for wnd in reversed(self._nado_watch or ()):
+            if self.eng.t - float(wnd.get("t0", 0.0)) > self.rocket_nado_s:
+                continue
+            alive = [u for u in wnd.get("pulled", ()) if u.hp > 0 and u.spec.kind == "troop"]
+            if alive and tile_dist(nx, ny, float(wnd["cx"]), float(wnd["cy"])) <= _ROCKET_RADIUS + 1.0:
+                nado = alive
+                break
+        if nado is not None and worth >= self.rocket_min_worth:
+            # Deliberately NOT multiplied by combo_mult as well: stacking the two multipliers
+            # priced a tornado-bundled rocket at 18.0, six times an X-Bow play, which would have
+            # taught the policy that the combo is worth more than winning the tower. The bundle
+            # IS the engineered 2-for-1, so it is worth the same class, plus a bounded uplift when
+            # the same blast also reaches a tower.
+            val = self.w_wincon * self.rocket_nado_mult
+            return val + (self.w_wincon * self.rocket_chip_behind * 0.5 if on_tower else 0.0)
+
+        if self._rocket_combo(nx, ny):                       # tower + valuable support = 2-for-1
+            return self.w_wincon * self.combo_mult
+
+        if on_tower:
+            # TIEBREAK RACE. Behind or level -> this chip is the win condition; ahead -> it is a
+            # luxury. Scaled rather than gated so the policy learns the gradient, not a cliff.
+            gap = self._tiebreak_gap()
+            late = self._defensive or self.eng.t >= self._double_time
+            if late:
+                mult = self.rocket_chip_behind if gap <= 0.0 else self.rocket_chip_ahead
+            else:
+                mult = self.rocket_chip_early
+            return self.w_wincon * mult + (self.w_wincon * self.rocket_chip_behind * 0.5
+                                           if worth >= self.rocket_min_worth else 0.0)
+
+        if worth >= self.rocket_min_worth:
+            return self.w_wincon * min(1.0, worth / 10.0) * self.combo_mult
+
+        threat = next((u for u in self.eng.units
+                       if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
+                       and u.y > 0.52 and u.spec.elixir >= 4), None)
+        if threat is not None and any(tile_dist(nx, ny, u.x, u.y) <= _ROCKET_RADIUS + 0.3
+                                      for u in (threat,)):
+            cheaper = [i for i in self._hand_ids()
+                       if i in self.rocket_ids or i < 0 or self.specs[i].kind == "spell"
+                       or self.eng.elixir[0] < self.specs[i].elixir]
+            if len(cheaper) >= len(self._hand_ids()):        # nothing non-spell + affordable left
+                return self.w_wincon * self.rocket_emergency
+
+        if hit and worth < self.rocket_min_worth:
+            return self.w_wincon_mis * self.rocket_waste_mult   # six elixir on cheap bodies
         return 0.0
 
     def _rocket_combo(self, nx: float, ny: float) -> bool:

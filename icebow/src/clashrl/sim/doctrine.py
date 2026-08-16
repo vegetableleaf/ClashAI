@@ -208,6 +208,13 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         _add_spot(w, env, tgt.x, max(0.46, min(tgt.y, 0.62)), 3.5, 1.0)
 
     elif base == "rocket":
+        # TORNADO SYNERGY (user doctrine, 2026-08-16) -- FIRST, because it is the only rule that
+        # is time-critical. The Tornado is what MAKES a rocket-sized clump in this deck; a bundle
+        # that big rarely forms on its own. Aim at the pull CENTRE, where the bodies are being
+        # dragged to, not at where any one of them currently stands.
+        nado = _live_nado(env)
+        if nado is not None:
+            _add_spot(w, env, float(nado["cx"]), float(nado["cy"]), 5.0, 1.5)
         # #50: fresh pump (exists as reward; the prior points the SAMPLER at it too).
         pump = next((u for u in enemies if u.spec.base == "elixir_collector" and u.age <= 12.0), None)
         if pump is not None:
@@ -240,3 +247,128 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         return None
 
     return list(w.items()) if w else None
+
+
+# ---- WHICH card, not just where ---------------------------------------------
+
+def _blast_group(enemies, radius: float = 0.12, min_cost: int = 3, need: int = 2):
+    """The biggest cluster of enemy troops costing >= ``min_cost`` that one blast covers.
+
+    Returns (members, cx, cy) or None. `radius` is in BOARD FRACTION (Manhattan), matching the
+    existing cell rules -- a rocket's 2-tile blast on an 18x32 board.
+    """
+    heavies = [u for u in enemies if u.spec.kind == "troop" and u.spec.elixir >= min_cost]
+    best = None
+    for u in heavies:
+        near = [v for v in heavies if abs(v.x - u.x) + abs(v.y - u.y) < radius]
+        if len(near) >= need and (best is None or len(near) > len(best)):
+            best = near
+    if not best:
+        return None
+    return best, sum(v.x for v in best) / len(best), sum(v.y for v in best) / len(best)
+
+
+def _live_nado(env):
+    """An agent Tornado cast that is still gathering, with enough elixir bundled to be worth a
+    rocket. Returns the watch record (it carries the pull CENTRE) or None.
+
+    The window is deliberately short. The combo is a timing play -- "place both cards fast or the
+    Rocket will miss" -- and the pull only holds bodies together for a moment, so a rocket
+    nominated later would be aimed at a clump that has already walked apart.
+    """
+    for wnd in reversed(getattr(env, "_nado_watch", None) or ()):
+        if env.eng.t - float(wnd.get("t0", 0.0)) > 2.5:
+            continue
+        alive = [u for u in wnd.get("pulled", ()) if u.hp > 0 and u.spec.kind == "troop"]
+        if sum(u.spec.elixir for u in alive) >= 6:
+            return wnd
+    return None
+
+
+def doctrine_cards(env) -> Optional[Dict[int, float]]:
+    """{card_id: weight} prior over WHICH card to play now, or None to leave the floor uniform.
+
+    WHY THIS EXISTS (measured 2026-08-16). The cell prior above answers "where should the rocket
+    go", but nothing ever chose the rocket: 0 plays across four separate evaluations and 14,300
+    training matches. Probing the reward showed why, and it is NOT that rocket is punished --
+    a rocket that kills a 13-elixir support trio pays +1.0, and the tower + support 2-for-1 pays
+    w_wincon x combo_mult = 2.4, on par with an X-Bow play. The problem is DISCOVERY: those
+    payoffs need a precise aim on a rare board, so a uniformly-sampled rocket earns ~0.00 (or
+    -0.3 into empty ground), the policy's estimate of its value never leaves zero, and it never
+    reaches the states where the existing shaping would pay. A card the sampler never selects
+    cannot learn from any reward, however well designed.
+
+    So this nominates the rocket only in the situations that real play (and the coded rewards)
+    agree are rocket situations. Same hard rules as the cell prior: rollout-only, ground truth,
+    annealable to nothing via sim.doctrine_frac.
+    """
+    eng = env.eng
+    rocket_ids = _deck_ids(env, "rocket")
+    if not rocket_ids:
+        return None
+    rid = next(iter(rocket_ids))
+    if rid not in set(env._hand_ids()) or eng.elixir[0] < env.specs[rid].elixir:
+        return None                                  # not holdable/affordable: nothing to nominate
+    enemies = _enemies(env)
+    w: Dict[int, float] = {}
+
+    def bump(v):
+        w[rid] = max(w.get(rid, 0.0), float(v))
+
+    # 1. FRESH PUMP. An unanswered Elixir Collector out-economies a control deck; the reward
+    #    already pays full win-condition credit for killing one inside its window.
+    if any(u.spec.base == "elixir_collector" and u.age <= env.pump_window for u in enemies):
+        bump(4.0)
+
+    # 2. THE 2-FOR-1. A 4-6 elixir support body sitting next to a live princess tower is the
+    #    classic "rocket the Musketeer behind the tower" -- tower chip AND a card-advantage kill.
+    for t in eng.towers[1][:2]:
+        if not t.alive:
+            continue
+        if any(u.spec.kind == "troop" and not u.spec.building_only and 4 <= u.spec.elixir <= 6
+               and abs(u.x - t.x) + abs(u.y - t.y) < 0.14 for u in enemies):
+            bump(4.0)
+
+    # 3. A BUNDLE worth the 6 elixir. Guides put the bar at "troops typically worth 4 or more
+    #    elixir", and warn against spending it on lone cheap bodies -- so this counts the elixir
+    #    actually covered rather than the number of bodies: three Skeletons are not a rocket.
+    grp = _blast_group(enemies)
+    if grp is not None:
+        members, _, _ = grp
+        if sum(u.spec.elixir for u in members) >= 6:
+            bump(3.5 if len(members) >= 3 else 3.0)
+
+    # 4. TORNADO SYNERGY -- the reason clumps exist in this deck at all. A rocket-sized bundle
+    #    rarely forms by itself; the Tornado MAKES one, and the follow-up has to be immediate
+    #    ("place both cards fast or the Rocket will miss"). While a cast is still pulling, the
+    #    rocket is the intended second half of the combo.
+    if _live_nado(env) is not None:
+        bump(5.0)
+
+    # 5. THE TIEBREAK RACE (user doctrine, 2026-08-16). An icebow match that reaches overtime is
+    #    decided by whose LOWEST princess tower is lower, so once the bow is not breaking through,
+    #    rocket-cycling the weaker enemy tower is the win condition -- "launch a Rocket in the
+    #    final ten seconds to assure your victory". Only nominate while we are actually behind on
+    #    that race or level with it; if our lowest tower is already the healthier one, chipping is
+    #    optional and the elixir is better held for defence.
+    if env._defensive or eng.t >= env._double_time:
+        ours = [t for t in eng.towers[0][:2] if t.alive]
+        theirs = [t for t in eng.towers[1][:2] if t.alive]
+        if ours and theirs:
+            my_low = min(t.hp for t in ours)
+            op_low = min(t.hp for t in theirs)
+            if op_low >= my_low:                     # losing or level on the tiebreak
+                bump(4.5)
+
+    # 6. NO CHEAPER ANSWER. A heavy threat is over the river and nothing else in hand answers it.
+    #    Rocket is not the efficient counter, but "acceptable ... if you have no other effective
+    #    answer in your hand" -- a bad trade beats taking the whole push.
+    threat = _deepest_ground_threat(env)
+    if threat is not None and threat.spec.elixir >= 4 and threat.y > 0.52:
+        others = [i for i in env._hand_ids()
+                  if i != rid and i >= 0 and eng.elixir[0] >= env.specs[i].elixir
+                  and env.specs[i].kind != "spell"]
+        if not others:
+            bump(3.0)
+
+    return w or None
