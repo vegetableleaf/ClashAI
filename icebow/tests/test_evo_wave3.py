@@ -264,7 +264,13 @@ class EvoWave3Tests(unittest.TestCase):
         self.assertTrue(eng.deploy(1, gc, 0.50, 0.55))
         cage = _one(eng, 1)
         eng.elixir = [10.0, 10.0]
-        self.assertTrue(eng.deploy(0, build_spec(eng.db, "knight", 11), 0.42, 0.55))
+        # 0.38, not 0.42: the Goblin Cage's body is 1.0 tiles (game-file collision_radius 1000,
+        # imported 2026-08-16 -- it used to take the 0.5 baseline fallback). At 0.42 the Knight now
+        # starts INSIDE the cage's reach, so the cage just brawls him and the hook never fires --
+        # which is correct behaviour, not a regression. 0.38 puts him back where the test means him
+        # to be: a passer-by outside reach but inside the 3-tile hook. Verified he is reeled 0.60
+        # tiles there.
+        self.assertTrue(eng.deploy(0, build_spec(eng.db, "knight", 11), 0.38, 0.55))
         kn = _one(eng, 0)
         for _ in range(12):
             eng.advance(0.1)

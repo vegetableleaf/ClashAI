@@ -34,6 +34,8 @@ import math
 from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
+from .. import levels as _lv
+
 # --- BOARD GEOMETRY (tiles) -------------------------------------------------------------------
 # Set once per process from `sim.board` by SimEngine.__init__ (every env in a process shares one
 # config, so module-level is safe and keeps `_dist` / `build_spec` free of an engine reference).
@@ -184,8 +186,17 @@ class CardSpec:
     # vulnerability is per-SPELL, not purely a property of the target.
     knockback_all: bool = False
     # This BODY shrugs off the small-to-medium pushback (Fireball / Giant Snowball / Rocket / Bowler).
-    # Curated: CR's underlying mass is not published as a field, only named in prose. See cards.yaml.
+    # Sourced from the game files' `ignore_pushback` (21 units), which both CONFIRMED the curated
+    # list and extended it: the wiki prose enumerates "heavy troops such as the Prince, Sparky, ...",
+    # and reading that as exhaustive had left every giant-class tank knockable. The wiki settles it
+    # in the Giant Snowball page's own words -- pushback applies "if small or medium sized", and a
+    # Giant or Elixir Golem is only SLOWED.
     knockback_immune: bool = False
+    # Shove weight, straight from the game files (Skeleton 1, Knight 6, Giant 18, Golem 20). None
+    # for cards newer than the 2023 dump -- _push_mass falls back rather than treating them as
+    # weightless. NOT derivable from collision_radius: six different units share a 0.5 radius and
+    # have masses from 1 to 6.
+    mass: Optional[float] = None
     roll_len: float = 0.0     # forward length of the roll corridor (tiles)
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
@@ -527,8 +538,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         p_stun = float(evo.get("pulse_stun", 0.0))
         p_int = float(evo.get("pulse_interval", 0.0))
         dmg_reduc = float(evo.get("damage_reduction", 0.0))  # Evo Knight: takes this fraction LESS damage while not attacking
-    sc = 1.1 ** (int(level) - 11)                             # CR level scaling: HP + damage only
-    hp *= sc; dmg *= sc; dps *= sc; tower_dmg *= sc; p_dmg *= sc
+    # CR level scaling: HP + damage only. NOT 1.1^(level-11) -- the game floors a level-1 base
+    # against a hand-authored percentage table that drifts off the 10% rule (256% at L11, not
+    # 259%; 409% at L16, not 418%). See levels.py for how the table was derived and verified.
+    # Scaling each stat through `scale()` reproduces the game's own rounding exactly.
+    hp = _lv.scale(hp, level); dmg = _lv.scale(dmg, level)
+    dps = _lv.scale(dps, level); tower_dmg = _lv.scale(tower_dmg, level)
+    p_dmg = _lv.scale(p_dmg, level)
+    sc = _lv.ratio(level)                                     # for stats with no integer base
     sight = float(db.sight_range_tiles(base))                  # per-troop aggro radius, TILES (from the KB)
     # SIEGE WIND-UP (2026-08-15, wiki attr tables): X-Bow and Mortar publish a 3.5 s deploy
     # time where everything else takes 1 s -- that window is the whole counterplay to an
@@ -591,7 +608,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # so a defensive Log was shoving a push 2.3x too far up the arena.
         knockback=knockback_tiles,
         knockback_all=("knockback_all" in flags),
-        knockback_immune=("knockback_immune" in flags),
+        # either the curated flag OR the game files' ignore_pushback (imported as a plain field)
+        knockback_immune=("knockback_immune" in flags) or bool(c.get("knockback_immune")),
+        mass=db.mass(base),
         roll_len=(float(c.get("roll_tiles") or _LOG_ROLL_LEN) if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
@@ -1034,20 +1053,25 @@ def _body_radius(ref) -> float:
 
 
 def _push_mass(spec) -> float:
-    """How hard a body is to SHOVE, from its VOLUME (collision radius cubed).
+    """How hard a body is to SHOVE -- the game's own `mass`, not a guess from its size.
 
     Body-blocking used to split every push 50/50, so a 0.5-radius 81 hp Skeleton moved a 0.75-radius
     3968 hp Giant exactly as far as the Giant moved it. MEASURED: six Skeletons cut a Giant to 34% of
     its unblocked pace and nine to 30% -- a swarm was stopping a tank dead, which is not a play that
     exists in the game.
 
-    Volume is used rather than the obvious momentum (mass x speed) because SPEED MAKES IT WORSE, not
-    better: the small units are the fast ones (Skeletons 1.5 tiles/s vs a Giant's 0.75), so weighting
-    by speed hands the swarm MORE shoving power. The radius is the one SOURCED size we have
-    (cr-api-data collision_radius), and cubing it is the physical reading of "bigger body, heavier",
-    with no free parameter to tune. Giant/Skeleton comes out 3.4:1.
+    The fix for that was `radius ** 3`, on the stated grounds that CR's mass "is not published as a
+    field, only named in prose". That was wrong: the game files publish `mass` for all 119
+    characters, and the volume approximation missed badly in both directions. It put a Giant at 3.4x
+    a Skeleton where the game says 18x, and -- worse -- it gave Knight, Musketeer, Archer, Skeleton,
+    Goblin and Bat the SAME shoving weight, because they all share a 0.5 collision radius, when
+    their real masses are 6, 5, 3, 1, 2 and 1. Size and heft are simply different fields.
+
+    `spec.mass` is None for the handful of cards released after the dump froze; those keep the old
+    volume estimate rather than defaulting to weightless.
     """
-    return float(spec.radius) ** 3
+    m = getattr(spec, "mass", None)
+    return float(m) if m else float(spec.radius) ** 3 * 48.0   # 48: volume->mass at the 0.5/6 anchor
 
 
 def _gap(ax: float, ay: float, ref) -> float:
@@ -1162,11 +1186,15 @@ class SimEngine:
         self.last_deploy = {0: None, 1: None}    # (spec, x, y, t) of each team's most recent deploy
 
     def _make_tower(self, x: float, y: float, troop: str, level: int, king: bool) -> Tower:
-        """Build one Tower from a tower-troop profile (config/wiki stats at my_tower_level), scaling HP +
-        damage by CR's 1.1^(level-ref) so an opponent's rolled level tunes its tower like its cards do."""
+        """Build one Tower from a tower-troop profile (config/wiki stats at my_tower_level), scaling to
+        the opponent's rolled level on the TOWER tables -- which are not the card table and not each
+        other: a Princess Tower gains 8% per level, the King's Tower 7%, cards 10%. Damage is one
+        shared progression across both towers. Using 1.1^(level-ref) here was the worst place to
+        approximate, because tower HP is the denominator of every chip-damage reward."""
         prof = self.king_profile if king else self.tower_troops.get(troop, self.tower_troops.get("princess", {}))
-        sc = 1.1 ** (int(level) - self.tower_ref_level)
-        hp = float(prof.get("hp", 4424.0)) * sc
+        ref = self.tower_ref_level
+        hp = _lv.tower_scale(float(prof.get("hp", 4424.0)), level, ref, king=king)
+        sc = _lv.tower_scale(1.0, level, ref, king=king, damage=True)   # shared damage table
         hit_speed = float(prof.get("hit_speed", 0.8))
         dps = float(prof.get("dps", 197.0))
         tw = Tower(x, y, hp, hp, king=king, active=(not king),
