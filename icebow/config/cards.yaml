@@ -1261,6 +1261,11 @@ cards:
     rarity: legendary              # Tornado drags it, both as in game.
     attacks: [ground]
     movement: ground
+    speed_tiles: 0                 # STATIONARY: the egg is dropped where the Phoenix died and stays
+                                   # there. It was inheriting the "medium" 1 tile/s default and
+                                   # walking off down the lane, which both moved the reborn bird away
+                                   # from the fight it died in and made the egg harder to snipe than
+                                   # it should be. Needs the explicit-zero fix in build_spec to hold.
     range: melee
     splash: false
     count: 1
