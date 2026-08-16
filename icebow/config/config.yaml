@@ -726,8 +726,15 @@ env:
                                  # acting at OVERTIME and printed a 0-0 result while play continued
                                  # (the terminal path then finds no scoreboard -> outcome None).
   results_timeout: 30.0          # max seconds to wait for the results screen at match end
-  enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.48, 0.11]]
-  my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]]
+  # KING x CORRECTED 2026-08-16 from the session replay. The arena is symmetric about a vertical
+  # axis, and perspective is symmetric with it, so the king's centre x is the SAME as the midpoint
+  # of its own two princess towers at every depth. Both king anchors were listed at 0.480 while
+  # those midpoints are 0.4950 (mine) and 0.4975 (theirs) -- an error of ~0.3 tiles, ~10 px, in the
+  # same direction on both sides. BoardWarp anchors on these, so every board->frame mapping near
+  # the king was skewed left by that much: exactly where the Tornado king-activation spots live,
+  # and a systematic bias on any tap aimed near the centre line.
+  enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.4975, 0.11]]
+  my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.4950, 0.72]]
   # FIELD-EDGE + RIVER anchors for BoardWarp (frame-normalized; measured 2026-08-14 from
   # timelapse_20260814_230750, REFINED same night from the user's placeable-area outline).
   # Tower anchors alone left board 0 / 0.5 / 1 to extrapolation, and the first measurement
