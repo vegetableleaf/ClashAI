@@ -636,12 +636,17 @@ train:
   # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
   # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
   # disable it for the session. OFF by default -- turn it on deliberately.
-  llm_advisor: false
-  llm_advisor_model: qwen2.5:latest   # 0.589s p50; gemma3:4b scores better (6/10 vs 5/10) but takes 1.006s
-  llm_advisor_timeout_s: 0.8          # hard budget; act_period is 1.0s and the bot is BLIND during the call
+  llm_advisor: true
+  llm_advisor_model: qwen2.5:latest   # 0.590s p50 WITH the doctrine prompt. gemma3:4b scores better
+                                      # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it
+                                      # to 3.020s -- unusable inside a 1.0s act_period. Raising act_period
+                                      # to ~3.5s would buy those two cases at the cost of reaction time.
+  llm_advisor_timeout_s: 0.9          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
+                                      # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
+                                      # prompt, so 0.8 clipped the tail into needless random fallbacks.
   llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
-  rl_epsilon_start: 0.10
-  rl_epsilon_end: 0.05
+  rl_epsilon_start: 0.50
+  rl_epsilon_end: 0.10
   rl_epsilon_decay_steps: 1000
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir

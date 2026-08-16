@@ -10,10 +10,11 @@ harness, not the model:
     before falling back to 127.0.0.1 -- about 2 s, every call; and
   * every call opened a fresh TCP connection instead of reusing one.
 
-Fixing both drops a 7B model to 0.589 s p50 / 0.610 s worst, and a 0.5B model to 0.347 s. Model
-SIZE barely moved the number (0.5B and 4B were within half a second of each other), which is what
-gave the artefact away: compute was never the cost. So this module keeps ONE persistent connection
-to the numeric address and never uses a hostname.
+Fixing both drops a 7B model to 0.589 s p50, and a 0.5B model to 0.347 s. On the TINY models size
+barely moved the number, which is what gave the artefact away -- compute was never the 2.4 s. It
+does matter once the model and the prompt are real: with the doctrine prompt below, qwen2.5 7B
+sits at 0.590 s p50 / 0.823 s tail while gemma3 4B takes 3.020 s. So this module keeps ONE
+persistent connection to the NUMERIC address, never a hostname.
 
 WHERE IT PLUGS IN, AND WHY THAT IS SAFE
 ---------------------------------------
@@ -25,10 +26,11 @@ which is why the sim gets the offline doctrine table instead.) So the effect her
 exploration stops being uniform noise and starts being plausible play, and the Q-learner gets a
 replay buffer of sensible actions to learn from.
 
-It is an ADVISOR, not an oracle. Scored on tools/llm_eval.py the best local model manages 6/10 on
-this project's own doctrine cases. That is far better than uniform-random over the hand, which is
-what it replaces -- and it never touches the greedy action, so a bad suggestion costs one
-exploration step, not a match.
+It is an ADVISOR, not an oracle. On tools/llm_eval.py the live model scores 6/10 on this project's
+own doctrine cases -- far better than the uniform-random pick it replaces, and it never touches the
+greedy action, so a bad suggestion costs one exploration step rather than a match. The ceiling
+there is the PROMPT more than the model: adding the deck's decision rules took gemma3 4B from
+3/10 to 8/10, which is why the prompt below states rules and not just card roles.
 
 HARD RULES
 ----------
@@ -53,7 +55,7 @@ class LLMAdvisor:
         self.model = model or g("train", "llm_advisor_model", default="qwen2.5:latest")
         # Budget, not a hope: act_period is 1.0 s and the bot cannot see during the call.
         self.timeout = float(timeout if timeout is not None
-                             else (g("train", "llm_advisor_timeout_s", default=0.8) or 0.8))
+                             else (g("train", "llm_advisor_timeout_s", default=0.9) or 0.9))
         self.host, self.port = host, int(port)
         self._conn = None
         self.calls = self.hits = self.fails = 0
@@ -88,13 +90,32 @@ class LLMAdvisor:
         """Return a card name from ``hand``, or None. None means "caller decides as usual"."""
         if not hand or self.disabled:
             return None
+        # SHARP RULES, not just roles. Measured on tools/llm_eval.py, putting the deck's actual
+        # decision rules in the prompt moved gemma3:4b from 3/10 to 8/10 -- the ceiling was the
+        # PROMPT, not the model.
+        #
+        # It is not free, though, and an earlier note here wrongly said it was. That claim came
+        # from measuring 60 vs 191 tokens on 0.5B/1B models, where the difference vanished into
+        # per-request overhead. On a real model it does not: this prompt takes gemma3:4b from
+        # 1.006 s to 3.020 s, which is why gemma3 cannot be the live advisor despite scoring
+        # better. qwen2.5 7B holds 0.590 s p50 with it, with a 0.823 s tail -- hence the timeout
+        # default below.
         prompt = (
-            "Clash Royale, ICEBOW deck (X-Bow control). Roles: x_bow is the win condition and your "
-            "tower damage; tesla is the defensive building that pulls and survives; ice_wizard "
-            "slows a whole group; knight bodies-blocks; skeletons distract, reset a charge and "
-            "cycle for 1; the_log clears cheap GROUND swarms; rocket hits 4+ elixir support, a "
-            "fresh pump, or chips the weaker tower in overtime; tornado bunches enemies, drags an "
-            "attacker into your own King Tower to wake it, and barely moves a Giant or Golem.\n\n"
+            "Clash Royale, ICEBOW deck (X-Bow control). Apply this doctrine:\n"
+            "- x_bow: the win condition and your tower damage. Do NOT plant it into a push that is "
+            "already committed -- it dies before it fires.\n"
+            "- tesla: the defensive building; it pulls attackers and SURVIVES, so it is the answer "
+            "to a committed push.\n"
+            "- ice_wizard: slows a whole group at once. knight: cheap mini-tank, bodies-blocks.\n"
+            "- skeletons: 1 elixir -- distract a tank so your defence gets free seconds, reset a "
+            "charge, or cycle.\n"
+            "- the_log: clears cheap GROUND swarms and resets charges; CANNOT hit air. Always log "
+            "a tombstone at half health.\n"
+            "- rocket: only on 4+ elixir support, a FRESH elixir collector, or chipping the weaker "
+            "tower in overtime. NEVER on cheap bodies a 1-3 cost card handles. Never on their KING.\n"
+            "- tornado: bunch enemies for splash, drag an attacker into your own King Tower to wake "
+            "it, or pull defenders off your bow. It barely moves a Giant or Golem -- if a TANK is "
+            "in front of a Hog, use ROCKET, not tornado.\n\n"
             "%s\nHAND: %s\nELIXIR: %.0f/10\n\nPick the single best card to play now."
             % (situation, ", ".join(hand), elixir)
         )
