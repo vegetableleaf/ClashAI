@@ -86,10 +86,30 @@ class LLMAdvisor:
         self._conn = None
 
     # -- the ask --------------------------------------------------------
+    def suggest_plan(self, situation: str, hand: list, elixir: float):
+        """An ORDERED answer of one to three cards, or [] -- a defence, not a single card.
+
+        Counters in this game are rarely one-to-one. A Giant with a Musketeer behind it is not
+        answered by any single card in an icebow hand; it is answered by Tesla to hold the Giant
+        and then Log or Ice Wizard for the support. Asking "the single best card" cannot express
+        that, and worse, it distorts the FIRST card too: the best opener of a good two-card defence
+        is frequently not the best card considered alone (Knight first only makes sense if the Log
+        is coming behind it).
+
+        The live loop plays one card per decision, so a combination is necessarily a SEQUENCE
+        across consecutive decisions. This returns that sequence; the caller commits to it and
+        spends it in order, re-planning when the board changes underneath it.
+        """
+        return self._ask(situation, hand, elixir, plan=True)
+
     def suggest(self, situation: str, hand: list, elixir: float):
-        """Return a card name from ``hand``, or None. None means "caller decides as usual"."""
+        """Single-card form, kept for callers that only take one action."""
+        got = self._ask(situation, hand, elixir, plan=False)
+        return got[0] if got else None
+
+    def _ask(self, situation: str, hand: list, elixir: float, plan: bool):
         if not hand or self.disabled:
-            return None
+            return []
         # SHARP RULES, not just roles. Measured on tools/llm_eval.py, putting the deck's actual
         # decision rules in the prompt moved gemma3:4b from 3/10 to 8/10 -- the ceiling was the
         # PROMPT, not the model.
@@ -119,13 +139,18 @@ class LLMAdvisor:
             "%s\nHAND: %s\nELIXIR: %.0f/10\n\nPick the single best card to play now."
             % (situation, ", ".join(hand), elixir)
         )
-        schema = {"type": "object",
-                  "properties": {"card": {"type": "string", "enum": list(hand)}},
-                  "required": ["card"]}
+        schema = ({"type": "object",
+                   "properties": {"cards": {"type": "array", "minItems": 1, "maxItems": 3,
+                                            "items": {"type": "string", "enum": list(hand)}}},
+                   "required": ["cards"]}
+                  if plan else
+                  {"type": "object",
+                   "properties": {"card": {"type": "string", "enum": list(hand)}},
+                   "required": ["card"]})
         body = json.dumps({"model": self.model,
                            "messages": [{"role": "user", "content": prompt}],
                            "format": schema, "stream": False, "keep_alive": "60m",
-                           "options": {"temperature": 0.0, "num_predict": 16}})
+                           "options": {"temperature": 0.0, "num_predict": 48 if plan else 16}})
         self.calls += 1
         t0 = time.time()
         try:
@@ -133,21 +158,26 @@ class LLMAdvisor:
             c.request("POST", "/api/chat", body=body,
                       headers={"Content-Type": "application/json"})
             raw = c.getresponse().read()
-            got = json.loads(json.loads(raw)["message"]["content"]).get("card")
+            msg = json.loads(json.loads(raw)["message"]["content"])
+            got = msg.get("cards") if plan else [msg.get("card")]
         except Exception as e:  # noqa: BLE001
             # Any failure at all: drop the connection so the next call starts clean, and let the
             # caller fall back. A live loop must never wait on this.
             self._reset()
             self._note_fail("%s: %s" % (type(e).__name__, e))
             self.total_s += time.time() - t0
-            return None
+            return []
         self.total_s += time.time() - t0
-        if got in hand:
+        out = []
+        for c_ in (got or []):
+            if c_ in hand and c_ not in out:
+                out.append(c_)
+        if out:
             self.hits += 1
             self._streak = 0
-            return got
+            return out
         self._note_fail("reply outside the hand: %r" % (got,))
-        return None
+        return []
 
     def _note_fail(self, why):
         self.fails += 1

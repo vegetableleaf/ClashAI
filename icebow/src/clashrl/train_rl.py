@@ -307,6 +307,7 @@ def train_rl(cfg, init: str | None = None) -> None:
     own_cards = set(card_names) | {_base_key(k) for k in card_names}
     advisor = None
     advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
+    plan: list = []          # the advisor's remaining ordered cards for this board
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor
         advisor = LLMAdvisor(cfg)
@@ -416,10 +417,21 @@ def train_rl(cfg, init: str | None = None) -> None:
             # it cannot answer in time it returns None and this falls straight back to random.
             c = None
             if advisor is not None:
-                pick = advisor.suggest(situation,
-                                       [card_names[i] for i in playable], elixir)
-                if pick is not None and pick in card_names:
-                    idx = card_names.index(pick)
+                # A DEFENCE IS USUALLY MORE THAN ONE CARD, and the live loop plays one card per
+                # decision -- so the answer is a SEQUENCE spent over consecutive turns. Ask once,
+                # then spend the plan in order. This also means the opening card can be the one
+                # that must land FIRST rather than the one that scores best alone (a Knight in
+                # front only makes sense if the Log is coming behind it), which a per-decision
+                # single-card question can never express.
+                while plan and (card_names.index(plan[0]) not in playable):
+                    plan.pop(0)              # cycled away or unaffordable -> that step is spent
+                if not plan:
+                    plan[:] = advisor.suggest_plan(
+                        situation, [card_names[i] for i in playable], elixir) or []
+                    if plan and advisor_log:
+                        print("[train-rl]   plan: %s" % " -> ".join(plan))
+                if plan:
+                    idx = card_names.index(plan.pop(0))
                     if idx in playable:
                         c = idx
             if c is None and advisor is not None and advisor_log:
@@ -637,6 +649,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             if collector is not None:
                 collector.new_match()
             nstep.buf.clear()                    # never bridge transitions across matches
+            plan.clear()                         # a plan is about ONE board; never carry it into a new match
             ep_reward = 0.0
             plays = 0
             hand = env.hand_vec.copy()
