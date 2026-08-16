@@ -690,6 +690,11 @@ env:
   tower_shaping: true
   tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
   tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
+  match_end_confirm: 3           # consecutive frames the board must be UNRECOGNISED before the live
+                                 # env declares the match over. Without this a single bad read ended
+                                 # the episode mid-match -- measured 2026-08-15 when the bot stopped
+                                 # acting at OVERTIME and printed a 0-0 result while play continued
+                                 # (the terminal path then finds no scoreboard -> outcome None).
   results_timeout: 30.0          # max seconds to wait for the results screen at match end
   enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.48, 0.11]]
   my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.48, 0.72]]

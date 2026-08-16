@@ -330,6 +330,8 @@ class LiveMatchEnv:
         self.sight_range = float(cfg.get("sim", "sight_range", default=0.12))
         self._last_dets_all = []                         # every tagged detection this frame (both teams)
         self._det_hold = _DetHold(float(cfg.get("observation", "det_hold_s", default=0.45)))
+        self._not_in_match = 0          # consecutive frames the board was NOT recognised
+        self.match_end_confirm = int(cfg.get("env", "match_end_confirm", default=3))
         # PUMP PUNISH (elixir collector -> rocket): sighting state for the reward + the aim assist
         self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))
         self.pump_aim_radius = float(cfg.get("env", "pump_aim_radius", default=0.10))
@@ -596,7 +598,8 @@ class LiveMatchEnv:
         self.tower.reset()
         self.tower_hp.reset()
         self._canvas_stack.reset()
-        self._det_hold.reset()                        # flicker memory must not bridge two matches        # motion history must never bridge two matches
+        self._det_hold.reset()                        # flicker memory must not bridge two matches
+        self._not_in_match = 0        # motion history must never bridge two matches
         self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
         self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
         self._xbow_play_t = None          # wincon repeat-credit window must not bridge two matches
@@ -1213,7 +1216,27 @@ class LiveMatchEnv:
             self._last_obs = self._observe(frame)
             self._cad["obs"] += time.time() - t0
             self._last_frame = frame
+            self._not_in_match = 0                  # a good frame clears the debounce
             return self._last_obs, reward, False, {"elixir": self.elixir, "elixir_mult": self.elixir_mult}
+
+        # NOT IN_MATCH -> but ONE bad frame must not end a live match (2026-08-15, user report:
+        # the bot "shut down completely when overtime hit" and the results line printed 0-0
+        # while the match was still going). The branch below is terminal and there was no
+        # confirmation in front of it, so any single perception hiccup -- an overtime banner
+        # covering the UI element in_match keys on, a spell flash, an emote popup -- ended the
+        # episode. _resolve_terminal then found no scoreboard (the match is still running),
+        # which is precisely the `seen == 0 -> outcome None` path and the 0-0 print.
+        # Same shape as env.tower_confirm_steps: require N CONSECUTIVE bad reads. Costs at most
+        # N decisions of latency when a match really has ended (the results screen persists far
+        # longer than that), and costs nothing when it has not.
+        self._not_in_match += 1
+        if self._not_in_match < self.match_end_confirm:
+            if self._not_in_match == 1:
+                print(f"[env] board not recognised ({state.name}) -- holding the match open "
+                      f"({self._not_in_match}/{self.match_end_confirm})", flush=True)
+            return self._last_obs, 0.0, False, {"elixir": self.elixir,
+                                                "elixir_mult": self.elixir_mult,
+                                                "unrecognised": int(self._not_in_match)}
 
         # match is over -> resolve win/loss terminal reward, then exit
         reward, outcome, detail = self._resolve_terminal()

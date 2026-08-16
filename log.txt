@@ -3162,3 +3162,27 @@ Notes / caveats
   exactly; RoyaleAPI meta usage figures now parse. Install is light (lxml/orjson/curl_cffi/
   playwright shims) and the training stack is untouched (torch 2.11, cv2 5.0, ultralytics
   8.4.107 all still import; sim env still steps). Tests skip themselves offline. 154/154.
+
+2026-08-15 — LIVE: one bad frame could end a match ("shut down at overtime", 0-0 result)
+- User report: the bot stopped acting when OVERTIME hit and the results line printed 0-0 while
+  the match was still being played. Confirmed in the run's own telemetry: match 2 has
+  outcome=None, last play at t=159 s, elixir multipliers only ever 1 and 2 -- i.e. it died right
+  at the 180 s overtime boundary, before 3x could ever appear.
+- CAUSE is structural, not overtime-specific. env.step() reads `if state == IN_MATCH: ...
+  return done=False` and EVERYTHING ELSE falls straight through to the terminal branch, with no
+  confirmation in front of it. So a single unrecognised frame ends the episode; _resolve_terminal
+  then looks for a scoreboard that is not there, takes the `seen == 0 and no towers fell` path,
+  and reports outcome None with 0-0 crowns. Exactly the observed symptom.
+  (The overtime banner is the likely trigger -- in_match_ot.png has never fired in ANY footage I
+  have sampled, 0 hits over ~1250 frames -- but the fix must not depend on that, since an emote
+  popup or a spell flash would do the same thing.)
+- FIX: env.match_end_confirm (3) consecutive unrecognised frames before the match is declared
+  over, the same shape as tower_confirm_steps. Cleared on every good frame and on reset() so a
+  stale count cannot end the NEXT match early. Costs at most 3 decisions of latency on a real
+  ending (the results screen persists far longer); costs nothing otherwise. Logs the first
+  unrecognised frame so a recurring hiccup is visible rather than silent.
+- Tests: test_match_end_debounce (4) -- single hiccup absorbed, short run absorbed + counter
+  resets, a real ending still terminates, and reset() clears it. 158/158 (1 skipped).
+- STILL OPEN: in_match_ot.png does not fire. If the debounce log shows repeated unrecognised
+  frames at overtime, the OT banner template needs re-cutting from an overtime frame (must be
+  cut in _work() space, work_width 480 -- see the play_again.png lesson).
