@@ -20,8 +20,10 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
+import math
+
 from .. import threat_value
-from .engine import _TORNADO_RADIUS
+from .engine import _TILES_X, _TILES_Y, _TORNADO_RADIUS, build_spec
 
 
 def _tower_level(env) -> int:
@@ -32,7 +34,96 @@ def _enemy_level(env) -> int:
     """The level the opponent's cards are assumed to sit at, for the ignore-cost model."""
     return int(env.cfg.get("sim", "enemy_card_level", default=11) or 11)
 
-# ---- geometry helpers -------------------------------------------------------
+# ---- placement geometry -----------------------------------------------------
+#
+# The fundamentals research (2026-08-16) produced two placement rules that every guide states and
+# nothing here implemented. Both are GEOMETRY, so they are computed from the engine's own tower
+# positions and ranges rather than transcribed as magic tile numbers -- which also let the first
+# one be checked, and it failed.
+
+
+def _tiles(ax: float, ay: float, bx: float, by: float) -> float:
+    """Distance in TILES between two board points (the board is 18 x 32 tiles, not square)."""
+    return math.hypot((ax - bx) * _TILES_X, (ay - by) * _TILES_Y)
+
+
+def _my_princesses(env):
+    return [t for t in env.eng.towers[0][:2] if getattr(t, "hp", 0) > 0]
+
+
+def _double_cover(env, x: float, y: float) -> bool:
+    """Do BOTH our princess towers reach a unit standing here?
+
+    This is the whole point of the centre pull -- "troops stuck in the centre take damage from the
+    building AND both towers" -- and it is a hard geometric fact, so it is measured, not guessed.
+    MEASURED against the engine at its configured 8.0-tile tower reach: the centre double-cover
+    zone begins **3.69 tiles from the river** (y = 0.6154 at x = 0.50), close to the guides' folk
+    rule of "four tiles from the river, dead centre" without being identical to it -- their number
+    is for the real game's 7.5-tile towers, where the same computation gives 4.40.
+
+    It also showed the existing Tesla pull spot (0.48, 0.585) is 8.51 tiles from BOTH princess
+    towers, outside the reach of each, so the rule named after this benefit was not obtaining it.
+    That gap is the reason to compute the rule instead of transcribing the tile number.
+    """
+    rng = float(env.cfg.get("sim", "tower_range", default=7.5) or 7.5)
+    towers = _my_princesses(env)
+    return len(towers) >= 2 and all(_tiles(x, y, t.x, t.y) <= rng for t in towers)
+
+
+def _spell_pair_risk(env, x: float, y: float) -> bool:
+    """Could ONE spell the opponent is known to hold hit this cell AND one of our towers?
+
+    A circle of radius r covers two points only if they are within 2r of each other, so this is
+    exact given the radius. Radii come from the engine's own specs (rocket 2.0, fireball 2.5,
+    lightning/poison 3.5 tiles) rather than a guide's table, so they cannot drift apart.
+
+    This is why placements are quoted as "7-2 avoids Rocket value on the tower and the building":
+    a structure parked next to a tower turns their spell into a two-for-one for free.
+    """
+    known = _opp_cards(env)
+    if not known:
+        return False
+    towers = _my_princesses(env)
+    if not towers:
+        return False
+    for base in known:
+        try:
+            spec = build_spec(env.db, str(base), 11)
+        except Exception:  # noqa: BLE001
+            continue
+        if spec.kind != "spell" or not spec.spell_radius:
+            continue
+        reach = 2.0 * float(spec.spell_radius)
+        if any(_tiles(x, y, t.x, t.y) <= reach for t in towers):
+            return True
+    return False
+
+
+#: how hard the two geometric rules push. Deliberately mild -- they REWEIGHT the spots a rule
+#: already proposed rather than moving them, so a tuned rule keeps its intent and the sampler
+#: still sees every option.
+_DOUBLE_COVER_BONUS = 1.4
+_SPELL_RISK_PENALTY = 0.6
+
+
+def _shape_placement(w: Dict[int, float], env, base: str) -> None:
+    """Apply the two geometric rules to a finished cell prior, in place.
+
+    Only for STRUCTURES. A troop is gone in seconds and its placement is about the engagement;
+    a building or an X-Bow stands there for its whole lifetime, which is what makes both the
+    double-cover payoff and the one-spell-two-targets risk worth paying for.
+    """
+    if not w or base not in ("tesla", "x_bow", "bomb_tower", "cannon", "tombstone"):
+        return
+    acts = env.actions
+    gw = int(acts.gw)
+    for cell in list(w):
+        cx, cy = acts.cell_center(int(cell) % gw, int(cell) // gw)
+        if _double_cover(env, cx, cy):
+            w[cell] *= _DOUBLE_COVER_BONUS
+        if _spell_pair_risk(env, cx, cy):
+            w[cell] *= _SPELL_RISK_PENALTY
+
 
 def _add_spot(w: Dict[int, float], env, x: float, y: float, weight: float = 3.0,
               ring: float = 1.0) -> None:
@@ -193,8 +284,24 @@ def _pull_resistant(u) -> bool:
 # ---- the rule table ---------------------------------------------------------
 
 def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
-    """(cell, weight) prior for playing ``card_id`` right now, or None (caller falls back to the
-    uniform floor). Weights need not be normalised; the caller masks to deployable and normalises."""
+    """(cell, weight) prior for playing ``card_id``, with the geometric rules applied.
+
+    A thin wrapper on purpose. The rule body below has SIX exit points, and shaping each one
+    separately is exactly the kind of edit that silently misses a branch -- so the shaping happens
+    once, here, where nothing can route around it.
+    """
+    got = _doctrine_cells_rules(env, card_id)
+    if not got:
+        return got
+    keys = env.deck_keys
+    base = keys[card_id][:-4] if keys[card_id].endswith("_evo") else keys[card_id]
+    w = dict(got)
+    _shape_placement(w, env, base)
+    return list(w.items())
+
+
+def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
+    """The hand-written rule table. See :func:`doctrine_cells` for the shaping applied on top."""
     keys = env.deck_keys
     if not (0 <= card_id < len(keys)):
         return None
@@ -219,6 +326,18 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
         _add_spot(w, env, 0.48, y, 4.0, 1.5)
         _add_spot(w, env, 0.44, y, 1.5, 0.5)
         _add_spot(w, env, 0.52, y, 1.5, 0.5)
+        # THE DOUBLE-COVER SPOT, which the band above does not reach. Measured: (0.48, 0.585) sits
+        # 8.51 tiles from BOTH princess towers, outside the 8.0 reach of each -- so the rule named
+        # for the centre pull was collecting the pull and none of the crossfire that is supposed to
+        # pay for it. Coverage starts at y = 0.615 (3.69 tiles from the river).
+        #
+        # Added ALONGSIDE rather than replacing it, at a comparable weight, because the two trade
+        # against each other in a way this cannot settle from geometry: deeper buys both towers,
+        # shallower stops the push further from the tower. Both are sampled and the reward decides.
+        # Not offered against an EARTHQUAKE deck, where the whole point of the shallow spot is to
+        # sit above the region their spell farms.
+        if "earthquake" not in _opp_cards(env):
+            _add_spot(w, env, 0.50, 0.645, 3.5, 1.2)
 
     elif base == "x_bow":
         if env._defensive:

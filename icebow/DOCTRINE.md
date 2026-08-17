@@ -19,6 +19,21 @@ shows.
 
 ---
 
+## 0. Fundamentals — the tier above the catalog
+
+**Added 2026-08-16** after live play showed the model "defending" a lone Skeletons. Everything in
+§3 answers *what beats X*; nothing asked *is X worth beating*. These rules run **first**, and the
+catalog only applies once they say there is a decision to make.
+
+| # | Rule | The number behind it | Where it lives |
+|---|---|---|---|
+| F1 | **Triage: is it worth a card?** A Princess Tower kills small things unaided. | `threat_value.ignore_cost_frac` — tower HP lost if ignored, from our own card DB at our tower level. Skeletons **0.4%**, Spear Goblins 1.5%, Bats 2.7%, Ice Wizard 2.9%. 28 cards under 5%; 22 over 20%. | `threat_value.py`; sim = top of `doctrine_cards`, live = `_needs_answer()` in train_rl, **before** the advisor |
+| F2 | **Threats add.** Three ignorable units arriving together are one real push. | `group_ignore_frac` sums the group; triage is never per-body | same |
+| F3 | **Outrange beats health.** Anything reaching past the tower never enters the trade at all. | Princess, Mortar, X-Bow → **unbounded**, never ignorable however little health they have. The naive model called the Princess free at 0.4% | `ignore_cost_frac` returns `inf` |
+| F4 | **Defence is minimising damage, not preventing it** (the 2.6 Hog principle). Taking 200 damage beats overspending; never spend more than the push cost. | — | advisor prompt |
+| F5 | **Cheapest card that works; keep the answer** to their win condition in hand. | — | advisor prompt |
+| F6 | **Hold is a play.** The advisor may decline to spend. | Was structurally impossible: the reply schema was `enum=hand`, so the grammar forbade what the prompt asked for | `llm_advisor.HOLD` |
+
 ## 1. Card niches
 
 | Card | Niche | Key facts the rules lean on |
@@ -200,7 +215,26 @@ How the evolutions CHANGE our answers. Rows keyed to the counter catalog's numbe
 ## 4. Standing placement priors (the always-on shape hints)
 
 1. **Defensive band discipline**: buildings at y 0.52–0.62, centre-biased; never deeper than 0.62 unless EQ-flag.
+   > ⚠️ **MEASURED CONFLICT (2026-08-16) — needs your call.** Every guide says the centre pull's
+   > payoff is that *both* princess towers reach the pulled unit. On this engine (8.0-tile reach,
+   > towers at y 0.7969) that starts **3.69 tiles from the river**, and after the 24-row grid
+   > quantises it, **row 15 (y 0.6458, 4.67 tiles) is the shallowest double-covered cell — row 14
+   > (0.6042) is covered by neither tower.** So "never deeper than 0.62" and "both towers cover"
+   > cannot both hold: there is no compromise cell on this grid.
+   >
+   > Worse, the existing Tesla pull spot (0.48, 0.585) is **8.51 tiles from both** towers — outside
+   > each — so the rule named for the centre pull was collecting the pull and none of the crossfire
+   > meant to pay for it.
+   >
+   > Not silently overridden. The row-15 spot is added **alongside** the shallow one at a comparable
+   > weight so PPO samples both and the reward arbitrates — the trade (deeper buys crossfire,
+   > shallower stops the push further out) is not decidable from geometry. Suppressed under the
+   > EQ-flag, where the shallow spot exists precisely to dodge their quake region.
 2. **Anti-spell spacing**: our defensive trio never within one fireball radius (0.12) of each other (#44).
+   Now also enforced against **their** spells: a structure is down-weighted where one cast would
+   cover it *and* a princess tower. Exact, since a circle of radius r covers two points only within
+   2r — radii read from the engine's own specs (rocket 2.0, fireball 2.5, lightning/poison 3.5
+   tiles), never transcribed, so they cannot drift apart from the sim.
 3. **Lane bows at the edges** vs rocket/spell decks (#47); centre-forward bows only on the front row.
 4. **IW default depth**: 0.64–0.68, behind whatever is tanking; never first.
 5. **Skeletons cycle spot**: back corners (0.10/0.86, 0.85+) when cycling; ON the target when defending.
@@ -214,4 +248,6 @@ How the evolutions CHANGE our answers. Rows keyed to the counter catalog's numbe
 - Supercell August 2026 balance notes (X-Bow shot-wasting fix; Hero Ice Golem rework) + thephrasemaker.com August 2026 balance explainer (Evo Knight / Evo Recruits as anti-siege)
 - Repo measurements: Hunter CR mined response matrix (log.txt 2026-08-12 night), his X-Bow placement/timing distributions (53% offensive both-lane bridge spots at 0.16–0.27/0.73–0.84 × y 0.50; 25% defensive band 0.42–0.63 × 0.56–0.59; ~5.4 bows/match, re-bow median 24 s; phases 1x 39 / 2x 32 / 3x 5)
 - User-review corrections (2026-08-14): anti-EQ Tesla "(0-3)" spot confirmed via Theria Tesla guide; Firecracker king-activation bait geometry via zleague.gg + TikTok tech guides; Mortar 3.5-tile blind-spot/retarget mechanics via Clash Royale Wiki + clash.world Mortar guide; Log ground-only purge; Rocket-on-Balloon demoted to last resort; skels-on-locked-princess mitigation added
+- **Defensive fundamentals sweep (2026-08-16)** — the §0 tier. ClashDecks (top-5 defensive tips; elixir management 101; counter-push mechanics with opponent-elixir thresholds 0-3/3-5/6+/full; control-deck mastery), clashroyalearena.com common-mistakes and deploying guides, jeu.video "defend for less" (spend only what the attack requires; a few points of tower damage do not justify a second troop and a spell), clashroyale.wiki kiting guide, 2.6 Hog guides ("the art of 2.6 defence is minimising damage, not preventing it"; 4-3 vs 4-2 against jumping win conditions; 3-3 vs Mega Knight), sportskeeda win-condition/bridge-spam/graveyard defence guides, Fandom building-placement blogs (X-Y convention; 7-2/7-3 dodges Rocket value, 2-3/3-4 dodges Fireball, 4-6/3-5 dodges Lightning/Poison), highgroundgaming archetype guide, elixir-rate references (1 per 2.8s / 1.4s / 0.933s).
+  The recurring finding: **every fundamental is stated as prose or as a tile number to memorise, never as something computable** — so §0's numbers come from our own card DB and the engine's geometry instead, which is how the 8.51-tile pull-spot error surfaced.
 - Midladder package (3h, 2026-08-14): X-Bow ~65% WR vs Mega Knight + kite-centre/mini-tank-plus-DPS counters via TrophyCoach, gamerant, androidayuda MK guides + Clash Royale Wiki (MK takes damage mid-jump, no i-frames); MK king-activation lines (Tornado pull-to-king; two-jump bait chain: unit 4 tiles from king +1 into his lane, then skels 1 tile from king pre-second-jump) via TikTok tech guides (mauticlive et al.); 2026 meta context (Hero powers + March deck-slot rework: 1 Evo/1 Hero/1 Wild) via lootbar/ldshop/kingboost/trophycoach 2026 meta articles. Boss Bandit mechanics NOT reliably documented -- row 65 marked for in-game verification.
