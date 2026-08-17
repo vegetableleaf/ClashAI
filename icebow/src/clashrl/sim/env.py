@@ -286,6 +286,9 @@ class SimMatchEnv:
         self.damage_spell_ids = {i for i in range(self.n_cards)
                                  if self.specs[i].kind == "spell" and self.specs[i].spell_dmg > 0.0}
         self.w_spell_waste = r("spell_waste", -0.3)
+        # A defensive BUILDING spent on a quiet board while they still hold a win condition.
+        # Same shape as spell_waste but for the card that has to still BE there later.
+        self.w_building_waste = r("building_waste", -0.4)
         self.spell_waste_radius = float(cfg.get("sim", "spell_waste_tiles", default=4.5))
         # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
         # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
@@ -1219,6 +1222,50 @@ class SimMatchEnv:
         d = (credit - debit) / self.value_norm
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
+    def _building_waste(self, card_id: int) -> float:
+        """A defensive BUILDING spent with nothing to defend against.
+
+        The reported failure (user, 2026-08-16): the model plants a Tesla in a good spot on an
+        EMPTY board, its 30 s lifetime runs out, and the opponent's win condition then arrives
+        with no building left to pull it. Nothing priced that -- spell_waste covers an empty
+        cast, and there was no equivalent for a building, so an early Tesla was free.
+
+        A building is not a spell: it keeps working for its whole lifetime, so this must not fire
+        merely because the board is quiet THIS INSTANT. It fires when the board is quiet *and*
+        the opponent still holds a win condition we would want the building for -- i.e. exactly
+        the case where holding it is strictly better than spending it.
+
+        The X-Bow is excluded by the siege flag: it is a building by kind, but it is our win
+        condition, and planting it on a quiet board is the correct play, not a waste.
+        """
+        spec = self.specs[card_id]
+        if spec.kind != "building" or spec.siege:
+            return 0.0
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if committed and threat_value.group_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+            return 0.0                                   # a real threat is here: this is its job
+        # Quiet board. Only a waste if they still have a win condition to bring.
+        if not self._opp_holds_wincon():
+            return 0.0
+        return self.w_building_waste
+
+    def _opp_holds_wincon(self) -> bool:
+        """Does the opponent's deck contain a win condition that is not currently on the board?
+
+        That is the thing a defensive building is being SAVED for. If their win condition is
+        already committed, the building is answering it and nothing here applies.
+        """
+        onboard = {u.spec.base for u in self.eng.units if u.team == 1 and u.hp > 0}
+        for base in (getattr(self.opponent, "cards", None) or []):
+            if base in onboard:
+                continue
+            if card_threat.profile(self.db, str(base)).win_condition:
+                return True
+        return False
+
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
         """True when a DAMAGE spell is cast with NOTHING to hit -- no enemy unit within its blast radius AND
         not aimed at a live enemy princess tower (chipping a tower is a valid target). A SOFT nudge against
@@ -1326,6 +1373,7 @@ class SimMatchEnv:
                     self._ev_spells.append((nx, ny, float(spec.spell_radius or 2.0), self.eng.t))
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.rw_stats.add("spell_waste", self.w_spell_waste)                                    # (soft) damage spell cast into emptiness
+                reward += self.rw_stats.add("building_waste", self._building_waste(card_id))   # a Tesla spent on a quiet board while their wincon is still in hand
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
                 self._cf_open()             # ...and fork the alternative branch where we HELD this card

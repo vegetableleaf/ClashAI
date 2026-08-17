@@ -22,6 +22,7 @@ from typing import Dict, List, Optional, Tuple
 
 import math
 
+from .. import card_threat
 from .. import threat_value
 from .engine import _TILES_X, _TILES_Y, _TORNADO_RADIUS, build_spec
 
@@ -657,6 +658,26 @@ def _live_nado(env):
     return None
 
 
+def _hold_the_building(env, w: Dict[int, float], quiet: bool) -> Dict[int, float]:
+    """Strip DEFENSIVE-BUILDING nominations from a quiet board, whatever proposed them.
+
+    A post-filter rather than a condition inside each rule, because the nomination that actually
+    caused the reported behaviour came from the auto-generated LLM rule table, not from a
+    hand-written rule -- and any future rule can make the same mistake. Enforcing it once, at the
+    exit, means no rule can route around it.
+
+    Same condition as the reward's ``_building_waste``, deliberately: the prior must not nominate
+    what the reward then charges for. The X-Bow is exempt via the siege flag -- it is a building
+    by kind but it is our win condition.
+    """
+    if not quiet or not w:
+        return w
+    if not env._opp_holds_wincon():
+        return w                       # nothing left to save it for
+    return {c: v for c, v in w.items()
+            if not (env.specs[c].kind == "building" and not env.specs[c].siege)}
+
+
 def doctrine_cards(env) -> Optional[Dict[int, float]]:
     """{card_id: weight} prior over WHICH card to play now, or None to leave the floor uniform.
 
@@ -704,19 +725,47 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # The prior REPLACES the exploration floor over the cards it names, so nominating the right
     # card here is also how a wrong one gets suppressed.
     committed = [u for u in enemies if u.y > 0.42 and u.spec.kind != "spell"]
-    if committed:
-        cost = threat_value.group_ignore_frac(
-            env.db, [u.spec.base for u in committed],
-            tower_level=_tower_level(env), enemy_level=_enemy_level(env))
-        if cost < threat_value.IGNORE_FRAC:
-            # NOT a defence situation. The tower handles this by itself, so the elixir belongs in
-            # the win condition -- "with an empty enemy board and 6+ elixir the play is the X-Bow;
-            # otherwise cycle the cheapest card or hold".
+    # An EMPTY board is the strongest version of "nothing to answer", not a special case to skip:
+    # leaving it out is how a Tesla got nominated into open grass, which is exactly the play the
+    # user reported (planted well, dead of old age before their win condition arrived).
+    cost = threat_value.group_ignore_frac(
+        env.db, [u.spec.base for u in committed],
+        tower_level=_tower_level(env), enemy_level=_enemy_level(env)) if committed else 0.0
+    quiet = cost < threat_value.IGNORE_FRAC
+    if quiet:
+        # NOT a defence situation. The tower handles this by itself, so the elixir belongs in the
+        # win condition -- "with a quiet enemy board and 6+ elixir the play is the X-Bow;
+        # otherwise cycle the cheapest card or hold".
+        #
+        # HOLD is the default, and the thresholds are the reason. This deck is 3.5 cycle, not 2.9:
+        # banking is correct play, so a cycle card is nominated only near the LEAK point where
+        # holding starts throwing elixir away. Nominating it at 2 elixir would have taught the
+        # opposite of the deck's own doctrine.
+        if eng.elixir[0] >= 6.0:
             _bump(_holdable("x_bow"), 4.0)
+        if eng.elixir[0] >= 8.0:
             cheap = min((i for i in hand if eng.elixir[0] >= env.specs[i].elixir),
                         key=lambda i: env.specs[i].elixir, default=None)
             _bump(cheap, 1.5)
-            return w or None
+        # NO early return. The rules below also cover plays keyed off THEIR half -- rocketing a
+        # fresh Elixir Collector, the support parked behind their tower, the overtime tiebreak --
+        # and returning here made every one of them unreachable whenever our own half was quiet,
+        # which is precisely when those plays are correct. The defensive rules below cannot fire
+        # on a quiet board anyway: each needs an enemy near our side to trigger at all.
+
+    # ---- TESLA IS FOR THEIR WIN CONDITION ---------------------------------------------------
+    # It pulls and it SURVIVES, which is exactly what a win condition needs answering with, and
+    # it has a 30 s lifetime -- so one spent early is simply not there when the Hog/Giant/Balloon
+    # arrives. The user's report: a Tesla planted in a good spot on an EMPTY board, dead by the
+    # time the real push came. The reward now prices that (env._building_waste); this is the
+    # other half -- when a win condition IS on the board, Tesla outranks everything else.
+    wincons = [u for u in enemies
+               if u.y > 0.30 and card_threat.profile(env.db, u.spec.base).win_condition]
+    if wincons:
+        _bump(_holdable("tesla"), 6.0)                # above every other rule in this table
+        # and the cheap support that buys the building time to do its work
+        _bump(_holdable("skeletons"), 3.0)
+        _bump(_holdable("ice_wizard"), 3.0)
 
     # ---- DEFEND THE STANDING BOW ------------------------------------------------------------
     # The bow is the deck's tower damage, and an unprotected one dies to whatever they send at it
@@ -790,7 +839,7 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # ---- ROCKET -----------------------------------------------------------------------------
     rid = _holdable("rocket")
     if rid is None:
-        return w or None
+        return _hold_the_building(env, w, quiet) or None
 
     def bump(v):
         _bump(rid, v)
@@ -851,4 +900,4 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         if not others:
             bump(3.0)
 
-    return w or None
+    return _hold_the_building(env, w, quiet) or None
