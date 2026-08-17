@@ -14,23 +14,36 @@ at all:
 > **1683 such steps. The reward read NOTHING on 665 of them — 39.5%.**
 
 So the blind spot is live and large, and the labelling is justified. But the priority list is not
-the one I guessed. Ranked by how often each win condition was actually committed-and-invisible:
+the one I guessed. Ranked by how often each win condition was actually committed-and-invisible,
+against the boxes that are **actually in the training split**:
 
-| card | blind commits | instances | vs the bar |
-|---|---|---|---|
-| **wall_breakers** | 168 | 64 | biggest single gap, and it was not in my original scope |
-| **giant** | 140 | 59 | |
-| **battle_ram** | 87 | 56 | |
-| **golem** | 81 | 67 | |
-| **skeleton_barrel** | 69 | 97 | |
-| **goblin_drill** | 55 | 68 | |
-| **goblin_giant** | 46 | 58 | |
-| ram_rider | 19 | 122 | lower priority |
-| royal_giant | 0 | 131 | never committed in this sample |
-| graveyard | 0 | 99 | never committed in this sample |
+| card | blind commits | train boxes | val boxes | in frozen val subset? |
+|---|---|---|---|---|
+| **wall_breakers** | 168 | **7** | 2 | no |
+| **giant** | 140 | **5** | 1 | no |
+| **battle_ram** | 87 | **7** | 1 | no |
+| **golem** | 81 | **13** | 3 | no |
+| **skeleton_barrel** | 69 | **19** | 6 | no |
+| **goblin_drill** | 55 | **1** | 1 | no |
+| **goblin_giant** | 46 | **11** | 2 | no |
+| ram_rider | 19 | 31 | 4 | no |
+| royal_giant | 0 | 39 | 8 | no |
+| graveyard | 0 | **0** | 0 | no |
+| *balloon (the bar)* | — | *40* | *12* | *yes — **R 1.00*** |
+| *hog_rider* | — | *91* | *19* | *yes — moderate* |
 
-Reference points: balloon 156 instances → R 1.00; hog_rider 276 → moderate tier; valkyrie 375 →
-still 0.33.
+**The bar is far lower than I first claimed.** Balloon reaches **R 1.00 on 40 training boxes**.
+Giant has 5. Wall Breakers has 7. Golem has 13. Graveyard has never been labelled at all. These
+classes are not *hard*, they are **untrained** — which is the cheap kind of problem.
+
+**None of the ten appears in the frozen val subset**, so no detector generation has ever been
+graded on any of them. "Broken on board-13" was never measured for these; they were simply never
+in the test.
+
+> **Correction to an earlier version of this file.** It listed 56–131 instances per class. That
+> count swept every `.txt` under `data/detect`, including staging and batch folders that are not
+> in the training split, and overstated the real numbers by roughly 10x. The table above counts
+> `labels/train` and `labels/val` only.
 
 **Two corrections to my original scope.** `royal_giant` and `graveyard` did not commit once in
 this sample and drop off the list. `wall_breakers`, `battle_ram`, `skeleton_barrel`,
@@ -102,11 +115,17 @@ cloud of spawning skeletons, so it behaves like a swarm class, not a body. If it
 the bar, the fallback is to key off its *skeletons* (already a class) plus the spawn footprint
 rather than the spell itself.
 
-## Effort
+## Effort (revised against the corrected counts)
 
 - **No new capture needed for a first pass.** 20,075 images on disk, 6,408 labelled →
   **13,667 already unlabelled**.
-- Target ~150 instances per class from **≥20 distinct scenes** each.
+- Target **~40 train boxes per class** — Balloon's demonstrated bar for R 1.00 — plus **~10 val
+  boxes** so recall becomes measurable at all. That is roughly 8 classes x 50 boxes ≈ **400
+  boxes**, most frames carrying one instance.
+- Add those val frames to the frozen subset, otherwise the next generation still cannot be graded
+  on them and we repeat this exercise.
+- The old target below (~150 instances from ≥20 scenes) was set before the counts were corrected
+  and is more than these classes need.
 - `pre-annotate` turns the job into *correcting* boxes, not drawing them.
 - Estimate: **~600 frames to review, roughly 2–3 hours** of hand-labelling, plus one detector
   retrain (board-14). The retrain is GPU work and the PPO run is `--device cpu`, so they coexist.
