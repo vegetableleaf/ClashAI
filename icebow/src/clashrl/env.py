@@ -28,7 +28,8 @@ from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
                      pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell,
-                     xbow_lock_cell, xbow_offense_depth_cell, tesla_pull_cell)
+                     xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
+                     tesla_pull_cell)
 from .reward import TILE as _TILE
 from .clock import ElixirClock
 from .states import GameState
@@ -403,6 +404,18 @@ class LiveMatchEnv:
         self.hand_vec = self.vision.hand_multihot(self.hand_ids)
         self.next_id = self.vision.recognize_next(frame)
         self.next_vec = self._cycle_tracker.observe(self.hand_ids, self.next_id)
+
+    def _enemy_tower_hp(self):
+        """[left, right] enemy princess HP for the placement assists, or None when unread.
+
+        The live digit read, not a fraction: xbow_target_lane_cell compares the two against each
+        other and normalises by the larger, so raw HP is what it wants.
+        """
+        hp = getattr(self, "tower_hp", None)
+        vals = list(getattr(hp, "enemy_hp", []) or [])
+        if len(vals) < 2 or any(v is None for v in vals[:2]):
+            return None
+        return [float(vals[0]), float(vals[1])]
 
     def _tower_frac(self) -> np.ndarray:
         """6-dim crown-tower HP block in the SAME layout the sim trained on (sim/view.tower_vector):
@@ -1041,6 +1054,17 @@ class LiveMatchEnv:
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
+                # WHICH TOWER FIRST, then whether it locks. Order matters: xbow_lock_cell snaps to
+                # the NEARER princess, so if the bow is sitting in a lane whose tower is already
+                # down, running it first cements the mistake. Live overtime showed exactly that --
+                # several perfect bows, all of them in the dead lane.
+                lane = xbow_target_lane_cell(cx, cy, enemy_a, self._enemy_tower_hp(),
+                                             self.tower.enemy_alive, self.xbow_defense_front,
+                                             self.actions)
+                if lane is not None:
+                    cell = lane
+                    gx, gy = cell % self.gw, cell // self.gw
+                    cx, cy = self.actions.cell_center(gx, gy)
                 snapped = xbow_lock_cell(cx, cy, enemy_a, self.xbow_range, self.xbow_defense_front, self.actions)
                 if snapped is not None:
                     cell = snapped

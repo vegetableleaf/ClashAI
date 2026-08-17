@@ -435,8 +435,31 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
             mass_left = sum(u.spec.elixir for u in enemies if u.x < 0.5)
             mass_right = sum(u.spec.elixir for u in enemies if u.x >= 0.5)
             wl, wr = (4.0, 2.0) if mass_right > mass_left else (2.0, 4.0) if mass_left > mass_right else (3.0, 3.0)
-            _add_spot(w, env, left, 0.50, wl, 1.0)
-            _add_spot(w, env, right, 0.50, wr, 1.0)
+            # WHICH TOWER IS WORTH SHOOTING beats which lane is emptier. Live overtime, one tower
+            # down each side: several technically perfect offensive bows, every one of them in the
+            # lane whose enemy princess was ALREADY DESTROYED -- six elixir aimed at nothing, since
+            # the bow can then only fall through to the far tankier king.
+            #
+            # Applied as a multiplier on the lane weights rather than a new spot, so the punish
+            # rule above still chooses BETWEEN live lanes and only loses its say when one of them
+            # has nothing left to shoot at.
+            etw = env.eng.towers[1]
+            l_alive = etw[0].hp > 0 if len(etw) > 0 else True
+            r_alive = etw[1].hp > 0 if len(etw) > 1 else True
+            if l_alive != r_alive:                          # exactly one down: never bow the dead lane
+                wl, wr = (6.0, 0.0) if l_alive else (0.0, 6.0)
+            elif l_alive and r_alive and len(etw) > 1:
+                # Both up: concentrate on the WEAKER one so successive bows work toward a single
+                # kill instead of splitting chip across two towers.
+                full = max(etw[0].hp, etw[1].hp) or 1.0
+                if etw[1].hp < etw[0].hp - 0.10 * full:
+                    wr *= 1.8
+                elif etw[0].hp < etw[1].hp - 0.10 * full:
+                    wl *= 1.8
+            if wl > 0.0:
+                _add_spot(w, env, left, 0.50, wl, 1.0)
+            if wr > 0.0:
+                _add_spot(w, env, right, 0.50, wr, 1.0)
             _add_spot(w, env, 0.48, 0.47, 1.0, 0.3)          # centre-forward, front row only (low weight)
 
     elif base == "knight":

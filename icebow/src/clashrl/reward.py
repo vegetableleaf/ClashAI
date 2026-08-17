@@ -247,6 +247,55 @@ def spell_intercept_cell(cx, cy, tracks, impact_s, snap_radius, acts):
     return acts.cell_at(tx, ty)
 
 
+def xbow_target_lane_cell(cx, cy, enemy_anchors, enemy_hp, enemy_alive, defense_y, acts,
+                          hp_margin=0.10):
+    """Put an OFFENSIVE X-Bow in the lane whose tower is worth shooting at.
+
+    Reported from live overtime (user, 2026-08-16), one tower down each side: the model placed a
+    technically perfect offensive bow several times and every one of them was in the lane whose
+    enemy princess was ALREADY DESTROYED. Six elixir, a good spot, and nothing to chip -- the bow
+    can only fall through to the king, which is far tankier and further away.
+
+    Nothing existing catches this. ``xbow_lock_cell`` snaps to the NEARER tower's lane, which is
+    precisely the wrong move when the nearer one is the dead one, and the depth assist only sets
+    the row. Neither ever asks whether the target is alive.
+
+    Two rules, in order:
+
+      1. NEVER bow a dead lane. If the princess this bow points at is down and the other is up,
+        move to the live one. Hard, no margin -- a destroyed tower cannot be chipped at all.
+      2. Otherwise concentrate on the WEAKER tower, so successive bows work toward one kill
+        instead of splitting the damage across two. Needs a real gap (``hp_margin`` of full HP)
+        so a near-tie does not make the lane flap between placements.
+
+    Keeps the bow's DEPTH row -- the caller's depth assist owns that. Returns a new cell, or None
+    to leave the placement alone (defensive bow, no anchors, or already the right lane).
+    """
+    princesses = enemy_anchors[:2] if enemy_anchors else []
+    if len(princesses) < 2 or cy >= defense_y:
+        return None                                   # defensive bow: it is not aiming at a tower
+    alive = list(enemy_alive or [True, True])[:2]
+    while len(alive) < 2:
+        alive.append(True)
+    aimed = 0 if abs(princesses[0][0] - cx) <= abs(princesses[1][0] - cx) else 1
+    other = 1 - aimed
+
+    if not alive[aimed]:
+        if not alive[other]:
+            return None                               # both down: the king is all that is left
+        return acts.cell_at(princesses[other][0], cy)  # rule 1: shoot something that exists
+    if not alive[other]:
+        return None                                   # already on the only live tower
+
+    hp = list(enemy_hp or [])
+    if len(hp) < 2 or hp[aimed] is None or hp[other] is None:
+        return None
+    full = max(hp[aimed], hp[other]) or 1.0
+    if hp[other] < hp[aimed] - hp_margin * full:      # rule 2: concentrate on the weaker one
+        return acts.cell_at(princesses[other][0], cy)
+    return None
+
+
 def xbow_lock_cell(cx, cy, enemy_anchors, xbow_range, defense_y, acts):
     """Snap a FORWARD (offensive) X-Bow that landed OUT of firing range onto the nearer enemy
     princess's LANE so it actually locks the tower. The policy tends to drop the X-Bow at the far

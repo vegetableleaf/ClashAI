@@ -19,7 +19,8 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
-                     xbow_lock_cell, xbow_offense_depth_cell, tesla_pull_cell)
+                     xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
+                     tesla_pull_cell)
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -520,6 +521,18 @@ def play(cfg) -> None:
         if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
+            # WHICH TOWER FIRST. xbow_lock_cell snaps to the NEARER princess, so on a board
+            # with a tower already down it will happily cement a bow into the dead lane --
+            # which is what live overtime actually did, several times in one match.
+            _raw = list(hp_tracker.enemy_hp or [])[:2]
+            _ehp = ([float(v) for v in _raw]
+                    if len(_raw) == 2 and all(v is not None for v in _raw) else None)
+            lane = xbow_target_lane_cell(cx, cy, tower_tracker.enemy_a, _ehp,
+                                         tower_tracker.enemy_alive, xbow_defense_front, actions)
+            if lane is not None:
+                cell = lane
+                gx, gy = cell % gw, cell // gw
+                cx, cy = actions.cell_center(gx, gy)
             snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_front, actions)
             if snapped is not None:
                 cell = snapped
