@@ -74,6 +74,22 @@ def load_meta_decks(cfg, db) -> List[dict]:
     if not out:
         out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c)}
                for n, c in _BUILTIN]
+
+    # LADDER SKEW. meta_decks.yaml is scraped popularity across the whole population, but the bot
+    # plays at ~10k trophies, where Royal Hogs / Lava Hound / Balloon / Royal Giant show up far
+    # more than their global share (user, 2026-08-17). Re-weighting here rather than editing a
+    # thousand scraped entries keeps the file as DATA and the skew as a tunable opinion.
+    #
+    # MAX, never product: LavaLoon holds two boosted win conditions and multiplying would give it
+    # the square of the intended weight -- the deck would flood the pool and the other three would
+    # effectively get rarer, which is the opposite of the ask.
+    boosts = cfg.get("sim", "meta_deck_boost", default=None) or {}
+    if boosts:
+        for d in out:
+            m = max((float(v) for k, v in boosts.items()
+                     if any(str(c).startswith(str(k)) for c in d["cards"])), default=1.0)
+            if m != 1.0:
+                d["weight"] = max(0.01, float(d.get("weight", 1.0))) * m
     if key is not None:
         _CACHE.clear()                        # only the current generation is useful
         _CACHE[key] = out
