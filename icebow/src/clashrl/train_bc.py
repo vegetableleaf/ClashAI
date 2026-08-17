@@ -51,6 +51,29 @@ def _load_datasets(root, target_thr: int = THREAT_DIM):
             grid, deck, len(files))
 
 
+
+def _demonstrated_cell_logits(all_cell_logits, card_targets):
+    """(B, n_cards, n_cells) + the demonstrated card -> that card's placement map, (B, n_cells).
+
+    The cell head emits ONE MAP PER CARD (see PolicyNet.cell_conv). A demonstration has a single
+    card and a single cell, so the loss has to be taken against the map of the card that was
+    actually played. Without this the 3-D tensor went straight into cross_entropy against a 1-D
+    target, and `argmax(1)` -- reported as `cell_acc` -- was an argmax over the CARD axis, so the
+    number printed as placement accuracy was not measuring placement at all.
+
+    Every RL, play and eval path was updated when the head changed; this one was missed, and it
+    fails quietly rather than loudly, which is why it needs the explicit shape check below.
+    """
+    if all_cell_logits.dim() != 3:
+        raise ValueError("expected per-card cell logits [B, n_cards, n_cells], got %s"
+                         % (tuple(all_cell_logits.shape),))
+    if card_targets.dim() != 1 or card_targets.shape[0] != all_cell_logits.shape[0]:
+        raise ValueError("card targets must be [B] matching the logits batch, got %s vs %s"
+                         % (tuple(card_targets.shape), tuple(all_cell_logits.shape)))
+    rows = torch.arange(card_targets.shape[0], device=card_targets.device)
+    return all_cell_logits[rows, card_targets]
+
+
 def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None = None,
              val_frac: float = 0.0, patience: int = 3, seed: int = 0) -> None:
     # `data` points BC at an alternative dataset root -- notably data/replay_bc, the pro-replay
@@ -185,8 +208,9 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
             for xb, hb, nb, eb, tb, cardb, cellb in loader:
                 xb, hb, nb, eb, tb = xb.to(device), hb.to(device), nb.to(device), eb.to(device), tb.to(device)
                 cardb, cellb = cardb.to(device), cellb.to(device)
-                card_logits, cell_logits = net(xb, hb, nb, eb, tb)
+                card_logits, all_cell_logits = net(xb, hb, nb, eb, tb)
                 card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
+                cell_logits = _demonstrated_cell_logits(all_cell_logits, cardb)
                 loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
                 opt.zero_grad()
                 loss.backward()
@@ -206,8 +230,9 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
                         xb, hb, nb, eb, tb = (xb.to(device), hb.to(device), nb.to(device),
                                               eb.to(device), tb.to(device))
                         cardb, cellb = cardb.to(device), cellb.to(device)
-                        cl, ll = net(xb, hb, nb, eb, tb)
+                        cl, all_ll = net(xb, hb, nb, eb, tb)
                         cl = cl.masked_fill(hb < 0.5, float("-inf"))
+                        ll = _demonstrated_cell_logits(all_ll, cardb)   # SAME selection as training
                         vtot += (ce(cl, cardb) + ce(ll, cellb)).item() * len(xb)
                         vn += len(xb)
                         vsc += (cl.argmax(1) == cardb).sum().item()

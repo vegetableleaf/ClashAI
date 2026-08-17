@@ -477,16 +477,20 @@ def play(cfg) -> None:
             cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
             # PER-CARD map: pick the chosen card's placement map (PolicyNet.cell_conv).
             cell_logits_m = cell_logits[0, card_id].masked_fill(~cmask, float("-inf")).unsqueeze(0)
-            # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best DEPLOYABLE cell;
-            # value of WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
-            # cycle) instead of firing every act_period like the old trol bot. A PPO checkpoint's heads are
-            # LOGITS, so its greedy gate compares the two gate logits directly (no Q sums).
+            # GATE -- MUST MATCH THE TRAINER, and for DDQN it did not. train_rl compares the two gate
+            # logits ALONE, because its card and cell heads are dueling-style ADVANTAGES: their
+            # legal maxima are 0 at their own argmax, so max over (card, cell) of Q(play) IS
+            # gate[play] and the decision is one head against one head. This path still added
+            # `+ max_card + max_cell`, which is three heads against one -- the exact "passivity
+            # ratchet" train_rl's own comment describes removing. A DDQN checkpoint therefore
+            # learned one WAIT/PLAY rule and was DEPLOYED under another. policy_stats already used
+            # the gate-only rule, so live play was the odd one out of the three.
+            # PPO heads are logits, not advantages, so that branch keeps its thresholded probability.
             if gate_logits is not None:
                 if is_ppo:
                     wait = bool(torch.sigmoid(gate_logits[0, 1] - gate_logits[0, 0]) <= gate_tau)
                 else:
-                    play_val = gate_logits[0, 1] + card_logits.max() + cell_logits_m.max()
-                    wait = bool(gate_logits[0, 0] >= play_val)
+                    wait = bool(gate_logits[0, 0] >= gate_logits[0, 1])
                 if wait:
                     return
             cell = int(cell_logits_m.argmax(1).item())
