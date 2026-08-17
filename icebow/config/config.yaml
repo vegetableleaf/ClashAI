@@ -645,6 +645,13 @@ train:
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
   llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
+  # PLACEMENT LOSS (clashrl/spatial_targets.py). Exact one-hot on a 432-cell grid calls a
+  # strategically identical neighbour completely wrong, which is how the placement head keeps
+  # collapsing onto one tile. Hybrid: a little exact credit to keep the peak sharp, most of the
+  # weight on a legal-masked Gaussian so near-misses train instead of being punished.
+  exact_cell_loss_weight: 0.25
+  soft_cell_loss_weight: 0.75
+
   rl_epsilon_start: 0.70
   rl_epsilon_end: 0.15
   rl_epsilon_decay_steps: 6000
@@ -1438,6 +1445,14 @@ sim:
   # Each SHARE grows by well under 2x even though every one of their decks doubled in weight --
   # they are all rising against each other. Boosted archetypes now hold ~51% of sampling weight
   # between them; drop a multiplier toward 1.5 if that starts to crowd out the rest of the field.
+  # EVALUATION POOL, deliberately separate from the training weights above. Boosting what the bot
+  # MEETS is right for training and wrong for measurement: a policy tuned against a skewed pool
+  # then gets scored on that same skew and looks better than it is. Measured cost of conflating
+  # them: the same checkpoint read 20.0% on the boosted pool and 21.2% on the flat one, so the
+  # boost alone moved the headline by 1.2pp. Empty = use the flat scraped popularity.
+  eval_deck_boost: {}
+  eval_deck_top_n: 0
+
   meta_deck_boost:
     royal_hogs: 2.0
     lava_hound: 2.0

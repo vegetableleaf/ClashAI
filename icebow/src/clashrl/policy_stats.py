@@ -29,6 +29,17 @@ _ONE_SIDED_BY_DESIGN = {"lose_own_tower", "take_enemy_tower", "chip_offence", "c
 
 def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int = 8,
                  seed: int = 4242, epsilon: float = 0.0, out: Optional[str] = None) -> None:
+    # EVALUATION POOL, separate from the training weights. sim.meta_deck_boost skews the opponent
+    # mix toward what the bot MEETS, which is right for training and wrong for measurement --
+    # scoring a policy on the same skew it was tuned against flatters it. Measured: the same
+    # checkpoint read 20.0% on the boosted pool and 21.2% on the flat one. The eval keys are
+    # swapped in HERE, in this process only, so the training config on disk is untouched.
+    _sim = cfg.data.setdefault("sim", {}) if hasattr(cfg, "data") else None
+    if _sim is not None:
+        _sim["meta_deck_boost"] = _sim.get("eval_deck_boost") or {}
+        _sim["meta_deck_top_n"] = int(_sim.get("eval_deck_top_n") or 0)
+        print("[policy-stats] opponent pool: EVAL weighting (training boosts disabled)", flush=True)
+
     try:
         import torch
     except ImportError as exc:  # noqa: BLE001
@@ -321,6 +332,31 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
           f"(forced waits {100 * wait_forced / max(1, steps):.0f}%)", flush=True)
     print(f"[policy-stats] placement spread: {result['cells_used']} of {n_cells} cells used, "
           f"top cell {100 * result['top_cell_share']:.1f}% of plays", flush=True)
+    # COLLAPSE WARNINGS. The placement head has collapsed twice in this project's history and both
+    # times the headline win rate was FLAT or RISING while it happened -- champion 48/432 cells at
+    # 41% top-cell, then 28/432 at 37% after the per-card head had briefly reached 62/432 at 20%.
+    # An aggregate that only improves is exactly how it goes unnoticed, so the diagnosis is printed
+    # next to the number rather than left to be spotted later.
+    _row_share, _gw = {}, gw
+    for _c, _n in enumerate(total_heat):
+        if _n:
+            _row_share[_c // _gw] = _row_share.get(_c // _gw, 0) + _n
+    _plays_tot = max(1, sum(total_heat))
+    _top_row, _top_row_n = max(_row_share.items(), key=lambda kv: kv[1], default=(-1, 0))
+    warns = []
+    if result["cells_used"] < 0.10 * n_cells:
+        warns.append("only %d of %d cells ever used (<10%%)" % (result["cells_used"], n_cells))
+    if result["top_cell_share"] >= 0.25:
+        warns.append("one tile holds %.0f%% of all plays" % (100 * result["top_cell_share"]))
+    if _top_row_n >= 0.60 * _plays_tot:
+        warns.append("row %d holds %.0f%% of all plays" % (_top_row, 100 * _top_row_n / _plays_tot))
+    _flat = [c["key"] for c in cards_out
+             if c["plays"] >= 20 and len({i for i, v in enumerate(c["heat"]) if v}) <= 3]
+    if _flat:
+        warns.append("cards pinned to <=3 cells: %s" % ", ".join(_flat[:6]))
+    for w in warns:
+        print("[policy-stats] PLACEMENT COLLAPSE WARNING: %s" % w, flush=True)
+    result["collapse_warnings"] = warns
     for c in sorted(cards_out, key=lambda c: -c["plays"]):
         print(f"[policy-stats]   {c['display']:<24} {c['plays']:>6} plays "
               f"({100 * c['share']:4.1f}%)", flush=True)

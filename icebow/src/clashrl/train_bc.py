@@ -25,6 +25,7 @@ from .threats import THREAT_DIM
 def _load_datasets(root, target_thr: int = THREAT_DIM):
     files = sorted(glob.glob(str(root / "*" / "dataset.npz")))
     obs, acts, hands, nexts, elixirs, threats, grid, deck = [], [], [], [], [], [], None, None
+    groups = []                     # per-sample SESSION index -- the split has to be group-wise
     for f in files:
         d = np.load(f, allow_pickle=True)
         if len(d["obs"]) == 0 or "hands" not in d:
@@ -41,14 +42,15 @@ def _load_datasets(root, target_thr: int = THREAT_DIM):
             fixed[:, :min(t.shape[1], target_thr)] = t[:, :min(t.shape[1], target_thr)]
             t = fixed
         threats.append(t)
+        groups.append(np.full(len(d["obs"]), len(groups), np.int64))
         grid = d["grid"]
         if "deck" in d:
             deck = [str(s) for s in d["deck"]]
     if not obs:
-        return None, None, None, None, None, None, None, None, 0
+        return None, None, None, None, None, None, None, None, 0, None
     return (np.concatenate(obs), np.concatenate(acts), np.concatenate(hands),
             np.concatenate(nexts), np.concatenate(elixirs), np.concatenate(threats),
-            grid, deck, len(files))
+            grid, deck, len(files), np.concatenate(groups))
 
 
 
@@ -92,7 +94,7 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
                      if bool(cfg.get("observation", "use_interactions", default=False)) else 0)
                   + (view.TOWER_DIM
                      if bool(cfg.get("observation", "use_tower_hp", default=True)) else 0))
-    obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files = _load_datasets(root, target_thr)
+    obs, acts, hands, nexts, elixirs, threats, grid, deck, n_files, groups = _load_datasets(root, target_thr)
     if obs is None:
         print("[train-bc] no identity-labeled datasets found. Build hand templates "
               "(`hand-templates`), then `record` and `label --all`.")
@@ -146,11 +148,27 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
     val_frac = float(max(0.0, min(0.9, val_frac)))
     n_val = int(len(ds) * val_frac)
     if n_val >= 1 and len(ds) - n_val >= 1:
-        g = torch.Generator().manual_seed(int(seed))
-        perm = torch.randperm(len(ds), generator=g).tolist()
-        tr_idx, va_idx = perm[n_val:], perm[:n_val]
+        # SPLIT BY SESSION, NOT BY FRAME. A random per-sample split puts adjacent frames of the
+        # SAME match on both sides: the val set then contains near-duplicates of training frames,
+        # val accuracy reads high, and none of it survives contact with a new match. Whole
+        # sessions go to one side or the other.
+        rng = np.random.default_rng(int(seed))
+        uniq = np.unique(groups)
+        rng.shuffle(uniq)
+        va_groups, taken = set(), 0
+        for gid in uniq:                       # take whole sessions until the val fraction is met
+            if taken >= n_val or len(va_groups) >= max(1, len(uniq) - 1):
+                break
+            va_groups.add(int(gid))
+            taken += int((groups == gid).sum())
+        va_idx = [i for i in range(len(ds)) if int(groups[i]) in va_groups]
+        tr_idx = [i for i in range(len(ds)) if int(groups[i]) not in va_groups]
+        if not va_idx or not tr_idx:           # single session -> a group split cannot hold out
+            tr_idx, va_idx = list(range(len(ds))), []
+        print(f"[train-bc] group split: {len(va_groups)} of {len(uniq)} session(s) held out")
         loader = DataLoader(Subset(ds, tr_idx), batch_size=batch_size, shuffle=True)
-        val_loader = DataLoader(Subset(ds, va_idx), batch_size=batch_size, shuffle=False)
+        val_loader = (DataLoader(Subset(ds, va_idx), batch_size=batch_size, shuffle=False)
+                      if va_idx else None)
         print(f"[train-bc] split: {len(tr_idx)} train / {len(va_idx)} val "
               f"({val_frac:.0%} held out, early stop patience {patience})")
     else:
@@ -158,6 +176,29 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
         if val_frac > 0:
             print("[train-bc] too few samples to hold out a val split -- training without one "
                   "(treat the result as a warm start only).")
+
+    # --- SOFT PLACEMENT TARGETS (spatial_targets.py) --------------------------------------------
+    # Exact one-hot on a 432-cell grid calls an equivalent neighbour completely wrong, which is how
+    # the placement head keeps collapsing onto one tile. Legal masks are per CARD (rocket/miner may
+    # go anywhere; everything else is your half), and the tolerance is per card KIND.
+    from .actions import ActionSpace
+    from . import spatial_targets as _st
+    from .cards import CardDB as _CardDB
+    _acts = ActionSpace(cfg)
+    _any_ids = {i for i, k in enumerate(deck)
+                if (str(k)[:-4] if str(k).endswith("_evo") else str(k)) in ("rocket", "miner")}
+    _half = torch.tensor(_acts.deployable_mask(False), dtype=torch.bool)
+    _all = torch.tensor(_acts.deployable_mask(True), dtype=torch.bool)
+    legal_by_card = torch.stack([_all if i in _any_ids else _half for i in range(n_cards)]).to(device)
+    try:
+        _sig = _st.sigma_for(_CardDB(cfg), deck)
+    except Exception:                                    # noqa: BLE001  (deck not in the KB)
+        _sig = [1.0] * n_cards
+    sigma_by_card = torch.tensor(_sig, dtype=torch.float32, device=device)
+    w_exact = float(cfg.get("train", "exact_cell_loss_weight", default=0.25))
+    w_soft = float(cfg.get("train", "soft_cell_loss_weight", default=0.75))
+    print(f"[train-bc] placement loss: {w_exact:.2f} exact + {w_soft:.2f} soft "
+          f"(sigma by kind, legal-masked)")
 
     threat_dim = int(thr.shape[1])
     # BC learns from RECORDED frames, so the image width comes from the DATASET rather than the
@@ -211,7 +252,11 @@ def train_bc(cfg, init: str | None = None, iterations: int = 1, data: str | None
                 card_logits, all_cell_logits = net(xb, hb, nb, eb, tb)
                 card_logits = card_logits.masked_fill(hb < 0.5, float("-inf"))  # only cards in hand
                 cell_logits = _demonstrated_cell_logits(all_cell_logits, cardb)
-                loss = ce(card_logits, cardb) + ce(cell_logits, cellb)
+                soft = _st.gaussian_spatial_target(cellb, legal_by_card[cardb], gw, gh,
+                                                   sigma_by_card[cardb])
+                cell_loss = w_exact * ce(cell_logits, cellb) + w_soft * _st.soft_cell_loss(
+                    cell_logits, soft)
+                loss = ce(card_logits, cardb) + cell_loss
                 opt.zero_grad()
                 loss.backward()
                 opt.step()
