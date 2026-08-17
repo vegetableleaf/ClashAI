@@ -252,8 +252,9 @@ def play(cfg) -> None:
         print(f"[play] canvas stack: {_canvas_slices} slices @ {canvas_stack_dt(cfg):g}s (motion input).")
     # LIVE team verdicts by evidence fusion (own plays / motion / HP bars / side prior with pocket gating)
     # so your units aren't read as enemy threats -- see replay_mine.TeamTracker.
-    from .replay_mine import TeamTracker
+    from .replay_mine import TeamTracker, own_card_bases
     _team_tracker = TeamTracker(
+        own_cards=own_card_bases(_db),               # DECK VETO: 'mine' must name a card we own
         spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
         spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
         enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),

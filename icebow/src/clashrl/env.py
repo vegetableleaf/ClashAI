@@ -311,8 +311,9 @@ class LiveMatchEnv:
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
         self._opp_elixir = OpponentElixirEstimator(db)   # live estimate from mirrored spend accounting
-        from .replay_mine import TeamTracker
+        from .replay_mine import TeamTracker, own_card_bases
         self._team_tracker = TeamTracker(                # LIVE: evidence-fused teams (plays/motion/bars/pockets)
+            own_cards=own_card_bases(db),                # + the DECK VETO: 'mine' must name a card we own
             spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
             spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
             enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),

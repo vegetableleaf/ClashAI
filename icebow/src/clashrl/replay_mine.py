@@ -39,7 +39,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import cv2
 import numpy as np
@@ -175,6 +175,21 @@ def _body_vote(frame: np.ndarray, d_cx: float, d_cy: float, d_w: float, d_h: flo
     return "enemy" if red > blue else "mine"
 
 
+def own_card_bases(db) -> List[str]:
+    """Every BASE key our deck can legitimately put on the board, for :class:`TeamTracker`'s veto.
+
+    Detections carry base keys (``knight``), the deck carries identities (``knight``, ``knight_evo``),
+    so the evolved forms are folded down. One definition, shared by env.py and play.py, because two
+    copies of "what counts as ours" would drift and the veto would silently start rejecting our own
+    units in one path and not the other.
+    """
+    out = set()
+    for k in (db.deck_identities() if db is not None else []):
+        out.add(str(k))
+        out.add(card_threat.base_key(str(k)))
+    return sorted(out)
+
+
 class TeamTracker:
     """LIVE team verdicts by EVIDENCE FUSION over short unit tracks, replacing the old colour-only
     guess. Colour was the weakest possible signal: the HP bar (the one reliable team colour) only
@@ -204,7 +219,21 @@ class TeamTracker:
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
                  track_radius: float = 0.12, forget_s: float = 4.5,
                  enemy_window_s: Optional[float] = None, motion_min: float = 0.05,
-                 deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38):
+                 deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38,
+                 own_cards: Optional[Sequence[str]] = None):
+        # DECK VETO -- a hard constraint, not another piece of evidence. A unit on OUR side can only
+        # be a card from OUR deck, so a "mine" verdict for a card we do not own is wrong BY
+        # CONSTRUCTION, whatever the colour/motion/side evidence said. Every rank above can produce
+        # it: the side prior tags an enemy Earthquake landing on our tower "mine" (it is born deep in
+        # our half and never moves), a bar strip drawn over OUR units votes "mine" for the enemy spell
+        # covering them, and the own-play anchor claims anything near a play recorded without a base.
+        #
+        # MEASURED over the three recorded sessions at the live 10 Hz cadence: 158 of 1482 ally-tagged
+        # detections (10.7%) named a card outside this deck. This turns all of them into "enemy",
+        # which is what they are. It CANNOT fix the mirror case -- an enemy Knight or Skeletons read
+        # as ours passes the check, since those are in the deck -- so the residual error is real but
+        # invisible to this rule and to the audit that motivated it.
+        self.own_cards = frozenset(str(c) for c in own_cards) if own_cards else None
         self.spawn_radius = float(spawn_radius)
         self.spawn_window_s = float(spawn_window_s)
         # ENEMY-side plays (a Miner / anything you drop on THEIR half) linger at their target, so they get
@@ -241,6 +270,20 @@ class TeamTracker:
     def _in_lane(x: float, pockets) -> bool:
         """Is normalized x inside an OPEN pocket lane? (lanes overlap through the centre to be safe)"""
         return (x < 0.55 and pockets[0]) or (x > 0.45 and pockets[1])
+
+    def _claim(self, team: str, base: str) -> str:
+        """Apply the deck veto: a card we do not own is the OPPONENT'S, whatever the evidence said.
+
+        Symmetric on purpose. It rescues the "mine" mistakes this was written for, and it also
+        resolves "unknown" -- which is not a harmless abstention, because the two consumers read it
+        in contradictory ways: ``detect_obs._channel_of`` paints anything that is not "mine" into an
+        ENEMY channel, while ``interactions`` drops it entirely. So the same unit is simultaneously
+        an enemy to the observation canvas and nonexistent to the tower-pressure block, and the SIM
+        the policy trains on has ground-truth teams and never produces the category at all.
+        """
+        if team != "enemy" and self.own_cards is not None and str(base) not in self.own_cards:
+            return "enemy"
+        return team
 
     def _verdict(self, d, trk) -> "tuple[str, int]":
         """Best (team, rank) for a linked det+track from the evidence available NOW (1 = strongest)."""
@@ -292,11 +335,11 @@ class TeamTracker:
             if trk["rank"] > 1 and any(
                     (pb is None or pb == d.base) and (dx - px) ** 2 + (dy - py) ** 2 <= sr2
                     for px, py, _, pb in self._plays):
-                trk["team"], trk["rank"] = "mine", 1
+                trk["team"], trk["rank"] = self._claim("mine", d.base), 1
             else:
                 team, rank = self._verdict(d, trk)
                 if rank <= trk["rank"]:                           # stronger/equal evidence -> (re)decide
-                    trk["team"], trk["rank"] = team, rank
+                    trk["team"], trk["rank"] = self._claim(team, d.base), rank
             d.team = trk["team"]
             live.append(trk)
         # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.
@@ -326,8 +369,19 @@ class BoardDetector:
     weights are found, so the miner can report readiness instead of crashing."""
 
     def __init__(self, model=None, names: Optional[Dict[int, str]] = None, db=None, fly_offset: float = 0.0,
-                 conf_by_card: Optional[Dict[str, float]] = None, imgsz: int = 960):
+                 conf_by_card: Optional[Dict[str, float]] = None, imgsz: int = 960,
+                 arena_box: Optional[Sequence[float]] = None):
         self._model = model
+        # PLAYFIELD GATE. The detector sees the WHOLE captured window, which includes the card tray
+        # and the HUD, and it happily names the ART ON THE CARDS IN YOUR HAND. Those boxes then flow
+        # into the board pipeline as if they were units standing on the grass -- and because the tray
+        # sits at the bottom of the frame, the team tracker's "born deep in my half" prior tags them
+        # MINE. MEASURED over the three recorded sessions at the live 10 Hz cadence: 50 of 3761
+        # detections (1.3%) land outside the playfield, and they account for 39 of the 158 impossible
+        # ally detections (25%) -- mother_witch_hog x22, barbarian_barrel x10, elixir_blob x9 (the
+        # elixir bar itself). None of them is a unit. `None` keeps every box, for labelling/eval tools
+        # that want the raw output.
+        self._arena_box = tuple(float(v) for v in arena_box) if arena_box else None
         self._names = names or {}
         self._db = db                      # CardDB, for the flying-unit shadow correction (None -> skip)
         self._fly_offset = float(fly_offset)   # normalized DOWNWARD shift from a flyer's sprite to its shadow
@@ -386,6 +440,13 @@ class BoardDetector:
             if self._fly_offset > 0 and self._db is not None and \
                     card_threat.profile(self._db, card_threat.base_key(cls)).flying:
                 gcy = min(1.0, cy + self._fly_offset)
+            # OFF THE PLAYFIELD = not a unit. Gated on the GROUND position (shadow-corrected), which
+            # is the one that means "which tile is it standing on"; a flyer drawn high over the top
+            # of the arena still belongs to the board.
+            if self._arena_box is not None:
+                ax0, ay0, ax1, ay1 = self._arena_box
+                if not (ax0 <= cx <= ax1 and ay0 <= (cy if gcy is None else gcy) <= ay1):
+                    continue
             out.append(Detection(cls, cx, cy, bw, bh, float(b.conf[0]), team, gcy, bar, body))
         return out
 
@@ -417,7 +478,8 @@ def load_detector(cfg, weights: Optional[str] = None) -> BoardDetector:
         db = None
     return BoardDetector(model, {int(k): str(v) for k, v in names.items()}, db=db, fly_offset=fly_offset,
                          conf_by_card=cfg.get("observation", "detector_conf_by_card", default=None),
-                         imgsz=int(cfg.get("detect", "imgsz", default=960)))
+                         imgsz=int(cfg.get("detect", "imgsz", default=960)),
+                         arena_box=cfg.get("env", "arena_region", default=None))
 
 
 # ---------------------------------------------------------------------------
