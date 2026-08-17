@@ -474,7 +474,8 @@ def play(cfg) -> None:
         else:
             card_id = int(card_logits.argmax(1).item())
             cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
-            cell_logits_m = cell_logits.masked_fill(~cmask.unsqueeze(0), float("-inf"))
+            # PER-CARD map: pick the chosen card's placement map (PolicyNet.cell_conv).
+            cell_logits_m = cell_logits[0, card_id].masked_fill(~cmask, float("-inf")).unsqueeze(0)
             # GATE (synced with train-rl): value of PLAYING = Q_play + best card + best DEPLOYABLE cell;
             # value of WAITING = Q_wait. If the policy prefers to wait, do nothing this tick (save elixir /
             # cycle) instead of firing every act_period like the old trol bot. A PPO checkpoint's heads are

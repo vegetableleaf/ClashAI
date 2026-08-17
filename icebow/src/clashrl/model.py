@@ -81,11 +81,45 @@ class PolicyNet(nn.Module):
         self.card_head = nn.Linear(self.embed_dim, n_cards)
         # spatial cell head: context -> per-location conditioning -> 1x1 convs -> logit map
         self.cell_ctx = nn.Sequential(nn.Linear(self.embed_dim, 32), nn.ReLU(inplace=True))
+        # PER-CARD logit maps: the last conv emits ONE MAP PER CARD, not one map per state.
+        #
+        # It used to emit a single channel, so the network produced one 432-cell distribution for
+        # the whole board state and every card sampled from it. MEASURED on the champion over 80
+        # greedy matches: row 13 (the frontmost legal row) took 78.7% of all placements, and the
+        # concentration held for every card at once -- tesla 88%, x_bow 85%, skeletons 80%,
+        # tornado 62% -- which is the signature of a shared map rather than ten learned ones. On
+        # one fixed board with a Giant and Musketeer committed, all ten cards resolved to the
+        # identical tile.
+        #
+        # That made whole classes of doctrine unlearnable rather than merely unlearned: "knight in
+        # front of the bow, ice wizard behind it, skeletons onto the attacker" is four different
+        # placements for four cards in ONE state, and the old head could not represent it at any
+        # weights. Cost is one extra conv channel per card (10 x 432 outputs) in the same pass.
         self.cell_conv = nn.Sequential(
             nn.Conv2d(64 + 32, 48, 1), nn.ReLU(inplace=True),
             nn.Conv2d(48, 24, 1), nn.ReLU(inplace=True),
-            nn.Conv2d(24, 1, 1),
+            nn.Conv2d(24, n_cards, 1),
         )
+
+    @staticmethod
+    def load_compat(policy, state: dict) -> "list[str]":
+        """Load what still fits, and REPORT what did not. Returns the dropped parameter names.
+
+        The cell head changed shape when it became per-card (one output channel -> n_cards), so
+        every checkpoint written before that has a `cell_conv` last layer of the wrong width. A
+        strict load raises; loading with strict=False alone would silently leave the head at its
+        random init while printing "warm-started", which is the worst of the three outcomes because
+        the run looks warm and behaves fresh.
+
+        The trunk, the card head and the embedding are unaffected and worth keeping -- they are the
+        expensive part -- so those load and only the mismatched tensors are dropped and named.
+        """
+        own = policy.state_dict()
+        keep = {k: v for k, v in state.items()
+                if k in own and tuple(own[k].shape) == tuple(v.shape)}
+        dropped = sorted(set(own) - set(keep))
+        policy.load_state_dict(keep, strict=False)
+        return dropped
 
     def _embed(self, fmap: torch.Tensor, hand: torch.Tensor,
                nxt: torch.Tensor | None, elx: torch.Tensor | None,
@@ -108,11 +142,17 @@ class PolicyNet(nn.Module):
         return self._embed(self.features(x), hand, nxt, elx, thr)
 
     def _cell_logits(self, fmap: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
+        """(B, n_cards, n_cells) -- one placement map PER CARD, row-major gy*gw+gx.
+
+        Callers index by the card they are placing: ``cells[b, card_id]``. Anything that wants a
+        card-agnostic view (a heatmap, a diagnostic) should say so explicitly with ``.amax(1)``
+        rather than assuming the old 2-D shape.
+        """
         ctx = self.cell_ctx(z)[:, :, None, None].expand(-1, -1, fmap.shape[2], fmap.shape[3])
-        m = self.cell_conv(torch.cat([fmap, ctx], dim=1))         # (B, 1, h', w') logit map
+        m = self.cell_conv(torch.cat([fmap, ctx], dim=1))         # (B, n_cards, h', w')
         gw, gh = self.grid_wh
         cells = F.interpolate(m, size=(gh, gw), mode="bilinear", align_corners=False)
-        return cells.flatten(1)                                   # row-major gy*gw+gx == ActionSpace
+        return cells.flatten(2)                                   # (B, n_cards, gh*gw)
 
     def forward_parts(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
                       elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):

@@ -353,7 +353,7 @@ def _policy_agent(env, path: str):
                 return (0, 0, 0)
             card = int(cq.masked_fill(~ok, -1e9).argmax())
             cm = torch.tensor(e.actions.deployable_mask(card in e.anywhere_ids))
-            ceqm = ceq.masked_fill(~cm, -1e9)
+            ceqm = ceq[card].masked_fill(~cm, -1e9)     # PER-CARD placement map
             cell = int(ceqm.argmax())
             play = (float(torch.sigmoid(gq[1] - gq[0])) > gate_tau) if is_ppo \
                 else (gq[1] + cq.max() + ceqm.max() > gq[0])

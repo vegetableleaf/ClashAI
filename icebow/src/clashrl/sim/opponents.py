@@ -491,15 +491,18 @@ class SelfPlayOpponent:
         if getattr(self.net, "_ppo", False):
             wait = bool(torch.sigmoid(gq[0, 1] - gq[0, 0]) <= self._gate_tau)
         else:
-            wait = bool(gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0].max())
+            # PER-CARD maps: the additive Q rule needs the cell map of the card it would
+            # actually play, so the card argmax has to come FIRST now.
+            wait = bool(gq[0, 0] >= gq[0, 1] + cq[0].max() + ceq[0, int(cq[0].argmax())].max())
         if wait:
             return                                               # gate says WAIT
         card = int(cq[0].argmax())
         # Mask cells to the legal set BEFORE the argmax (what the trainer does). Clamping afterwards
         # folds many illegal cells onto one boundary cell and distorts the placement the policy chose.
+        ceq_c = ceq[0, card]                                     # this card's placement map
         if card not in self.anywhere_ids:
-            ceq = ceq.masked_fill(~cache["half"].unsqueeze(0), _NEG)
-        cell = int(ceq[0].argmax())
+            ceq_c = ceq_c.masked_fill(~cache["half"], _NEG)
+        cell = int(ceq_c.argmax())
 
         cell = self.actions.deploy_clamp(card in self.anywhere_ids, cell)
         lnx, lny = self.actions.cell_center(cell % self.gw, cell // self.gw)

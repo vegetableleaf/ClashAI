@@ -518,7 +518,7 @@ def train_rl(cfg, init: str | None = None) -> None:
                                       hand_to_tensor(next_vec), hand_to_tensor(elixir_vec),
                                       hand_to_tensor(threat_vec))
                 emask = allcells_mask if c in anywhere_ids else yourhalf_mask
-                cell = int(ceq_e.masked_fill(~emask.unsqueeze(0), float("-inf")).argmax())
+                cell = int(ceq_e[0, c].masked_fill(~emask, float("-inf")).argmax())
                 if advisor_log:
                     # WHAT it chose and WHERE it went, so "the plays look random" becomes a thing
                     # that can be read rather than guessed at. The card comes from the advisor; the
@@ -543,7 +543,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         cq = cq.masked_fill(~playable_mask, float("-inf"))   # in hand AND affordable
         card_id = int(cq.argmax())
         cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
-        ceq = ceq.masked_fill(~cmask.unsqueeze(0), float("-inf"))
+        ceq = ceq[0, card_id].masked_fill(~cmask, float("-inf"))
         play_val = gq[0, 1]
         wait_val = gq[0, 0]
         # DUELING-STYLE IDENTIFIABILITY. The card and cell heads express only the RELATIVE preference
@@ -558,6 +558,14 @@ def train_rl(cfg, init: str | None = None) -> None:
         if wait_val >= play_val:
             return (0, 0, 0)
         return (1, card_id, int(ceq.argmax()))
+
+    def _card_map(ceq, idx):
+        """(B, n_cards, n_cells) + card index -> that CARD's placement map, (B, n_cells).
+
+        The cell head emits one map per card now (see PolicyNet.cell_conv), so every consumer has
+        to say which card it is placing. Reducing over cards instead would silently restore the
+        shared-map behaviour this replaced."""
+        return ceq.gather(1, idx.view(-1, 1, 1).expand(-1, 1, ceq.shape[-1])).squeeze(1)
 
     def _masked_max(q, mask):
         """Max over the ALLOWED entries per row. Rows with nothing allowed return 0 -- their play
@@ -604,7 +612,8 @@ def train_rl(cfg, init: str | None = None) -> None:
         q_wait = gq[:, 0]
         q_play = (gq[:, 1]
                   + (cq.gather(1, card).squeeze(1) - _masked_max(cq, playable_cur))
-                  + (ceq.gather(1, cell).squeeze(1) - _masked_max(ceq, cellmask_cur)))
+                  + (_card_map(ceq, card).gather(1, cell).squeeze(1)
+                     - _masked_max(_card_map(ceq, card), cellmask_cur)))
         q_sa = torch.where(play == 1, q_play, q_wait)
         with torch.no_grad():
             # DOUBLE DQN: the ONLINE net selects the greedy next action (gate / card / cell); the
@@ -626,7 +635,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             else:
                 any_next = torch.zeros_like(sel_card, dtype=torch.bool)
             cellmask_next = torch.where(any_next, allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
-            sel_cell = _masked_argmax(ceqn, cellmask_next)                # online greedy DEPLOYABLE cell
+            sel_cell = _masked_argmax(_card_map(ceqn, sel_card), cellmask_next)   # greedy DEPLOYABLE cell
             # Under the dueling form the greedy play's advantages are 0, so its value IS gate[play].
             # A state where nothing is affordable can only WAIT -- previously that fell out of the
             # -inf masking, so it now has to be said explicitly.
@@ -634,7 +643,8 @@ def train_rl(cfg, init: str | None = None) -> None:
             cq2, ceq2, gq2 = target(nobs, nhand, nnxt, nelx, nthr)
             q_play_next = (gq2[:, 1]
                            + (cq2.gather(1, sel_card).squeeze(1) - _masked_max(cq2, playable_next))
-                           + (ceq2.gather(1, sel_cell).squeeze(1) - _masked_max(ceq2, cellmask_next)))
+                           + (_card_map(ceq2, sel_card).gather(1, sel_cell).squeeze(1)
+                              - _masked_max(_card_map(ceq2, sel_card), cellmask_next)))
             v_next = torch.where(play_next, q_play_next, gq2[:, 0])      # eval the online-chosen action
             y = rew + gpow * v_next * (1.0 - done)                       # n-step: gamma^k bootstrap
         loss = F.smooth_l1_loss(q_sa, y)

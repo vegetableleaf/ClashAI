@@ -224,7 +224,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 acts.append((0, 0, 0)); continue
             ci = int(cq_i.argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
-            ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
+            ceq_i = ceq[i, ci].masked_fill(~cmask, float("-inf"))   # PER-CARD map
             if gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:
@@ -381,7 +381,7 @@ def train_sim(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, env
                 acts.append((0, 0, 0)); continue
             ci = int(cq_i.argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
-            ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
+            ceq_i = ceq[i, ci].masked_fill(~cmask, float("-inf"))   # PER-CARD map
             if gq[i, 0] >= gq[i, 1] + cq_i.max() + ceq_i.max():
                 acts.append((0, 0, 0))
             else:

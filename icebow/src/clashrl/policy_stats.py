@@ -217,7 +217,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
             else:
                 ci = int(cq_i.argmax())
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
-                ceq_i = ceq[i].masked_fill(~cmask, float("-inf"))
+                ceq_i = ceq[i, ci].masked_fill(~cmask, float("-inf"))   # PER-CARD map
                 held = (float(torch.sigmoid(gq[i, 1] - gq[i, 0])) <= gate_tau if is_ppo
                         else bool(gq[i, 0] >= gq[i, 1]))
                 if held:

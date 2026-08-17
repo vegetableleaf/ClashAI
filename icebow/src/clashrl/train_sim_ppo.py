@@ -215,13 +215,21 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                   and int(ck.get("threat_dim", -1)) == threat_dim
                   and int(ck.get("in_ch", 3)) == in_ch)
             if ok:
-                net.policy.load_state_dict(ck["model"])
+                dropped = PolicyNet.load_compat(net.policy, ck["model"])
                 if "gate" in ck and not reset_gate:
                     net.gate.load_state_dict(ck["gate"])
                 print(f"[train-sim-ppo] warm-started policy{'' if reset_gate else '+gate'} from "
                       f"{p.name} (value head fresh"
                       + (", gate RESET -- the source gate had collapsed to always-play)" if reset_gate
                          else ")"))
+                if dropped:
+                    # Say it loudly. A partially-loaded net looks warm and behaves fresh in the
+                    # part that was dropped, and that is exactly the confusion worth preventing.
+                    print(f"[train-sim-ppo]   NOTE: {len(dropped)} tensor(s) did NOT carry over and "
+                          f"start from random init: {', '.join(dropped[:6])}"
+                          + (" ..." if len(dropped) > 6 else ""))
+                    print("[train-sim-ppo]   (expected when warm-starting across the per-card cell "
+                          "head change -- the placement head has to relearn from scratch)")
             else:
                 print(f"[train-sim-ppo] --init {p.name} shape-incompatible -> training from scratch")
         else:
@@ -317,7 +325,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         is_any = (card_idx.view(-1, 1) == anywhere_ids_t.view(1, -1)).any(1) if anywhere_ids_t.numel() \
             else torch.zeros_like(card_idx, dtype=torch.bool)
         cellmask = torch.where(is_any.unsqueeze(1), allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
-        return cq_m, ceq.masked_fill(~cellmask, _NEG), gq_m, playable
+        # PER-CARD map: ceq is (B, n_cards, n_cells) now, so pick the row for the card that was
+        # actually played. Everything downstream keeps the old (B, n_cells) shape, which is what
+        # makes the log-prob gather and the PPO ratio identical to before.
+        sel = ceq.gather(1, card_idx.view(-1, 1, 1).expand(-1, 1, ceq.shape[-1])).squeeze(1)
+        return cq_m, sel.masked_fill(~cellmask, _NEG), gq_m, playable
 
     def choose_sample(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Sample (gate, card, cell) from the factored policy for all K envs; return acts, logps, values."""
@@ -375,7 +387,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     continue
                 ci = int(c_samp[i])
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
-                ceq_i = ceq[i].masked_fill(~cmask, _NEG)
+                ceq_i = ceq[i, ci].masked_fill(~cmask, _NEG)   # PER-CARD map
                 # CELL sampling from the SAME mixture shape as the card head above. Without this the
                 # 432-way cell head had NO anti-collapse protection while the 10-way card head did,
                 # and it collapsed to a constant: MEASURED on policy_sim_ppo_best over 150 matches,
@@ -430,7 +442,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 acts.append((0, 0, 0)); continue
             ci = int(cq_m[i].argmax())
             cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
-            acts.append((1, ci, int(ceq[i].masked_fill(~cmask, _NEG).argmax())))
+            acts.append((1, ci, int(ceq[i, ci].masked_fill(~cmask, _NEG).argmax())))
         return acts
 
     def save(path=None):
