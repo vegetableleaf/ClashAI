@@ -1,0 +1,1696 @@
+# =====================================================================
+# Card knowledge base.  Combat stats below are the LEVEL-11 base; per-card
+# levels are set in the deck (1v1 mode -> levels vary) and scaled from level 11.
+#
+# Two kinds of data:
+#   * STABLE  (elixir, kind, targets, movement, splash, flags, evolution):
+#     safe to hand-maintain; rarely changes.
+#   * VOLATILE (hitpoints / damage / hit_speed / dps @ level 11): scales with
+#     level and shifts on balance updates -> treat as REFRESHABLE. These are
+#     left null here; import them from a stats source and bump `meta.updated`.
+#
+# `verified: false` marks an entry whose stable fields still need a source check.
+# Loaded by src/clashrl/cards.py (CardDB).
+# =====================================================================
+
+meta:
+  level: 11
+  mode: "1v1"
+  updated: "2026-07-24"
+  stats_source: null        # e.g. "RoyaleAPI" once combat stats are imported
+  notes: >
+    Elixir + categorical fields populated. Combat stats (hitpoints/damage/
+    hit_speed) pending import from a stats source (see README refresh note).
+
+# Your deck (icebow / X-Bow 2.9 control: defend + cycle; X-Bow is the WIN CONDITION, placed
+# forward to lock the enemy princess tower; Knight tanks / defends / body-blocks; Rocket
+# clears big pushes or cycle-chips in 2x/3x). `evolved: true` uses the Evolution variant.
+# Classic 1v1 -> card levels are the player's real account levels.
+deck:
+  name: "Hog Earthquake 2.6 Cycle (Classic 1v1)"
+  # Levels read off the user's card screen, 2026-08-17.
+  cards:
+    - {card: hog_rider, level: 13}                    # win condition
+    - {card: firecracker, evolved: true, level: 13}   # EVO: knockback + air answer + chip
+    - {card: mighty_miner, level: 14}                 # CHAMPION -- 1-elixir Explosive Escape ability
+    - {card: tesla, evolved: true, level: 14}         # defensive building
+    - {card: the_log, level: 14}
+    - {card: earthquake, level: 13}                   # building removal -> clears the Hog's path
+    - {card: skeletons, level: 15}
+    - {card: ice_spirit, level: 13}
+
+# ---------------------------------------------------------------------
+# card fields:
+#   elixir      int
+#   kind        troop | building | spell
+#   rarity      common | rare | epic | legendary | champion
+#   attacks     which target types it can damage: [ground], [air, ground], [] (spell hits per radius)
+#   movement    ground | air | none
+#   speed       slow | medium | fast | very_fast | null
+#   range       melee | short | long | null   (attack reach; ranged if long/short)
+#   splash      true if area damage
+#   count       units deployed
+#   win_condition   true for building-targeting pushers / primary tower threats
+#   targets     buildings_only | any | null   (what a troop prefers to attack)
+#   flags       [ranged, flying, spawner, kamikaze, dash, charge, stun, freeze,
+#                knockback, pull, shield, splash_air, building_targeting, swarm,
+#                siege, tank, mini_tank, splash, jump]   (siege => X-Bow/Mortar)
+#   evolution   {available, cycles, effect, gains:[...]}   (null if none)
+#               `cycles` = how many times the BASE card must be PLAYED before the Evo is
+#               available, so cycles:2 => base, base, EVO (every 3rd play is evolved). The sim
+#               enforces this (sim/env.py evo charges), so a wrong value directly changes play.
+#               VERIFIED in-game: tesla 2, knight 2. UNVERIFIED (musketeer / skeletons / archers /
+#               valkyrie all sit at 1) -- none are in the current deck and opponent decks use BASE
+#               keys only, so those four are inert today; verify before ever slotting one.
+#   hitpoints/damage/hit_speed/dps   @ meta.level (null => import)
+#   crown_tower_damage   spells' reduced damage to crown towers @ meta.level
+#                        (null => import; troops/un-reduced spells hit towers for full damage)
+# ---------------------------------------------------------------------
+cards:
+
+  # ---- opponent-only curated entries ------------------------------
+  elixir_collector:            # OPPONENT pump (never in your deck) -- curated for the sim's PUMP ECONOMY:
+    display: "Elixir Collector"   # the engine pays its owner +1 elixir every gen_every_s while it stands,
+    elixir: 6                     # so rocketing a FRESH pump denies real production (see sim/engine.py).
+    kind: building
+    movement: none
+    speed: null
+    count: 1
+    win_condition: false
+    targets: none
+    flags: []
+    lifetime: 70               # seconds on the field -- VERIFY vs current balance (stats import has no lifetime)
+    gen_every_s: 8.5           # +1 owner elixir every ~8.5s (~8 over its life, +2 net) -- VERIFY
+
+  # ---- your deck --------------------------------------------------
+  musketeer:
+    display: "Musketeer"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged]
+    evolution: {available: true, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  tesla:
+    display: "Tesla"
+    elixir: 4
+    kind: building
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: short
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, hides]
+    evolution:
+      available: true
+      cycles: 2            # VERIFIED in-game 2026-08-08: 2-cycle -> every 3rd Tesla played is the Evo
+      effect: "electric pulse on deploy and on every surfacing: damages and briefly stuns nearby enemies"
+      gains: [stun, area_shock]
+      # "It spawns a Tesla with IDENTICAL STATS to the original" -- the Evo's hitpoint boost was
+      # REMOVED on 14/5/2024, so hp/damage are the base Tesla's published level-11 values (1152/220)
+      # rather than the boosted pair this file used to carry.
+      hitpoints: 1152
+      damage: 220
+      hit_speed: 1.1
+      dps: 200               # 220 / 1.1
+      lifetime: 25           # seconds (a normal building is ~40)
+      # PULSE. Not on a timer: "after surfacing and deployment". Its death pulse existed only
+      # between 14/5/2024 and 8/10/2024 and is gone, so deploy + every surfacing is the whole set.
+      pulse_damage: 174      # published level-11 Pulse Damage (147 here was the pre-9/4/2025 value)
+      pulse_radius: 6        # published Pulse Radius, tiles
+      pulse_stun: 0.5        # published Pulse Stun Duration
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  bomber:
+    display: "Bomber"
+    elixir: 2
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: short
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, ground_only]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  # EVO BOMBER: still the same ranged splash bomber (stats overlay from the imported bomber_evo
+  # row, 332 hp), plus BOUNCING BOMBS: "After the initial throw, the bomb will bounce twice,
+  # 2.5 tiles apart in a straight line, dealing the same damage as the initial hit" (2.5 since
+  # 5/3/2024, from 3). Since 16/12/2024 enemies hit by the attack take damage only ONCE -- the
+  # three blasts share a hit set. The bounces are how it chips the crown tower from the bridge.
+  bomber_evo: {bounces: 2, bounce_tiles: 2.5, verified: true}
+
+  # ---- T1 EVO MECHANICS (2026-08-14 verify sweep; stats flow from the imported _evo rows) ----
+  # EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around it and
+  # knocks back enemy ground troops by 1 tile"; air immune to both. Recoil damage 81 at level 11
+  # (USER-VERIFIED 2026-08-14 -- the wiki publishes the row but no scrapeable value).
+  royal_giant_evo: {recoil_damage: 81, recoil_radius_tiles: 2.5, verified: true}
+  # EVO SKELETONS: "every time they attack, an additional Evolved Skeleton will spawn, for a
+  # maximum total of 8" (cap = living evo skeletons on the team).
+  skeletons_evo: {spawn_on_hit: skeletons_evo, spawn_on_hit_cap: 8, verified: true}
+  # EVO RECRUITS: "AFTER their shield is destroyed, they gain the ability to charge towards their
+  # target after traveling [charge_range, imported 2.5] tiles, dealing 2x damage" -> 266 at L11.
+  royal_recruits_evo: {charge_damage: 266, charge_after_shield: true, verified: true}
+  # EVO BARBARIANS: "every attack, their attack speed and movement speed increases by 30% for
+  # 3 seconds" (3 s since 14/5/2024; 30% since the 6/10/2025 global rage nerf). Does not stack
+  # with other rage. Their +10% hp / 1.4 s hit speed flow from the imported row.
+  barbarians_evo: {hit_rage_s: 3.0, hit_rage_boost: 0.30, verified: true}
+  # EVO VALKYRIE: "every time [she] attacks, a Tornado appears for half a second, pulling all
+  # units towards her" -- 5.5-tile radius, 76 tornado damage, ground AND air (reuses the vortex).
+  valkyrie_evo: {attack_nado_radius_tiles: 5.5, attack_nado_duration_s: 0.5, attack_nado_damage: 76, verified: true}
+  # EVO ZAP: "the ring grows and zaps every target inside 2 more times" -- 3 pulses ~1 s apart at
+  # radii 2.5 -> 3.0 -> 3.5, each a full zap (damage/stun/crown chip from the imported row).
+  zap_evo: {zap_pulses: 3, zap_radius_step_tiles: 0.5, verified: true}
+  # EVO PEKKA: the imported hitpoints 5640 is the OVERHEAL CAP (3760 x 1.5), not deploy hp, and
+  # the damage row is missing -- both re-curated from the base card. Post-rework heal: "each kill
+  # heals the same amount ... always 12.5% of the core HP" = 470 at L11, overheal to 150%.
+  pekka_evo: {hitpoints: 3760, damage: 842, dps: 468, kill_heal: 470, overheal_frac: 1.5, verified: true}
+  # ---- PHASE B WAVE 3 (2026-08-14 sweep 3): the 17 remaining evos ----
+  # EVO MEGA KNIGHT: "every time [he] attacks, [he] will do an uppercut, launching the targeted
+  # troop back 4 tiles towards the nearest enemy Crown Tower", weight-independent (buildings
+  # excepted, as always). The shove re-enters his own jump band -- the uppercut-jump loop.
+  mega_knight_evo: {uppercut_tiles: 4.0, verified: true}
+  # EVO EXECUTIONER: "the Axe Smash ability ... pushes foes back two tiles. The range for this
+  # attack is 3.5 tiles, and it is effective on Ground and Air"; the shove resets charges.
+  executioner_evo: {smash_range_tiles: 3.5, smash_knockback_tiles: 2.0, verified: true}
+  # EVO HUNTER: "throws a net at the closest unit every 5 seconds, freezing the troop in place
+  # and rendering it unable to move or attack for 3 seconds" (root -- still hittable). Net range
+  # curated to his sight [verify].
+  hunter_evo: {net_cd_s: 5.0, net_root_s: 3.0, net_range_tiles: 5.5, verified: true}
+  # EVO WIZARD: Fire Shield (imported shield_hp 192); "when the Fire Shield is destroyed, it
+  # triggers an explosion ... and a knockback effect, pushing all enemy troops within a 3-tile
+  # radius back by 3 tiles". The imported death_damage 281 IS that break blast (he has no death
+  # damage) -- moved to shield_burst_damage and zeroed as death damage.
+  wizard_evo: {death_damage: 0, shield_burst_damage: 281, shield_burst_radius_tiles: 3.0, shield_burst_knockback_tiles: 3.0, verified: true}
+  # EVO WITCH, re-sourced 2026-08-16. The old entry back-derived a base of 796 by dividing the
+  # imported 1039 by a "+30% overheal" figure. The division was sound; the +30% was three balance
+  # changes out of date (130% -> 125% -> 124%, the last on 6/5/2025), so the base came out wrong.
+  # The Evolution page now publishes both numbers outright, and its table headers name them:
+  # hp_11 839 is "Hitpoints", maks_hp_11 1039 is "Max Hitpoints" (the overheal cap, 1039/839 =
+  # 1.238), heal_11 76 is "Skeleton Death Heal" -- not the 109 we carried. Her base hitpoints are
+  # simply the base Witch's 839, which is the cross-check that the 796 never had.
+  witch_evo: {hitpoints: 839, spawn_death_heal: 76, overheal_frac: 1.238, verified: true}
+  # EVO ELECTRO DRAGON: "bolts chain indefinitely between multiple targets within a 3.5-tile
+  # radius, provided there is more than one enemy in range" -- hits_per_attack raised to 12 as
+  # the practical infinity on a 18x32 board.
+  electro_dragon_evo: {hits_per_attack: 12, verified: true}
+  # EVO INFERNO DRAGON: "once [it] defeats a troop on whatever damage stage it was in, it
+  # remains on that damage state until 9 seconds ... or it is reset by a stun. After 20 seconds
+  # of damage, [it] will reach a 4th damage stage which deals twice the damage of the 3rd."
+  inferno_dragon_evo: {ramp_keep_s: 9.0, ramp_stage4_s: 20.0, ramp_stage4_mult: 2.0, verified: true}
+  # EVO BABY DRAGON: "produces a 8x9 square area of a gust of wind around it that slows enemy
+  # troops by 30% and speeds up allies by 30%" -- modeled as a 4-tile moving aura.
+  baby_dragon_evo: {aura_radius_tiles: 4.0, aura_slow_frac: 0.30, aura_boost_frac: 0.30, verified: true}
+  # EVO PRINCESS: "her first shot will slow down enemies within a 3-tile radius for 7 seconds.
+  # After this first shot, she will fire two normal shots, and the third one will slow them."
+  princess_evo: {volley_slow_every: 3, volley_slow_s: 7.0, verified: true}
+  # EVO MINION HORDE: "Horde Immunity makes a minion invincible for 3 seconds after taking the
+  # initial hit. Only the Minions that receive a hit become invincible."
+  minion_horde_evo: {first_hit_immune_s: 3.0, verified: true}
+  # EVO DART GOBLIN: "Poisonous Darts, which inflict poison damage on impact. This poison
+  # becomes stronger the longer the Dart Goblin remains alive." Base dps + the x2-by-30s growth
+  # curve are curated [verify] -- no published numbers anywhere scrapeable.
+  # Wiki vardefines: 3-STAGE poison, 51/115/307 dps by his time alive (stage thresholds not
+  # published -- 15 s steps [verify]); crown towers take it 1 s at 25% (13/29/77).
+  dart_goblin_evo: {poison_dps: 51, poison_stages: [51, 115, 307], poison_s: 2.0, verified: true}
+  # EVO CANNON: "after deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row
+  # and 4 on the bottom, which deals area damage and inflicts knockback". Per-ball damage is not
+  # published anywhere scrapeable: 87 [verify].
+  # Wiki vardefines (api.php harvest 2026-08-14): each cannonball 304 dmg / 89 crown.
+  cannon_evo: {deploy_volley: 9, volley_damage: 304, volley_crown_damage: 89, verified: true}
+  # EVO MORTAR: hit speed 4 s (imported; 1 s faster) + "every attack that it does also spawns a
+  # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
+  mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
+  # EVO FURNACE: "the spawn speed is decreased to 2.4 sec" (sides-vs-front is cosmetic here).
+  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}
+  # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
+  # passively summon a Goblin." Imported hp 3223 flows via the overlay.
+  goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
+  # EVO WALL BREAKERS: "rolling on a large, explosive barrel, and the barrel deals DEATH
+  # damage" -- imported death_damage 291 flows via the overlay + the death-blast machinery.
+  # (No curation needed; row kept for the audit trail.)
+  wall_breakers_evo: {verified: true}
+  # EVO ROYAL GHOST: "summons two Souldiers upon deployment. Souldiers have the Hit Points of a
+  # Skeleton, but deal Damage like a Royal Ghost. They also inherit the invisibility ability."
+  royal_ghost_evo: {deploy_spawn: ghost_souldier, deploy_spawn_n: 2, verified: true}
+
+  ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
+    display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
+    elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: true
+    flags: [splash]
+    count: 1
+    win_condition: false
+    hitpoints: 81
+    damage: 261
+    hit_speed: 1.8
+    range_tiles: 1.2
+    speed_tiles: 1.5
+    deploy_time: 1.0
+    invisibility_time_s: 1.8
+    verified: true
+
+  # EVO SKELETON ARMY: "15 skeletons + a shielded General [Gerry] ... if a skeleton is
+  # destroyed while the General is alive, the skeleton turns into a ghost. Skeleton ghosts can
+  # keep dealing damage, but they are invisible and indestructible. Once the shielded General
+  # is destroyed, the ghosts disappear with him." General stats unpublished -- guard-like
+  # curation [verify].
+  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, verified: true}
+
+  skarmy_general:                  # Gerry -- wiki vardefines (api.php): a SKELETON with a
+    display: "Skeleton General"    # shield: 81 hp + 81 shield + 81 dmg at 1.0 s
+    elixir: null
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 81
+    damage: 81
+    hit_speed: 1.0
+    range_tiles: 0.5
+    speed_tiles: 1.5
+    deploy_time: 1.0
+    shield_hp: 81
+    verified: true
+
+  # EVO GIANT SNOWBALL: "Snow Bowling: the affected troops get pulled into it and [it] rolls on
+  # the ground for 4.5 tiles ... troops inside cannot be targeted [approximated: they are swept
+  # to the end of the roll]. When it finishes its roll, the troops are freed" + 4 s slow
+  # (4/3/2025 balance). Modeled as a Log-style roll whose victims are carried to the corridor's
+  # end. Roll is ground-only (air is not gathered).
+  giant_snowball_evo: {flags: [rolls], roll_tiles: 4.5, carry_roll: true, slow_duration_s: 4.0, attacks: [ground], verified: true}
+  # EVO GOBLIN CAGE: "when a ground troop comes within 3 tiles of the building, they get pulled
+  # into the cage and attacked directly" -- the Fisherman's hook machinery on a building body
+  # (prep + reel timings fisherman-like [verify]).
+  goblin_cage_evo: {hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, verified: true}
+  # EVO GOBLIN DRILL: "submerges and reappears around the tower as it takes damage, spawning
+  # Goblins each time" -- every 25% hp lost it resurfaces on a new side with a fresh goblin.
+  goblin_drill_evo: {drill_relocate: true, verified: true}
+  # EVO BATTLE RAM: "Super Charge: charge and bounce multiple times against buildings and towers
+  # until its HP is depleted", breaking into EVOLVED Barbarians ("the only evolution to spawn
+  # another evolved troop").
+  battle_ram_evo: {ram_bounce: true, spawns: {unit: barbarians_evo, on_death: 2}, verified: true}
+  # EVO ROYAL HOGS: "deploy as flying troops ... upon attacking or getting hurt, the hogs will
+  # fall to the ground, dealing low area damage on impact" (fall damage [verify]).
+  # Wiki vardefines: landing damage 115 (post 2/3/2026 -27% nerf); their swing is 74.
+  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 115, verified: true}
+  # EVO LUMBERJACK: the base death-Rage stays, and "when [he] dies, his ghost will spawn. The
+  # ghost has unlimited health, and can't be targeted by troops, buildings and towers, but can
+  # be affected by spells, and will disappear after a short time." Lifetime [verify] 5 s;
+  # spell-vulnerability approximated by a big-but-finite hp pool.
+  # Wiki vardefines: the EVO's dropped rage also DAMAGES on the drop (179, crown 54 --
+  # modeled via the death blast at the rage radius); ghost confirmed 256 dmg / 0.8 s / ~5 s.
+  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, death_damage: 179, death_radius_tiles: 3.0, verified: true}
+
+  lumberjack_ghost:                # the Evo Lumberjack's death ghost -- spawned, NOT a card
+    display: "Lumberjack Ghost"
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 4000
+    damage: 256
+    hit_speed: 0.8
+    range_tiles: 0.8
+    speed_tiles: 2.0
+    deploy_time: 0.5
+    invisibility_time_s: 1.8
+    always_ghost: true
+    ghost_life_s: 5.0
+    verified: false
+
+  # EVO SKEL BARREL: imported count 2 is the BARRELS-carried attribute, not bodies -- one flying
+  # unit with 665 hp (125% of base) and 238 death damage per barrel. First barrel drops at 75%
+  # hp (blast + 7 skeletons); the second on death; both at once if it reaches the tower unspent.
+  # Contact damage zeroed like the base barrel (the imported damage row is the skeleton's swing).
+  skeleton_barrel_evo: {count: 1, damage: 0, dps: 0, mid_drop_frac: 0.75, verified: true}
+
+  # ---- PHASE B EVO MECHANICS (2026-08-14 sweep 2) ----
+  # EVO MUSKETEER: "gains 3 infinite-range attacks that target the closest troop or building from
+  # anywhere in the Arena in front of her, dealing 1.8x the damage of her normal attacks" (1.5x at
+  # the Nov-2024 launch; the page's current figure is 1.8). "She cannot snipe Crown Towers", and
+  # "will only expend her sniper shots when she is not in range of her regular attacks."
+  musketeer_evo: {sniper_shots: 3, sniper_mult: 1.8, verified: true}
+  # EVO ARCHERS: "if there are units between 4 and 6 tiles ... they will shoot their Power Shot,
+  # which deals 50% bonus damage"; their reach is 6 (one further than base) via the imported row.
+  archers_evo: {power_mult: 1.5, power_min: 4.0, verified: true}
+  # EVO FIRECRACKER: "both the initial and small shrapnel will leave sparks behind, which will
+  # deal damage every 0.25 seconds and slow down enemy troops on them, similar to a Poison" --
+  # 15% slow (imported slow_pct -15; Theria's "does not slow" prose loses to the attributes
+  # table), small-spark duration 2.5 s (May 2025 balance). Tick damage is NOT published anywhere
+  # scrapeable: 12 per 0.25 s tick (48 dps in-zone, poison-class) is curated [verify].
+  # USER-VERIFIED 2026-08-14: LARGE spark (carrier trail) 192 dps, SMALL sparks (shrapnel
+  # trails) 60 dps, at level 11.
+  firecracker_evo: {spark_dps_large: 192, spark_dps_small: 60, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: true}
+  # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
+  # curated from the announcement; cards-import will supersede the stats when the page lands):
+  # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at
+  # "an enemy troop or Crown Tower", and "the javelins create a glowing Rage trail" that buffs
+  # any friendly inside. Base-stat copies + evo_cycles 1 from the announcement; deltas [verify].
+  elite_barbarians_evo:
+    display: "Evo Elite Barbarians"
+    elixir: 6
+    kind: troop
+    rarity: common
+    base: elite_barbarians
+    evolution: true
+    evo_cycles: 1
+    hitpoints: 1341
+    damage: 384
+    hit_speed: 1.4
+    dps: 274
+    count: 2
+    movement: ground
+    speed_tiles: 1.5
+    range_tiles: 1.2
+    attacks: [ground]
+    deploy_time: 1.0
+    javelin_damage: 284
+    javelin_cd_s: 5.0
+    verified: false
+
+  ice_wizard:
+    display: "Ice Wizard"
+    elixir: 3
+    kind: troop
+    rarity: legendary
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, slow]        # hits slow their targets' movement + attack
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  tornado:
+    display: "Tornado"
+    elixir: 3
+    kind: spell
+    rarity: epic
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [pull, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  royal_delivery:              # overlay only: imported stats carry the rest (curated wins on set keys)
+    crown_tower_damage: 40     # L11 basis: the spell's 133 impact damage is REDUCED vs crown towers like
+                               # every damage spell (~30%; USER VERIFY exact). Without it the sim gave RD
+                               # full tower damage. The spawned Recruit still hits towers at full melee.
+
+  rocket:
+    display: "Rocket"
+    elixir: 6
+    kind: spell
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: true          # this deck's tower-chip win condition
+    targets: null
+    flags: [splash, splash_air, knockback, building_targeting]
+    # Rocket's lead sentence says it "inflicts knockback" but the wiki publishes NO pushback range
+    # for it and has no balance entry changing one, so knockback_tiles is left unset and the engine
+    # falls back to Fireball's published 1 tile (its nearest documented sibling).
+    knockback_tiles: null
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  ronin:
+    display: "Ronin"
+    elixir: 5
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [melee, parry, reflect, stun]
+    ability: {name: "Parry", effect: "reflects the next MELEE attack: takes no damage, stuns the attacker, deals 200% of its attack damage back", cooldown_s: 3.5}
+    parry_cd_s: 3.5           # 2026-08-15: wires the ability above into the engine (_land_hit)
+    counters: [prince, dark_prince, bandit, boss_bandit, pekka, mini_pekka, mega_knight]
+    evolution: null
+    verified: true
+    hitpoints: 1779
+    damage: 371
+    hit_speed: 1.4
+    dps: 265                       # 371 dmg / 1.4s (medium melee range, fast move)
+
+  ice_spirit:
+    display: "Ice Spirit"
+    elixir: 1
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [kamikaze, freeze, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  skeletons:
+    display: "Skeletons"
+    elixir: 1
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 3
+    win_condition: false
+    targets: any
+    flags: [swarm]
+    evolution: {available: true, effect: "spawns extra skeletons on hit/death", gains: [extra_spawn]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  # ---- common opponent cards (categorical only, for counter reasoning) ----
+  knight:
+    display: "Knight"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [mini_tank]
+    evolution: {available: true, cycles: 2, damage_reduction: 0.60, effect: "60% less damage from ALL sources WHILE NOT ATTACKING (drops the instant it deals a hit, back on when it moves again); NO numerical HP shield", gains: [damage_reduction]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  archers:
+    display: "Archers"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: false
+    count: 2
+    win_condition: false
+    targets: any
+    flags: [ranged]
+    evolution: {available: true, effect: "extra range / speed", gains: [extra_range]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  minions:
+    display: "Minions"
+    elixir: 3
+    kind: troop
+    rarity: common
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: false
+    count: 3
+    win_condition: false
+    targets: any
+    flags: [flying, ranged]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  hog_rider:
+    display: "Hog Rider"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, jump]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  giant:
+    display: "Giant"
+    elixir: 5
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: slow
+    range: melee
+    splash: false
+    count: 1
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  valkyrie:
+    display: "Valkyrie"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [splash, mini_tank]
+    evolution: {available: true, effect: "spin knockback / lifesteal", gains: [knockback]}
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  mini_pekka:
+    display: "Mini P.E.K.K.A"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [high_damage]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  wizard:
+    display: "Wizard"
+    elixir: 5
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: ground
+    speed: medium
+    range: long
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [ranged, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  baby_dragon:
+    display: "Baby Dragon"
+    elixir: 4
+    kind: troop
+    rarity: epic
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: true
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [flying, splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  mega_minion:
+    display: "Mega Minion"
+    elixir: 3
+    kind: troop
+    rarity: rare
+    attacks: [air, ground]
+    movement: air
+    speed: medium
+    range: short
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [flying]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  balloon:
+    display: "Balloon"
+    elixir: 5
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: air
+    speed: medium
+    range: melee
+    splash: true
+    count: 1
+    # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds" --
+    # walking out of the bomb is the counterplay. Knockback on the blast [verify tiles].
+    death_delay_s: 3.0
+    knockback_tiles: 1.0
+    win_condition: true
+    targets: buildings_only
+    flags: [flying, building_targeting, splash, death_damage]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  skeleton_army:
+    display: "Skeleton Army"
+    elixir: 3
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 15
+    win_condition: false
+    targets: any
+    flags: [swarm]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  fireball:
+    display: "Fireball"
+    elixir: 4
+    kind: spell
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air, knockback]
+    knockback_tiles: 1.0       # 2/8/2022 Balance Update: "decreased the Fireball's pushback range to 1 tile (from 1.8 tiles)"
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  # "When used, it can STUN enemies in its radius for 0.5 seconds" -- Lightning's stun was not
+  # modelled at all (no stun_duration_s in the import), so it was pure damage.
+  # LIGHTNING (2026-08-15 wiki): "the three troops that are targeted are always the three
+  # that have the highest hitpoints within its radius" + 0.5 s stun. It was resolving as a
+  # radius BLAST, nuking the swarms real Lightning ignores. Radius 3.5 (was KB-default 2.9).
+  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
+              radius_tiles: 3.5, attacks: [air, ground], verified: true}
+  # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
+  # crowd-control modelled either. Duration is not published, so it falls back to the global
+  # sim.freeze_duration rather than being invented here.
+  # VINES (2026-08-15 wiki): "freeze the troop in place ... for 2.5 seconds. The three troops
+  # that are targeted are always the three that have the highest hitpoints within its radius."
+  # dmg 153 x2 hits collapsed to one application (306, crown 39 x2 = 78): total right, the
+  # 1.25 s split between the two ticks is below the sim's decision resolution.
+  vines: {kind: spell, flags: [stun], stun_duration_s: 2.5, top_n_targets: 3,
+          damage: 306, crown_tower_damage: 78, radius_tiles: 2.5, verified: true}
+  # POISON (2026-08-15 wiki): "low damage that is dealt every second for 8 seconds ...
+  # decreases the movement speed of enemy troops by 15%". It was resolving as a ONE-TIME
+  # 92-damage blast -- 12% of its real output, in 10% of ladder decks. KB's per-tick values
+  # (92 troop / 23 crown at 11) are already per-second, so the zone uses them directly.
+  # attacks: the wiki calls both "air-targeting" spells; the imported KB rows had them as
+  # ground-only, which (with the 2026-08-16 air guard in card_threat.counters) would have made
+  # them look like non-counters against any flying threat.
+  poison: {kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
+           radius_tiles: 3.5, attacks: [air, ground], verified: true}
+
+  # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
+  # targets share the zone -- 1 target: 696/97 crown; 2-3: 294/51; 4+: 153/35 (level 11).
+  # "dealing more damage to them the fewer there are inside its radius".
+  void: {kind: spell, zone_s: 4.0, zone_tick_s: 1.333, radius_tiles: 2.5,
+         zone_tiers: [[1, 696, 97], [3, 294, 51], [99, 153, 35]], verified: true}
+
+  zap:
+    display: "Zap"
+    elixir: 2
+    kind: spell
+    rarity: common
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air, stun, reset]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  arrows:
+    display: "Arrows"
+    elixir: 3
+    kind: spell
+    rarity: common
+    attacks: [air, ground]
+    movement: none
+    speed: null
+    range: null
+    splash: true
+    count: 0
+    win_condition: false
+    targets: null
+    flags: [splash, splash_air]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
+  # GOBLIN BARREL (base-card bug found during Phase B): the sim resolved it as a bare 120-damage
+  # blast that spawned NOTHING -- the imported damage row is the GOBLIN's swing, and the real
+  # barrel drops 3 Goblins with ZERO impact damage. Every logbait deck in the pool was toothless.
+  goblin_barrel:
+    display: "Goblin Barrel"
+    elixir: 3
+    kind: spell
+    # 2026-08-16 wiki: thrown from the King's Tower, so the FLIGHT scales with the throw
+    # distance (`lobbed`, the rocket's physics) instead of a flat 0.4 s -- the shadow crossing
+    # the arena is what a defender times against. The Goblins then take their own deploy time
+    # (balance log: "Goblins' spawn time to 1.1 seconds"), which is the window a log is thrown
+    # into. Base card deals NO impact damage (removed 4/7/2016; the Evo's "Cannonball!" adds it).
+    lobbed: true
+    rarity: epic
+    attacks: [ground]
+    movement: none
+    speed: null
+    range: null
+    splash: false
+    count: 3
+    win_condition: true
+    targets: null
+    flags: [spawner, swarm]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: 0
+    dps: 0
+    hit_speed: null
+    spawns_troop: {unit: goblins, count: 3}
+
+  # EVO GOBLIN BARREL: "a second Goblin Barrel is launched alongside the first one, which lands
+  # on its mirroring tile in the other lane. Once [it] has hit the ground, it spawns three Decoy
+  # Goblins" -- dual-lane pressure, indistinguishable in the air.
+  goblin_barrel_evo: {decoy_mirror: goblin_barrel_decoy, verified: true}
+
+  goblin_barrel_decoy:             # the mirrored DECOY barrel -- a spawned spell, NOT a card
+    display: "Decoy Goblin Barrel"
+    elixir: null
+    kind: spell
+    rarity: epic
+    radius_tiles: 1.5
+    damage: 0
+    dps: 0
+    count: 3
+    spawns_troop: {unit: decoy_goblin, count: 3}
+    verified: true
+
+  decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops" --
+    display: "Decoy Goblin"        # USER-VERIFIED 2026-08-14: 81 hp / 89 damage at level 11,
+    elixir: null                   # goblin hit speed (1.1 s)
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 81
+    damage: 89
+    hit_speed: 1.1
+    range_tiles: 0.5
+    speed_tiles: 2.0
+    deploy_time: 1.0
+    verified: true
+
+  # ---- pre-filled win conditions + siege (2026-07-26) -----------------------------
+  # STRATEGIC TAGS ONLY (win_condition/targets/flags); combat stats come from
+  # cards_stats.json by key. verified:false => please review. Add/remove as you see fit.
+  royal_giant:
+    display: "Royal Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [ranged, building_targeting]
+    range: long
+    verified: false
+
+  golem:
+    display: "Golem"
+    win_condition: true
+    targets: buildings_only
+    # "When defeated, the Golem explodes, dealing damage, INFLICTING KNOCKBACK, while spawning two
+    # Golemites" -- the knockback rides on the DEATH blast, not on its melee swing.
+    # SPLIT-ON-DEATH (2026-08-11): the split was never wired, so in the sim the Golem simply
+    # VANISHED when killed -- the defender got the whole 8-elixir tank for free and never had to
+    # answer the second wave. `spawns.on_death` is the same death-burst path the Tombstone uses;
+    # with no `interval` it fires ONLY on death, which is exactly the Golem's behaviour.
+    # death_damage 225 = the Fandom Card Statistics table at LEVEL 11 (this file's reference level,
+    # cards_stats.json meta.level), which the import left null -- so the death blast did nothing.
+    spawns: {unit: golemite, on_death: 2}
+    death_damage: 225            # L11 Fandom; radius 2.0 tiles already imported (death_radius_tiles)
+    flags: [tank, building_targeting, knockback, death_damage]
+    range: melee
+    verified: true
+
+  lava_hound:
+    display: "Lava Hound"
+    win_condition: true
+    targets: buildings_only
+    # "When defeated, it bursts into six spread-out Lava Pups" (Fandom; Lava Pup Attributes = x6).
+    # The Hound is the SHIELD, the Pups are the damage -- without this split the sim's LavaLoon
+    # opponents were a slow 7-elixir balloon that died to nothing, so the policy never learned that
+    # killing the Hound is when the fight actually starts.
+    # NO death damage: "the Lava Hound in Clash Royale does not have death damage" (Fandom trivia).
+    spawns: {unit: lava_pups, on_death: 6}
+    flags: [flying, building_targeting]
+    range: melee
+    verified: true
+
+  ram_rider:
+    display: "Ram Rider"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, charge]
+    range: melee
+    verified: false
+
+  # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds."
+  # Its SHOTS do not shove -- only the bomb it drops when it dies does (user, 2026-08-16). The
+  # single knockback_tiles field applied to both, so every lobbed shell was pushing the push back
+  # and the tower defended far better than the real one. Split: 0 on the attack, 1.0 on the death
+  # blast, which is the "drops a bomb which explodes after 3 seconds" the wiki describes.
+  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 0, death_knockback_tiles: 1.0, verified: true}
+
+  battle_ram:
+    display: "Battle Ram"
+    win_condition: true
+    targets: buildings_only
+    # 2026-08-15 wiki: "After it travels 3 tiles, it will begin to charge ... deals double
+    # damage (573 @11) if it hits whilst charging. Once it reaches a building or it is
+    # destroyed, it will break and reveal the two Barbarians underneath." kamikaze = the
+    # connect IS the break; the barbs come out via the death-spawn path either way.
+    flags: [building_targeting, charge, kamikaze]
+    charge_damage: 573
+    charge_range: 3.0
+    spawns: {unit: barbarians, on_death: 2}
+    range: melee
+    verified: true
+
+  wall_breakers:
+    display: "Wall Breakers"
+    win_condition: true
+    targets: buildings_only
+    # 2026-08-15 wiki attr row: "area-damage ... 1.5" -- the barrel blast is AREA (radius
+    # 1.5), so troops standing beside the building it connects with are damaged too.
+    flags: [building_targeting, kamikaze, splash]
+    splash_radius_tiles: 1.5
+    range: melee
+    verified: true
+
+  goblin_giant:
+    display: "Goblin Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting, spawner]
+    range: melee
+    verified: false
+
+  elixir_golem:
+    display: "Elixir Golem"
+    win_condition: true
+    targets: buildings_only
+    # Splits TWICE: Elixir Golem -> 2 Elixir Golemites -> 2 Elixir Blobs each (4 blobs). The chain
+    # is automatic -- build_spec resolves a spawn unit's OWN `spawns`, so the golemite entry below
+    # carries the second split and the blobs (which spawn nothing) terminate it.
+    # THE DRAWBACK IS THE POINT: every death in the chain REFUNDS ELIXIR TO THE OPPONENT --
+    # Golem 1 + 2 Golemites x0.5 + 4 Blobs x0.5 = up to 4 elixir back for a 3-elixir card. Modelled
+    # via `elixir_on_death` (sim/engine.py pays it to the other team on death), so the sim can no
+    # longer learn that Elixir Golem is free value.
+    spawns: {unit: elixir_golemite, on_death: 2}
+    elixir_on_death: 1.0
+    flags: [building_targeting]
+    range: melee
+    verified: true
+
+  royal_hogs:
+    display: "Royal Hogs"
+    win_condition: true
+    targets: buildings_only
+    flags: [building_targeting, swarm]
+    range: melee
+    verified: false
+
+  electro_giant:
+    display: "Electro Giant"
+    win_condition: true
+    targets: buildings_only
+    flags: [tank, building_targeting]
+    range: melee
+    # ZAP PACK (wiki): units damaging him within 3 tiles take ~120 (L11) back + a 0.5s stun; off
+    # while frozen/stunned. This is what makes the ranged-only counter-doctrine learnable in sim.
+    reflect_damage: 120
+    reflect_radius_tiles: 3.0
+    reflect_stun_s: 0.5
+    verified: false
+
+  skeleton_barrel:
+    display: "Skeleton Barrel"
+    win_condition: true
+    targets: buildings_only
+    # "Once the Skeleton Barrel reaches a building or is destroyed, the barrel drops, dealing area
+    # damage, INFLICTING KNOCKBACK, and spawning seven Skeletons in a circle." The barrel itself
+    # deals NO contact damage -- the drop IS its death (kamikaze), so reaching the tower and being
+    # shot down produce the same blast (death_damage 145 / 2.0 tiles from the import) + 7 skeletons.
+    # (The imported `damage` row is the spawned skeleton's swing, zeroed here for the barrel body.)
+    # 2026-08-16 wiki: "the player must account for the 0.5 SECOND ANIMATION where neither the
+    # Barrel nor the Skeletons are considered as entities; if the spell is cast during this
+    # phase, it will not affect the Skeletons." The blast + knockback land when the barrel
+    # breaks; the seven bodies arrive 0.5 s later. That gap is the whole timing skill: a log
+    # thrown AT the falling barrel hits nothing, so it must be timed to land after the split.
+    # (Tornado can still displace the barrel during the animation -- not modelled.)
+    flags: [flying, building_targeting, swarm, knockback, kamikaze]
+    damage: 0
+    dps: 0
+    death_spawn_delay_s: 0.5
+    spawns: {unit: skeletons, on_death: 7}
+    range: melee
+    verified: true
+
+  goblin_drill:
+    display: "Goblin Drill"
+    win_condition: true
+    targets: buildings_only
+    # "when it surfaces, it will deal damage to enemy units around it in a 360 area around it, and
+    # INFLICT KNOCKBACK" -- the surfacing blast, published as spawn_damage 84 / spawn_crown_damage 26.
+    flags: [spawner, building_targeting, deploy_anywhere, knockback]   # drills up anywhere, same as the Miner
+    # "Every 3 seconds... summon a Goblin"; "when defeated, it will also spawn two Goblins". The
+    # intro prose still says the first wave is 0.8s, but the 6/10/2025 balance change raised it to
+    # 1s -- the History section is newer than the prose, so the delay is overridden here.
+    spawns: {unit: goblins, count: 1, on_death: 2, delay: 1.0}
+    verified: true
+
+  graveyard:
+    display: "Graveyard"
+    win_condition: true
+    targets: null
+    flags: [spawner, swarm]
+    # 2026-08-15 wiki: "After 2.2 seconds, it spawns a single Skeleton ... every 0.5 seconds
+    # for 9 seconds on the edge of the spell's radius" (x12, radius 4). It was resolving as
+    # an 81-damage BLAST that spawned NOTHING -- the classic siege-killing archetype simply
+    # did not exist in training.
+    kind: spell
+    radius_tiles: 4.0
+    damage: 0                 # the spell itself deals no damage; the Skeletons do
+    crown_tower_damage: 0
+    zone_s: 9.0
+    zone_spawn_n: 12
+    zone_spawn_start_s: 2.2
+    zone_spawn_gap_s: 0.5
+    zone_spawn_edge: true
+    spawn_unit: skeletons     # per-body stats (81/81 @11, the card's hp/dmg ARE per body)
+    verified: true
+
+  the_log:
+    display: "The Log"
+    elixir: 2
+    kind: spell
+    rarity: legendary
+    attacks: [ground]          # rolling log -- GROUND ONLY (cannot hit air)
+    splash: true               # area damage along its roll path (a lane-wide LINE, not a circle)
+    range: long                # rolls forward a long line from the cast point
+    targets: any
+    flags: [knockback, knockback_all, rolls, splash] # knocks back / resets ground troops as it rolls
+    # 7/2/2023 Balance Update: "decreased The Log's pushback range to 0.7 tiles (from 1 tile)".
+    # `knockback_all` because the 19/9/2016 update "allowed The Log to push back ALL ground troops.
+    # This allowed The Log to reset the charge attacks of the Prince and Dark Prince" -- the two
+    # units the Bowler page lists as immune to Fireball/Snowball/Rocket pushback.
+    knockback_tiles: 0.7
+    verified: true
+    # cast point is YOUR half only (it ROLLS to the enemy side); L11 stats: damage 266, crown_tower_damage 40 (poor tower chip)
+
+  # -- ROLLING / KNOCKBACK spells that were not otherwise curated --
+  # Barbarian Barrel still ROLLS but has NO pushback: the 3/9/2018 Balance Update "decreased its
+  # rolling distance to 5 tiles (from 7 tiles), decreased its damage by 9%, and REMOVED ITS PUSHBACK".
+  # It was previously modelled as a point blast, because `rolls` used to be derived from the
+  # knockback flag -- so removing the pushback also silently removed the corridor.
+  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 5.0, verified: true}
+  # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
+  # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
+  giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
+  # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
+  # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
+  # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.
+  # Earthquake is the ONE spell that reaches a retracted Tesla: the 3/3/2020 Balance Update
+  # "allowed the Earthquake to affect the Tesla even if it is hidden". Carried as a property of the
+  # SPELL rather than of the Tesla, so nothing has to know a card name to get this right.
+  earthquake: {kind: spell, flags: [hits_hidden, slow], verified: true}
+
+  miner:
+    display: "Miner"
+    win_condition: true
+    targets: any
+    flags: [deploy_anywhere]   # TUNNELS: deployable on ANY tile incl. the defender's tower, so he skips the
+                               # lane entirely. Without this the sim's bot drops him at the bridge like a
+                               # Knight and the policy never trains on the scenario that actually happens.
+    range: melee
+    crown_tower_damage: 78     # L11 basis: Miner's signature nerf -- ~40% of his 194 hit vs crown towers
+                               # (wiki-style reduced value; USER VERIFY exact number). Without it the sim
+                               # let him chip towers at full damage -> the king-snipe exploit.
+    verified: false
+
+  x_bow:
+    display: "X-Bow"
+    win_condition: true
+    targets: any
+    flags: [ranged, siege]
+    range: long
+    deploy_time_s: 3.5        # wiki attr table: 0.3s hit / 0.3s load / 3.5s DEPLOY / 30s life
+    verified: true            # 2026-08-15 wiki sweep (range 11.5, lifetime 30 already correct)
+
+  mortar:
+    display: "Mortar"
+    win_condition: true
+    targets: any
+    flags: [splash, siege]
+    splash_radius_tiles: 2.0  # wiki attr: shell area radius 2
+    # 2026-08-15 wiki sweep: attr table publishes "3.5-11.5" range, 3.5 s deploy, 30 s life,
+    # 5 s hit speed. The range table carried 3.5 -- the DEAD-ZONE minimum, not the reach --
+    # so an opponent Mortar could never actually siege; a whole ladder archetype was a dud.
+    range: long
+    range_tiles: 11.5
+    min_range_tiles: 3.5      # the blind spot: "preventing it from attacking enemies inside it"
+    deploy_time_s: 3.5
+    verified: true
+
+  three_musketeers:
+    display: "Three Musketeers"
+    win_condition: true
+    targets: any
+    flags: [ranged]
+    range: long
+    verified: false
+
+  # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
+  # several individual recruits packed into the "royal_recruits" card). Its own class on
+  # purpose; NOT the same as royal_recruits. Not in cards_stats.json, so fuller entry here.
+  royal_recruit:
+    display: "Royal Recruit"
+    elixir: null
+    kind: troop
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: any
+    flags: [shield]
+    evolution: null
+    verified: false
+
+  mother_witch_hog:                # the cursed HOGS Mother Witch spawns (distinct from Royal Hogs) -- fast,
+    display: "Mother Witch Hog"    # building-targeting; a spawned unit, NOT a deployable card (no elixir/stats in the KB)
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false           # a spawned harasser, not a deployed win condition -- but it DOES go for the tower
+    targets: buildings_only
+    flags: [building_targeting]
+    hitpoints: 629
+    damage: 53
+    hit_speed: 1.2
+    dps: 44
+    range_tiles: 0.75
+    speed_tiles: 2.0
+    deploy_time: 0.2
+    evolution: null
+    verified: false
+
+  phoenix_egg:                     # the EGG a dying Phoenix leaves behind -- a spawned body, NOT a
+    display: "Phoenix Egg"         # deployable card. Stationary and harmless; its whole job is to
+    elixir: null                   # survive 3.8 s (see phoenix `egg:`). 239 hp at level 11 per the
+    kind: troop                    # wiki. A TROOP (not a building) so The Log shoves it and the
+    rarity: legendary              # Tornado drags it, both as in game.
+    attacks: [ground]
+    movement: ground
+    speed_tiles: 0                 # STATIONARY: the egg is dropped where the Phoenix died and stays
+                                   # there. It was inheriting the "medium" 1 tile/s default and
+                                   # walking off down the lane, which both moved the reborn bird away
+                                   # from the fight it died in and made the egg harder to snipe than
+                                   # it should be. Needs the explicit-zero fix in build_spec to hold.
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 239
+    damage: 0
+    dps: 0
+    hit_speed: 1.0
+    range_tiles: 0.5
+    speed_tiles: 0.0
+    deploy_time: 0.0
+    evolution: null
+    verified: true
+
+  golemite:                        # the 2 smaller golems Golem splits into on death (they also deal death damage)
+    display: "Golemite"
+    elixir: null
+    kind: troop
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: slow
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false           # a death-spawn, not a deployed win condition -- but it keeps going for the tower
+    targets: buildings_only
+    flags: [building_targeting, death_damage]
+    # COMBAT STATS ARE CURATED HERE ON PURPOSE: death-spawn children are not cards, so they are
+    # absent from cards_stats.json (the importer only keeps the parent's `spawn_unit_stats`, i.e.
+    # the attributes below). Without these the Golemites would spawn at 0 HP and die on arrival --
+    # i.e. the split would look wired but change nothing. LEVEL 11 = this file's reference level,
+    # from the Fandom Golem page's "Card Statistics" table (Golemite columns).
+    hitpoints: 1039
+    damage: 84
+    dps: 33
+    hit_speed: 2.5
+    death_damage: 99               # "the Golemites also deal area damage upon death"
+    death_radius_tiles: 2.0        # Fandom Golemite Attributes: Death Damage Splash Radius 2
+    range_tiles: 0.25              # Melee: Short (0.25) -- matches golem.spawn_unit_stats
+    speed_tiles: 0.75              # Slow (45)
+    evolution: null
+    verified: true
+
+  elixir_golemite:                 # the 2 mid units Elixir Golem splits into on death (each then splits into blobs)
+    display: "Elixir Golemite"
+    elixir: null
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: buildings_only
+    flags: [building_targeting]
+    spawns: {unit: elixir_blob, on_death: 2}   # the SECOND split: 2 golemites -> 4 blobs total
+    elixir_on_death: 0.5                       # each Golemite hands the opponent half an elixir
+    # LEVEL 11 (this file's reference level), USER-VERIFIED in-game 2026-08-11. The attributes also
+    # match elixir_golem.spawn_unit_stats from the import (hit_speed 1.1, range 0.8, medium speed).
+    hitpoints: 762
+    damage: 128
+    dps: 116                       # 128 / 1.1
+    hit_speed: 1.1
+    range_tiles: 0.8
+    speed_tiles: 1.0               # medium
+    evolution: null
+    verified: true
+
+  elixir_blob:                     # the smallest Elixir Golem split (gives the OPPONENT elixir when it dies)
+    display: "Elixir Blob"
+    elixir: null
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    speed: fast
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    targets: buildings_only
+    flags: [building_targeting]
+    # End of the chain -- blobs spawn nothing, which is what terminates the recursion.
+    # LEVEL 11, USER-VERIFIED in-game 2026-08-11. Blobs are FAST (1.5 tiles/s), so they reach a
+    # tower quickly if they are ignored -- and each one still refunds half an elixir when killed.
+    elixir_on_death: 0.5
+    hitpoints: 360
+    damage: 64
+    dps: 58                        # 64 / 1.1
+    hit_speed: 1.1
+    range_tiles: 0.8
+    speed_tiles: 1.5               # fast
+    evolution: null
+    verified: true
+
+  lava_pups:                       # the small FLYING units Lava Hound splits into on death (6 pups); UNLIKE
+    display: "Lava Pups"           # the Hound (buildings_only) they attack troops too -> targets any, air+ground
+    elixir: null
+    kind: troop
+    rarity: legendary
+    attacks: [air, ground]
+    movement: air
+    speed: fast
+    range: short
+    splash: false
+    count: 1
+    win_condition: false           # a death-spawn swarm, not a deployed win condition
+    targets: any
+    flags: [flying]
+    # Curated for the same reason as the Golemite above (not a card -> not in the stats import).
+    # LEVEL 11, from the Fandom Lava Hound page's "Card Statistics" table (Lava Pup columns) and
+    # its "Lava Pup Attributes" row; they match lava_hound.spawn_unit_stats exactly.
+    hitpoints: 217
+    damage: 81
+    dps: 47
+    hit_speed: 1.7
+    range_tiles: 1.6               # Melee: Long (1.6)
+    speed_tiles: 1.0               # Medium (60)
+    evolution: null
+    verified: true
+
+  # ---- attack RANGE curation (2026-07-26; reach = melee|short|long; verified:false => review) ------
+  # Adds `range` to troops that had none (combat stats still come from cards_stats.json). Powers
+  # card_threat.melee (a melee attacker) for the planned melee tornado-pull-activate behaviour.
+  # Left UNCURATED on purpose: terry, wizard_trio (special troops -- not in normal 1v1s).
+  # -- melee --
+  # "If there are ground units between 3.5 and 6 tiles of her, she will stop moving and begin
+  # charging a dash attack which takes 0.8 seconds to execute, and will deal double damage. She is
+  # IMMUNE TO DAMAGE during her dash." (dash_damage / dash_time_s are imported; the trigger band and
+  # the immunity live in the lead PROSE, so they are curated.) Balance history confirms the minimum:
+  # 12/2/2018 "decreased her minimum dash range to 3.5 tiles (from 4 tiles)".
+  bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_invulnerable: true, leap_towers: true, verified: true}
+  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
+  bats: {range: melee, verified: false}
+  # EVO BATS: "every time they attack, [they] heal themselves, having two healing pulses with a
+  # 0.5 second interval. The healing can OVERHEAL them ... up to double their initial hitpoints."
+  # 76 hp/s at the level-11 row x 1.3 s hit speed = ~99 per attack (both pulses folded into the
+  # swing on our 0.1 s grid); cap 244 = 2 x their 122 deploy hp. Spawn hp 150% flows from import.
+  bats_evo: {hit_heal: 99, overheal_frac: 2.0, verified: true}
+  battle_healer: {range: melee, verified: false}
+  berserker: {range: melee, verified: false}
+  # SAME dash as the Bandit, word for word: "If there are ground units between 3.5 and 6 tiles of
+  # her, she will stop moving and begin charging a dash attack which takes 0.8 seconds to execute,
+  # and will deal double damage" (dash_damage 489 / dash_time_s 0.8 are imported). NOTE she is NOT
+  # described as immune during it -- that line is the Bandit's alone -- so no leap_invulnerable.
+  # ABILITY "Getaway Grenade", 1 elixir: "get invisible for one second, then teleport 6 tiles behind
+  # her current spot", 3 s cooldown after the duration, ONLY TWICE per deployment.
+  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_towers: true,
+                ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0,
+                ability_invis_s: 1.0, ability_back_tiles: 6.0, verified: true}
+  # KNOCKBACK-IMMUNE HEAVIES. Sourced from the Bowler page, whose pushback "functions identically to
+  # a Fireball, Giant Snowball, or Rocket, pushing back small to medium sized ground troops, and
+  # minimally damaging heavy troops such as the Prince, Sparky, Dark Prince, Skeleton King, Giant
+  # Skeleton, Goblin Machine, P.E.K.K.A, Mega Knight, Cannon Cart, and the Mighty Miner".
+  # CURATED because CR's underlying mass is NOT a published field and NO KB property separates these
+  # from vulnerable troops -- measured: Sparky (immune, 1451 hp) sits below Knight (vulnerable, 1766),
+  # and goblin_machine / cannon_cart / mighty_miner share collision radius 0.50 with plain Goblins.
+  # The Log ignores this list entirely (see its knockback_all flag).
+  dark_prince: {range: melee, flags: [splash, knockback_immune], splash_radius_tiles: 1.25, charge_splash_radius_tiles: 2.2, verified: true}   # splash swing 1.25 tiles, widened to 2.2 on a CHARGED strike (user-verified); was silently single-target
+  elite_barbarians: {range: melee, verified: false}
+  fire_spirit: {range: melee, verified: false}
+  # Fisherman (Fandom attributes): hook range 3.5-7, hook time 1.3s, hook projectile speed 800.
+  # Lead quote: his ranged hook pulls ENEMY TROOPS toward him and pulls HIMSELF to enemy buildings.
+  # Current history also lists his slow as 1.5s at -30%.
+  fisherman:
+    range: melee
+    flags: [slow]
+    slow_duration_s: 1.5
+    slow_pct: -30
+    hook_min_tiles: 3.5
+    hook_max_tiles: 7.0
+    hook_time_s: 1.3
+    hook_speed_tiles: 13.33
+    verified: true
+  giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune],
+                   death_delay_s: 3.0, death_crown_mult: 2.0, verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
+  goblins: {range: melee, verified: false}
+  goblin_gang: {range: melee, verified: false}
+  golden_knight: {range: melee, verified: false}
+  guards: {range: melee, verified: false}
+  heal_spirit: {range: melee, verified: false}
+  ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
+  # LUMBERJACK. "Upon death, he drops a bottle of Rage" boosting friendly troops' AND buildings'
+  # move + attack speed. Balance log: radius 3 tiles + duration 4.5 s (Aug 2025), boost +30%
+  # (10/6/2025, down from 35%), 0.5 s deploy timer before the zone takes effect.
+  lumberjack: {range: melee, drops_rage: {radius_tiles: 3.0, duration_s: 4.5, boost: 0.30, delay_s: 0.5}, verified: true}
+  # "If there are ground units between 3.5 and 5 tiles of him, he will stop moving and begin charging
+  # a jump attack which takes 0.9 seconds to execute, and will deal double damage, and inflict
+  # knockback." Same mechanic as the Bandit's dash, narrower band, no immunity.
+  # The leap numbers come from the card's SECOND attributes row, which the importer does not read:
+  #   Jump Time 0.9 sec | Jump Speed 250 | Jump Range 3.5-5 | Splash Radius 2.2 | Transport Air
+  # 60 speed units = 1 tile/s, so Jump Speed 250 = 4.17 tiles/s. The 0.9 s is the WIND-UP, not the
+  # flight -- the balance log says "decreased the time required for CHARGING his jump to 0.9
+  # seconds". His JUMP splash (2.2) is far wider than his normal swing (1.3).
+  mega_knight: {range: melee, attacks: [ground], flags: [tank, splash, knockback, knockback_immune], leap_min_tiles: 3.5, leap_max_tiles: 5.0, leap_speed_tiles: 4.17, leap_splash_tiles: 2.2, leap_towers: true, verified: true}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it. "he will deal damage to enemy units around him in a 360 area ... and inflict knockback" (spawn_damage 430 over splash_radius 1.3). He DOES jump crown towers; his "Mega Power Jump" modifier only lifts the DISTANCE limit.
+  mighty_miner: {range: melee, flags: [knockback_immune], verified: false}
+  # "the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback,
+  # EVEN IF the targeted troop is normally immune to knockback" -> combo_every 3 + knockback_all.
+  # The 3rd hit's EXTRA DAMAGE is not published, so only the shove is modelled.
+  monk: {range: melee, flags: [knockback, knockback_all], combo_every: 3, verified: false}
+  night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
+  pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
+  prince: {range: melee, flags: [knockback_immune], verified: false}
+  # RASCALS. The girls' body is MUCH smaller than the boy's (user-verified) -- sharing the card-level
+  # 0.75 collision radius made them tank-sized. Index-aligned with the KB component rows: [boy, girls].
+  rascals: {range: melee, component_collision_tiles: [0.75, 0.45], verified: true}
+  # ROYAL GHOST. "Upon deployment, he will spawn invisible, and will only turn visible once he
+  # attacks. If he is in his invisible state, he will not be targeted by opposing units, but can
+  # still be hit by area damage or spells. When he is not fighting any unit for 1.8 seconds, he will
+  # become invisible again." 1.8 is from the HISTORY -- 7/6/2022 "increased the time required for
+  # turning invisible to 1.8 seconds (from 1.6)", after 4/6/2018 took it to 1.6 from 1.2. The
+  # attributes table still prints "Invisibility Time 2 sec", which the dated balance log contradicts.
+  # He is an AREA-damage troop ("a fast, area-damage, ground-targeting, melee, ground troop"), which
+  # the import missed entirely. That he takes splash while invisible is explicit: 8/4/2022 "fixed an
+  # issue where an invisible Royal Ghost was not receiving splash damage".
+  royal_ghost: {range: melee, splash: true, flags: [splash], invisibility_time_s: 1.8, verified: true}
+  royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
+  # 2026-08-15 wiki: "a slow, single-target, BUILDING-TARGETING, melee, ground troop" (attr
+  # row: Medium (60) / Melee: Medium (1.2) / Building). The thin KB import had no targeting
+  # data, so the sim's Rune Giant was brawling troops on the way in. Her ally damage-buff
+  # ability stays unmodeled (documented in SIM_FIDELITY.md deferrals).
+  rune_giant: {range: melee, targets: buildings_only, flags: [building_targeting], verified: true}
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
+  # SUSPICIOUS BUSH. The imported row was the BUSH GOBLINS' stats pinned on the parent -- the bush
+  # itself has 81 hp (skeleton-tier), never attacks, and "spawns invisible as it moves towards the
+  # nearest building ... invisible to troops, like the Royal Ghost" (towers ignore ghosts too;
+  # splash and spells still connect). "Once the Suspicious Bush either reaches a building or is
+  # defeated, it will spawn two Bush Goblins" -- kamikaze arrival, same shape as Skeleton Barrel.
+  # It stays invisible for life because the ghost refade rule keys on fighting, and it never fights.
+  suspicious_bush:
+    display: "Suspicious Bush"
+    targets: buildings_only
+    flags: [building_targeting, kamikaze]
+    invisibility_time_s: 1.8
+    hitpoints: 81
+    damage: 0
+    dps: 0
+    hit_speed: 1.4
+    range: melee
+    range_tiles: 0.5
+    speed_tiles: 1.0
+    spawns: {unit: bush_goblin, on_death: 2}
+    verified: true
+
+  bush_goblin:                     # the two goblins the bush breaks into -- a spawned body, NOT a
+    display: "Bush Goblin"         # deployable card. Wiki: 304 hp / 227 damage at level 11,
+    elixir: null                   # single-target melee ground troops; cadence + reach + speed
+    kind: troop                    # from the import's spawn_unit_stats row (1.4s / 0.8t / 1.0t-s).
+    rarity: rare
+    attacks: [ground]
+    movement: ground
+    range: melee
+    splash: false
+    count: 1
+    win_condition: false
+    hitpoints: 304
+    damage: 227
+    hit_speed: 1.4
+    range_tiles: 0.8
+    speed_tiles: 1.0
+    deploy_time: 0.2
+    evolution: null
+    verified: true
+  # -- short --
+  electro_spirit: {range: short, multi: chain, hits_per_attack: 9, verified: false}
+  # HUNTER: 10 pellets of 84 (published as "84 x10"), each an individual hit, scattered across a
+  # cone -- the damage falloff is what the cone DOES to a target of fixed size, not a rule. The
+  # half-angle is the one number the wiki never prints (24/1/2018 only says it "slightly decreased
+  # his bullet spread"). 18 degrees is set so that point-blank all ten connect, which is what his
+  # published DPS of 84 x 10 / 2.2 assumes, and so his maximum range still lands what the previous
+  # hardcoded falloff produced -- a mechanic fix, not a rebalance.
+  hunter: {range: short, attacks: [air, ground], flags: [ranged], multi: shotgun, spread_degrees: 18, verified: true}
+  minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
+  # PHOENIX. "When defeated, the Phoenix explodes, dealing damage, inflicting knockback" (death
+  # blast 163/1.5 from the import) -- AND drops an EGG once. "If the egg is not defeated within
+  # 3.8 seconds, it will hatch into another Phoenix"; since 7/2/2023 the reborn spawns with 80%
+  # of the original's hitpoints and damage, deals NO death damage and drops NO second egg.
+  phoenix: {range: short, flags: [knockback], egg: {hatch_s: 3.8, reborn_frac: 0.8}, verified: true}
+  skeleton_dragons: {range: short, verified: false}
+  # -- long --
+  archer_queen: {range: long, verified: false}
+  # "The Bowler launches an attack that travels up to its maximum range, and inflicts knockback,
+  # while piercing through enemies" -- the ONLY card here whose knockback is its NORMAL ATTACK
+  # rather than a death blast, so it rides the piercing projectile and shoves along the roll line.
+  # The Bowler page is also the source of the knockback-immune list (see dark_prince).
+  bowler: {range: long, attacks: [ground], splash: true, flags: [splash, knockback], verified: false}
+  cannon_cart: {range: long, flags: [knockback_immune], verified: false}
+  dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
+  electro_dragon: {range: long, multi: chain, verified: true}
+  # "If 2 or more targets are within his range, his attack will SPLIT and attack the closest 2
+  # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
+  # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes
+  # up to 2 OTHER targets" for full damage each.
+  electro_wizard: {range: long, multi: split, spawn_damage: 115, spawn_radius_tiles: 3.0, verified: true}   # SPAWN ZAP: damages + STUNS around him on deploy (115 dmg / 3.0 tiles, USER-VERIFIED); the stun rides via his `stuns` flag now that _deploy_blast applies status
+  executioner: {range: long, multi: boomerang, verified: true}
+  firecracker: {range: long, multi: spark, verified: true}
+  flying_machine: {range: long, verified: false}
+  inferno_dragon: {range: long, targets: any, flags: [ranged, flying], verified: false}   # 4e FLYING tank-melter (ramping single-target) -> needs AIR defence; a swarm or a reset stops the ramp
+  # LITTLE PRINCE (user bug report): the imported row carried the GUARDIAN's stats -- hp 1600,
+  # damage 217, and his dash's charge_damage 256 -- so the sim's Little Prince hit like the
+  # bodyguard. Real level-11 champion: 653 hp, 98 damage (stage-1 dps 82 x 1.2 s), NO charge.
+  # His cadence RAMPS while attacking from the same spot: every 3 attacks the stage steps
+  # 1.2 s -> 0.8 s -> 0.4 s (dps 82 -> 123 -> 247, the published anchors; 3-attack stages since
+  # 17/11/2023), and ANY movement or displacement (knockback/stun shove) resets it (14/12/2023
+  # fix). The Guardian ability itself remains unmodeled (champion abilities are out of scope).
+  little_prince:
+    # 2026-08-16 wiki sweep: hp_11 698 / dmg_11 104. The curated row carried 653/98 -- one
+    # scaling step low, because CHAMPIONS start at level 11 while the import treated the row as
+    # a common-card base. dps follows from 104/1.2.
+    range: long
+    hitpoints: 698
+    damage: 104
+    dps: 87
+    hit_speed: 1.2
+    charge_damage: 0
+    attack_ramp: {per_stage: 3, mults: [1.0, 1.5, 3.0]}
+    verified: true
+  magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
+  # Mother Witch page carries two unit rows (witch + cursed hog). The importer currently binds the
+  # hog row's hp/dmg onto the card body, so the witch herself is corrected here from the page's
+  # level-11 vardefines (hp_11=529, dmg_11=133, atk_speed=1.0) and keeps her own 5 s curse timer.
+  mother_witch:
+    range: long
+    hitpoints: 529
+    damage: 133
+    hit_speed: 1.0
+    dps: 133
+    curse_duration_s: 5.0
+    verified: true
+  princess: {range: long, flags: [splash], verified: false}                    # 3e glass cannon: longest range in the game, AREA arrow, ~200hp -> any spell kills it
+  sparky: {range: long, attacks: [ground], flags: [splash, knockback_immune], verified: false}   # 6e glass cannon: huge AREA hit on a ~4s cycle, GROUND only -> swarm/surround it or spell it before it fires
+  spear_goblins: {range: long, verified: false}
+  witch: {range: long, flags: [splash, spawner], spawns: {unit: skeletons, count: 4, delay: 1.0}, verified: true}   # 5e AREA support: "a group of four Skeletons" every 7s, first wave 1s after deploy
+  zappies: {range: long, verified: false}
+  # -- MULTI-HIT MECHANICS. The wiki gives `hits_per_attack` as one number but it covers four
+  # unrelated behaviours, so only the KIND is curated (the count stays imported). Damage is PER HIT
+  # and the published dps counts only one, so before this these cards were 2-10x too weak.
+  #   chain     the bolt arcs on to further targets, carrying the stun (each takes the FULL hit)
+  #   split     ONE attack DIVIDED between the closest N targets -- the published damage is the
+  #             TOTAL, so counting it per target doubles the card (Electro Wizard only)
+  #   boomerang the axe flies out AND back, damaging on both passes
+  #   spark     sparks spray outward from where the rocket lands, not from the firer
+  #   shotgun   a cone of pellets: nearly all connect point-blank, few at max range
+  # These used to be SEPARATE `card: {multi: ...}` entries further down the file, which made them
+  # DUPLICATE YAML KEYS -- PyYAML silently keeps the last, so the earlier entry was discarded and
+  # hunter lost its curated `flags: [ranged]` without any error. Merged into the entries above.
+  # -- SPAWNERS. The wiki's attribute table gives the TIMINGS (spawn_interval_s / spawn_delay_s /
+  # spawn_range_tiles, imported into cards_stats.json) but never names the card being summoned nor
+  # HOW MANY appear per tick -- both of those live in the page's intro prose, so they are curated
+  # here and quoted alongside. `unit` must be a real KB key; `count` is units per spawn tick;
+  # `on_death` is the burst when the spawner dies. `interval`/`delay` are OVERRIDES, used only where
+  # the attribute table is provably stale (see tombstone).
+  # `spawn_range_tiles` present => the spawner only ticks while an enemy is inside it (Goblin Hut
+  # stopped spawning automatically in the May 2025 update); absent => it spawns unconditionally.
+  goblin_hut: {kind: building, flags: [spawner], spawns: {unit: spear_goblins, count: 1, on_death: 1}, verified: true}   # "summon a Spear Goblin" every 2.2s when an enemy is in range; death spawn cut to 1 (from 3) on 6/6/2023
+  # Tombstone: the attribute table says 4s but the prose says 3.5s AND the Common modifier says
+  # "spawn speed is doubled, for a total of 1.75 seconds" -- 3.5/2 = 1.75, so the TABLE is stale.
+  tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 2, on_death: 4, interval: 3.5}, verified: true}   # "a group of two Skeletons, with a 0.5 seconds delay from each other"
+  barbarian_hut: {kind: building, flags: [spawner], spawns: {unit: barbarians, count: 3, on_death: 1}, verified: true}   # "a group of three Barbarians" every 15s; "when defeated, it will also spawn a Barbarian"
+  # GOBLIN CAGE. "When defeated, it will spawn a Goblin Brawler." The importer folded the BRAWLER's
+  # stats into the cage -- hitpoints 1080 / damage 337 are his, and a cage does not attack at all.
+  # The wiki keeps them apart as `cage_hp_11 = 780` and `hp_11 = 1080`, so the cage is the 780-hp
+  # body and the Brawler is curated below as a spawn-only unit. Its lifetime expiry releases him too,
+  # because a lifetime is modelled as hp decay and therefore runs through the same death path.
+  goblin_cage: {kind: building, hitpoints: 780, damage: 0, dps: 0, spawns: {unit: goblin_brawler, on_death: 1}, verified: true}
+  # Goblin Brawler: not a playable card, so there is no import to merge with -- every number here is
+  # from the Goblin Cage attribute table's second row. "He is also the same as that spawned by the
+  # Party Hut." Speed Fast (90) = 1.5 tiles/s at the wiki's 60 units = 1 tile/s.
+  goblin_brawler:
+    display: "Goblin Brawler"
+    kind: troop
+    rarity: rare
+    hitpoints: 1080
+    damage: 337
+    hit_speed: 1.1
+    range_tiles: 0.8        # "Melee: Short (0.8)"
+    speed_tiles: 1.5        # "Fast (90)"
+    attacks: [ground]
+    movement: ground
+    targets: any
+    count: 1
+    range: melee
+    splash: false
+    win_condition: false
+    verified: true
+  # -- clarified dual / special-attack troops (user-provided) --
+  cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
+  # FURNACE IS A TROOP, not a building: the 4/8/2025 update "changed the Furnace into a troop that
+  # can walk and deal damage". Its wiki table reads Type: Troop, Speed Medium (60), Range 6, and it
+  # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
+  # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
+  # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
+  goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
+  # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
+  # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
+  # he sprints at the nearest building and detonates on connect or when the fuse runs out.
+  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage, knockback],
+                      enrage_frac: 0.5, enrage_fuse_s: 10.0, enrage_speed: 2.0, enrage_reach: 0.5,
+                      verified: true}
+  # STILL NOT MODELLED, and why:
+  #   mega_knight  -- his JUMP blast (jump_damage 537 / jump_time_s 0.9) needs a leap mechanic; his
+  #                   LANDING blast IS modelled (spawn_damage)
+  #   mighty_miner -- the bomb dropped by his ABILITY ("Explosive Escape"). Researched 2026-08-17:
+  #                   1 elixir (was 2), 13 s cooldown, ~1 s delay, then he becomes intangible and
+  #                   moves to the HORIZONTALLY MIRRORED position (same depth, opposite lane),
+  #                   leaving a bomb at the original spot that detonates after ~1 s for area damage
+  #                   to ground AND air with 1.8-tile knockback. The bomb's damage number is not
+  #                   published in the KB, so it still cannot be sourced.
+  #                   ENGINE GAP, and it is not just missing data: the ability block (engine.py
+  #                   ~2094-2121) models ONE shape -- invisibility plus a backward nudge of
+  #                   `ability_back` tiles -- and fires it AUTOMATICALLY when a unit drops below a
+  #                   per-unit random HP fraction. That is the Bandit / Archer Queen pattern, i.e.
+  #                   an OPPONENT behaviour. Explosive Escape is a mirror (not a nudge), drops a
+  #                   damaging bomb (no hook), and is a PLAYER CHOICE (no action-space slot).
+  #                   Deliberately left undeclared: setting ability_invis_s here would not
+  #                   approximate the ability, it would give our own Mighty Miner the Bandit's
+  #                   behaviour at a random HP threshold we never chose.
+  goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
+  spirit_empress: {range: melee, verified: false}                               # GROUND form (3e single-target melee); air form is ranged flying

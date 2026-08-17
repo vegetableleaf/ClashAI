@@ -1,0 +1,1503 @@
+# =====================================================================
+# Learning ClashBot ("real") configuration.
+# Play + capture happen on PC via Google Play Games, so the agent trains on
+# and plays on the exact same rendering. Region is in PHYSICAL pixels (the
+# process runs DPI-aware), reused from the trol calibration.
+# =====================================================================
+
+window:
+  title_contains: "Clash Royale"
+  region: null   # 4 physical px [left, top, width, height] of the game render, or null to auto-detect the window by title (do NOT write [null] -- that is a 1-item list and errors)
+
+capture:
+  work_width: 480                # frames scaled to this width for vision
+
+# --- Hand card slots (normalized centres, from the trol calibration) ------
+hand:
+  slots: [[0.308, 0.887], [0.485, 0.887], [0.660, 0.884], [0.854, 0.884]]
+  click_radius: 0.06            # a click near a slot's x, in the tray band, = selecting that card
+  # Card-identity recognition: the policy acts on WHICH card identity to play (not
+  # the tray slot, which cycles). An EVOLVED card is its own identity (`<key>_evo`)
+  # separate from the normal card, since it plays differently; champions are their
+  # own cards already. Each slot's portrait is cropped (card_w/card_h are half-
+  # width/half-height around the slot centre) and matched against
+  # templates/cards/<identity>.png -- extra crops of one identity are allowed and
+  # help (name them <identity>_2.png, ...). Build these from a recording with
+  # `run.py hand-templates` and check with `run.py verify --hand`.
+  templates_dir: "templates/cards"
+
+  # CHAMPION ABILITY BUTTON (Mighty Miner, "Explosive Escape", 1 elixir, 13 s cooldown).
+  # A champion's ability is NOT a card play: it is a separate on-screen button that appears only
+  # while the champion is alive and off cooldown, so it is a new ACTION, not a new deck slot.
+  # Normalised (x, y) of the bomb icon's centre, measured off the user's 652x1041 in-match capture
+  # at (628, 789). ESTIMATED FROM A SCALED SCREENSHOT -- confirm against a real captured frame with
+  # `run.py verify` before trusting it live; a few pixels off taps nothing and the elixir is spent.
+  ability_button: [0.963, 0.758]
+  ability_button_radius: 0.055     # how far from that centre still counts as the button
+  ability_cost: 1
+  ability_cooldown_s: 13.0
+  card_w: 0.055                 # half-width of a hand-card portrait crop (normalized)
+  card_h: 0.045                 # half-height of a hand-card portrait crop (normalized)
+  match_threshold: 0.5          # min normalized template-match score to accept an identity
+  # HAND-READER SLOT CACHE (2026-08-13). recognize_hand's cost grows with the template variants
+  # (~20 per card x 10 identities x 4 slots ~= 800 small matches per call) and MEASURED 1.28-1.78 s
+  # per call under a training-day CPU load -- the largest term in the live decision loop. A slot is
+  # re-matched ONLY when its pixels changed (small colour thumb, mean-abs diff >= cache_diff), the
+  # match was not confident (score < match_threshold + 0.15 always re-matches -- near-threshold
+  # results flip between lookalikes on pixel noise and must never be frozen), or the cached entry
+  # is older than cache_ttl_s (hard bound on any residual staleness). VERIFIED 2026-08-13: 300
+  # current-UI live frames, 0 mismatches vs the uncached reader, ~3x faster (far more under load,
+  # where the uncached reader was the thing being starved). cache_diff 0 disables the cache.
+  cache_diff: 3.5               # mean-abs colour-thumb change that counts as "the slot moved" -> re-match
+  cache_ttl_s: 4.0              # max seconds a cached slot id may be served before a forced re-match
+  # The "next card" preview sits to the LEFT of the tray and is drawn smaller. Feeding its
+  # identity to the policy lets it plan cycles (hold a cheap card to line up a counter).
+  # The values below are an ESTIMATE -- calibrate with `run.py verify --hand`: the next-card
+  # box is drawn in cyan; nudge next_slot / next_card_w / next_card_h until it frames it.
+  next_slot: [0.090, 0.965]     # normalized centre of the next-card PORTRAIT (the card, below the "Next:" label)
+  next_card_w: 0.045            # half-width of the next-card crop
+  next_card_h: 0.030            # half-height of the next-card crop
+  next_top_frac: 0.6            # match only the TOP fraction of the card (skip the elixir badge + "1sec" cycle timer)
+  next_templates_dir: "templates/next"  # the next preview is a SMALLER, blue-tinted rendering -> its own template set
+
+# --- Elixir bar reading (YOUR elixir; from the trol calibration) ---------
+# Only your elixir is on screen (the opponent's is hidden), so this gives your
+# affordability, not a full elixir trade. Counts filled (magenta) pips.
+elixir:
+  bar_y: 0.971
+  # BAR GEOMETRY (2026-08-15, measured off 446 frames of timelapse_20260815_191158): the fill's
+  # right edge quantises to bar_x0 + n*(bar_x1-bar_x0)/10 for n=1..10. read_elixir measures that
+  # LENGTH instead of sampling pip centres -- the droplet icon and its white count text sit over
+  # the bar's left end and made the old per-pip counter read one LOW (a full bar read 9, so the
+  # leak penalty never fired and the policy learned to hoard). pip_xs is kept only for reference.
+  bar_x0: 0.2797
+  bar_x1: 0.9672
+  pip_xs: [0.312, 0.369, 0.440, 0.506, 0.577, 0.635, 0.708, 0.775, 0.850, 0.917]
+  filled_hsv_lower: [140, 60, 120]
+  filled_hsv_upper: [175, 255, 255]
+  # --- 2x / 3x elixir CLOCK (src/clashrl/clock.py -> feeds the icebow offense->defense phase machine) ---
+  # The multiplier is read TWO ways and CROSS-CHECKED; the CLOCK is AUTHORITATIVE (only ever RISES):
+  #   TIME  -- elapsed since the match started. Works with NO calibration; lags the real clock by
+  #            however long IN_MATCH took to detect (~1-2s) -- fine for the coarse 2x/3x gate.
+  #   BADGE -- template-match the on-screen "x2"/"x3" indicator. OPTIONAL cross-check: drop
+  #            templates/elixir_2x.png + elixir_3x.png (any crop scale) -- checked vs the clock, and
+  #            the CLOCK WINS any disagreement (the mismatch is logged as a calibration hint).
+  double_time_s: 120           # elapsed seconds when DOUBLE elixir starts (regulation 180 - last 60s)
+  # TRIPLE is the LAST MINUTE OF OVERTIME, not the start of it: regulation ends at 180 s and
+  # overtime's FIRST minute (180-240 s) is still DOUBLE. Was 180, which called x3 a minute early --
+  # and overtime is exactly when a 6-cost win condition becomes affordable, so the phase the policy
+  # banks for was mistimed. The on-screen x2/x3 badge cross-checks this; the CLOCK wins a tie.
+  triple_time_s: 240           # elapsed seconds when TRIPLE elixir starts (last minute of overtime)
+  overtime_time_s: 180         # elapsed seconds when OVERTIME begins. NOT derivable from the elixir
+                               # badge: overtime's first minute is still DOUBLE (triple only at 240),
+                               # so the 3x badge would report overtime a full minute late. The icebow
+                               # offence -> defence phase flip keys off THIS (2026-08-15 doctrine:
+                               # hold the siege through double elixir, turtle only once OT starts).
+  x2_template: elixir_2x.png   # optional PNG in templates/ for the on-screen "x2" badge (null => time only)
+  x3_template: elixir_3x.png   # optional PNG in templates/ for the on-screen "x3" badge
+  badge_threshold: 0.7         # min template-match score to accept a badge
+  badge_check_window_s: 20     # only run the badge cross-check within this many seconds of an expected
+                               # transition (double_time_s / triple_time_s). The badge never DECIDES the
+                               # multiplier (the clock wins all disagreements), so away from a transition
+                               # the check is 16 whole-frame template matches for nothing -- MEASURED
+                               # ~865 ms/step under training load, the largest single term in the live
+                               # decision pipeline (log 2026-08-12). 0 = never check the badge.
+
+# --- Scripted menu navigation (reused from trol) --------------------------
+# The learned policy only plays cards in-match; queueing/exiting is scripted so
+# the bot runs match-to-match unattended. Values + templates come from trol.
+buttons:
+  battle_button: [0.492, 0.771]  # HOME -> queues a 1v1 match directly (auto-queue; no party/quick-match step)
+  quick_match:   [0.690, 0.555]  # (unused in 1v1; kept for reference)
+  play_again:    [0.335, 0.905]  # 1v1 results screen -> re-queue immediately ("Play Again", bottom-left); tapped by default so the match loop continues without returning HOME
+  play_again_template: play_again.png   # optional PNG in templates/ (e.g. play_again.png) to LOCATE the button each frame -- robust
+  play_again_threshold: 0.8      # to layout/window drift. null => fixed play_again coord + the OK-button escalation only.
+  results_ok:    [0.645, 0.905]  # 1v1 results screen -> "OK" (bottom-right, returns HOME) -- fallback only
+  results_ok_center: [0.5, 0.905] # "OK only" results variant (Play Again removed): the single CENTERED OK button
+  results_ok_dc: [0.645, 0.905]  # no disconnect screen in 1v1 -> same as OK
+  # In-match emote/chat icon (bottom-left). Tapping it opens the emote wheel and the bot
+  # gets stuck, so card placements are nudged UP out of this box (from trol's emote button).
+  chat_avoid_box: [0.0, 0.79, 0.185, 0.90]
+
+states:
+  home_menu:  {template: "home_menu.png",  threshold: 0.55}   # lowered: the "Daily Bonus" sub-banner + capture drift drop the Battle-button match (~0.6); nav taps where it locates it
+  party_menu: {template: "party_menu.png", threshold: 0.80}
+  # At OVERTIME the game replaces the 'Time left:' label with the red/orange OVERTIME plate, so
+  # in_match.png alone reads UNKNOWN mid-OT (bot froze). Second entry = STRICT banner template:
+  # own high threshold + top-right search window, fires only on a near-perfect plate match
+  # (measured: real OT 0.65-0.95 across sessions, menus/results <= 0.57 -- scale drift means it
+  # will MISS sometimes, which is fine: play's in_match grace hold covers the misses, and the
+  # strictness is what keeps it from ever re-breaking menu navigation like the first attempt).
+  # in_match_v2.png = the RESTYLED 'Time left:' text band after the 2026-08 game update (new dark
+  # rounded plate; the old crop flatlined at ~0.49 on new footage). The OLD in_match.png stays
+  # listed so pre-update recordings (verify / label / outcome mining) still read correctly.
+  in_match:
+    threshold: 0.80
+    # ORDERED BY WHAT ACTUALLY FIRES (2026-08-15, measured over 757 sampled frames of
+    # data/sessions/20260815_222309): in_match_v2.png matched 424 and in_match.png matched
+    # ZERO. Since a state returns on its FIRST hit, having the dead template first cost a
+    # 22 ms whole-frame search on every in-match decision. v1 is kept (older client builds /
+    # arena skins may still need it) but is now tried last.
+    templates:
+      - "in_match_v2.png"
+      - "in_match.png"
+  # OVERTIME is a SEPARATE state entry, checked AFTER match_end (see vision.detect_state).
+  # The "Time left:" box that in_match_v2 keys on is REPLACED by a red "Overtime" banner, so
+  # regulation templates cannot see an overtime board -- measured on the overtime match in
+  # data/sessions/20260815_222309, the board went UNKNOWN at t=184 s and stayed unrecognised
+  # for the whole 131 s of overtime, which is what stopped the bot acting.
+  # It cannot ride in the in_match list because that list is checked FIRST: the banner is still
+  # on screen behind the results overlay (measured: all 6 end frames of that match fire BOTH
+  # the OK button and this banner), so an in_match-first hit would MASK the match end and hang
+  # nav on the results screen forever.
+  in_match_ot:
+    templates:
+      - {template: "in_match_ot.png", threshold: 0.85, region: [0.66, 0.00, 1.00, 0.12]}
+  # RENAMED 2026-08-15 (was match_end.png / match_end_dc.png). Both are post-match BUTTONS and
+  # BOTH are valid 1v1 endings -- which of the two screens appears is chance, per the user, and
+  # neither has anything to do with a disconnect. The old "_dc" name nearly got the OK template
+  # deleted as 2v2 dead weight; it is in fact the one that detected every ending in the
+  # 2026-08-04 session (3/3 frames, while Exit matched 0/3). Keep BOTH: dropping either loses
+  # whichever screen it covers and leaves nav hanging on its timeout for those matches.
+  # REGION-LIMITED (2026-08-15). Both are BUTTONS on the results screen and they only ever
+  # appear in the bottom band: MEASURED at y 0.886..0.941 on all four recorded endings across
+  # two sessions and two window sizes. Searching the whole frame for them cost ~44 ms on every
+  # decision that is not answered by the first in_match template -- which is EVERY overtime
+  # frame, since overtime replaces the "Time left:" box the regulation template keys on.
+  # The band is padded generously (0.82..1.00) so a differently sized window cannot slip out.
+  match_end:
+    threshold: 0.80
+    templates:
+      - {template: "match_end_ok.png", region: [0.00, 0.82, 1.00, 1.00]}
+      - {template: "match_end_exit.png", region: [0.00, 0.82, 1.00, 1.00]}
+
+nav:
+  poll_hz: 6                     # how often play() re-checks the screen state
+  menu_delay: 0.5                # wait after a menu tap before re-checking (lower = faster match-to-match transitions)
+  match_end_timeout: 6           # seconds tapping "Play Again" with NO progress before ESCALATING to the OK button
+                                 # (-> HOME -> located Battle), so a drifted/covered Play Again button can't hang nav
+
+# --- Recording human play (screen + mouse) for imitation data ------------
+record:
+  fps: 12                        # frames/sec captured while you play
+  out_dir: "data/sessions"       # each session saved under icebow/data/sessions/<timestamp>/
+  log_moves: false               # also log mouse-move paths during drags (bigger files)
+
+# --- Labeling: pair your clicks into card plays (select slot -> place) -----
+label:
+  pair_timeout: 3.0              # max seconds between selecting a card and placing it
+  arena_top: 0.10               # placement clicks fall in this normalized y-band...
+  arena_bottom: 0.86            # ...below this is the card tray (slot selects)
+
+# --- Observation the agent sees (used by the imitation + RL pipeline) -----
+observation:
+  arena_size: [64, 96]           # downscaled arena image (w, h) fed to the CNN
+  # --- Stage 3: identity-grounded threat features (detector -> obs) ------------------------------
+  # When ON, the policy's THREAT vector gains a 10-feature IDENTITY block (card_threat.IDENTITY_DIM):
+  # for RECOGNISED enemy cards it exposes their KB role (tank / swarm / air / building / win-condition /
+  # building-targeter) + how deep they are + their APPROACH VELOCITY + a PREDICTED depth `predict_horizon_s`
+  # ahead (where the push will be when a defender finishes deploying) so the policy counters by identity
+  # AND anticipates motion, not just red blobs. PLUS an 8-feature opponent SHORT-TERM MEMORY block
+  # (card_threat.OPP_MEMORY_DIM): the archetype/roles SEEN this match, opponent avg elixir, recent tempo,
+  # and back-line STAGING (troops massing on THEIR half) -- the strategic "who is this / what are they
+  # building" read the reactive identity block can't give (answers 'see opponent-side plays', not just
+  # your half). The SIM builds both from ground truth (filtered to `detector_cards` to mimic the detector's
+  # coverage); LIVE builds them from the detector. Both GROW-safe: adding whitelist cards needs NO retrain.
+  # Flipping this changes threat_dim (16 <-> 34 = 16 base + 10 identity + 8 memory) -> a FRESH train-sim +
+  # train-rl (init train-rl from the SIM checkpoint so the wide block carries; NB train-bc caps threats at 16).
+  use_detector: true            # Stage-3 gate: add the identity + memory blocks (needs a trained detector live)
+  # WATCH LINE for the identity block, in the normalised y where 0.5 is the RIVER and 1.0 is your king.
+  # This was hard-coded to 0.5 ("only once it has CROSSED"), which meant an incoming win condition lit
+  # its win_condition / building_targeting flags at depth ~0 -- the latest possible moment, after which
+  # a defensive building can no longer deploy and acquire in time to intercept (the Hog-at-the-bridge
+  # case). 0.44 = the deploy line, so the push is recognised while it is still arriving and the depth +
+  # approach-VELOCITY features have something to say. Depth is renormalised over the watched span, so
+  # 0.0 = this line and 1.0 = your king. Does NOT change threat_dim (same 10 features) but it DOES
+  # change the observation distribution -> a fresh train-sim / train-sim-ppo (and a re-`label` for BC).
+  # Raise back to 0.5 for the old behaviour. Live play, the live RL env, the sim, the mirrored self-play
+  # opponent and the offline labeller all read THIS value -- never hard-code it in one of them.
+  identity_front_y: 0.44
+  # Stage-3b gate: the troop-INTERACTION block -- an engineered predictor of WHO IS MOVING AT WHOM using
+  # CR's deterministic targeting rules (building-targeters ignore troops; ground-only attackers can't take
+  # air; else nearest-in-sight, else march at the nearest alive tower). The policy sees a fixed 12-dim
+  # TOWER-PRESSURE summary: per tower (your L/R/king, then theirs) the incoming elixir-value predicted to
+  # be heading at it + an urgency (nearest attacker's ETA). SIM builds it from ground truth (whitelist +
+  # recall-noise scoped); LIVE from the detector's tagged tracks. Flipping this WIDENS threat_dim (+12 ->
+  # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
+  use_interactions: true
+  # CANONICAL RGB LIVE (2026-08-15). The image branch is rebuilt from OUR OWN detections in the
+  # sim's palette instead of showing the real game pixels, so sim / BC-replay / live all present
+  # ONE distribution to the conv trunk. Measured motivation: the same checkpoint never used
+  # column 0 in the sim (placements sat on columns 3/9/14) but dumped 28% of live plays there.
+  # Shape is unchanged (3 channels) so checkpoints stay valid; set false to A/B against raw pixels.
+  canonical_rgb_live: true
+  # DETECTOR FLICKER (2026-08-15). Measured over 72 consecutive frames of
+  # data/sessions/20260815_222309 (tracks matched by card within 0.06): a unit that is genuinely
+  # on the board is MISSING from 31% of the frames in its own lifespan, 1.71 vanish-and-return
+  # events per track. That is the blinking the user saw in the overlay, and the policy sees the
+  # same gaps in the semantic + predictive canvases. A 0.45 s hold (env._DetHold) bridges them:
+  # measured dropout 31% -> 9%, vanish-return events 12 -> 4.
+  # NB the sim ALREADY models canvas dropout at sim_detector_presence_recall 0.85 (15%) further
+  # down this file -- so after the hold the LIVE canvas (9%) is now cleaner than what the policy
+  # trains against, which is the safe direction. Left as-is rather than tightened to match.
+  det_hold_s: 0.45               # live: how long a vanished detection is re-emitted at its last
+                                 # position. Long enough to bridge the measured 1-3 frame gaps,
+                                 # short enough that a killed unit stays dead (the trade ledger's
+                                 # vanish accounting is delayed by this much and no more).
+  # --- OBS-CANVAS FLIP (Stage-3c) ---------------------------------------------------------------
+  # When ON, the policy's IMAGE branch stops being just the 64x96 arena render: detect_obs's SEMANTIC
+  # CHANNELS are stacked on top of it (enemy ground/air/building, my ground/building, spell), so
+  # "what is where" arrives as a clean map instead of having to be inferred from coloured blobs that
+  # domain randomisation repaints every match. in_ch 3 -> 9.
+  #
+  # WHY IT IS SAFE TO FLIP NOW. This is the gate `detect-eval` prints as OBS-CANVAS FLIP GATES, and it
+  # is scored on CLASS-AGNOSTIC PRESENCE recall -- the canvas needs position + team + coarse role, not
+  # the card's name (that is the separate identity block's job). MEASURED on the frozen 241-image
+  # subset at conf 0.35, board-24 passes both gates (presence UNITS 0.855 vs 0.85, whitelist 0.823 vs
+  # 0.70) and STRICTLY DOMINATES the previous pin board-21, which never clears presence at ANY
+  # confidence (its best is 0.789 at 0.30) and fails 2 of 5 deck UNIT gates (knight, skeletons) where
+  # board-24 passes 5/5.
+  #
+  # Flipping this changes the OBSERVATION IMAGE, so it is a FRESH train-sim/train-sim-ppo (and a
+  # re-`label` + train-bc if you want BC to see it). Checkpoints now carry `in_ch`, so an old
+  # 3-channel policy still loads and plays -- `play` feeds the canvas only when the checkpoint asks
+  # for it, which is why promoting the detector does not strand the current policy.
+  use_detector_canvas: true
+  # PREDICTIVE CANVAS (2026-08-15 architecture break, in_ch 9 -> 12): +3 mechanics-derived
+  # channels per slice -- enemy/my units dead-reckoned predictive_canvas_dt_s ahead along the
+  # line to their rule-predicted targets at KB speeds, plus an enemy URGENCY map
+  # (1 - eta/eta_horizon_s). The short-term-outcome read a human makes at a glance, painted
+  # instead of learned. Flipping this invalidates every checkpoint (stale_resume gates it).
+  use_predictive_canvas: true
+  predictive_canvas_dt_s: 1.0
+  eta_horizon_s: 8.0
+  # TROOP HP CHANNELS -- BUILT, MEASURED, AND TURNED OFF (2026-08-15). The sim half is exact
+  # (engine hp/max_hp) but the LIVE half cannot be read reliably yet, so enabling it would
+  # feed the policy a channel that is truthful in training and garbage at inference -- the
+  # exact sim2real trap the play.py warp bug just cost us a live run over.
+  # MEASURED on real Hunter frames (detector boxes + the reader): the pink arena floor has
+  # the same hue/sat as a red bar (H~176 S~110 V~155), bars sit anywhere from -0.042 to
+  # +0.025 of frame height relative to the box top (sometimes INSIDE the box), the "empty"
+  # half is a SATURATED dark team colour (not the desaturated grey the reader assumed), and
+  # a level badge sits at the bar's left end. A badge-anchored version reads some bars
+  # correctly (0.55 / 0.92 / 0.99 verified) but misses most and produced a FALSE 0.02 on a
+  # healthy X-Bow -- inventing damage, which the design forbids.
+  # To finish this properly: add hp-bar classes to the YOLO detector (structure, not colour
+  # thresholds) or template-match the bar's dark outline, with labelled ground truth. The
+  # code + synthetic-bar tests stay in place behind this flag.
+  use_hp_canvas: false
+  # --- CANVAS STACK: the MOTION half of the observation (default OFF = 1 slice) ---------------
+  # A single canvas is a SNAPSHOT -- it says where every unit IS, never where it is GOING, so the
+  # policy cannot learn to lead a push or pre-place against one. >1 appends the canvas as it looked
+  # `canvas_stack_dt_s` ago (and again, once per extra slice), so the conv trunk reads motion
+  # straight off the channel deltas. Slice 0 is always the CURRENT canvas, so the layout a 1-deep
+  # stack produces is unchanged and only the extra slices are new.
+  #
+  # WHY STACKING RATHER THAN AN EXPLICIT VELOCITY CHANNEL: velocity needs per-unit cross-frame
+  # TRACKING (association + a stable team tag + sub-box position precision), which is a much harder
+  # ask than the class-agnostic PRESENCE recall the canvas is gated on -- and it is exactly the
+  # signal that degrades live, so it would train beautifully in sim and transfer badly. Stacking
+  # rides on the presence recall you already measured: a unit missed on one frame is simply absent
+  # from that one slice, and the sim reproduces that because each slice draws its own dropout.
+  #
+  # COST: +6 image channels per extra slice (in_ch 9 -> 15 -> 21) and a FRESH train-sim, same as
+  # the canvas flip itself -- checkpoints carry `in_ch`, so an existing 9-channel policy keeps
+  # playing and `play` sizes the stack from the CHECKPOINT rather than from this file.
+  canvas_stack: 1                # 1 = today's single canvas. 2-3 = motion. Try 2 first.
+  canvas_stack_dt_s: 0.5         # seconds between slices. Sampled by TIMESTAMP, not by "last N
+                                 # observations", because neither producer ticks evenly: perception_hz
+                                 # is a ceiling (~5-10 Hz) and the act loop wakes early on a new-enemy
+                                 # event, so decisions land 0.3-1.0 s apart. A fixed clock keeps the
+                                 # implied speed identical in sim, live and mined replays.
+                                 # Too small and the deltas are noise; too large and a fast troop has
+                                 # already crossed the board -- 0.5 s is ~half a tile for a medium troop.
+  # --- DOMAIN RANDOMIZATION of the sim's synthetic render (sim2real for the CNN branch) ---
+  # The conv trunk only ever sees the synthetic canvas; live it meets real pixels (and each new
+  # ARENA repaints them) fully out-of-distribution -- measured: the live cell argmax collapsed to
+  # one corner regardless of the board while the same net placed 11 distinct cells on sim obs.
+  # Per-MATCH restyle (stable within a match, different across matches, like arena rotation):
+  # background/river palette jitter, mild team-colour jitter (blue-vs-red identity is SIGNAL),
+  # global gain/bias, additive noise. Training envs only -- the eval benchmark renders canonical.
+  domain_rand:
+    enabled: true
+    bg_jitter: 55          # +- per BGR channel on grass/river colours
+    team_jitter: 25        # +- on unit/tower colours (mild; keeps blue-vs-red separable)
+    gain: [0.7, 1.25]      # global contrast multiplier range
+    bias: [-25, 25]        # global brightness offset range
+    noise: 6.0             # max additive uniform pixel noise
+  detector_conf: 0.35            # LIVE: only trust a detection at/above this confidence. RE-SWEPT for board-24 on
+                                 # the frozen 241-image subset; 0.40 -> 0.35 because 0.40 MISSED the obs-canvas
+                                 # presence gate by 0.008 and 0.35 clears it:
+                                 #   0.40  presence(units) R 0.842 / P 0.889   whitelist R 0.808 / P 0.897  (below)
+                                 #   0.35  presence(units) R 0.855 / P 0.882   whitelist R 0.823 / P 0.886  (PASS)
+                                 # The old comment held 0.35 back "until the canvas obs channel is live and phantom
+                                 # boxes have a measurable cost" -- the canvas IS live now
+                                 # (observation.use_detector_canvas), so that condition is met and the trade is
+                                 # +1.3pp presence recall for 0.7pp of precision.
+                                 # Re-tune per detector generation (sweep, don't inherit).
+  # PER-CLASS gate overrides (base card key -> conf). A SINGLE global threshold assumes every class is
+  # calibrated the same way; measured on board-16 they are not. Breaking each class's val misses into
+  # blind / low-conf / wrong-class showed the failure modes differ completely:
+  #   hog_rider  R 0.33 @0.40 with precision 1.00, R 0.42 @0.30 STILL 1.00  -- purely over-gated
+  #   knight     R 0.57/P 0.78 @0.40 -> R 0.62/P 0.80 @0.30                 -- better on BOTH axes
+  #   tesla/x_bow gain ~nothing below 0.40 and only shed precision          -- leave them high
+  #   guards     gains NO recall at any gate, precision collapses 0.75->0.50 -- lowering is pure loss
+  # Detection runs at the LOWEST gate in play and each box is judged against its own class's
+  # threshold, so lowering one card costs nothing anywhere else. Variants share their BASE key's gate.
+  # EMPTY ON PURPOSE: those numbers come from ONE generation on 12-63 val instances, and the sparky
+  # lesson (0.50/0.75/0.62 across three generations on n=8 was noise) says an override needs a STABLE
+  # measurement ACROSS generations. Populate only after board-17 and board-18 agree, using
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt`.
+  detector_conf_by_card: {}
+  perception_hz: 10              # CONTINUOUS PERCEPTION: the detector + team tracker run in a background thread
+                                 # at this rate; the act loop reads a fresh snapshot at decision time (staleness
+                                 # <= 1 period instead of 'blind since the last act'), tracker velocities are
+                                 # finely sampled (rocket lead / motion team evidence), and the preview window's
+                                 # boxes become near-realtime. This is a CEILING: measured single-frame detect is
+                                 # ~121ms on the RTX 5050 (~8 Hz free, ~5-7 Hz while train-rl shares the GPU); the
+                                 # loop self-regulates to whatever the hardware sustains.
+                                 # 0 = classic synchronous mode (one detector pass per decision).
+  predict_horizon_s: 1.0         # look-ahead for the predicted post-deploy depth (~a defender's deploy time)
+  # SIM-ONLY detector realism: simulate the live YOLO detector's imperfect recall/precision on the sim's
+  # GROUND-TRUTH identity + memory blocks, so the sim PRIOR trains on a sparse/noisy threat signal like it
+  # gets live -> narrows the sim-to-real gap. 1.0/1.0 = perfect (old behaviour). Applied to BOTH the agent's
+  # and the self-play opponent's identity block; LIVE play ignores these (it uses the real detector).
+  # VALUES BELOW = the CURRENT detector (board-21). It is the FIRST generation since board-16 to beat
+  # it: board-17/18/19 all failed while the dataset more than doubled. On the frozen 241-image subset
+  # board-21 does not merely trade recall for precision -- it STRICTLY DOMINATES. At matched precision
+  # it gives whitelist R 0.737 @ P 0.922 (conf 0.45) vs board-16's 0.723 @ P 0.920, and on presence
+  # UNITS at conf 0.50 it beats board-16's conf-0.40 numbers on BOTH axes (0.746/0.927 vs 0.733/0.911).
+  # Measured BASE-FOLDED on the WHITELIST at the LIVE gate (detector_conf 0.40). Re-measure after each
+  # retrain: `run.py detect-eval --sweep --subset data/detect/val_board15.txt` (the subset keeps
+  # generations comparable as val grows).
+  sim_detector_recall: 0.82      # GLOBAL fallback (mid-tier + thin-val cards): measured whitelist 0.823 @0.35
+  sim_detector_precision: 0.89   # ~11% of seen detections relabelled (measured folded 0.886 @0.35)
+  # CANVAS presence recall -- the class-agnostic "is there a box on that unit at all" rate, which is
+  # what the semantic canvas actually depends on (a missed unit is simply absent from the map). Kept
+  # SEPARATE from sim_detector_recall because the two are different measurements and the canvas one is
+  # materially higher: naming a unit is harder than seeing it. MEASURED presence(UNITS) 0.855 @0.35 on
+  # board-24. Not paired with a precision knob: a mislabelled box still lands in the right channel
+  # unless its coarse role changes, so identity precision does not describe this signal.
+  sim_detector_presence_recall: 0.85
+  # Optional PER-CARD recall override -> falls back to sim_detector_recall for any card NOT listed.
+  # Values are the MEAN across board-14/15/16, NOT the latest run: at n=48 val instances the binomial
+  # SE is ~7pp, so knight reading 0.56 -> 0.67 -> 0.54 across three generations is NOISE around ~0.59,
+  # and chasing the newest number would re-tune the sim every time. Only cards whose 3-generation mean
+  # sits clearly off the global rate are listed; everything else stays on the global.
+  # DELIBERATELY NOT UPDATED FOR board-21, even though it moved knight 0.54 -> 0.77 (n=48, ~3.2 SE) and
+  # skeletons 0.73 -> 0.80. Those look real, but the rule this block was written under -- and the sparky
+  # lesson behind it -- is that a per-card override needs a STABLE reading across generations, and
+  # board-21 is ONE sample of a new dataset. board-22 (identical recipe, seed 1) is the second sample;
+  # revisit these after it lands. The GLOBAL scalars above were updated because they rest on ~450
+  # whitelist boxes, not on one card's n=48.
+  sim_detector_recall_by_card:
+    # reliable
+    balloon: 0.90                # 1.00 / 1.00 / 1.00 (n=11) -- capped, a perfect thin-val score is not a real 1.0
+    ice_wizard: 0.90             # 0.92 / 0.93 / 0.88 (n=85) -- the best-supported card in the set
+    cannon: 0.85                 # 0.85 / 0.85 / 0.92 (n=13)
+    royal_recruit: 0.80          # 0.80 / 0.80 / 0.85 (n=40)
+    ronin: 0.74                  # 0.77 / 0.77 / 0.69 (n=13)
+    # weak
+    mega_knight: 0.65            # 0.56 / 0.67 / 0.72 (n=18) -- trending up but wide
+    knight: 0.58                 # 0.56 / 0.67 / 0.54 (n=48) -- the mean; see the SE note above
+    ice_spirit: 0.45             # 0.42 / 0.47 / 0.47 (n=19)
+    hog_rider: 0.42              # 0.50 / 0.42 / 0.33 (n=12)
+    # (skeletons 0.69-0.74 / miner 0.70-0.76 / musketeer ~= global -> unlisted. DROPPED bowler: 0.75 /
+    #  0.75 / 0.50 on n=8 is the sparky pattern -- an unstable thin-val card belongs on the global rate.)
+  # LIVE team assignment (own-play ground truth overrides the colour guess so your units aren't read as
+  # enemy threats). A TROOP you play is tagged 'mine' at its spawn, then tracked as it advances.
+  team_spawn_radius: 0.10        # a detection within this (normalized) of a card you just played = yours
+  team_spawn_window_s: 2.5       # ...for this long after a YOUR-HALF play (kept short so an enemy engaging your
+                                 # fresh defender near its spawn isn't hidden as 'mine' for long)
+  team_enemy_window_s: 4.0       # ENEMY-HALF plays (Miner etc.) linger at their target -> a longer window keeps
+                                 # them tagged 'mine' for their whole life without over-tagging your-side engagements
+  team_track_radius: 0.12        # keep 'mine' as the unit moves: within this of last frame's allied unit
+  team_forget_s: 4.5             # a tracked own unit missed by the detector is CARRIED this long (frozen in place)
+                                 # before the tag lapses -- bridges ~2-3 missed reads at the act cadence, so a Miner
+                                 # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
+                                 # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
+                                 # 'mine' onto the enemy defenders answering it.
+  team_motion_min: 0.05          # EVIDENCE FUSION (TeamTracker): net y drift since first seen that counts as
+                                 # MARCHING (units advance toward the enemy: up = mine, down = enemy -- decisive
+                                 # for the team-colourless rolling Log); below it (idle units, buildings,
+                                 # knockback jitter) motion abstains. Raise if slow tanks flip verdicts early.
+  team_deep_mine_y: 0.62         # first seen BELOW this = born deep in MY half -> 'mine' prior... unless that lane's
+  team_deep_enemy_y: 0.38        # (resp. ABOVE = enemy prior) -- princess is DOWN: a taken tower opens the deploy
+                                 # POCKET on the loser's side of the lane, so the prior is voided there (set_towers).
+                                 # Widen the middle band (raise mine / lower enemy) if bridge drops get mis-sided.
+  flying_shadow_offset: 0.045    # FLYING units are drawn ABOVE the ground -> their detector box sits too high.
+                                 # Shift a flyer's read DOWN by this (normalized frame height) to its SHADOW = the
+                                 # true tile, so spell targeting + depth/movement prediction use where it really is.
+                                 # 0 disables. Calibrate to the visible sprite->shadow gap (detect-obs / verify --threats).
+  detector_cards:                # ENEMY TROOPS the detector RELIABLY names (BASE keys; evo/hero variants fold in via
+                                 # card_threat.base_key -- so `knight` also covers knight_hero). ONLY these fire the
+                                 # identity block. GROW freely as you label more: the identity vector is a FIXED role
+                                 # aggregate, so adding cards needs NO retrain (resume-safe). From board-13 per-base recall.
+    # -- reliable (val recall >= 0.6) --
+    - ice_wizard
+    - royal_recruit
+    - skeletons
+    - ronin
+    - knight
+    - princess
+    - archers
+    - witch
+    - sparky
+    - baby_dragon
+    - musketeer
+    - giant_skeleton
+    - inferno_dragon
+    - balloon                    # PROMOTED board-12: R 1.00, n=11 -- a top air win condition, lights wc+air flags
+    - cannon                     # PROMOTED board-12: R 0.88, n=8 -- common defensive building
+    # -- moderate (recall ~0.4-0.6, strong train; high precision so a firing is trustworthy) --
+    - miner
+    - ice_spirit
+    - hog_rider
+    - bowler
+    - magic_archer
+    - ice_golem
+    - hunter
+    - royal_hogs
+    - pekka
+    - lava_hound
+    - mega_knight
+    # -- HOLD until labelled (broken/unmeasured on board-13; ADD here once recall is proven -- NO retrain needed):
+    #    valkyrie (R 0.33 -- DIAGNOSED 2026-08-06, NOT an annotation problem: box-geometry CoV 0.37 is as tight as
+    #    knight/mega_knight. The detector FINDS 6/12 correctly but 2 of them at conf 0.14, and mislabels 4 more as
+    #    lookalike humanoid melee (wizard_hero/ronin/hunter) at conf 0.08-0.42 => it is UNDER-TRAINED + low-confidence,
+    #    not mislabelled. Only 62 real train instances vs knight 206 / ice_wizard 468, and the val boxes come from ~4
+    #    scenes. FIX = more REAL valkyrie frames with POSE variety (esp. mid-spin: the one blank miss had h=0.064 vs
+    #    the 0.042 median); copy-paste can't help here since it replays the same 72 sprites = no new poses),
+    #    guards (0.17), dart_goblin (0.00), wizard (0.44), electro_wizard (0.20), golden_knight (~0),
+    #    bats (0.43, +29pp off synth -- close), barbarians (0.67 but n=6), goblins, lumberjack,
+    #    spear_goblins (0.75, n=4), skeleton_king (0.94, n=4), skeleton_army
+
+# --- Discrete action space (card slot x placement grid) ------------------
+action:
+  grid: [18, 24]                 # placement grid: columns x rows. COARSENED 32->24 rows (576->432 cells) to shrink
+                                 # the action space so DQN explores it faster (the 18x32 one-cell-per-tile grid
+                                 # plateaued ~54% below the old coarse-grid peak -- testing if 576 was too fine).
+                                 # NOTE: no longer exactly one cell per board tile (18 wide x 32 tall); rows are grouped.
+  arena_box: [0.03, 0.10, 0.97, 0.86]  # normalized [x0,y0,x1,y1] of the arena PLAYFIELD the grid is anchored to
+                                 # (defaults to env.arena_region if unset). Calibrate to the visible grass corners so
+                                 # a cell centre lines up with a tile centre; the board's mild perspective makes this
+                                 # a close approximation, not a pixel-exact map. Changing grid/arena_box needs a RETRAIN.
+  deploy_top: 0.44               # troops can only deploy on YOUR half (below the river); a cell above this y is clamped
+                                 # DOWN so the card actually deploys (spells target anywhere). 0.44 (was 0.47) opens the
+                                 # central grass just below the river -- the deployable space in front of your towers.
+  king_avoid_half: [0.09, 0.06]  # half-size of YOUR king tower's footprint (around the my_towers king anchor). A troop
+                                 # cell landing on it is pulled to the row just in front -- you can't deploy on your own tower.
+  princess_avoid_half: [0.06, 0.05]  # same, per each of YOUR two PRINCESS towers (my_towers[0..1]) -- smaller footprint than the king
+
+# --- Reward shaping (RL fine-tune) ---------------------------------------
+# CORRECTNESS-FIRST: the model is rewarded for PLAYING THE GAME CORRECTLY (read the
+# threat -> counter it in-lane, trade elixir UP, execute the win condition, cycle toward
+# the counter it needs next), NOT for winning. The block below is one coherent score of a
+# few bounded sub-terms; the sim (ground truth) and the live env (perception) share it.
+rewards:
+  sim_trade_deadband: 0.05 # sim trade potential: |dPhi| under this is hp-tick flicker, not a trade
+  # ============================================================================================
+  # CORRECTNESS-FIRST reward. Winning is NOT the objective -- PLAYING THE GAME CORRECTLY is. One
+  # coherent score of a few bounded sub-terms (below) replaces the old ~40 patchwork rewards. The
+  # policy is taught to read the YOLO->KB threat, play its hand's KB-correct COUNTER placed to
+  # intercept, trade elixir UP, execute the deck's win condition, and CYCLE toward the counters it
+  # needs next. Correctness DOMINATES; the match outcome is only a faint compass. Shared by the sim
+  # (ground truth) and the live env (perception) -- see sim/env.py + env.py reward assembly.
+  # ============================================================================================
+  # -- (1) THREAT-RESPONSE correctness (YOLO -> KB -> the right counter, placed to intercept) --
+  threat_response: 1.0     # played the KB-correct counter to the ASSESSED threat, in its lane on your half
+  threat_miss: -1.0        # wrong-role card dropped as a defence, OR ignored an ANSWERABLE threat (a counter was in hand + affordable). Uncapped.
+  # -- (2) ELIXIR-TRADE correctness (the honest economy: value removed - elixir spent) --
+  elixir_trade: 1.0        # x [ (signed potential-based enemy value/mass eliminated, clipped) - elixir spent ] / value_norm. Telescopes -> idling can't farm it.
+  # -- (3) WIN-CONDITION execution (the deck's doctrine done right for the current phase) --
+  # REPRICED 2026-08-10 from 0.8. The old number was not wrong in isolation, it was wrong PER ELIXIR,
+  # and per elixir is what the policy optimises. threat_response pays 1.0 for ANY correct counter, so a
+  # 1-elixir Skeletons returned 1.00/elixir while a 6-elixir X-Bow returned 0.8/6 = 0.13/elixir -- a
+  # 7.5x edge for cheap spam. PPO maximised exactly that: MEASURED on the 100k-match checkpoint the gate
+  # collapsed to P(play) 0.938 (min 0.911, so it never held at ANY threshold), elixir never once passed
+  # 5.00 in 1448 decisions, and X-Bow/Rocket sat in hand on 99.4% of steps while affordable on 0.00%.
+  # 3.0 puts the win condition at 0.50/elixir -- still under a cheap counter, which is correct (a
+  # counter that saves a tower SHOULD beat a speculative siege), but close enough that the tower chip
+  # and crown the X-Bow goes on to earn decide it, instead of the gap deciding it before the game does.
+  wincon_exec: 3.0         # X-Bow forward-in-range (offence) / back-centre (defence), Miner chips the princess, rocket-cycle chip
+  wincon_misplace: -1.0    # the win condition thrown away (X-Bow out of range / king-hugged, Miner on the enemy KING) -- scaled with wincon_exec so a misplace still stings
+  xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
+                           #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
+  rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
+  # CONDITIONAL ROCKET VALUE (2026-08-16). A rocket is worth wildly different amounts depending on
+  # the board and the clock, and pricing it flat is why it went unplayed for 14,300 matches. All of
+  # these multiply wincon_exec (3.0), so an X-Bow played correctly scores 3.0 for comparison.
+  rocket_nado_mult: 3.0    # TORNADO -> ROCKET: the pull manufactures the clump this deck otherwise never sees
+  rocket_chip_behind: 1.2  # tower chip while LOSING/level on the tiebreak -- in overtime this IS the win condition
+  rocket_chip_ahead: 0.35  # ...same chip while already ahead on the race: optional, elixir better held for defence
+  rocket_chip_early: 0.25  # ...during regulation, while the bow is still the plan
+  rocket_emergency: 0.8    # a heavy threat is over the river and nothing else in hand answers it
+  rocket_waste_mult: 0.5   # x wincon_misplace when 6 elixir lands on cheap bodies a 1-3 cost card handles
+  # PUNISH WINDOW: an offensive X-Bow is a gamble when the opponent can still answer it, but a PUNISH
+  # once they have overcommitted and cannot -- the siege starts firing before their answer is affordable.
+  # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
+  xbow_punish_mult: 1.5
+  # -- (4) CYCLE-PLAN correctness -- INACTIVE (deleted everywhere 2026-08-12; knobs kept for history) --
+  # The SIM deleted its copy after 110 fires / 0 positives (sim/env._cycle_plan documents why an
+  # instantaneous cycle judgement cannot work); the LIVE copy was then measured with the identical
+  # action-tax shape -- 2 positives vs 24 negatives over 5 matches, in an env whose every match
+  # totalled -12 to -23 -- and deleted too. Neither env reads these keys any more.
+  cycle_plan: 0.4          # INACTIVE (no code path)
+  cycle_waste: -0.4        # INACTIVE (no code path)
+  # Weight on the COUNTERFACTUAL term (sim.counterfactual gates whether it runs at all): the tower
+  # differential the real branch reached minus the branch where this card was HELD. Zero-mean by
+  # construction -- the property every hand-written per-play term has lacked -- so it cannot become an
+  # action tax however large it is. NOT routed through correctness_cap for that reason: capping only
+  # the positive side of a signed term would reintroduce exactly the asymmetry it exists to avoid.
+  # CALIBRATED, not guessed. Because the term is zero-mean its MEAN per match is ~0 by design, so the
+  # quantity to match against its neighbours is its per-match STANDARD DEVIATION. MEASURED over 40
+  # matches on the 4096-match checkpoint at weight 1.0: per-match total mean -0.015, SD 0.089, with
+  # 1.0 settlements/match (17 positive / 22 negative). Its neighbours are _trade_reward 4.88/match and
+  # (now deleted) _cycle_plan 1.10. Weight 10 put its SD at ~0.9/match.
+  # RE-CALIBRATED after the position scalar became TOTAL RESOURCES: forks carrying signal went 33% ->
+  # ~100%, so at weight 10 the per-match SD jumped to 2.14 with mean -2.15 -- bigger than everything
+  # except _trade_reward. Weight 5 puts SD at ~1.07, comparable to its neighbours.
+  # HONEST CAVEAT: the mean is NOT ~0 any more (33 positive vs 95 negative settlements). That is a
+  # TRUE statement about a weak policy -- its plays really are worse than holding on average -- but
+  # it does mean the term is mildly action-discouraging, because a policy that never plays opens no
+  # forks and scores 0. Unlike the deleted taxing terms the way to improve it is to PLAY BETTER (a
+  # play that beats holding scores positive), but keep it off the dominant slot until the mean moves.
+  # RE-CALIBRATED AGAIN for horizon 15 s / budget 10 (see sim.counterfactual for WHY it was widened).
+  # The weight and the budget are COUPLED and it is not a small effect: MEASURED at unit weight over
+  # 15 matches, per-match total went -0.190 (SD 0.328, 2.5 settlements) at 6 s/3 to -1.665 (SD 0.689,
+  # 9.5 settlements) at 15 s/10 -- an 8.76x jump, because the longer horizon MORE THAN DOUBLES each
+  # settlement (-0.077 -> -0.175) on top of 3.2x more of them. Left at 5.0 this term alone would be
+  # -8.3/match and would swamp every other signal while pointing negative. 0.6 lands it near
+  # -1.0/match (SD ~0.4), alongside its neighbours.
+  # WATCH THIS ONE: settlements are 32 positive / 111 negative (22% positive, down from 35% at 6 s).
+  # A reachable positive branch is what separates this from the deleted action taxes (which had 0 of
+  # 305), and 22% is genuinely reachable -- but it is the same SHAPE that collapsed two runs, so if
+  # plays/match falls off a cliff after a restart, this is the first term to suspect.
+  counterfactual: 0.6
+  # -- (5) tempo / economy --
+  leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
+  spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
+  # -- TORNADO execution credit (positive-only, soft, inside correctness_cap): the pull's value is
+  # COMPOSITE + DELAYED (clump -> splash/rocket payoff, king activation, dragging a wincon off a
+  # tower), which outcome terms barely see. Measured from engine ground truth ~2-3.5s after the
+  # cast; train.n_step carries the credit back to the cast action. spell_waste still penalizes an
+  # EMPTY tornado, so these only pay for pulls that actually do something.
+  nado_clump: 0.25         # per EXTRA enemy gathered at the vortex centre (2 -> +0.25, 4+ -> +0.75)
+  nado_combo: 0.6          # >=2 pulled enemies dead within ~3.5s (ice-wizard splash / rocket on the clump)
+  nado_king_activate: 0.5  # a pull woke your sleeping king tower (once per match)
+  nado_retarget: 0.4       # dragged a tower-locked wincon (hog etc.) off your tower (lost hits)
+  correctness_cap: 20.0    # per-match ceiling on POSITIVE shaping (terms 1,3,4) -- anti-farm; penalties + trade + outcome are uncapped
+  # -- (6) OUTCOME compass (DEMOTED: winning is not the objective, only a faint direction) --
+  # ---- X-BOW LEDGER REPAIR (2026-08-14; design in log + DOCTRINE, Hunter-lineage guides) ----
+  xbow_overcommit: 0.08    # per enemy elixir drawn onto a bow BEYOND its 6, paid when the bow dies
+  xbow_overcommit_cap: 0.5 # ...capped per bow ("they paid 12 to stop it" -> +0.48: the draw did its job)
+  xbow_lock_tick: 0.02     # per second the bow is TOWER-LOCKED (dense proxy for the delayed chip)...
+  xbow_lock_cap: 0.4       # ...capped per bow; a re-bow re-caps, mirroring the real re-bow cadence
+  xbow_chip_linear: 0.15   # LINEAR chip lane while a bow stands (the convex pool mutes partial chip)
+  xbow_first_play_frac: 0.25   # "never X-Bow the bridge first play": offensive credit fraction, t < 30 s
+  xbow_hostile_frac: 0.6   # offensive credit x this once Little Prince / Evo Bomber has been SEEN
+  win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
+  loss: -2.0
+  take_enemy_tower: 1.0    # CROWN JUMP: destroying a tower is a big discrete reward -- a tower at 1-2 HP still fully works
+  lose_own_tower: -1.0     # the matching defensive jump when YOUR princess/king falls
+  tower_chip_scale: 0.3    # CONVEX chip POOL per tower (with env.tower_chip_power): PARTIAL chip is worth sub-proportionally
+                           # little, so the reward JUMPS on the crown (take), not gradually with damage. Total chip << the crown.
+  hp_scale: 0.5            # (no longer scales the reward -- tower_hp still reads it; the convex chip proxy replaced its linear return)
+
+# --- Automatic win/loss detection (results scoreboard) -------------------
+# Reads the 2v2 end screen: YOUR team (blue) sits on the BOTTOM, the enemy
+# (red) on TOP, each with 3 crown cushions above its name banner. Detection
+# anchors to the coloured banners (found by a row-wise colour vote) so it is
+# robust to the banners sliding in, then counts gold crowns per team. Used by
+# `run.py outcomes` and, later, as the RL terminal reward. HSV is OpenCV-style
+# (H 0-179). Override only if a UI/theme change breaks detection.
+outcome:
+  gold_frac: 0.10                # min gold fraction in a cushion cell to count a crown
+  cushion_xs: [0.25, 0.49, 0.72] # normalized x-centres of the 3 crown cushions
+  cushion_offsets: [0.06, 0.08, 0.10, 0.12, 0.14]  # y-gaps above a banner to scan for its crowns
+  banner_min_frac: 0.45          # a name banner must span >= this fraction of the width
+  settle_reads: 8                # keep reading the results screen until the crown total holds
+                                 # steady this many frames -- crowns animate in one-by-one, so
+                                 # stopping as soon as the board appears can miss the last crown
+
+# --- DQN / training hyperparameters (RL fine-tune) -----------------------
+train:
+  device: "cuda"                 # "cuda" (GPU) or "cpu"
+  gamma: 0.99
+  n_step: 3                      # N-STEP returns (sim trainer): each transition's target carries the next N real rewards
+                                 # + a bootstrap N states ahead -> consequences (overspend -> counter-push -> tower damage)
+                                 # reach the CAUSING action's target directly = faster/stronger cause-and-effect credit.
+                                 # 1 = classic 1-step TD (old behaviour). Small values (3-5) are standard (Rainbow uses 3).
+  # --- STABILITY LEVERS (if the sim benchmark OSCILLATES: peak-then-decline / a swinging fair avg) ---
+  # lower lr, raise target_sync, and/or grow replay_size to damp Double-DQN value oscillation. Try lr 5e-5
+  # + target_sync 1000 first; sim.selfplay_keep_best also tackles the self-play side of the instability.
+  lr: 0.00005                    # learning rate -- LOWERED 1e-4 -> 5e-5 to damp Double-DQN value oscillation (decline-from-peak). Shared by train-sim + train-rl
+  batch_size: 64
+  replay_size: 100000            # bigger replay = more decorrelated batches = steadier bootstrap targets
+  epsilon_start: 1.0
+  epsilon_end: 0.05
+  epsilon_decay_steps: 3000      # linear exploration decay (in agent steps)
+  # LIVE fine-tune exploration (train-rl only; falls back to epsilon_* when absent). A converged sim
+  # policy must NOT re-explore from eps 1.0 on the ladder -- that is ~60-75 matches of random play.
+  # LLM EXPLORATION ADVISOR (2026-08-16). On epsilon steps the live trainer picks a RANDOM card;
+  # this replaces that choice with a local model's suggestion. It never touches the greedy action,
+  # so a bad suggestion costs one exploration step. Safe here because live RL is Double-DQN and
+  # OFF-POLICY -- the behaviour policy filling the replay buffer need not match the policy being
+  # learned, so no importance correction is required (the sim's PPO is on-policy and gets the
+  # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
+  # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
+  # disable it for the session. OFF by default -- turn it on deliberately.
+  llm_advisor: true
+  llm_advisor_model: qwen2.5:latest   # 0.590s p50 WITH the doctrine prompt. gemma3:4b scores better
+                                      # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it
+                                      # to 3.020s -- unusable inside a 1.0s act_period. Raising act_period
+                                      # to ~3.5s would buy those two cases at the cost of reaction time.
+  llm_advisor_timeout_s: 0.9          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
+                                      # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
+                                      # prompt, so 0.8 clipped the tail into needless random fallbacks.
+  llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
+  # PLACEMENT LOSS (clashrl/spatial_targets.py). Exact one-hot on a 432-cell grid calls a
+  # strategically identical neighbour completely wrong, which is how the placement head keeps
+  # collapsing onto one tile. Hybrid: a little exact credit to keep the peak sharp, most of the
+  # weight on a legal-masked Gaussian so near-misses train instead of being punished.
+  exact_cell_loss_weight: 0.25
+  soft_cell_loss_weight: 0.75
+
+  rl_epsilon_start: 0.70
+  rl_epsilon_end: 0.15
+  rl_epsilon_decay_steps: 6000
+  explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
+  min_play_elixir: 2             # while exploring, don't play a card below this elixir
+  min_replay: 200                # transitions to collect before learning starts
+  target_sync: 1500              # steps between target-network syncs -- RAISED 500 -> 1500 to slow the bootstrap target + steady training (anti-oscillation)
+  grad_clip: 10.0                # max global grad-norm per Double-DQN update (stabilises noisy TD targets)
+  save_every_matches: 1          # checkpoint cadence during RL
+  # KEEP-BEST GATE for train-rl. Live RL used to overwrite data/policy_rl.pt unconditionally, and
+  # play.py PREFERS that file -- so a session that made the policy worse silently became the deployed
+  # policy. A checkpoint is promoted only when the last `rl_keep_best_window` matches are at least as
+  # good as the best window this session; every save still lands in data/policy_rl_last.pt regardless.
+  # Scored on WIN RATE and guarded by plays/match: the passivity collapse RAISES mean episode reward
+  # (a shorter match accrues fewer per-step penalties), so a reward-scored gate would endorse it.
+  rl_keep_best_window: 10        # matches per evaluation window (small = noisy, large = slow to promote)
+  rl_keep_best_min_play_frac: 0.5  # never promote a window whose plays/match fell below this x the best
+  bc_epochs: 10                  # behaviour-cloning pretrain epochs
+  checkpoint: "data/policy.pt"       # behaviour-cloning policy (train-bc writes this)
+  rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
+  sim_checkpoint: "data/policy_sim.pt" # SIMULATOR-trained prior (train-sim); warm-start live train-rl from it
+  sim_ppo_checkpoint: "data/policy_sim_ppo.pt" # PPO sibling (train-sim-ppo) -- separate file so the DDQN baseline is never clobbered
+  # timelapse: capture the whole train-rl run and compress it to a fixed-length video
+  # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
+  timelapse: true                # record a training timelapse during train-rl
+  timelapse_seconds: 30          # length of the output video (exactly this many seconds)
+  timelapse_fps: 60              # output frame rate -> timelapse_seconds * timelapse_fps frames total
+  timelapse_width: 640           # downscale width for the timelapse frames
+  timelapse_dir: "data/timelapses"   # each train-rl run saves timelapse_<date_time>.mp4 in this folder
+
+# --- Live RL environment + in-match tower reward -------------------------
+# The RL loop plays real matches. Tower shaping rewards taking enemy towers and
+# penalises losing yours; a tower is read "alive" by team colour at its anchor
+# and only latched destroyed after a few sustained empty reads (rubble is grey,
+# towers never rebuild), so troop occlusion won't fake it. Set tower_shaping
+# false to learn from the (robust) win/loss reward alone. Anchors are normalized
+# (x, y); order is [left princess, right princess, king]. Calibrate if a tower
+# event never/always fires.
+env:
+  # -- CORRECTNESS-reward geometry (used by the threat_response / elixir_trade terms) --
+  intercept_lane: 0.15           # same-lane tolerance: a counter within this |x| of the threat counts as placed to intercept
+  # cycle_cheap_max / cycle_spare_elixir: INACTIVE since the cycle_plan/cycle_waste deletion
+  # (2026-08-12) -- kept for the measurement history below, which is part of the passivity-collapse
+  # record (collapse #1 of 3; see log.txt 2026-08-12).
+  cycle_cheap_max: 3             # INACTIVE -- was: a played card at/below this elixir counts as a CYCLE card
+  # RESERVE, measured on the elixir LEFT AFTER the play (was 7.0 graded on PRE-spend elixir).
+  # MEASURED 2026-08-08 on the 5500-match checkpoint: 96% of this deck's plays are cheap (8 of 10
+  # identities cost <= 3), pre-spend elixir at a cheap play was p90 3.60, so 'pre-spend < 7' was TRUE
+  # on 100% of them -- a flat tax on every action rather than a shaping signal, and the policy's
+  # answer was to stop playing (plays/match 46.8 -> 26.0, winrate 8.3% -> 2.8%).
+  cycle_spare_elixir: 3.0        # INACTIVE -- was: a discretionary cheap play should leave at least this much
+  # QUIET-BOARD exception to the premature-defender penalty. On a quiet board WAITING is the safe
+  # default -- a Knight/Ice Wizard committed to one lane can be punished by a push in the OTHER lane,
+  # so the defender is spent and the far lane is open. The exception is LEAKING FIRST: if you hold
+  # more elixir than the opponent AND you are near the cap, your bar fills before theirs, so waiting
+  # wastes more than the lane commitment costs -- then a cycle card or a back Knight/Ice Wiz is right.
+  # Below this, or without the elixir lead, the penalty still applies.
+  quiet_board_free_elixir: 8.0
+  # PUNISH WINDOW for the offensive X-Bow (rewards.xbow_punish_mult). BOTH must hold: the opponent is
+  # broke in ABSOLUTE terms (below this they cannot afford a typical 3-5 elixir X-Bow answer) and you
+  # are ahead by this GAP. The absolute term matters on its own -- a 4-elixir lead while they sit on 6
+  # still lets them answer, so the gap alone would mis-fire.
+  punish_opp_elixir: 4.0
+  punish_elixir_gap: 4.0
+  # A card only BLOCKS a forward X-Bow if it can body one -- the pool splits cleanly on hitpoints:
+  # ice_golem 1315 / knight 1766 / elixir_golem 1569 / berserker 896 / ice_wizard 688 can trade with a
+  # siege, while spirits 215 / bomber 304 / minions 230 / bats 81 / guards 81 just get shredded. The
+  # gap between ~330 and ~690 is where this sits. Without it the "cheapest blocker" was a 1-elixir
+  # spirit in most decks, which made the punish window require the opponent to be under 1 elixir.
+  # Hitpoints are the KB's reference level; opponents play at L13-16, but the ORDERING is unchanged.
+  punish_blocker_min_hp: 600
+  value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
+  trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
+  tower_chip_power: 1.0          # LINEAR chip. Was 2.0 (convex: partial chip worth sub-proportionally
+                                 # little) on the reasoning that "a tower at 1-2 HP still fully works,
+                                 # so most of a tower's value is the CROWN". That is true when a crown
+                                 # is what decides the match -- and it stopped being true when the
+                                 # overtime tiebreak was fixed (c2fb89e). The tiebreak reads the
+                                 # least-healthy STANDING tower, so chip that never finishes a tower is
+                                 # exactly what wins those matches, and this deck's SECOND win condition
+                                 # (rocket cycling) produces nothing else.
+                                 #   at 2.0:  99% damage paid +0.294 vs a crown's +1.3 -- a 4.4x cliff
+                                 #            right where the tiebreak says the two are worth the same.
+                                 #   MEASURED consequence: over 20 matches the policy played x_bow 57
+                                 #            times and rocket ZERO, despite 6 elixir being affordable
+                                 #            on 20.7% of steps for both.
+                                 # Linear makes marginal chip worth the same everywhere, which is what
+                                 # the tiebreak actually pays. The crown is still a jump (w_take 1.0).
+                                 #   (reward = sum over towers of damage_frac**this * tower_chip_scale)
+  tower_shaping: true
+  tower_alive_frac: 0.03         # min team-colour fraction at an anchor to count "alive"
+  tower_confirm_steps: 3         # consecutive empty reads before a tower is latched destroyed
+  match_end_confirm: 3           # consecutive frames the board must be UNRECOGNISED before the live
+                                 # env declares the match over. Without this a single bad read ended
+                                 # the episode mid-match -- measured 2026-08-15 when the bot stopped
+                                 # acting at OVERTIME and printed a 0-0 result while play continued
+                                 # (the terminal path then finds no scoreboard -> outcome None).
+  results_timeout: 30.0          # max seconds to wait for the results screen at match end
+  # KING x CORRECTED 2026-08-16 from the session replay. The arena is symmetric about a vertical
+  # axis, and perspective is symmetric with it, so the king's centre x is the SAME as the midpoint
+  # of its own two princess towers at every depth. Both king anchors were listed at 0.480 while
+  # those midpoints are 0.4950 (mine) and 0.4975 (theirs) -- an error of ~0.3 tiles, ~10 px, in the
+  # same direction on both sides. BoardWarp anchors on these, so every board->frame mapping near
+  # the king was skewed left by that much: exactly where the Tornado king-activation spots live,
+  # and a systematic bias on any tap aimed near the centre line.
+  enemy_towers: [[0.25, 0.205], [0.745, 0.205], [0.4975, 0.11]]
+  my_towers:    [[0.245, 0.615], [0.745, 0.615], [0.4950, 0.72]]
+  # FIELD-EDGE + RIVER anchors for BoardWarp (frame-normalized; measured 2026-08-14 from
+  # timelapse_20260814_230750, REFINED same night from the user's placeable-area outline).
+  # Tower anchors alone left board 0 / 0.5 / 1 to extrapolation, and the first measurement
+  # mistook the decorative APRONS for the grid: the raised back WALKWAY strip (one tile of
+  # floor-looking rim behind each back row) and the river-bank heart LEDGES render exactly
+  # like placeable tiles but refuse placement. These five lines are the TRUE grid edges,
+  # walkway/ledge excluded. Re-measure if the capture window's aspect/layout ever changes.
+  board_edges:
+    top: 0.129       # first tile row's top edge, BELOW the back walkway (board y 0.0)
+    river: 0.4425    # water-band center (board y 0.5); band spans ~0.433-0.459
+    bottom: 0.762    # last tile edge above the bottom walkway (board y 1.0)
+    left: 0.048      # field's left tile edge on land rows (board x 0.0)
+    right: 0.950     # field's right tile edge on land rows (board x 1.0)
+  # Chip-damage reward: read each princess tower's printed HP with a digit CNN
+  # and reward *partial* HP loss (rocket chip, etc.) even when the tower survives.
+  # HP is piecewise-constant + monotonic, so a value is only accepted after it
+  # reads the same on `hp_consensus` frames -> near-zero false damage. Damage is
+  # normalized by hp_full (a full tower's worth of chip = rewards.hp_scale).
+  # Boxes are white HP-number crops (crown excluded), normalized [x0,y0,x1,y1]. They can
+  # be TALL: the reader locks onto the digit row band inside the box (a strict near-white
+  # mask), so the same box tolerates HP bars sitting at different heights (different tower
+  # troops -- Cannoneer / Dagger Duchess / Royal Chef) and small window drift. Check the
+  # alignment with verify --towers; keep the box centred over where the number can appear.
+  # Needs torch + hp_digits.npz; falls back to no-op if missing. hp_reward false
+  # disables it (relies on the destruction latch + win/loss instead).
+  hp_reward: true                # 1v1: read printed tower HP -> chip-damage reward (digit CNN retrained on 1v1 lvl 14-15 towers via tools/hp_ocr)
+  hp_full: 4032                  # ENEMY princess full HP (~level 14, 1v1) -- enemy seed + offence-chip normaliser
+  my_hp_full: 4424               # YOUR princess full HP (~level 15, 1v1) -- your seed + defence-chip normaliser
+  hp_consensus: 2                # consecutive equal reads before a new HP is confirmed
+  hp_min_conf: 0.55              # min mean per-digit CNN confidence to use a read
+  hp_max_chip: 1500              # reject drops bigger than this (misread guard; allows a rocket)
+  enemy_tower_hp_boxes: [[0.147, 0.110, 0.278, 0.157], [0.645, 0.110, 0.797, 0.157]]
+  my_tower_hp_boxes:    [[0.185, 0.612, 0.298, 0.657], [0.685, 0.612, 0.798, 0.657]]
+  # KING HP-number boxes -- read by `verify --towers` for the E-king / M-king alignment check.
+  enemy_king_hp_box: [0.41, 0.015, 0.55, 0.08]
+  my_king_hp_box:    [0.41, 0.690, 0.55, 0.77]
+  # enemy_mass = enemy-troop (red) pixel fraction over arena_region (HUD/tray + enemy towers excluded);
+  # its SIGNED per-step change (clipped +/-defeat_cap) drives the elixir-trade term (potential-based ->
+  # idling can't farm it). A spell's effect frame is grabbed at its predicted impact (rocket travel grows
+  # ~linearly with distance from rocket_origin at rocket_travel_rate + rocket_base_time; tornado ~ tornado_time).
+  spell_effect_reward: true      # INACTIVE (2026-08-14): the spell-impact sampler was deleted with the
+                                 # trade-potential rework (ELIXIR_TRADE_DESIGN.md 5) -- consequences
+                                 # settle from the ordinary frame stream; the blocking wait is gone.
+  phi_max_age_s: 0.6             # trade potential validity gate: max perception age for a Phi read
+  trade_deadband: 0.02           # |dPhi| below this is detector flicker, not a trade -- not scored
+  trade_grace_s: 3.0             # attributed kills pay FULL credit if the enemy died within this
+                                 # many seconds of crossing onto our half (prompt defense)...
+  trade_late_s: 10.0             # ...decaying linearly to ZERO here: a tesla dropped after the
+                                 # hog already locked and hit the tower credits nothing
+  threat_max_depth: 0.65         # threat_response depth CEILING: a counter placed once the threat
+                                 # is already on our tower is TOO LATE to credit (window with
+                                 # threat_min_depth; same timing doctrine as the trade ledger)
+  threat_min_depth: 0.12         # threat_response positives require the threat PAST the watch line
+                                 # (identity depth toward our king) -- pre-committing vs a back
+                                 # build is the wrong play and now scores nothing
+  threat_credit_budget: 2        # positive threat_response credits per threat episode (a real
+                                 # defense is 1-2 cards; the 4th role-match adds no information)
+  arena_region: [0.03, 0.10, 0.97, 0.86]
+  defeat_cap: 0.15               # 'full push' enemy-mass scale / per-step clip for the trade term
+  spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)
+  rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
+  rocket_base_time: 0.3          # fixed part of rocket flight time (s)
+  rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
+  tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
+  royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
+  spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  spell_waste_radius: 0.14       # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness. Generous so predictive/near-miss casts aren't punished.
+  rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)
+  rocket_combo_radius: 0.11      # ROCKET COMBO: the support must be within this of the aimed princess tower
+  # PUMP PUNISH (enemy elixir collector -> rocket): a pump left alive out-economies a control deck, so a
+  # FRESH pump is a rocket job -- full win-condition credit, the 2-for-1 multiplier when one blast also
+  # clips a princess tower, the misplace penalty if the blast would wake the KING, and the cycle-plan
+  # reward treats "rocket not in hand" as a reason to cycle cheap. The sim models the pump's real
+  # economy (cards.yaml gen_every_s) so denying production is genuinely valuable, not just shaped.
+  pump_rocket_window_s: 12.0     # rocket the pump within this of its appearance; later it has already paid out
+  pump_aim_radius: 0.10          # a rocket aimed within this of the SEEN pump counts as the pump punish (live)
+  pump_pair_gap: 0.11            # pump within this of a princess tower -> aim assist snaps to the MIDPOINT (hit both)
+  pump_king_guard: 0.15          # never aim within this of the enemy KING for a pump (activation costs more than any pump)
+  spell_lead_radius: 0.12        # ROCKET LEAD ASSIST: tracked enemies within this of the policy's rocket aim are
+                                 # advanced to their PREDICTED position at impact (act latency + distance-scaled
+                                 # flight time) and the aim snaps to their centroid -- the policy decides WHEN/WHAT
+                                 # to rocket, the assist makes the blast actually land on the marching push.
+  enemy_quiet_frac: 0.02         # below this arena troop mass the board is "quiet"
+  elixir_full: 10                # elixir at/above this (full bar) + nothing played this step = leak penalty
+  defense_threat_frac: 0.02            # min enemy (red) mass in a half of your side to call it "threatened" (lane read)
+  wrong_lane_margin: 0.12              # deadband around the 0.48 lane split before a placement counts as wrong-lane (threat_response)
+  # X-Bow (win condition) placement geometry: forward within tower range, or the CENTER INTERCEPT band for defence.
+  xbow_range: 0.36                     # max normalized distance from the X-Bow to an enemy princess for it to REACH the tower (~11.5 tiles)
+  xbow_defense_front: 0.52             # DEFENSIVE "back-centre" band: from just behind the bridge (the central Tesla area)...
+  xbow_defense_back: 0.62              # ...down to ~your princess-tower line. BEHIND the towers (deeper) is rarely useful ->
+                                       #    earns only rewards.xbow_deep_frac of the win-condition credit (soft nudge, not a punishment)
+  xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: X-Bow chipped LESS than this fraction of a tower by 2x elixir -> switch to defensive X-Bow + rocket-cycle
+  # --- PRESCRIBED PLACEMENTS (aim assists, not shaping: the policy still decides WHEN and WHAT) ----
+  # OFFENSIVE X-BOW DEPTH. Reach to the enemy princess is a RADIUS, so the correct row depends on
+  # the column. BEHIND A BRIDGE (x ~ 0.25 / 0.75) the bow is nearly in the tower's own lane and
+  # still locks it one row back -- and that row is what leaves space to drop a Knight/Tesla IN
+  # FRONT of the bow to absorb the answer. OFF-LANE (the central area between the two crossings)
+  # the path is diagonal and longer, so it must sit on the frontmost deployable row. Measured
+  # against xbow_range 0.36: lane 0.260 front / 0.291 one back (both fine); centre 0.342 front /
+  # 0.358 one back (one row deeper and it falls short). No knob needed -- the rule is geometric.
+  # TESLA CENTRE-PULL vs a lane win condition: a wincon dropped at one bridge beelines the near
+  # tower and only that tower ever shoots it. Placing the Tesla at the FAR EDGE of that wincon's
+  # own aggro radius drags it across the middle instead. The pull distance comes from the card's
+  # KB sight range, so a 9.5-tile Hog is dragged ~0.22 across while a 5.5-tile Ram Rider moves
+  # ~0.12. The band below is the row the Tesla is placed on: behind the bridge, in front of your
+  # princess-tower line (0.615).
+  tesla_pull_front: 0.52               # ...from just behind the bridge...
+  tesla_pull_back: 0.59                # ...to just in front of your princess towers (midpoint is used)
+  # SIM matchup doctrine (reads the opponent's style): vs a fast CYCLE / heavy BEATDOWN deck, or a
+  # SPLIT-LANE deck built on these wide two-lane win conditions (one X-Bow can't cover both lanes),
+  # play defensive X-Bow + rocket-cycle from the start.
+  split_lane_counter_cards: [royal_recruits, royal_hogs]
+  # Win-condition (tower-targeting troop) detection -> SAVE the Tesla for it. A "win condition"
+  # is a troop that heads straight for your tower instead of fighting: it PENETRATES deep into
+  # your half (wc_depth: 0 at the river .. 1 at your king) OR CROSSES fast toward it (wc_fast_speed,
+  # in delta-depth/second). Seeing one latches "enemy has a win condition" for the match; wc_active
+  # tracks one being on the board (wc_confirm reads to arm, wc_release quiet reads to clear). While
+  # the enemy has a win condition but none is active the Tesla is HELD (in play + reward-shaped in
+  # training); with a win condition active, or none ever seen, the Tesla plays as normal. Calibrate
+  # wc_depth / wc_fast_speed with `verify --threats` (a red "WIN-COND" label marks a detection).
+  wc_depth: 0.5                        # enemy depth into your half (river 0 -> king 1) that reads as tower-bound
+  wc_fast_speed: 0.30                  # OR advance speed (delta-depth/s) flagging a fast tower-targeter (Hog/Ram/Balloon)
+  wc_min_mass: 0.004                   # min enemy mass in your half for it to be a real unit (not noise)
+  wc_confirm: 2                        # consecutive reads before a win condition is called "active"
+  wc_release: 3                        # consecutive quiet reads before "active" clears (hysteresis)
+
+# --- Running the trained policy live -------------------------------------
+play:
+  act_period: 1.0                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
+                                 # trained its reaction timing + per-step reward economics at 1.0s): between
+                                 # decisions the model is BLIND, so this bounds its reaction time to a new threat.
+                                 # The gate head still no-ops freely, so a faster cadence adds decision
+                                 # OPPORTUNITIES, not spam. (The preview window's box lag shrinks with this too.)
+                                 # 2026-08-12: train-rl's env now PACES to this value (waits only for what
+                                 # remains of the period since the last frame grab) instead of sleeping the full
+                                 # period on top of the ~1.5s vision pipeline -- that shape served ~2.2s against
+                                 # the trained 1.0s. Served cadence = max(act_period, pipeline); the per-phase
+                                 # [cadence] line each match shows which one is binding.
+  react_min_gap_s: 0.3           # EVENT-DRIVEN REACTIONS: the perception loop WAKES the act loop the moment it
+                                 # spots a NEW enemy commitment (rising enemy-detection count vs the last ~1.5s,
+                                 # so detector flicker can't fire it) -> trigger-to-action ~0.3-0.45s, pro-human
+                                 # reaction, while the quiet-board cadence stays at the trained act_period. This
+                                 # is the minimum gap between decisions (rate limit; events inside it coalesce).
+                                 # A flat 10-15Hz act loop is deliberately NOT used: the policy's value landscape
+                                 # (per-step rewards, gamma horizon, n-step) is trained at agent_dt 1.0s, and the
+                                 # detector (121ms) + tap (~0.2s) cap the real pipeline anyway.
+  # TAP GESTURE (2026-08-15). MEASURED from the 19:11 live match by checking whether each
+  # play's elixir actually dropped: 8 of 33 plays (24%) never placed -- card selected, arena
+  # tap ignored -- across every position and with elixir to spare, i.e. an INPUT failure, not
+  # geometry and not affordability. Google Play Games synthesises touches from mouse events
+  # and drops a press that arrives in the same batch as the move, so each tap is now
+  # move -> dwell -> down -> hold -> up, and the two taps are further apart.
+  select_delay: 0.15             # delay between selecting a card and placing it (was 0.08)
+  move_dwell: 0.03               # let the pointer position land before pressing
+  tap_hold: 0.05                 # press duration -- a 0-length click is not a touch
+  ensure_focus: true             # bring the game window to the foreground before a card tap.
+                                 # Windows gives the first click on an unfocused window to the
+                                 # focus change, so that tap selects nothing and the placement
+                                 # lands empty-handed. MEASURED 2026-08-16: 48% of plays never
+                                 # moved the elixir bar, and taps after a >3 s idle failed
+                                 # 63-82% against 17% for taps within 1.5 s of the previous one
+                                 # -- consecutive taps keep the window hot, the first after a
+                                 # gap is spent re-focusing.
+  focus_settle_s: 0.06           # pause after taking focus, before the card tap
+  elixir_safety_margin: 0.25     # pips subtracted before deciding a card is AFFORDABLE. The bar
+                                 # cannot be read finely enough to separate 2.99 pips from 3.00
+                                 # and the game demands the full amount, so "exactly affordable"
+                                 # plays are routinely refused: MEASURED 61% of them never moved
+                                 # the bar, against 22% for plays with any spare elixir -- and
+                                 # 63% of all plays were made at exactly-affordable. Costs ~0.7s
+                                 # of tempo at 1x (0.35s at 2x); the observation and the leak
+                                 # test still use the TRUE reading.
+  epsilon: 0.0                   # random-action rate while playing (0 = greedy)
+  in_match_grace_s: 150          # OVERTIME failsafe: if the state reads UNKNOWN within this many seconds
+                                 # of the last positive IN_MATCH read, play HOLDS in-match (keeps acting)
+                                 # instead of freezing -- covers OT when the strict banner template misses
+                                 # (label is replaced at OT) + brief label dropouts. Any positively
+                                 # identified OTHER screen (MATCH_END/HOME/PARTY) cancels the hold, so
+                                 # menus are never grace-held. 150s = 2 min max OT + slack. 0 disables.
+  stuck_timeout: 25              # seconds on an UNRECOGNISED screen before tapping to dismiss it. A
+                                 # post-match chest/level-up/season/offer popup that detect_state does
+                                 # not cover would otherwise hang navigation. Keep this LONGER than your
+                                 # typical matchmaking wait so a real search is not cancelled early.
+  stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
+
+# --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
+# When enabled, a background thread (its own screen capture, like the preview window) records the
+# first `seconds` of EVERY match to out_dir/match_<stamp>.mp4 with draw_detections() overlaid --
+# the opening is where placement, the first read of the opponent, and the detector's coverage of a
+# clean board are all visible at once. The BOXES refresh at observation.perception_hz (~0.1s, the
+# same feed as the preview window), so the clip shows real perception latency rather than hiding it.
+# Clips are WALL-CLOCK PACED: if capture can't hit `fps` the newest frame is duplicated to fill the
+# missed slots, so playback is always real-time instead of fast-forward. The achieved capture rate
+# is printed when each clip closes -- check it if the video looks stuttery.
+overlay_replay:
+  enabled: true              # master gate
+  seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
+  max_clips: 5               # HARD CAP per session (process lifetime). train-rl plays unattended for
+                             # hours, so an uncapped recorder quietly fills the disk with clips nobody
+                             # watches -- and the early ones are the useful ones anyway, since they all
+                             # show the same policy. On the last clip the recorder shuts its thread down
+                             # rather than idling, so it stops grabbing the screen entirely. 0 = no cap.
+  fps: 50                    # clip frame rate (max 60). MEASURED on this machine: grab 14.9ms + draw 0.9
+                             # + resize 0.3 + encode 1.0 = 17.1ms/frame => a ~58 fps CEILING with nothing
+                             # else running, and the GRAB is 87% of that. 60 is therefore right at the
+                             # limit (~1 full core) and will drop slots once train-rl's perception loop
+                             # and the preview window are grabbing too -- the pacing keeps the timing
+                             # honest, but you get duplicated frames. 30 is the safe smooth setting.
+  scale: 1.0                 # frame resolution before encoding. 1.0 = FULL native capture resolution
+                             # (the resize is skipped entirely at 1.0). ~100 MB per 60s clip at this fps;
+                             # encode cost rises with frame area but the screen GRAB still dominates the
+                             # per-frame budget, so the achieved fps is largely unchanged. Drop back to
+                             # 0.5 (half size, ~25 MB) if the clips get too large for disk.
+  out_dir: data/overlayed_replays   # one mp4 per match (falls back to .avi/MJPG if mp4v is missing)
+
+# --- Live detector preview (train-rl side window) ---
+# Pops a small window beside the game during train-rl showing each captured frame with the
+# detector's team-coloured boxes -- exactly what the policy's perception sees, fed from the SAME
+# detector pass the env already runs (no extra inference). The capture is a SCREEN grab, so the
+# window must never cover the game: by default it sits just RIGHT of the capture region. Closing
+# the window turns it off for the session.
+preview:
+  enabled: true
+  scale: 0.5          # window size as a fraction of the captured frame
+  fps: 30             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
+                      # (boxes still update at the act cadence ~1.5s = what the policy actually sees)
+  pos: null           # [x, y] screen position; null = auto (right of the game window)
+
+# --- Remote monitoring (optional Discord screenshots during long runs) ---
+# Posts a screenshot of the game window to Discord when train-rl starts, then a short video CLIP
+# every `interval_min` minutes, so you can tell remotely whether it's progressing or stuck. The
+# webhook URL is a SECRET: NEVER put it here (this file is committed). Set the env var named below,
+# or write the URL into the git-ignored file `webhook_file` (one line). If neither is set, off.
+monitor:
+  interval_min: 30                       # minutes between clips (0 not allowed; min 1)
+  webhook_env: CLASHRL_DISCORD_WEBHOOK   # env var holding your Discord webhook URL (preferred)
+  webhook_file: data/discord_webhook.txt # git-ignored fallback file with the URL (data/ is ignored)
+  jpeg_quality: 70                       # startup-screenshot JPEG quality (lower = smaller/faster upload)
+  clip_seconds: 30                       # length of each periodic video clip (seconds)
+  clip_fps: 10                           # clip frame rate (higher = smoother but a bigger upload)
+  clip_scale: 0.5                        # downscale the clip (0.5 = half size) to stay under Discord's ~8 MB webhook limit
+  overlay_detections: true            # draw the trained YOLO detector's boxes on the periodic clips (enemy=red,
+                                         # yours=blue, + card name/conf) so you can SEE what the detector perceives,
+                                         # remotely. Loads its OWN detector on the first clip (needs trained weights in
+                                         # runs/detect); a brief 2nd model during the 30s clip -- turn off if VRAM is tight.
+  overlay_conf: 0.4                      # min detector confidence to draw a box on the clip overlay
+
+# --- Board object detection (YOLO11) dataset bootstrap -------------------
+# `run.py autolabel` builds an Ultralytics dataset under detect.dataset_dir from your
+# recordings. It AUTO-boxes YOUR OWN just-spawned troops -- a card you play is a known class
+# at a known spot, so the unit that appears at the tap (found by a frame diff) is boxed for
+# free -- and also exports extra active in-match frames with EMPTY labels for you to hand-label
+# the enemy troops/spells in a tool (Label Studio / Roboflow / CVAT). Then train with
+# tools/detect/train.py. Class taxonomy: detect.classes_file. The auto labels are a STARTING
+# POINT: open each frame and add the units the auto-pass couldn't know (enemy + extra own),
+# else the detector learns to treat them as background.
+detect:
+  classes_file: config/detect_classes.yaml
+  # THE OPERATING DETECTOR, pinned. null = use whichever run was trained MOST RECENTLY, which is a
+  # trap: newest is not best. Measured 2026-08-07 on the frozen val subset (identical 241 images /
+  # 817 boxes for every generation), board-17 trained last but REGRESSED -- whitelist identity
+  # recall 0.675 / precision 0.882, failing the 0.70 gate, vs board-16's 0.724 / 0.911 which passes.
+  # Its ultralytics mAP50 looked best (0.7144) only because it validated on a larger val set. With
+  # no pin, `play` / `train-rl` / `mine-replays` / `label-queue` would all have silently adopted the
+  # worse detector. Promote a new generation ONLY after
+  # `run.py detect-eval --sweep --subset data/detect/val_board15.txt` beats the incumbent, and
+  # re-measure observation.sim_detector_recall* at the same time (they describe THIS detector).
+  # SHARED WITH icebow. The detector is deck-agnostic -- it names cards on the board, and
+  # both decks meet the same opponents -- so this points at the icebow tree rather than
+  # duplicating 10 GB of frames and 1.5 GB of weights per deck. Retraining the detector
+  # there upgrades BOTH decks; nothing here writes to it.
+  weights: C:/Users/benpe/ClashBot/icebow/runs/detect/board-24-5/weights/best.pt
+  dataset_dir: C:/Users/benpe/ClashBot/icebow/data/detect
+  # INFERENCE RESOLUTION for the live detector. MUST match what the weights were trained at.
+  # ultralytics' predict() defaults to 640 no matter what the model was fitted for, and every
+  # board-* generation here trains at 960 -- so `BoardDetector.detect()`, the single choke point
+  # every live path goes through, was reading the arena at two thirds resolution. `detect_eval`
+  # passed imgsz=960 explicitly, so no measurement in this project ever saw it. MEASURED on board-16
+  # over the frozen 241-frame subset:
+  #     imgsz 640   presence R 0.660   whitelist R 0.657   612 dets
+  #     imgsz 960   presence R 0.709   whitelist R 0.730   656 dets
+  # 7.3pp of whitelist recall, free. Note the obs-canvas flip gate is whitelist >= 0.70: the gate was
+  # being judged on 0.730 while the live bot delivered 0.657, so it had never actually been met.
+  imgsz: 960
+  spawn_delay_s: 0.5             # a troop appears ~this long after your placement tap
+  spawn_extra_offsets: [0.3, 0.8]  # also try these delays (s) if the first localisation misses
+  search_radius: 0.10            # look this far (normalized) around the tap for the new unit
+  diff_thresh: 22                # frame-diff threshold to find the spawned unit
+  min_blob_px: 30                # ignore diff blobs smaller than this (noise)
+  box_pad: 0.008                 # pad the auto box by this (normalized) so it isn't too tight
+  general_per_session: 40        # extra active in-match frames per session to hand-label (enemy)
+  val_frac: 0.15                 # fraction of exported images held out for validation
+  jpeg_quality: 92               # exported frames are JPEG at this quality (labelling-friendly, small)
+  label_queue_subdir: to_label   # flat folder UNDER images/ where detect-frames/-timelapse/harvest drop
+                                 # NEW frames to hand-label. Import-safe (detect-import never touches it)
+                                 # and FLAT so Label Studio Local Storage points straight at it (no train\ backslash bug).
+  # ANNOTATION HARVEST -- shared by `train-rl` AND `record`: drop live game frames into images/to_label
+  # (empty labels, to hand-label) so a session doubles as detector data collection. Additive and
+  # non-destructive (new trl_* stems, flat folder that survives detect-import). Re-sync Label Studio
+  # Local Storage to pick them up. `record` only harvests IN_MATCH frames -- it reads the screen state
+  # once per capture_every_s so menus and result screens never reach the queue.
+  capture_during_train: true    # set false to disable the harvest during train-rl / record
+  capture_every_s: 5.0           # one frame every N seconds of match play
+  capture_per_match: 20          # cap frames per match
+  capture_session_max: 500       # cap frames for the whole train-rl / record session
+
+# --- External-replay strategy mining (Stage 4 groundwork) ----------------
+# `run.py mine-replays` distils strong-player rocket-cycle replay VIDEOS into deck-agnostic
+# strategy priors (data/analysis/strategy_priors.json): defensive placements, positive elixir
+# trades, and when to rocket a tower. It NEEDS the trained board detector (Stage 2/3) to read
+# footage that has no mouse log; until then the command reports readiness. Enable the priors in
+# training via rewards.strategy_prior_scale (default 0 = off). See clashrl/replay_mine.py.
+replay_mine:
+  replays_dir: data/detect/HunterCR_replays   # where the replay VIDEOS actually live (mp4/avi/mkv/mov/webm).
+                                 # Was data/replays, which never existed -- mine-replays would have found
+                                 # nothing and reported "no replays" rather than failing loudly.
+  frame_stride: 15               # sample every Nth frame. TIGHTENED 30 -> 15 (0.25 s at 60 fps) for the
+                                 # replay->BC miner: unit TRACKING is what tells a fresh deploy apart from
+                                 # a unit already on the board, and at 0.5 s a fast troop moves further than
+                                 # the tracker's match radius, so it looked brand new every sample. Halving
+                                 # the step keeps tracks attached. The old 30 was tuned for `mine-replays`
+                                 # (which only needs ~2 samples/sec to catch a placement), not for tracking.
+                                 # Lower it only if you need sub-second timing of a spell's travel.
+  detect_conf: 0.30              # detector confidence threshold for a unit to count
+  learn_side: bottom             # which player to imitate: the featured/blue player is usually on the bottom
+                                 # -- CONFIRMED correct for this footage: Hunter plays the BOTTOM (blue) side.
+
+# --- Headless simulator (train-sim): fast, no-vision RL from scratch ------
+# `run.py train-sim` trains the SAME policy against a medium-fidelity, stat-driven match engine
+# (clashrl.sim, driven by the card KB) so it can play THOUSANDS of matches with no capture and
+# from scratch. The result (data/policy_sim.pt) is a PRIOR to warm-start live train-rl, then
+# fine-tune on real matches. Medium fidelity -> expect a sim-to-real gap. See icebow/DECK_SWITCH.md.
+sim:
+  envs: 8                        # VECTORIZED match instances feeding one learner (batched inference + shared replay); --envs overrides
+  # WIN-CONDITION BANK (train-sim-ppo). While a win condition is IN HAND and the bar has reached this
+  # many elixir, the cards that would drain it below the win condition's cost are MASKED, so the bar
+  # climbs the last stretch and the win condition becomes samplable at all. This is a REACHABILITY fix,
+  # not a preference: a masked action gets zero policy gradient, and MEASURED on the collapsed 100k
+  # checkpoint X-Bow/Rocket were in hand on 99.4% of steps and affordable on 0.00% of them, so no
+  # reward weight on the win condition could ever fire. Climbing to 6 elixir needs ~14 consecutive
+  # waits; at the collapsed P(play) 0.938 that is ~1e-17, i.e. never.
+  # The rule is a pure function of (hand, elixir) -- the two inputs the rollout already stores -- so the
+  # sampling-time and update-time masks are identical and the PPO likelihood ratio stays exact.
+  # 3.0, not 4.0: MEASURED at floor 4 the rule fired so rarely that X-Bow reached only 3 plays in 945
+  # (0.3%) -- the policy spends at ~2.5 elixir, so the bar seldom even reached the floor. 3.0 leaves
+  # the 0-3 range free for ordinary cheap defence and commits the climb from there.
+  # Set 0 to disable (the original always-affordable mask).
+  # WHICH CARDS ARE THIS DECK'S WIN CONDITION. Read by SimMatchEnv, policy_stats and train_sim_ppo;
+  # naming a card that is not in the deck is a hard error, so a deck swap cannot silently leave the
+  # win condition unpriced. Hog Earthquake has exactly one: the Hog. Earthquake is its ESCORT, not a
+  # second win condition -- it is 3 elixir of building removal, and pricing it as a wincon would pay
+  # the agent for casting it alone, which is the single most common way this deck is misplayed.
+  wincon_cards: [hog_rider]
+  wincon_bank_floor: 0      # OFF, and for this deck it must STAY off. IceBow banked to 6 for the
+                             # bow; Hog EQ is a 2.75 CYCLE deck whose entire advantage is arriving
+                             # again before they have the answer -- holding elixir for the Hog
+                             # forfeits the rotation that makes the Hog good in the first place.
+  agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
+  sub_dt: 0.1                    # physics sub-tick within each agent step
+  regulation_s: 180             # elixir: single -> DOUBLE at (regulation-60s); double CONTINUES through
+                                # overtime's first minute; TRIPLE only in the LAST 60s of overtime
+  overtime_s: 120               # SUDDEN DEATH after regulation -- first crown wins instantly. Only
+                                # entered when the crowns are LEVEL at 180 s; a crown lead ends the
+                                # match there. 180 + 120 = the real 300 s ceiling (was 60, so
+                                # overtime ran half as long as the game's).
+  # --- Tower Troops ---------------------------------------------------------------------------------
+  # Per-troop HP + DISCRETE-HIT attack, sourced from the Clash Royale Fandom wiki at LEVEL 15 (VERIFY
+  # against your in-game cards). Your two princess towers use `my_tower_troop` at `my_tower_level`; the
+  # OPPONENT rolls a troop from `opponent_tower_weights` (princess most common on ladder) at a level drawn
+  # from `enemy_levels`. hit_dmg is derived as dps*hit_speed; HP + damage scale by 1.1^(level - my_tower_level).
+  # BOARD GEOMETRY. The simulated arena is a TILE GRID and every sim distance below is in TILES.
+  # Positions stay normalized [0,1] per axis, so ONE normalized unit = 18 tiles across but 32 tiles
+  # up: the engine converts to tiles before measuring (a plain hypot made every range ~1.78x shorter
+  # horizontally than vertically). The towers are derived FROM these tiles, so the two halves are
+  # exactly symmetric about the river at y=0.5 -- previously the sim borrowed env.my_towers /
+  # env.enemy_towers, which are LIVE SCREEN coordinates carrying the game's perspective
+  # foreshortening, putting your towers 0.115 from the river and the enemy's 0.295 (and breaking the
+  # self-play mirror, which reflects about y=0.5).
+  board:
+    tiles_x: 18                 # arena width in tiles
+    tiles_y: 32                 # arena height in tiles
+    princess_tile: [3.5, 6.5]   # princess tower centre: tiles from the SIDE wall, tiles from the BACK wall
+    king_tile: [9.0, 3.0]       # king tower centre: tiles from the side wall, tiles from the back wall
+    bridge_tiles: [3.5, 14.5]   # bridge lane centres in tile-x (aligned with the princess lanes)
+    bridge_width_tiles: 3.0     # DECK WIDTH. Units cross anywhere on the deck, not single-file down
+                                # the centre line: routing everything to the exact centre made a swarm
+                                # converge on ONE point at the river, where collision (two 0.5-radius
+                                # bodies sit 1.0 tile apart) shoved them back out again -- goblins
+                                # pinned at y=0.5000 forever, oscillating between x 3.00 and 4.00.
+    river_width_tiles: 2.0      # THE RIVER HAS THICKNESS: 2 tiles (rows 15..17, centre 16), so the
+                                # bank a troop steps onto is a tile off the centre line. Modelled as a
+                                # zero-thickness line, the whole 15..17 strip was walkable AND
+                                # deployable -- the front-most deployable row centre sat at 16.67
+                                # tiles, i.e. IN THE WATER.
+    deploy_top: 0.53125         # troops deploy on your half only, and NOT in the river: 17/32 = the
+                                # near BANK, not 0.5 (=16/32, the river's centre line)
+  # LLM-PROPOSED DOCTRINE (2026-08-16). config/llm_doctrine.json holds card suggestions a local
+  # model made for coarse board buckets, each one REPLAYED IN THE ENGINE and kept only if it beat
+  # holding the card over repeated seeds -- regenerate with tools/llm_doctrine.py. It is a
+  # proposer, not an oracle: scored on tools/llm_eval.py the best local model manages 6/10 on this
+  # project's own doctrine cases, and every model tested made the same X-Bow-into-a-push mistake
+  # the reward ledger was separately found to be paying for. The gate is the whole value; on the
+  # first run it rejected half the proposals. false = ignore the file entirely.
+  llm_doctrine: true
+  my_tower_troop: princess      # your equipped tower troop (you play princess exclusively)
+  my_tower_level: 15            # your king/tower level -> stats reference level (enemy tower levels scale off this)
+  # WEAPON WIND-UP before a unit's FIRST hit on a new target (game-file load_time; Archer 0.4 s,
+  # Knight 0.7 s, Valkyrie 1.4 s). Real, and imported for 83 cards -- but OFF because enabling it
+  # exposes a pre-existing engagement flicker at the edge of a unit's reach: with no wind-up the
+  # unit fired on the tick it arrived and the flicker never showed, and with one it drifts,
+  # re-acquires, and repeats. Turn on together with reach hysteresis, and measure. See engine.py.
+  load_time: false
+  # CROWN TOWER REACH, in tiles, measured from the tower's CENTRE to the target's body EDGE
+  # (engine._gap). DERIVED FROM THE BOARD, not a nominal figure: the defender's end of the bridge
+  # sits 8.50 tiles from a princess tower's centre (tower 6.5 tiles off the back wall, the river's
+  # near bank 15.0), so a standard 0.5-radius troop reads a gap of 8.00 the instant it steps off the
+  # brown. At the old 7.5 the tower stayed silent for another half-tile of walking; 8.0 makes it open
+  # fire exactly as the troop clears the bridge, and a wider body (Giant 0.75) is caught a shade
+  # earlier, which is correct -- more of it is already inside the radius.
+  tower_range: 8.0              # TILES: princess-class reach (all tower troops share it)
+  king_range: 7.5               # TILES: king-tower reach -- still 0.5 shorter than a princess tower
+                                # (the +0.5 is a measurement correction, so it applies to both)
+  tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
+  opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
+    princess: 6
+    dagger_duchess: 2
+    cannoneer: 2
+    royal_chef: 1
+  tower_troops:                 # {hp, dps, hit_speed} @ L15; Dagger Duchess + Royal Chef carry their specials
+    princess:       {hp: 4424, dps: 197, hit_speed: 0.8}
+    dagger_duchess: {hp: 4013, dps: 312, hit_speed: 0.5, ammo: 8, empty_dps: 111, reload_s: 0.9}   # loaded burst -> empty cadence
+    cannoneer:      {hp: 3792, dps: 211, hit_speed: 2.2}                                            # slow, heavy single hits
+    royal_chef:     {hp: 3918, dps: 158, hit_speed: 1.0, cook_period_s: 30, cook_delay_s: 7, buff_mult: 1.1, buff_min_frac: 0.33}  # ~every 30s feeds the ally troop with most HP (+1 level)
+  king_tower:       {hp: 7032, dps: 158, hit_speed: 1.0}                                            # L15 King's Tower (wakes when first hit)
+  siege_sight: 11.5             # TILES: X-Bow engage range; locks the tower past this only when no troops are closer
+  sight_tiles: 5.5              # TILES: FALLBACK troop aggro radius. Units now use PER-TROOP sight from the game data
+                                # (cards.py _SIGHT_TILES, cr-api-data characters.sight_range): most 5.5 tiles, PEKKA/
+                                # Giant Skeleton 5.0 (kite-able), building-seekers 7.0-7.7, Hog/Royal Hogs/Princess 9.5.
+                                # Opposite lanes are ~9-10 tiles apart -> troops march past each other (real CR behaviour).
+  sight_range: 0.12             # LIVE-only twin of sight_tiles: the same fallback as a SCREEN-normalized radius
+                                # (clashrl/env.py + play.py read this; the sim reads sight_tiles).
+  # --- sim REWARD geometry, in TILES (the env.* twins below are LIVE screen-space and stay separate) ---
+  xbow_range_tiles: 11.5        # max distance from the X-Bow to an enemy princess for it to REACH the tower
+  xbow_defense_front: 0.56      # DEFENSIVE "back-centre" band (normalized y): ~2 tiles behind the river...
+  xbow_defense_back: 0.74       # ...down THROUGH the canonical centre bow spot (~3 tiles ahead of the king,
+                                #    row 17 / y~0.73). 2026-08-15: the old 0.66 ended the band a row early, so
+                                #    the textbook defensive bow read as "behind" (0.25 credit) or, off-centre,
+                                #    as a full -1.0 misplace -- MEASURED 32/32 bow plays at -1.0 in a 20-match
+                                #    probe, a tax that would eventually delete the win condition.
+  spell_tower_aim_tiles: 3.8    # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  spell_waste_tiles: 4.5        # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness
+  rocket_combo_tiles: 3.5       # ROCKET COMBO: the support must be within this of the aimed princess tower
+  slow_factor: 0.5              # SLOW status (Ice Wizard) -> this multiple of move + attack speed
+  slow_duration: 2.0            # seconds a SLOW lasts
+  stun_duration: 0.5            # seconds a STUN lasts (Zap / Tesla-evo pulse / Electro)
+  freeze_duration: 1.0          # seconds a FREEZE lasts (Ice Spirit / Freeze) -- a longer stun
+  collision: true               # soft body-block: units can't stack, so a wall of troops holds up a tank
+  enemy_levels: [13, 14, 15, 16]      # opponent cards EACH roll a random level from here...
+  enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
+  backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
+  backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
+  anywhere_deploy_prob: 0.75          # chance a bot holding a DEPLOY_ANYWHERE card (cards.yaml flag: Miner /
+                                      # Goblin Drill) tunnels it straight onto a live princess tower instead of
+                                      # walking it from the bridge. Without this the sim never produces the
+                                      # scenario -- an enemy suddenly ON your tower with no approach to read --
+                                      # so the policy cannot learn to answer it however the reward is shaped.
+  # --- ADAPTIVE scripted bots (Tier-1 'smart opponents', TRAINING ONLY: only train_sim's opponent
+  # provider passes adaptive=True; the eval benchmark + fair eval never do, so eval curves stay
+  # comparable across runs). Each training bot rolls adaptive_prob; an adaptive bot then rolls each
+  # behaviour + a human reaction delay -> a POPULATION of skill levels, not one clone:
+  #   anti-siege   = answer a fielded X-Bow (big spell when supported, else heaviest troop ON it)
+  #   counter-hold = after SEEING the X-Bow, reserve their heaviest troop as the siege answer
+  #   dump punish  = 8+ agent elixir in ~6s -> immediate opposite-lane commit
+  #   split-push   = after SEEING a tornado, split/alternate lanes -- one pull can no longer catch
+  #                  the whole attack (exactly the pressure that makes real tornado timing worth learning)
+  adaptive_prob: 0.65
+  adaptive:
+    reaction_s: [1.0, 3.0]            # per-bot human reaction delay, uniform in this range
+    anti_siege_prob: 0.8
+    hold_counter_prob: 0.6
+    punish_prob: 0.6
+    split_prob: 0.7
+  explore_count_based: true           # epsilon random picks weighted 1/sqrt(play count): situational cards (tornado) actually get trialled
+  epsilon_start: 1.0            # from-scratch -> start fully random
+  epsilon_end: 0.05
+  epsilon_decay_steps: 40000    # long exploration (far more steps than live RL, since the sim is fast)
+  log_every_matches: 25         # print a rolling win-rate/avg-reward summary this often
+  save_every_matches: 50        # checkpoint data/policy_sim.pt this often
+  # Benchmark eval: every N matches, run the GREEDY policy vs the FIXED scripted meta pool and print the
+  # win-rate. Unlike the self-play win-rate (which hovers ~50%), this is a STABLE plateau signal -- watch
+  # it flatten to judge when DDQN has topped out (the PPO-integration trigger; see DECK_SWITCH.md). 0 = off.
+  action_latency_s: 0.25     # SIM-ONLY (2026-08-15): our decisions reach the board this much
+                             # later, modelling the live decide->tap->game pipeline so the sim
+                             # policy has to LEAD the same way the live one does. Elixir is
+                             # committed at decision time. Opponent scripts are unaffected.
+  rollout_workers: 12        # engine shards (subprocesses); 0 = classic single-process. The
+                             # engine is pure Python -- this is how the other 15 cores get used
+  curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
+                             # (same meta decks at OUR level 11, no adaptive counter-play)
+  curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %
+  eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
+  eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
+  eval_envs: 8                  # vectorized eval envs (capped at --envs)
+  eval_smooth_window: 5         # print a ROLLING AVERAGE of the last N benchmark points so a plateau vs noise is readable
+  fair_eval: true               # ALSO benchmark vs the meta pool at a FAIR (equal) level -- isolates raw policy strength from the L13-16 handicap
+  fair_eval_level: null         # fair-eval enemy card level (null = auto: rounded mean of YOUR deck's card levels)
+  # train-sim also keeps data/policy_sim_best.pt at the PEAK ladder rolling-avg (guards vs the late-training decay you saw: 69% @20k -> ~58% @40k)
+  # --- Self-play (frozen past policy mixed in with the scripted meta bots) --------------------------
+  # Every `selfplay_snapshot_every` matches the current policy is frozen into a small league; each match
+  # reset then picks a league snapshot to pilot the OPPONENT with prob `selfplay_prob` (ramped in over
+  # `selfplay_ramp_matches`), else a scripted meta-deck bot. The frozen self plays the agent's own deck
+  # on a mirrored board (sim/view.py) = a strong, adaptive sparring partner. Set selfplay_prob 0 to
+  # disable (scripted-only, the original behaviour).
+  # HISTORY. 0.5 -> 0.0 (2026-08-13 morning): attribution run after the overnight league drift --
+  # from the 23:27 champion (19.3% on the matched benchmark) the policy spent a night optimising
+  # against its PFSP^2-hardened league while the frozen SCRIPTED benchmark fell to 1.3%. The
+  # scripted-only day then RECOVERED monotonically (5% -> 13%), convicting the 0.5/power-2.0 mix.
+  # 0.0 -> 0.15 (2026-08-13 evening): gentle reintroduction, per the plan and per the user's deck-
+  # rarity point -- icebow is RARE on ladder, so the MIRROR matchup (the only deck a frozen self
+  # can pilot: its card head knows exactly our 10 identities, meta decks are architecturally out
+  # of reach without per-deck opponent nets) must stay a SMALL slice of training. At 0.15, ~6 of 7
+  # matches are the varied scripted META pool (100 decks, adaptive_prob 0.65 of them reactive:
+  # anti-siege / counter-hold / dump-punish / split-push), which is where deck variety actually
+  # lives. Raise only after the benchmark banks clear gains, and never back to 0.5 + power 2.0.
+  selfplay_prob: 0.15           # fraction of matches played vs a frozen self (0 = off); the rest are scripted meta decks
+  selfplay_ramp_matches: 5000   # linearly ramp selfplay_prob 0 -> full over this many matches (0 = no ramp)
+  selfplay_snapshot_every: 1000 # freeze a policy snapshot into the league this often (matches)
+  selfplay_league_size: 8       # keep this many recent snapshots; DEEPENED 5 -> 8 with PFSP (more history
+                                # is useful once sampling is prioritized instead of uniform)
+  selfplay_keep_best: true      # ALSO spar against the BEST-benchmark self (not just recent snapshots) -- damps the
+                                # self-play "chase a degrading recent self" oscillation; the biggest stability lever here
+  # Tier-2 PFSP (prioritized fictitious self-play): league opponents are sampled by (1 - winrate)^power
+  # over a rolling 40-match record per snapshot, so sparring concentrates on the past selves that BEAT
+  # the current policy (that's where the learning signal is) instead of uniformly re-farming beaten ones.
+  # Snapshots with little history sample at medium priority; a small floor keeps every snapshot in play.
+  selfplay_pfsp: true
+  selfplay_pfsp_power: 1.0      # >1 = sharper focus on the hardest snapshots; 1.0 = proportional.
+                                # LOWERED 2.0 -> 1.0 (2026-08-13) with the selfplay reintroduction:
+                                # power-2 over-sampling of the hardest selves is the other half of
+                                # the league-drift diagnosis (see selfplay_prob history above).
+  # --- PPO trainer (train-sim-ppo; the on-policy sibling built at the DDQN 83/84 plateau) ---------
+  # Same trunk/heads read as LOGITS + a value head; clipped surrogate + GAE. Everything around the
+  # algorithm (eval benchmark, keep-best, PFSP league, adaptive bots, DR, masks) matches train-sim
+  # so the curves are directly comparable against the DDQN baseline. Standard PPO defaults below.
+  ppo_horizon: 128              # env steps collected per env before each update (batch = horizon x envs)
+  ppo_epochs: 4                 # optimisation passes over each rollout
+  ppo_minibatch: 512            # minibatch size within a rollout
+  ppo_clip: 0.2                 # PPO clip epsilon (the trust region)
+  ppo_lr: 0.00025               # PPO learning rate (on-policy tolerates more than the DQN's 5e-5)
+  ppo_entropy: 0.02             # entropy bonus (exploration pressure on the gate + CARD categoricals).
+                                # 0.01 -> 0.02 after the round-5 card-head logit explosion (+/-140
+                                # raw, tornado/x_bow frozen at ~0 prob): with the new +/-8 tanh cap
+                                # the entropy gradient always has traction, and the stronger pull
+                                # resists re-sharpening into the rails.
+  # CELL-HEAD ANTI-COLLAPSE. The card head has had a floor since 2026-08-11; the 432-way CELL head
+  # had NONE, and it collapsed completely: MEASURED on policy_sim_ppo_best over 150 greedy matches,
+  # 3 distinct cells out of 432 were ever used, with 79% of ALL plays on ONE tile (x=0.21, y=0.53 --
+  # the LEFT lane) and six different cards deploying to that identical spot regardless of where the
+  # enemy push was. That is a constant function, not a policy: every placement-dependent reward
+  # becomes unreachable, wrong-lane defences are structural rather than a mistake, and NO amount of
+  # reward tuning can move it. Two independent levers, both rollout-only (greedy eval + live play
+  # stay the pure policy):
+  #   * the floor mixes uniform-over-DEPLOYABLE-cells into cell sampling, so every legal cell keeps
+  #     receiving gradient (a never-sampled action gets none, which is what made it self-reinforcing);
+  #   * a SEPARATE entropy coefficient, because one shared coefficient cannot hold a 10-way and a
+  #     432-way categorical at once -- max entropy is ln(10)=2.30 vs ln(432)=6.07, so at 0.01 the big
+  #     head's entropy gradient was far too weak to resist collapsing to a delta.
+  # START HIGH TO BREAK THE EXISTING COLLAPSE, THEN ANNEAL: 0.25 means a quarter of training
+  # placements are random, which is deliberately a lot of noise -- it is the price of re-populating a
+  # dead distribution. Once policy-stats reports cells-used in the dozens, walk this down toward
+  # 0.05-0.10. 0 disables (the original pure-policy sampling that collapsed).
+  # FLOOR/INIT PAIRING RULE (learned 2026-08-14, the hard way): 0.10 maintains an ALIVE cell
+  # head; a from-BC (or otherwise collapsed) init needs 0.25 until spread recovers, else the
+  # frozen argmax never repopulates (measured: 2 cells / 90.8% top after 1.9 h at 0.10 from BC,
+  # with wincon_exec bleeding -1 x332 on the one frozen X-Bow tile).
+  # BACK TO 0.25 (2026-08-14): the SPATIAL cell head lands with the next run, which starts from a
+  # fresh BC -- repopulation phase again, so the high floor applies. Anneal to 0.10 only after
+  # policy-stats shows healthy spread AND board-conditioned placement on the new head.
+  ppo_cell_explore_floor: 0.25
+  ppo_cell_entropy: 0.05        # entropy bonus for the CELL head alone (>= ppo_entropy; 5x here)
+  # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md -> sim/doctrine.py; user-approved 2026-08-14). When a
+  # doctrine rule matches the current (card, board state), this share of the CELL FLOOR's mass is
+  # sampled from the doctrine placement distribution instead of uniform: anti-EQ Tesla spot,
+  # behind-bridge X-Bow locks (edge column vs rocket decks), knight body-block / mortar blind-spot
+  # / firecracker king-bait, nado-to-king activation + clumps, skels surround / princess smother,
+  # IW depth band, rocket pump/weak-tower/combo aims, ground-only Log paths. ROLLOUT-ONLY (greedy
+  # eval + live untouched); the stored log-prob is the mixture's, so PPO stays exact importance
+  # sampling. This is the SCAFFOLD: anneal toward 0 once the spatial head has internalised the
+  # placements (judge by policy-stats WITH the scaffold off -- i.e. greedy -- improving).
+  doctrine_frac: 0.6
+  # CARD-SAMPLING EXPLORATION FLOOR. During ROLLOUTS the card is drawn from (1-floor)*policy +
+  # floor*uniform(over the in-hand/affordable/bank-legal cards); the stored log-prob is that mixture,
+  # so the PPO ratio stays exact (see train_sim_ppo.masked_logits + choose_sample). This is the
+  # PPO port of sim.explore_count_based (which only fed the DDQN epsilon path) and exists for exactly
+  # the failure it names: DIAGNOSED 2026-08-11 on the obs-flip checkpoint, tornado(3)/rocket(6)/
+  # tesla_evo(4) sat IN HAND for thousands of steps but were played 0 times -- their card logits had
+  # collapsed to ~0, and a never-sampled action gets no policy gradient, so the collapse is
+  # self-reinforcing (and rocket/tesla_evo then clog the hand, keeping a wincon in hand ~always so the
+  # bank throttles the cheap cards too). The floor only touches training rollouts -- the greedy
+  # benchmark and live play are the pure policy -- so it guarantees exploration WITHOUT forcing bad
+  # plays (a card that is genuinely weak still earns negative advantage and stays rare). Anneal toward
+  # 0 once the deck is used; 0 disables (the original pure-policy sampling).
+  ppo_explore_floor: 0.15
+  ppo_vf_coef: 0.5              # value-loss weight
+  ppo_gae_lambda: 0.95          # GAE lambda (bias/variance of the advantage estimates)
+  ppo_max_grad_norm: 0.5        # gradient clip
+  ppo_head_norm_mult: 2.0       # HEAD SHARPNESS CAP: card/cell head weight norms are clamped to
+                                # this x their healthy startup norms after every optimizer step.
+                                # Measured 2026-08-14: post-repair, advantage spikes sprinted raw
+                                # card logits +/-2.8 -> +/-119 in <10 min (x_bow -109) THROUGH the
+                                # grad clip; scale is sharpness, not expressiveness, so cap it.
+  ppo_value_warmup: 60          # on --resume, the first N minibatches train the CRITIC only, so a
+                                # stale value function recalibrates before it can shove the policy
+                                # (30 -> 60 on 2026-08-14: the trade/threat ledger port changed the
+                                # reward distribution more than any prior resume; the critic needs
+                                # the longer runway before full-rate policy steps)
+  # DEPLOY GATE THRESHOLD. The gate head is [wait, play]; the deterministic rule plays when
+  # P(play) = sigmoid(play - wait) > this. The old rule was a raw logit compare, i.e. tau 0.5 -- but a
+  # card play is RARE per tick, so a well-calibrated gate sits far below 0.5 (measured: median P(play)
+  # 0.049, above 0.5 on only 11.1% of decisions). Exactly the imbalanced-classifier threshold problem.
+  # tau 0.5 therefore refused about a third of the plays the policy was trained to make, sat on elixir
+  # and lost. MEASURED 2026-08-08 on the frozen ladder benchmark, 150 matches per rule (n=60 in
+  # brackets -- tau 0.25 is stable across both):
+  #   sampled (what TRAINING does)  69% [62]   34.9 plays/match  5.3 mean elixir
+  #   tau 0.50 (old)                39% [43]   23.9              6.2   <- benchmark AND play.py ran here
+  #   tau 0.35                      63% [60]   28.4              6.2
+  #   tau 0.25                      72% [73]   36.0              5.5   <- chosen
+  #   tau 0.15                      69% [68]   36.7              4.9
+  # +33pp over the old rule (SE of the difference 5.8pp at n=150). The elixir column is the tell: the
+  # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
+  # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
+  ppo_gate_threshold: 0.25
+  # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
+  # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,
+  # rolls that branch `horizon_s` with the AGENT DOING NOTHING, and later compares the real branch's
+  # tower differential against it -- "did playing this beat holding it?" That difference is zero-mean
+  # by construction (helped -> +, hurt -> -), which is the property every hand-written per-play term
+  # has failed to have: cycle_plan fired 0 bonuses against 305 penalties and threat_response's
+  # quiet-board branch 0 against 257, and both taught the policy to stop playing.
+  # COST, MEASURED end-to-end with the opponent acting inside the branch (a 39-unit board, against a
+  # 99 ms baseline match = 125 decisions x 0.79 ms). NB my first estimate of 14 ms was 3x too low
+  # because it rolled a QUIET fork: the opponent keeps deploying inside the branch, so the board grows
+  # and the ticks get dearer. Real cost is a ~6.5 ms floor (deepcopy + setup) plus ~3.5 ms per second
+  # of horizon:
+  #   horizon   ms/fork   forks for a 2x slowdown
+  #      8 s     35.0        2.8
+  #      4 s     24.0        4.1
+  #      2 s     16.1        6.1
+  #      1 s     10.5        9.4
+  # The budget is a HARD PER-MATCH CAP, not a probability, so the worst case is deterministic and a
+  # busy match cannot cost ten times a quiet one. Raise budget_per_match to buy signal with wall clock.
+  counterfactual:
+    enabled: true            # ON: it now REPLACES cycle_plan, which was deleted for being one-sided
+    # WIDENED from 6 s / 3 after measuring WHY the policy plateaued. The gate had collapsed to
+    # P(play) = 0.999 and elixir never exceeded 5.00 in 5616 decisions, so X-Bow and Rocket (6 each)
+    # were masked as unaffordable on 100% of steps -- a masked action gets zero policy gradient, so
+    # the deck's win condition was not merely unrewarded, it was unlearnable. Root cause: with the
+    # trade term made a pure transfer, playing became weakly better than waiting in EVERY state
+    # (the card might do something; holding provably does nothing the reward could see), so there
+    # was no reason to ever bank. Elixir has OPTION value -- 6 in the bar can still become an X-Bow,
+    # two 3-cost bodies on the field cannot -- and nothing priced it.
+    # This fork is the mechanism that can price it WITHOUT hardcoding "save for the X-Bow" (which is
+    # what cycle_plan was, and it failed three times): _roll_fork advances the HELD branch doing
+    # nothing, and _position counts elixir, so over a long enough window holding visibly banks.
+    horizon_s: 15.0          # at 6 s the held branch banks only ~2 elixir = +0.2 position, below the
+                             # noise of whatever the played card did; 15 s banks ~5 and is legible.
+                             # NB this now EXCEEDS the 17 s GAE window only slightly -- if the GAE
+                             # horizon is raised next, revisit whether this should follow.
+    budget_per_match: 10     # was 3 = ~6% of ~50 plays sampled. MEASURED cost ~= 2.0 + 0.72 x
+                             # horizon_s ms per fork, so 15 s x 10 = ~116 ms/match, ~12% of the ~1 s
+                             # match at 4 envs on CPU. 20 s x 20 was 328 ms (~33%) -- too steep.
+                             # Settlements land at 9.5/match, so the budget is near-saturated.
+    min_units: 1             # skip forking an empty board -- nothing can differ, so it is pure cost
+    cap: 1.0                 # per-fork clip on (real - held) position, in princess-tower HP units
+    # How much a full elixir bar's worth of board value counts against one princess tower in the
+    # position scalar. Tower HP alone left 2 of 3 forks settling at EXACTLY zero (nothing reaches a
+    # tower in 6 s), so the term only carried signal on ~1 play in 3. Board value + elixir together
+    # move continuously -- and elixir MUST be included, or playing a card would score positive by
+    # construction (you gain board value the held-card branch does not) and the term would become an
+    # action BONUS, the same asymmetry that cost two runs, inverted.
+    board_weight: 1.0
+  # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
+  # file from the official CR API (needs a free token in the env var below); else the curated set is used.
+  meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
+  # LADDER SKEW toward what this bot ACTUALLY faces. meta_decks.yaml is scraped popularity over the
+  # whole population; at ~10k trophies these four win conditions turn up far more often than that
+  # (user, 2026-08-17). Multiplier on any deck containing the card, applied at load time so the
+  # scraped file stays untouched data. Applied as a MAX, never a product, so LavaLoon (which holds
+  # two of them) is not boosted twice and does not crowd out the other three.
+  # MEASURED before/after over the 1000-deck pool, share of total sampling weight, with every
+  # boost below plus meta_deck_top_n applied together:
+  #   any hog    12.4% -> 16.4%    royal_hogs  7.9% -> 10.5%    balloon    7.6% -> 10.1%
+  #   royal_giant 5.3% ->  7.0%    lava_hound  5.2% ->  6.9%    any pekka  4.1% ->  5.5%
+  # Each SHARE grows by well under 2x even though every one of their decks doubled in weight --
+  # they are all rising against each other. Boosted archetypes now hold ~51% of sampling weight
+  # between them; drop a multiplier toward 1.5 if that starts to crowd out the rest of the field.
+  # EVALUATION POOL, deliberately separate from the training weights above. Boosting what the bot
+  # MEETS is right for training and wrong for measurement: a policy tuned against a skewed pool
+  # then gets scored on that same skew and looks better than it is. Measured cost of conflating
+  # them: the same checkpoint read 20.0% on the boosted pool and 21.2% on the flat one, so the
+  # boost alone moved the headline by 1.2pp. Empty = use the flat scraped popularity.
+  eval_deck_boost: {}
+  eval_deck_top_n: 0
+
+  meta_deck_boost:
+    royal_hogs: 2.0
+    lava_hound: 2.0
+    balloon: 2.0
+    royal_giant: 2.0
+    # Hog is the most-played win condition in the pool and Hog 2.6 is its single most-played deck,
+    # so boosting the others without it QUIETLY DEMOTED hog: its share fell 12.4% -> 11.3% purely
+    # because everything around it grew. Included to hold it steady rather than to raise it.
+    hog_rider: 2.0
+    # PEKKA bridge spam is reported as the dominant TOP-1000 deck (~61% win rate; RoyaleAPI and
+    # Aug-2026 meta writeups) but holds only 1.9% of this scraped pool -- the clearest gap between
+    # the scrape and what top ladder actually plays. Raised to roughly double that.
+    pekka: 2.0
+  # ...and boost the MOST-PLAYED decks outright. Ranked on the pool's OWN popularity weights, so
+  # re-running `decks-import` tracks the new meta without editing this list. Cross-checked against
+  # RoyaleAPI / Aug-2026 meta writeups and the scrape holds up: its #1 is Hog 2.6 and its #2 is
+  # Evo Royal Giant Fisherman, which those sources name the top ladder deck by win rate.
+  # MEASURED: top-10 share of sampling weight 20.2% -> 28.6%.
+  meta_deck_top_n: 10
+  meta_deck_top_n_boost: 2.0
+  api_token_env: CLASHRL_CR_API_TOKEN       # env var holding your official CR API token (developer.clashroyale.com; IP-locked)
+  api_token_file: data/cr_api_token.txt     # git-ignored fallback file with the token (data/ is ignored), one line.
+                                            # PREFER THIS over the env var: exporting a token on a command line puts a
+                                            # long-lived credential into shell history, and on PowerShell `set NAME value`
+                                            # is Set-Variable -- it makes a SHELL variable that os.environ never sees, so
+                                            # it silently looks like it worked. Correct env syntax is `$env:NAME = "..."`.
+  api_base: https://api.clashroyale.com/v1  # official Clash Royale API base URL
