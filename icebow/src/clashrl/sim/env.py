@@ -228,6 +228,14 @@ class SimMatchEnv:
         # a high cost tank at the back, immediately X-Bow opposite lane" (SAME lane vs a Lava
         # Hound), "Little Prince/Evolved Bomber ... wrecks a X-Bow" -> discount when seen.
         self.w_bow_over = r("xbow_overcommit", 0.08)          # per enemy elixir drawn beyond the bow's 6
+        # A FORWARD BOW PLANTED INTO A COMMITTED PUSH. See _xbow_into_push for the measurement that
+        # forced this: nothing anywhere priced the bow dying to the push it was dropped on top of,
+        # so the leak penalty alone made it a GOOD play at high elixir.
+        self.w_bow_into_push = r("xbow_into_push", -4.0)
+        self.bow_push_radius = float(cfg.get("sim", "xbow_push_radius_tiles", default=5.0))
+        # How far from the river still counts as a FORWARD (win-condition) bow. 4.0 tiles
+        # covers the two frontmost deployable rows; the defensive centre band starts beyond.
+        self.bow_forward_tiles = float(cfg.get("sim", "xbow_forward_tiles", default=4.0))
         self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
         self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
         self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
@@ -1222,6 +1230,55 @@ class SimMatchEnv:
         d = (credit - debit) / self.value_norm
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
+    def _xbow_into_push(self, card_id: int, nx: float, ny: float) -> float:
+        """A FORWARD X-Bow dropped on top of a committed push. Six elixir that never fires.
+
+        MEASURED (2026-08-16), the same board branched three ways over ~24 steps -- a Giant,
+        Musketeer and Knight committed into our left lane at 10 elixir:
+
+            bow ON the push      -25.56      leak -1.6, wincon_exec +0.42
+            hold                 -29.15      leak -4.8
+            bow OPPOSITE lane    -25.34      leak -1.6, wincon_exec +0.42
+
+        So planting into the push beat holding by +3.59, and the CORRECT lane beat the wrong one
+        by 0.22. Almost the entire gap is `leak`: sitting at capacity bleeds -0.2 a step and
+        playing anything stops it, so the 6-elixir bow was simply the biggest leak-stopper in
+        hand. threat_miss_idle was -23.0 in all three branches -- identical -- so wasting the bow
+        while the push killed us cost exactly what holding it did.
+
+        The reward was therefore teaching "play something" at +3.2 and "play the right thing in
+        the right place" at +/-0.4, about 8:1 the wrong way. That does not fade with training; it
+        sharpens, because more training means more confidence in the DOMINANT signal.
+
+        Deliberately not fixed by weakening `leak`, which exists for a good reason and would move
+        every other decision at capacity. This prices the specific mistake instead.
+
+        Not charged for a DEFENSIVE bow (behind ``xbow_front`` it IS the answer, a second pull
+        building), nor when the nearby enemies are too slight to kill it -- a couple of Skeletons
+        near a bow is not the failure this describes, so the same triage decides.
+        """
+        # FORWARD IS MEASURED FROM THE RIVER, not against xbow_front, and the difference is not
+        # cosmetic: the reward sees the POST-CLAMP position, and the clamp pushes every legal
+        # forward bow onto row 13 at y = 0.5625 -- already past xbow_front (0.56). Gating on that
+        # threshold made this branch unreachable, so the term read 0.0 for exactly the placement
+        # it exists to price. Caught because the fix did not change the measurement it was built
+        # from. Rows 13-14 (2.0 and 3.3 tiles out) are the offensive lock attempt; row 15+ is the
+        # defensive centre band the doctrine aims at.
+        if card_id not in self.xbow_ids:
+            return 0.0
+        if (ny - 0.5) * 32.0 > self.bow_forward_tiles:
+            return 0.0                                   # a defensive bow: it IS a pull building
+        near = [u for u in self.eng.units
+                if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
+                and tile_dist(nx, ny, u.x, u.y) <= self.bow_push_radius]
+        if not near:
+            return 0.0
+        cost = threat_value.group_ignore_frac(
+            self.db, [u.spec.base for u in near], tower_level=self._tower_level_for_triage)
+        if cost < threat_value.IGNORE_FRAC:
+            return 0.0                                   # too slight to kill a bow
+        return self.w_bow_into_push
+
     def _building_waste(self, card_id: int) -> float:
         """A defensive BUILDING spent with nothing to defend against.
 
@@ -1374,6 +1431,8 @@ class SimMatchEnv:
                 if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
                     reward += self.rw_stats.add("spell_waste", self.w_spell_waste)                                    # (soft) damage spell cast into emptiness
                 reward += self.rw_stats.add("building_waste", self._building_waste(card_id))   # a Tesla spent on a quiet board while their wincon is still in hand
+                reward += self.rw_stats.add("xbow_into_push",
+                                            self._xbow_into_push(card_id, nx, ny))   # a forward bow dropped onto a committed push
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
                 self._cf_open()             # ...and fork the alternative branch where we HELD this card
