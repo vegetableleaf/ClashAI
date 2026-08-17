@@ -91,6 +91,27 @@ CASES = [
          answer="tornado",
          why="guide: 'If they invest 3M, Tornado all three to one side and Rocket' -- the pull "
              "comes first, it is what makes the rocket worth casting"),
+    # -- TRIAGE: is it worth a card at all? Added 2026-08-16 after the user reported the model
+    # "defending" a lone Skeletons. These are not counter questions -- the right answer is to
+    # spend nothing -- and nothing in this eval tested for it before.
+    dict(id="lone_skeletons_ignore",
+         state="A single enemy SKELETONS (three skeletons) is walking at your tower. Nothing "
+               "else is on the board.",
+         hand=["the_log", "tesla", "ice_wizard", "knight"], elixir=6,
+         answer="hold",
+         why="threat_value: ignored completely it deals 17 damage = 0.4% of a Princess Tower; "
+             "any card spent on it is a pure loss"),
+    dict(id="lone_spear_goblins_ignore",
+         state="Enemy SPEAR GOBLINS are walking at your tower alone. Nothing else on the board.",
+         hand=["the_log", "tesla", "rocket", "knight"], elixir=5,
+         answer="hold",
+         why="threat_value: 1.5% of a tower if ignored; the tower handles it"),
+    dict(id="real_push_answer_it",
+         state="A GIANT with a MUSKETEER behind it has crossed the bridge into your half.",
+         hand=["tesla", "the_log", "skeletons", "rocket"], elixir=7,
+         answer="tesla",
+         why="triage: a Giant is 73% of a tower if ignored -- this one MUST be answered, and the "
+             "building is what pulls and survives"),
     dict(id="overtime_chip",
          state="OVERTIME. Both towers even, your X-Bow has not broken through all game. Enemy "
                "board is empty and you are at full elixir.",
@@ -102,31 +123,25 @@ CASES = [
 
 
 def ask(model, case, timeout=180):
-    hand = case["hand"]
-    prompt = (
-        "You are an expert Clash Royale player advising on an ICEBOW deck (X-Bow control: X-Bow, "
-        "Tesla, Ice Wizard, Knight, Skeletons, The Log, Rocket, Tornado).\n\n"
-        "SITUATION: %s\n"
-        "YOUR HAND: %s\nYOUR ELIXIR: %d/10\n\n"
-        "Pick the single best card to play right now. Answer with one card name from the hand."
-        % (case["state"], ", ".join(hand), case["elixir"])
-    )
-    schema = {"type": "object",
-              "properties": {"card": {"type": "string", "enum": hand}},
-              "required": ["card"]}
-    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
-                       "format": schema, "stream": False,
-                       "options": {"temperature": 0.0, "num_predict": 32}}).encode()
-    req = urllib.request.Request(OLLAMA + "/api/chat", data=body,
-                                 headers={"Content-Type": "application/json"})
+    """Ask through the REAL advisor, so this measures the thing that actually runs.
+
+    It used to build its own generic prompt ("You are an expert Clash Royale player...") which
+    shared nothing with LLMAdvisor's doctrine prompt. So the score graded a prompt that ships
+    nowhere: every improvement to the live prompt was invisible here, and this tool's verdict on
+    which MODEL to run was formed on inputs the bot never sends. Same reason its latency column
+    disagreed with the advisor's own measurement -- different prompt, no connection reuse.
+    """
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from clashrl.llm_advisor import LLMAdvisor
+
+    adv = LLMAdvisor(model=model, timeout=timeout)
     t0 = time.time()
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        d = json.loads(r.read())
+    got = adv.suggest(case["state"], list(case["hand"]), case["elixir"])
     dt = time.time() - t0
-    try:
-        return json.loads(d["message"]["content"]).get("card"), dt
-    except Exception:  # noqa: BLE001
-        return None, dt
+    adv.close()
+    return got, dt
 
 
 def score(model):

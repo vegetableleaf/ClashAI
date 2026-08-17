@@ -20,7 +20,17 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
+from .. import threat_value
 from .engine import _TORNADO_RADIUS
+
+
+def _tower_level(env) -> int:
+    return int(env.cfg.get("env", "my_tower_level", default=15) or 15)
+
+
+def _enemy_level(env) -> int:
+    """The level the opponent's cards are assumed to sit at, for the ignore-cost model."""
+    return int(env.cfg.get("sim", "enemy_card_level", default=11) or 11)
 
 # ---- geometry helpers -------------------------------------------------------
 
@@ -475,6 +485,35 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     def _bump(card_id, v):
         if card_id is not None:
             w[card_id] = max(w.get(card_id, 0.0), float(v))
+
+    # ---- FUNDAMENTALS: IS THERE ANYTHING TO ANSWER AT ALL? ----------------------------------
+    # This tier sits ABOVE every counter rule below, and it is the one that was missing. All of
+    # them answer "what beats X"; none asked "is X worth beating", so the policy spent cards on a
+    # lone Skeletons -- which costs 0.4% of a Princess Tower if ignored completely
+    # (clashrl.threat_value, computed from our own card DB at our tower level). Every guide states
+    # the principle -- "if a card don't solve a situation or don't affect the battle, don't play
+    # it", "don't defend single weak units when accepting 100-200 damage costs less elixir" -- but
+    # only as prose, so nothing could act on it.
+    #
+    # Threats ADD: three ignorable units arriving together are one real push, which is why this
+    # triages the GROUP and not each body (reading the push as a whole is the whole skill).
+    #
+    # The prior REPLACES the exploration floor over the cards it names, so nominating the right
+    # card here is also how a wrong one gets suppressed.
+    committed = [u for u in enemies if u.y > 0.42 and u.spec.kind != "spell"]
+    if committed:
+        cost = threat_value.group_ignore_frac(
+            env.db, [u.spec.base for u in committed],
+            tower_level=_tower_level(env), enemy_level=_enemy_level(env))
+        if cost < threat_value.IGNORE_FRAC:
+            # NOT a defence situation. The tower handles this by itself, so the elixir belongs in
+            # the win condition -- "with an empty enemy board and 6+ elixir the play is the X-Bow;
+            # otherwise cycle the cheapest card or hold".
+            _bump(_holdable("x_bow"), 4.0)
+            cheap = min((i for i in hand if eng.elixir[0] >= env.specs[i].elixir),
+                        key=lambda i: env.specs[i].elixir, default=None)
+            _bump(cheap, 1.5)
+            return w or None
 
     # ---- TORNADO ----------------------------------------------------------------------------
     nid = _holdable("tornado")

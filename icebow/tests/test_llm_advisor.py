@@ -13,7 +13,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from clashrl.llm_advisor import LLMAdvisor  # noqa: E402
+from clashrl.llm_advisor import HOLD, LLMAdvisor  # noqa: E402
 
 HAND = ["tornado", "x_bow", "the_log", "skeletons"]
 SIT = "ENEMY: a tank/win condition threat is 60% of the way to your king and closing fast."
@@ -65,12 +65,59 @@ class FailSafeTests(unittest.TestCase):
         self.assertLess(a.timeout, 1.0)
 
 
+class _FakeConn:
+    """Stands in for the pooled HTTP connection so the reply contract can be tested offline."""
+
+    def __init__(self, content):
+        self._content = content
+
+    def request(self, *a, **k):
+        pass
+
+    def getresponse(self):
+        import json as _j
+        payload = _j.dumps({"message": {"content": self._content}}).encode()
+        return type("R", (), {"read": lambda self_: payload})()
+
+    def close(self):
+        pass
+
+
+def _advisor_answering(content):
+    a = LLMAdvisor(model="stub", timeout=5.0)
+    a._connection = lambda: _FakeConn(content)          # noqa: SLF001
+    return a
+
+
 class ContractTests(unittest.TestCase):
-    def test_suggestion_is_always_from_the_hand(self):
-        """The caller indexes the deck by this name, so anything outside the hand must be None."""
+    def test_suggestion_is_always_from_the_hand_or_hold(self):
+        """The caller indexes the deck by this name, so anything else must be None or HOLD."""
         a = LLMAdvisor(model="qwen2.5:latest", timeout=0.3, port=1)
         got = a.suggest(SIT, HAND, 7)
-        self.assertTrue(got is None or got in HAND)
+        self.assertTrue(got is None or got == HOLD or got in HAND)
+
+    def test_hold_is_an_answer_not_a_failure(self):
+        """The whole point of HOLD: 'play nothing' has to be distinguishable from 'the advisor
+        did not reply', because the caller falls back to a RANDOM card on the second one. The
+        schema used to be enum=hand, which made declining structurally impossible -- the prompt
+        said 'or hold' and the grammar forbade it, so every exploration step spent a card."""
+        a = _advisor_answering('{"card": "hold"}')
+        self.assertEqual(a.suggest(SIT, HAND, 7), HOLD)
+        self.assertEqual(a.hits, 1)
+        self.assertEqual(a.fails, 0)
+
+    def test_hold_ends_a_plan(self):
+        a = _advisor_answering('{"cards": ["hold", "tesla"]}')
+        self.assertEqual(a.suggest_plan(SIT, HAND, 7), [HOLD])
+
+    def test_a_real_card_still_comes_back(self):
+        a = _advisor_answering('{"card": "%s"}' % HAND[0])
+        self.assertEqual(a.suggest(SIT, HAND, 7), HAND[0])
+
+    def test_a_card_outside_the_hand_is_still_a_failure(self):
+        a = _advisor_answering('{"card": "golem"}')
+        self.assertIsNone(a.suggest(SIT, HAND, 7))
+        self.assertEqual(a.fails, 1)
 
     def test_absent_setting_means_off(self):
         """Opt-IN, so a config that never mentions the advisor must not get one.

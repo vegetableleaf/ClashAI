@@ -46,6 +46,10 @@ from __future__ import annotations
 import json
 import time
 
+#: The advisor's way of saying "play nothing". A real answer, not a failure -- callers must be
+#: able to tell it apart from "the advisor did not respond", which falls back to random instead.
+HOLD = "hold"
+
 
 class LLMAdvisor:
     """Suggests a card to explore with. Fails to None, never raises into the caller."""
@@ -121,39 +125,49 @@ class LLMAdvisor:
         # better. qwen2.5 7B holds 0.590 s p50 with it, with a 0.823 s tail -- hence the timeout
         # default below.
         prompt = (
-            "Clash Royale, ICEBOW deck (X-Bow control). Apply this doctrine:\n"
-            "- x_bow: the win condition and your tower damage. Do NOT plant it into a push that is "
-            "already committed -- it dies before it fires.\n"
-            "- tesla: the defensive building; it pulls attackers and SURVIVES, so it is the answer "
-            "to a committed push.\n"
-            "- ice_wizard: slows a whole group at once. knight: cheap mini-tank, bodies-blocks.\n"
-            "- skeletons: 1 elixir -- distract a tank so your defence gets free seconds, reset a "
-            "charge, or cycle.\n"
-            "- the_log: clears cheap GROUND swarms and resets charges; CANNOT hit air. Always log "
-            "a tombstone at half health.\n"
-            "- rocket: only on 4+ elixir support, a FRESH elixir collector, or chipping the weaker "
-            "tower in overtime. NEVER on cheap bodies a 1-3 cost card handles. Never on their KING.\n"
-            "- tornado: bunch enemies for splash, drag an attacker into your own King Tower to wake "
-            "it, or pull defenders off your bow. It barely moves a Giant or Golem -- if a TANK is "
-            "in front of a Hog, use ROCKET, not tornado.\n\n"
-            "Counters are rarely one card for one card: a tank with support behind it wants a "
-            "building for the tank AND something for the support. Read the enemy push as a whole.\n"
-            "BUT WHEN THERE IS NOTHING TO COUNTER, DO NOT COUNTER. On an empty board a spell hits "
-            "nothing and a defensive building is wasted. Tornado, The Log, Rocket and Ice Wizard "
-            "are ANSWERS -- they need something on the board to answer. With an empty enemy board "
-            "and 6+ elixir the play is the X-Bow; otherwise cycle the cheapest card or hold.\n\n"
+            "Clash Royale, ICEBOW deck (X-Bow control). Win by defending for LESS elixir than the "
+            "attack cost, then chipping with the X-Bow.\n\n"
+            "STEP 1 -- IS IT WORTH A CARD? Your tower kills small things by itself. If the enemy "
+            "board is only a lone Skeletons, Spear Goblins, Goblins, Bats, Bomber, Guards, Ice "
+            "Wizard or Dart Goblin, answer 'hold' and spend NOTHING -- logging a lone Skeletons is "
+            "a textbook waste. Spend a card ONLY on: a tank, a win condition (Hog, Giant, Royal "
+            "Giant, Balloon, Graveyard, Miner, Ram Rider), THREE OR MORE units together, an elixir "
+            "collector, or something that outranges your tower (Princess, Mortar, X-Bow).\n\n"
+            "STEP 2 -- CHEAPEST CARD THAT ACTUALLY WORKS:\n"
+            "skeletons 1: distract a tank, reset a charge.\n"
+            "the_log 2: THREE OR MORE ground swarm units, or reset a charge, or a tombstone at "
+            "half health. Cannot hit air. NOT for one or two small units.\n"
+            "ice_wizard 3: slow a whole group. knight 3: body-block one ground attacker.\n"
+            "tornado 3: bunch enemies for splash, drag an attacker into your own King Tower to "
+            "wake it, or pull defenders off your bow. Barely moves a Giant or Golem -- a TANK in "
+            "front of a Hog means rocket, not tornado.\n"
+            "tesla 4: THE answer to a committed push -- it pulls and SURVIVES. Use it on tanks "
+            "and win conditions.\n"
+            "rocket 6: 4+ elixir of GROUPED support, a FRESH elixir collector, or the weaker "
+            "tower in overtime. Never on cheap bodies, never on their King.\n"
+            "x_bow 6: the win condition, NOT a defence -- only on a quiet board with 6+ elixir, "
+            "never into a committed push.\n\n"
+            "Read the push as a whole: a tank with support wants the building for the tank AND an "
+            "answer for the support. Defence is minimising damage, not preventing it -- never "
+            "spend more elixir than the push cost.\n\n"
             "%s\nHAND: %s\nELIXIR: %.0f/10\n\n%s"
             % (situation, ", ".join(hand), elixir,
-               "List the cards to play IN ORDER, one if one is enough." if plan
-               else "Pick the single best card to play now.")
+               "List the cards to play IN ORDER, one if one is enough, or just hold." if plan
+               else "Pick the single best card, or hold to play nothing.")
         )
+        # "hold" IS AN ANSWER. The schema used to be enum=hand, which made declining to play
+        # structurally impossible: the prompt said "or hold" and the grammar forbade it, so on
+        # every exploration step the model was forced to name a card even when the board deserved
+        # none. That is exactly the reported failure -- cards spammed at an empty board -- and no
+        # amount of prompt wording could fix a constraint in the grammar.
+        opts = list(hand) + [HOLD]
         schema = ({"type": "object",
                    "properties": {"cards": {"type": "array", "minItems": 1, "maxItems": 3,
-                                            "items": {"type": "string", "enum": list(hand)}}},
+                                            "items": {"type": "string", "enum": opts}}},
                    "required": ["cards"]}
                   if plan else
                   {"type": "object",
-                   "properties": {"card": {"type": "string", "enum": list(hand)}},
+                   "properties": {"card": {"type": "string", "enum": opts}},
                    "required": ["card"]})
         body = json.dumps({"model": self.model,
                            "messages": [{"role": "user", "content": prompt}],
@@ -178,6 +192,9 @@ class LLMAdvisor:
         self.total_s += time.time() - t0
         out = []
         for c_ in (got or []):
+            if c_ == HOLD:
+                out = [HOLD]                  # a decision, and it ends the sequence
+                break
             if c_ in hand and c_ not in out:
                 out.append(c_)
         if out:

@@ -20,6 +20,9 @@ from __future__ import annotations
 import random
 import signal
 import time
+
+from . import threat_value
+from .llm_advisor import HOLD as _HOLD
 from collections import deque
 from pathlib import Path
 
@@ -109,6 +112,7 @@ def train_rl(cfg, init: str | None = None) -> None:
     # live affordability mask; card_elixir all-zero (unknown deck) makes the mask a harmless no-op.
     from .cards import CardDB
     _db = CardDB(cfg)
+    _tower_level = int(cfg.get("env", "my_tower_level", default=15) or 15)
 
     def _base_key(k):
         k = str(k)
@@ -310,7 +314,7 @@ def train_rl(cfg, init: str | None = None) -> None:
     plan: list = []          # the advisor's remaining ordered cards for this board
     advisor_plan = bool(cfg.get("train", "llm_advisor_plan", default=False))
     if bool(cfg.get("train", "llm_advisor", default=False)):
-        from .llm_advisor import LLMAdvisor
+        from .llm_advisor import LLMAdvisor  # noqa: F401  (HOLD imported at module scope below)
         advisor = LLMAdvisor(cfg)
         # A REACHABILITY CHECK, not just a banner. The advisor is meant to fail silently to random
         # during a match, which is right for the live loop and useless at startup: a dead Ollama, a
@@ -334,6 +338,30 @@ def train_rl(cfg, init: str | None = None) -> None:
         # ambiguity cost a debugging round (user, 2026-08-16).
         print("[train-rl] LLM exploration advisor OFF (set train.llm_advisor: true to enable); "
               "epsilon steps pick a random card")
+
+    def _needs_answer(env) -> bool:
+        """Is anything on the board actually worth spending a card on?
+
+        DECIDED IN CODE, NOT BY THE MODEL. This is exactly computable from our own card DB -- an
+        ignored Skeletons costs 0.4% of a Princess Tower -- and a 7B model asked the same question
+        got it wrong repeatedly on tools/llm_eval.py even with the rule stated first and in
+        capitals: it answered `the_log` to a lone Skeletons, which is the textbook waste. Asking a
+        language model to do arithmetic it cannot check, when the answer is a table lookup, is the
+        wrong division of labour. So the advisor is only consulted once there is a real decision,
+        which also means a quiet board costs NO llm call at all.
+
+        Threats ADD -- three ignorable units arriving together are one real push -- so this
+        triages the group.
+        """
+        dets = getattr(env, "_last_dets_all", None)
+        if not dets:
+            return True              # blind -> never suppress; the detector failing is not "quiet"
+        bases = [str(d.base) for d in dets
+                 if d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42]
+        if not bases:
+            return False             # nothing of theirs on our side of the river
+        return threat_value.group_ignore_frac(
+            _db, bases, tower_level=_tower_level) >= threat_value.IGNORE_FRAC
 
     def _situation(env) -> str:
         """The board in words, from the DETECTOR -- named cards, lanes and depths.
@@ -399,7 +427,8 @@ def train_rl(cfg, init: str | None = None) -> None:
         return ("ENEMY: a %s threat is %.0f%% of the way to your king and %s."
                 % ("/".join(roles) or "recognised", 100.0 * depth, pace))
 
-    def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir, situation=""):
+    def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir, situation="",
+               needs_answer=True):
         # playable = in hand AND affordable (mirrors play.py) -> the policy never selects a card it
         # can't pay for, which otherwise wastes the turn on a "Not enough Elixir!" no-op.
         playable = [i for i, v in enumerate(hand_vec)
@@ -417,7 +446,19 @@ def train_rl(cfg, init: str | None = None) -> None:
             # ~0.59 s inside the 1.0 s budget and is right far more often than uniform noise; when
             # it cannot answer in time it returns None and this falls straight back to random.
             c = None
-            if advisor is not None:
+            if not needs_answer:
+                # NOT A DEFENCE DECISION. The tower handles what is out there, so the elixir goes
+                # into the win condition -- "with a quiet enemy board and 6+ elixir the play is
+                # the X-Bow; otherwise cycle the cheapest card or hold". Same rule the sim's
+                # doctrine applies, so exploration means the same thing on both sides.
+                bow = next((i for i in playable if _base_key(card_names[i]) == "x_bow"), None)
+                if bow is not None and elixir >= 6.0:
+                    c = bow
+                else:
+                    if advisor_log:
+                        print("[train-rl]   explore: HOLD (nothing on the board needs an answer)")
+                    return (0, 0, 0)
+            if c is None and advisor is not None:
                 # A DEFENCE IS USUALLY MORE THAN ONE CARD, and the live loop plays one card per
                 # decision -- so the answer is a SEQUENCE spent over consecutive turns. Ask once,
                 # then spend the plan in order. This also means the opening card can be the one
@@ -432,7 +473,8 @@ def train_rl(cfg, init: str | None = None) -> None:
                     # single card even when asked for a sequence. Paying latency for a capability
                     # the model does not use is the worst of both, so the fast single-card path is
                     # the default until a model actually produces sequences.
-                    while plan and (card_names.index(plan[0]) not in playable):
+                    while plan and plan[0] != _HOLD and (
+                            plan[0] not in card_names or card_names.index(plan[0]) not in playable):
                         plan.pop(0)          # cycled away or unaffordable -> that step is spent
                     if not plan:
                         plan[:] = advisor.suggest_plan(
@@ -443,6 +485,17 @@ def train_rl(cfg, init: str | None = None) -> None:
                 else:
                     pick = advisor.suggest(situation,
                                            [card_names[i] for i in playable], elixir)
+                # HOLD IS AN ANSWER, not a failure. "Is this even worth a card" is the first
+                # question the doctrine asks, and a lone Skeletons costs 0.4% of a tower if
+                # ignored -- so the advisor must be able to spend nothing, and that decision
+                # belongs in the replay buffer as a real no-op the Q-learner can learn from.
+                # Falling through to a random card here would teach the exact habit we are
+                # trying to remove.
+                if pick == _HOLD:
+                    if advisor_log:
+                        print("[train-rl]   explore: HOLD (nothing worth answering) | %s"
+                              % situation.replace("\n", " | ")[:90])
+                    return (0, 0, 0)
                 if pick is not None and pick in card_names:
                     idx = card_names.index(pick)
                     if idx in playable:
@@ -634,6 +687,12 @@ def train_rl(cfg, init: str | None = None) -> None:
             "in_ch": in_ch,
             "deck": deck,
             "arena_size": ckpt.get("arena_size", list(cfg.get("observation", "arena_size", default=[64, 96]))),
+            # EXPLORATION PROGRESS, so --resume continues the schedule instead of restarting it.
+            # Without this every launch went back to rl_epsilon_start: the counter is a local that
+            # begins at 0, and a decay measured in thousands of steps (~200 steps a match at a 1.0 s
+            # act_period) never finished inside one session. The practical effect was that only
+            # rl_epsilon_start mattered and the end value was close to unreachable.
+            "explore_step": int(step),
         }
         torch.save(payload, last_path)          # ALWAYS -- this session's weights are never lost
         tail = f" ({why})" if why else ""
@@ -646,7 +705,12 @@ def train_rl(cfg, init: str | None = None) -> None:
 
     print("[train-rl] running. Ctrl+C to stop and save. Make sure Clash Royale is on "
           "the HOME screen; it will queue, play, and re-queue on its own.")
-    step = 0
+    # RESUME the exploration schedule where the last session left it (see save()). A fresh init from
+    # a SIM checkpoint has no explore_step and correctly starts at rl_epsilon_start.
+    step = int(ckpt.get("explore_step", 0) or 0)
+    if step:
+        print("[train-rl] resuming exploration at step %d -> epsilon %.2f (start %.2f, end %.2f "
+              "over %d steps)" % (step, epsilon(step), eps_start, eps_end, eps_steps))
     match = 0
     wins = losses = 0
     try:
@@ -672,7 +736,8 @@ def train_rl(cfg, init: str | None = None) -> None:
             while running["v"]:
                 eps = epsilon(step)
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
-                                _situation(env) if advisor is not None else "")
+                                _situation(env) if advisor is not None else "",
+                                needs_answer=_needs_answer(env))
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
                     tl.add(env._last_frame)         # collect a frame for the training timelapse
