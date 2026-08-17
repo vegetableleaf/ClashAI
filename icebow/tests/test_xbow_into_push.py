@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from clashrl.config import Config                        # noqa: E402
 from clashrl.sim.engine import Unit, build_spec          # noqa: E402
 from clashrl.sim.env import SimMatchEnv                  # noqa: E402
+from clashrl.sim import view                            # noqa: E402
+from clashrl import card_threat                         # noqa: E402
 
 PUSH = (("giant", 0.56), ("musketeer", 0.50), ("knight", 0.54))
 FORWARD_Y = 13.5 / 24.0          # row 13 -- where the deploy clamp puts every forward bow
@@ -93,6 +95,65 @@ class XbowIntoPushTests(unittest.TestCase):
         the behaviour survives the fix."""
         self._put(PUSH)
         self.assertLess(self._charge(), -3.59)
+
+
+class XbowOverAggressionTests(unittest.TestCase):
+    """Don't buy chip with the elixir the defence needed.
+
+    The hole this closes, measured: threat_miss_idle charges -1.0 a step at 3 elixir or more and
+    GOES SILENT below 3 -- the cheapest counter's cost. So spending down to 2 does not merely fail
+    to answer the push, it stops the penalty for not answering it, and a 6-elixir bow from 8 buys
+    that silence outright. Over-aggression was an escape hatch from the defensive term.
+    """
+
+    def _env(self, left, opp_elixir=6.0, push=PUSH):
+        env = SimMatchEnv(Config.load(), seed=5)
+        env.reset()
+        env.eng.units.clear()
+        for base, y in push:
+            sp = build_spec(env.db, base, 11)
+            env.eng.units.append(Unit(spec=sp, team=1, x=0.28, y=y, hp=sp.hp))
+        env.eng.elixir[0] = float(left)          # POST-spend, as the charge site sees it
+        env.eng.elixir[1] = float(opp_elixir)
+        env._threat_id_true = card_threat.identity_threat_vector(
+            view.identity_items(env.eng, 0, env.detector_cards, env.identity_front),
+            env.db, prev_depth=0.0, dt=env.agent_dt, horizon=env.predict_horizon)
+        env._xid = next(i for i, k in enumerate(env.deck_keys) if k.startswith("x_bow"))
+        return env
+
+    @staticmethod
+    def _charge(env, ny=FORWARD_Y, nx=0.75):
+        return env._xbow_overaggression(env._xid, nx, ny)
+
+    def test_charged_when_the_bow_leaves_us_unable_to_answer(self):
+        self.assertLess(self._charge(self._env(left=2)), 0.0)
+
+    def test_not_charged_while_a_counter_is_still_affordable(self):
+        self.assertEqual(self._charge(self._env(left=4)), 0.0)
+
+    def test_it_covers_exactly_the_window_where_the_MISS_penalty_goes_silent(self):
+        """The invariant worth keeping: at no elixir level can we ignore a live push for free."""
+        for left in (6, 4, 3, 2, 1, 0):
+            with self.subTest(left=left):
+                env = self._env(left=left)
+                quiet = env._threat_miss_idle() == 0.0
+                charged = self._charge(env) < 0.0
+                self.assertTrue((not quiet) or charged,
+                                "at %d elixir neither term fires -- free to ignore the push" % left)
+
+    def test_a_DEFENSIVE_bow_is_not_charged(self):
+        self.assertEqual(self._charge(self._env(left=1), ny=DEEP_Y), 0.0)
+
+    def test_an_ignorable_board_is_not_charged(self):
+        env = self._env(left=1, push=(("skeletons", 0.54),))
+        self.assertEqual(self._charge(env), 0.0)
+
+    def test_a_punish_window_is_exempt(self):
+        """The counterattack this deck is built on: if they cannot answer the bow, spending on it
+        is the plan, not over-aggression."""
+        env = self._env(left=1, opp_elixir=0.0)
+        if env._punish_window(spend=float(env.specs[env._xid].elixir)):
+            self.assertEqual(self._charge(env), 0.0)
 
 
 if __name__ == "__main__":

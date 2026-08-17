@@ -236,6 +236,9 @@ class SimMatchEnv:
         # How far from the river still counts as a FORWARD (win-condition) bow. 4.0 tiles
         # covers the two frontmost deployable rows; the defensive centre band starts beyond.
         self.bow_forward_tiles = float(cfg.get("sim", "xbow_forward_tiles", default=4.0))
+        # A forward bow that leaves the defence unable to answer a live push. See
+        # _xbow_overaggression -- it covers the window where threat_miss_idle goes silent.
+        self.w_bow_overaggro = r("xbow_overaggression", -3.0)
         self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
         self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
         self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
@@ -1230,6 +1233,53 @@ class SimMatchEnv:
         d = (credit - debit) / self.value_norm
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
+    def _xbow_overaggression(self, card_id: int, nx: float, ny: float) -> float:
+        """A forward X-Bow that spends the elixir the DEFENCE still needed.
+
+        The opposite-lane bow is the legitimate version of the aggressive play -- it survives, it
+        chips, and against an overcommitted opponent it is the punish this deck is built on. What
+        it must not be is a way to trade a live push for chip damage the tower pays for.
+
+        And the reward had a hole exactly there. MEASURED on a live Giant push with the counters
+        still in hand: ``threat_miss_idle`` charges -1.0 a step at 3 elixir or more, and **goes
+        silent below 3** -- the cheapest counter's cost. So spending down to 2 elixir does not
+        merely fail to answer the push, it STOPS THE PENALTY FOR NOT ANSWERING IT. A 6-elixir bow
+        from 8 elixir buys that silence outright. Over-aggression was an escape hatch from the
+        defensive term, which is the opposite of what that term is for.
+
+        So this charges the case the silence covers: a real committed push, and after paying for
+        the bow there is no counter left in hand we can afford. Exempt when ``_punish_window``
+        says they cannot answer it -- that is the counterattack, not over-aggression, and the
+        deck's whole plan depends on still being allowed to make it.
+        """
+        if card_id not in self.xbow_ids:
+            return 0.0
+        if (ny - 0.5) * 32.0 > self.bow_forward_tiles:
+            return 0.0                                   # defensive bow: it is part of the defence
+        tid = self._threat_id_true
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return 0.0                                   # nothing recognised to defend against
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if not committed:
+            return 0.0
+        if threat_value.group_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
+            return 0.0                                   # the tower handles it; spending is fine
+        # `spend` is added back because elixir is already deducted here -- the same correction
+        # _punish_window documents, or the test needs a 10-elixir lead and never fires.
+        if self._punish_window(spend=float(self.specs[card_id].elixir)):
+            return 0.0                                   # they cannot punish it: the real counterattack
+        left = float(self.eng.elixir[0])                 # POST-spend: what the defence has left
+        for cid in self._hand_ids():
+            if cid == card_id:
+                continue
+            if (self.specs[cid].elixir <= left
+                    and card_threat.counters(self._deck_profiles[cid], tid)):
+                return 0.0                               # we can still answer: the bow was affordable
+        return self.w_bow_overaggro
+
     def _xbow_into_push(self, card_id: int, nx: float, ny: float) -> float:
         """A FORWARD X-Bow dropped on top of a committed push. Six elixir that never fires.
 
@@ -1433,6 +1483,8 @@ class SimMatchEnv:
                 reward += self.rw_stats.add("building_waste", self._building_waste(card_id))   # a Tesla spent on a quiet board while their wincon is still in hand
                 reward += self.rw_stats.add("xbow_into_push",
                                             self._xbow_into_push(card_id, nx, ny))   # a forward bow dropped onto a committed push
+                reward += self.rw_stats.add("xbow_overaggression",
+                                            self._xbow_overaggression(card_id, nx, ny))
                 if spec.kind == "spell" and getattr(spec, "pulls", False):
                     self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
                 self._cf_open()             # ...and fork the alternative branch where we HELD this card
