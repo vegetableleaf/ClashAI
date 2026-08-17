@@ -1,7 +1,57 @@
-# Labelling scope — the beatdown blind spot
+# Labelling scope — the win-condition blind spot
 
-**Written 2026-08-16.** Target: get `giant`, `golem`, `royal_giant` and `graveyard` into
-`observation.detector_cards`.
+**Written 2026-08-16, then corrected by measurement the same day.** `tools/blindspot_probe.py`
+was written to decide whether this work is worth doing before doing it. It settled the question
+and it also **rewrote the target list** — see "What the probe actually found", which supersedes
+the four-card scope below.
+
+## What the probe actually found
+
+Over 40 greedy matches against the meta pool, counting every step where an enemy **win condition
+is committed on our half** and asking whether the reward's own threat vector could see anything
+at all:
+
+> **1683 such steps. The reward read NOTHING on 665 of them — 39.5%.**
+
+So the blind spot is live and large, and the labelling is justified. But the priority list is not
+the one I guessed. Ranked by how often each win condition was actually committed-and-invisible:
+
+| card | blind commits | instances | vs the bar |
+|---|---|---|---|
+| **wall_breakers** | 168 | 64 | biggest single gap, and it was not in my original scope |
+| **giant** | 140 | 59 | |
+| **battle_ram** | 87 | 56 | |
+| **golem** | 81 | 67 | |
+| **skeleton_barrel** | 69 | 97 | |
+| **goblin_drill** | 55 | 68 | |
+| **goblin_giant** | 46 | 58 | |
+| ram_rider | 19 | 122 | lower priority |
+| royal_giant | 0 | 131 | never committed in this sample |
+| graveyard | 0 | 99 | never committed in this sample |
+
+Reference points: balloon 156 instances → R 1.00; hog_rider 276 → moderate tier; valkyrie 375 →
+still 0.33.
+
+**Two corrections to my original scope.** `royal_giant` and `graveyard` did not commit once in
+this sample and drop off the list. `wall_breakers`, `battle_ram`, `skeleton_barrel`,
+`goblin_drill` and `goblin_giant` were never in it and belong near the top — Wall Breakers alone
+outranks the Giant.
+
+**The 39.5% is a LOWER bound.** "Saw a threat" only means the identity block was lit by
+*something*; when a visible support unit walks beside an invisible Giant the step counts as seen
+even though the win condition itself is not. Wall Breakers appearing in both columns (168 blind,
+80 lit) is exactly that.
+
+**What the probe could NOT settle:** whether fixing it raises win rate. Changing a reward does
+not change a fixed policy's play, so that needs a retrain to measure. The archetype split came
+back 0/6 vs 3/34 — far too few matches, on a checkpoint 400 matches into training, to mean
+anything. Question 1 alone is the justification.
+
+---
+
+## Original scope (superseded by the table above, kept for the reasoning)
+
+Target: get `giant`, `golem`, `royal_giant` and `graveyard` into `observation.detector_cards`.
 
 ## Why this is worth doing
 
