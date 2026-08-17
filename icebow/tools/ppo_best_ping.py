@@ -29,13 +29,18 @@ def _webhook() -> str:
 
 def _post(url: str, text: str) -> None:
     body = json.dumps({"content": text}).encode()
+    # THE USER-AGENT IS NOT OPTIONAL. Discord answers 403 Forbidden to urllib's default
+    # "Python-urllib/3.x" -- verified against this webhook. Without it every ping would have
+    # failed silently behind the except below, and the watcher would have looked healthy while
+    # announcing nothing.
     req = urllib.request.Request(url, data=body,
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json",
+                                          "User-Agent": "icebow-monitor/1.0 (+local)"})
     try:
         urllib.request.urlopen(req, timeout=15).read()
     except Exception as e:  # noqa: BLE001
         # Never let the URL reach a log line. Report the failure TYPE only.
-        print("[ping] post failed: %s" % type(e).__name__, flush=True)
+        print("[ping] post failed: %s %s" % (type(e).__name__, getattr(e, "code", "")), flush=True)
 
 
 def main(argv) -> int:
