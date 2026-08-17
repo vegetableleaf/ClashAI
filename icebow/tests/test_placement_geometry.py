@@ -129,5 +129,88 @@ class TestShapingIsApplied(unittest.TestCase):
         self.assertEqual(w, {5: 1.0})
 
 
+class TestBowDefence(unittest.TestCase):
+    """Keeping a standing X-Bow alive: knight tanks, skeletons distract, ice wizard stalls,
+    tesla holds. A bow that fires its whole life is worth about a tower; one that dies at three
+    seconds is six elixir gifted -- and nothing in the rule table asked what was walking at it."""
+
+    @staticmethod
+    def _board(attacker_y=0.60, bow=(0.30, 0.56)):
+        env = _env()
+        env.eng.units.append(_Unit(build_spec(env.db, "x_bow", 15), bow[0], bow[1], hp=1500))
+        env.eng.units[-1].team = 0
+        env.eng.units.append(_Unit(build_spec(env.db, "knight", 11), bow[0] + 0.02, attacker_y))
+        return env
+
+    def _spot(self, env, card):
+        ids = [i for i, k in enumerate(env.deck_keys) if k == card or k == card + "_evo"]
+        got = D.doctrine_cells(env, ids[0]) if ids else None
+        if not got:
+            return None
+        gw = int(env.actions.gw)
+        cell = max(got, key=lambda t: t[1])[0]
+        return cell, env.actions.cell_center(cell % gw, cell // gw)
+
+    def test_the_bow_and_its_attackers_are_found(self):
+        env = self._board()
+        bow = D._my_bow(env)
+        self.assertIsNotNone(bow)
+        self.assertEqual([u.spec.base for u in D._bow_attackers(env, bow)], ["knight"])
+
+    def test_every_role_lands_on_a_DEPLOYABLE_cell(self):
+        """The bug this caught: "behind the bow" was written relative to the THREAT, so once an
+        attacker walked past the bow it resolved to the far side of the river -- row 10, enemy
+        half, silently masked away to nothing."""
+        env = self._board()
+        mask = env.actions.deployable_mask(False)
+        for card in ("knight", "skeletons", "ice_wizard", "tesla"):
+            with self.subTest(card=card):
+                got = self._spot(env, card)
+                self.assertIsNotNone(got, "%s produced no bow-defence spot" % card)
+                self.assertTrue(mask[got[0]], "%s -> undeployable cell" % card)
+
+    def test_the_ice_wizard_goes_BEHIND_the_bow_even_when_the_attacker_is_past_it(self):
+        env = self._board(attacker_y=0.68)          # attacker deeper in our half than the bow
+        bow = D._my_bow(env)
+        _, (_, iy) = self._spot(env, "ice_wizard")
+        self.assertGreater(iy, bow.y, "ice wizard must sit deeper in OUR half than the bow")
+
+    def test_the_knight_goes_between_the_bow_and_the_threat(self):
+        env = self._board(attacker_y=0.66)
+        bow = D._my_bow(env)
+        _, (_, ky) = self._spot(env, "knight")
+        self.assertGreater(ky, bow.y)               # toward the attacker
+
+    def test_offsets_clear_a_grid_row(self):
+        """One grid row is 1/24 = 0.0417 normalised. The natural "one row in front" written as
+        0.04 quantises back onto the bow's own cell, and the geometry silently disappears."""
+        self.assertGreaterEqual(D._ROW, 1.0 / 24.0 - 1e-9)
+        env = self._board()
+        bow = D._my_bow(env)
+        bow_cell = env.actions.cell_at(bow.x, bow.y)
+        self.assertNotEqual(self._spot(env, "knight")[0], bow_cell)
+        self.assertNotEqual(self._spot(env, "ice_wizard")[0], bow_cell)
+
+    def test_no_bow_means_no_bow_rules(self):
+        env = _env()
+        env.eng.units.append(_Unit(build_spec(env.db, "knight", 11), 0.30, 0.60))
+        self.assertIsNone(D._my_bow(env))
+        w = {}
+        self.assertFalse(D._bow_defence_cells(env, "knight", w))
+        self.assertEqual(w, {})
+
+    def test_a_distant_enemy_does_not_count_as_attacking_the_bow(self):
+        env = self._board(attacker_y=0.86)          # far behind the bow, walking at the tower
+        bow = D._my_bow(env)
+        self.assertEqual(D._bow_attackers(env, bow), [])
+
+    def test_the_cards_are_nominated_when_the_bow_is_under_threat(self):
+        env = self._board()
+        got = D.doctrine_cards(env) or {}
+        named = {env.deck_keys[k] for k in got}
+        self.assertTrue(named & {"skeletons", "tesla", "knight", "knight_evo", "ice_wizard"},
+                        "no bow-defence card nominated: %s" % named)
+
+
 if __name__ == "__main__":
     unittest.main()

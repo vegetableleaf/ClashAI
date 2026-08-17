@@ -266,6 +266,83 @@ def _llm_rules(env):
     return _LLM_RULES
 
 
+def _my_bow(env):
+    """Our standing X-Bow, or None. The one asset in this deck worth defending FOR ITS OWN SAKE."""
+    return next((u for u in env.eng.units
+                 if u.team == 0 and u.spec.base == "x_bow" and u.hp > 0), None)
+
+
+#: How close an enemy has to be before it counts as coming for the bow rather than the tower.
+_BOW_GUARD_TILES = 5.5
+#: One placement-grid row, normalised. Any offset smaller than this is not representable.
+_ROW = 1.0 / 24.0
+#: Shallowest deployable y on our side (ActionSpace.min_own_gy = row 13 of 24).
+_OWN_FRONT = 13.5 / 24.0
+
+
+def _own_half(y: float) -> float:
+    """Clamp to a row we can actually deploy on. Without it, "behind the bow" walked off our
+    half whenever the bow sat near the bridge, and the prior was silently masked away."""
+    return min(max(float(y), _OWN_FRONT), 23.5 / 24.0)
+
+
+def _bow_attackers(env, bow):
+    """Enemy troops close enough to the bow to be threatening it, nearest first.
+
+    A bow that fires for its whole lifetime is worth roughly a tower; one that dies at three
+    seconds is six elixir gifted. So "what is walking at my bow" is a different question from
+    "what is walking at my tower", and until now nothing asked it.
+    """
+    out = [u for u in _enemies(env)
+           if u.spec.kind == "troop" and _tiles(u.x, u.y, bow.x, bow.y) <= _BOW_GUARD_TILES]
+    return sorted(out, key=lambda u: _tiles(u.x, u.y, bow.x, bow.y))
+
+
+def _bow_defence_cells(env, base: str, w: Dict[int, float]) -> bool:
+    """Placements that keep a standing X-Bow firing. True if a rule fired.
+
+    The roles, and why each one goes where it goes (DOCTRINE.md 2, "internal synergies"):
+
+      knight     -- IN FRONT, one row toward the threat. He is the bodyguard: the answer walking
+                    at the bow hits him instead, and the evo takes 60% less while walking.
+      skeletons  -- ON the attacker. Three bodies on a distracted single-target melee kill it
+                    fast, and even losing them buys the bow two or three more shots.
+      ice_wizard -- BEHIND the bow, offset. He is never the kill; he is the multiplier, and he
+                    has to be out of the one spell that would take him and the bow together.
+      tesla      -- between the bow and the threat, pulling. It survives, which is the whole
+                    reason it is the answer to something committed.
+    """
+    bow = _my_bow(env)
+    if bow is None:
+        return False
+    threats = _bow_attackers(env, bow)
+    if not threats:
+        return False
+    t = threats[0]
+    # OFFSETS MUST CLEAR A GRID ROW. The placement grid is 24 rows over the board, so one row is
+    # 0.0417 normalised (1.33 tiles) -- the natural "one row in front of the bow" written as 0.04
+    # quantises straight back onto the bow's own cell and the geometry silently vanishes. Every
+    # offset here is therefore at least _ROW.
+    toward = _ROW if t.y > bow.y else -_ROW          # one row from the bow, on the threat's side
+    if base == "knight":
+        _add_spot(w, env, bow.x, _own_half(bow.y + toward), 4.0, 1.0)
+        return True
+    if base == "skeletons":
+        _add_spot(w, env, t.x, _own_half(t.y), 4.0, 1.5)      # centre + ring IS the surround
+        return True
+    if base == "ice_wizard":
+        # BEHIND means deeper in OUR half -- always +y, never "opposite the threat", which put him
+        # on the enemy side of the river when the attacker had already walked past the bow.
+        # Offset sideways too: directly behind is inside one Fireball of the bow.
+        side = 0.06 if bow.x < 0.48 else -0.06
+        _add_spot(w, env, bow.x + side, _own_half(bow.y + 2 * _ROW), 4.0, 1.0)
+        return True
+    if base == "tesla":
+        _add_spot(w, env, (bow.x + t.x) / 2.0, _own_half(bow.y + toward), 4.0, 1.2)
+        return True
+    return False
+
+
 def _pull_resistant(u) -> bool:
     """Units a Tornado barely moves, so no rule should aim a pull at one.
 
@@ -311,6 +388,13 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
     enemies = _enemies(env)
     threat = _deepest_ground_threat(env)
     king_asleep = not eng.towers[0][2].active
+
+    # DEFEND THE BOW FIRST. A standing X-Bow is the deck's whole win condition and it cannot
+    # defend itself; the plays that keep it alive are placements RELATIVE TO IT, which none of the
+    # threat-relative rules below express. Checked before them so the bodyguard beats the generic
+    # body-block whenever both would fire.
+    if _bow_defence_cells(env, base, w):
+        return list(w.items())
 
     if base == "tesla":
         # #1/#5/#6/#15: centre-band pull vs any tower-bound/building-targeting or deep threat.
@@ -633,6 +717,22 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
                         key=lambda i: env.specs[i].elixir, default=None)
             _bump(cheap, 1.5)
             return w or None
+
+    # ---- DEFEND THE STANDING BOW ------------------------------------------------------------
+    # The bow is the deck's tower damage, and an unprotected one dies to whatever they send at it
+    # -- six elixir for a few shots. So when it is up and something is walking at it, nominate the
+    # cards that keep it firing, by role: knight tanks the answer, tesla holds and survives,
+    # skeletons distract, ice wizard slows the whole group. Weighted at the top of the table
+    # because losing the bow loses the match plan, not just the exchange.
+    bow = _my_bow(env)
+    if bow is not None:
+        attackers = _bow_attackers(env, bow)
+        if attackers:
+            melee = [u for u in attackers if not u.spec.charge_range and (u.spec.reach or 0.0) <= 2.0]
+            _bump(_holdable("knight"), 4.5 if melee else 3.0)     # the bodyguard
+            _bump(_holdable("skeletons"), 4.0)                    # distract / surround
+            _bump(_holdable("ice_wizard"), 3.5 if len(attackers) >= 2 else 2.5)
+            _bump(_holdable("tesla"), 4.0 if len(attackers) >= 2 else 3.0)
 
     # ---- TORNADO ----------------------------------------------------------------------------
     nid = _holdable("tornado")
