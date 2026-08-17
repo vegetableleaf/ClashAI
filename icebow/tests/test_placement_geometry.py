@@ -110,6 +110,14 @@ class TestSpellPairRisk(unittest.TestCase):
 class TestShapingIsApplied(unittest.TestCase):
     def test_tesla_prior_offers_a_double_covered_spot(self):
         env = _env()
+        # PIN A SPELL-FREE OPPONENT. Which deck the env samples comes from the meta pool, and the
+        # deep double-covered spot is deliberately down-weighted (x0.6) when one of THEIR spells
+        # could cover it and a tower together -- so re-weighting the pool (sim.meta_deck_boost /
+        # meta_deck_top_n) changed the sampled opponent, a 3.5-tile spell appeared in its deck, and
+        # this read 4.62 (= 7.7 x 0.6) instead of leading. That is the shaping working; the test
+        # simply has to say which opponent it means.
+        env.opponent.cards = ["knight", "musketeer", "hog_rider", "skeletons",
+                              "archers", "cannon", "ice_spirit", "bats"]
         env.eng.units.append(_Unit(build_spec(env.db, "hog_rider", 11), 0.30, 0.55))
         tid = next(i for i, k in enumerate(env.deck_keys) if k.startswith("tesla"))
         got = D.doctrine_cells(env, tid)

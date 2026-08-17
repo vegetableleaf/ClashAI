@@ -1441,6 +1441,17 @@ sim:
     lava_hound: 2.0
     balloon: 2.0
     royal_giant: 2.0
+    # PEKKA bridge spam is reported as the dominant TOP-1000 deck (~61% win rate; RoyaleAPI and
+    # Aug-2026 meta writeups) but holds only 1.9% of this scraped pool -- the clearest gap between
+    # the scrape and what top ladder actually plays. Raised to roughly double that.
+    pekka: 2.0
+  # ...and boost the MOST-PLAYED decks outright. Ranked on the pool's OWN popularity weights, so
+  # re-running `decks-import` tracks the new meta without editing this list. Cross-checked against
+  # RoyaleAPI / Aug-2026 meta writeups and the scrape holds up: its #1 is Hog 2.6 and its #2 is
+  # Evo Royal Giant Fisherman, which those sources name the top ladder deck by win rate.
+  # MEASURED: top-10 share of sampling weight 20.2% -> 28.6%.
+  meta_deck_top_n: 10
+  meta_deck_top_n_boost: 2.0
   api_token_env: CLASHRL_CR_API_TOKEN       # env var holding your official CR API token (developer.clashroyale.com; IP-locked)
   api_token_file: data/cr_api_token.txt     # git-ignored fallback file with the token (data/ is ignored), one line.
                                             # PREFER THIS over the env var: exporting a token on a command line puts a

@@ -73,6 +73,16 @@ class XbowRewardTests(unittest.TestCase):
         env = _quiet_env(seed=45)
         xid = next(iter(env.xbow_ids))
         env._defensive = False
+        # PIN THE PUNISH BRANCH OFF for parts (a) and (b), which are about the first-play discount
+        # and the plain offensive bow -- not the punish multiplier. Whether _punish_window fires
+        # depends on the OPPONENT'S DECK (its cheapest blocker and whether one is in hand), and the
+        # deck is sampled from the meta pool by seed. So re-weighting that pool -- sim.meta_deck_boost
+        # / meta_deck_top_n -- silently changed which opponent seed 45 draws and this test started
+        # reading 4.5 (= w_wincon x xbow_punish_mult) instead of the discounted 0.75. The assertions
+        # were right; their setup was quietly depending on pool sampling. Part (c) restores it and
+        # tests the punish path deliberately.
+        _real_punish = env._punish_window
+        env._punish_window = lambda *a, **k: False
         # (a) first-play bridge bow: fraction of the normal credit while t < 30
         env.eng.t = 5.0
         early = env._wincon_exec(xid, 0.20, 0.53)
@@ -82,6 +92,7 @@ class XbowRewardTests(unittest.TestCase):
         base = env._wincon_exec(xid, 0.20, 0.53)
         self.assertAlmostEqual(base, env.w_wincon, delta=0.01)
         # (c) enemy golem invested deep in THEIR right lane -> OPPOSITE-lane bow is punish-class
+        env._punish_window = _real_punish         # the punish path is what (c) is FOR
         env.eng.elixir[1] = 10.0
         assert env.eng.deploy(1, build_spec(env.eng.db, "golem", 11), 0.75, 0.10)
         env.eng.elixir[1] = 10.0                  # restore their bar: NOT an elixir-race window,

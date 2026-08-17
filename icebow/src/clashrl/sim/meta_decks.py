@@ -57,7 +57,13 @@ def load_meta_decks(cfg, db) -> List[dict]:
     """
     path = Path(cfg.path(cfg.get("sim", "meta_decks_file", default="config/meta_decks.yaml")))
     try:
-        key = (str(path), path.stat().st_mtime_ns if path.exists() else 0, id(db))
+        # The boost settings are part of the identity of the cached result -- without them a
+        # second config in the same process (a test, a sweep) silently gets the first one's
+        # weighting back.
+        key = (str(path), path.stat().st_mtime_ns if path.exists() else 0, id(db),
+               repr(sorted((cfg.get("sim", "meta_deck_boost", default=None) or {}).items())),
+               cfg.get("sim", "meta_deck_top_n", default=0),
+               cfg.get("sim", "meta_deck_top_n_boost", default=1.0))
     except OSError:
         key = None
     if key is not None and key in _CACHE:
@@ -84,11 +90,22 @@ def load_meta_decks(cfg, db) -> List[dict]:
     # the square of the intended weight -- the deck would flood the pool and the other three would
     # effectively get rarer, which is the opposite of the ask.
     boosts = cfg.get("sim", "meta_deck_boost", default=None) or {}
-    if boosts:
-        for d in out:
+    top_n = int(cfg.get("sim", "meta_deck_top_n", default=0) or 0)
+    top_mult = float(cfg.get("sim", "meta_deck_top_n_boost", default=1.0) or 1.0)
+    # THE MOST-PLAYED DECKS, by the pool's own popularity weights. Ranked on the RAW weight before
+    # any boost, so the card multipliers below cannot promote a deck into the top N and then
+    # compound on it. Self-updating: re-run `decks-import` and the same rule tracks the new meta.
+    top_ids = set()
+    if top_n > 0 and top_mult != 1.0:
+        ranked = sorted(range(len(out)), key=lambda i: -float(out[i].get("weight", 1.0)))
+        top_ids = set(ranked[:top_n])
+    if boosts or top_ids:
+        for i, d in enumerate(out):
             m = max((float(v) for k, v in boosts.items()
                      if any(str(c).startswith(str(k)) for c in d["cards"])), default=1.0)
-            if m != 1.0:
+            if i in top_ids:
+                m = max(m, top_mult)              # MAX again: a top-N deck holding a boosted win
+            if m != 1.0:                          # condition is raised once, not multiplied twice
                 d["weight"] = max(0.01, float(d.get("weight", 1.0))) * m
     if key is not None:
         _CACHE.clear()                        # only the current generation is useful
