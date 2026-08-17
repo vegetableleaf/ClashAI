@@ -106,7 +106,16 @@ class XbowOverAggressionTests(unittest.TestCase):
     that silence outright. Over-aggression was an escape hatch from the defensive term.
     """
 
-    def _env(self, left, opp_elixir=6.0, push=PUSH):
+    # A HOG push, not the Giant one. The Giant is absent from observation.detector_cards, so a
+    # Giant push lights the identity block with EVERY role flag zero -- card_threat.counters then
+    # matches nothing, threat_miss_idle is silent too, and this term correctly abstains rather
+    # than blaming the model for not casting an answer the role table cannot name. That is the
+    # labelling blind spot, not an over-aggression hole, so the invariant is tested on a threat
+    # the table CAN name.
+    NAMED_PUSH = (("hog_rider", 0.56), ("musketeer", 0.52))
+
+    def _env(self, left, opp_elixir=6.0, push=None):
+        push = self.NAMED_PUSH if push is None else push
         env = SimMatchEnv(Config.load(), seed=5)
         env.reset()
         env.eng.units.clear()
@@ -147,6 +156,46 @@ class XbowOverAggressionTests(unittest.TestCase):
     def test_an_ignorable_board_is_not_charged(self):
         env = self._env(left=1, push=(("skeletons", 0.54),))
         self.assertEqual(self._charge(env), 0.0)
+
+    # -- what counts as an ANSWER rather than support --------------------------------
+    def _contrib(self, env, card, push):
+        from clashrl.sim.engine import Unit as _U
+        units = [_U(spec=build_spec(env.db, b, 11), team=1, x=0.28, y=y,
+                    hp=build_spec(env.db, b, 11).hp) for b, y in push]
+        cid = next(i for i, k in enumerate(env.deck_keys) if k == card)
+        return env._counter_contribution(cid, units)
+
+    def test_skeletons_are_support_once_the_push_has_SUPPORT_troops(self):
+        """The user's ask: Skeletons alone do not defend a real push."""
+        env = self._env(left=10)
+        self.assertLess(self._contrib(env, "skeletons", self.NAMED_PUSH), env.counter_min_share)
+
+    def test_skeletons_DO_count_against_a_building_targeter_with_no_support(self):
+        """The correction that rebuilt this rule (user, 2026-08-17). Giant and Hog are BUILDING-
+        TARGETING -- they never swing at Skeletons, which simply DPS them down unharassed. An
+        earlier version asked "does it survive a hit from the threat", which measured an attack
+        the push does not make and wrote Skeletons off everywhere."""
+        env = self._env(left=10)
+        self.assertGreaterEqual(self._contrib(env, "skeletons", (("giant", 0.56),)),
+                                env.counter_min_share)
+
+    def test_support_troops_are_what_flip_skeletons_to_insufficient(self):
+        env = self._env(left=10)
+        alone = self._contrib(env, "skeletons", (("giant", 0.56),))
+        escorted = self._contrib(env, "skeletons", (("giant", 0.56), ("musketeer", 0.52)))
+        self.assertLess(escorted, alone / 2.0,
+                        "a musketeer clearing them should collapse their contribution")
+
+    def test_the_ice_wizards_SLOW_is_credited_not_just_his_damage(self):
+        """He is the deck's force multiplier; scored on damage alone he rated 0.04-0.15 against
+        every push -- never an answer -- which would fire the penalty whenever he was all we had."""
+        env = self._env(left=10)
+        self.assertGreater(self._contrib(env, "ice_wizard", self.NAMED_PUSH), 0.3)
+
+    def test_a_building_always_counts(self):
+        """A building's job is to survive and pull; per-body damage does not describe it."""
+        env = self._env(left=10)
+        self.assertGreaterEqual(self._contrib(env, "tesla", self.NAMED_PUSH), 1.0)
 
     def test_a_punish_window_is_exempt(self):
         """The counterattack this deck is built on: if they cannot answer the bow, spending on it

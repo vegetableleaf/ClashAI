@@ -645,9 +645,9 @@ train:
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
   llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
-  rl_epsilon_start: 0.50
-  rl_epsilon_end: 0.10
-  rl_epsilon_decay_steps: 1000
+  rl_epsilon_start: 0.70
+  rl_epsilon_end: 0.15
+  rl_epsilon_decay_steps: 6000
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
@@ -1426,6 +1426,21 @@ sim:
   # Opponent decks: the sim samples these to vary the matchup. `run.py decks-import` refreshes the
   # file from the official CR API (needs a free token in the env var below); else the curated set is used.
   meta_decks_file: config/meta_decks.yaml   # pool of opponent decks (imported top-meta, or curated fallback)
+  # LADDER SKEW toward what this bot ACTUALLY faces. meta_decks.yaml is scraped popularity over the
+  # whole population; at ~10k trophies these four win conditions turn up far more often than that
+  # (user, 2026-08-17). Multiplier on any deck containing the card, applied at load time so the
+  # scraped file stays untouched data. Applied as a MAX, never a product, so LavaLoon (which holds
+  # two of them) is not boosted twice and does not crowd out the other three.
+  # MEASURED before/after over the 1000-deck pool, share of total sampling weight:
+  #   royal_hogs  7.9% -> 12.9%   balloon 7.6% -> 12.4%
+  #   royal_giant 5.3% ->  8.6%   lava_hound 5.2% ->  8.5%
+  #   these four combined: 26.0% -> 42.4%   (the four rise together, so each one's SHARE grows
+  #   by less than 2x even though every one of their decks doubled in weight)
+  meta_deck_boost:
+    royal_hogs: 2.0
+    lava_hound: 2.0
+    balloon: 2.0
+    royal_giant: 2.0
   api_token_env: CLASHRL_CR_API_TOKEN       # env var holding your official CR API token (developer.clashroyale.com; IP-locked)
   api_token_file: data/cr_api_token.txt     # git-ignored fallback file with the token (data/ is ignored), one line.
                                             # PREFER THIS over the env var: exporting a token on a command line puts a

@@ -239,6 +239,9 @@ class SimMatchEnv:
         # A forward bow that leaves the defence unable to answer a live push. See
         # _xbow_overaggression -- it covers the window where threat_miss_idle goes silent.
         self.w_bow_overaggro = r("xbow_overaggression", -3.0)
+        # Share of a push a card must be able to remove to count as a real ANSWER rather
+        # than support. See _counter_contribution.
+        self.counter_min_share = float(cfg.get("sim", "counter_min_share", default=0.35))
         self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
         self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
         self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
@@ -1271,14 +1274,75 @@ class SimMatchEnv:
         # _punish_window documents, or the test needs a 10-elixir lead and never fires.
         if self._punish_window(spend=float(self.specs[card_id].elixir)):
             return 0.0                                   # they cannot punish it: the real counterattack
+        # DOES AN ANSWER EVEN EXIST? The identity vector can be LIT but ROLELESS -- every role flag
+        # zero -- and then card_threat.counters matches nothing, so "no affordable answer" would be
+        # true no matter how much elixir was left. MEASURED on a Giant + Musketeer push: exactly
+        # that, because the Giant is not in observation.detector_cards (the labelling blind spot)
+        # and a lone Musketeer lights no role. Charging there would blame the model for failing to
+        # cast an answer the role table cannot name, so the term abstains instead.
+        answers = [cid for cid in self._hand_ids()
+                   if cid != card_id
+                   and card_threat.counters(self._deck_profiles[cid], tid)
+                   and self._counter_contribution(cid, committed) >= self.counter_min_share]
+        if not answers:
+            return 0.0                                   # no real answer was in hand to spend away
         left = float(self.eng.elixir[0])                 # POST-spend: what the defence has left
-        for cid in self._hand_ids():
-            if cid == card_id:
-                continue
-            if (self.specs[cid].elixir <= left
-                    and card_threat.counters(self._deck_profiles[cid], tid)):
-                return 0.0                               # we can still answer: the bow was affordable
+        if any(self.specs[cid].elixir <= left for cid in answers):
+            return 0.0                                   # a real answer is still affordable
         return self.w_bow_overaggro
+
+    def _counter_contribution(self, cid: int, committed) -> float:
+        """How much of a push can this card actually remove -- as a fraction of the push's HP.
+
+        "Affordable and the right role" is not "enough": Skeletons alone do not defend a real
+        push, though they are a fine distraction alongside something that does (user, 2026-08-17).
+
+        A FIRST VERSION OF THIS ASKED THE WRONG QUESTION -- whether the card survives a hit from
+        the threat. Giant and Hog Rider are BUILDING-TARGETING and never swing at Skeletons at
+        all, so that test was measuring an attack the push does not make. Skeletons dropped on a
+        Giant simply DPS it, unharassed, for as long as the support lets them (user, same day).
+
+        So it is measured as the user framed it -- distraction time and damage contributed:
+
+          * only the units that can actually target TROOPS harass our counter; building-targeters
+            are ignored, because they walk on by,
+          * survival = our total HP / their combined DPS (unbounded when nothing can touch it),
+          * the window is capped by how long the push takes to REACH the tower, since damage dealt
+            after that did not defend anything,
+          * contribution = our DPS x that time, over the push's total HP.
+
+        Buildings and spells return 1.0: a building's job is to survive and pull, a spell's is its
+        effect, and neither is described by this model. Whether they answer THIS threat at all is
+        already decided by card_threat.counters.
+        """
+        spec = self.specs[cid]
+        if spec.kind != "troop" or not committed:
+            return 1.0
+        hp = float(spec.hp or 0.0) * max(1, int(spec.count or 1))
+        our_dps = (float(spec.hit_dmg or 0.0) / max(0.1, float(spec.hit_speed or 1.0))) \
+            * max(1, int(spec.count or 1))
+        if our_dps <= 0.0:
+            return 0.0
+        # WHO CAN ACTUALLY SHOOT BACK. A building-targeter ignores our troop entirely.
+        incoming = sum(float(u.spec.hit_dmg or 0.0) / max(0.1, float(u.spec.hit_speed or 1.0))
+                       for u in committed if not u.spec.building_only)
+        survive = (hp / incoming) if incoming > 0.0 else float("inf")
+        # ...and the clock the defence is actually racing: the push reaching our tower.
+        deepest = max(committed, key=lambda u: u.y)
+        gap_tiles = max(0.0, (0.80 - deepest.y) * 32.0)          # princess line sits at y ~0.797
+        pace = max(0.4, float(getattr(deepest.spec, "speed", 0.0) or 0.8))
+        window = gap_tiles / pace
+        push_hp = sum(float(u.hp or 0.0) for u in committed) or 1.0
+        share = (our_dps * min(survive, window)) / push_hp
+        # A SLOW IS NOT DAMAGE, and scoring it as damage is why the first version of this rated the
+        # Ice Wizard at 0.04-0.15 against every push -- effectively "never an answer", which would
+        # have fired the over-aggression penalty whenever he was the only card left. He is the
+        # deck's force multiplier: slow_mult 0.7 takes 30% off the whole push's output for as long
+        # as it holds, which is worth about that share of removing it. Credited once, not per body,
+        # since the slow does not stack with itself.
+        if getattr(spec, "slows", False) and float(spec.slow_mult or 0.0) > 0.0:
+            share += max(0.0, 1.0 - float(spec.slow_mult))
+        return share
 
     def _xbow_into_push(self, card_id: int, nx: float, ny: float) -> float:
         """A FORWARD X-Bow dropped on top of a committed push. Six elixir that never fires.
