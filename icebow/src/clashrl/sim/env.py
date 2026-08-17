@@ -21,6 +21,7 @@ from ..cards import shared as shared_db
 from .. import card_threat
 from .. import detect_obs
 from .. import interactions
+from .. import threat_value
 from ..cycle import cycle_vector
 from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS
 from .meta_decks import load_meta_decks
@@ -209,6 +210,8 @@ class SimMatchEnv:
         _wc_ids = set(getattr(self, "xbow_ids", ())) | set(getattr(self, "rocket_ids", ()))
         self._bank_wincon_ids = _wc_ids
         self._bank_wincon_cost = min((float(self.specs[i].elixir) for i in _wc_ids), default=0.0)
+        # Tower level for the triage waiver in _threat_miss_idle (clashrl.threat_value).
+        self._tower_level_for_triage = int(cfg.get("env", "my_tower_level", default=15) or 15)
         self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
         self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
@@ -684,6 +687,21 @@ class SimMatchEnv:
         counter is genuinely playable again and the penalty charges as before."""
         tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return 0.0
+        # TRIAGE WAIVER (2026-08-16). "Answerable" is not the same as "worth answering", and this
+        # term charged the full miss penalty for the single clearest correct hold in the doctrine:
+        # MEASURED, a lone Skeletons -- 0.38% of a Princess Tower if ignored outright -- cost -1.0,
+        # the identical penalty as ignoring a Hog Rider at 34%. The fundamentals tier teaches that
+        # hold and this term punished it, so the two were pulling the policy in opposite directions
+        # on the exact board the user reported it playing badly.
+        #
+        # Threats ADD, so this triages the committed GROUP: three ignorable units together are a
+        # real push and the penalty applies again, unchanged.
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if committed and threat_value.group_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
             return 0.0
         elix = float(self.eng.elixir[0])
         hand = self._hand_ids()

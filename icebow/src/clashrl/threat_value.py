@@ -69,35 +69,53 @@ def tower_hp(tower_level: int = 15) -> int:
     return levels.PRINCESS_HP[min(int(tower_level), len(levels.PRINCESS_HP) - 1)]
 
 
+def _bodies(db, base: str, enemy_level: int = 11):
+    """[(hp, dps)] for one card's bodies, or None when the tower cannot resolve it at all."""
+    c = db.get(base) if db is not None else None
+    if not c:
+        return None
+    if str(c.get("type", "")).lower() == "spell":
+        return None                       # a spell is not a body; triage does not apply
+    hp = _num(c, "hitpoints", "hp")
+    dmg = _num(c, "damage", "damage_per_hit")
+    hs = _num(c, "hit_speed", "hit_speed_s")
+    if not hp or not dmg or not hs:
+        return None                       # unknown card: never assume it is safe to ignore
+    rng = _num(c, "range", "range_tiles") or 0.0
+    if rng >= TOWER_RANGE or bool(c.get("siege")):
+        return None                       # outranges the tower: it chips forever, unanswered
+    count = max(1, int(c.get("count") or 1))
+    hp = levels.scale(hp, enemy_level, 11)
+    dmg = levels.scale(dmg, enemy_level, 11)
+    return [(hp, dmg / hs)] * count
+
+
+def _dealt(bodies, tower_level: int) -> float:
+    """Damage a group lands while a single-target tower works through it, body by body.
+
+    SUPERLINEAR IN COUNT, which is the whole reason this is not a sum of per-card numbers: each
+    extra body extends the time EVERY surviving body keeps firing. Three Skeletons cost 0.4% of a
+    tower; twelve are not 4 x 0.4%, because the tower needs four times as long to clear them and
+    the tail is shooting for all of it.
+    """
+    dps_t = tower_dps(tower_level)
+    elapsed, dealt = 0.0, 0.0
+    for hp, dps in bodies:
+        elapsed += hp / dps_t                            # tower finishes this body at `elapsed`
+        dealt += dps * max(0.0, elapsed - TOWER_FIRST_HIT)
+    return dealt
+
+
 def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> float:
     """Fraction of one Princess Tower lost if this card walks in unanswered.
 
     ``inf`` means "the tower cannot resolve this on its own" -- it outranges us, it is a siege
     building, or we have no stats for it (unknown is never ignorable).
     """
-    c = db.get(base) if db is not None else None
-    if not c:
+    bodies = _bodies(db, base, enemy_level)
+    if bodies is None:
         return float("inf")
-    kind = str(c.get("type", "")).lower()
-    if kind == "spell":
-        return float("inf")               # a spell is not a body; triage does not apply
-    hp = _num(c, "hitpoints", "hp")
-    dmg = _num(c, "damage", "damage_per_hit")
-    hs = _num(c, "hit_speed", "hit_speed_s")
-    if not hp or not dmg or not hs:
-        return float("inf")               # unknown card: never assume it is safe to ignore
-    rng = _num(c, "range", "range_tiles") or 0.0
-    if rng >= TOWER_RANGE or bool(c.get("siege")):
-        return float("inf")               # outranges the tower: it chips forever, unanswered
-    count = max(1, int(c.get("count") or 1))
-    hp = levels.scale(hp, enemy_level, 11)
-    dmg = levels.scale(dmg, enemy_level, 11)
-    dps = dmg / hs
-    t_kill_one = hp / tower_dps(tower_level)
-    dealt = 0.0
-    for i in range(count):                # body i survives until the tower has worked through i+1
-        dealt += dps * max(0.0, t_kill_one * (i + 1) - TOWER_FIRST_HIT)
-    return dealt / float(tower_hp(tower_level))
+    return _dealt(bodies, tower_level) / float(tower_hp(tower_level))
 
 
 def triage(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> str:
@@ -111,12 +129,20 @@ def triage(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> str:
 
 
 def group_ignore_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) -> float:
-    """Ignore cost of a whole enemy group. Threats ADD -- three ignorable units arriving together
-    are not three ignorable problems, and reading the push as a whole is the entire point."""
-    total = 0.0
+    """Ignore cost of a whole enemy group, pooling every body into ONE clearing queue.
+
+    Not a sum of the per-card numbers, which is what this did first and it was wrong in the
+    direction that matters: four Skeletons cards came to 4 x 0.38% = 1.5% and triaged as
+    "ignorable", when twelve skeletons chewing on a tower plainly are not. The tower kills one
+    body at a time, so every extra body extends the window for all the survivors -- pooling them
+    captures that and summing cannot.
+    """
+    pooled = []
     for b in bases:
-        f = ignore_cost_frac(db, b, tower_level, enemy_level)
-        if f == float("inf"):
+        bodies = _bodies(db, b, enemy_level)
+        if bodies is None:
             return float("inf")
-        total += f
-    return total
+        pooled.extend(bodies)
+    if not pooled:
+        return 0.0
+    return _dealt(pooled, tower_level) / float(tower_hp(tower_level))
