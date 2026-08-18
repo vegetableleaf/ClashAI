@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 17:30**, at commit `HEAD` (board-26 resumed at epoch 52/120; live gate run).
+Last updated: **2026-08-18 17:35**, at commit `HEAD` (board-26 resumed and confirmed training at epoch 52/120).
 
 ---
 
@@ -71,6 +71,12 @@ cd C:\Users\benpe\ClashBot\hogeq
   `ClashBot\runs\detect\runs\detect\board-26` — outside icebow, where `detect-eval` would never find
   it. **Always pass an absolute `project=`.**
 * **`python3` does not exist** on PATH; only the venv pythons.
+* **PowerShell `Out-File -Encoding utf8` writes a BOM (PS 5.1).** A pid file written that way holds
+  `\xef\xbb\xbf20852`, and Git Bash `tr -d '\xef\xbb\xbf'` does **not** strip it (that tr reads the
+  escapes as the literal letters x/e/f/b). `tasklist //FI "PID eq <bom>20852"` then matches nothing
+  and a monitor reports the job **dead while it is running** — this produced a false alarm at 17:30.
+  Write pid files with `printf '%s\n'` from bash, and prefer **log-mtime** liveness over a PID check:
+  it also catches a hang, which a PID check never does.
 * **`Start-Process -ArgumentList "-c",$code` silently mangles python one-liners.** PowerShell splits
   the code string on spaces, so python receives only `from` and dies with
   `SyntaxError: invalid syntax`. Launch long-running python from a **file**, not `-c`.
@@ -154,10 +160,15 @@ cd C:\Users\benpe\ClashBot\hogeq
   were the first runs using the fixed reward and that test is still pending.
 
 ### The RAM constraint (important)
-31.4 GB total. Two PPO trainers + 24 rollout workers hold ~5.2 GB; YOLO at imgsz 960 needs ~5 GB
-(main ~2.5 GB + ~650 MB per dataloader worker). **The machine cannot run both.** board-26 died with
-`MemoryError ... Unable to allocate 1.63 MiB` — that is *host* RAM, not GPU. If it OOMs again, drop
-to `workers=2`. CPU contention is NOT the issue: the 5 it/s measurement was taken while PPO ran.
+31.4 GB total. Two PPO trainers + 24 rollout workers hold ~5.2 GB. **The machine cannot run both.**
+board-26 died with `MemoryError ... Unable to allocate 1.63 MiB` — that is *host* RAM, not GPU. If
+it OOMs again, drop to `workers=2`. CPU contention is NOT the issue: the 5 it/s measurement was
+taken while PPO ran.
+
+**YOLO's footprint is far bigger than the ~5 GB previously written here. MEASURED 2026-08-18 17:33
+during the resume: 12.85 GB** — trainer 4.27 GB plus **12** worker processes, not the 4 that
+`workers=4` implies (ultralytics spawns train and val pools, both counted). That left only **5.6 GB
+free**. Budget ~13 GB for a board-* run, and treat "YOLO ≈ 5 GB" as retired.
 
 ---
 
