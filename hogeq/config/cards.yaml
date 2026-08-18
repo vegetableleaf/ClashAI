@@ -1586,7 +1586,10 @@ cards:
   # up to 2 OTHER targets" for full damage each.
   electro_wizard: {range: long, multi: split, spawn_damage: 115, spawn_radius_tiles: 3.0, verified: true}   # SPAWN ZAP: damages + STUNS around him on deploy (115 dmg / 3.0 tiles, USER-VERIFIED); the stun rides via his `stuns` flag now that _deploy_blast applies status
   executioner: {range: long, multi: boomerang, verified: true}
-  firecracker: {range: long, multi: spark, verified: true}
+  # RECOIL 1 tile: "After attacking, she will recoil backwards 1 tile" (wiki). The commonly-quoted
+  # 1.5 is STALE -- the 7/7/2020 balance update "decreased her recoil range to 1 tile (from 1.5)".
+  # The Evolution does not change it. She is 1 of only 3 recoiling troops (Sparky, Super Archers).
+  firecracker: {range: long, multi: spark, recoil_tiles: 1, verified: true}
   flying_machine: {range: long, verified: false}
   inferno_dragon: {range: long, targets: any, flags: [ranged, flying], verified: false}   # 4e FLYING tank-melter (ramping single-target) -> needs AIR defence; a swarm or a reset stops the ramp
   # LITTLE PRINCE (user bug report): the imported row carried the GUARDIAN's stats -- hp 1600,

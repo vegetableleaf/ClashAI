@@ -176,5 +176,98 @@ class SparkGeometryTests(unittest.TestCase):
                             "a zone was dropped mid-flight between the Firecracker and her target")
 
 
+class RecoilTests(unittest.TestCase):
+    """"After attacking, she will recoil backwards 1 tile" (wiki).
+
+    The widely-quoted 1.5 is stale -- the 7/7/2020 balance update "decreased her recoil range to 1
+    tile (from 1.5)". It matters in both directions: the recoil walks her away from the melee troop
+    she is shooting, and it is also why "her repeated recoil may cause her to switch to the other
+    lane", which is the reason she is placed behind the engagement rather than beside it.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.env = SimMatchEnv(Config.load())
+        cls.env.reset()
+
+    def _pair(self, fx=0.50, fy=0.62, tx=0.50, ty=0.47):
+        env = self.env
+        fc = build_spec(env.db, "firecracker_evo", 13)
+        kn = build_spec(env.db, "knight", 11)
+        return (Unit(spec=fc, team=0, x=fx, y=fy, hp=fc.hp),
+                Unit(spec=kn, team=1, x=tx, y=ty, hp=kn.hp))
+
+    def _tiles(self, ax, ay, bx, by):
+        from clashrl.sim.engine import _TILES_X, _TILES_Y
+        import math
+        return math.hypot((ax - bx) * _TILES_X, (ay - by) * _TILES_Y)
+
+    def test_the_published_distance_is_one_tile(self):
+        self.assertEqual(1.0, build_spec(self.env.db, "firecracker", 13).recoil)
+
+    def test_the_evolution_recoils_the_same(self):
+        self.assertEqual(1.0, build_spec(self.env.db, "firecracker_evo", 13).recoil)
+
+    def test_she_moves_exactly_one_tile(self):
+        f, t = self._pair()
+        x0, y0 = f.x, f.y
+        self.env.eng._recoil(f, t)
+        self.assertAlmostEqual(self._tiles(x0, y0, f.x, f.y), 1.0, places=3)
+
+    def test_she_moves_AWAY_from_what_she_shot(self):
+        f, t = self._pair()
+        before = self._tiles(f.x, f.y, t.x, t.y)
+        self.env.eng._recoil(f, t)
+        self.assertAlmostEqual(self._tiles(f.x, f.y, t.x, t.y), before + 1.0, places=3)
+
+    def test_the_recoil_is_along_the_firing_line_not_just_backwards(self):
+        """Shooting diagonally must push her diagonally, or she would drift out of her own lane."""
+        import math
+        from clashrl.sim.engine import _TILES_X, _TILES_Y
+        f, t = self._pair(fx=0.40, fy=0.62, tx=0.55, ty=0.50)
+        x0, y0 = f.x, f.y
+        self.env.eng._recoil(f, t)
+        a0 = math.atan2((y0 - t.y) * _TILES_Y, (x0 - t.x) * _TILES_X)
+        a1 = math.atan2((f.y - t.y) * _TILES_Y, (f.x - t.x) * _TILES_X)
+        self.assertAlmostEqual(a0, a1, places=6)
+        self.assertNotAlmostEqual(f.x, x0, places=4, msg="a diagonal shot moved her straight back")
+
+    def test_cards_that_do_not_recoil_do_not_move(self):
+        env = self.env
+        _, t = self._pair()
+        for k in ("archers", "musketeer"):
+            sp = build_spec(env.db, k, 11)
+            u = Unit(spec=sp, team=0, x=0.50, y=0.62, hp=sp.hp)
+            env.eng._recoil(u, t)
+            self.assertEqual((0.50, 0.62), (u.x, u.y), k)
+
+    def test_recoil_does_not_disarm_a_charge_the_way_a_real_shove_does(self):
+        """It is self-inflicted, so it must not route through the knockback path -- nothing hit her."""
+        f, t = self._pair()
+        f.charge_dist, f.ramp_shots = 3.0, 2
+        self.env.eng._recoil(f, t)
+        self.assertEqual(3.0, f.charge_dist)
+        self.assertEqual(2, f.ramp_shots)
+
+    def test_she_recoils_when_she_actually_fires(self):
+        env = self.env
+        env.reset()
+        eng = env.eng
+        eng.units.clear(); eng.projectiles.clear(); eng.spark_zones.clear()
+        f, t = self._pair()
+        eng.units += [f, t]
+        y0 = f.y
+        moved_back = False
+        prev = f.y
+        for _ in range(60):
+            eng.advance(0.1)
+            if f.y - prev > 1e-6:
+                moved_back = True
+                break
+            prev = f.y
+        self.assertTrue(moved_back, "she never recoiled across a full attack cycle")
+        self.assertGreater(f.y, y0, "team 0 recoils toward its own side (+y)")
+
+
 if __name__ == "__main__":
     unittest.main()

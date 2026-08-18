@@ -178,6 +178,10 @@ class CardSpec:
     ability_bomb_radius: float = 0.0
     ability_bomb_knock: float = 0.0
     ability_delay: float = 0.0
+    # SELF-RECOIL, in tiles: the shooter shoves ITSELF backwards every time it fires. Not a
+    # knockback -- nothing is being hit, and it applies to the firer regardless of any knockback
+    # immunity. Three cards have it (Firecracker, Sparky, Super Archers); 0 = it does not recoil.
+    recoil: float = 0.0
     # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
     # card. 0 = fall back to _SPLASH_R.
     splash_r: float = 0.0
@@ -776,6 +780,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # Bomb damage is a level-scaled stat like any other, so it goes through scale() rather than
         # the flat `sc` ratio -- that is what reproduces the game's own rounding off the level table.
         ability_bomb_dmg=_lv.scale(float(c.get("ability_bomb_damage") or 0.0), level),
+        recoil=float(c.get("recoil_tiles") or 0.0),
         ability_bomb_radius=float(c.get("ability_bomb_radius") or 0.0),
         ability_bomb_knock=float(c.get("ability_bomb_knockback") or 0.0),
         ability_delay=float(c.get("ability_delay_s") or 0.0),
@@ -2997,6 +3002,7 @@ class SimEngine:
                     dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
                 fspec = replace(fspec, poison_dps=dps)
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
+            self._recoil(u, ref)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
         # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
@@ -3478,6 +3484,30 @@ class SimEngine:
         if spec.knockback <= 0.0 or e.spec.kind == "building":
             return False
         return spec.knockback_all or not e.spec.knockback_immune
+
+    def _recoil(self, u: Unit, ref) -> None:
+        """The shooter shoves ITSELF backwards on firing -- Firecracker's 1 tile.
+
+        Wiki, Firecracker: "After attacking, she will recoil backwards 1 tile." (7/7/2020 dropped it
+        from 1.5 to 1.) It cuts both ways, and both directions matter to how she is played: it walks
+        her out of reach of the melee troop she is shooting -- and out of a spell aimed where she was
+        standing -- but "her repeated recoil may cause her to switch to the other lane", which is
+        the reason she is placed BEHIND the engagement rather than beside it.
+
+        Straight away from the target, since that is what "backwards" means for a unit that always
+        faces what it shoots. Not routed through _knock: nothing hit her, so knockback immunity and
+        the charge/ramp resets a real shove carries must not apply -- a recoiling Sparky keeps her
+        charge, and a knockback-immune recoiler would otherwise stop recoiling entirely.
+        """
+        r = u.spec.recoil
+        if r <= 0.0 or ref is None:
+            return
+        dx, dy = (u.x - ref.x) * _TILES_X, (u.y - ref.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d <= 1e-6:                       # standing on top of it: recoil toward our own side
+            dx, dy, d = 0.0, (1.0 if u.team == 0 else -1.0), 1.0
+        u.x, u.y = _clamp_xy(u.x + (dx / d) * r / _TILES_X,
+                             u.y + (dy / d) * r / _TILES_Y, u.spec.radius)
 
     def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
                dx: float = 0.0, dy: float = 0.0) -> None:
