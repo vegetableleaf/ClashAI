@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 17:35**, at commit `HEAD` (board-26 resumed and confirmed training at epoch 52/120).
+Last updated: **2026-08-18 18:35**, at commit `HEAD` (six sim fixes; hogeq detector unblocked; /watchvideo installed).
 
 ---
 
@@ -77,6 +77,26 @@ cd C:\Users\benpe\ClashBot\hogeq
   and a monitor reports the job **dead while it is running** — this produced a false alarm at 17:30.
   Write pid files with `printf '%s\n'` from bash, and prefer **log-mtime** liveness over a PID check:
   it also catches a hang, which a PID check never does.
+* **hogeq's venv had NO `ultralytics`.** The clone excluded `.venv`, so `train-rl` printed
+  *"could not load detector"* and **played blind** -- the weights path was correct all along, the
+  import was what failed. Fixed 2026-08-18. **Do NOT fix this with a bare `pip install
+  ultralytics`**: it resolves torchvision from PyPI, which drags in **torch 2.13.0 and destroys the
+  cu128 build** (`torch.cuda.is_available()` -> False). Correct order:
+  ```
+  pip install "torchvision==0.26.0+cu128" --index-url https://download.pytorch.org/whl/cu128
+  pip install "ultralytics==8.4.107"          # pin: it is what icebow has, whose weights hogeq loads
+  ```
+  Verified after: detector available, 230 classes, torch 2.11.0+cu128, CUDA True, both decks.
+* **`python3` NOW EXISTS** (it did not before 2026-08-18, and older notes here say so). Two shims,
+  deliberately in two different places, both pointing at the **ClashBot root `.venv`** -- NOT
+  icebow/hogeq, whose venvs must keep their cu128 torch:
+  * `C:\Users\benpe\bin\python3` -- extensionless, for **Git Bash** (bash's PATH lookup appends
+    `.exe` but never `.cmd`, so without it bash falls through to the Windows Store `python3`
+    app-execution alias, a stub that only offers to install Python). This directory is on the Git
+    Bash PATH but is **not** in the Windows PATH, which is what keeps the two shims from colliding.
+  * `C:\Users\benpe\tools\bin\python3.cmd` -- for **Windows / PowerShell**.
+  An extensionless file in `tools\bin` breaks Windows callers (CreateProcess tries the exact name,
+  which is not a PE binary), which is why they are split.
 * **`Start-Process -ArgumentList "-c",$code` silently mangles python one-liners.** PowerShell splits
   the code string on spaces, so python receives only `from` and dies with
   `SyntaxError: invalid syntax`. Launch long-running python from a **file**, not `-c`.
@@ -113,6 +133,11 @@ cd C:\Users\benpe\ClashBot\hogeq
   **Do not launch it via `Start-Process -ArgumentList "-c",$code`** — PowerShell splits the `-c`
   string on spaces and python dies with `SyntaxError: invalid syntax` pointing at the word `from`.
   Use a launcher **file**; that is why `_resume_board26.py` exists.
+
+  **Checked 2026-08-18 18:30: alive and healthy, epoch 55/120**, ~14.5 min/epoch. mAP50 0.8536 /
+  mAP50-95 0.6825 -- flat since the resume (epoch 51 was 0.8588 / 0.6840), so it is plateauing and
+  patience 30 from epoch 51 puts the earliest stop at epoch 81. A persistent Monitor watches
+  per-epoch mAP, stall (by LOG MTIME, which also catches a hang), early stop and crashes.
 
   **State at the crash (epoch 51, which WAS the best epoch):** mAP50 **0.8588** / mAP50-95
   **0.6840**, 0 epochs since best, fitness monotonically rising from epoch 32 (0.8524 / 0.6617).
@@ -238,6 +263,12 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `151acd0` | **Ramp-up survived every interruption.** `focus_time` only reset when the TARGET CHANGED, so a stun, a Log knockback, a Tornado drag or the target walking out of reach left the stage intact and the beam resumed at stage 3 on contact. Now any non-firing tick resets it (Evo Inferno Dragon's post-kill `ramp_keep_s` hold preserved, except through a stun). | at stage 3 (focus 12.00) then interrupted: mighty_miner / inferno_dragon / inferno_tower all **12.00 -> 0.00**, damage in the next 0.2 s **0** (was 409 / 422 / 851). Undisturbed ramp still climbs and still lands its top hit |
+| `151acd0` | **Evo Firecracker's sparks ignored crown towers.** Zones iterated `self.units` only. Crown rate from the wiki vardefines: Big_dmg_11 48 / Big_Crown 15 and Small 48 / Small_Crown 15 -> **15/48 = 0.3125** (`_SPARK_CROWN_FRAC`), applied as a fraction so it tracks level. | 5 s zone on a tower: **0 -> 15.0 damage per 0.25 s tick**; 0 against our own tower; 0 at 8 tiles |
+| `151acd0` | **Firecracker never re-aimed after her own recoil** (hogeq only). `locked` is cleared only by an aggro reset, which the recoil deliberately does not raise (that would wipe a Sparky's charge), so she shoved herself out of her own 6 tiles and stayed locked forever. Now `locked` alone is cleared, and only if the recoil actually broke the engagement. | **0 retargets in 40 s, ending out of reach -> 14 shots (base) / 13 (evo)** over the same 40 s, target reachable |
+| `151acd0` | **Shrapnel was squashed by the arena wall** -- pierce projectiles were clamped like bodies, so a bolt reaching the border burned its range in place and dropped its spark zone against the edge | **24 of 95 bolt samples pinned on x=0 -> 0**, and 26 samples now continue off-board |
+| `151acd0` | **The fused death bomb was narrower than the instant one.** `_death_blast` is edge-based, but any card with `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) routes through the generic spell path, which compared centre to centre. New `blast_edge` flag, set on the fused bomb only. | Balloon's 3-tile bomb vs a crown tower: reached **3.0 -> 4.5 tiles** from the tower centre, i.e. the full 3.0 from its hitbox. Radius itself was already correct at 3.0 (wiki) and is unchanged |
+| `151acd0` | **A dart goblin out-ranged the king tower.** Both published numbers are right (goblin 6.5, king 7); the duel used two rulers -- a troop measures centre-to-EDGE and so subtracts the tower's half-width (king 2.0), the tower only subtracted the troop's 0.5. `king_range` 7.5 -> **8.5** = princess 8.0 + the 0.5 of extra bulk the king concedes. | goblin fired at **8.50** while the king answered to **8.00** (sieged untouched) -> tower now wins by **0.50** against king AND princess; king demonstrably shoots back |
 | `a266788` | Firecracker's firework dealt **nothing** to the target it hit — piercing shots move before their first pierce check, so all 5 shards were ~0.8 tiles clear of impact. Now one pierce pass at spawn. | dead-centre 63 → **315** (5×63); 189/126/63 at 1.9/3.8/6.4 tiles behind; 0 beside (cone fans forward) |
 | `9bf05fb` | Earthquake had **no cell rule at all** → cast in our own half. Added: midpoint when tower+prize within 2× radius, else the prize, else pure tower chip. | Tesla-in-front: tower 0.8t + building 1.7t both HIT; 10.2t-away building → prize HIT, tower MISS (intended) |
 | `a18c13e` | `threat_miss_idle` charged every tick — see §4.1 | -0.545 → -0.106/step; 152 → 24 fires |
@@ -279,16 +310,27 @@ configured but **have never run** — BC has not been retrained since the soft-t
    skeletons 0.77 fails the 0.80 gate (full table in §3). Re-run on the final best.pt. If the
    recall deficit survives to the end, the likely cause is the val/train mix shifting toward clean
    Roboflow frames, and the fix is reweighting toward live captures — not more epochs.
-4. **Ability button calibration (hogeq)** — `hand.ability_button: [0.963, 0.758]` is still estimated
-   off a scaled screenshot. Script ready at
-   `…/scratchpad/ability_calib.py` (`--aim` draws a crosshair and presses nothing; no-flag plays the
-   Miner then taps and reports PASS/FAIL from the 1-elixir drop; `--list-windows` catches the
-   wrong-window trap). **Needs a live match.**
+4. **Ability button calibration (hogeq) -- DONE.** The user confirmed the calibration is correct
+   (2026-08-18). The policy can and does press it: `mighty_miner_ability` is identity #11 of
+   `policy_identities()` and every checkpoint carries an 11-wide `card_head (11, 328)`. MEASURED
+   over 40 greedy matches on `policy_sim_ppo_best.pt`: **81 plays, 4.5% of 1,790**, i.e. ~2 per
+   match and ~78% of the Mighty Miners it deploys. **What is NOT fixed is the QUALITY** -- the
+   `ability_use` reward term fired 80 times at **+39 / -41**, so it presses the button nearly as
+   often wrongly as rightly. That is the thing to chase, not the plumbing.
 5. **`firecracker_evo` has no hand templates** (only `knight_evo`/`tesla_evo` exist) — run
    `run.py hand-templates` with the evo charged before live play.
 6. **Placement collapse** (§4.3) — after a clean BC retrain, if the head still collapses, the lever
    is the soft-target loss that has never been exercised.
-7. **hogeq is still full of icebow-specific reward terms** (`xbow_*`, `rocket_*`, `nado`). They are
+7. **`spark_dps_small` disagrees with the current wiki, and it is marked `verified: true`.**
+   `cards.yaml` has `firecracker_evo.spark_dps_small: 60` = **15.0 per 0.25 s tick**, but the wiki
+   now gives `Small_dmg_11 48` -- the same as the big spark (192 dps). 15.0 is exactly the *crown*
+   number, so this looks like a troop/crown mix-up at import time. **Deliberately NOT changed**: the
+   row is user-verified, and overwriting a verified value unasked is worse than flagging it. The
+   consequence is real though -- crown chip from SMALL zones is computed as 31.25% of 15.0 (4.7)
+   instead of 31.25% of 48.0 (15.0), so small-spark tower chip is ~3x too low. Big-spark chip is
+   exactly right. Also unresolved: `spark_duration_s` is a single 2.5 for both, but the wiki
+   separates them (big **3.0**, small 2.5) since the 14/5/2024 balance change.
+8. **hogeq is still full of icebow-specific reward terms** (`xbow_*`, `rocket_*`, `nado`). They are
    inert (the ids resolve to empty sets) but they are dead weight and the 41 failing hogeq tests are
    all IceBow-card lookups.
 
@@ -337,6 +379,19 @@ configured but **have never run** — BC has not been retrained since the soft-t
   its own val set and yet, at epoch 51, scored *below* board-24-5 on all but one deck unit on the
   241 live images. Higher precision, lower recall. **Never promote a detector on `results.csv`;
   only `detect-eval --subset val_board15.txt` decides.**
+* **Changing what a CONFIG KEY MEANS is not a local change.** The dart-goblin fix looked like it
+  wanted `tower_range` re-based from the tower's centre onto its hitbox edge. That would have been
+  wrong twice over: (a) `tower_range: 8.0` is **derived from the board** -- tuned so a princess
+  opens fire exactly as a troop clears the bridge -- so adding the radius on top opened fire 1.5
+  tiles early, across the river, killing an Evo Battle Ram mid-charge and costing a Skeleton Barrel
+  a skeleton; and (b) the key is also read by `sim/doctrine._double_cover`, the tornado
+  king-activation reward in `sim/env.py`, `config_edit.py`'s defaults and a hardcoded copy in
+  `tests/test_sim_status_effects.DummyCfg`, every one of which would have silently retuned. **Grep
+  every reader before changing a setting's units, and prefer changing the VALUE over the frame.**
+* **A test fixture can carry its own stale copy of a config value.** `DummyCfg` hardcodes
+  `tower_range`/`king_range` rather than reading config.yaml, so a config change does not reach the
+  tests that use it -- and "fixing" the fixture to match config.yaml silently made every tower in
+  those tests 0.5 tiles stronger. A test double's job is that unrelated tests keep their meaning.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
@@ -366,7 +421,42 @@ also applied to the board-24-5 import, so `auto` reproduces the known-good state
 
 ---
 
-## 10. Useful one-liners
+## 10. Video analysis (`/watchvideo`) -- installed 2026-08-18
+
+A local video analyzer is installed as a Claude Code skill, so gameplay footage (or any video) can
+be turned into a transcript + tiled contact sheets that the session reads directly. **No API key,
+no MCP, nothing leaves the machine.** Source: `github:charlesdove977/watchvideo` (MIT). The
+installer was read before running: it only copies `skill/` into `~/.claude/skills/watchvideo/` and
+writes a command stub -- no network, no eval, no postinstall.
+
+| piece | where | note |
+|---|---|---|
+| skill | `~/.claude/skills/watchvideo/` | modes `hook` / `condensed` (default) / `forensic` |
+| `yt-dlp.exe` 2026.07.04 | `C:\Users\benpe\tools\bin` | on the **user PATH, first** |
+| `ffmpeg.exe` / `ffprobe.exe` 9.0.1 | same | gyan.dev essentials static build |
+| `openai-whisper` | **ClashBot root `.venv`** | torch **2.13.0+cpu** -- CPU by design, so it never competes with a detector run for the 8 GB of VRAM |
+
+**Verified end to end 2026-08-18** on a 19 s clip: download -> `ffprobe` duration 19.014 -> one
+tiled 5x4 contact sheet (last cell padded black, which is expected) -> 16 kHz mono wav -> `base.en`
+transcript with 4 correctly-timestamped segments, ~2.8 s of transcription. The sheet was read back
+successfully, so the vision leg works too.
+
+**Gotchas**
+* `npx watchvideo doctor` reports **openai-whisper MISSING even when it is fine**. Node >=18.20
+  refuses to `execFileSync` a `.cmd` without `shell:true`, so it can never see the `python3.cmd`
+  shim. The skill's own preflight runs in **Bash**, where it works. Check with
+  `python3 -c "import whisper"` in Git Bash instead, and ignore the doctor's whisper line.
+* A shell started **before** the PATH edit will not see `tools\bin`; `export
+  PATH="/c/Users/benpe/tools/bin:$PATH"` or start a new shell.
+* The skill's own notes warn that yt-dlp **2026.07.04** (the version installed) 403s on some YouTube
+  videos due to PO-token gating. Fix is `pip install -U yt-dlp` or
+  `--extractor-args "youtube:player_client=tv,web_safari"`, or `--cookies-from-browser chrome`.
+* Whisper transcription is **CPU** and does compete with PPO/detector training for cores. A 19 s
+  clip is nothing; warn before anything over ~40 min.
+
+---
+
+## 11. Useful one-liners
 
 ```bash
 # hoard/dump + reward-term breakdown (the §4.1 diagnostic)
