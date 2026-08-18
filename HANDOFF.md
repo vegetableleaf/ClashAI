@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 18:35**, at commit `HEAD` (six sim fixes; hogeq detector unblocked; /watchvideo installed).
+Last updated: **2026-08-18 19:10**, at commit `HEAD` (detector team fixes 553fe5c; doctrine research workflow running).
 
 ---
 
@@ -179,6 +179,16 @@ cd C:\Users\benpe\ClashBot\hogeq
   > ```
   > run.py detect-eval --weights runs/detect/<gen>/weights/best.pt --subset data/detect/val_board15.txt
   > ```
+* **Hog EQ doctrine research workflow** (started 2026-08-18 ~19:0x) — 13 agents: 6 written-guide
+  researchers, up to 6 video watchers through the local yt-dlp/ffmpeg/whisper pipeline (throttled
+  2-at-a-time for RAM), 1 synthesizer. Output lands at `hogeq/DOCTRINE_RESEARCH.md`. Feeds the
+  advisor rework: `llm_advisor.py` live prompt + `tools/llm_doctrine.py` proposer prompt are BOTH
+  still hard-coded ICEBOW ("answer 'hold'...") and `config/llm_doctrine.json` is still the icebow
+  table — actively harmful for hogeq (nominates a quiet-board Tesla at 10 elixir where the answer
+  is Hog). `sim/doctrine.py` already has pressure in `doctrine_cards` (Hog nominated at >= 4
+  elixir on a quiet board) and a correct EQ cell rule, but the Hog has **no cell rule** — a
+  nominated Hog explores uniformly over 432 cells. Same gap: mighty_miner / firecracker /
+  ice_spirit cells.
 * **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
   `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
   22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
@@ -263,6 +273,7 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `553fe5c` | **Own cards read as ENEMIES (user report), 3 causes, both decks:** (a) defensive buildings fell through every evidence rank (deep_mine_y 0.62 is behind the princess line; a front-half Tesla never marches and an Evo Tesla hides its bar) -> new BUILDING side prior split at the RIVER (placement legality, pockets void it, 0.46-0.50 abstains); (b) the canvas painted "unknown" into an ENEMY channel (audit gap #2) -> canvas now SKIPS unknown (obs-distribution change, taken with the planned from-scratch PPO restart); (c) the deck veto flipped hard-evidence "mine" verdicts to "enemy" when the detector misnamed our card (mighty_miner as "miner") -> curated LOOKALIKES rescue relabels to the deck twin on rank 1-3 evidence (rank 4 for buildings). | 15 new tests per deck; icebow 371 OK, hogeq 437 with the 41 baseline failures + 1 environmental flake (royaleapi Cloudflare, not code) |
 | `151acd0` | **Ramp-up survived every interruption.** `focus_time` only reset when the TARGET CHANGED, so a stun, a Log knockback, a Tornado drag or the target walking out of reach left the stage intact and the beam resumed at stage 3 on contact. Now any non-firing tick resets it (Evo Inferno Dragon's post-kill `ramp_keep_s` hold preserved, except through a stun). | at stage 3 (focus 12.00) then interrupted: mighty_miner / inferno_dragon / inferno_tower all **12.00 -> 0.00**, damage in the next 0.2 s **0** (was 409 / 422 / 851). Undisturbed ramp still climbs and still lands its top hit |
 | `151acd0` | **Evo Firecracker's sparks ignored crown towers.** Zones iterated `self.units` only. Crown rate from the wiki vardefines: Big_dmg_11 48 / Big_Crown 15 and Small 48 / Small_Crown 15 -> **15/48 = 0.3125** (`_SPARK_CROWN_FRAC`), applied as a fraction so it tracks level. | 5 s zone on a tower: **0 -> 15.0 damage per 0.25 s tick**; 0 against our own tower; 0 at 8 tiles |
 | `151acd0` | **Firecracker never re-aimed after her own recoil** (hogeq only). `locked` is cleared only by an aggro reset, which the recoil deliberately does not raise (that would wipe a Sparky's charge), so she shoved herself out of her own 6 tiles and stayed locked forever. Now `locked` alone is cleared, and only if the recoil actually broke the engagement. | **0 retargets in 40 s, ending out of reach -> 14 shots (base) / 13 (evo)** over the same 40 s, target reachable |
