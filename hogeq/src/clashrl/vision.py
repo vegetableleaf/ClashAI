@@ -50,9 +50,18 @@ class Vision:
         self.next_templates_dir = cfg.path(cfg.get("hand", "next_templates_dir", default="templates/next"))
         try:
             from .cards import CardDB
-            self.deck_keys = CardDB(cfg).deck_identities()
+            _db = CardDB(cfg)
+            self.deck_keys = _db.deck_identities()
+            # The champion ability is an action, not a card in hand -- but it IS an identity in the
+            # policy's card head, so the live deck has to carry it or a sim-trained checkpoint will
+            # not load here (10 vs 11 outputs). It has no hand slot and no template: availability is
+            # read from the ability BUTTON, not from template matching (see hand.ability_button).
+            self.ability_key = _db.ability_identity()
+            if self.ability_key is not None:
+                self.deck_keys = list(self.deck_keys) + [self.ability_key]
         except Exception:  # noqa: BLE001
             self.deck_keys = []
+            self.ability_key = None
         # One template list per deck card. A card's templates are any file whose
         # stem is the deck key or the key followed by "_<suffix>" -- so multiple
         # appearances are supported: musketeer.png, musketeer_2.png, musketeer_evo.png,

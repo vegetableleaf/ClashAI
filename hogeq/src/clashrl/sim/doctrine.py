@@ -817,6 +817,20 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         _bump(_holdable("mighty_miner"), 5.0)
         _bump(_holdable("skeletons"), 2.5)
 
+    # ---- EXPLOSIVE ESCAPE IS A TIMING DECISION ----------------------------------------------
+    # The ability is nominated only when their answer is ALREADY STANDING ON HIM, because that is
+    # the entire skill: every guide says triggering early wastes it and triggering late loses him.
+    # Two bodies inside the blast is the bar -- one is what his own melee handles, and swarms are
+    # the weakness the bomb exists to cover. Deliberately silent about the lane-switch use, which
+    # depends on their hand rather than the board and is not something this table can read.
+    champ = next((u for u in env.eng.units
+                  if u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0), None)
+    if champ is not None and champ.ability_cd_left <= 0.0:
+        blast = champ.spec.ability_bomb_radius or 2.0
+        on_him = [u for u in enemies if _tiles(u.x, u.y, champ.x, champ.y) <= blast]
+        if len(on_him) >= 2:
+            _bump(_holdable("mighty_miner_ability"), 5.5)
+
     # ---- DEFEND THE STANDING BOW ------------------------------------------------------------
     # The bow is the deck's tower damage, and an unprotected one dies to whatever they send at it
     # -- six elixir for a few shots. So when it is up and something is walking at it, nominate the

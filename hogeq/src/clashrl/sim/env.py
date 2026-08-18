@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import copy
 import random
+from dataclasses import replace
 from typing import Tuple
 
 import numpy as np
@@ -80,6 +81,31 @@ class SimMatchEnv:
         self.deck_card_levels = self.db.deck_levels()
         self.n_cards = max(1, len(self.deck_keys))
         self.specs = [build_spec(self.db, k, lvl) for k, lvl in zip(self.deck_keys, self.deck_card_levels)]
+        # CHAMPION ABILITY AS A PSEUDO-CARD. The action space is (wait/play, card, cell) and an
+        # ability is none of those: it costs elixir and it is a decision, but it has no placement --
+        # it acts on the champion wherever he already stands. Giving it its own identity slot is the
+        # smallest change that makes it LEARNABLE: it reuses the card head, the affordability mask
+        # and the gate exactly as they are, and its cell is simply ignored.
+        #
+        # It is NOT in the cycle. `slot_of` has no entry for it, so _play_slot no-ops and the ability
+        # neither consumes a hand slot nor rotates the deck -- which is the real behaviour, and also
+        # why availability has to be computed rather than dealt (see _hand_ids).
+        #
+        # The `_ability` suffix is the taxonomy's existing one (card_threat._SUFFIXES), so the key
+        # folds back to the champion for every threat/profile lookup without special-casing.
+        self.ability_id = -1
+        self.ability_champ_id = -1
+        _ability_key = self.db.ability_identity()       # the SHARED definition -- live vision uses it too
+        _champ = next((i for i, s in enumerate(self.specs) if s.ability_bomb_dmg > 0.0), None)
+        if _ability_key is not None and _champ is not None:
+            self.ability_champ_id = _champ
+            self.ability_id = len(self.deck_keys)
+            self.deck_keys = list(self.deck_keys) + [_ability_key]
+            self.deck_card_levels = list(self.deck_card_levels) + [self.deck_card_levels[_champ]]
+            # Its elixir IS the ability's cost, so every affordability check already works on it.
+            self.specs = list(self.specs) + [replace(self.specs[_champ],
+                                                     elixir=self.specs[_champ].ability_cost)]
+            self.n_cards = len(self.deck_keys)
         # PHYSICAL CARD SLOTS. The cycle runs over the deck's 8 CARDS, not the 10 policy identities:
         # an Evolution is not its own card, it IS the base card shown evolved once that slot has been
         # played `cycles` times. Cycling identities instead let base and Evo sit in hand together and
@@ -227,6 +253,12 @@ class SimMatchEnv:
         self._bank_wincon_cost = min((float(self.specs[i].elixir) for i in self.wincon_ids), default=0.0)
         # Tower level for the triage waiver in _threat_miss_idle (clashrl.threat_value).
         self._tower_level_for_triage = int(cfg.get("env", "my_tower_level", default=15) or 15)
+        # CHAMPION ABILITY ledger (see _ability_value). Deliberately small: the ability's real payoff
+        # is already priced by the elixir_trade term when the bomb kills something, so these only
+        # have to make the ACTION discoverable and discourage burning it on an empty board.
+        self.w_ability_value = r("ability_value", 3.0)
+        self.w_ability_waste = r("ability_waste", -0.5)
+        self.ability_value_cap = float(cfg.get("rewards", "ability_value_cap", default=1.0))
         self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
         self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
@@ -380,7 +412,20 @@ class SimMatchEnv:
         return [self._slot_card_id(s) for s in self.cycle]
 
     def _hand_ids(self):
-        return [self._slot_card_id(s) for s in self.cycle[:4]]
+        ids = [self._slot_card_id(s) for s in self.cycle[:4]]
+        # The ability is not dealt, it becomes AVAILABLE: the champion has to be alive on the board
+        # and off cooldown. Appending it here is what puts it in hand_vec and past step()'s gate, so
+        # availability is expressed in exactly one place and the policy sees it the same way it sees
+        # a card it may play. A hand of five is correct -- the real UI shows four cards AND the
+        # ability button.
+        if self.ability_id >= 0 and self._ability_ready():
+            ids.append(self.ability_id)
+        return ids
+
+    def _ability_ready(self) -> bool:
+        """Champion on the board, ability off cooldown. Elixir is left to the affordability mask."""
+        return any(u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
+                   and u.ability_cd_left <= 0.0 for u in self.eng.units)
 
     def _play_slot(self, card_id: int) -> None:
         """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to
@@ -1467,6 +1512,31 @@ class SimMatchEnv:
         return not any(u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad
                        for u in self.eng.units)
 
+    def _ability_value(self) -> float:
+        """What Explosive Escape was actually worth, priced at the moment of the cast.
+
+        Every guide says the same thing about this ability and it is entirely a TIMING skill: the
+        bomb wants their counter already committed and standing on him, and triggering early is the
+        classic way to waste it. So the reward is the enemy elixir caught in the blast, plus credit
+        for escaping while genuinely under threat -- and a small charge for firing into nothing,
+        which is the failure mode the timing rule exists to prevent.
+
+        The bomb sits at the FRONT of the spell queue (champion_ability just appended it) rather than
+        where the champion now stands, which is the whole point -- he is already in the other lane.
+        """
+        if not self.eng.spells:
+            return 0.0
+        sp = self.eng.spells[-1]
+        rad = float(sp.spec.spell_radius or 2.0)
+        caught = [u for u in self.eng.units
+                  if u.team == 1 and u.hp > 0 and tile_dist(sp.x, sp.y, u.x, u.y) <= rad]
+        elix = sum(float(u.spec.elixir) for u in caught)
+        if elix <= 0.0:
+            return self.w_ability_waste
+        # Normalised on the ability's own cost: one elixir that removes four is the play it exists
+        # for, and the cap keeps a lucky multi-catch from dwarfing the rest of the ledger.
+        return min(self.ability_value_cap, elix / max(1.0, self.value_norm) * self.w_ability_value)
+
     def _chip_progress(self, towers) -> float:
         """Convex chip 'progress' over a side's princess towers: sum of (damage_fraction ** chip_power) so
         PARTIAL chip is worth sub-proportionally LESS than finishing the tower. Most of a tower's value is
@@ -1541,7 +1611,15 @@ class SimMatchEnv:
         play, card_id, cell = action
         reward = 0.0
         placed_id = -1
-        if play and 0 <= card_id < self.n_cards and card_id in self._hand_ids():
+        if play and card_id == self.ability_id and self.ability_id >= 0 \
+                and card_id in self._hand_ids():
+            # CHAMPION ABILITY: no placement, no slot, no deploy. It either fires on the champion
+            # where he stands or it does not fire at all, so the whole (cell -> clamp -> deploy)
+            # path below is skipped and the cell the policy chose is ignored by design.
+            if self.eng.champion_ability(0):
+                placed_id = card_id
+                reward += self.rw_stats.add("ability_use", self._bonus(self._ability_value()))
+        elif play and 0 <= card_id < self.n_cards and card_id in self._hand_ids():
             spec = self.specs[card_id]
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
             nx, ny = self.actions.cell_center(cell % self.gw, cell // self.gw)

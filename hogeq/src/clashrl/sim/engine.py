@@ -169,6 +169,15 @@ class CardSpec:
     ability_cd: float = 0.0
     ability_invis: float = 0.0
     ability_back: float = 0.0
+    # THE OTHER ABILITY SHAPE: the Mighty Miner's "Explosive Escape", which is a PLAYER action, not
+    # the automatic reaction above. He mirrors to the opposite lane and leaves a fused bomb behind,
+    # so it needs a displacement that is a reflection rather than a nudge, plus a blast the nudge
+    # ability has no concept of. Non-zero `ability_bomb_dmg` is what marks a card as having it; see
+    # Engine.champion_ability, which the env calls from a dedicated action-space slot.
+    ability_bomb_dmg: float = 0.0
+    ability_bomb_radius: float = 0.0
+    ability_bomb_knock: float = 0.0
+    ability_delay: float = 0.0
     # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
     # card. 0 = fall back to _SPLASH_R.
     splash_r: float = 0.0
@@ -764,6 +773,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_cd=float(c.get("ability_cooldown_s") or 0.0),
         ability_invis=float(c.get("ability_invis_s") or 0.0),
         ability_back=float(c.get("ability_back_tiles") or 0.0),
+        # Bomb damage is a level-scaled stat like any other, so it goes through scale() rather than
+        # the flat `sc` ratio -- that is what reproduces the game's own rounding off the level table.
+        ability_bomb_dmg=_lv.scale(float(c.get("ability_bomb_damage") or 0.0), level),
+        ability_bomb_radius=float(c.get("ability_bomb_radius") or 0.0),
+        ability_bomb_knock=float(c.get("ability_bomb_knockback") or 0.0),
+        ability_delay=float(c.get("ability_delay_s") or 0.0),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -1313,6 +1328,55 @@ class SimEngine:
 
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
+
+    def champion_ability(self, team: int) -> bool:
+        """EXPLOSIVE ESCAPE -- the Mighty Miner's 1-elixir ability, as a PLAYER action.
+
+        Unlike the automatic invisibility reaction (see the ability block in _tick_units), this is
+        chosen: the env exposes it as its own action-space slot and calls straight through here.
+
+        The wiki's sequence, and each part matters to how it is used: after a short delay he becomes
+        intangible and moves to the HORIZONTALLY MIRRORED position -- same depth, opposite lane --
+        leaving a bomb at the position he left, which detonates for area damage to ground AND air
+        with knockback. So it is simultaneously an escape, a lane switch, and a swarm answer, which
+        is why triggering it too early is the classic way to waste it: the bomb wants their counter
+        already committed and standing on him.
+
+        The bomb is resolved through the same fused-spell path the Balloon and Giant Skeleton death
+        bombs use, so it inherits their delay, knockback and ground/air rules rather than
+        re-implementing them. Returns False when there is no champion on the board, the ability is
+        still cooling down, or the elixir is not there.
+        """
+        if self.done:
+            return False
+        champ = next((u for u in self.units
+                      if u.team == team and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0), None)
+        if champ is None or champ.ability_cd_left > 0.0:
+            return False
+        s = champ.spec
+        if self.elixir[team] < s.ability_cost:
+            return False
+        self.elixir[team] -= s.ability_cost
+        champ.ability_cd_left = s.ability_cd
+        ox, oy = champ.x, champ.y
+        # THE BOMB, left where he was standing. Built off his own spec so it keeps his team and
+        # level scaling, with every unrelated spell behaviour explicitly cleared -- the same
+        # defensive `replace` the death-bomb path uses, because a stray `pulls`/`rolls`/`spawn_count`
+        # inherited from the source card is exactly how a bomb quietly becomes a tornado.
+        bomb = replace(s, kind="spell", spell_dmg=s.ability_bomb_dmg,
+                       spell_radius=s.ability_bomb_radius or 2.0,
+                       spell_tower_dmg=0.0,          # the escape bomb is not tower damage
+                       knockback=s.ability_bomb_knock, ground_only=False,
+                       pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
+                       spawn_count=0, decoy_mirror=False, zap_pulses=0,
+                       death_dmg=0.0, death_delay_s=0.0,
+                       stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False)
+        self.spells.append(_Spell(team, ox, oy, bomb, max(0.0, s.ability_delay)))
+        # ...and he is gone: mirrored across the arena's centre line, untargetable for the transit.
+        champ.x = 1.0 - ox
+        champ.invis_left = max(champ.invis_left, s.ability_delay)
+        champ.target = None
+        return True
 
     def deploy(self, team: int, spec: CardSpec, x: float, y: float,
                delay_s: float = 0.0) -> bool:
@@ -2090,6 +2154,15 @@ class SimEngine:
                         break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            # PLAYER-TRIGGERED ability cooldown + transit. The Boss Bandit block below ticks these
+            # too, but only for cards with `ability_invis` -- so a champion whose ability is chosen
+            # rather than automatic (the Mighty Miner) would fire once and never recharge, and would
+            # stay permanently untargetable after his escape. Ticked here, before that branch, and
+            # skipped for the automatic cards so their existing sequencing is untouched.
+            if u.spec.ability_bomb_dmg > 0.0 and u.spec.ability_invis <= 0.0:
+                u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
+                if u.invis_left > 0.0:
+                    u.invis_left = max(0.0, u.invis_left - dt)
             # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
             # she is invisible and untouchable for a second, then reappears `ability_back` tiles
             # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.

@@ -149,6 +149,37 @@ def play(cfg) -> None:
     controller = Controller(capture, cfg)
     rocket_ids = {i for i, key in enumerate(vision.deck_keys)
                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
+    # CHAMPION ABILITY. Its identity is the LAST deck key (CardDB.ability_identity appends it), and
+    # it is dispatched as a single tap on the button rather than a select-then-place. -1 when the
+    # deck has no champion, which never matches a real card_id.
+    _ability_id = (vision.deck_keys.index(vision.ability_key)
+                   if getattr(vision, "ability_key", None) in vision.deck_keys else -1)
+    _ability_xy = tuple(cfg.get("hand", "ability_button", default=[0.963, 0.758]))
+    _ability_cd = float(cfg.get("hand", "ability_cooldown_s", default=13.0))
+    _ability_last = {"t": -1e9}          # our own last activation, for the cooldown
+    _champ_base = (card_threat.base_key(vision.ability_key)
+                   if getattr(vision, "ability_key", None) else None)
+
+    def _champion_on_board(vision, frame) -> bool:
+        """Is our champion actually on the arena? The ability button is only live while he is.
+
+        Read from the DETECTOR rather than from what we played, because he can die at any moment and
+        a stale 'we deployed him 40 s ago' would keep offering an action the game would refuse. He is
+        a tracked class, so this is a lookup, not new perception work.
+        """
+        if _champ_base is None:
+            return False
+        try:
+            if _ploop is not None and _ploop.running:
+                dets, age = _ploop.snapshot()
+                if age <= 2.0:
+                    return any(d.base == _champ_base and d.team == "mine" for d in dets)
+            if _detector is not None:
+                return any(d.base == _champ_base and d.team == "mine"
+                           for d in _detector.detect(frame, conf=detector_conf))
+        except Exception:  # noqa: BLE001  -- availability must never break the play loop
+            return False
+        return False
     hp_tracker = TowerHpTracker(cfg)          # enemy princess HP, for the rocket redirect
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
@@ -402,6 +433,17 @@ def play(cfg) -> None:
         hand_vec = vision.hand_multihot(hand_ids)
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
             return
+        # CHAMPION ABILITY AVAILABILITY. The ability has no hand card and therefore no template, so
+        # template matching can never light its bit -- left alone, the action would be offered to the
+        # policy in the sim and be permanently invisible live, which is exactly the kind of silent
+        # sim/live divergence that makes a transferred checkpoint behave differently for no visible
+        # reason. Reconstructed from the two things that actually gate it in game: the champion has
+        # to be ON THE BOARD (the detector sees him -- he is a tracked class) and the ability has to
+        # be off its cooldown, timed from our own last tap.
+        if _ability_id >= 0:
+            _seen = _champion_on_board(vision, frame)
+            _ready = (time.time() - _ability_last["t"]) >= _ability_cd
+            hand_vec[_ability_id] = 1.0 if (_seen and _ready) else 0.0
         next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
@@ -555,18 +597,27 @@ def play(cfg) -> None:
                                    _pull_front, _pull_back, actions)
             if pull is not None:
                 cell = pull
-        gx, gy = cell % gw, cell // gw
-        controller.play_card(*actions.decode(slot, gx, gy))
-        _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
-        # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
-        # is claimed at the cast point while an enemy answer dropped on the same spot is not.
-        cx, cy = actions.cell_center(gx, gy)
-        _opp_elx.record_my_play(card_threat.base_key(vision.deck_keys[card_id]))
-        if _ploop is not None and _ploop.running:
-            _ploop.record_play(cx, cy, time.time(), base=card_threat.base_key(vision.deck_keys[card_id]))
+        if card_id == _ability_id:
+            # CHAMPION ABILITY: ONE tap on the ability button. No slot to select, no placement -- it
+            # acts on the champion wherever he stands, so the cell the policy produced is ignored
+            # exactly as it is in the sim. It also must not touch the cycle tracker or the detection
+            # 'mine': no card left the hand and no unit was deployed, and recording either would
+            # desync the hand model and mis-anchor a team tag onto whatever is at the button.
+            controller.tap(*_ability_xy)
+            _ability_last["t"] = time.time()      # starts the cooldown the availability bit reads
         else:
-            _team_tracker.record_play(cx, cy, time.time(),
-                                      base=card_threat.base_key(vision.deck_keys[card_id]))
+            gx, gy = cell % gw, cell // gw
+            controller.play_card(*actions.decode(slot, gx, gy))
+            _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
+            # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
+            # is claimed at the cast point while an enemy answer dropped on the same spot is not.
+            cx, cy = actions.cell_center(gx, gy)
+            _opp_elx.record_my_play(card_threat.base_key(vision.deck_keys[card_id]))
+            if _ploop is not None and _ploop.running:
+                _ploop.record_play(cx, cy, time.time(), base=card_threat.base_key(vision.deck_keys[card_id]))
+            else:
+                _team_tracker.record_play(cx, cy, time.time(),
+                                          base=card_threat.base_key(vision.deck_keys[card_id]))
 
     running = {"v": True}
 
