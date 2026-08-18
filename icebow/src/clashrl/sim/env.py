@@ -261,6 +261,10 @@ class SimMatchEnv:
         self.threat_credit_budget = int(cfg.get("env", "threat_credit_budget", default=2))
         self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []
         self._threat_credits, self._tid_unlit_t = 0, None                # per-step clip on the trade term
+        # Minimum seconds between two threat_miss charges. See _threat_miss_idle: charging every
+        # 1-second step made holding elixir strictly worse than dumping it, by 8x.
+        self.threat_miss_period = float(cfg.get("env", "threat_miss_period_s", default=4.0))
+        self._threat_miss_last = -1e9
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
         self.cf_horizon = float(cfg.get("sim", "counterfactual", "horizon_s", default=8.0))
@@ -489,6 +493,7 @@ class SimMatchEnv:
         self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []   # trade event ledger
         self._threat_credits = 0          # threat-response credits paid this episode (budgeted)
         self._tid_unlit_t = None          # engine-time stamp of sustained threat quiet (hysteresis)
+        self._threat_miss_last = -1e9     # engine-time of the last threat_miss charge (throttle)
         # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
         # "turtle" half is the my_c >= 1 flip in step(), so the matchup lock here only needs to cover
         # decks that STRUCTURALLY blank a siege. A SPLIT-LANE deck (Royal Recruits / Royal Hogs) does:
@@ -720,6 +725,28 @@ class SimMatchEnv:
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
             return 0.0
+        # ALREADY ANSWERING IT IS NOT IGNORING IT (2026-08-17). This term asked only "is a counter in
+        # hand and affordable", never "is the push already being dealt with" -- so the step after a
+        # Knight was dropped to intercept, and every step while he walked into the fight, was charged
+        # the full miss penalty again. Defence takes seconds; the penalty charged per 1-second step.
+        if any(u.team == 0 and u.hp > 0 and u.spec.kind != "spell"
+               and card_threat.counters(card_threat.profile(self.db, u.spec.base), tid)
+               for u in self.eng.units):
+            return 0.0
+        # ...AND IGNORING IT IS ONE MISTAKE, NOT ONE PER TICK. Uncapped per-step charging made this
+        # the dominant term in the whole ledger and taught the policy to keep its bar empty.
+        #
+        # MEASURED on the Hog EQ deck, which shares this file: a hold-to-6 policy took -152.00 from
+        # this term alone over 152 fires -- 86% of its total penalty -- while spend-everything took
+        # none, because the term only charges on a step where nothing was played. Holding scored
+        # -0.545/step against -0.065 for dumping, so ALWAYS PLAY was strictly optimal; the gate duly
+        # collapsed to it (P(play) 0.611-0.698, never below the 0.25 threshold, bar never above 5,
+        # 4-cost cards never played). After the fix: 24 fires, -0.106/step against -0.065.
+        #
+        # A push left genuinely unanswered still charges repeatedly -- that is what this term is for
+        # -- just on a human timescale rather than every tick.
+        if self.eng.t - self._threat_miss_last < self.threat_miss_period:
+            return 0.0
         elix = float(self.eng.elixir[0])
         hand = self._hand_ids()
         banking = (self._bank_floor > 0.0 and self._bank_wincon_cost > 0.0
@@ -732,6 +759,7 @@ class SimMatchEnv:
                 continue                                     # not affordable
             if banking and self.specs[cid].elixir < self._bank_wincon_cost:
                 continue                                     # bank-masked -> not actually playable
+            self._threat_miss_last = self.eng.t
             return self.w_threat_miss
         return 0.0
 
