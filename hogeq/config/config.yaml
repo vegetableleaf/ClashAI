@@ -1194,8 +1194,21 @@ sim:
   # fire exactly as the troop clears the bridge, and a wider body (Giant 0.75) is caught a shade
   # earlier, which is correct -- more of it is already inside the radius.
   tower_range: 8.0              # TILES: princess-class reach (all tower troops share it)
-  king_range: 7.5               # TILES: king-tower reach -- still 0.5 shorter than a princess tower
-                                # (the +0.5 is a measurement correction, so it applies to both)
+  # KING RANGE IS NOT "princess minus 0.5" -- it has to be princess PLUS the king's extra bulk.
+  # These are CENTRE-measured, but an attacker's reach is measured to the target's hitbox EDGE
+  # (_gap), so a tower's own half-width is handed to whoever is shooting it: 2.0 tiles for the
+  # king's 4x4 body against 1.5 for a princess. MEASURED at the old 7.5: a Dart Goblin (6.5 reach)
+  # opened fire 8.50 tiles from the king's centre while the king answered only to 8.00 -- it sieged
+  # the king untouched, which is the user-reported bug. It is not a Dart Goblin problem; EVERY
+  # attacker was getting the same free half-tile, and the wiki confirms the card's 6.5 and the
+  # king's published 7 are both correct, so the error was here.
+  # 8.5 = the princess's 8.0 + the 0.5 of extra half-width the king's larger body concedes. That
+  # gives both towers the SAME reach measured from their own edge (9.00 - 2.0 == 8.50 - 1.5 == 7.0)
+  # which is what the published 7.5/7.0 pair is really saying, and it clears the dart goblin's 8.50
+  # for every body size. Preferred over re-basing the whole setting onto the tower edge: that frame
+  # change would have silently retuned _double_cover, the tornado king-activation reward and the
+  # config editor, and it opened fire 1.5 tiles early across the river.
+  king_range: 8.5               # TILES: king-tower reach -- LONGER than a princess by its extra bulk
   tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
   opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
     princess: 6

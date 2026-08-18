@@ -81,6 +81,16 @@ _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit count
 # it would swing.
 _PRINCESS_HALF = 1.5
 _KING_HALF = 2.0
+
+# EVO FIRECRACKER: her lingering sparks DO chip a Crown Tower -- "the small sparks connect to the
+# Crown Tower, resulting in massive damage if not addressed properly" -- but at a reduced rate, the
+# ordinary crown-damage discount every area effect pays. The wiki's own vardefines give it exactly,
+# and identically for both spark sizes at level 11:
+#     Big_dmg_11   48   Big_Crown_dmg_11   15
+#     Small_dmg_11 48   Small_Crown_dmg_11 15
+# 15 / 48 = 0.3125. Applied as a FRACTION of whatever per-tick damage the zone carries rather than
+# as a second absolute number, so it keeps tracking the card's level and any future rebalance.
+_SPARK_CROWN_FRAC = 0.3125
 _TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
 # MULTI-HIT geometry, in TILES. Neither is published by the wiki, so both are estimates: how far a
@@ -230,6 +240,9 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
+    # Whether this blast measures its radius to the target's hitbox EDGE rather than its centre.
+    # Set only on the FUSED bomb a death blast spawns -- see _death_blast / _resolve_spell.
+    blast_edge: bool = False
     # Knockback carried by the DEATH blast alone, when it differs from the card's ordinary one.
     # The Bomb Tower is the case: its shots do not shove, only the bomb it drops when it dies
     # does. 0 = no separate value, so the death blast reuses `knockback` (Golem, Giant Skeleton
@@ -2070,6 +2083,17 @@ class SimEngine:
                             self._hurt(e, z[5])
                             e.slow_left = max(e.slow_left, 0.3)   # 15% slow while standing in it
                             e.slow_mult = 0.85
+                    # ...and the SAME tick chips a Crown Tower the zone overlaps, at
+                    # _SPARK_CROWN_FRAC of the troop damage. This is the whole reason the card is
+                    # played in a Hog deck: "the small sparks connect to the Crown Tower" while she
+                    # clears the path. The loop above iterates `self.units` ONLY, so a tower sitting
+                    # in a spark field took literally nothing -- MEASURED at 0 damage from a 5 s
+                    # zone placed directly on it.
+                    # Edge-based like every other area effect (`_gap` already subtracts the tower's
+                    # hitbox), so a zone clipping the tower's corner still counts.
+                    for tw in self._enemy_towers(z[3]):
+                        if tw.alive and _gap(z[0], z[1], tw) <= z[2]:
+                            self._damage_tower(tw, z[5] * _SPARK_CROWN_FRAC, z[3])
         # spells land
         landed = []
         for s in self.spells:
@@ -2155,6 +2179,21 @@ class SimEngine:
                 # and knockback cost the attacker real time: it has to pay the wind-up afresh when
                 # it re-engages, rather than resuming mid-swing.
                 u.loaded = False
+                # ...AND THE RAMP DROPS WITH IT. An Inferno / Mighty Miner charges only while it is
+                # actually firing, so ANY interruption resets it to stage 1 -- not just the target
+                # CHANGING (which is all this used to check, below). The gap mattered: a Log
+                # knockback, a Tornado dragging the attacker off, or the target simply walking out
+                # of reach left `focus_time` untouched, so the beam resumed at full stage 3 the
+                # instant contact returned. Resetting an Inferno by displacing it is a core
+                # interaction of the game and the sim had none of it.
+                # MEASURED before this line: Mighty Miner knocked back 3 tiles kept focus 6.60 ->
+                # 6.70 (stage 3 -> 3); Inferno Tower whose target walked out of its 6 tiles kept
+                # 7.60 (stage 3). See tests/test_ramp_reset.py.
+                # `ramp_hold` is the ONE exception and is checked here rather than skipped: Evo
+                # Inferno Dragon deliberately keeps its stage for ramp_keep_s after a KILL, and
+                # that hold is ticked down (and cleared by a stun) elsewhere.
+                if u.ramp_hold <= 0.0:
+                    u.focus_time = 0.0
             if u.curse_left > 0.0:
                 u.curse_left = max(0.0, u.curse_left - dt)
                 if u.curse_left <= 0.0:
@@ -2169,6 +2208,13 @@ class SimEngine:
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
+                # A STUN OR FREEZE RESETS THE RAMP IMMEDIATELY, and unlike the out-of-reach case
+                # above it also cancels Evo Inferno Dragon's post-kill hold -- the wiki's wording is
+                # that it keeps its damage state "unless it is stunned". Zapping an Inferno the
+                # instant it reaches stage 3 is the textbook counter; without this the stun cost it
+                # nothing but the frozen seconds.
+                u.focus_time = 0.0
+                u.ramp_hold = 0.0
                 continue
             if u.hook_left > 0.0:
                 self._tick_hook(u, dt)
@@ -2725,7 +2771,7 @@ class SimEngine:
                            spell_tower_dmg=s.death_dmg * s.death_crown_mult,
                            pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
                            spawn_count=0, decoy_mirror=False, zap_pulses=0,
-                           knockback=blast_knock, death_delay_s=0.0)
+                           knockback=blast_knock, death_delay_s=0.0, blast_edge=True)
             self.spells.append(_Spell(u.team, u.x, u.y, bomb, s.death_delay_s))
             return
         for e in self.units:
@@ -3285,7 +3331,13 @@ class SimEngine:
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
                 p.y += p.diry * step
-                p.x, p.y = _clamp_xy(p.x, p.y, 0.0)
+                # NOT CLAMPED TO THE ARENA. A pierce shot is a projectile in flight, not a body:
+                # clamping it pinned every bolt that reached a wall AT the wall, where it kept
+                # burning its remaining range in place and then dropped its spark zone against the
+                # edge -- so a Firecracker fired near the border sprayed her shrapnel into a single
+                # pile instead of past it. MEASURED before this change: 24 of 95 bolt samples sat
+                # exactly on x=0. A shot that leaves the board simply carries on and expires; there
+                # is nothing out there for `_pierce_pass` to hit, which is the correct outcome.
                 p.left -= step
                 self._pierce_pass(p)
                 if p.left <= 0.0:
@@ -3548,6 +3600,16 @@ class SimEngine:
             dx, dy, d = 0.0, (1.0 if u.team == 0 else -1.0), 1.0
         u.x, u.y = _clamp_xy(u.x + (dx / d) * r / _TILES_X,
                              u.y + (dy / d) * r / _TILES_Y, u.spec.radius)
+        # ...AND RE-EVALUATE IF THE RECOIL BROKE THE ENGAGEMENT. `u.locked` means "already swinging,
+        # nothing else exists", and only an aggro reset clears it -- but the recoil deliberately does
+        # not raise one (see above: that would wipe a Sparky's charge). The result was a Firecracker
+        # who shoved herself out of her own 6 tiles and then stayed locked on a target she could no
+        # longer reach, forever: MEASURED over 40 s she made ZERO retargets and finished with her
+        # target out of reach, doing nothing while a second enemy stood well inside her range.
+        # Clearing only `locked` re-opens the choice on the next tick without touching the charge /
+        # ramp state a real shove would reset.
+        if ref is not None and _gap(u.x, u.y, ref) > u.spec.reach:
+            u.locked = False
 
     def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
                dx: float = 0.0, dy: float = 0.0) -> None:
@@ -3752,15 +3814,26 @@ class SimEngine:
                     self._apply_status(s.team, s.spec, ref)
             return
         rad = s.r_override or s.spec.spell_radius
+        # A FUSED DEATH BOMB measures to the hitbox EDGE; a thrown spell measures to the centre.
+        # This is not cosmetic. The immediate death blast in _death_blast has always been
+        # edge-based, but a card with `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) is
+        # routed through this generic path instead -- where the radius was compared centre to
+        # centre, silently shrinking the SAME 3-tile bomb by each target's own radius. Against a
+        # Crown Tower that is the difference between reaching from 4.5 tiles out and having to land
+        # almost inside it: the Balloon's whole point is that killing it at the tower still delivers
+        # the bomb, and it very often did not.
+        edge = s.spec.blast_edge
         for e in self.units:
             if s.spec.ground_only and e.spec.flying:
                 continue                                     # a ground bomb can't reach flyers
-            if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= rad:
+            reach_e = rad + (e.spec.radius if edge else 0.0)
+            if e.team != s.team and _dist(e.x, e.y, s.x, s.y) <= reach_e:
                 self._hurt(e, s.spec.spell_dmg, s.spec.hits_hidden)
                 self._apply_status(s.team, s.spec, e)                 # Zap/Freeze stun; slow spells
                 self._knock(e, s.spec, s.x, s.y)              # Fireball / Giant Snowball / Rocket pushback
         for tw in self._enemy_towers(s.team):
-            if _dist(tw.x, tw.y, s.x, s.y) <= rad:
+            d_tw = _gap(s.x, s.y, tw) if edge else _dist(tw.x, tw.y, s.x, s.y)
+            if d_tw <= rad:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
                 self._apply_status(s.team, s.spec, tw)
         if s.echoes > 0:
