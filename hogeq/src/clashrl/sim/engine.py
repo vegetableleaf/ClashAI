@@ -121,7 +121,12 @@ class CardSpec:
     spell_radius: float       # spells only
     spell_dmg: float
     spell_tower_dmg: float
-    spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
+    # PER-HIT damage to BUILDINGS, when a spell hits them harder than it hits troops. Earthquake is
+    # the reason this exists: 287 vs 84 at level 11 ("3.5 times damage to buildings"), which is the
+    # entire point of the card -- it is how a Hog deck deletes the Tesla/Cannon/Inferno that would
+    # otherwise stop its win condition. 0 = buildings take the ordinary spell_dmg.
+    spell_build_dmg: float = 0.0
+    spell_delay: float = 0.0  # Royal Delivery lands after a delay; Rocket ~instant
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     # DEPLOY / SURFACE BLAST: area damage the moment the body finishes appearing. Mega Knight "will
@@ -308,6 +313,10 @@ class CardSpec:
     # Void (3 count-tiered hits over 4 s), Graveyard (timed edge spawns). One system.
     zone_s: float = 0.0
     zone_tick_s: float = 0.0
+    # Whether the field's FIRST tick lands at cast rather than one interval later. Poison ramps in,
+    # but an Earthquake's first wave hits as it lands -- and that second matters here, because the
+    # play is casting it as the Hog crosses so the building dies before it can do its work.
+    zone_first_tick_now: bool = False
     zone_move_slow: float = 0.0
     zone_tiers: tuple = ()        # Void: ((max_targets, dmg, crown_dmg), ...) per tick
     zone_spawn_n: int = 0         # Graveyard: "a single Skeleton ... every 0.5 seconds
@@ -720,6 +729,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         poison_s=float(c.get("poison_s") or 0.0),
         min_range=float(c.get("min_range_tiles") or 0.0),
         top_n_targets=int(c.get("top_n_targets") or 0),
+        spell_build_dmg=_lv.scale(float(c.get("build_damage") or 0.0), level),
+        zone_first_tick_now=bool(c.get("zone_first_tick_now")),
         zone_s=float(c.get("zone_s") or 0.0),
         zone_tick_s=float(c.get("zone_tick_s") or 0.0),
         zone_move_slow=float(c.get("zone_move_slow") or 0.0),
@@ -1019,6 +1030,8 @@ class _Zone:
     def __init__(self, team: int, x: float, y: float, spec: CardSpec, left: float):
         self.team, self.x, self.y, self.spec, self.left = team, x, y, spec, left
         self.tick_in = spec.zone_tick_s if spec.zone_tick_s > 0.0 else (left + 1.0)
+        if spec.zone_first_tick_now and spec.zone_tick_s > 0.0:
+            self.tick_in = 0.0                    # Earthquake: wave one lands with the spell
         self.age = 0.0
         self.spawned = 0
 
@@ -3877,8 +3890,13 @@ class SimEngine:
             if z.tick_in > 0.0:
                 continue
             z.tick_in += sp.zone_tick_s
+            # A ground-only field cannot touch flyers ("it is an EARTHquake, after all"), and a
+            # RETRACTED building is normally untouchable -- except to a spell that carries
+            # hits_hidden, which is precisely why Earthquake is the efficient answer to a Tesla.
             foes = [e for e in self.units if e.team != z.team and e.hp > 0
-                    and not e.hidden and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
+                    and (sp.hits_hidden or not e.hidden)
+                    and not (sp.ground_only and e.spec.flying)
+                    and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
             tws = [tw for tw in self._enemy_towers(z.team)
                    if _dist(tw.x, tw.y, z.x, z.y) <= sp.spell_radius]
             dmg, crown = sp.spell_dmg, sp.spell_tower_dmg
@@ -3892,7 +3910,11 @@ class SimEngine:
                         dmg, crown = d_, c_
                         break
             for e in foes:
-                self._hurt(e, dmg)
+                # Buildings take the spell's BUILDING damage where it has one (Earthquake 287 vs 84
+                # per wave at level 11) -- the reason the card is in a Hog deck at all.
+                self._hurt(e, (sp.spell_build_dmg if (sp.spell_build_dmg > 0.0
+                                                      and e.spec.kind == "building") else dmg),
+                           sp.hits_hidden)
                 if sp.zone_move_slow > 0.0 and (e.slow_left <= 0.0
                                                 or e.slow_mult > 1.0 - sp.zone_move_slow):
                     # POISON: "decreases the movement speed of enemy troops by 15%" -- never

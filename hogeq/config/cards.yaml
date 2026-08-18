@@ -1172,7 +1172,16 @@ cards:
   # Earthquake is the ONE spell that reaches a retracted Tesla: the 3/3/2020 Balance Update
   # "allowed the Earthquake to affect the Tesla even if it is hidden". Carried as a property of the
   # SPELL rather than of the Tesla, so nothing has to know a card name to get this right.
-  earthquake: {kind: spell, flags: [hits_hidden, slow], verified: true}
+  # EARTHQUAKE IS THREE WAVES, NOT ONE. Wiki vardefines: dmg_hits 3, dmg_11 84, build_dmg_11 287,
+  # crown_dmg_11 53 -- "3.5 times damage to buildings, that is dealt every second for 3 seconds",
+  # plus a 50% slow, no flying units, and it reaches a CONCEALED Tesla. The sim modelled it as a
+  # single instantaneous blast with no building bonus, so it was delivering one third of its troop
+  # and crown damage and about a tenth of its building damage -- gutting the one card whose whole
+  # job is deleting the building that stops the Hog. Routed through the Poison-style zone: the
+  # cast itself lands nothing and the field does the work over its 3 s.
+  earthquake: {kind: spell, flags: [hits_hidden, slow], attacks: [ground],
+               build_damage: 287, zone_s: 3.0, zone_tick_s: 1.0, zone_first_tick_now: true,
+               zone_move_slow: 0.5, verified: true}
 
   miner:
     display: "Miner"
