@@ -382,7 +382,11 @@ cards:
   # scrapeable: 12 per 0.25 s tick (48 dps in-zone, poison-class) is curated [verify].
   # USER-VERIFIED 2026-08-14: LARGE spark (carrier trail) 192 dps, SMALL sparks (shrapnel
   # trails) 60 dps, at level 11.
-  firecracker_evo: {spark_dps_large: 192, spark_dps_small: 60, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: true}
+  # evo_cycles 2 (user-confirmed 2026-08-17, and it is what the wiki's Cycles column says). It was
+  # MISSING, and missing did not mean "no evolution" -- CardDB.evo_cycles returns 0, and the sim's
+  # slot reads 0 as "charged already", so the slot presented Evo Firecracker on EVERY cycle and the
+  # base card became unplayable. deck_slots() now refuses an evolved slot that resolves to 0.
+  firecracker_evo: {evo_cycles: 2, spark_dps_large: 192, spark_dps_small: 60, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: true}
   # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
   # curated from the announcement; cards-import will supersede the stats when the page lands):
   # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at
