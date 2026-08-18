@@ -3365,7 +3365,7 @@ class SimEngine:
         for i in range(n):
             ang = base + math.radians(-35.0 + 70.0 * i / (n - 1))
             cx, cy = math.cos(ang), math.sin(ang)
-            self.projectiles.append(Projectile(
+            shard = Projectile(
                 label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y,
                 tx=p.x + cx * left / _TILES_X, ty=p.y + cy * left / _TILES_Y, target=None,
                 spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=0.0,
@@ -3373,7 +3373,21 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
-                trail_dmg=s.spark_dps_small * 0.25))  # Evo FC shrapnel drops SMALL sparks
+                trail_dmg=s.spark_dps_small * 0.25)  # Evo FC shrapnel drops SMALL sparks
+            self.projectiles.append(shard)
+            # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
+            # IMPACT, DAMAGING THE TARGET and showering anything behind it", with the damage figure
+            # published per shard -- "totaling 320 if all shards hit the same target". Both describe
+            # one event: all five spawn on the landing point, so whatever stands there takes all
+            # five at once, the wide blast an instant before they fan out.
+            #
+            # It landed NOTHING on the body it hit. A piercing shot moves BEFORE its first pierce
+            # check, so every shard was already ~0.8 tiles clear of the impact by the time it looked
+            # -- MEASURED, a dead-centre target took 63 of 315. One pass at the spawn point fixes
+            # it, and p.hit stops a shard damaging that body again on its way out. Measured after:
+            # dead centre 315 (5 shards), then 189 / 126 / 63 at 1.9 / 3.8 / 6.4 tiles behind, which
+            # is the published falloff ("something closer ... will be hit by more of them").
+            self._pierce_pass(shard)
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
         """Whether `spec`'s pushback moves THIS body at all.

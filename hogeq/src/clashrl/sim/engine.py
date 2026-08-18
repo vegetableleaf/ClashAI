@@ -3483,7 +3483,7 @@ class SimEngine:
         for i in range(n):
             ang = base + math.radians(-35.0 + 70.0 * i / (n - 1))
             cx, cy = math.cos(ang), math.sin(ang)
-            self.projectiles.append(Projectile(
+            shard = Projectile(
                 label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y,
                 tx=p.x + cx * left / _TILES_X, ty=p.y + cy * left / _TILES_Y, target=None,
                 spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=0.0,
@@ -3491,7 +3491,20 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
-                spark_end_dmg=s.spark_dps_small * 0.25))  # ONE small zone at the END of each bolt
+                spark_end_dmg=s.spark_dps_small * 0.25)  # ONE small zone at the END of each bolt
+            self.projectiles.append(shard)
+            # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
+            # IMPACT, DAMAGING THE TARGET and showering anything behind it" -- and the damage figure
+            # is per shard, "totaling 320 if all shards hit the same target". The two statements are
+            # the same event: all five spawn on the landing point, so whatever is standing there
+            # takes all five at once, which is the wide blast you see an instant before they fan out.
+            #
+            # It was landing NOTHING on the target it hit. A piercing shot moves BEFORE its first
+            # pierce check, so every shard was already ~0.8 tiles clear of the impact point by the
+            # time it looked -- MEASURED, a dead-centre target took 63 of 315 (one shard's worth,
+            # and only by luck of the geometry). One pass at the spawn point fixes it; p.hit means a
+            # shard cannot then damage that body a second time on its way out.
+            self._pierce_pass(shard)
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
         """Whether `spec`'s pushback moves THIS body at all.
