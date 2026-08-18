@@ -55,11 +55,37 @@ class ChampionAbilityTests(unittest.TestCase):
 
     def test_sim_and_live_action_spaces_are_identical(self):
         """A mismatch here means a sim-trained checkpoint silently fails to load for live play."""
+        self.assertEqual(CardDB(self.cfg).policy_identities(), list(self.env.deck_keys))
+
+    def test_policy_identities_is_the_action_space_and_deck_identities_is_not(self):
+        """The distinction that broke train-rl: the deck has 10 CARDS but the policy has 11 ACTIONS,
+        and the deck guard compared the checkpoint against the card list."""
         db = CardDB(self.cfg)
-        live = db.deck_identities()
-        if db.ability_identity():
-            live = live + [db.ability_identity()]
-        self.assertEqual(live, list(self.env.deck_keys))
+        self.assertEqual(len(db.deck_identities()) + 1, len(db.policy_identities()))
+        self.assertNotIn("mighty_miner_ability", db.deck_identities())
+        self.assertEqual("mighty_miner_ability", db.policy_identities()[-1])
+
+    def test_the_ability_is_not_a_physical_card(self):
+        """It must never reach deck_slots -- it has no hand position and does not cycle."""
+        db = CardDB(self.cfg)
+        self.assertEqual(8, len(db.deck_slots()))
+        self.assertNotIn("mighty_miner_ability", [s["base"] for s in db.deck_slots()])
+
+    def test_the_ability_costs_its_OWN_elixir(self):
+        """It has no card row, so this returned None and the callers' `or 0` made it read as FREE;
+        folding the suffix to the champion instead would have priced it at his 4."""
+        db = CardDB(self.cfg)
+        self.assertEqual(1, db.elixir("mighty_miner_ability"))
+        self.assertEqual(4, db.elixir("mighty_miner"))
+
+    def test_the_live_affordability_vector_prices_it(self):
+        """This is the vector play.py masks card logits with -- a 0 here means the bot would fire
+        the ability with an empty bar, and the game would simply refuse the tap."""
+        db = CardDB(self.cfg)
+        keys = db.policy_identities()
+        costs = [(db.elixir(k) or db.elixir(k[:-4] if k.endswith("_evo") else k) or 0) for k in keys]
+        self.assertEqual(1, costs[keys.index("mighty_miner_ability")])
+        self.assertTrue(all(c > 0 for c in costs), "some identity has no cost: %s" % costs)
 
     def test_it_is_not_in_the_cycle(self):
         """It is not a card leaving the hand, so playing it must not rotate the deck."""

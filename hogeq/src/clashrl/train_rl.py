@@ -122,7 +122,10 @@ def train_rl(cfg, init: str | None = None) -> None:
     # icebow switch: 9 -> 10 identities, miner -> knight/knight_evo) an old net's hand/card heads
     # are the wrong WIDTH and its card ids mean different cards -- without this check that
     # surfaces as a cryptic IndexError (card_elixir[i]) mid-match.
-    current_deck = _db.deck_identities()
+    # policy_identities, not deck_identities: the ACTION SPACE includes the champion ability, so a
+    # sim checkpoint is 11 wide while the deck's cards are 10. Comparing against the card list
+    # rejected a checkpoint that was in fact correct for this deck.
+    current_deck = _db.policy_identities()
     if n_cards != len(current_deck) or (deck and list(deck) != list(current_deck)):
         print(f"[train-rl] checkpoint/deck MISMATCH -- {init_path.name} was trained for:")
         print(f"[train-rl]   ckpt deck ({n_cards}): {', '.join(map(str, deck or ['?'] * n_cards))}")

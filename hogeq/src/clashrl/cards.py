@@ -190,6 +190,14 @@ class CardDB:
         return self.cards.get(_key(name)) if name else None
 
     def elixir(self, name: str) -> Optional[int]:
+        # A CHAMPION ABILITY costs its own elixir, not the champion's. `mighty_miner_ability` is an
+        # action-space identity with no card row of its own, so this used to return None and the
+        # callers' `or 0.0` fallback made the ability read as FREE to the affordability mask --
+        # while folding the suffix to the base card would have priced it at the champion's 4.
+        if str(name).endswith("_ability"):
+            champ = self.get(str(name)[: -len("_ability")]) or {}
+            cost = champ.get("ability_cost")
+            return int(cost) if cost else None
         c = self.get(name)
         return c.get("elixir") if c else None
 
@@ -507,6 +515,25 @@ class CardDB:
             if float((self.get(k) or {}).get("ability_bomb_damage") or 0.0) > 0.0:
                 return k + "_ability"
         return None
+
+    def policy_identities(self) -> List[str]:
+        """The POLICY'S ACTION SPACE: the deck's card identities plus a champion ability if the deck
+        has one. This is the list every card head, hand vector and checkpoint width must agree on.
+
+        Deliberately separate from :meth:`deck_identities`, which is the PHYSICAL cards -- what the
+        detector expects to see on screen and what the cycle deals. The ability is an action, not a
+        card: it never appears in hand, never rotates the cycle, and is never detected as a unit, so
+        the detector-side callers must keep using deck_identities and would be wrong to include it.
+
+        Getting this wrong is silent in the worst way: the sim trains an 11-output policy while a
+        consumer builds a 10-name deck, and the mismatch surfaces either as a refusal to start or as
+        card ids that quietly mean different cards.
+        """
+        out = list(self.deck_identities())
+        ability = self.ability_identity()
+        if ability:
+            out.append(ability)
+        return out
 
     def deck_levels(self) -> List[int]:
         """Per-identity card levels, PARALLEL to deck_identities() (an evolved slot repeats the level)."""
