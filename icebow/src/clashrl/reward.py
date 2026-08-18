@@ -247,6 +247,73 @@ def spell_intercept_cell(cx, cy, tracks, impact_s, snap_radius, acts):
     return acts.cell_at(tx, ty)
 
 
+def log_corridor_cell(cx, cy, tracks, acts, half_w=0.064, roll=0.28, air=(), min_hit=1):
+    """PUT THE TARGET IN FRONT OF THE LOG, NOT BESIDE IT.
+
+    The Log is not a blast, it is a CORRIDOR: it rolls forward from the cast point and damages what
+    lies within a narrow lateral band along that line (the sim resolves it exactly this way -- see
+    engine._resolve_roll). So a cast whose x is a tile off the push does nothing at all, while the
+    same cast shifted sideways clears it. Live had no assist for this and the model was casting to
+    the SIDE of the target (user report); the rocket, the X-Bow and the Tesla all had aim assists
+    and the Log had none.
+
+    The fix is only LATERAL plus enough depth to guarantee the target is inside the roll. The
+    policy still chooses which fight to log and roughly where -- this refuses to let a chosen fight
+    be missed by a tile.
+
+    ``tracks`` = [(x, y, vx, vy, base)] from TeamTracker.enemy_tracks(with_base=True). Flying bases
+    are dropped, because the Log passes underneath them; if that leaves nothing, the aim stands.
+    Forward is DECREASING y (our side is the bottom of the frame). Returns a cell, or None.
+    """
+    ground = [t for t in tracks if (t[4] if len(t) > 4 else None) not in air]
+    if not ground:
+        return None
+    # The cluster the policy meant: everything it could plausibly have been aiming at. Judged on a
+    # generous radius, because the whole point is that the chosen aim may be off by a tile or two.
+    near = [t for t in ground if np.hypot(t[0] - cx, t[1] - cy) <= max(roll, 4.0 * half_w)]
+    if len(near) < min_hit:
+        return None
+    tx = float(np.mean([t[0] for t in near]))          # LATERAL: line the corridor up with them
+    lead = max(t[1] for t in near)                     # the NEAREST body (largest y is closest to us)
+    # Cast just behind the nearest body so the whole group is ahead of the roll rather than half of
+    # it being behind the cast point. Never behind the policy's own choice of depth by more than the
+    # corridor needs, and never past our own tower line.
+    ty = min(0.74, max(cy, lead + 0.25 * half_w))
+    if not any(abs(t[0] - tx) <= half_w and -0.5 * half_w <= (ty - t[1]) <= roll for t in near):
+        return None                                    # nothing would actually be caught -- stand
+    return acts.cell_at(min(0.98, max(0.02, tx)), min(0.98, max(0.02, ty)))
+
+
+def nado_king_cell(tracks, my_anchors, acts, pull_r=0.16, x_off=0.028, y_off=0.131, band=0.10):
+    """THE KING ACTIVATION PULL: drag an attacker into our sleeping king so it wakes and defends.
+
+    This is the single highest-value Tornado in the deck and the model has never once attempted it
+    live. The sim teaches it (doctrine._king_spots + the nado_king_activate reward) but live had no
+    assist at all, so a cast that has to land within a tile of one spot was left to a placement head
+    that puts 36% of everything on row 13.
+
+    Geometry MIRRORED from the sim's own: a spot just in front of the king, offset half a tile to
+    the side the attacker is on. The window is small by construction -- our princess is 6.52 tiles
+    from the king, an attacker on the arena side of it is ~8 tiles out, and the pull reaches 5.5 --
+    so the target has to sit near the EDGE of the pull, which is exactly the user's own rule.
+
+    Only offered when an attacker is actually deep enough to be worth waking the king for. Returns
+    a cell, or None when there is no such attacker (the overwhelmingly common case).
+    """
+    if not my_anchors or len(my_anchors) < 3:
+        return None
+    kx, ky = my_anchors[2]
+    deep = [t for t in tracks if t[1] >= ky - band - y_off]     # past our princess line, near the king
+    if not deep:
+        return None
+    u = max(deep, key=lambda t: t[1])                            # the deepest one
+    side = -1.0 if u[0] < kx else 1.0
+    tx, ty = kx + side * x_off, ky - y_off
+    if np.hypot(u[0] - tx, u[1] - ty) > pull_r:                  # out of the vortex's reach
+        return None
+    return acts.cell_at(min(0.98, max(0.02, tx)), min(0.98, max(0.02, ty)))
+
+
 def xbow_target_lane_cell(cx, cy, enemy_anchors, enemy_hp, enemy_alive, defense_y, acts,
                           hp_margin=0.10):
     """Put an OFFENSIVE X-Bow in the lane whose tower is worth shooting at.

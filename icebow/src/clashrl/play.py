@@ -20,7 +20,7 @@ from .capture import WindowCapture
 from .controller import Controller
 from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
                      xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
-                     tesla_pull_cell)
+                     tesla_pull_cell, log_corridor_cell, nado_king_cell)
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -149,6 +149,33 @@ def play(cfg) -> None:
     controller = Controller(capture, cfg)
     rocket_ids = {i for i, key in enumerate(vision.deck_keys)
                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
+    # LOG + TORNADO AIM ASSISTS. Both cards were flying blind live: every other card with geometry
+    # that matters (rocket, X-Bow, Tesla) had an assist and these two had none, which is why the Log
+    # kept landing beside its target and the king-activation pull never once appeared. Distances are
+    # the LIVE screen-space normalised ones, not the sim's tile counts.
+    _log_ids = {i for i, key in enumerate(vision.deck_keys)
+                if (key[:-4] if key.endswith("_evo") else key) == "the_log"}
+    _nado_ids = {i for i, key in enumerate(vision.deck_keys)
+                 if (key[:-4] if key.endswith("_evo") else key) == "tornado"}
+    _log_half_w = float(cfg.get("env", "log_half_width", default=0.064))   # 2.2 tiles of corridor
+    _log_roll = float(cfg.get("env", "log_roll_len", default=0.28))        # 9.6 tiles of travel
+    _nado_pull_r = float(cfg.get("env", "nado_pull_radius", default=0.16))  # 5.5-tile vortex
+
+    class _AirSet:
+        """Which detected classes FLY, answered from the card KB rather than a hand-kept list --
+        a hardcoded roster silently stops being true the next time a card is released."""
+
+        def __init__(self, db):
+            self._db, self._memo = db, {}
+
+        def __contains__(self, base):
+            if base is None:
+                return False
+            hit = self._memo.get(base)
+            if hit is None:
+                hit = self._memo[base] = bool(card_threat.profile(self._db, base).flying)
+            return hit
+
     hp_tracker = TowerHpTracker(cfg)          # enemy princess HP, for the rocket redirect
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
@@ -185,6 +212,7 @@ def play(cfg) -> None:
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
     _db = CardDB(cfg)
+    _AIR_BASES = _AirSet(_db)          # the Log rolls UNDER flyers -- never aim it at one
     # HARD GUARD: the checkpoint must match the CONFIGURED deck (same check as train-rl). After a
     # deck change an old net's heads are the wrong width and its card ids mean different cards --
     # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
@@ -548,6 +576,24 @@ def play(cfg) -> None:
             depth = xbow_offense_depth_cell(cx, cy, xbow_defense_front, _deploy_top, actions)
             if depth is not None:
                 cell = depth
+        elif card_id in _log_ids:
+            # THE LOG IS A CORRIDOR, NOT A BLAST: line it up with the push instead of beside it.
+            gx, gy = cell % gw, cell // gw
+            cx, cy = actions.cell_center(gx, gy)
+            _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                   else _team_tracker.enemy_tracks(time.time(), True))
+            aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
+            if aim is not None:
+                cell = aim
+        elif card_id in _nado_ids:
+            # KING ACTIVATION: the highest-value Tornado in the deck, and the one the model has
+            # never attempted live. Only fires when an attacker is actually deep enough to be
+            # worth waking the king -- otherwise the policy's own cast stands.
+            _tk = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
+                   else _team_tracker.enemy_tracks(time.time()))
+            aim = nado_king_cell(_tk, tower_tracker.mine_a, actions, _nado_pull_r)
+            if aim is not None:
+                cell = aim
         elif card_id in tesla_ids and _wincon["xy"] is not None:
             # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
             # across the middle instead of beelining the near princess tower.

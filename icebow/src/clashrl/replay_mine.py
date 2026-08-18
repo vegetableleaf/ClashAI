@@ -346,11 +346,16 @@ class TeamTracker:
         self._tracks = live + prev
         return dets
 
-    def enemy_tracks(self, now: float):
+    def enemy_tracks(self, now: float, with_base: bool = False):
         """[(x, y, vx, vy)] for RECENT enemy tracks: current position + LIFETIME-average velocity
         (normalized/s, from the first-seen point -- smooth, jitter-proof, right for marching troops).
         Young tracks (<0.5s of history) report zero velocity; speeds are clamped to sane troop pace
-        so a bad link jump can't produce a wild lead. Feeds the spell-intercept aim assist."""
+        so a bad link jump can't produce a wild lead. Feeds the spell-intercept aim assist.
+
+        ``with_base`` appends the track's CARD NAME, which an aim assist needs whenever the spell
+        cannot hit everything: the Log rolls along the ground and must not be aimed at a Minion
+        Horde it would pass straight under. Off by default so the existing callers are untouched.
+        """
         out = []
         for tr in self._tracks:
             if tr["team"] != "enemy" or now - tr["t"] > self.forget_s:
@@ -360,7 +365,8 @@ class TeamTracker:
             if dt >= 0.5:
                 vx = max(-0.12, min(0.12, (tr["x"] - tr["x0"]) / dt))
                 vy = max(-0.12, min(0.12, (tr["y"] - tr["y0"]) / dt))
-            out.append((tr["x"], tr["y"], vx, vy))
+            out.append((tr["x"], tr["y"], vx, vy, tr.get("base"))
+                       if with_base else (tr["x"], tr["y"], vx, vy))
         return out
 
 
