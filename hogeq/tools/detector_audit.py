@@ -198,7 +198,7 @@ def _report(name: str, arms: dict) -> None:
              100.0 * before["frames_with_bad"] / max(1, before["seen"])))
     for title, key, t in (("most common IMPOSSIBLE ally cards (BEFORE)", "bad_cards", before),
                           ("ally cards that are at least plausible (AFTER)", "mine_cards", after),
-                          ("UNKNOWN-team cards, painted as ENEMY on the canvas (AFTER)",
+                          ("UNKNOWN-team cards (canvas SKIPS these since 553fe5c; before that they were painted as ENEMY) (AFTER)",
                            "unknown_cards", after)):
         if not t[key]:
             continue
