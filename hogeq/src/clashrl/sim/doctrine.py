@@ -823,6 +823,10 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # Two bodies inside the blast is the bar -- one is what his own melee handles, and swarms are
     # the weakness the bomb exists to cover. Deliberately silent about the lane-switch use, which
     # depends on their hand rather than the board and is not something this table can read.
+    #
+    # SINGLE USE (4/8/2026 balance) makes the bar matter more, not less: there is no cooldown to
+    # wait out and no second attempt, so a wasted activation is gone until this Mighty Miner dies
+    # and cycles back. That is the argument for keeping the threshold at two rather than one.
     champ = next((u for u in env.eng.units
                   if u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0), None)
     if champ is not None and champ.ability_cd_left <= 0.0:

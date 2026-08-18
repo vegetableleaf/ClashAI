@@ -155,8 +155,9 @@ def play(cfg) -> None:
     _ability_id = (vision.deck_keys.index(vision.ability_key)
                    if getattr(vision, "ability_key", None) in vision.deck_keys else -1)
     _ability_xy = tuple(cfg.get("hand", "ability_button", default=[0.963, 0.758]))
-    _ability_cd = float(cfg.get("hand", "ability_cooldown_s", default=13.0))
-    _ability_last = {"t": -1e9}          # our own last activation, for the cooldown
+    # SINGLE USE per champion BODY (4/8/2026 balance -- no cooldown any more), so availability is a
+    # spent flag cleared when he leaves the arena, not a timer. `gone_since` is only for diagnostics.
+    _ability_last = {"spent": False, "gone_since": None}
     _champ_base = (card_threat.base_key(vision.ability_key)
                    if getattr(vision, "ability_key", None) else None)
 
@@ -442,8 +443,14 @@ def play(cfg) -> None:
         # be off its cooldown, timed from our own last tap.
         if _ability_id >= 0:
             _seen = _champion_on_board(vision, frame)
-            _ready = (time.time() - _ability_last["t"]) >= _ability_cd
-            hand_vec[_ability_id] = 1.0 if (_seen and _ready) else 0.0
+            if not _seen:
+                # He is gone. The next Mighty Miner is a NEW BODY and brings his own activation, so
+                # the spent flag clears here rather than on any timer.
+                _ability_last["spent"] = False
+                _ability_last["gone_since"] = _ability_last.get("gone_since") or time.time()
+            else:
+                _ability_last["gone_since"] = None
+            hand_vec[_ability_id] = 1.0 if (_seen and not _ability_last["spent"]) else 0.0
         next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
@@ -604,7 +611,7 @@ def play(cfg) -> None:
             # 'mine': no card left the hand and no unit was deployed, and recording either would
             # desync the hand model and mis-anchor a team tag onto whatever is at the button.
             controller.tap(*_ability_xy)
-            _ability_last["t"] = time.time()      # starts the cooldown the availability bit reads
+            _ability_last["spent"] = True         # this body's one activation is gone
         else:
             gx, gy = cell % gw, cell // gw
             controller.play_card(*actions.decode(slot, gx, gy))

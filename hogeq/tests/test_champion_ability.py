@@ -75,24 +75,77 @@ class ChampionAbilityTests(unittest.TestCase):
         env.eng.units.clear()
         self.assertNotIn(env.ability_id, env._hand_ids())
 
+    def test_the_engine_refuses_it_with_no_champion(self):
+        """Guarded in BOTH layers on purpose: the hand check keeps it out of the action space, and
+        this keeps a hand-desync or a hand-crafted action from firing an ability with no body."""
+        env = self.env
+        env.eng.units.clear()
+        env.eng.elixir[0] = 10.0
+        self.assertFalse(env.eng.champion_ability(0))
+
+    def test_a_forced_ability_action_with_no_champion_costs_nothing(self):
+        """The failure that would matter in training: elixir quietly spent on a no-op."""
+        env = self.env
+        env.reset()
+        env.eng.units.clear()
+        env.eng.elixir[0] = 10.0
+        env.step((1, env.ability_id, 200))
+        self.assertEqual(10.0, env.eng.elixir[0])
+
+    def test_only_OUR_champion_counts(self):
+        """An enemy Mighty Miner on the board must not arm our ability."""
+        env = self.env
+        env.reset()
+        env.eng.units.clear()
+        mm = build_spec(env.db, "mighty_miner", 14)
+        env.eng.units.append(Unit(spec=mm, team=1, x=0.5, y=0.3, hp=mm.hp))
+        env.eng.elixir[0] = 10.0
+        self.assertNotIn(env.ability_id, env._hand_ids())
+        self.assertFalse(env.eng.champion_ability(0))
+
+    def test_a_DEAD_champion_does_not_arm_it(self):
+        env, champ = self._board(swarm=0)
+        champ.hp = 0.0
+        self.assertNotIn(env.ability_id, env._hand_ids())
+        self.assertFalse(env.eng.champion_ability(0))
+
     def test_available_once_the_champion_is_out(self):
         env, _ = self._board()
         self.assertIn(env.ability_id, env._hand_ids())
 
-    def test_unavailable_while_cooling_down(self):
-        env, _ = self._board(swarm=4)
+    def test_it_is_SINGLE_USE(self):
+        """4/8/2026 balance: "no longer have a cooldown timer in-between abilities. Instead, his
+        ability will now be single use." Every champion but the Boss Bandit gets exactly one."""
+        env, champ = self._board(swarm=4)
+        self.assertEqual(1, champ.spec.ability_uses)
         self.assertTrue(env.eng.champion_ability(0))
+        self.assertFalse(env.eng.champion_ability(0), "the ability fired a second time")
         self.assertNotIn(env.ability_id, env._hand_ids())
 
-    def test_the_cooldown_actually_ticks(self):
-        """It only ticked inside the automatic-invisibility branch, so a champion whose ability is
-        CHOSEN would have fired once and never recharged."""
-        env, champ = self._board(swarm=4)
+    def test_a_spent_ability_never_comes_back(self):
+        """There is no cooldown to wait out any more -- waiting must not refill it."""
+        env, _ = self._board(swarm=4)
         env.eng.champion_ability(0)
-        self.assertAlmostEqual(champ.ability_cd_left, 13.0, places=3)
-        for _ in range(50):
+        for _ in range(300):                       # 30 s, well past the old 13 s cooldown
             env.eng.advance(0.1)
-        self.assertAlmostEqual(champ.ability_cd_left, 8.0, places=2)
+        self.assertNotIn(env.ability_id, env._hand_ids())
+        self.assertFalse(env.eng.champion_ability(0))
+
+    def test_a_REDEPLOYED_champion_brings_a_fresh_use(self):
+        """One use per BODY, not per match: he dies, he cycles back, he has it again."""
+        env, _ = self._board(swarm=4)
+        env.eng.champion_ability(0)
+        env, champ2 = self._board(swarm=4)         # a new Mighty Miner on the board
+        self.assertEqual(1, env.eng._ability_uses_left(champ2))
+        self.assertIn(env.ability_id, env._hand_ids())
+        self.assertTrue(env.eng.champion_ability(0))
+
+    def test_the_spent_ability_leaves_the_action_space(self):
+        """It must not linger in hand_vec as a legal action the policy can never take."""
+        env, _ = self._board(swarm=4)
+        env.step((1, env.ability_id, 0))
+        env._update_vectors()
+        self.assertEqual(0.0, float(env.hand_vec[env.ability_id]))
 
     def test_it_will_not_fire_without_the_elixir(self):
         env, _ = self._board(swarm=4, elixir=0.0)

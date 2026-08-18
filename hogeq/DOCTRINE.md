@@ -67,7 +67,10 @@ the Hog comes back every **29.1 s**. That number is the deck's clock and most de
 
 ## 4. Mighty Miner's ability — "Explosive Escape"
 
-**1 elixir, 13 s cooldown**, and it is effectively a ninth card. What it does, precisely:
+**1 elixir, and SINGLE USE** — the 4/8/2026 balance update removed the cooldown entirely and gave
+every champion except the Boss Bandit exactly one activation. One use per *body*, so a Mighty Miner
+who dies and cycles back brings a fresh one. It is effectively a ninth card you get once per Miner.
+What it does, precisely:
 
 1. After a **1 second delay** he becomes intangible and moves to the **horizontally mirrored
    position** — same depth, opposite lane.
@@ -85,7 +88,8 @@ the Hog comes back every **29.1 s**. That number is the deck's clock and most de
 * **Split-lane defence.** He can answer one lane, then mirror to the other.
 
 **The timing rule the guides all state:** the single biggest skill is knowing *when* to trigger.
-Early = wasted; late = dead. That makes it a genuine learned decision, not a scripted one.
+Early = wasted; late = dead. That makes it a genuine learned decision, not a scripted one — and
+single use sharpens it, because there is no cooldown to wait out and no second attempt.
 
 **Implemented** as `Engine.champion_ability` plus a pseudo-card identity (`mighty_miner_ability`)
 in the action space — it costs elixir and is a decision, but has no placement, so its cell is

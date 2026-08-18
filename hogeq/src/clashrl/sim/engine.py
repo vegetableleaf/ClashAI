@@ -1350,6 +1350,12 @@ class SimEngine:
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
 
+    @staticmethod
+    def _ability_uses_left(u: "Unit") -> int:
+        """Activations this BODY has left. ``ability_left`` starts at -1 meaning 'not yet read from
+        the spec', which is why this cannot just compare the field: -1 is 'full', not 'empty'."""
+        return int(u.spec.ability_uses if u.ability_left < 0 else u.ability_left)
+
     def champion_ability(self, team: int) -> bool:
         """EXPLOSIVE ESCAPE -- the Mighty Miner's 1-elixir ability, as a PLAYER action.
 
@@ -1370,14 +1376,22 @@ class SimEngine:
         """
         if self.done:
             return False
+        # A champion of OURS must actually be standing on the arena with a use left. There is no
+        # ability without a body -- it acts on him where he is, so with no Mighty Miner out there is
+        # nothing to act on and the action must be refused rather than silently spending elixir.
         champ = next((u for u in self.units
-                      if u.team == team and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0), None)
-        if champ is None or champ.ability_cd_left > 0.0:
+                      if u.team == team and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
+                      and u.ability_cd_left <= 0.0
+                      and self._ability_uses_left(u) > 0), None)
+        if champ is None:
             return False
         s = champ.spec
         if self.elixir[team] < s.ability_cost:
             return False
         self.elixir[team] -= s.ability_cost
+        # SINGLE USE (4/8/2026 balance): every champion but the Boss Bandit gets exactly one
+        # activation, counted per BODY -- a Mighty Miner who dies and is cycled back gets his again.
+        champ.ability_left = self._ability_uses_left(champ) - 1
         champ.ability_cd_left = s.ability_cd
         ox, oy = champ.x, champ.y
         # THE BOMB, left where he was standing. Built off his own spec so it keeps his team and

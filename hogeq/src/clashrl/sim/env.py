@@ -423,9 +423,19 @@ class SimMatchEnv:
         return ids
 
     def _ability_ready(self) -> bool:
-        """Champion on the board, ability off cooldown. Elixir is left to the affordability mask."""
+        """Champion of OURS alive on the board, with an activation left and no cooldown running.
+
+        All three conditions have to be here and not only in the engine: this is what puts the
+        ability in hand_vec, so a spent or bodiless ability that stayed 'in hand' would keep being
+        offered to the policy as a legal action it can never actually take -- a permanently dead
+        entry in the action space, and gradient spent on it every step.
+
+        Single use (4/8/2026 balance) is counted per BODY, so a Mighty Miner who dies and is cycled
+        back brings a fresh activation with him.
+        """
         return any(u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
-                   and u.ability_cd_left <= 0.0 for u in self.eng.units)
+                   and u.ability_cd_left <= 0.0 and self.eng._ability_uses_left(u) > 0
+                   for u in self.eng.units)
 
     def _play_slot(self, card_id: int) -> None:
         """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to

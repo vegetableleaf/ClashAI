@@ -35,7 +35,11 @@ hand:
   ability_button: [0.963, 0.758]
   ability_button_radius: 0.055     # how far from that centre still counts as the button
   ability_cost: 1
-  ability_cooldown_s: 13.0
+  # NO COOLDOWN. The 4/8/2026 balance update removed the timer and made every champion ability
+  # except the Boss Bandit's SINGLE USE, so live availability is a spent flag cleared when the
+  # champion leaves the arena (one use per body), not a countdown. Kept at 0 so nothing reads a
+  # stale 13 s and re-offers an ability the game would refuse.
+  ability_cooldown_s: 0.0
   card_w: 0.055                 # half-width of a hand-card portrait crop (normalized)
   card_h: 0.045                 # half-height of a hand-card portrait crop (normalized)
   match_threshold: 0.5          # min normalized template-match score to accept an identity

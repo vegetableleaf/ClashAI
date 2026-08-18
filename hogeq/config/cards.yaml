@@ -1482,7 +1482,7 @@ cards:
   # flight -- the balance log says "decreased the time required for CHARGING his jump to 0.9
   # seconds". His JUMP splash (2.2) is far wider than his normal swing (1.3).
   mega_knight: {range: melee, attacks: [ground], flags: [tank, splash, knockback, knockback_immune], leap_min_tiles: 3.5, leap_max_tiles: 5.0, leap_speed_tiles: 4.17, leap_splash_tiles: 2.2, leap_towers: true, verified: true}   # 7e tank whose spawn/jump SPLASHES -- do not answer it with a swarm; a building pulls it. "he will deal damage to enemy units around him in a 360 area ... and inflict knockback" (spawn_damage 430 over splash_radius 1.3). He DOES jump crown towers; his "Mega Power Jump" modifier only lifts the DISTANCE limit.
-  # MIGHTY MINER + "EXPLOSIVE ESCAPE" (1 elixir, 13 s). Executed by Engine.champion_ability, which
+  # MIGHTY MINER + "EXPLOSIVE ESCAPE" (1 elixir, single use). Executed by Engine.champion_ability,
   # the env exposes as its own action-space slot -- this is a PLAYER choice, not the automatic
   # Boss-Bandit reaction, so it deliberately carries NO ability_invis_s (that field is what selects
   # the automatic behaviour, and declaring it here would fire his escape at a random HP threshold).
@@ -1492,8 +1492,14 @@ cards:
   # RADIUS IS THE ONE GUESS: the ability is described only as "medium area damage" and no source
   # publishes a number, so 2.5 tiles sits between Bomber's 1.5 splash and Giant Skeleton's 3.0
   # death blast. Worth measuring against a real clip before trusting the ability's defensive value.
+  # SINGLE USE, NO COOLDOWN (wiki balance history, 4/8/2026): "made it so that the Mighty Miner
+  # would no longer have a cooldown timer in-between abilities. Instead, his ability will now be
+  # single use." The 13-second cooldown still quoted in that page's prose is STALE -- the balance
+  # entry supersedes it, and every champion except the Boss Bandit now gets exactly one activation.
+  # Tracked PER BODY (Unit.ability_left), so a Mighty Miner who dies and is cycled back gets his
+  # one use again -- it is one use per deployment, not one per match.
   mighty_miner: {range: melee, flags: [knockback_immune],
-                 ability_cost: 1, ability_cooldown_s: 13.0, ability_delay_s: 1.0,
+                 ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0,
                  ability_bomb_damage: 366, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8,
                  verified: false}
   # "the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback,
@@ -1707,7 +1713,8 @@ cards:
   #   mega_knight  -- his JUMP blast (jump_damage 537 / jump_time_s 0.9) needs a leap mechanic; his
   #                   LANDING blast IS modelled (spawn_damage)
   #   mighty_miner -- the bomb dropped by his ABILITY ("Explosive Escape"). Researched 2026-08-17:
-  #                   1 elixir (was 2), 13 s cooldown, ~1 s delay, then he becomes intangible and
+  #                   1 elixir (was 2), SINGLE USE per body (the 4/8/2026 balance update removed
+  #                   the old 13 s cooldown outright), ~1 s delay, then he becomes intangible and
   #                   moves to the HORIZONTALLY MIRRORED position (same depth, opposite lane),
   #                   leaving a bomb at the original spot that detonates after ~1 s for area damage
   #                   to ground AND air with 1.8-tile knockback. The bomb's damage number is not
