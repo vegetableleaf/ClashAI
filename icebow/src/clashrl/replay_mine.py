@@ -190,6 +190,29 @@ def own_card_bases(db) -> List[str]:
     return sorted(out)
 
 
+#: Detector classes that are VISUAL LOOKALIKES of a deck card, keyed by the deck card's base.
+#: The deck veto turns any "mine" verdict for a non-deck card into "enemy" -- which is right when
+#: the TEAM was wrong, and exactly backwards when the NAME was wrong: our Mighty Miner misread as
+#: "miner" became a phantom enemy standing in our own half, and the policy defended against its
+#: own card (user-reported 2026-08-18). When hard evidence (anchor / motion / bars, ranks 1-3)
+#: says "mine" and the named card is a curated lookalike of one we own, the verdict stands and
+#: the detection is RELABELLED to the deck card. Priors (ranks 4-5) are not enough -- an enemy
+#: really can park a Miner deep in our half, and the veto must keep winning that argument.
+#: Curated from the sprite taxonomy, not measured; extend when detect-eval's confusions say so.
+LOOKALIKES = {
+    "hog_rider": ("ram_rider", "royal_hogs", "battle_ram"),
+    "mighty_miner": ("miner",),
+    "firecracker": ("archers", "dart_goblin"),
+    "ice_spirit": ("fire_spirit", "electro_spirit", "heal_spirit"),
+    "skeletons": ("skeleton_army",),
+    "the_log": ("barbarian_barrel",),
+    "ice_wizard": ("wizard", "electro_wizard"),
+    "knight": ("golden_knight",),
+    "tesla": ("cannon",),
+    "x_bow": ("mortar",),
+}
+
+
 class TeamTracker:
     """LIVE team verdicts by EVIDENCE FUSION over short unit tracks, replacing the old colour-only
     guess. Colour was the weakest possible signal: the HP bar (the one reliable team colour) only
@@ -220,7 +243,8 @@ class TeamTracker:
                  track_radius: float = 0.12, forget_s: float = 4.5,
                  enemy_window_s: Optional[float] = None, motion_min: float = 0.05,
                  deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38,
-                 own_cards: Optional[Sequence[str]] = None):
+                 own_cards: Optional[Sequence[str]] = None, is_building=None,
+                 building_mine_y: float = 0.50, building_enemy_y: float = 0.46):
         # DECK VETO -- a hard constraint, not another piece of evidence. A unit on OUR side can only
         # be a card from OUR deck, so a "mine" verdict for a card we do not own is wrong BY
         # CONSTRUCTION, whatever the colour/motion/side evidence said. Every rank above can produce
@@ -245,6 +269,20 @@ class TeamTracker:
         self.motion_min = float(motion_min)        # net |dy| that counts as marching (not jitter/knockback)
         self.deep_mine_y = float(deep_mine_y)      # first seen BELOW this -> deep in MY half
         self.deep_enemy_y = float(deep_enemy_y)    # first seen ABOVE this -> deep in ENEMY half
+        # BUILDING side prior (see _verdict): buildings cannot cross the river, so which half one
+        # stands in is near-proof of whose it is -- and the split is the RIVER (~0.48), not the
+        # deep-half lines above, because a defensive building is placed at the FRONT of its half.
+        self._is_building = is_building or (lambda base: False)
+        self.building_mine_y = float(building_mine_y)
+        self.building_enemy_y = float(building_enemy_y)
+        # alias -> deck twin, for the lookalike rescue in _claim (see LOOKALIKES)
+        self._twin = {}
+        if self.own_cards:
+            for twin, aliases in LOOKALIKES.items():
+                if twin in self.own_cards:
+                    for a in aliases:
+                        if a not in self.own_cards:
+                            self._twin[a] = twin
         self.reset()
 
     def reset(self) -> None:
@@ -271,7 +309,7 @@ class TeamTracker:
         """Is normalized x inside an OPEN pocket lane? (lanes overlap through the centre to be safe)"""
         return (x < 0.55 and pockets[0]) or (x > 0.45 and pockets[1])
 
-    def _claim(self, team: str, base: str) -> str:
+    def _claim(self, team: str, base: str, rank: int = 9) -> "tuple[str, str]":
         """Apply the deck veto: a card we do not own is the OPPONENT'S, whatever the evidence said.
 
         Symmetric on purpose. It rescues the "mine" mistakes this was written for, and it also
@@ -282,8 +320,21 @@ class TeamTracker:
         the policy trains on has ground-truth teams and never produces the category at all.
         """
         if team != "enemy" and self.own_cards is not None and str(base) not in self.own_cards:
-            return "enemy"
-        return team
+            # LOOKALIKE RESCUE. Hard evidence (rank 1 anchor / 2 motion / 3 bars) says this unit is
+            # OURS, and the detector named a curated lookalike of a card we own -- then the NAME is
+            # the error, not the team, and vetoing it manufactures the exact phantom enemy the veto
+            # exists to prevent. Relabel to the deck twin so identity, interactions and the obs
+            # canvas all see the true card. Priors (rank >= 4) do NOT qualify: an enemy really can
+            # park a Miner deep in our half, and the veto must keep winning that argument.
+            twin = self._twin.get(str(base))
+            # Buildings extend the rescue to rank 4: their side prior is not the weak deep-half
+            # guess but placement legality (a building STANDING on our half can only have been
+            # placed by us, pockets already excluded) -- so "cannon on our half" is our Tesla
+            # misread, not an enemy cannon.
+            if twin is not None and team == "mine"                     and (rank <= 3 or (rank == 4 and self._is_building(str(base)))):
+                return "mine", twin
+            return "enemy", base
+        return team, base
 
     def _verdict(self, d, trk) -> "tuple[str, int]":
         """Best (team, rank) for a linked det+track from the evidence available NOW (1 = strongest)."""
@@ -294,6 +345,19 @@ class TeamTracker:
             return "enemy", 2                       # marching DOWN, toward me
         if trk["bm"] != trk["be"]:
             return ("mine" if trk["bm"] > trk["be"] else "enemy"), 3
+        if self._is_building(d.base) and d.base not in self.NO_SIDE_PRIOR:
+            # BUILDINGS CANNOT CROSS THE RIVER. One can only ever have been PLACED, and placement
+            # is confined to the owner's half (pocket aside), so which half it STANDS in is
+            # near-proof of whose it is. The generic deep-half prior below misses most of them:
+            # deep_mine_y (0.62) is behind our princess line, while a defensive Tesla is placed at
+            # the FRONT of our half (y ~ 0.52-0.60), never marches, and shows no HP bar until
+            # damaged -- an Evo Tesla hides underground, so often no bar at all. It fell through
+            # to "unknown", and the canvas painted unknown as an ENEMY (audit gap #2): our own
+            # defensive building read as an enemy attacking one, and the policy answered it.
+            if trk["y0"] >= self.building_mine_y and not self._in_lane(trk["x0"], self._pocket_my):
+                return "mine", 4
+            if trk["y0"] <= self.building_enemy_y and not self._in_lane(trk["x0"], self._pocket_enemy):
+                return "enemy", 4
         if d.base not in self.NO_SIDE_PRIOR:
             if trk["y0"] >= self.deep_mine_y and not self._in_lane(trk["x0"], self._pocket_my):
                 return "mine", 4
@@ -335,11 +399,17 @@ class TeamTracker:
             if trk["rank"] > 1 and any(
                     (pb is None or pb == d.base) and (dx - px) ** 2 + (dy - py) ** 2 <= sr2
                     for px, py, _, pb in self._plays):
-                trk["team"], trk["rank"] = self._claim("mine", d.base), 1
+                team, nb = self._claim("mine", d.base, 1)
+                trk["team"], trk["rank"] = team, 1
+                if nb != d.base:
+                    d.cls = nb                                    # lookalike relabel (base follows cls)
             else:
                 team, rank = self._verdict(d, trk)
                 if rank <= trk["rank"]:                           # stronger/equal evidence -> (re)decide
-                    trk["team"], trk["rank"] = self._claim(team, d.base), rank
+                    team, nb = self._claim(team, d.base, rank)
+                    trk["team"], trk["rank"] = team, rank
+                    if nb != d.base:
+                        d.cls = nb                                # lookalike relabel (base follows cls)
             d.team = trk["team"]
             live.append(trk)
         # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.

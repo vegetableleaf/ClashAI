@@ -193,6 +193,17 @@ def detection_channels(dets: List[Detection], db, oh: int, ow: int, warp=None) -
     confidence in its channel; overlaps take the max."""
     ch = np.zeros((oh, ow, N_CHANNELS), np.float32)
     for d in dets:
+        if d.team == "unknown":
+            # NOT PAINTED. _channel_of maps anything that is not "mine" into an enemy channel, so
+            # a unit the tracker could not side -- most often one of OUR OWN deck cards with no
+            # motion/bar/side evidence yet -- appeared to the policy as an enemy, and it answered
+            # its own units (user-reported 2026-08-18; audit gap #2). The sim the policy trains on
+            # has ground-truth teams and NEVER produces "unknown", so painting a guess is strictly
+            # out-of-distribution, while a briefly missing unit is in-distribution (the detector
+            # already misses a unit in ~31% of its frames). `interactions` has always dropped
+            # unknown; now the canvas agrees. NOTE this narrows the enemy channels' distribution
+            # -- a deliberate retrain decision, taken with the from-scratch PPO restart planned.
+            continue
         k = _channel_of(d, db)
         if warp is not None:                       # live: frame coords -> BOARD coords, so the
             bx, by = warp.frame_to_board(d.cx, d.gy)   # canvas matches the sim's board-true one
@@ -227,7 +238,7 @@ def predictive_channels(units, my_towers, enemy_towers, db, oh: int, ow: int,
         cv2.ellipse(layer, (int(px * ow), int(py * oh)), (rx, ry), 0, 0, 360,
                     float(min(1.0, conf)), -1)
         ch[:, :, k] = np.maximum(ch[:, :, k], layer)
-        if team != "mine" and urg > 0.0:
+        if team == "enemy" and urg > 0.0:
             layer = np.zeros((oh, ow), np.float32)
             cv2.ellipse(layer, (int(x * ow), int(y * oh)), (rx, ry), 0, 0, 360,
                         float(min(1.0, urg * conf)), -1)

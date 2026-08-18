@@ -288,6 +288,7 @@ def play(cfg) -> None:
     from .replay_mine import TeamTracker, own_card_bases
     _team_tracker = TeamTracker(
         own_cards=own_card_bases(_db),               # DECK VETO: 'mine' must name a card we own
+        is_building=lambda b, _db=_db: _db.kind(b) == "building",      # building side prior
         spawn_radius=float(cfg.get("observation", "team_spawn_radius", default=0.10)),
         spawn_window_s=float(cfg.get("observation", "team_spawn_window_s", default=2.5)),
         enemy_window_s=float(cfg.get("observation", "team_enemy_window_s", default=4.0)),
