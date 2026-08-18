@@ -477,6 +477,24 @@ class CardDB:
                 out.append(k + "_evo")
         return out
 
+    def ability_identity(self) -> Optional[str]:
+        """The deck's player-triggered champion ability as its own action identity, or None.
+
+        A champion ability costs elixir and is a real decision, but it has no placement -- it acts on
+        the champion wherever he already stands. Giving it an identity is what makes it reachable by
+        a policy whose action space is (wait/play, card, cell); the cell is then ignored.
+
+        action spaces have to agree exactly or a checkpoint trained in the sim cannot be loaded to
+
+        Keyed off `ability_bomb_damage`, which marks the PLAYER-triggered shape specifically; the
+        automatic Boss-Bandit reaction (`ability_invis_s`) is opponent behaviour and gets no slot.
+        """
+        for entry in self._deck.get("cards", []):
+            k = _key(entry.get("card"))
+            if float((self.get(k) or {}).get("ability_bomb_damage") or 0.0) > 0.0:
+                return k + "_ability"
+        return None
+
     def deck_levels(self) -> List[int]:
         """Per-identity card levels, PARALLEL to deck_identities() (an evolved slot repeats the level)."""
         out: List[int] = []
