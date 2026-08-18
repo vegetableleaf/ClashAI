@@ -603,6 +603,53 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
         tgt = max(ground, key=lambda u: u.y)
         _add_spot(w, env, tgt.x, max(0.46, min(tgt.y, 0.62)), 3.5, 1.0)
 
+    elif base == "earthquake":
+        # EARTHQUAKE IS AN OFFENSIVE SPELL IN THIS DECK, ~90% of casts (user doctrine): it chips a
+        # princess tower and deletes the building defending it IN THE SAME CAST. There was no cell
+        # rule for it at all, which is why it was landing in the centre of our OWN half -- a cast
+        # with nothing to hit, on the side of the arena the card has no business on.
+        #
+        # THE GEOMETRY IS FIXED, which is the point: their princess sits at y=0.2031 and the blast
+        # reaches 3.5 tiles, so one cast covers the tower and anything within 7 tiles of it. That is
+        # every standard defensive-building placement, so the aim barely varies -- it is a spot, not
+        # a search. Their half only: y < 0.5 is past the river.
+        alive_tw = [t for t in env.eng.towers[1][:2] if getattr(t, "hp", 0) > 0]
+        if not alive_tw:
+            return None
+        theirs = [u for u in enemies if u.y < 0.5 and u.hp > 0 and not u.spec.flying]
+        builds = [u for u in theirs if u.spec.kind == "building"]
+        # A ground CLUMP counts as the same kind of target: EQ out-trades a swarm it can catch
+        # alongside the tower. Buildings rank first -- they are what actually stops the Hog.
+        clump = [u for u in theirs if u.spec.kind == "troop"]
+        prize = None
+        if builds:
+            prize = min(builds, key=lambda u: min(_tiles(u.x, u.y, t.x, t.y) for t in alive_tw))
+        elif len(clump) >= 3:
+            cx = sum(u.x for u in clump) / len(clump)
+            cy = sum(u.y for u in clump) / len(clump)
+            prize = type("_P", (), {"x": cx, "y": cy})()
+
+        # The tower we are working on: the one nearest the prize, else the weaker of the two.
+        if prize is not None:
+            tw = min(alive_tw, key=lambda t: _tiles(prize.x, prize.y, t.x, t.y))
+        else:
+            tw = min(alive_tw, key=lambda t: getattr(t, "hp", 0.0))
+
+        if prize is None:
+            # PURE CHIP. Nothing of theirs to delete, so sit on the tower itself -- the cast still
+            # pays three waves of crown damage, and this deck wins on chip as much as on connects.
+            _add_spot(w, env, tw.x, tw.y, 4.0, 1.2)
+        else:
+            sep = _tiles(prize.x, prize.y, tw.x, tw.y)
+            reach = float(env.specs[card_id].spell_radius or 3.5)
+            if sep <= 2.0 * reach:
+                # BOTH. Midpoint: each target sits half the separation away, inside the blast.
+                _add_spot(w, env, (prize.x + tw.x) / 2.0, (prize.y + tw.y) / 2.0, 5.0, 1.5)
+            else:
+                # THE PRIZE, not the tower. User doctrine: "prioritising the latter if hitting both
+                # isn't an option" -- the building is what stops the Hog, the chip is a bonus.
+                _add_spot(w, env, prize.x, prize.y, 5.0, 1.5)
+
     elif base == "rocket":
         # TORNADO SYNERGY (user doctrine, 2026-08-16) -- FIRST, because it is the only rule that
         # is time-critical. The Tornado is what MAKES a rocket-sized clump in this deck; a bundle
