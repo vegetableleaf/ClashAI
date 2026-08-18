@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 07:20**, at commit `c083bac`.
+Last updated: **2026-08-18 17:30**, at commit `HEAD` (board-26 resumed at epoch 52/120; live gate run).
 
 ---
 
@@ -71,6 +71,9 @@ cd C:\Users\benpe\ClashBot\hogeq
   `ClashBot\runs\detect\runs\detect\board-26` — outside icebow, where `detect-eval` would never find
   it. **Always pass an absolute `project=`.**
 * **`python3` does not exist** on PATH; only the venv pythons.
+* **`Start-Process -ArgumentList "-c",$code` silently mangles python one-liners.** PowerShell splits
+  the code string on spaces, so python receives only `from` and dies with
+  `SyntaxError: invalid syntax`. Launch long-running python from a **file**, not `-c`.
 * **Bash tool cwd persists between calls.** A `cd` into icebow silently makes later relative paths
   resolve there — this caused a verification pass to run against the wrong deck. Prefer absolute
   paths, or re-`cd` in the same command.
@@ -80,16 +83,35 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-* **board-26 detector training** — started 2026-08-17 ~23:30 via
-  `icebow/_train_board26.py`, `save_dir=C:\Users\benpe\ClashBot\icebow\runs\detect\board-26`.
+* **board-26 detector training — RESUMED 2026-08-18 17:24 after a host restart killed it.**
+  Originally started 2026-08-17 ~23:30 via `icebow/_train_board26.py`,
+  `save_dir=C:\Users\benpe\ClashBot\icebow\runs\detect\board-26`.
   yolo11s.pt, 120 epochs, imgsz 960, batch 4, patience 30, workers 4, nc=230.
-  17,821 training frames (12,821 real + 5,000 synth), 4,456 batches/epoch.
-  Measured ~4.3–5.0 it/s → **~15.8 min/epoch**; expect **~18 h** if it early-stops near board-25's
-  69 epochs, ~31 h for the full 120. A persistent Monitor is armed for per-epoch mAP, early stop,
-  and `MemoryError`/OOM/traceback.
-  **Checked 2026-08-18 07:17: alive, 32/120 epochs, 14.2 min/epoch.** mAP50 0.8524 / mAP50-95
-  0.6617 at epoch 32, still improving (0 epochs since best, patience 30). ETA 8.8 h to epoch 69,
-  20.9 h to 120.
+  17,821 training frames (12,821 real + 5,000 synth), 4,456 batches/epoch, **14.5 min/epoch**.
+
+  **The restart.** The laptop rebooted at **11:54**; the last checkpoint wrote at **11:37**, so the
+  run died at **epoch 51/120** and the machine then sat idle ~5.5 h. Nothing was lost: `last.pt`
+  carried `optimizer` + `scaler` + `ema` + `best_fitness`, and `save_dir/args.yaml` carried the
+  hyperparameters. **This run is fully resumable and was resumed** — recipe below.
+
+  **Resume recipe** (`icebow/_resume_board26.py`; PID in `icebow/runs/board26.pid`, logs
+  `icebow/runs/board26_resume.{out,err}`):
+  ```python
+  YOLO(r"...\runs\detect\board-26\weights\last.pt").train(resume=True)
+  ```
+  `resume=True` re-reads `args.yaml`, so **do not re-pass** `epochs/imgsz/batch/workers/patience`
+  and **do not pass `project=`/`name=`** — resume ignores them and it only re-opens the
+  relative-project trap (§2). Confirm it took hold: the log must say
+  `Resuming training ...\last.pt from epoch 52 to 120 total epochs`. A bare
+  `Starting training for 120 epochs` instead means it restarted from zero — kill it.
+  **Do not launch it via `Start-Process -ArgumentList "-c",$code`** — PowerShell splits the `-c`
+  string on spaces and python dies with `SyntaxError: invalid syntax` pointing at the word `from`.
+  Use a launcher **file**; that is why `_resume_board26.py` exists.
+
+  **State at the crash (epoch 51, which WAS the best epoch):** mAP50 **0.8588** / mAP50-95
+  **0.6840**, 0 epochs since best, fitness monotonically rising from epoch 32 (0.8524 / 0.6617).
+  Remaining: **69 epochs ≈ 16.7 h** to 120; floor is epoch 81 ≈ 7.3 h if it plateaus now and
+  patience 30 fires.
 
   > **⚠ THE EPOCH-BY-EPOCH COMPARISON AGAINST board-25 IS NOT APPLES-TO-APPLES.** The Roboflow
   > import landed 2026-08-17 18:57 (`7d23f12`); board-25 ran 08-13 and board-24-5 on 08-11, both
@@ -101,6 +123,31 @@ cd C:\Users\benpe\ClashBot\hogeq
   > The honest gate is unchanged and uncontaminated: `run.py detect-eval` on
   > `data/detect/val_board15.txt` — **241 images, verified 0% Roboflow**, all live-captured. That
   > file lists image STEMS (and has a UTF-8 BOM on line 1), not paths.
+  >
+  > **THE GATE HAS NOW BEEN RUN, AND IT CONFIRMS THE WARNING. board-26 @ epoch 51 does NOT beat
+  > board-24-5 on live images** — the +6 mAP50 lead was the easier val set, exactly as suspected.
+  > Both scored on the same 241 stems / 820 GT boxes @ conf 0.35:
+  >
+  > | | board-24-5 (the pin) | board-26 @ e51 |
+  > |---|---|---|
+  > | presence UNITS **R** | **0.855** | 0.853 |
+  > | presence UNITS P | 0.886 | **0.904** |
+  > | whitelist ident R | 0.823 | **0.828** |
+  > | deck UNITS ≥ 0.80 | **5/5** | **4/5 — skeletons 0.77 FAILS** |
+  > | tesla | **0.98** | 0.96 |
+  > | knight | **0.90** | 0.81 |
+  > | skeletons | **0.82** | 0.77 |
+  > | tornado (proj) | **1.00** | 0.67 |
+  >
+  > It trades **recall for precision** (+1.8 P, −0.2 R) and loses recall on **4 of 5 deck units**.
+  > `detect.weights` therefore **stays pinned to board-24-5**. Re-run this gate on the FINAL
+  > best.pt — 69 epochs of training remain and epoch 51 was still improving, so this is a status
+  > check, not the verdict.
+  >
+  > Command, for both generations:
+  > ```
+  > run.py detect-eval --weights runs/detect/<gen>/weights/best.pt --subset data/detect/val_board15.txt
+  > ```
 * **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
   `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
   22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
@@ -217,6 +264,10 @@ configured but **have never run** — BC has not been retrained since the soft-t
 3. **board-26 verdict**: it only replaces board-24-5 if `detect-eval` beats it on
    `data/detect/val_board15.txt` (241 images). The `detect.weights` pin stays until then.
    board-25 came out **bit-identical** to board-24-5, so this gate has already caught one no-op.
+   **Measured at epoch 51 (2026-08-18): board-26 LOSES** — 4/5 deck units below board-24-5,
+   skeletons 0.77 fails the 0.80 gate (full table in §3). Re-run on the final best.pt. If the
+   recall deficit survives to the end, the likely cause is the val/train mix shifting toward clean
+   Roboflow frames, and the fix is reweighting toward live captures — not more epochs.
 4. **Ability button calibration (hogeq)** — `hand.ability_button: [0.963, 0.758]` is still estimated
    off a scaled screenshot. Script ready at
    `…/scratchpad/ability_calib.py` (`--aim` draws a crosshair and presses nothing; no-flag plays the
@@ -271,6 +322,10 @@ configured but **have never run** — BC has not been retrained since the soft-t
   did not exist when board-25 was validated, so comparing their per-epoch mAP measures the val
   set as much as the model. Before comparing two training runs, check the val set is the same
   one -- and prefer the fixed held-out gate (`val_board15.txt`) over training-time metrics.
+* **A training-time mAP lead can invert on the real gate.** board-26 led board-25 by +6.1 mAP50 on
+  its own val set and yet, at epoch 51, scored *below* board-24-5 on all but one deck unit on the
+  241 live images. Higher precision, lower recall. **Never promote a detector on `results.csv`;
+  only `detect-eval --subset val_board15.txt` decides.**
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
