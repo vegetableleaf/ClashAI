@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-17 23:50**, at commit `1cfa07e`.
+Last updated: **2026-08-18 07:20**, at commit `c083bac`.
 
 ---
 
@@ -87,10 +87,20 @@ cd C:\Users\benpe\ClashBot\hogeq
   Measured ~4.3–5.0 it/s → **~15.8 min/epoch**; expect **~18 h** if it early-stops near board-25's
   69 epochs, ~31 h for the full 120. A persistent Monitor is armed for per-epoch mAP, early stop,
   and `MemoryError`/OOM/traceback.
-  **Epoch 1 completed 2026-08-17 23:46 in 15:00 flat at 5.0 it/s**, matching the estimate.
-  A one-shot check is scheduled for **07:03 on 2026-08-18** (session-only cron `4c55594d` — it dies
-  if the Claude session is closed; if that happens, just do the check manually: read
-  `runs/detect/board-26/results.csv` and compare against board-25 / board-24-5 at the same epoch).
+  **Checked 2026-08-18 07:17: alive, 32/120 epochs, 14.2 min/epoch.** mAP50 0.8524 / mAP50-95
+  0.6617 at epoch 32, still improving (0 epochs since best, patience 30). ETA 8.8 h to epoch 69,
+  20.9 h to 120.
+
+  > **⚠ THE EPOCH-BY-EPOCH COMPARISON AGAINST board-25 IS NOT APPLES-TO-APPLES.** The Roboflow
+  > import landed 2026-08-17 18:57 (`7d23f12`); board-25 ran 08-13 and board-24-5 on 08-11, both
+  > BEFORE it. **81% of board-26's val set (1,893 of 2,346) is Roboflow images that did not exist
+  > when the older runs were validated**, and Roboflow frames are cleaner than live captures. So
+  > board-26's headline lead (+6.1 mAP50 / +11.9 mAP50-95 over board-25's FINAL best, already at
+  > epoch 32) is partly an easier val set. Do not report it as a win.
+  >
+  > The honest gate is unchanged and uncontaminated: `run.py detect-eval` on
+  > `data/detect/val_board15.txt` — **241 images, verified 0% Roboflow**, all live-captured. That
+  > file lists image STEMS (and has a UTF-8 BOM on line 1), not paths.
 * **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
   `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
   22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
@@ -257,6 +267,10 @@ configured but **have never run** — BC has not been retrained since the soft-t
 * **The detector audit trap**: an offline tool that reads the *live screen* instead of the video it
   claims to analyse. `LiveMatchEnv.__init__` starts a 10 Hz perception thread and `_detect_enemies`
   returns its snapshot if <2 s old.
+* **A model's own val set can change under you.** board-26's val is 81% Roboflow images that
+  did not exist when board-25 was validated, so comparing their per-epoch mAP measures the val
+  set as much as the model. Before comparing two training runs, check the val set is the same
+  one -- and prefer the fixed held-out gate (`val_board15.txt`) over training-time metrics.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
