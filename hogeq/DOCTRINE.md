@@ -1,8 +1,15 @@
 # Hog Earthquake doctrine — card roles, synergies, and the counter plan
 
-**Status: DRAFT, 2026-08-17.** Written from research at the deck switch; nothing here has been
-compiled into sim rules yet. The icebow doctrine that used to live in this file is preserved in
+**Status: 2026-08-17.** The icebow doctrine that used to live in this file is preserved in
 `../icebow/DOCTRINE.md` and does not apply — this deck wins a different way.
+
+Five rules from this document are compiled into `sim/doctrine.py` and fire in the sim:
+quiet board → **Hog at 4 elixir** (replacing IceBow's bank-to-6), cycle from 6, **Earthquake**
+whenever an enemy building stands, **Mighty Miner** onto a ≥2000 HP body with a cheap distraction,
+and **Explosive Escape** only once two or more enemies are inside the blast. The Tesla-for-wincon
+rule carries over with the Ice Spirit replacing the Ice Wizard as its cheap support.
+
+Everything in §5 below is still a first draft that has not been measured against frames.
 
 **Deck (Classic 1v1, real account levels):** Hog Rider 13, Evo Firecracker 13, Mighty Miner 14
 (champion), Evo Tesla 14, The Log 14, Earthquake 13, Skeletons 15, Ice Spirit 13.
@@ -79,6 +86,13 @@ the Hog comes back every **29.1 s**. That number is the deck's clock and most de
 
 **The timing rule the guides all state:** the single biggest skill is knowing *when* to trigger.
 Early = wasted; late = dead. That makes it a genuine learned decision, not a scripted one.
+
+**Implemented** as `Engine.champion_ability` plus a pseudo-card identity (`mighty_miner_ability`)
+in the action space — it costs elixir and is a decision, but has no placement, so its cell is
+ignored and it does not rotate the cycle. Bomb damage 441 at level 13 / 484 at 14; the blast
+**radius 2.5 tiles is the one guess in the whole card** — no source publishes it, so it sits
+between Bomber's splash and the Giant Skeleton's death blast, and it is worth measuring against a
+real clip before trusting the ability's defensive value.
 
 ## 5. Standing placement priors (first draft — to be checked against frames)
 
