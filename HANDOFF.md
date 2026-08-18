@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-17 23:45**, at commit `a266788`.
+Last updated: **2026-08-17 23:50**, at commit `1cfa07e`.
 
 ---
 
@@ -87,6 +87,10 @@ cd C:\Users\benpe\ClashBot\hogeq
   Measured ~4.3–5.0 it/s → **~15.8 min/epoch**; expect **~18 h** if it early-stops near board-25's
   69 epochs, ~31 h for the full 120. A persistent Monitor is armed for per-epoch mAP, early stop,
   and `MemoryError`/OOM/traceback.
+  **Epoch 1 completed 2026-08-17 23:46 in 15:00 flat at 5.0 it/s**, matching the estimate.
+  A one-shot check is scheduled for **07:03 on 2026-08-18** (session-only cron `4c55594d` — it dies
+  if the Claude session is closed; if that happens, just do the check manually: read
+  `runs/detect/board-26/results.csv` and compare against board-25 / board-24-5 at the same epoch).
 * **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
   `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
   22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
