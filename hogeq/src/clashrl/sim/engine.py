@@ -1059,9 +1059,12 @@ class Projectile:
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
     bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
-    trail_next: float = 0.75   # EVO FC: tiles of flight until the next lingering spark zone drops
-    trail_dmg: float = 0.0     # EVO FC: per-0.25s tick damage of the zones THIS shot drops
-                               # (carrier = large spark 192 dps; shrapnel = small 60 dps; 0 = none)
+    # EVO FC: per-0.25s tick damage of the ONE lingering spark zone this shot leaves WHERE ITS
+    # FLIGHT ENDS -- the carrier drops a large zone on the target it hit, each shrapnel bolt drops a
+    # small one at the end of its run. It used to drop a zone every 1.25 tiles along the WHOLE path,
+    # for the carrier and all five bolts, which at 11 tiles of shrapnel range carpeted most of a lane
+    # in damage-over-time (user report: "covering too much space"). 0 = this shot leaves none.
+    spark_end_dmg: float = 0.0
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -3153,7 +3156,7 @@ class SimEngine:
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
             bounces_left=spec.bounce_n,
-            trail_dmg=spec.spark_dps_big * 0.25))    # Evo FC carrier drops LARGE sparks
+            spark_end_dmg=spec.spark_dps_big * 0.25))   # Evo FC: ONE large zone on the impact point
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -3246,13 +3249,6 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            if p.trail_dmg > 0.0:                    # Evo FC: "both the initial and small shrapnel
-                p.trail_next -= step                 # will leave sparks behind" along their flight
-                if p.trail_next <= 0.0:
-                    p.trail_next = 1.25
-                    self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
-                                             self.t + p.spec.spark_dur, p.trail_dmg, self.t])
-                    del self.spark_zones[:-60]
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
                 p.y += p.diry * step
@@ -3278,6 +3274,7 @@ class SimEngine:
                         p.left = back
                         p.hit.clear()
                         continue
+                    self._drop_spark_zone(p)   # Evo FC shrapnel: one SMALL zone at the end of its run
                     self.projectiles.remove(p)
                 continue
             dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
@@ -3288,8 +3285,23 @@ class SimEngine:
                 p.y += (dyt / d) * move / _TILES_Y
             p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
+                self._drop_spark_zone(p)   # Evo FC carrier: one LARGE zone on the impact point
                 self._impact(p)
                 self.projectiles.remove(p)
+
+    def _drop_spark_zone(self, p: Projectile) -> None:
+        """EVO FIRECRACKER: leave this shot's lingering spark zone where its flight ENDED.
+
+        The card's damage-over-time is deliberately only in two places -- one large circle on the
+        primary projectile's impact point, and one small circle at the very end of each of the five
+        shrapnel bolts' flight. Dropping them along the flight path instead (the old model, every
+        1.25 tiles) painted most of a lane with DoT and made her a zoning card she is not.
+        """
+        if p.spark_end_dmg <= 0.0:
+            return
+        self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
+                                 self.t + p.spec.spark_dur, p.spark_end_dmg, self.t])
+        del self.spark_zones[:-60]
 
     def _impact(self, p: Projectile) -> None:
         spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
@@ -3446,7 +3458,7 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
-                trail_dmg=s.spark_dps_small * 0.25))  # Evo FC shrapnel drops SMALL sparks
+                spark_end_dmg=s.spark_dps_small * 0.25))  # ONE small zone at the END of each bolt
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
         """Whether `spec`'s pushback moves THIS body at all.

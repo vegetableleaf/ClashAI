@@ -283,11 +283,15 @@ class CardDB:
         """
         c = self.get(name) or {}
         ev = c.get("evolution") or {}
-        if not isinstance(ev, dict) or not ev.get("available"):
-            return 0
-        if ev.get("cycles"):
+        if isinstance(ev, dict) and ev.get("cycles"):
             return int(ev["cycles"])
-        evo = self.get(f"{_key(name)}_evo") or {}     # the wiki's Cycles column lives on the EVO page
+        # The wiki's Cycles column lives on the EVO page, so a `<card>_evo` row carrying evo_cycles
+        # is itself proof the card evolves. This used to be gated behind the BASE card declaring
+        # `evolution.available`, which only holds for cards curated inline -- Firecracker's base row
+        # comes from the importer and has no evolution block, so the gate returned 0 and the sim
+        # treated its Evolution as permanently charged. Reading the evo row directly cannot produce
+        # a false positive: a card with no evolution has no `<card>_evo` entry to read.
+        evo = self.get(f"{_key(name)}_evo") or {}
         return int(evo.get("evo_cycles") or 0)
 
     def shield_hp(self, name: str) -> float:
@@ -529,10 +533,23 @@ class CardDB:
         for entry in self._deck.get("cards", []):
             k = _key(entry.get("card"))
             evolved = bool(entry.get("evolved"))
+            cycles = self.evo_cycles(k) if evolved else 0
+            # 0 CYCLES ON AN EVOLVED SLOT IS NOT A DEFAULT, IT IS A CONTRADICTION. evo_cycles returns
+            # 0 to mean "this card has no evolution", but the sim's slot asks `charge >= cycles`, and
+            # 0 satisfies that from the first tick -- so the slot presents the EVOLUTION on every
+            # cycle and the base card never appears again. That is what happened to Evo Firecracker
+            # here: the KB simply had no evo_cycles for it, and a missing number silently became an
+            # infinitely-charged Evolution rather than an error. Refuse it instead.
+            if evolved and cycles <= 0:
+                raise ValueError(
+                    "deck card %r is marked evolved but the card KB gives it %d evolution cycles. "
+                    "0 would make the slot PERMANENTLY evolved (the base card could never be "
+                    "played). Add `evo_cycles: <n>` to the %s_evo entry in cards.yaml, or drop "
+                    "`evolved: true` from the deck." % (k, cycles, k))
             out.append({
                 "base": k,
                 "evo": (k + "_evo") if evolved else None,
-                "cycles": self.evo_cycles(k) if evolved else 0,
+                "cycles": cycles,
                 "level": int(entry.get("level", 11)),
             })
         return out
