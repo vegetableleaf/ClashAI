@@ -220,9 +220,19 @@ cd C:\Users\benpe\ClashBot\hogeq
   Rocket first, then Tornado onto the blast point (needs a two-card sequencing primitive the cell
   prior cannot express, so it is a real design task, not an edit); (b) remaining §2 items —
   Tesla-as-Fireball-bait, the zero-damage Graveyard order (pre-fire Skeletons BEFORE it lands),
-  layered-defense ordering; (c) icebow `llm_advisor` prompt + `llm_doctrine.json` regen
-  (LLMDOC_CPU is ported, `6c7b699`); (d) verify Log crown chip (35) and Golden Knight HP in-game —
-  both flagged by the verifiers as unsafe to encode from the sources alone.
+  layered-defense ordering; (c) **DONE** — the icebow `llm_advisor` prompt (`9a60c8e`) and the
+  table PROPOSER prompt (`e0ef278`) both carry the gates now. The **table was deliberately NOT
+  regenerated**: it already holds 6 rocket rules of 72 (x_bow 20 / knight 15 / tesla 14 /
+  tornado 9 / ice_wizard 8 / rocket 6) and cost 107 proposals, so a regen risks a known-good
+  engine-verified table for little gain. Note what that distribution proves — rocket was present
+  in BOTH the prior and the table and was STILL played 2/1288, so the gap was never nomination,
+  it was that the professional's trigger (a HAND condition) had no encoding anywhere;
+  (d) verify Log crown chip (35) and Golden Knight HP in-game — both flagged by the verifiers as
+  unsafe to encode from sources alone; (e) **re-probe the advisor on qwen2.5:latest once board-26
+  frees the GPU** — on the 0.5b proxy the R1 case answers rocket 4/4, but the CONTROL (Knight in
+  hand) still answers rocket 3/3, i.e. the conjunction is not applied. If 7B fails it too, move
+  the conjunction out of the prompt and into `train_rl`'s own gating, where it becomes a hand
+  check rather than a comprehension test.
 
 ### The RAM constraint (important)
 31.4 GB total. **Not even ONE full-width PPO run fits beside a board-* detector run** — measured
