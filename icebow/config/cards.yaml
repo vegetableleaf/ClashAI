@@ -1682,4 +1682,16 @@ cards:
   #   mighty_miner -- the bomb dropped by his ABILITY. Champion abilities have no engine hook at all
   #                   and the bomb's damage is not in the KB, so there is nothing to source it from.
   goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
-  spirit_empress: {range: melee, verified: false}                               # GROUND form (3e single-target melee); air form is ranged flying
+  # SPIRIT EMPRESS, curated 2026-08-19 (both forms; engine.deploy picks by caster elixir:
+  # under 3 uncastable, [3,6) ground, >=6 air -- exactly 6.0 is AIR). The imported stats
+  # were poisoned: the 2026-08-14 wiki import caught the Fandom page mid-edit-war (hp
+  # cycled 1697->2046->2023->1798 across Aug 9-14 with no balance change behind it).
+  # Values from Supercell's own balance posts chained to 2026-05-04, cross-checked live.
+  spirit_empress: {elixir: 3, hitpoints: 1121, damage: 307, hit_speed: 1.2,
+                   range_tiles: 1.2, speed_tiles: 1.5, movement: ground,
+                   attacks: [ground], count: 1, verified: true}
+  spirit_empress_air: {display: "Spirit Empress (air)", rarity: legendary, kind: troop,
+                      elixir: 6, hitpoints: 1121, damage: 307, hit_speed: 1.4,
+                      range_tiles: 5.0, speed_tiles: 1.0, movement: air,
+                      attacks: [air, ground], count: 1, flags: [ranged, flying],
+                      verified: true}

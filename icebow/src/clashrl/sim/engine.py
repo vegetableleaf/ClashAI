@@ -1180,6 +1180,7 @@ class SimEngine:
     def __init__(self, cfg, db, rng):
         self.cfg = cfg
         self.db = db
+        self._empress_cache: dict = {}   # (key, level) -> CardSpec; see _empress_form
         self.rng = rng
         self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
         self.rage_zones: list = []      # (x, y, r_tiles, team, t_on, t_off, boost) -- Lumberjack's bottle
@@ -1334,11 +1335,32 @@ class SimEngine:
             return 1.0 / 1.4                       # double: last minute of regulation THROUGH overtime
         return 1.0 / 2.8                          # single
 
+    def _empress_form(self, team: int, spec: "CardSpec") -> "CardSpec":
+        """Spirit Empress is ONE card with TWO forms, picked by the caster's elixir AT CAST:
+        under 3 uncastable, [3, 6) the 3-elixir GROUND form, >= 6 the 6-elixir AIR form (exactly
+        6.0 is air -- RoyaleAPI: "From 3 to 5.9 elixir: ground form. With 6 or more: flying").
+        The swap happens before can_afford, so at >= 6 the air form's 6-elixir price is charged
+        and at [3, 6) the ground form's 3 -- a caller may pass either key and gets the form the
+        rules dictate. Forms are cached per level; specs are immutable and shared."""
+        want_air = self.elixir[team] >= 6.0
+        is_air = spec.key.endswith("_air")
+        if want_air == is_air:
+            return spec
+        other = "spirit_empress_air" if want_air else "spirit_empress"
+        key = (other, spec.level)
+        got = self._empress_cache.get(key)
+        if got is None:
+            got = self._empress_cache[key] = build_spec(self.db, other, spec.level)
+        return got
+
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
 
     def deploy(self, team: int, spec: CardSpec, x: float, y: float,
                delay_s: float = 0.0) -> bool:
+        if spec.base in ("spirit_empress", "spirit_empress_air"):
+            # base_key does not strip "_air" (it is a FORM, not an evo), so both bases route here
+            spec = self._empress_form(team, spec)   # the 2-in-1 card: form picked by elixir
         if self.done or not self.can_afford(team, spec):
             return False
         # REAL-GAME TILE SNAP (2026-08-15): the game quantizes every placement -- troop or
