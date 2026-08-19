@@ -321,5 +321,13 @@ Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)
 14. **AMBIGUOUS, unresolved — "log rocket on this."** Cannot tell from transcript alone whether
     Log and Rocket both went onto the Dark Prince, or the Rocket was tower-chip with the Log
     clearing separate support. **Not compiled.**
-15. **AMBIGUOUS, unresolved — the "surprise rocket" target on 2.6.** Most likely the Musketeer,
+15. **NOT ENCODABLE — the tornado-to-king throttle.** *"Do not do it to every hog; that is how
+    you get three-crowned"* is real advice for a human, but it cannot become a sim rule as stated:
+    the existing king-activation spot is already gated on `king_asleep`, and a king that wakes
+    **stays** awake, so the sim can offer that pull **at most once per match**. A throttle would
+    price a repetition the engine cannot produce. Two readings survive and neither is testable
+    from the quote — (a) he means the *general* habit across matches, (b) he means the pull drags
+    attackers deeper toward your towers and the damage adds up. **Deliberately not compiled**; if
+    (b) is the intent it wants a damage-risk term, not a throttle.
+16. **AMBIGUOUS, unresolved — the "surprise rocket" target on 2.6.** Most likely the Musketeer,
     but the transcript says only *"on top of this"*. **Not compiled as a card-specific rule.**

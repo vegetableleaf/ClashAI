@@ -408,6 +408,16 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
         # standard pull depth). Values nearer the row boundary quantise into the SAME row and the
         # EQ distinction silently vanishes (caught by the rule tests).
         y = 0.548 if "earthquake" in _opp_cards(env) else 0.585
+        # DO NOT STEAL A LIVE KING ACTIVATION (SS2.2, Hunter CR naming it his own mistake: his
+        # Tesla sniped the very unit that was about to wake his King Tower -- "if I didn't put that
+        # Tesla, we would have had king tower... I probably should have put it one higher"). A king
+        # activation is a permanent, game-long defensive asset; one building's chip is not. So
+        # while the king is ASLEEP and a ground attacker is already deep enough to wake it, the
+        # Tesla moves one placement ROW toward the river (smaller y = away from the king), out of
+        # the line where it would kill the activator first. One ROW, not one tile: the grid is 24
+        # rows, so a sub-row nudge quantises back to the same cell and changes nothing.
+        if king_asleep and any(u.hp > 0 and not u.spec.flying and u.y > 0.62 for u in enemies):
+            y -= _ROW
         _add_spot(w, env, 0.48, y, 4.0, 1.5)
         _add_spot(w, env, 0.44, y, 1.5, 0.5)
         _add_spot(w, env, 0.52, y, 1.5, 0.5)
@@ -426,7 +436,21 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
 
     elif base == "x_bow":
         if env._defensive:
-            _add_spot(w, env, 0.48, 0.55, 4.0, 1.5)          # #56: defensive bow, centre band
+            # THE CENTRAL LESSON (DOCTRINE_RESEARCH.md SS3, Hunter CR): NEVER place a mid-map or
+            # defensive X-Bow against a deck holding Rocket. His stated chain is: they rocket the
+            # bow (six elixir lost for nothing) -> they rocket your tower -> you rocket back -> the
+            # resulting deficit means you never get a bow lock all game.
+            #
+            # This is the case the reward's `xbow_into_push` term cannot see: that term explicitly
+            # EXEMPTS a defensive bow ("behind xbow_front it IS the answer, a second pull
+            # building"), and it triggers on a committed PUSH, whereas this triggers on the
+            # opponent's DECK. That term measures -276.0 over 69 fires and is never once positive,
+            # so the forward case is already priced; this closes the other half.
+            #
+            # Suppressed rather than re-weighted: "never" is the doctrine, and a weaker spot would
+            # still be sampled.
+            if "rocket" not in _opp_cards(env):
+                _add_spot(w, env, 0.48, 0.55, 4.0, 1.5)      # #56: defensive bow, centre band
         else:
             # #53/#47: behind-bridge lock spots. Opposite lane of the enemy's committed mass
             # (the punish rule); EDGE column vs rocket decks so their rocket can't clip tower+bow.
@@ -568,6 +592,19 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
         if len(clump) >= 2:
             cx = sum(u.x for u in clump) / len(clump)
             _add_spot(w, env, 0.48 + (cx - 0.48) * 0.5, 0.55, 3.0, 1.0)
+        # TORNADO-BACK, the standard air-swarm answer (SS2.3): pull the flock BACKWARD -- deeper
+        # into our half, toward our own tower -- so the tower re-targets it. The generic clump rule
+        # above aims at the fixed centre band, which for a flock already past that band is FORWARD
+        # of them: it drags them away from the guns that are supposed to kill them. For air swarms
+        # the pull DIRECTION, not the clump centre, is the entire play.
+        air = [u for u in enemies if u.spec.flying and u.y > 0.55 and not _pull_resistant(u)]
+        if len(air) >= 2:
+            ax = sum(u.x for u in air) / len(air)
+            ay = max(u.y for u in air)
+            tw = min(_my_princesses(env), key=lambda t: abs(t.x - ax), default=None)
+            if tw is not None:
+                # aim BEHIND the flock, between it and our tower, so the pull walks it onto guns
+                _add_spot(w, env, (ax + tw.x) / 2.0, min(0.74, ay + _ROW), 4.0, 1.2)
         # THE SNEAKY LOCK (icebow guide): "Tornado units out of X-Bow range for a sneaky lock",
         # and explicitly "if they play a Knight near their tower and they don't have anything else
         # on the arena, Tornado the Knight out of X-Bow range to get it on tower". The bow retargets
