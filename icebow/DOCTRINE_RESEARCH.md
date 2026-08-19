@@ -67,6 +67,29 @@ elixir of Rocket was the cheaper answer.**
 
 ---
 
+### 0.1 What the gate changes actually did (measured 2026-08-19)
+
+`policy-stats` cannot measure this: it is GREEDY and never reads the doctrine, so the 0.2% figure
+above is what the policy *learned*, not what the prior *offers*. The prior's offer rate is the
+thing the gate edits move, so it was measured directly — 240 sampled board states walked the same
+way `tools/llm_doctrine.py` samples them, counting how often `doctrine_cards` nominates Rocket in
+the states where Rocket is actually playable (71 of 240), before vs after commit `2b0a7de`:
+
+| | before | after |
+|---|---|---|
+| Rocket nominated | 14 / 71 = **19.7%** | 28 / 71 = **39.4%** |
+| mean weight when nominated | 3.79 | 3.77 |
+| by elixir (6 / 7 / 8 / 9 / 10) | 3 / 5 / 1 / 1 / 4 | 4 / 8 / **5** / **4** / 7 |
+
+**Exactly 2.0× more often, at the same weight** — the change is in *how often the situation is
+recognised*, not in shouting louder about it, which is the intended shape. The gain concentrates
+at **8–9 elixir** (1→5 and 1→4), i.e. precisely the states where the bar is healthy and a threat
+is committed: the R1 "cheap answers are out of rotation" and R3 "chaining would cost 7+" cases.
+
+**Honest limit:** this is the prior's offer rate in rollouts. The policy's *play* rate cannot
+change until a PPO run consumes the new prior — and that run is blocked behind board-26. Do not
+quote 39.4% as a play rate.
+
 ## 1. ROCKET DECISION PROCEDURE
 
 Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)**.
