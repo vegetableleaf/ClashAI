@@ -227,8 +227,17 @@ cd C:\Users\benpe\ClashBot\hogeq
   engine-verified table for little gain. Note what that distribution proves — rocket was present
   in BOTH the prior and the table and was STILL played 2/1288, so the gap was never nomination,
   it was that the professional's trigger (a HAND condition) had no encoding anywhere;
-  (d) verify Log crown chip (35) and Golden Knight HP in-game — both flagged by the verifiers as
-  unsafe to encode from sources alone; (e) **re-probe the advisor on qwen2.5:latest once board-26
+  (d) **PARTLY RESOLVED from the card KB, and it exposed a real bug.** Golden Knight L11 HP =
+  **1799 > Rocket 1484**, so the verifier was right that a rocket cannot remove him (full
+  lethality table now in DOCTRINE_RESEARCH.md §6.11; note Sparky 1451 DOES die, and Prince 1920
+  does NOT — which is fine, because R1/R3 are damage-MITIGATION rules and deliberately carry no
+  lethality check, unlike R4). **⚠ THE OPEN ITEM IS BIGGER THAN THE FLAG WAS:** the sim's KB
+  carries **pre-nerf crown damage** — rocket `spell_tower_dmg` **371** and the_log **40**, vs the
+  researched post-Season-84 **342** and **35** (+8.5% and +14%). The sim over-pays every rocket
+  and log tower chip, which feeds the `chip_*` reward terms and every measured baseline in this
+  session. NOT changed silently — it moves reward magnitudes, and the same verifier that caught
+  the staleness also refused to certify 342/35 as current. **Settle this before the next PPO
+  run**, because that run's chip rewards train on it; (e) **re-probe the advisor on qwen2.5:latest once board-26
   frees the GPU** — on the 0.5b proxy the R1 case answers rocket 4/4, but the CONTROL (Knight in
   hand) still answers rocket 3/3, i.e. the conjunction is not applied. If 7B fails it too, move
   the conjunction out of the prompt and into `train_rl`'s own gating, where it becomes a hand

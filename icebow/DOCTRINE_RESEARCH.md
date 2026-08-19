@@ -83,6 +83,16 @@ Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)
 * **Log crown chip: use 35 (Supercell's figure). Do NOT derive it from 13% × 266.** The percentage
   and the absolute disagree at *both* endpoints (pre-nerf 15% × 266 = 39.9 vs a quoted 41), so the
   percentage is applied at base level and scaled. **Measure in-game before encoding.** **[M]**
+* ⚠ **THE SIM'S OWN CARD KB IS CARRYING PRE-NERF CROWN DAMAGE.** Measured 2026-08-19 from
+  `build_spec(db, ..., 11)`: **rocket `spell_tower_dmg` = 371** and **the_log = 40**. The research
+  numbers are **342** and **35** — i.e. the KB is **+8.5% on Rocket and +14% on Log**, and 371/41
+  are exactly the pre-Season-84 figures the STALE verdict (§6.13) flagged in the guide table.
+  So the sim currently over-pays every rocket and log tower chip, which feeds the `chip_*` reward
+  terms and any lethal arithmetic. **NOT changed here**: it moves reward magnitudes and therefore
+  every measured baseline in this file, and the same verifier that caught the staleness also
+  refused to certify 342/35 as current (the "no changes after June" claim rested on a change
+  *count* naming no cards). **This is a decision for the user, not a silent edit** — but it should
+  be settled before the next PPO run, because that run's chip rewards will be trained on it.
 * ⚠ **Currency caveat:** the pool's "nothing changed after June" rests on a *count* ("11 cards:
   6 nerfs, 4 buffs") that names no cards, and the August page 403'd. Treat 342/35 as
   *no-evidence-of-change*, **not** verified-current; re-check each season rollover.
@@ -310,9 +320,32 @@ Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)
    cards, and the August source 403'd. Downgraded to *no evidence found*.
 10. **MISREAD-RISK — the 19–19.5 s two-rocket window.** Caption unresolved ("19 1.5 secondsish")
     and the quantity is not a constant. Encode as a function of elixir rate (R8).
-11. **MISREAD-RISK — Golden Knight / mini-tank rockets.** 1484 very likely does not kill a
-    tournament-level Golden Knight, and the quote's *"you don't want to be rocketing that"* has an
-    unresolved antecedent. Needs a lethality-or-tower-clip precondition; **verify his HP first.**
+11. **RESOLVED against the card KB (2026-08-19) — Golden Knight / mini-tank rockets.** The
+    verifier was right: **Golden Knight L11 HP = 1799 > Rocket 1484**, so a rocket does NOT kill
+    him. The "take rockets on hard-to-kill mini-tanks" line cannot be filed as removal. Measured
+    from `build_spec` at level 11, alongside the rest of the lethality table:
+
+    | card | HP | dies to one Rocket (1484)? |
+    |---|---|---|
+    | magic_archer | 529 | yes |
+    | electro_wizard | 714 | yes |
+    | musketeer | 721 | yes |
+    | witch | 839 | yes |
+    | hunter | 885 | yes |
+    | dark_prince | 1200 | **no — shield absorbs the hit with no carryover** |
+    | executioner | 1280 | yes |
+    | **sparky** | **1451** | **yes** (so N6's trade is a real 6-for-6 kill, not just chip) |
+    | **golden_knight** | **1799** | **no** |
+    | **prince** | **1920** | **no** — see the note below |
+    | bowler | 2081 | no |
+    | royal_giant | 3164 | no |
+
+    **The Prince row matters and is easy to "fix" wrongly.** Hunter's R3 quote is about rocketing
+    a *Prince*, and a rocket does not kill one — it leaves ~436 HP for the tower to finish. That
+    is not a contradiction: **R1 and R3 are damage-MITIGATION rules, not removal rules**, which is
+    why they deliberately carry no lethality check. Only R4 (bad-placement punish) and the 2-for-1
+    do, because those are the ones that claim a kill. Adding a lethality gate to R1/R3 would delete
+    the exact play the corpus's best observation is about.
 12. **MISREAD-RISK — "Balloon inside Lavaloon pushes."** The quote establishes a Balloon and an
     Inferno Dragon; nothing establishes Lavaloon. Generalised to *rocket a Balloon in any push*.
 13. **STALE — the spell-cycle combo table (371 / 429).** Pre-nerf *and* internally inconsistent
