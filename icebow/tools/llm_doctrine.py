@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
 import sys
 import time
@@ -178,7 +179,12 @@ def propose(model, env, timeout=120):
               "required": ["cards"]}
     body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
                        "format": schema, "stream": False,
-                       "options": {"temperature": 0.0, "num_predict": 32}}).encode()
+                       # num_gpu 0 -> CPU inference when the GPU is owned by a detector
+                       # training run (a 3.3 GB model forced into a contested 8 GB card can OOM
+                       # the TRAINING process, which costs hours; slow proposals cost nothing).
+                       "options": ({"temperature": 0.0, "num_predict": 32, "num_gpu": 0}
+                                   if os.environ.get("LLMDOC_CPU") else
+                                   {"temperature": 0.0, "num_predict": 32})}).encode()
     req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
