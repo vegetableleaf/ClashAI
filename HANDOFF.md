@@ -22,7 +22,10 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 23:10**, at commit `HEAD` (PPO-beside-YOLO measured infeasible; icebow doctrine research running overnight).
+Last updated: **2026-08-19**, at commit `HEAD` (hogeq DOCTRINE_RESEARCH.md rewritten as the merged 6-section doctrine:
+guide facts + 4 watched videos, send-ladder T1-T5 / hold-vetoes H1-H5 for the Hog, per-card placement tables (the
+sim's `SS2` references still resolve), spell timing, 16 synergy lines, matchups, 11 logged contradictions. One sim
+change requested (its S6 C8): quiet-board Hog bar 4 -> 7 in single elixir only; keep 4 in x2/OT and punish windows).
 
 ---
 
