@@ -378,7 +378,30 @@ configured but **have never run** — BC has not been retrained since the soft-t
    (`20260815_222309`) has never been labelled.
 2. **Restart both PPO runs** after board-26 — first real test of the reward fix. Train **from
    scratch**, not `--resume`; `--reset-gate` should no longer be needed.
-3. **board-26 verdict — AUTOMATED 2026-08-19.** A detached watcher
+3. **board-26 verdict — DECIDED 2026-08-19: IT LOSES, and the way it lost is the finding.**
+   Trained to completion (120/120; best epoch 114, mAP50-95 **0.7108**) and gated automatically
+   against the pin on the frozen 241 live images:
+
+   | metric | board-24-5 (pin) | board-26 @e51 | board-26 @e120 |
+   |---|---|---|---|
+   | presence UNITS recall | **0.855** | 0.853 | 0.827 |
+   | whitelist identity | 0.823 | 0.828 | **0.794** |
+   | deck units passing | **5/5** | 4/5 | 4/5 |
+
+   **`detect.weights` STAYS on board-24-5.** Per-card, board-26 is worse on tesla (0.98→0.94),
+   knight (0.90→0.81), skeletons (0.82→0.77), tornado (1.00→0.67) and ice_wizard (0.93→0.92),
+   better only on rocket (0.78→0.83).
+
+   **THE IMPORTANT PART — it got WORSE on live images while getting BETTER on its own val set.**
+   Over epochs 51→120 it gained **+0.027 mAP50-95** on its own validation split and LOST **0.026
+   presence recall / 0.034 whitelist recall** on the live subset. That is not undertraining, it is
+   the training mix specialising: the val split is 81% Roboflow, so more epochs bought more skill
+   on clean frames at the cost of live captures. **More epochs will not fix this and the earlier
+   "it is still improving" reading was measuring the wrong distribution.** The lever is the DATA
+   MIX — reweight training toward live captures (12,821 real vs 12,359 Roboflow imported 08-17,
+   plus 5,000 synth) — or hold out a live-only val split so training-time metrics stop lying.
+   Full outputs: `icebow/runs/gate_board26.txt`, `gate_board24_5.txt`.
+   Automation that produced this (reusable for board-27): A detached watcher
    (`icebow/tools/board26_gate_on_finish.py`, PID in `runs/gate_watcher.pid`, logs
    `runs/gate_watcher.{out,err}`) waits for training to finish, runs `detect-eval` on BOTH
    board-26's final `best.pt` and the incumbent board-24-5 over the same frozen 241-image subset,
