@@ -5,7 +5,7 @@ Fandom pages 402) plus 88 observations from 4 watched videos (yt-dlp/whisper/con
 pipeline). `src/clashrl/sim/doctrine.py` cites this file's **§2** rows ("DOCTRINE_RESEARCH.md SS2
 <card>") — §2 stays the per-card placement table so those references remain valid.
 
-**Deck:** Hog Rider 13, Evo Firecracker 13, Mighty Miner 14 (champion), Evo Tesla 14, The Log 14,
+**Deck:** Hog Rider 13, Evo Firecracker 13, Mighty Miner 15 (champion; upgraded 2026-08-19), Evo Tesla 14, The Log 14,
 Earthquake 13, Skeletons 15, Ice Spirit 13 — avg 2.75, "2.6 Hog EQ" with Mighty Miner.
 
 **Source keys** (every claim below carries one; full URLs here once):

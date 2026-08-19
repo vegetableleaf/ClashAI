@@ -32,7 +32,7 @@ deck:
   cards:
     - {card: hog_rider, level: 13}                    # win condition
     - {card: firecracker, evolved: true, level: 13}   # EVO: knockback + air answer + chip
-    - {card: mighty_miner, level: 14}                 # CHAMPION -- 1-elixir Explosive Escape ability
+    - {card: mighty_miner, level: 15}                 # CHAMPION -- 1-elixir Explosive Escape ability (upgraded 2026-08-19)
     - {card: tesla, evolved: true, level: 14}         # defensive building
     - {card: the_log, level: 14}
     - {card: earthquake, level: 13}                   # building removal -> clears the Hog's path
@@ -460,6 +460,7 @@ cards:
                                # full tower damage. The spawned Recruit still hits towers at full melee.
 
   rocket:
+    crown_tower_damage: 342   # post-1/6/2026 (see crown_damage_audit.py)
     display: "Rocket"
     elixir: 6
     kind: spell
@@ -818,7 +819,7 @@ cards:
   # LIGHTNING (2026-08-15 wiki): "the three troops that are targeted are always the three
   # that have the highest hitpoints within its radius" + 0.5 s stun. It was resolving as a
   # radius BLAST, nuking the swarms real Lightning ignores. Radius 3.5 (was KB-default 2.9).
-  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
+  lightning: {crown_tower_damage: 264, kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
               radius_tiles: 3.5, attacks: [air, ground], verified: true}
   # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
   # crowd-control modelled either. Duration is not published, so it falls back to the global
@@ -836,7 +837,7 @@ cards:
   # attacks: the wiki calls both "air-targeting" spells; the imported KB rows had them as
   # ground-only, which (with the 2026-08-16 air guard in card_threat.counters) would have made
   # them look like non-counters against any flying threat.
-  poison: {kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
+  poison: {crown_tower_damage: 21, kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
            radius_tiles: 3.5, attacks: [air, ground], verified: true}
 
   # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
@@ -846,6 +847,7 @@ cards:
          zone_tiers: [[1, 696, 97], [3, 294, 51], [99, 153, 35]], verified: true}
 
   zap:
+    crown_tower_damage: 48   # post-1/6/2026 (see crown_damage_audit.py)
     display: "Zap"
     elixir: 2
     kind: spell
@@ -1140,6 +1142,7 @@ cards:
     verified: true
 
   the_log:
+    crown_tower_damage: 35   # post-1/6/2026 (see crown_damage_audit.py)
     display: "The Log"
     elixir: 2
     kind: spell
@@ -1179,8 +1182,8 @@ cards:
   # and crown damage and about a tenth of its building damage -- gutting the one card whose whole
   # job is deleting the building that stops the Hog. Routed through the Poison-style zone: the
   # cast itself lands nothing and the field does the work over its 3 s.
-  earthquake: {kind: spell, flags: [hits_hidden, slow], attacks: [ground],
-               build_damage: 287, zone_s: 3.0, zone_tick_s: 1.0, zone_first_tick_now: true,
+  earthquake: {crown_tower_damage: 49, damage: 81, kind: spell, flags: [hits_hidden, slow], attacks: [ground],
+               build_damage: 283, zone_s: 3.0, zone_tick_s: 1.0, zone_first_tick_now: true,
                zone_move_slow: 0.5, verified: true}
 
   miner:

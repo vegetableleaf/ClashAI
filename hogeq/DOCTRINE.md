@@ -11,7 +11,7 @@ rule carries over with the Ice Spirit replacing the Ice Wizard as its cheap supp
 
 Everything in §5 below is still a first draft that has not been measured against frames.
 
-**Deck (Classic 1v1, real account levels):** Hog Rider 13, Evo Firecracker 13, Mighty Miner 14
+**Deck (Classic 1v1, real account levels):** Hog Rider 13, Evo Firecracker 13, Mighty Miner 15
 (champion), Evo Tesla 14, The Log 14, Earthquake 13, Skeletons 15, Ice Spirit 13.
 Average elixir **2.75** (classic 2.6 with Mighty Miner in the Knight's slot).
 

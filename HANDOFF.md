@@ -47,7 +47,7 @@ excluded `data/ runs/ .venv __pycache__ .git .pytest_cache` (252 MB instead of 2
 supplies perception for the live path.
 
 ### hogeq deck (real account levels)
-Hog Rider 13, Evo Firecracker 13, Mighty Miner 14 (champion), Evo Tesla 14, The Log 14,
+Hog Rider 13, Evo Firecracker 13, Mighty Miner 15 (champion; upgraded 2026-08-19), Evo Tesla 14, The Log 14,
 Earthquake 13, Skeletons 15, Ice Spirit 13. Average elixir **2.75**.
 11 policy identities = 10 card identities + `mighty_miner_ability`.
 
