@@ -2014,18 +2014,75 @@ class SimEngine:
                 s = am + bm
                 if s <= 0:
                     continue
+                # ALLIED FLOW -- REAR PUSHES FRONT (2026-08-19, from the datamined push mechanics).
+                # Two same-team WALKERS used to split the separation symmetrically, shoving the
+                # follower BACKWARD every tick: the column's net speed hit zero and pushes jammed
+                # at the bridge (measured: 8 bodies, 24.7 s to cross, 6.6 s dead stall). The real
+                # game's rule is momentum transfer -- the rear unit pushes the front one onward and
+                # the pair flows at a blended speed; a follower's velocity is never zeroed. Here:
+                # the body further along its team's march axis is FRONT and absorbs the whole
+                # separation (which points away from the rear, i.e. forward); the REAR keeps its
+                # own full step. March axis: team 0 attacks upward (-y), team 1 downward (+y).
+                if (a.team == b.team and am > 0.0 and bm > 0.0
+                        and not (a.attacking or a.locked or b.attacking or b.locked)):
+                    fwd = -1.0 if a.team == 0 else 1.0        # sign of "toward the enemy" in y
+                    a_front = (a.y - b.y) * fwd > 0.0
+                    if a_front:
+                        am, bm = 0.0, s                       # a takes ALL of it (bm/s share = 1)
+                    else:
+                        am, bm = s, 0.0
                 px, py = ux * overlap / _TILES_X, uy * overlap / _TILES_Y  # back to normalised, per axis
                 # Each body yields in inverse proportion to its OWN mass, so the heavier one barely
                 # moves: a Skeleton takes 77% of the separation against a Giant instead of 50%.
                 # Buildings are fully anchored once placed: the entire separation is applied to the
                 # non-building body, never to the building.
+                #
+                # TANGENTIAL SLIDE (2026-08-19). Pure radial separation head-on cancels a walker's
+                # own step: a Hog blocked by ONE stationary Knight dead-centre on its path stayed
+                # latched FOREVER (measured, 60 s cap) where the real game costs ~a second -- the
+                # pre-2025 engine's own description is that troops "walk straight into them and
+                # only navigate around after a collision". So a WALKING body's displacement is bent
+                # toward the contact tangent that points at its march target, scaled by the mass
+                # ratio: a heavy blocker bends the path less per tick (Skeleton King's mass-10,
+                # radius-1.0 body holds noticeably longer -- he is the designed blocker), and
+                # ATTACKING/LOCKED bodies keep pure radial: they hold ground and must not be
+                # walked off their target by contact.
+                def _slide(m, o, rx, ry):
+                    if m.attacking or m.locked or m.spec.kind == "building":
+                        return rx, ry
+                    ref = m.target
+                    if ref is not None and getattr(ref, "hp", 1) > 0:
+                        gx, gy = ref.x, ref.y
+                    else:                                     # no target: the march direction
+                        gx, gy = m.x, (0.0 if m.team == 0 else 1.0)
+                    dvx, dvy = (gx - m.x) * _TILES_X, (gy - m.y) * _TILES_Y
+                    t1x, t1y = -ry, rx                        # the two contact tangents
+                    if dvx * t1x + dvy * t1y < 0.0:
+                        t1x, t1y = ry, -rx                    # pick the one toward the goal
+                    # TUNED against the research's expectations, not guessed: at 1.0x the
+                    # first version rounded even a Skeleton King in +0.8 s where a plain
+                    # Knight should cost ~1 s -- body-blocking has to stay a real play.
+                    k = max(0.12, min(0.9, 0.45 * _push_mass(m.spec) / max(1e-6, _push_mass(o.spec))))
+                    nx, ny = rx + k * t1x, ry + k * t1y
+                    n = math.hypot(nx, ny)
+                    return (nx / n, ny / n) if n > 1e-9 else (rx, ry)
                 if a_anch:
-                    b.x, b.y = _clamp_xy(b.x - px, b.y - py, b.spec.radius)
+                    sx, sy = _slide(b, a, -ux, -uy)
+                    b.x, b.y = _clamp_xy(b.x + sx * overlap / _TILES_X,
+                                         b.y + sy * overlap / _TILES_Y, b.spec.radius)
                 elif b_anch:
-                    a.x, a.y = _clamp_xy(a.x + px, a.y + py, a.spec.radius)
+                    sx, sy = _slide(a, b, ux, uy)
+                    a.x, a.y = _clamp_xy(a.x + sx * overlap / _TILES_X,
+                                         a.y + sy * overlap / _TILES_Y, a.spec.radius)
                 else:
-                    a.x, a.y = _clamp_xy(a.x + px * (bm / s), a.y + py * (bm / s), a.spec.radius)
-                    b.x, b.y = _clamp_xy(b.x - px * (am / s), b.y - py * (am / s), b.spec.radius)
+                    if bm > 0.0:
+                        sx, sy = _slide(a, b, ux, uy)
+                        a.x, a.y = _clamp_xy(a.x + sx * overlap * (bm / s) / _TILES_X,
+                                             a.y + sy * overlap * (bm / s) / _TILES_Y, a.spec.radius)
+                    if am > 0.0:
+                        sx, sy = _slide(b, a, -ux, -uy)
+                        b.x, b.y = _clamp_xy(b.x + sx * overlap * (am / s) / _TILES_X,
+                                             b.y + sy * overlap * (am / s) / _TILES_Y, b.spec.radius)
                 # Being SHOVED off what you were hitting resets aggro. This is the real mechanic
                 # behind dropping a body between a melee attacker and the tower it is chewing on:
                 # the attacker is pushed out, loses its lock, and re-picks -- and the thing now in

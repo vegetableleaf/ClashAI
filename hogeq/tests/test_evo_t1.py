@@ -67,6 +67,16 @@ class EvoT1Tests(unittest.TestCase):
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(1, rr, 0.50, 0.46))
         squad = [u for u in eng.units if u.team == 1]
+        # ONE recruit only. The measurement is a per-tick HP delta, and since the allied-flow
+        # pathing fix (2026-08-19) the squad genuinely arrives TOGETHER -- two simultaneous
+        # normal swings (2 x 133 = 266) are numerically identical to one charge hit (266), so
+        # the multi-body version of this probe cannot distinguish the thing it exists to test.
+        # Isolating one body restores the unambiguous reading without touching the doctrine.
+        keep = min(squad, key=lambda u: abs(u.x - 0.50))   # the CENTRE recruit: the line spawns
+        for u in squad:                                     # wide, and an edge body wanders tiles
+            if u is not keep:                               # before meeting the knight mid-board
+                u.hp = 0.0
+        squad = [keep]
         if break_shields:
             for u in squad:
                 u.shield_left = 0.0
