@@ -455,6 +455,7 @@ cards:
                                # full tower damage. The spawned Recruit still hits towers at full melee.
 
   rocket:
+    crown_tower_damage: 342   # post-1/6/2026 (see crown_damage_audit.py)
     display: "Rocket"
     elixir: 6
     kind: spell
@@ -813,7 +814,7 @@ cards:
   # LIGHTNING (2026-08-15 wiki): "the three troops that are targeted are always the three
   # that have the highest hitpoints within its radius" + 0.5 s stun. It was resolving as a
   # radius BLAST, nuking the swarms real Lightning ignores. Radius 3.5 (was KB-default 2.9).
-  lightning: {kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
+  lightning: {crown_tower_damage: 264, kind: spell, flags: [stun], stun_duration_s: 0.5, top_n_targets: 3,
               radius_tiles: 3.5, attacks: [air, ground], verified: true}
   # "it will FREEZE the troop in place and render it unable to move or attack" -- Vines had no
   # crowd-control modelled either. Duration is not published, so it falls back to the global
@@ -831,7 +832,7 @@ cards:
   # attacks: the wiki calls both "air-targeting" spells; the imported KB rows had them as
   # ground-only, which (with the 2026-08-16 air guard in card_threat.counters) would have made
   # them look like non-counters against any flying threat.
-  poison: {kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
+  poison: {crown_tower_damage: 21, kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
            radius_tiles: 3.5, attacks: [air, ground], verified: true}
 
   # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
@@ -841,6 +842,7 @@ cards:
          zone_tiers: [[1, 696, 97], [3, 294, 51], [99, 153, 35]], verified: true}
 
   zap:
+    crown_tower_damage: 48   # post-1/6/2026 (see crown_damage_audit.py)
     display: "Zap"
     elixir: 2
     kind: spell
@@ -1135,6 +1137,7 @@ cards:
     verified: true
 
   the_log:
+    crown_tower_damage: 35   # post-1/6/2026 (see crown_damage_audit.py)
     display: "The Log"
     elixir: 2
     kind: spell
@@ -1167,7 +1170,7 @@ cards:
   # Earthquake is the ONE spell that reaches a retracted Tesla: the 3/3/2020 Balance Update
   # "allowed the Earthquake to affect the Tesla even if it is hidden". Carried as a property of the
   # SPELL rather than of the Tesla, so nothing has to know a card name to get this right.
-  earthquake: {kind: spell, flags: [hits_hidden, slow], verified: true}
+  earthquake: {build_damage: 283, crown_tower_damage: 49, damage: 81, kind: spell, flags: [hits_hidden, slow], verified: true}
 
   miner:
     display: "Miner"
