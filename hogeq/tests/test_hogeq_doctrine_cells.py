@@ -190,15 +190,21 @@ class SkeletonsDashKiteTests(_Base):
 
 class CardPriorPressureTests(_Base):
     def test_quiet_board_nominates_the_hog_over_holding(self):
+        # UPDATED to DOCTRINE_RESEARCH.md SS6 C8 (which this file predated by a few hours): the
+        # quiet single-elixir bar is 7 -- after the 4-cost Hog the bank keeps the 3-elixir floor
+        # -- while 6 holds. The punish/x2 paths at 4 live in test_hogeq_pressure_doctrine.
         e = self.fresh()
-        e.elixir[0] = 6.0
+        e.elixir[0] = 7.0
         got = D.doctrine_cards(self.env)
         self.assertTrue(got, "no card prior on a quiet board")
         hog = self.cid("hog_rider")
         if hog in self.env._hand_ids():
-            self.assertIn(hog, got, "the Hog was not nominated on a quiet board at 6 elixir")
+            self.assertIn(hog, got, "the Hog was not nominated on a quiet board at 7 elixir")
             self.assertEqual(max(got, key=got.get), hog,
                              "something outweighed the Hog on a quiet board")
+        e.elixir[0] = 6.0
+        got6 = D.doctrine_cards(self.env) or {}
+        self.assertNotIn(hog, got6, "a quiet x1 send at 6 breaks the 3-elixir floor (C8)")
 
 
 if __name__ == "__main__":

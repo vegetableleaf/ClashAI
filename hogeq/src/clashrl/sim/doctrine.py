@@ -281,6 +281,12 @@ _ROW = 1.0 / 24.0
 _OWN_FRONT = 13.5 / 24.0
 
 
+def pline_y(eng) -> float:
+    """Our princess line's board-true y, from the engine's own towers (~0.797)."""
+    tw = eng.towers[0]
+    return tw[0].y if len(tw) > 0 else 0.797
+
+
 def _own_half(y: float) -> float:
     """Clamp to a row we can actually deploy on. Without it, "behind the bow" walked off our
     half whenever the bow sat near the bridge, and the prior was silently masked away."""
@@ -397,7 +403,148 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
     if _bow_defence_cells(env, base, w):
         return list(w.items())
 
-    if base == "tesla":
+    if base == "hog_rider":
+        # DOCTRINE_RESEARCH.md SS2 H-1/H-2/H-3, ENGINE-ANCHORED (2026-08-19 review): the research
+        # legend's river 0.48 / lanes 0.25-0.745 / princess 0.615 are the LIVE frame; the board-
+        # true engine has the river at 0.5, the bridges at x=3.5/18 and 14.5/18 (the princess
+        # columns), and our princess line at y~0.797. Spots are derived from the engine's own
+        # towers so the two frames can never drift apart again.
+        etw = eng.towers[1]
+        mtw = eng.towers[0]
+        blx = mtw[0].x if len(mtw) > 0 else 3.5 / 18.0       # bridge = the princess column
+        brx = mtw[1].x if len(mtw) > 1 else 14.5 / 18.0
+        inner = 1.0 / 18.0                                    # one tile toward the centre
+        edge_l, edge_r = 0.5 / 18.0, 17.5 / 18.0              # H-3: the arena-edge river tiles
+        l_alive = etw[0].hp > 0 if len(etw) > 0 else True
+        r_alive = etw[1].hp > 0 if len(etw) > 1 else True
+        # LANE PICK. Mass uses the PER-BODY share (the same accounting the trade ledger and the
+        # state key use) -- summing full card cost per body made three Skeleton bodies outweigh a
+        # Golem and pointed the punish Hog INTO the committed lane.
+        mass_left = sum(u.spec.elixir / max(1, u.spec.squad_count or u.spec.count)
+                        for u in enemies if u.x < 0.5)
+        mass_right = sum(u.spec.elixir / max(1, u.spec.squad_count or u.spec.count)
+                         for u in enemies if u.x >= 0.5)
+        wl, wr = (4.0, 2.0) if mass_right > mass_left else (2.0, 4.0) if mass_left > mass_right else (3.0, 3.0)
+        if l_alive != r_alive:
+            # The dead lane gets NOTHING: a Hog there walks to the King -- tankier, and teaching
+            # the prior to feed the King while a princess stands is how chip value dies. King
+            # endgames are the uniform floor's and SS3.4's problem, not this prior's.
+            wl, wr = (4.0, 0.0) if l_alive else (0.0, 4.0)
+        elif l_alive and r_alive and len(etw) > 1:
+            full = max(etw[0].hp, etw[1].hp) or 1.0
+            if etw[1].hp < etw[0].hp - 0.10 * full:
+                wr *= 1.6
+            elif etw[0].hp < etw[1].hp - 0.10 * full:
+                wl *= 1.6
+        # T2 counter-push: a surviving defender leads the Hog out, SAME lane -- gated on the
+        # survivor's lane being ALIVE (the review caught this bump resurrecting a zeroed lane)
+        # and on an ENGINE-anchored depth: anything on our half up to ~1.5 tiles past our own
+        # princess line counts (the old live-frame 0.62 gate excluded every unit that had just
+        # defended AT the tower, which is where survivors actually stand).
+        pline = mtw[0].y if len(mtw) > 0 else 0.797
+        surv = [u for u in eng.units if u.team == 0 and u.hp > 0 and u.spec.kind == "troop"
+                and u.y <= pline + 1.5 / _TILES_Y]
+        if surv:
+            sfw = min(surv, key=lambda u: u.y)
+            if sfw.x < 0.5 and l_alive:
+                wl = max(wl, 5.0)
+            elif sfw.x >= 0.5 and r_alive:
+                wr = max(wr, 5.0)
+        # Per live lane: H-1 bridge centre; H-2 one tile inner (the anti-Tornado tile -- vs a
+        # known Tornado deck the WEIGHTS swap so the inner tile leads); H-3 the arena-edge river
+        # tile (auto pig push -- walks around a centre 3-from-river defensive plant).
+        nado = "tornado" in _opp_cards(env)
+        for alive, wgt, bx, ex, sgn in ((l_alive, wl, blx, edge_l, 1.0),
+                                        (r_alive, wr, brx, edge_r, -1.0)):
+            if not alive or wgt <= 0.0:
+                continue
+            w_main, w_inner = (wgt * 0.7, wgt) if nado else (wgt, wgt * 0.5)
+            _add_spot(w, env, bx, _OWN_FRONT, w_main, w_main * 0.35)
+            _add_spot(w, env, bx + sgn * inner, _OWN_FRONT, w_inner, w_inner * 0.35)
+            _add_spot(w, env, ex, _OWN_FRONT, wgt * 0.5, 0.4)
+
+    elif base == "mighty_miner":
+        # DOCTRINE_RESEARCH.md SS2 M-1/M-2/M-3/M-5/M-8, merged from both prior drafts.
+        big = [u for u in enemies if u.spec.kind == "troop" and not u.spec.flying
+               and u.spec.hp >= 1200.0 and (u.spec.squad_count or u.spec.count or 1) <= 2
+               and u.y > 0.30]
+        ma = next((u for u in enemies if u.spec.base == "magic_archer" and u.y > 0.30), None)
+        if big:
+            # M-1/M-2: tile-exact body-block on the tank's path, one step down-path -- the frame
+            # evidence is that ONE tile off is the difference between a full block and a leak.
+            tank = max(big, key=lambda u: u.spec.hp)
+            _add_spot(w, env, tank.x, _own_half(tank.y + 0.03), 5.0, 1.5)
+            _add_spot(w, env, 0.48, 0.60, 1.5, 0.8)          # centre fallback, low weight
+        elif ma is not None:
+            # M-3: right up AT the river, centre of the Magic Archer's lane -- denies every
+            # line-shot corridor through him to the tower. Never in the BACK of the MA's lane.
+            _add_spot(w, env, ma.x, _OWN_FRONT, 4.0, 1.2)
+        elif not any(u.spec.kind == "troop" for u in enemies):
+            # M-5: bridge punish on a genuinely EMPTY board (the engine's bridge columns), low
+            # weight -- the card prior decides WHETHER; this says WHERE. Any troop presence
+            # short of a big body means ABSTAIN (M-8: no splash, stage-1 cannot one-shot
+            # Skeletons) -- the uniform floor, not a spot.
+            _add_spot(w, env, eng.towers[0][0].x, _OWN_FRONT, 1.5, 0.5)
+            _add_spot(w, env, eng.towers[0][1].x, _OWN_FRONT, 1.5, 0.5)
+
+    elif base == "firecracker":
+        # DOCTRINE_RESEARCH.md SS2 F-1..F-11, engine-anchored. Depth bands measure from the NEAR
+        # BANK (17/32 -- the first deployable row behind the river), not the research legend's
+        # live-frame 0.48.
+        bank = 17.0 / _TILES_Y
+        pt = eng.towers[0][0]
+        air = [u for u in enemies if u.spec.flying and u.y > 0.25]
+        my_hog = next((u for u in eng.units if u.team == 0 and u.hp > 0
+                       and u.spec.base == "hog_rider"), None)
+        tgt = threat
+        if tgt is not None and tgt.spec.kind == "troop" and getattr(tgt.spec, "building_only", False):
+            # F-8: vs a building-targeting tank she goes DIRECTLY IN FRONT of it, so all five
+            # shrapnel pierce through into the backline -- the opposite geometry of the kite
+            # band, which only applies to troop-targeting chasers.
+            _add_spot(w, env, tgt.x, _own_half(tgt.y + 2.5 / _TILES_Y), 4.0, 1.2)
+        elif tgt is not None and tgt.spec.kind == "troop" and not tgt.spec.flying                 and tgt.spec.reach <= 1.6:
+            # F-1/F-2/F-3: the kite band, three depths -- 4th tile for light melee, 5th for
+            # P.E.K.K.A / Giant Skeleton (F-2: the recoil path drags them into King range),
+            # 6th for the jumpers and dashers (F-3/F-4: Mega Knight / Battle Healer / Bandit).
+            b = tgt.spec.base
+            depth = 6.0 if b in ("mega_knight", "battle_healer", "bandit")                 else 5.0 if b in ("pekka", "giant_skeleton") else 4.0
+            off = (2.5 if depth >= 5.0 else 2.0) / _TILES_X
+            _add_spot(w, env, tgt.x + (off if tgt.x < 0.5 else -off),
+                      _own_half(bank + depth / _TILES_Y), 4.0, 1.5)
+        elif air:
+            # Anti-air from DEPTH: anchored 3 tiles in front of our princess line, offset off
+            # the tower column so one spell can never clip her AND the tower.
+            a = max(air, key=lambda u: u.y)
+            near = min(_my_princesses(env), key=lambda p: abs(p.x - a.x), default=pt)
+            bx = near.x if near is not None else 0.48
+            _add_spot(w, env, bx + (0.08 if bx < 0.48 else -0.08),
+                      _own_half(pline_y(eng) - 3.0 / _TILES_Y), 4.0, 1.5)
+        elif my_hog is not None and my_hog.y < 0.55:
+            # F-11: the offense layer -- several tiles BEHIND a crossing Hog; Hog FIRST (SS4 L7).
+            _add_spot(w, env, my_hog.x, _own_half(my_hog.y + 4.0 / _TILES_Y), 3.5, 1.2)
+        else:
+            # F-10: the bank play while holding -- the deepest reachable row beside the king
+            # (rows past the tap ceiling all collapse to the same tap, so aim at what is real).
+            kt = eng.towers[0][2]
+            _add_spot(w, env, kt.x, _own_half(kt.y - 1.8 / _TILES_Y), 2.0, 0.8)
+
+    elif base == "ice_spirit":
+        # DOCTRINE_RESEARCH.md SS2 I-1/I-2/I-5, merged.
+        my_hog = next((u for u in eng.units if u.team == 0 and u.hp > 0
+                       and u.spec.base == "hog_rider" and u.y < 0.60), None)
+        if my_hog is not None:
+            # I-2: ESCORT -- the freeze converts 1 tower hit into 2-3. Rides the Hog itself
+            # (clamped to our rows); the spirit is Very Fast and catches up.
+            _add_spot(w, env, my_hog.x, _own_half(my_hog.y), 4.0, 1.5)
+        elif threat is not None:
+            # I-5: freeze-stall the deepest threat while Tesla / Mighty Miner do the real work.
+            _add_spot(w, env, threat.x, _own_half(threat.y), 3.5, 1.2)
+        else:
+            # I-1: the PROBE at the bridges (engine columns) -- rung two of the opening ladder.
+            _add_spot(w, env, eng.towers[0][0].x, _OWN_FRONT, 1.2, 0.4)
+            _add_spot(w, env, eng.towers[0][1].x, _OWN_FRONT, 1.2, 0.4)
+
+    elif base == "tesla":
         # #1/#5/#6/#15: centre-band pull vs any tower-bound/building-targeting or deep threat.
         movers = [u for u in enemies if (u.spec.building_only or u.spec.kind == "troop") and u.y > 0.30]
         if not movers:
@@ -658,97 +805,6 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
                 # isn't an option" -- the building is what stops the Hog, the chip is a bonus.
                 _add_spot(w, env, prize.x, prize.y, 5.0, 1.5)
 
-    elif base == "hog_rider":
-        # DOCTRINE_RESEARCH.md SS2 Hog (2026-08-18): the Hog is played AT THE BRIDGE, never from
-        # the back. Three spots per lane -- the bridge column, its INNER-side tile ("middle or
-        # inner side of the bridge"), and the arena-EDGE river tile (the auto pig push, which
-        # bypasses a centre 3-from-river building plant). All on the shallowest deployable row
-        # (_own_half clamps them there). Lane choice mirrors the punish logic: opposite the
-        # enemy's committed mass, work the weaker tower, and never a lane whose princess is
-        # already down (a Hog into a dead lane can only reach the far tankier king).
-        etw = eng.towers[1]
-        l_alive = etw[0].hp > 0 if len(etw) > 0 else True
-        r_alive = etw[1].hp > 0 if len(etw) > 1 else True
-        mass_left = sum(u.spec.elixir for u in enemies if u.x < 0.5)
-        mass_right = sum(u.spec.elixir for u in enemies if u.x >= 0.5)
-        wl, wr = ((4.0, 2.0) if mass_right > mass_left
-                  else (2.0, 4.0) if mass_left > mass_right else (3.0, 3.0))
-        if l_alive != r_alive:
-            wl, wr = (5.0, 0.0) if l_alive else (0.0, 5.0)
-        elif l_alive and r_alive and len(etw) > 1:
-            full = max(etw[0].hp, etw[1].hp) or 1.0
-            if etw[1].hp < etw[0].hp - 0.10 * full:
-                wr *= 1.6
-            elif etw[0].hp < etw[1].hp - 0.10 * full:
-                wl *= 1.6
-        if wl > 0.0:
-            _add_spot(w, env, 0.25, 0.50, wl, 0.8)           # the left bridge
-            _add_spot(w, env, 0.31, 0.50, wl * 0.5, 0.5)     # inner side of it
-            _add_spot(w, env, 0.06, 0.50, wl * 0.5, 0.4)     # arena edge: auto pig push
-        if wr > 0.0:
-            _add_spot(w, env, 0.745, 0.50, wr, 0.8)
-            _add_spot(w, env, 0.685, 0.50, wr * 0.5, 0.5)
-            _add_spot(w, env, 0.94, 0.50, wr * 0.5, 0.4)
-
-    elif base == "mighty_miner":
-        # DOCTRINE_RESEARCH.md SS2 MM: defensively ON the tank (tile-exact body-blocking is the
-        # skill -- "1 tile left, 1 tile down would have blocked the Ram Rider entirely"), and a
-        # deliberate NO-SPOT against swarms: he has no splash and his stage-1 hit cannot even
-        # one-shot Skeletons, so a swarm answer here would teach exactly the waste the guides
-        # warn about. On a genuinely quiet board, the bridge-punish pattern (MM alone at the
-        # bridge; his ability then swaps lanes ahead of the Hog).
-        big = [u for u in enemies if u.y > 0.35 and not u.spec.flying
-               and u.spec.kind != "spell" and u.spec.hp >= 1200
-               and (u.spec.squad_count or u.spec.count or 1) <= 2]
-        if big:
-            t = max(big, key=lambda u: u.spec.hp)
-            _add_spot(w, env, t.x, max(0.50, t.y + 0.02), 4.5, 1.0)   # on the tank's path
-            _add_spot(w, env, 0.48, 0.60, 1.5, 0.8)                   # centre fallback
-        elif threat is None and not enemies:
-            _add_spot(w, env, 0.25, 0.50, 2.0, 0.8)
-            _add_spot(w, env, 0.745, 0.50, 2.0, 0.8)
-
-    elif base == "firecracker":
-        # DOCTRINE_RESEARCH.md SS2 FC: from DEPTH, never the bridge. The kite band vs a melee
-        # chaser (4th-6th tile behind the bridge, staggered toward the OTHER lane -- one tile
-        # deeper vs jumpers/dashers), the behind-our-line answer vs air or a stacked push
-        # (off the tower column, so one Fireball can never clip her AND the tower), and on
-        # offence LAYERED BEHIND a crossing Hog -- splash clears his path, sparks chip.
-        air = [u for u in enemies if u.spec.flying and u.y > 0.30]
-        melee_chaser = (threat is not None and not threat.spec.flying
-                        and threat.spec.reach <= 1.6)
-        if melee_chaser:
-            jump = threat.spec.base in ("mega_knight", "bandit", "battle_healer")
-            depth = 0.48 + ((6.0 if jump else 4.5) / 32.0)
-            off = 0.09 if threat.x < 0.48 else -0.09
-            _add_spot(w, env, min(0.90, max(0.10, threat.x + off)), depth, 4.0, 1.2)
-        elif air or threat is not None:
-            t = max(air, key=lambda u: u.y) if air else threat
-            tw_near = min(_my_princesses(env), key=lambda p: abs(p.x - t.x), default=None)
-            bx = tw_near.x if tw_near is not None else 0.48
-            _add_spot(w, env, bx + (0.08 if bx < 0.48 else -0.08), 0.66, 4.0, 1.2)
-            _add_spot(w, env, 0.48, 0.68, 1.5, 0.8)
-        else:
-            my_hog = next((u for u in eng.units if u.team == 0 and u.hp > 0
-                           and u.spec.base == "hog_rider" and u.y < 0.55), None)
-            if my_hog is not None:
-                _add_spot(w, env, my_hog.x, 0.545, 3.0, 1.0)
-
-    elif base == "ice_spirit":
-        # DOCTRINE_RESEARCH.md SS2 Ice Spirit: the Hog's escort first (the freeze on the
-        # defender is what guarantees the tower hit), the defensive freeze on the deepest
-        # threat second, and the bridge probe (the escalation ladder's 1-elixir opener) on a
-        # quiet board.
-        my_hog = next((u for u in eng.units if u.team == 0 and u.hp > 0
-                       and u.spec.base == "hog_rider" and u.y < 0.60), None)
-        if my_hog is not None:
-            _add_spot(w, env, my_hog.x, 0.52, 4.0, 1.0)
-        elif threat is not None:
-            _add_spot(w, env, threat.x, max(0.50, threat.y), 3.0, 1.2)
-        else:
-            _add_spot(w, env, 0.25, 0.50, 1.5, 0.6)
-            _add_spot(w, env, 0.745, 0.50, 1.5, 0.6)
-
     elif base == "rocket":
         # TORNADO SYNERGY (user doctrine, 2026-08-16) -- FIRST, because it is the only rule that
         # is time-critical. The Tornado is what MAKES a rocket-sized clump in this deck; a bundle
@@ -901,6 +957,30 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         env.db, [u.spec.base for u in committed],
         tower_level=_tower_level(env), enemy_level=_enemy_level(env)) if committed else 0.0
     quiet = cost < threat_value.IGNORE_FRAC
+    # ---- T1 PUNISH (DOCTRINE_RESEARCH.md SS1.1) ---------------------------------------------
+    # They just committed >= 5 elixir DEEP in their half: a tank behind the king OR a pump --
+    # `kind in ("troop", "building")`, because the Elixir Collector is the single most-punishable
+    # commit in the research and a troop-only filter silently excluded it (review blocker). The
+    # Hog goes to the opposite-lane bridge NOW; the CELL rule reads the same mass imbalance and
+    # aims it. Nothing travels behind it -- the beatdown rule for exactly this trigger is "Hog
+    # opposite lane at once, ADD NOTHING" (SS5.1). Outside the quiet gate on purpose: the window
+    # is about THEIR bank, not our board.
+    # SS5.3 matchup veto: vs a P.E.K.K.A deck in single elixir the punish is OFF -- she holds
+    # the bridge and the double-lane pressure this window invites is exactly what loses that
+    # matchup before double elixir.
+    _punish = (sum(u.spec.elixir / max(1, u.spec.squad_count or u.spec.count)
+                   for u in enemies if u.y < 0.25 and u.spec.kind in ("troop", "building")) >= 5.0
+               and not (eng.t < 120.0
+                        and ("pekka" in _opp_cards(env)
+                             or any(u.spec.base == "pekka" for u in enemies))))
+    # T2: a surviving forward defender (engine-anchored depth -- see the hog cell rule) also
+    # opens the send window at 4.
+    _pl = eng.towers[0][0].y if len(eng.towers[0]) > 0 else 0.797
+    _surv_fwd = any(u.team == 0 and u.hp > 0 and u.spec.kind == "troop"
+                    and u.y <= _pl + 1.5 / 32.0 for u in eng.units)
+    if _punish:
+        _bump(_holdable("hog_rider"), 6.0)
+
     if quiet:
         # NOT a defence situation. The tower handles this by itself, so the elixir belongs in the
         # win condition -- "with a quiet enemy board and 6+ elixir the play is the X-Bow;
@@ -911,10 +991,15 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         # IceBow rule this replaces, which held elixir on a quiet board and nominated a cycle card
         # only near the leak point. Holding here would forfeit the rotation that makes the Hog good.
         #
-        # The Hog is nominated as soon as it is affordable rather than at some higher bar: a quiet
-        # enemy board IS the window (nothing of theirs is committed to punish us), and every guide
-        # states the same thing -- the Hog goes to the bridge, never from the back.
-        if eng.elixir[0] >= 4.0:
+        # The bar is SPLIT by game phase (DOCTRINE_RESEARCH.md SS1.1 T5, SS6 C8). In single elixir
+        # a quiet-board send waits for 7 -- after the 4-cost Hog the bank stays >= 3, the floor
+        # every guide keeps ("elixir bar always at least 3 except against a large push"). In
+        # double elixir / overtime the Hog goes at 4, and an open T1/T2 window (computed below,
+        # shared with the punish block) drops the bar to 4 as well -- C8's "keep 4 for x2/OT and
+        # all punish windows". T3 (their answer out of rotation) and T4 (their bank is low) are
+        # NOT encoded: both need opponent-rotation/elixir tracking this prior does not have.
+        bar = 4.0 if (eng.t >= 120.0 or _punish or _surv_fwd) else 7.0
+        if eng.elixir[0] >= bar:
             _bump(_holdable("hog_rider"), 4.0)
         # Cycling starts well below the leak point for a deck this cheap: a 1-elixir Skeletons or
         # Ice Spirit spent here is how the Hog comes back around, so it is a PLAY, not a leak valve.
