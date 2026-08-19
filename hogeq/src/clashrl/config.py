@@ -14,6 +14,10 @@ class Config:
     data: Dict[str, Any]
     root: Path
 
+    def __deepcopy__(self, memo):
+        # SHARED ACROSS ENGINE FORKS -- read-only after load; see CardSpec.__deepcopy__.
+        return self
+
     @classmethod
     def load(cls, path: Optional[str | os.PathLike] = None) -> "Config":
         # project root is …/icebow  (this file lives at src/clashrl/config.py)

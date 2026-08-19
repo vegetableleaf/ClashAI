@@ -113,11 +113,24 @@ class ThreatProfile:
 
 
 def profile(db: CardDB, name: str) -> ThreatProfile:
-    """Resolve a detected class name to its :class:`ThreatProfile` via the KB."""
+    """Resolve a detected class name to its :class:`ThreatProfile` via the KB.
+
+    MEMOISED PER DB INSTANCE (2026-08-19): the KB is read-only at runtime and the result is a
+    frozen ThreatProfile, but this was rebuilt from six dict lookups on every call -- 8.4k calls
+    in a 5-match profile, ~10% of a match's runtime, all returning identical objects. The cache
+    lives ON the db so a rebuilt/replaced CardDB never serves stale profiles.
+    """
     base = base_key(name)
+    cache = getattr(db, "_profile_cache", None)
+    if cache is None:
+        cache = db._profile_cache = {}
+    hit = cache.get(base)
+    if hit is not None:
+        return hit
     c = db.get(base)
     if not c:
-        return ThreatProfile(name=base, known=False)
+        out = cache[base] = ThreatProfile(name=base, known=False)
+        return out
     kind = c.get("kind")
     flags = set(db.flags(base))
     tagged = any(k in c for k in ("win_condition", "flags", "targets"))
@@ -126,7 +139,7 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
     building_targeting = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     dps = c.get("dps") if c.get("dps") is not None else c.get("damage_per_second")
     reach = db.attack_range(base)                        # melee | short | long | None
-    return ThreatProfile(
+    out = cache[base] = ThreatProfile(
         name=base,
         known=True,
         tagged=tagged,
@@ -150,6 +163,7 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
         melee=reach == "melee",
         pull=("pull" in flags),
     )
+    return out
 
 
 # --- Stage 3: identity-grounded threat features (the detector -> obs bridge) ------------------

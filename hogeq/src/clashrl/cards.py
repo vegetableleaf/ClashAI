@@ -173,6 +173,13 @@ class CardDB:
                     base[kk] = vv
         self.cards: Dict[str, dict] = merged
 
+    def __deepcopy__(self, memo):
+        # SHARED ACROSS ENGINE FORKS. The DB is read-only after construction, and the engine holds
+        # a reference (eng.db) that the counterfactual fork was dragging through deepcopy -- the
+        # entire merged card dictionary tree, every fork, several forks per match. See the matching
+        # hook on CardSpec for the measurement.
+        return self
+
     def mass(self, name: str) -> Optional[float]:
         """How heavy a body is for SHOVING, from the game files (Skeleton 1 ... Golem 20).
 

@@ -110,7 +110,7 @@ _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corr
 _KNOCKBACK_DEFAULT = 1.0
 
 
-@dataclass
+@dataclass(slots=True)
 class CardSpec:
     key: str
     base: str
@@ -457,6 +457,16 @@ class CardSpec:
     # share -- so billing by that would charge Rascals 5/1 for the boy PLUS 5/2 each for the girls,
     # i.e. 10 elixir for a 5-elixir card, inflating every position/counterfactual reading.
     squad_count: int = 0
+
+    def __deepcopy__(self, memo):
+        # SHARED ACROSS ENGINE FORKS ON PURPOSE. A spec is immutable in practice: every runtime
+        # variation goes through dataclasses.replace(), which creates a NEW instance, and no code
+        # assigns spec fields in place. The counterfactual reward forks the whole engine several
+        # times per match, and deep-copying ~200 fields per spec per unit made deepcopy 52% of a
+        # match's runtime (MEASURED 2026-08-19: 787,633 deepcopy calls for 43 forks). Sharing the
+        # instance is semantically identical and removes most of that. Unit/Tower/engine state is
+        # NOT given this hook -- forks must copy every mutable object exactly as before.
+        return self
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -863,7 +873,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     return spec
 
 
-@dataclass
+@dataclass(slots=True)
 class Unit:
     spec: CardSpec
     team: int
@@ -945,7 +955,7 @@ class Unit:
         self.shield_left = self.spec.shield_hp
 
 
-@dataclass
+@dataclass(slots=True)
 class Tower:
     x: float
     y: float
@@ -980,7 +990,7 @@ class Tower:
     fisherman_slowed: bool = False
 
 
-@dataclass
+@dataclass(slots=True)
 class _Spell:
     team: int
     x: float
@@ -991,7 +1001,7 @@ class _Spell:
     echoes: int = 0               # EVO ZAP: growing-ring pulses still to fire after this one
 
 
-@dataclass
+@dataclass(slots=True)
 class _Vortex:
     """A LANDED tornado: an active area that pulls enemies to its centre and deals its damage
     spread over the duration (the instant-blast model could never produce the clump synergies
@@ -1004,7 +1014,7 @@ class _Vortex:
     left: float                   # active seconds remaining
 
 
-@dataclass
+@dataclass   # NOT slots: custom __init__ assigns undeclared attrs (tick_in etc.)
 class _Zone:
     """A lingering AREA effect pinned to the ground: Poison's 8 s damage-over-time field,
     Void's count-tiered pulses, Graveyard's timed skeleton ring. Ticks in advance()."""
@@ -1016,7 +1026,7 @@ class _Zone:
         self.spawned = 0
 
 
-@dataclass
+@dataclass(slots=True)
 class Projectile:
     """A shot IN FLIGHT. Attacks used to land instantly, which is wrong in two ways that matter:
     a Mortar shell (300 = 5 tiles/s) took the same zero time to arrive as a Musketeer bullet
