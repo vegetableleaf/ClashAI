@@ -377,7 +377,18 @@ configured but **have never run** — BC has not been retrained since the soft-t
    (`20260815_222309`) has never been labelled.
 2. **Restart both PPO runs** after board-26 — first real test of the reward fix. Train **from
    scratch**, not `--resume`; `--reset-gate` should no longer be needed.
-3. **board-26 verdict**: it only replaces board-24-5 if `detect-eval` beats it on
+3. **board-26 verdict — AUTOMATED 2026-08-19.** A detached watcher
+   (`icebow/tools/board26_gate_on_finish.py`, PID in `runs/gate_watcher.pid`, logs
+   `runs/gate_watcher.{out,err}`) waits for training to finish, runs `detect-eval` on BOTH
+   board-26's final `best.pt` and the incumbent board-24-5 over the same frozen 241-image subset,
+   writes `runs/gate_board26.txt` + `runs/gate_board24_5.txt`, and posts the verdict table to
+   Discord. It survives this session. If it is ever lost, the same script run by hand with
+   `--now` does the comparison immediately. The pin only moves if the challenger is >= on presence
+   recall AND whitelist identity AND deck-units-passing.
+   **Note the trajectory:** board-26 lost this gate at epoch 51 (4/5 deck units below the pin) but
+   has since set 16 new bests, mAP50-95 0.6840 -> **0.7046** by epoch 108, so the verdict is
+   genuinely open rather than a formality.
+   Original criteria: it only replaces board-24-5 if `detect-eval` beats it on
    `data/detect/val_board15.txt` (241 images). The `detect.weights` pin stays until then.
    board-25 came out **bit-identical** to board-24-5, so this gate has already caught one no-op.
    **Measured at epoch 51 (2026-08-18): board-26 LOSES** — 4/5 deck units below board-24-5,
