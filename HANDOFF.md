@@ -267,6 +267,24 @@ free**. Budget ~13 GB for a board-* run, and treat "YOLO ≈ 5 GB" as retired.
 
 ---
 
+## 3b. 2026-08-19 daytime batch (user's five tasks)
+
+1. **Crown damage + user's EQ values — DONE `7bfe6ed`.** Curated overrides in BOTH decks
+   (rocket 342, log 35, lightning 264, zap 48, poison 21; EQ 81/49/283 user-read in-game).
+   Damage-sensitive suites pass unchanged (they measure relatively, per §8).
+2. **Mighty Miner 14 → 15 — DONE `7bfe6ed`.** hp 2979→3269, stages [58/296/594], bomb 531.
+3. **Spirit Empress — DONE `4d2ebe5`.** Was a 4-elixir 1798-HP flying hybrid: the 08-14 import
+   caught the Fandom page MID-EDIT-WAR. Now two curated forms + ONE deploy choke point picking by
+   caster elixir (<3 uncastable, [3,6) ground 3e melee fast ground-only, ≥6 air 6e ranged-5
+   flying; exactly 6.0 = air). 10 tests per deck. Mirror rule N/A (no Mirror in sim).
+4. **Sim speed — DONE `935350c`, +24%** (3.04→3.77 matches/s), byte-identical fixed-seed digest
+   at every step: `__deepcopy__→self` on CardSpec/CardDB/Config (deepcopy was 34% of runtime via
+   counterfactual forks), `slots=True` on 6 engine dataclasses (NOT _Zone — custom __init__),
+   `card_threat.profile` memoised per-db. Top remaining costs are SEMANTIC (CF rollouts ~0.9s,
+   obs building ~26%) — do not "optimise" them without a reward decision.
+5. **Pathing (bridge cramming + wincon-defender sticking) — IN PROGRESS**, research agent out on
+   CR pushing/mass/collision mechanics; implementation next.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
