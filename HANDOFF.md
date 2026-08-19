@@ -282,8 +282,22 @@ free**. Budget ~13 GB for a board-* run, and treat "YOLO ≈ 5 GB" as retired.
    counterfactual forks), `slots=True` on 6 engine dataclasses (NOT _Zone — custom __init__),
    `card_threat.profile` memoised per-db. Top remaining costs are SEMANTIC (CF rollouts ~0.9s,
    obs building ~26%) — do not "optimise" them without a reward decision.
-5. **Pathing (bridge cramming + wincon-defender sticking) — IN PROGRESS**, research agent out on
-   CR pushing/mass/collision mechanics; implementation next.
+5. **Pathing — DONE `6c1eec8`.** Both bugs reproduced, measured, fixed from mechanism research
+   (game-file Mass/CollisionRadius datamine + April-2025 rework notes + push-mechanics video):
+   * STICK: a Hog vs ONE pinned defender dead-centre went from **NEVER (60 s cap) → knight +0.6 s
+     / ice_golem +0.8 s / pekka +1.5 s / skeleton_king +1.4 s** over the 6.5 s baseline — mass-
+     graded slide, never a latch. Mechanism: walking bodies slide along the contact TANGENT toward
+     their target (k = clamp(0.45·m/o, 0.12, 0.9)); attackers hold ground (tested).
+   * CRAM: 8-body push **24.7 s → 17.3 s** all-across, worst stall **6.6 → 4.5 s**. Mechanism:
+     between two same-team walkers the REAR pushes the FRONT — a follower's velocity is never
+     zeroed. The 2026-08-15 stopped-attacker WALL rule is untouched.
+   * ⚠ TRAP for the next reader: the Evo-Recruits charge probe misread the flow fix as a
+     charge-through-shield bug — two simultaneous 133 swings ≡ one 266 charge hit numerically.
+     The probe now isolates the centre recruit. If a damage test breaks after a pathing change,
+     check simultaneity before doctrine.
+   * 4 regression tests per deck (`test_pathing_flow.py`). Research corpus incl. the datamined
+     mass tiers is in the CR pathing report (session log 2026-08-19); `card_mechanics.json`
+     already carries per-card mass/collision the engine uses.
 
 ## 4. The central problem, and where it stands
 
