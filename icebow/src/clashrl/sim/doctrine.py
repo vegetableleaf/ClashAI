@@ -869,15 +869,32 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
 
     # 1. FRESH PUMP. An unanswered Elixir Collector out-economies a control deck; the reward
     #    already pays full win-condition credit for killing one inside its window.
+    #    TWO GATES (DOCTRINE_RESEARCH.md SS1.1 R5, Hunter CR): (a) STOP rocketing pumps once
+    #    overtime starts -- the tower is worth more than the tempo by then; (b) skip it when the
+    #    board threat means we cannot defend at post-rocket elixir. He declined a pump rocket at
+    #    7 elixir for exactly (b), and the bot's `spell_waste` term (-23.7, never positive) is
+    #    what casting into that state looks like from the reward's side.
     if any(u.spec.base == "elixir_collector" and u.age <= env.pump_window for u in enemies):
-        bump(4.0)
+        committed = [u for u in enemies if u.y > 0.42 and u.spec.kind != "spell"]
+        threat_cost = threat_value.group_ignore_frac(
+            env.db, [u.spec.base for u in committed],
+            tower_level=_tower_level(env), enemy_level=_enemy_level(env)) if committed else 0.0
+        if eng.t < env._double_time and threat_cost < threat_value.MUST_ANSWER_FRAC:
+            bump(4.0)
 
     # 2. THE 2-FOR-1. A 4-6 elixir support body sitting next to a live princess tower is the
     #    classic "rocket the Musketeer behind the tower" -- tower chip AND a card-advantage kill.
     for t in eng.towers[1][:2]:
         if not t.alive:
             continue
+        # LETHALITY CHECK (SS1.1 R4). "Rocket the support next to the tower" is a REMOVAL play,
+        # so the body must actually die: hp under the rocket's damage and no shield soaking it.
+        # Without this the rule fired on Royal Giants and shielded 4-costs, where 1484 does not
+        # come close to a kill -- the verifier caught the pool generalising "4+ elixir supports
+        # will be one-shot", which is false for exactly those cards.
+        rk_dmg = float(env.specs[rid].spell_dmg or 0.0)
         if any(u.spec.kind == "troop" and not u.spec.building_only and 4 <= u.spec.elixir <= 6
+               and u.hp <= rk_dmg and u.shield_left <= 0.0 and u.spec.shield_hp <= 0.0
                and abs(u.x - t.x) + abs(u.y - t.y) < 0.14 for u in enemies):
             bump(4.0)
 
@@ -912,15 +929,56 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
             if op_low >= my_low:                     # losing or level on the tiebreak
                 bump(4.5)
 
-    # 6. NO CHEAPER ANSWER. A heavy threat is over the river and nothing else in hand answers it.
-    #    Rocket is not the efficient counter, but "acceptable ... if you have no other effective
-    #    answer in your hand" -- a bad trade beats taking the whole push.
+    # 6. CYCLE STATE, NOT ELIXIR MATH (DOCTRINE_RESEARCH.md SS1.1 R1 -- the single highest-value
+    #    rule in the whole corpus, and the fix for the MEASURED failure: rocket was played 2 times
+    #    in 1288 plays, 0.2%).
+    #
+    #    This gate used to require that NOTHING else in hand was affordable, which is a board state
+    #    that essentially never occurs -- so the trigger a professional actually uses was
+    #    unreachable and the rule was dead code. Hunter CR states it as a HAND condition, not a
+    #    value judgement: "the trigger for rocketing a support troop is CYCLE STATE, not elixir
+    #    math -- rocket it when your normal answers (Knight, Tesla) are not in hand." That is
+    #    observable, which matters here: the prior has been nominating rocket in rollouts for
+    #    14,300+ matches without the policy learning to value it, because the payoff is too rare
+    #    and too precise to find by sampling. A hand condition can be learned.
+    #
+    #    R3, THE OVERSPEND TEST, is the same rule from the other side and is the corpus's most
+    #    on-point observation -- Hunter naming his own worst play of a match as a rocket he did
+    #    NOT cast: "I had to drop nine elixir on that prince. If I would have just rocketed..."
+    #    So: if the cheapest sufficient answer in hand costs 7+ chained elixir, the 6-elixir
+    #    rocket IS the cheap answer, not the expensive one.
     threat = _deepest_ground_threat(env)
     if threat is not None and threat.spec.elixir >= 4 and threat.y > 0.52:
-        others = [i for i in env._hand_ids()
-                  if i != rid and i >= 0 and eng.elixir[0] >= env.specs[i].elixir
-                  and env.specs[i].kind != "spell"]
-        if not others:
-            bump(3.0)
+        # N3 (SS1.2): vs a Giant Skeleton the BUILDING is the answer, not the spell. Hunter's
+        # measured error of one video -- Rocket+Log instead of Tesla, tower lost, and he named
+        # Tesla-on-zero-elixir as the correct play. Veto rather than a negative weight, because
+        # the building rule below should win outright.
+        veto = threat.spec.base == "giant_skeleton" and _holdable("tesla") is not None
+        # N6: a LONE Sparky has a cheaper answer -- Tornado it into the Knight so the tower helps.
+        # The quote is "rocket the sparkies anytime he puts value WITH them", i.e. gated on the
+        # opponent adding accompanying investment; the pool's "on sight" reading was the opposite.
+        if threat.spec.base == "sparky":
+            supported = sum(1 for u in enemies
+                            if u is not threat and u.spec.kind == "troop" and u.y > 0.42) >= 1
+            if not supported and _holdable("tornado") is not None and _holdable("knight") is not None:
+                veto = True
+        if not veto:
+            answers = [i for i in env._hand_ids()
+                       if i != rid and i >= 0 and eng.elixir[0] >= env.specs[i].elixir
+                       and env.specs[i].kind != "spell"]
+            # THE DESIGNATED ANSWERS for a committed body in this deck are the Knight (body-block)
+            # and the Tesla (pull + survive). Ice Wizard and Skeletons shape a push; they do not
+            # stop a 4+ elixir threat on their own, which is why they do not count here.
+            has_designated = (_holdable("knight") is not None or _holdable("tesla") is not None)
+            if not has_designated:
+                bump(4.0)                       # R1: the cheap answers are out of rotation
+            elif not answers:
+                bump(3.0)                       # the original last-resort case
+            else:
+                # R3: everything affordable is chip-sized relative to the threat, so stopping it
+                # means chaining several cards. 7+ elixir of chaining loses to a 6-elixir rocket.
+                cheapest_stack = sum(sorted(float(env.specs[i].elixir) for i in answers)[:2])
+                if cheapest_stack >= 7.0:
+                    bump(3.5)
 
     return _hold_the_building(env, w, quiet) or None
