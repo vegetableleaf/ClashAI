@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 22:45**, at commit `HEAD` (advisor rework wired sim+live; doctrine cells; 19-rule table regenerated).
+Last updated: **2026-08-18 23:10**, at commit `HEAD` (PPO-beside-YOLO measured infeasible; icebow doctrine research running overnight).
 
 ---
 
@@ -195,13 +195,30 @@ cd C:\Users\benpe\ClashBot\hogeq
   board-26). Doctrine wiring CONFIRMED both sides: sim `doctrine_frac: 0.6` + `llm_doctrine: true`
   feed `doctrine_cells`/`doctrine_cards`; live `train.llm_advisor: true` (qwen2.5:latest present in
   ollama) feeds exploration, and the live quiet-board rule is now the pressure ladder (below).
-* **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
-  `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
-  22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
-  were the first runs using the fixed reward and that test is still pending.
+* **Both PPO runs remain STOPPED — and now it is MEASURED, not assumed.** The user started a
+  single hogeq `train-sim-ppo --envs 96 --workers 12` at 22:30 on 2026-08-18 while board-26
+  trained. Within 6 minutes: available RAM oscillating **5-520 MB**, hard faults **4,500-24,300/s**
+  (thrashing), and Windows was **evicting board-26's working set** (4.27 GB -> 1.5 GB) to feed the
+  PPO's ~8.4 GB (trainer 2.0 GB + 12 workers x ~535 MB). The user killed it on that evidence;
+  available RAM recovered to 7.4 GB and faults to ~200/s within a minute. **Restart PPO only after
+  board-26 finishes** — first real test of the fixed reward AND now of the new doctrine priors.
+  Train from scratch, not --resume.
+* **Icebow doctrine research workflow running overnight** (started 2026-08-18 ~23:0x, run
+  `wf_2fadd59a-18b`): 18 agents — 7 researchers (recency window Nov 2025+, **Hunter CR preferred
+  authority**), up to 8 video watchers (2-at-a-time RAM throttle; <=45 min videos with
+  transcript-guided selective sheet reading), 2 adversarial verifiers (misinterpretation +
+  recency/conflict lenses — the user explicitly asked for close review of ambiguous statements),
+  1 synthesizer -> `icebow/DOCTRINE_RESEARCH.md`. Focus: **Rocket decision procedure** (the
+  recurring misuse/non-use complaint) and **defensive plays**. Implementation follows
+  autonomously on completion: doctrine.py rocket/defense rules, llm_advisor prompt sharpening,
+  llm_doctrine.json regen (port LLMDOC_CPU to icebow's tool first).
 
 ### The RAM constraint (important)
-31.4 GB total. Two PPO trainers + 24 rollout workers hold ~5.2 GB. **The machine cannot run both.**
+31.4 GB total. **Not even ONE full-width PPO run fits beside a board-* detector run** — measured
+2026-08-18 22:36 (see §3): one `--envs 96 --workers 12` PPO holds ~8.4 GB, YOLO needs ~12.9 GB
+resident, and the OS takes the rest; the result was a 5 MB availability trough and 24k hard
+faults/s inside 6 minutes. An earlier note here said two PPO trainers held ~5.2 GB combined —
+that number was from a different (checkpoint-idle) phase and must not be used for planning.
 board-26 died with `MemoryError ... Unable to allocate 1.63 MiB` — that is *host* RAM, not GPU. If
 it OOMs again, drop to `workers=2`. CPU contention is NOT the issue: the 5 it/s measurement was
 taken while PPO ran.
