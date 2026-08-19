@@ -450,16 +450,26 @@ def train_rl(cfg, init: str | None = None) -> None:
             # it cannot answer in time it returns None and this falls straight back to random.
             c = None
             if not needs_answer:
-                # NOT A DEFENCE DECISION. The tower handles what is out there, so the elixir goes
-                # into the win condition -- "with a quiet enemy board and 6+ elixir the play is
-                # the X-Bow; otherwise cycle the cheapest card or hold". Same rule the sim's
-                # doctrine applies, so exploration means the same thing on both sides.
-                bow = next((i for i in playable if _base_key(card_names[i]) == "x_bow"), None)
-                if bow is not None and elixir >= 6.0:
-                    c = bow
-                else:
+                # NOT A DEFENCE DECISION -- and for THIS deck that means PRESSURE, not holding
+                # (DOCTRINE_RESEARCH.md SS1, 2026-08-18). The icebow rule this replaces looked
+                # for an x_bow (a card this deck does not hold) and then returned HOLD, which is
+                # the user-reported passivity hard-coded into live exploration. A 2.75 cycle
+                # deck's advantage IS the rotation: the quiet board is the attack window. The
+                # ladder, same as the sim's doctrine_cards so exploration means the same thing
+                # on both sides: Hog at the bridge from 4 elixir; from 6, cycle the cheapest
+                # card toward the next Hog; genuinely hold only when too poor for either.
+                hog = next((i for i in playable if _base_key(card_names[i]) == "hog_rider"), None)
+                if hog is not None and elixir >= 4.0:
+                    c = hog
+                elif elixir >= 6.0:
+                    # the ability is 1 elixir but is NOT a cycle card (its button without a
+                    # deployed champion is a dead tap), so it never counts as "cheapest".
+                    cyc = [i for i in playable if card_names[i] != "mighty_miner_ability"]
+                    if cyc:
+                        c = min(cyc, key=lambda i: card_elixir[i])
+                if c is None:
                     if advisor_log:
-                        print("[train-rl]   explore: HOLD (nothing on the board needs an answer)")
+                        print("[train-rl]   explore: HOLD (quiet board, banking toward the Hog)")
                     return (0, 0, 0)
             if c is None and advisor is not None:
                 # A DEFENCE IS USUALLY MORE THAN ONE CARD, and the live loop plays one card per

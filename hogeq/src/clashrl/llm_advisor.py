@@ -94,11 +94,11 @@ class LLMAdvisor:
         """An ORDERED answer of one to three cards, or [] -- a defence, not a single card.
 
         Counters in this game are rarely one-to-one. A Giant with a Musketeer behind it is not
-        answered by any single card in an icebow hand; it is answered by Tesla to hold the Giant
-        and then Log or Ice Wizard for the support. Asking "the single best card" cannot express
+        answered by any single card in this hand; it is answered by Tesla to hold the Giant and
+        then the Firecracker or Log for the support. Asking "the single best card" cannot express
         that, and worse, it distorts the FIRST card too: the best opener of a good two-card defence
-        is frequently not the best card considered alone (Knight first only makes sense if the Log
-        is coming behind it).
+        is frequently not the best card considered alone (Skeletons first only make sense because
+        the Mighty Miner is coming behind them).
 
         The live loop plays one card per decision, so a combination is necessarily a SEQUENCE
         across consecutive decisions. This returns that sequence; the caller commits to it and
@@ -125,31 +125,42 @@ class LLMAdvisor:
         # better. qwen2.5 7B holds 0.590 s p50 with it, with a 0.823 s tail -- hence the timeout
         # default below.
         prompt = (
-            "Clash Royale, ICEBOW deck (X-Bow control). Win by defending for LESS elixir than the "
-            "attack cost, then chipping with the X-Bow.\n\n"
-            "STEP 1 -- IS IT WORTH A CARD? Your tower kills small things by itself. If the enemy "
-            "board is only a lone Skeletons, Spear Goblins, Goblins, Bats, Bomber, Guards, Ice "
-            "Wizard or Dart Goblin, answer 'hold' and spend NOTHING -- logging a lone Skeletons is "
-            "a textbook waste. Spend a card ONLY on: a tank, a win condition (Hog, Giant, Royal "
-            "Giant, Balloon, Graveyard, Miner, Ram Rider), THREE OR MORE units together, an elixir "
-            "collector, or something that outranges your tower (Princess, Mortar, X-Bow).\n\n"
-            "STEP 2 -- CHEAPEST CARD THAT ACTUALLY WORKS:\n"
-            "skeletons 1: distract a tank, reset a charge.\n"
-            "the_log 2: THREE OR MORE ground swarm units, or reset a charge, or a tombstone at "
-            "half health. Cannot hit air. NOT for one or two small units.\n"
-            "ice_wizard 3: slow a whole group. knight 3: body-block one ground attacker.\n"
-            "tornado 3: bunch enemies for splash, drag an attacker into your own King Tower to "
-            "wake it, or pull defenders off your bow. Barely moves a Giant or Golem -- a TANK in "
-            "front of a Hog means rocket, not tornado.\n"
-            "tesla 4: THE answer to a committed push -- it pulls and SURVIVES. Use it on tanks "
-            "and win conditions.\n"
-            "rocket 6: 4+ elixir of GROUPED support, a FRESH elixir collector, or the weaker "
-            "tower in overtime. Never on cheap bodies, never on their King.\n"
-            "x_bow 6: the win condition, NOT a defence -- only on a quiet board with 6+ elixir, "
-            "never into a committed push.\n\n"
-            "Read the push as a whole: a tank with support wants the building for the tank AND an "
-            "answer for the support. Defence is minimising damage, not preventing it -- never "
-            "spend more elixir than the push cost.\n\n"
+            "Clash Royale, HOG EQ CYCLE deck (2.75 average cost). This deck wins by CONSTANT "
+            "PRESSURE: cycle back to the Hog Rider and send it at the BRIDGE again and again, "
+            "defending for less than the opponent spends. Banking elixir is WRONG here -- a "
+            "quiet enemy board is the attack window, not a reason to wait.\n\n"
+            "STEP 1 -- MUST ANYTHING BE ANSWERED? Your tower kills small things alone: a lone "
+            "Skeletons, Spear Goblins, Goblins, Bats or Ice Spirit deserves NOTHING. Answer "
+            "only: a win condition (Hog, Giant, Balloon, Miner, Ram Rider, Graveyard), a tank, "
+            "THREE OR MORE units together, an elixir collector (earthquake it), or a building "
+            "that will pull your Hog.\n\n"
+            "STEP 2 -- NOTHING TO ANSWER? Then 'hold' is almost always WRONG:\n"
+            "- 4+ elixir: hog_rider at the bridge. After a defence send it the SAME lane behind "
+            "your surviving troops; the instant they commit a tank in the back or a pump, send "
+            "it the OPPOSITE lane.\n"
+            "- under 4: cycle skeletons or ice_spirit in the back rather than leak at 10.\n"
+            "- 'hold' ONLY below 3 elixir, or while their fresh full Hog counter (building or "
+            "Mini Pekka in cycle) makes a commitment punishable.\n\n"
+            "STEP 3 -- DEFENDING: cheapest card that works.\n"
+            "skeletons 1: distract/surround, reset a charge, kite a dash unit to the CENTRE.\n"
+            "ice_spirit 1: freeze a push for a beat; escort the Hog (freeze the defender = an "
+            "extra hit).\n"
+            "the_log 2: THREE OR MORE ground swarm, strip a shield, knock a unit into your "
+            "defender. Cannot hit air.\n"
+            "earthquake 3: THEIR BUILDING, cast to clip their tower too; every pump on sight; "
+            "X-Bow setups. Never on air, never alone on a full Inferno Tower, rarely on defence "
+            "(the 50%% slow on a big ground push, in a pinch).\n"
+            "firecracker 3: air and grouped pushes, from DEPTH behind your line -- never at the "
+            "bridge; kite melee chasers 4-6 tiles from the bridge, staggered to the other lane.\n"
+            "tesla 4: THE answer to their win condition -- it pulls and SURVIVES. Centre, 3 "
+            "tiles from the river; 1 tile from the river against Earthquake decks.\n"
+            "mighty_miner 4: melts tanks (damage ramps on ONE target); place him ON the tank "
+            "with skeletons distracting. Useless against swarms.\n"
+            "mighty_miner_ability 1: pop it when he is swarmed, to dodge a spell, or to swap "
+            "lanes and lead a counter-attack.\n"
+            "hog_rider 4: the win condition. BRIDGE ONLY, never from the back.\n\n"
+            "Never spend more than the push cost. Space defenders so ONE enemy spell cannot hit "
+            "two of them.\n\n"
             "%s\nHAND: %s\nELIXIR: %.0f/10\n\n%s"
             % (situation, ", ".join(hand), elixir,
                "List the cards to play IN ORDER, one if one is enough, or just hold." if plan

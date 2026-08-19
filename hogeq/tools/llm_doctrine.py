@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
 import sys
 import time
@@ -119,44 +120,41 @@ def propose(model, env, timeout=120):
     # taught an all-spell playstyle that never defends. A model picks what it has been told
     # exists, so an omission in this string is a hole in the doctrine it can propose.
     prompt = (
-        "You are an expert Clash Royale player on an ICEBOW deck (X-Bow control). The eight cards "
-        "and what each is FOR:\n"
-        "- x_bow (6): THE WIN CONDITION and your main source of tower damage -- when you can "
-        "afford it and the lane is not already full of enemies, putting the bow down is usually "
-        "the strongest play in the deck. The one caveat: do not plant it INTO a push that is "
-        "already committed, because it dies before it fires.\n"
-        "- tesla (4): the main defensive building. It pulls attackers off your towers and "
-        "survives; centre placement covers both lanes.\n"
-        "- ice_wizard (3): cheap ranged support that SLOWS everything it hits; melts swarms and "
-        "buys your buildings time.\n"
-        "- knight (3): cheap mini-tank. Bodies-block a push, absorb hits, protect a bow or a "
-        "ranged support.\n"
-        "- skeletons (1): one elixir. Distract and reset a charging unit, kite a tank, or cycle "
-        "back to a key card.\n"
-        "- the_log (2): rolls through cheap GROUND swarms, resets charges, knocks back. Cannot "
-        "touch air.\n"
-        "- rocket (6): big damage. Worth it on 4+ elixir support, a fresh Elixir Collector, or "
-        "chipping the weaker enemy tower in overtime -- not on cheap bodies.\n"
-        "- tornado (3): pulls enemies together for splash, drags an attacker into your own King "
-        "Tower to wake it, pulls defenders off your bow. Barely moves Giant or Golem.\n\n"
-        "\nThis deck wins on COMBINATIONS, not on single cards. A card is often the right play "
-        "BECAUSE of what is already on the board:\n"
-        "- Skeletons are rarely the whole answer, but they distract a tank so your Tesla or Ice "
-        "Wizard gets extra free seconds on it, they add the last damage onto something your "
-        "defence is already chewing through, they reset a charge, and they cycle you back to a "
-        "key card for 1 elixir.\n"
-        "- Tornado + Rocket: the pull bunches a push so one Rocket hits all of it.\n"
-        "- Tornado + Ice Wizard: bunch them, then the slow lands on the whole group at once.\n"
-        "- Tornado + Tesla: drag a building-targeting attacker into your Tesla's range.\n"
-        "- Tornado + X-Bow: pull enemy defenders OFF your bow so it locks onto the tower.\n"
-        "- Knight + The Log: the Knight bodies the front of a push, the Log clears the swarm "
-        "behind it.\n"
-        "- Knight or Skeletons in front of Ice Wizard / Tesla: cheap bodies keep the ranged "
-        "damage alive.\n"
-        "- Tesla or Knight next to an offensive X-Bow: the bow does nothing if it dies first.\n"
-        "- Rocket + The Log: finishing chip on a tower that is nearly down.\n\n"
-        "Defence usually wins this deck the game, and defence is usually TWO cards, not one. "
-        "Prefer the card that combines with what you already have out.\n\n"
+        "You are an expert Clash Royale player on a HOG EQ CYCLE deck (2.75 average cost). "
+        "The deck wins by CONSTANT PRESSURE: it cycles back to the Hog Rider faster than the "
+        "opponent cycles their answer, and it defends for less than each push cost. A quiet "
+        "enemy board with 4+ elixir is the attack window -- holding there wastes the rotation "
+        "that makes this deck good. The nine options and what each is FOR:\n"
+        "- hog_rider (4): THE WIN CONDITION. Goes to the BRIDGE, never from the back. Send it "
+        "on every quiet board with 4+ elixir, the SAME lane right behind a finished defence, "
+        "or the OPPOSITE lane the instant they commit a tank in the back or a pump.\n"
+        "- earthquake (3): deletes their defensive building AND chips their tower in the same "
+        "cast when placed between them; cast it as the Hog crosses the bridge. Every elixir "
+        "collector on sight. Never on air; never alone on a full Inferno Tower.\n"
+        "- firecracker (3): the defensive core -- air and grouped pushes, always from DEPTH "
+        "behind your line, never at the bridge. Kites melee chasers. Protect her from spells.\n"
+        "- tesla (4): the answer to their win condition. It pulls and SURVIVES; centre "
+        "placement covers both lanes. Reactive in single elixir, pre-placed in double.\n"
+        "- mighty_miner (4): the tank melter -- his damage RAMPS on one target, so he goes ON "
+        "the Giant/Golem/Royal Giant with skeletons distracting. Useless against swarms.\n"
+        "- mighty_miner_ability (1): pop when he is swarmed, to dodge a spell, or to swap "
+        "lanes and lead a counter-attack in the other lane.\n"
+        "- the_log (2): THREE OR MORE ground swarm units, strips shields, knocks a unit back "
+        "into your defenders. Cannot touch air.\n"
+        "- skeletons (1): distract a tank, surround, reset a charge, kite a dash unit into "
+        "the centre, or cycle in the back at 9+ elixir.\n"
+        "- ice_spirit (1): a one-beat freeze that buys the Tesla or Mighty Miner time -- and "
+        "the Hog's escort: attached to the Hog it freezes the defender for an extra hit.\n\n"
+        "\nThis deck wins on TEMPO and combinations:\n"
+        "- Hog + Earthquake: the core -- EQ their building as the Hog crosses the bridge.\n"
+        "- Hog + Ice Spirit: the freeze guarantees a tower hit through a Mini Pekka.\n"
+        "- Mighty Miner + Skeletons: the distraction protects his damage ramp.\n"
+        "- Tesla + Ice Spirit or Skeletons: cheap support keeps the building alive.\n"
+        "- Firecracker BEHIND a Hog: she clears the path and her sparks chip the tower.\n"
+        "- Any finished defence + Hog: the counter-push goes behind whatever survived.\n\n"
+        "Defence is minimising damage for LESS elixir than the push cost -- then the elixir "
+        "lead becomes the next Hog. Prefer the cheapest card that works, and prefer pressure "
+        "over holding whenever nothing must be answered.\n\n"
         "SITUATION:\n%s\n\nYOUR HAND: %s\nNEXT CARD AFTER THIS: %s\nYOUR ELIXIR: %d/10\n\n"
         "List up to THREE cards worth playing right now, BEST FIRST. Include a card if it is a "
         "reasonable play, even if you are unsure -- another system tests each one and keeps only "
@@ -178,7 +176,12 @@ def propose(model, env, timeout=120):
               "required": ["cards"]}
     body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
                        "format": schema, "stream": False,
-                       "options": {"temperature": 0.0, "num_predict": 32}}).encode()
+                       # num_gpu 0 -> CPU inference when the GPU is owned by a detector
+                       # training run (a 3.3 GB model forced into a contested 8 GB card can OOM
+                       # the TRAINING process, which costs hours; slow proposals cost nothing).
+                       "options": ({"temperature": 0.0, "num_predict": 32, "num_gpu": 0}
+                                   if os.environ.get("LLMDOC_CPU") else
+                                   {"temperature": 0.0, "num_predict": 32})}).encode()
     req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:

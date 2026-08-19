@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-18 19:10**, at commit `HEAD` (detector team fixes 553fe5c; doctrine research workflow running).
+Last updated: **2026-08-18 22:45**, at commit `HEAD` (advisor rework wired sim+live; doctrine cells; 19-rule table regenerated).
 
 ---
 
@@ -97,6 +97,13 @@ cd C:\Users\benpe\ClashBot\hogeq
   * `C:\Users\benpe\tools\bin\python3.cmd` -- for **Windows / PowerShell**.
   An extensionless file in `tools\bin` breaks Windows callers (CreateProcess tries the exact name,
   which is not a PE binary), which is why they are split.
+* **Ollama on a contested GPU.** With board-26 training (5.4 of 8 GB VRAM), a cold
+  `qwen2.5:latest` (4.7 GB) load burns the advisor's whole 0.9 s budget per call until the circuit
+  breaker trips — 5 calls, 5 timeouts, advisor off. In a REAL live session the GPU is free (you
+  cannot train the detector and play at once) and the measured 0.59 s p50 applies, but any offline
+  advisor probe during training must either `warmup()` first with a long timeout or use
+  `qwen2.5:0.5b`. The doctrine-table generator has `LLMDOC_CPU=1` for the same reason — a 3.3 GB
+  model forced into the contested card can OOM the training run.
 * **`Start-Process -ArgumentList "-c",$code` silently mangles python one-liners.** PowerShell splits
   the code string on spaces, so python receives only `from` and dies with
   `SyntaxError: invalid syntax`. Launch long-running python from a **file**, not `-c`.
@@ -179,16 +186,15 @@ cd C:\Users\benpe\ClashBot\hogeq
   > ```
   > run.py detect-eval --weights runs/detect/<gen>/weights/best.pt --subset data/detect/val_board15.txt
   > ```
-* **Hog EQ doctrine research workflow** (started 2026-08-18 ~19:0x) — 13 agents: 6 written-guide
-  researchers, up to 6 video watchers through the local yt-dlp/ffmpeg/whisper pipeline (throttled
-  2-at-a-time for RAM), 1 synthesizer. Output lands at `hogeq/DOCTRINE_RESEARCH.md`. Feeds the
-  advisor rework: `llm_advisor.py` live prompt + `tools/llm_doctrine.py` proposer prompt are BOTH
-  still hard-coded ICEBOW ("answer 'hold'...") and `config/llm_doctrine.json` is still the icebow
-  table — actively harmful for hogeq (nominates a quiet-board Tesla at 10 elixir where the answer
-  is Hog). `sim/doctrine.py` already has pressure in `doctrine_cards` (Hog nominated at >= 4
-  elixir on a quiet board) and a correct EQ cell rule, but the Hog has **no cell rule** — a
-  nominated Hog explores uniformly over 432 cells. Same gap: mighty_miner / firecracker /
-  ice_spirit cells.
+* **Hog EQ doctrine research + advisor rework — DONE 2026-08-18 evening.** The 13-agent workflow
+  collected 157 guide facts + 88 observations from 4 watched videos (2 watchers + the synthesis
+  agent died to a session usage limit; the synthesis was done inline instead). The record is
+  `hogeq/DOCTRINE_RESEARCH.md`; the implementation is in the ledger below. `config/llm_doctrine.json`
+  was regenerated for THIS deck with the new proposer prompt: **19 engine-verified rules** kept of
+  27 tested (gemma3:4b on CPU via the new `LLMDOC_CPU=1` switch — 642 s; the GPU belongs to
+  board-26). Doctrine wiring CONFIRMED both sides: sim `doctrine_frac: 0.6` + `llm_doctrine: true`
+  feed `doctrine_cells`/`doctrine_cards`; live `train.llm_advisor: true` (qwen2.5:latest present in
+  ollama) feeds exploration, and the live quiet-board rule is now the pressure ladder (below).
 * **Both PPO runs are STOPPED** (user decision, to give board-26 the RAM). They were
   `train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --device cpu`, icebow started
   22:26 and hogeq 22:46, both checkpointed 23:18. **Restart them after board-26 finishes** — they
@@ -273,6 +279,8 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `(this)` | **The live advisor told hogeq to play icebow.** `llm_advisor.py`'s prompt opened "ICEBOW deck (X-Bow control)... answer 'hold' and spend NOTHING", `tools/llm_doctrine.py`'s proposer described the icebow cards, `config/llm_doctrine.json` held 72 icebow rules (quiet board at 10 elixir -> Tesla), and `train_rl.py`'s quiet-board branch was HARD-CODED to "find the x_bow or HOLD" — the user-reported passivity, in four places. All four reworked from `DOCTRINE_RESEARCH.md`: pressure-first prompts, a regenerated 19-rule engine-verified table, and the live ladder = Hog at the bridge from 4 elixir -> cheapest cycle from 6 (ability excluded) -> hold only when too poor. | tiny-model probe of the exact reported case: quiet board -> **hog_rider** (was hold); table regen kept 19/27 with measured gains (e.g. quiet+10elx -> mighty_miner **+1.71**, deep_2+7elx -> hog_rider +0.36) |
+| `(this)` | **The Hog had no placement rule** — `doctrine_cards` nominated it but `doctrine_cells` explored it uniformly over 432 cells. New branches from the research: hog (bridge column + inner-side tile + arena-edge auto-pig-push, lane picked opposite committed mass / weaker live tower, dead lanes excluded), mighty_miner (ON the tank, tile-exact; deliberate NO-SPOT vs swarms; bridge-punish spots on a quiet board), firecracker (kite band 4th-6th tile staggered to the other lane, behind-line anti-air off the tower column, layered behind a crossing Hog), ice_spirit (Hog escort > defensive freeze > bridge probes), skeletons (centreline dash-kite vs Bandit/Prince/Ram — the video short's tile-exact rule). | 12 new tests (`test_hogeq_doctrine_cells.py`), all green; suites: icebow 371 OK, hogeq back to the 41-failure baseline (+ the royaleapi Cloudflare flake) |
 | `553fe5c` | **Own cards read as ENEMIES (user report), 3 causes, both decks:** (a) defensive buildings fell through every evidence rank (deep_mine_y 0.62 is behind the princess line; a front-half Tesla never marches and an Evo Tesla hides its bar) -> new BUILDING side prior split at the RIVER (placement legality, pockets void it, 0.46-0.50 abstains); (b) the canvas painted "unknown" into an ENEMY channel (audit gap #2) -> canvas now SKIPS unknown (obs-distribution change, taken with the planned from-scratch PPO restart); (c) the deck veto flipped hard-evidence "mine" verdicts to "enemy" when the detector misnamed our card (mighty_miner as "miner") -> curated LOOKALIKES rescue relabels to the deck twin on rank 1-3 evidence (rank 4 for buildings). | MEASURED (tools/detector_audit.py, 553 frames, 3 sessions, CPU): impossible allies 45 (5.2%) -> **0**; unknowns 92 -> 71 (building prior + rescue resolved 21; the residual 71 are no longer painted at all). 15 new tests per deck; icebow 371 OK, hogeq 437 with the 41 baseline failures + 1 environmental flake (royaleapi Cloudflare) |
 | `151acd0` | **Ramp-up survived every interruption.** `focus_time` only reset when the TARGET CHANGED, so a stun, a Log knockback, a Tornado drag or the target walking out of reach left the stage intact and the beam resumed at stage 3 on contact. Now any non-firing tick resets it (Evo Inferno Dragon's post-kill `ramp_keep_s` hold preserved, except through a stun). | at stage 3 (focus 12.00) then interrupted: mighty_miner / inferno_dragon / inferno_tower all **12.00 -> 0.00**, damage in the next 0.2 s **0** (was 409 / 422 / 851). Undisturbed ramp still climbs and still lands its top hit |
 | `151acd0` | **Evo Firecracker's sparks ignored crown towers.** Zones iterated `self.units` only. Crown rate from the wiki vardefines: Big_dmg_11 48 / Big_Crown 15 and Small 48 / Small_Crown 15 -> **15/48 = 0.3125** (`_SPARK_CROWN_FRAC`), applied as a fraction so it tracks level. | 5 s zone on a tower: **0 -> 15.0 damage per 0.25 s tick**; 0 against our own tower; 0 at 8 tiles |
@@ -341,7 +349,12 @@ configured but **have never run** — BC has not been retrained since the soft-t
    instead of 31.25% of 48.0 (15.0), so small-spark tower chip is ~3x too low. Big-spark chip is
    exactly right. Also unresolved: `spark_duration_s` is a single 2.5 for both, but the wiki
    separates them (big **3.0**, small 2.5) since the 14/5/2024 balance change.
-8. **hogeq is still full of icebow-specific reward terms** (`xbow_*`, `rocket_*`, `nado`). They are
+8. **`tools/llm_eval.py`'s doctrine cases are still icebow's** — the 6/10 and 8/10 scores quoted
+   in `llm_advisor.py` were measured against icebow cases with the icebow prompt. Write hogeq
+   cases (the six probe scenarios in the 2026-08-18 session are a starting set) and re-score
+   qwen2.5:latest with the new prompt **when the GPU is free** — the tiny-model probe validated
+   the quiet-board behaviour only.
+9. **hogeq is still full of icebow-specific reward terms** (`xbow_*`, `rocket_*`, `nado`). They are
    inert (the ids resolve to empty sets) but they are dead weight and the 41 failing hogeq tests are
    all IceBow-card lookups.
 
