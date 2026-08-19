@@ -206,15 +206,19 @@ cd C:\Users\benpe\ClashBot\hogeq
   available RAM recovered to 7.4 GB and faults to ~200/s within a minute. **Restart PPO only after
   board-26 finishes** — first real test of the fixed reward AND now of the new doctrine priors.
   Train from scratch, not --resume.
-* **Icebow doctrine research workflow running overnight** (started 2026-08-18 ~23:0x, run
-  `wf_2fadd59a-18b`): 18 agents — 7 researchers (recency window Nov 2025+, **Hunter CR preferred
-  authority**), up to 8 video watchers (2-at-a-time RAM throttle; <=45 min videos with
-  transcript-guided selective sheet reading), 2 adversarial verifiers (misinterpretation +
-  recency/conflict lenses — the user explicitly asked for close review of ambiguous statements),
-  1 synthesizer -> `icebow/DOCTRINE_RESEARCH.md`. Focus: **Rocket decision procedure** (the
-  recurring misuse/non-use complaint) and **defensive plays**. Implementation follows
-  autonomously on completion: doctrine.py rocket/defense rules, llm_advisor prompt sharpening,
-  llm_doctrine.json regen (port LLMDOC_CPU to icebow's tool first).
+* **Icebow doctrine research — DONE 2026-08-19 (`2b0a7de`).** Run `wf_2fadd59a-18b` + resume:
+  270 facts from 7 researchers, **246 observations from 8 videos (7 of them Hunter CR)**, and
+  **20 adversarial verdicts (2 REJECT / 12 MISREAD-RISK / 4 CONTESTED / 2 STALE)**. Both the
+  recency verifier and the synthesizer died to session limits twice; synthesis was done inline.
+  Record: `icebow/DOCTRINE_RESEARCH.md` (§6 lists every claim that did NOT survive review, with
+  both readings; two remain deliberately uncompiled). Rocket gates compiled + 14 tests.
+  **STILL OPEN — the next tranche:** (a) §2 defensive rules are researched but mostly NOT
+  compiled (Tesla king-activation clearance, Tesla-as-Fireball-bait, tornado-BACK, the
+  tornado-to-king throttle, the zero-damage Graveyard order); (b) the sim's nado→rocket rule has
+  the CAST ORDER BACKWARDS — research says Rocket first, then Tornado onto the blast point;
+  (c) the mid-map-X-Bow-vs-Rocket-deck prohibition, which is the doctrine counterpart to the
+  measured `xbow_into_push` = −276; (d) icebow `llm_advisor` prompt + `llm_doctrine.json` regen
+  (LLMDOC_CPU is ported, `6c7b699`).
 
 ### The RAM constraint (important)
 31.4 GB total. **Not even ONE full-width PPO run fits beside a board-* detector run** — measured
