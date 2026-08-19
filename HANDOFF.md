@@ -212,13 +212,17 @@ cd C:\Users\benpe\ClashBot\hogeq
   recency verifier and the synthesizer died to session limits twice; synthesis was done inline.
   Record: `icebow/DOCTRINE_RESEARCH.md` (§6 lists every claim that did NOT survive review, with
   both readings; two remain deliberately uncompiled). Rocket gates compiled + 14 tests.
-  **STILL OPEN — the next tranche:** (a) §2 defensive rules are researched but mostly NOT
-  compiled (Tesla king-activation clearance, Tesla-as-Fireball-bait, tornado-BACK, the
-  tornado-to-king throttle, the zero-damage Graveyard order); (b) the sim's nado→rocket rule has
-  the CAST ORDER BACKWARDS — research says Rocket first, then Tornado onto the blast point;
-  (c) the mid-map-X-Bow-vs-Rocket-deck prohibition, which is the doctrine counterpart to the
-  measured `xbow_into_push` = −276; (d) icebow `llm_advisor` prompt + `llm_doctrine.json` regen
-  (LLMDOC_CPU is ported, `6c7b699`).
+  **Defensive tranche DONE `6dc9d8a`:** the mid-map-bow-vs-Rocket-deck prohibition (the doctrine
+  counterpart to `xbow_into_push` = −276 — that reward term EXEMPTS defensive bows and keys off a
+  PUSH, while this keys off their DECK, so it closes the half the reward cannot see), tornado-BACK
+  for air swarms, and the Tesla king-activation clearance. 8 tests; icebow 393 OK.
+  **STILL OPEN:** (a) the sim's nado→rocket rule has the CAST ORDER BACKWARDS — research says
+  Rocket first, then Tornado onto the blast point (needs a two-card sequencing primitive the cell
+  prior cannot express, so it is a real design task, not an edit); (b) remaining §2 items —
+  Tesla-as-Fireball-bait, the zero-damage Graveyard order (pre-fire Skeletons BEFORE it lands),
+  layered-defense ordering; (c) icebow `llm_advisor` prompt + `llm_doctrine.json` regen
+  (LLMDOC_CPU is ported, `6c7b699`); (d) verify Log crown chip (35) and Golden Knight HP in-game —
+  both flagged by the verifiers as unsafe to encode from the sources alone.
 
 ### The RAM constraint (important)
 31.4 GB total. **Not even ONE full-width PPO run fits beside a board-* detector run** — measured
