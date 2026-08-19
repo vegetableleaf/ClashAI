@@ -231,13 +231,20 @@ cd C:\Users\benpe\ClashBot\hogeq
   **1799 > Rocket 1484**, so the verifier was right that a rocket cannot remove him (full
   lethality table now in DOCTRINE_RESEARCH.md §6.11; note Sparky 1451 DOES die, and Prince 1920
   does NOT — which is fine, because R1/R3 are damage-MITIGATION rules and deliberately carry no
-  lethality check, unlike R4). **⚠ THE OPEN ITEM IS BIGGER THAN THE FLAG WAS:** the sim's KB
-  carries **pre-nerf crown damage** — rocket `spell_tower_dmg` **371** and the_log **40**, vs the
-  researched post-Season-84 **342** and **35** (+8.5% and +14%). The sim over-pays every rocket
-  and log tower chip, which feeds the `chip_*` reward terms and every measured baseline in this
-  session. NOT changed silently — it moves reward magnitudes, and the same verifier that caught
-  the staleness also refused to certify 342/35 as current. **Settle this before the next PPO
-  run**, because that run's chip rewards train on it; (e) **re-probe the advisor on qwen2.5:latest once board-26
+  lethality check, unlike R4). **⚠ CROWN DAMAGE IS STALE ACROSS FIVE SPELLS, AND A RE-IMPORT WILL NOT FIX IT.**
+  Traced 2026-08-19: `cards_stats.json` (imported 08-14, post-nerf) matches the wiki's
+  `crown_dmg_11` vardefine exactly — but that vardefine **contradicts the same wiki page's own
+  balance history**. Rocket's history says 23% of full damage since 1/6/2026; 23% × 1484 = 341,
+  while the vardefine's 371 is exactly the old 25%. The wiki's stat table lags its own history.
+  Swept: **Rocket 371→341, Lightning 286→264, Zap 58→48, the_log 40→35, Poison 23→21**
+  (Fireball 207 is correct). So the sim over-pays every one of those tower chips, feeding the
+  `chip_*` reward terms and every baseline measured this session. **Re-running `cards-import`
+  re-imports the stale numbers** — the fix must be a curated override in `cards.yaml`, which
+  takes precedence over the import. NOT changed silently: it moves reward magnitudes and so
+  invalidates this session's comparisons. **Settle before the next PPO run**, which trains its
+  chip rewards on whichever number is in place. **Earthquake is unresolved and matters to
+  hogeq**: its vardefine 53 vs dmg_11 84 is 63.1%, matching neither the old 65% nor the new 58%
+  — needs an in-game reading; (e) **re-probe the advisor on qwen2.5:latest once board-26
   frees the GPU** — on the 0.5b proxy the R1 case answers rocket 4/4, but the CONTROL (Knight in
   hand) still answers rocket 3/3, i.e. the conjunction is not applied. If 7B fails it too, move
   the conjunction out of the prompt and into `train_rl`'s own gating, where it becomes a hand

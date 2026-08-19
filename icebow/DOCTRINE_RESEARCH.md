@@ -83,6 +83,36 @@ Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)
 * **Log crown chip: use 35 (Supercell's figure). Do NOT derive it from 13% × 266.** The percentage
   and the absolute disagree at *both* endpoints (pre-nerf 15% × 266 = 39.9 vs a quoted 41), so the
   percentage is applied at base level and scaled. **Measure in-game before encoding.** **[M]**
+* ✅ **RESOLVED 2026-08-19 — and the fix is NOT the obvious one.** The wiki's own level-11
+  vardefine publishes `crown_dmg_11 = 371` for Rocket and `40` for the Log, which is exactly what
+  `cards_stats.json` imported on 2026-08-14. But the **same wiki page's balance history** says:
+  *"On 1/6/2026… decreased the Rocket's Crown Tower damage to **23%** of the full damage (from
+  25%)"*, and 25% × 1484 = **371** while 23% × 1484 = **341**. The Log: *"to **13%** (from 15%)"*,
+  and 15% × 266 = **40** while 13% × 266 = **35**. **The wiki's stat table lags its own balance
+  history**, so the research's 342/35 is right and both the wiki table and our KB are stale.
+  This also **retires the verifier's "applied at base level then scaled" theory** (§6.8) — the
+  simpler explanation fits exactly: the vardefine is the OLD percentage, unrounded and unedited.
+
+  **Consequence that matters operationally: re-running `cards-import` will NOT fix this** — it
+  re-imports the same stale vardefine. It needs a curated override in `cards.yaml`, which is the
+  documented precedence (a curated value there wins over the import).
+
+  **Swept across every damage spell (2026-08-19), vardefine vs the page's own latest percentage:**
+
+  | card | dmg_11 | vardefine crown | current % | should be |
+  |---|---|---|---|---|
+  | Rocket | 1484 | 371 | 23% | **341** |
+  | Lightning | 1057 | 286 | 25% | **264** |
+  | Zap | 192 | 58 | 25% | **48** |
+  | The Log | 266 | 40 | 13% | **35** |
+  | Poison | 92 | 23 | 23% | **21** |
+  | Fireball | 688 | 207 | 30% | 206 ✓ ok |
+
+  **Caveat on that table:** "current %" is the last percentage appearing in each page's history
+  section, which assumes chronological order (it holds for Rocket, whose 1/6/2026 line is last).
+  **Earthquake is deliberately excluded**: its vardefine 53 against dmg_11 84 is 63.1%, which
+  matches **neither** the old 65% (54.6) nor the new 58% (48.7), so it is inconsistent in a way
+  this audit cannot resolve — it needs an in-game reading, and it matters to hogeq, not here.
 * ⚠ **THE SIM'S OWN CARD KB IS CARRYING PRE-NERF CROWN DAMAGE.** Measured 2026-08-19 from
   `build_spec(db, ..., 11)`: **rocket `spell_tower_dmg` = 371** and **the_log = 40**. The research
   numbers are **342** and **35** — i.e. the KB is **+8.5% on Rocket and +14% on Log**, and 371/41
