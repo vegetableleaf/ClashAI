@@ -28,7 +28,7 @@ from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from . import threat_value
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess, pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell, xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell, tesla_pull_cell)
-from .reward import spell_whiffed, nado_regressed, lead_point, lead_velocity
+from .reward import spell_whiffed, nado_regressed, lead_point, lead_velocity, log_hits
 # deck-dependent aim cells: hogeq's reward.py has no tornado/log-corridor helpers
 try:
     from .reward import nado_king_cell
@@ -237,6 +237,12 @@ class LiveMatchEnv:
         self._failed_deploys = 0         # taps that never moved the elixir bar (see the tick)
         self._pending_deploys: list = []  # deploy checks awaiting evidence (settled >= 1.4s later)
         self._fast_tick = False          # this decision was woken by perception: skip slow reads
+        # THE LOG'S ROLL, shared by the aim assist and the whiff verdict so they cannot disagree
+        # about what the spell can touch.
+        self.log_half_w = float(cfg.get("env", "log_half_width", default=0.064))
+        self.log_roll = float(cfg.get("env", "log_roll_len", default=0.28))
+        self.air_bases = frozenset(b for b in (db.names() if hasattr(db, "names") else [])
+                                   if db.is_flying(b))
         self.fast_reaction_tick = bool(cfg.get("env", "fast_reaction_tick", default=True))
         # How long to wait before judging whether a card left the bar. The tap, the deploy
         # animation and the bar redraw all have to finish first; judging in the same step read a
@@ -1063,10 +1069,16 @@ class LiveMatchEnv:
         total = 0.0
         for p in due:
             if p["kind"] == "whiff":
-                miss = spell_whiffed(p["cx"], p["cy"], p["r"], fresh,
-                                     tower_anchors=enemy_a[:2],
-                                     tower_alive=list(self.tower.enemy_alive)[:2],
-                                     tower_aim_radius=self.spell_aim_radius)
+                if p.get("base") == "the_log":
+                    # THE USER'S RULE, geometrically: nothing in the roll's path = a miss, however
+                    # close the cast landed to a body it rolled away from.
+                    miss = not log_hits(p["cx"], p["cy"], fresh, self.log_half_w, self.log_roll,
+                                        self.air_bases)
+                else:
+                    miss = spell_whiffed(p["cx"], p["cy"], p["r"], fresh,
+                                         tower_anchors=enemy_a[:2],
+                                         tower_alive=list(self.tower.enemy_alive)[:2],
+                                         tower_aim_radius=self.spell_aim_radius)
                 if self.spell_verify_log:
                     def _in(tracks):
                         return [t for t in tracks
@@ -1106,9 +1118,18 @@ class LiveMatchEnv:
         tracks = self._enemy_tracks_now()
         base = card_threat.base_key(self.vision.deck_keys[card_id]) if 0 <= card_id < self.n_cards else ""
         kb = self.db.get(base) or {}
-        r_tiles = float(kb.get("radius_tiles") or 2.5) + 1.0
-        if any(math.hypot((t[0] - cx) * 18.0, (t[1] - cy) * 32.0) <= r_tiles for t in tracks):
-            return cell                                   # the model aimed at something real
+        if base == "the_log":
+            # A ROLL, NOT A BLAST. The circular test below passes for a Log dropped just forward
+            # of a troop -- the troop is a tile away, well inside the radius -- so this function
+            # used to return early and the corridor correction never ran, which is precisely the
+            # "log played too high, hits nothing, scores a hit" report (2026-08-20). Ask the real
+            # question instead: would the roll touch anything?
+            if log_hits(cx, cy, tracks, self.log_half_w, self.log_roll, self.air_bases):
+                return cell
+        else:
+            r_tiles = float(kb.get("radius_tiles") or 2.5) + 1.0
+            if any(math.hypot((t[0] - cx) * 18.0, (t[1] - cy) * 32.0) <= r_tiles for t in tracks):
+                return cell                               # the model aimed at something real
         if card_id in self.tornado_ids and nado_king_cell is not None:
             got = nado_king_cell(tracks, _anchors(self.cfg)[0], self.actions)
             if got is not None:

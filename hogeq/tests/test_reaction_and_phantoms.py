@@ -77,6 +77,7 @@ class WakeEventTests(unittest.TestCase):
                 return k.get("default")
         loop = PerceptionLoop.__new__(PerceptionLoop)     # no thread, no capture: just the logic
         loop._cnt_hist = __import__("collections").deque()
+        loop._half_hist = __import__("collections").deque()
         loop._tracker = TeamTracker(own_cards=list(own_cards))
         loop.wakes = 0
         loop.passes = 0
@@ -126,6 +127,35 @@ class WakeEventTests(unittest.TestCase):
                          "the deck veto no longer classifies an unowned deep unit as enemy")
         self.assertTrue(loop._should_wake(dets, time.time()),
                         "an enemy materialising deep in our half did not wake the act loop")
+
+    def test_an_enemy_crossing_into_our_half_wakes_the_act_loop(self):
+        """The commitment the old rules missed: a unit we have tracked all along steps into our
+        half. No new sighting, no rise in the total -- so nothing fired, and the act loop could
+        sit out the rest of its paced wait (MEASURED at 0.49s, the largest slice of reaction
+        time) before noticing the push that needs answering."""
+        import time as _t
+        loop = self._loop()
+        now = _t.time()
+        their_side = [_det("giant", 0.50, 0.30)]
+        loop._tracker.tag(their_side, now - 0.5)
+        loop._should_wake(their_side, now - 0.5)            # prime the history
+        crossed = [_det("giant", 0.50, 0.50)]               # now on OUR half
+        loop._tracker.tag(crossed, now)
+        self.assertTrue(loop._should_wake(crossed, now),
+                        "a tracked enemy crossing the river did not wake the act loop")
+
+    def test_a_unit_that_stays_on_our_half_does_not_re_fire(self):
+        """The edge is a RISE in how many are on our side, not a level -- otherwise every pass
+        while a push is parked in our half would wake the loop and thrash the decision rate."""
+        import time as _t
+        loop = self._loop()
+        now = _t.time()
+        here = [_det("giant", 0.50, 0.50)]
+        loop._tracker.tag(here, now - 0.5)
+        loop._should_wake(here, now - 0.5)
+        loop._tracker.tag(here, now)
+        self.assertFalse(loop._should_wake(here, now),
+                         "a stationary push re-fired the wake every pass")
 
 
 class GatePhantomTests(unittest.TestCase):

@@ -662,3 +662,25 @@ def lead_point(cx, cy, tracks, impact_s, snap_radius_tiles, db=None,
     tx = min(0.98, max(0.02, sum(p[0] for p in pts) / len(pts)))
     ty = min(0.98, max(0.02, sum(p[1] for p in pts) / len(pts)))
     return tx, ty
+
+
+def log_hits(cx, cy, tracks, half_w=0.064, roll=0.28, air=()):
+    """Would a Log cast at (cx, cy) actually touch anything?
+
+    The roll starts AT the cast point and travels forward (decreasing y -- our side is the high-y
+    end), so the damage area is the band `x within half_w` and `cy - roll <= y <= cy`. A unit
+    BEHIND the cast point is never hit, which is the whole of the "log played too high" failure:
+    the push is behind the roll and the spell touches nothing.
+
+    Flying bases are excluded -- the Log passes underneath them.
+    """
+    for t in (tracks or ()):
+        base = str(t[4]) if len(t) > 4 and t[4] else ""
+        if base and base in air:
+            continue
+        if abs(float(t[0]) - cx) > half_w:
+            continue                                  # beside the corridor
+        dy = cy - float(t[1])                          # >0 = the unit is FORWARD of the cast
+        if -0.5 * half_w <= dy <= roll:
+            return True
+    return False

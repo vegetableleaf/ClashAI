@@ -660,8 +660,8 @@ train:
   exact_cell_loss_weight: 0.25
   soft_cell_loss_weight: 0.75
 
-  rl_epsilon_start: 0.20
-  rl_epsilon_end: 0.05
+  rl_epsilon_start: 0.60
+  rl_epsilon_end: 0.10
   rl_epsilon_decay_steps: 6000
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
@@ -840,6 +840,8 @@ env:
   spell_verify_fresh_s: 0.8            # (2026-08-20) a spell's HIT/WHIFF verdict only counts enemies SEEN within this window. The tracker bridges a track for team_forget_s (4.5s) so a real unit blinking out is not forgotten -- but a FALSE POSITIVE is remembered just as long, so every cast at a ghost read as a hit and spell_waste never fired.
   deploy_verify_s: 1.4                 # wait this long after a tap before judging whether the card left the elixir bar. The paced wait is event-interruptible (react_min_gap 0.15s), so the same-step read often lands before the game has drawn the deduction -- which reported 'did NOT leave the bar' for cards that were plainly played.
   fast_reaction_tick: true             # when PERCEPTION cuts the wait short (something just happened), skip the slow telemetry reads -- tower-HP OCR, colour mass, the 2x/3x badge -- and let the previous values stand. They are slow-moving quantities, and every millisecond spent on them sits between seeing a push and answering it. Paced ticks refresh everything.
+  log_half_width: 0.064                # HALF the Log's lateral damage band. It is a ROLL, not a blast: the damage area is this band along the path, so a cast a tile to the side does nothing.
+  log_roll_len: 0.28                   # how far the roll travels FORWARD (decreasing y) from the cast point. Anything BEHIND the cast is never touched -- casting 'too high' leaves the whole push behind the roll, which both the aim assist and the whiff verdict now test for.
   spell_verify_log: true               # print each spell impact verdict (aim, radius, fresh vs remembered tracks in the blast) -- the line that tells you whether a whiff was a detector false positive or the model genuinely casting at nothing.
   spell_waste_radius: 0.14       # (soft spell_waste) a DAMAGE spell with NO enemy unit within this of its aim + not at a tower = cast into emptiness. Generous so predictive/near-miss casts aren't punished.
   rocket_combo_hp_frac: 1.5      # ROCKET COMBO: an enemy support counts as (almost) one-shottable when its hp <= rocket_dmg x this (captures Musketeer/Hunter/Executioner/Bowler/Witch/Sparky; excludes tanks)

@@ -27,6 +27,7 @@ class PerceptionLoop:
         self._tracker = tracker
         self._conf = float(conf)
         self.hz = min(20.0, max(1.0, float(hz)))
+        self._half_hist = __import__("collections").deque()   # enemies on OUR half, for the crossing edge
         self.wakes = 0                    # event wake-ups fired (visible health: reactions ARE event-driven)
         self.passes = 0                   # detector passes completed (visible health: ~hz * seconds)
         self._preview = preview                     # LivePreview: fed per pass -> near-realtime boxes
@@ -130,6 +131,21 @@ class PerceptionLoop:
         self._cnt_hist.append((now, n_enemy))
         while self._cnt_hist and now - self._cnt_hist[0][0] > 3.0:
             self._cnt_hist.popleft()
+        # CROSSING THE RIVER IS A COMMITMENT (2026-08-20). The two rules above fire on a NEW
+        # sighting or a rising total, so a unit we have been tracking all along -- the hog that
+        # was sitting at their bridge and has now stepped into our half -- fired nothing, and the
+        # act loop could sit out the rest of its paced wait before noticing. MEASURED: that wait
+        # averages 0.49 s against a 0.37 s pipeline, so it is the single largest slice of reaction
+        # time. A rise in the number of enemies ON OUR SIDE is the cheapest honest signal that
+        # something now needs answering.
+        n_here = sum(1 for d in dets
+                     if d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42)
+        here_recent = [c for (tt, c) in self._half_hist if now - tt <= 1.5]
+        if n_here > (max(here_recent) if here_recent else 0):
+            fire = True
+        self._half_hist.append((now, n_here))
+        while self._half_hist and now - self._half_hist[0][0] > 3.0:
+            self._half_hist.popleft()
         if not fire:
             own = getattr(self._tracker, "own_cards", None) or ()
             for d in dets:
