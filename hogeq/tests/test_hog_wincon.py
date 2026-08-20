@@ -238,7 +238,11 @@ class LiveTwinTests(unittest.TestCase):
         src = self._live_src()
         i = src.index("def _hog_wincon_live")
         body = src[i:i + 2000]
-        self.assertIn("group_ignore_frac", body, "the never-into-a-push rule is gone live")
+        # Matches either entry point: the gate moved to `bodies_ignore_frac` when the callers were
+        # found to be passing BODIES to a function that expects CARDS (one Skeletons card arrived
+        # as three, and was expanded into nine). The rule being guarded here is the triage gate
+        # itself, not the name it is spelled with.
+        self.assertIn("ignore_frac", body, "the never-into-a-push rule is gone live")
         self.assertIn("hog_bridge_y", body, "the bridge-only rule is gone live")
         self.assertIn("hog_punish_mult", body, "the punish-lane bonus is gone live")
 

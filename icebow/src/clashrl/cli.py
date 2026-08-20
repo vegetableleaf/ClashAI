@@ -160,6 +160,55 @@ def _cmd_train_sim_ppo(args) -> None:
                   reset_gate=args.reset_gate)
 
 
+def _cmd_drills(args) -> None:
+    from .sim import scenarios as _sc
+    from .sim.drill_env import report as _report
+    n = _sc.load_all()
+    if not n:
+        print("[drills] no scenarios registered (expected src/clashrl/sim/drills_<deck>.py)")
+        return
+    names = [s.strip() for s in str(args.only).split(",") if s.strip()] if args.only else None
+    if args.tier:
+        names = [s.name for s in _sc.by_tier(args.tier) if not names or s.name in names]
+    pol = None
+    if args.policy:
+        pol = _drill_policy_from_checkpoint(args.policy, args.device)
+    rows = _report(Config.load(args.config), names=names, reps=args.reps, seed=args.seed,
+                   policy=pol, level=args.level)
+    bad = [r for r in rows if r["verdict"].startswith("NOT DISCRIMINATING")]
+    if bad:
+        print("\n%d drill(s) NOT DISCRIMINATING -- doing nothing scores what the doctrine scores, "
+              "so they are measuring the board, not the play:" % len(bad))
+        for r in bad:
+            print("   %-28s nothing %.0f%%  doctrine %.0f%%"
+                  % (r["name"], 100 * r["baseline"], 100 * r["doctrine"]))
+
+
+def _drill_policy_from_checkpoint(path: str, device: str = None):
+    """Wrap a trained checkpoint as a drill policy (obs, env) -> action, or None if torch is absent."""
+    try:
+        import torch
+        from .policy import load_policy
+    except ImportError as exc:
+        print(f"[drills] --policy needs PyTorch ({exc}); running baseline + doctrine only")
+        return None
+    try:
+        net, dev = load_policy(path, device=device)
+    except Exception as exc:  # noqa: BLE001 -- a bad path should not kill the report
+        print(f"[drills] could not load {path}: {exc}")
+        return None
+
+    def _policy(obs, env):
+        import numpy as _np
+        with torch.no_grad():
+            x = torch.as_tensor(_np.asarray(obs)[None], dtype=torch.float32, device=dev)
+            out = net(x)
+        card = int(torch.as_tensor(out[0]).flatten().argmax().item())
+        cell = int(torch.as_tensor(out[1]).flatten().argmax().item()) if len(out) > 1 else 0
+        return (1, card, cell)
+    return _policy
+
+
 def _cmd_sim_bench(args) -> None:
     try:
         from .sim_bench import sim_bench
@@ -472,6 +521,21 @@ def main() -> None:
                           "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
                           "the GPU entirely, so PPO can run alongside a detector train")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
+
+    drl = sub.add_parser("drills",
+                         help="run the segmented mini-sim DRILLS and report pass rates "
+                              "(do-nothing baseline vs the doctrine oracle vs an optional policy)")
+    drl.add_argument("--reps", type=int, default=25,
+                     help="repetitions per drill per policy (more = tighter pass-rate estimate)")
+    drl.add_argument("--seed", type=int, default=5, help="RNG seed, the same for every policy")
+    drl.add_argument("--only", default=None, help="comma list of drill names (default: all)")
+    drl.add_argument("--tier", default=None,
+                     help="only this tier: foundational | compound | matchup")
+    drl.add_argument("--level", type=int, default=11, help="card level for scripted spawns")
+    drl.add_argument("--policy", default=None,
+                     help="also score a trained checkpoint (e.g. data/policy_sim.pt)")
+    drl.add_argument("--device", default=None, help="torch device for --policy")
+    drl.set_defaults(func=_cmd_drills)
 
     sbn = sub.add_parser("sim-bench",
                          help="measures training throughput (matches/s) at different --envs on THIS "

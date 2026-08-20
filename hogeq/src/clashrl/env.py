@@ -1400,7 +1400,7 @@ class LiveMatchEnv:
         bases = [str(t[4]) for t in tracks if len(t) > 4 and t[4] and float(t[1]) > 0.42]
         if bases:
             try:
-                if threat_value.group_ignore_frac(
+                if threat_value.bodies_ignore_frac(
                         self.db, bases, tower_level=15) >= threat_value.IGNORE_FRAC:
                     return self.w_wincon_mis      # a real push is on our half: not the moment
             except Exception:  # noqa: BLE001 -- a KB miss must not turn into free credit

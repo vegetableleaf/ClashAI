@@ -434,7 +434,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             except Exception:  # noqa: BLE001 -- perception hiccup must not break the gate
                 pass
             return False             # nothing of theirs on our side of the river
-        return threat_value.group_ignore_frac(
+        return threat_value.bodies_ignore_frac(
             _db, bases, tower_level=_tower_level) >= threat_value.IGNORE_FRAC
 
     def _situation(env) -> str:
@@ -933,7 +933,7 @@ def train_rl(cfg, init: str | None = None) -> None:
             while running["v"]:
                 eps = epsilon(step)
                 tb = _counted_threats(env)
-                na = True if tb is None else (bool(tb) and threat_value.group_ignore_frac(
+                na = True if tb is None else (bool(tb) and threat_value.bodies_ignore_frac(
                     _db, tb, tower_level=_tower_level) >= threat_value.IGNORE_FRAC)
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
                                 _situation(env) if advisor is not None else "",

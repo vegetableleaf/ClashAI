@@ -1279,6 +1279,16 @@ sim:
                              # committed at decision time. Opponent scripts are unaffected.
   rollout_workers: 12        # engine shards (subprocesses); 0 = classic single-process. The
                              # engine is pure Python -- this is how the other 15 cores get used
+  # DRILLS -- segmented mini-sims that rehearse ONE interaction (see sim/scenarios.py).
+  # 0.0 = off, and a run that leaves it at 0 builds a plain SimMatchEnv exactly as before.
+  # A drill is scored by the MATCH'S OWN reward terms, so this is a mixing ratio and not a
+  # separate training stage: some episodes are the full three minutes, some are the ten seconds
+  # where one skill is decided, and the objective never changes between them. 0.3 is the
+  # suggested starting point -- enough to concentrate experience on states the policy almost
+  # never reaches, not so much that the full-match terms (phase machine, crown terms, the
+  # double-elixir flip) stop appearing in the gradient.
+  drill_frac: 0.0
+  drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)
   curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %

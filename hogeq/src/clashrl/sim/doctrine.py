@@ -1089,7 +1089,7 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # An EMPTY board is the strongest version of "nothing to answer", not a special case to skip:
     # leaving it out is how a Tesla got nominated into open grass, which is exactly the play the
     # user reported (planted well, dead of old age before their win condition arrived).
-    cost = threat_value.group_ignore_frac(
+    cost = threat_value.bodies_ignore_frac(
         env.db, [u.spec.base for u in committed],
         tower_level=_tower_level(env), enemy_level=_enemy_level(env)) if committed else 0.0
     quiet = cost < threat_value.IGNORE_FRAC
@@ -1248,7 +1248,14 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     if lid is not None:
         ground = [u for u in enemies if not u.spec.flying and u.spec.kind == "troop" and u.y >= 0.42]
         swarm = [u for u in ground if u.spec.elixir <= 3]
-        if len(swarm) >= 3:
+        # TRIAGE OUTRANKS THE COUNTER, and this rule was the measured counter-example to the
+        # comment above claiming the defensive rules "cannot fire on a quiet board". `swarm`
+        # counts BODIES, and a single 1-elixir Skeletons card is three or four of them -- so a
+        # trickle the tower kills for free tripped "what the card is FOR" and spent the Log on it.
+        # That is exactly the reported failure: elixir committed to a small threat. The project's
+        # own triage function scores that group 0.0235 against an IGNORE_FRAC of 0.05, so the
+        # verdict was already available; the rule simply never asked for it.
+        if len(swarm) >= 3 and not quiet:
             _bump(lid, 4.0)                          # what the card is FOR
         elif len(ground) >= 1 and any(u.spec.charge_range for u in ground):
             _bump(lid, 3.5)                          # resets a charge (Battle Ram / Prince / Ram Rider)

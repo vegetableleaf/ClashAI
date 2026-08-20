@@ -94,7 +94,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
               f"~{K // max(1, len(rpool.procs))} envs (K={K}); learner stays in-parent")
     else:
         rpool = None
-        pool = [SimMatchEnv(cfg, seed=seed + i) for i in range(K)]
+        # through the drill factory: a plain SimMatchEnv unless sim.drill_frac asks for a mix
+        from .sim.drill_env import make_train_env
+        pool = [make_train_env(cfg, seed=seed + i) for i in range(K)]
         e0 = pool[0]
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
     in_ch = int(e0.obs_shape[2])      # 3 (RGB) or 3 + the semantic canvas (observation.use_detector_canvas)

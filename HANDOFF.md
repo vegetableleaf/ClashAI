@@ -23,11 +23,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > it down.
 
 Last updated: **2026-08-20**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
-validated -- `sim/scenarios.py` + `sim/drill_env.py` + 4 seed icebow drills, each measured baseline-vs-oracle.
-Building it surfaced three real bugs, all fixed and all cross-deck: every spell but Rocket was forbidden from
-the enemy half (the whole Hog+EQ combo was an UNREACHABLE action), every legal Hog send scored -1.0 against a
-threshold sitting in front of the frontmost legal row, and the king-activation prior told the model to cast
-Tornados 8.7 tiles from a 5.5-tile pull. See SS5, SS6.0 and the two new traps in SS8.)
+validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
+measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
+0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
+the triage gate counted bodies as cards (a lone Skeletons scored 9x the ignore threshold -- the reported
+"defends small threats" failure), the Log prior spent itself on those trickles, every spell but Rocket
+was forbidden from the enemy half (the whole Hog+EQ combo was an UNREACHABLE action), every legal Hog
+send scored -1.0, and the king-activation prior aimed 8.7 tiles from a 5.5-tile pull. See SS5, SS6.0 and
+the four new traps in SS8.)
 
 ---
 
@@ -759,6 +762,8 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `(this)` | **The triage gate counted BODIES as CARDS, inflating every multi-body card 3–360×.** `group_ignore_frac(db, bases)` takes CARD bases and expands each into that card's bodies — but all 21 call sites across both decks pass one entry *per body* (`[u.spec.base for u in units]` in sim, one per detector track live). So one Skeletons card arrived as three entries and was expanded into nine to twelve skeletons. This is the mechanism behind the reported "commits elixir to defend a small threat": the canonical ignorable trickle scored **nine times** the ignore threshold, so every gate downstream demanded an answer. New `bodies_ignore_frac` / `cards_from_bodies` recovers the card count as `ceil(seen / bodies_per_card)`, which preserves the pooling the function was built for. | at tournament level, IGNORE_FRAC 0.05: 1 Skeletons card **0.4381 → 0.0235 (answer → IGNORE, verdict flips)**; 1 Bats 3.44 → 0.088; 1 Goblin Gang 23.6 → 0.898; 1 Skeleton Army **359.3 → 1.369**; 4 Skeletons cards 8.69 → 0.839 (still "answer", correctly); Knight and Giant+Musketeer unchanged. 21 call sites switched; icebow 600 OK, hogeq at its 42 baseline |
+| `(this)` | **The Log prior spent itself on trickles the tower kills for free.** Its swarm rule counts BODIES (`len(swarm) >= 3`), so a single 1-elixir Skeletons card tripped "what the card is FOR". The surrounding code even claimed *"the defensive rules below cannot fire on a quiet board anyway"* — this was the counter-example. Now gated on the triage verdict the function above computes. | the `ignore_the_ignorable` drill surfaced it: prior offered `the_log 4.0` against a group triage scores 0.0235. Gated, while `log_the_ground_swarm` (a real Skeleton Army) still passes 100% |
 | `(this)` | **Every spell except Rocket was forbidden from the enemy half — in BOTH decks.** `anywhere_ids` was the literal set `{rocket, miner}`, so `deploy_clamp` hauled every other spell back to our own front row. In Clash Royale *all* spells may be cast anywhere (verified against the card DB's own `kind`). This did not make the offensive Log, the Tornado sneaky-lock at the river, or the **entire Hog+Earthquake combo** merely unlearned — it made them **unreachable actions**, and it silently desynced the doctrine prior from the executed action on every cast aimed past the river. Fixed in sim, live and `play.py` for both decks; troops still clamp correctly. | icebow Tornado aimed at (0.25,0.30) landed at y **0.562 — clamped back 8.4 tiles**, now lands 0.312; The Log clamped back 4.6 tiles, now exact; hogeq Earthquake aimed at their building (0.25,0.271) landed on **our own front row**, now lands 0.271. Knight/Skeletons still clamp 8.4 tiles (correct) |
 | `(this)` | **hogeq: every legal Hog send scored −1.0** — the term I added last session to *cure* the zero-Hog collapse was teaching "never play Hog". `hog_bridge_y` was 0.52 while `min_own_gy`=13 puts the frontmost reachable row at 0.5625, so `ny > thr` was true for every playable cell. Its unit test passed because it calls the term at y=0.47, **a cell `deploy_clamp` can never produce**. Fixed by FLOORING the threshold at the action grid's own frontmost own-half row + 1 tile, so a reward threshold can never again sit where the action space cannot reach. | `_hog_wincon` at the bridge row (gy 13, y 0.5625) **−1.00 → +3.00**; rows 14/15/16 stay −1.00 (correct: bridge-only). hogeq suite unchanged at its 42 baseline (3 fail + 39 err) with the change stashed and unstashed |
 | `(this)` | **The king-activation prior told the model to cast Tornados that could not pull anything.** The gate (`u.y > 0.52`) is satisfied the instant a Hog touches the bridge, and `_king_spots` emitted the front-of-king candidate **unconditionally** — only the second spot ever checked reach. Replaced with the real precondition: does the attacker's PATH pass within the 5.5-tile radius while the vortex lives (`spell_delay + 1.05s`)? A snapshot test is wrong both ways — it rejects the regression board's working cast at 6.40 tiles (the Hog marches *into* the vortex) and accepts the bridge whiff at 8.7. | drill harness: prior fired at y=0.528 with the cast point **8.7 tiles** from a 5.5-tile pull, hog walked through untouched every rep; now **no cells offered** until the pull is physically possible. `nado_king_activation` drill **0% → 100%** under the doctrine oracle. icebow 600 tests OK |
@@ -817,10 +822,31 @@ configured but **have never run** — BC has not been retrained since the soft-t
      its lock and the princess is always nearer, so the window collapses. The CR wiki independently
      says the same — reliable for Hog/Barrel/Miner, *"extremely inconsistent"* for Knight/Valkyrie/
      Mega Knight since the 2020 rework. **The sim is faithful here.**
-   * TODO: build out the two drafted curricula (icebow 40 drills / hogeq 37, both agent-drafted with
-     per-drill reward-coverage findings — see §6.0a); port the framework to hogeq + write
-     `drills_hogeq.py`; wire a drill/full-match mixing ratio into `train-sim-ppo` (proposal: 70/30)
-     with a CLI that reports pass rates per drill.
+   * **hogeq has the framework too**, with 5 drills, all discriminating:
+     `eq_clears_the_hogs_building` 15%→100%, `hog_send_on_a_quiet_board` 0%→100%,
+     `tesla_pulls_the_wincon` 0%→100%, `log_the_ground_swarm` 0%→100%,
+     `hog_never_into_the_push` 0%→45%. The EQ drill scores **the Hog CONNECTING**, not the
+     building dying: scored on "cannon dead" it passed 88% by doing nothing, because a Hog chews
+     through an 824 HP Cannon unaided — but measured, without the quake he kills it at 4.2s with
+     132 HP left and never lands a hit, and with it he is at 808 HP and connects at 4.8s.
+   * **`run.py drills`** — pass rates for every drill, do-nothing baseline vs doctrine oracle vs
+     `--policy <checkpoint>`. It flags any drill where baseline ≈ oracle as NOT DISCRIMINATING,
+     because such a drill is measuring the board rather than the play.
+   * **Training integration is a MIXING RATIO, not a stage.** `sim.drill_frac` (default **0.0**,
+     so an un-opted run is byte-for-byte what it was; 0.3 suggested) + `sim.drill_tiers`.
+     `DrillMixEnv` chooses per EPISODE inside `reset()`, so one class serves both the in-process
+     pool and the remote workers. A drill is scored by the match's own reward terms, so the
+     objective never changes between a 10-second drill and a 3-minute match — which is what keeps
+     the skill from having to survive a transfer afterwards.
+   * TODO: build out the two drafted curricula (icebow 40 drills / hogeq 37, both agent-drafted
+     with per-drill reward-coverage findings — see §6.0a); only 4 + 5 of them are built. Then run
+     a PPO comparison at `drill_frac` 0.0 vs 0.3 to measure whether the mix actually helps.
+   * **Open finding the triage drill surfaced (not fixed):** an LLM-proposed, engine-verified rule
+     (`x1|king_asleep|deep_0|worth_0|elx_6` → `knight`, gain 1.922, 3/3 wins) nominates a Knight on
+     a quiet board at 6 elixir, which contradicts the deck's own banking doctrine (a 3.5-cycle deck
+     nominates a cycle card only near the leak point, ≥8). It is why `ignore_the_ignorable` scores
+     the oracle at ~5% rather than ~100%. Left in place because it was measured; the conflict wants
+     a decision, not a silent deletion.
 
 0a. **Reward-coverage findings from the drill drafts (NOT yet verified by me — treat as leads).**
    The two curriculum agents each audited the reward against the doctrine. The three I *did* verify

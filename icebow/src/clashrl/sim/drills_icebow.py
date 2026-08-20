@@ -109,8 +109,15 @@ register(Scenario(
     name="ignore_the_ignorable",
     goal="Spend NOTHING on a lone Skeletons -- the tower handles it.",
     tier="foundational",
-    hand=(),                      # the whole deck: the temptation has to be available
-    elixir=10.0,
+    # THE TEMPTATION MUST BE A COUNTER, not the whole deck. Dealt everything at 10 elixir the
+    # doctrine oracle opened with the X-Bow -- which is CORRECT icebow play on a quiet board and
+    # has nothing to do with the trickle -- and the drill billed it as a failure, because the
+    # failure test is "did you spend". Restricted to the cards you would actually be tempted to
+    # throw at a couple of Skeletons, a spend can only mean answering them, which is the thing
+    # being rehearsed. The elixir comes down for the same reason: at 10 the drill also measures
+    # leak pressure, and one drill should ask one question.
+    hand=("the_log", "skeletons", "knight", "ice_wizard"),
+    elixir=6.0,
     spawns=(("skeletons", 1, 0.25, 0.46, 0.0),),
     # Success is the tower resolving it while we kept our elixir. Triage is a tier ABOVE every
     # counter rule and the one the deck kept violating, so it gets its own drill.

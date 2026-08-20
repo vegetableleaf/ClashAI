@@ -827,7 +827,7 @@ class SimMatchEnv:
         # real push and the penalty applies again, unchanged.
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.group_ignore_frac(
+        if committed and threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
             return 0.0
@@ -921,7 +921,7 @@ class SimMatchEnv:
         # never obliged to answer a lone Skeletons, and threat_response scores the play itself.
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.group_ignore_frac(
+        if committed and threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
             return 0.0
@@ -986,7 +986,7 @@ class SimMatchEnv:
         # group_ignore_frac gate every other tier in this project uses).
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.group_ignore_frac(
+        if committed and threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
             return self.w_wincon_mis
@@ -1558,7 +1558,7 @@ class SimMatchEnv:
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
         if not committed:
             return 0.0
-        if threat_value.group_ignore_frac(
+        if threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
             return 0.0                                   # the tower handles it; spending is fine
@@ -1679,7 +1679,7 @@ class SimMatchEnv:
                 and tile_dist(nx, ny, u.x, u.y) <= self.bow_push_radius]
         if not near:
             return 0.0
-        cost = threat_value.group_ignore_frac(
+        cost = threat_value.bodies_ignore_frac(
             self.db, [u.spec.base for u in near], tower_level=self._tower_level_for_triage)
         if cost < threat_value.IGNORE_FRAC:
             return 0.0                                   # too slight to kill a bow
@@ -1706,7 +1706,7 @@ class SimMatchEnv:
             return 0.0
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.group_ignore_frac(
+        if committed and threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
             return 0.0                                   # a real threat is here: this is its job

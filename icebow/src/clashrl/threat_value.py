@@ -33,6 +33,8 @@ health it has. Same for siege.
 """
 from __future__ import annotations
 
+import math
+
 from typing import Optional
 
 from . import levels
@@ -188,6 +190,39 @@ def group_ignore_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) -
     if not pooled:
         return 0.0
     return _dealt(pooled, tower_level) / float(tower_hp(tower_level))
+
+
+def cards_from_bodies(db, bases, enemy_level: int = 11):
+    """Collapse a list of BODY bases into the CARD list that produced them.
+
+    Callers see bodies -- the sim iterates `eng.units`, live iterates detector tracks -- but
+    :func:`group_ignore_frac` takes CARDS and expands each into its own bodies. Passing bodies
+    straight in therefore multiplies every squad by its own size: one Skeletons card became nine
+    to twelve skeletons, and a Skeleton Army became two hundred and twenty five.
+
+    Recovering the count as ceil(seen / per_card) keeps the property the pooling was built for --
+    four Skeletons cards really are worse than one, and twelve bodies still collapse to three
+    cards rather than to one. Single-body cards pass through untouched.
+    """
+    seen = {}
+    for b in bases:
+        seen[b] = seen.get(b, 0) + 1
+    out = []
+    for b, n in seen.items():
+        bodies = _bodies(db, b, enemy_level)
+        per = len(bodies) if bodies else 1
+        out.extend([b] * max(1, int(math.ceil(n / float(max(1, per))))))
+    return out
+
+
+def bodies_ignore_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) -> float:
+    """:func:`group_ignore_frac` for a list of BODIES rather than cards.
+
+    This is what essentially every caller actually has, and calling the card-level function with
+    body-level data is what made a lone Skeletons trickle score nine times the ignore threshold.
+    """
+    return group_ignore_frac(db, cards_from_bodies(db, bases, enemy_level),
+                             tower_level=tower_level, enemy_level=enemy_level)
 
 
 # ---------------------------------------------------------------------------------------------
