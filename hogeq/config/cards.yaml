@@ -1236,9 +1236,22 @@ cards:
   # purpose; NOT the same as royal_recruits. Not in cards_stats.json, so fuller entry here.
   royal_recruit:
     display: "Royal Recruit"
+    # THE SINGLE recruit dropped by Royal Delivery -- NOT the six-body Royal Recruits card. Same
+    # body, same stats (owner-confirmed 2026-08-20); only the count and the source differ, which is
+    # why both entries are legitimate and neither is a duplicate of the other.
+    #
+    # STATS WERE MISSING, and that is not cosmetic: threat_value._bodies needs hitpoints, damage
+    # and hit_speed, returned None without them, and ignore_cost_frac read that as "the tower
+    # cannot resolve this on its own" -> INF -> must_answer at any cost. A single recruit was
+    # therefore an infinite threat to every triage gate in the project, which is the same
+    # "spend a card on a small threat" failure the triage tier exists to prevent.
     elixir: null
     kind: troop
     rarity: common
+    hitpoints: 547
+    damage: 133
+    hit_speed: 1.3
+    shield_hp: 240.0
     attacks: [ground]
     movement: ground
     speed: medium
@@ -1249,7 +1262,7 @@ cards:
     targets: any
     flags: [shield]
     evolution: null
-    verified: false
+    verified: true
 
   mother_witch_hog:                # the cursed HOGS Mother Witch spawns (distinct from Royal Hogs) -- fast,
     display: "Mother Witch Hog"    # building-targeting; a spawned unit, NOT a deployable card (no elixir/stats in the KB)
