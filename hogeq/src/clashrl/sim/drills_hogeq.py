@@ -336,3 +336,166 @@ register(Scenario(
           "-1.0, because profile('skeletons').dps is below the tank-answer bar. Drill kept as-is: "
           "the doctrine is right and the referee is wrong, which the pass rate will show.",
 ))
+
+register(Scenario(
+    name="hog_then_eq_in_order",
+    goal="Hog FIRST, quake second -- the spell is spent on what is actually holding him.",
+    tier="compound",
+    hand=("hog_rider", "earthquake"),
+    elixir=9.0,
+    # THEIR CANNON IS ALREADY PLANTED. Quaking it before the Hog is committed spends three elixir
+    # on a building they have not yet had to use; sending the Hog first makes the quake answer a
+    # commitment instead of a guess. Same two cards, same board, opposite value.
+    spawns=(("cannon", 1, 0.26, 0.36, 0.0),),
+    success=lambda e, s: (played_before(s, "hog_rider", "earthquake")
+                          and enemy_tower_hp_lost(e, s, 0.0)),
+    failure=lambda e, s: played_before(s, "earthquake", "hog_rider"),
+    time_limit=20.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "spell_waste"),
+    prereq=("eq_clears_the_hogs_building",),
+    reference=(("hog_rider", 0.194, 0.5625, 0.6), ("earthquake", 0.26, 0.36, 2.4)),
+    notes="The order predicate is the drill: a board three seconds later looks the same either "
+          "way, and only the sequence says whether the elixir bought anything.",
+))
+
+register(Scenario(
+    name="mm_leads_the_hog",
+    goal="Mighty Miner goes FIRST and eats the building's attention; the Hog follows behind him.",
+    tier="compound",
+    hand=("mighty_miner", "hog_rider"),
+    elixir=10.0,
+    spawns=(("tesla", 1, 0.26, 0.36, 0.0),),
+    # THE PAIR ONLY WORKS ONE WAY ROUND. A Hog sent first is what the Tesla locks onto, and he
+    # dies to it; behind a Mighty Miner the building is already busy and he walks past.
+    success=lambda e, s: (played_before(s, "mighty_miner", "hog_rider")
+                          and enemy_tower_hp_lost(e, s, 0.0)),
+    failure=lambda e, s: played_before(s, "hog_rider", "mighty_miner"),
+    time_limit=22.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec",),
+    prereq=("hog_send_on_a_quiet_board", "mm_blocks_the_tank"),
+    reference=(("mighty_miner", 0.194, 0.5625, 0.6), ("hog_rider", 0.194, 0.5625, 2.4)),
+    notes="`_hog_wincon`'s c0 branch already prices 'behind the mini-tank'; this is the board it "
+          "was written for, at a size where the pass rate can see it.",
+))
+
+register(Scenario(
+    name="tesla_late_not_early",
+    goal="A building has a lifetime. Hold it until their win condition is actually coming.",
+    tier="compound",
+    hand=("tesla",),
+    elixir=9.0,
+    spawns=(("hog_rider", 1, 0.194, 0.44, 9.0),),
+    success=lambda e, s: (not _enemy(e) and (first_play_t(s, "tesla") or 0.0) >= 7.0
+                          and not princess_hp_lost(e, s, 120.0)),
+    failure=lambda e, s: (((first_play_t(s, "tesla") or 99.0) < 5.0)
+                          or princess_hp_lost(e, s, 400.0)),
+    time_limit=22.0,
+    randomise=("lane", "elixir"),
+    graded_by=("building_waste", "threat_response"),
+    prereq=("tesla_pulls_the_wincon",),
+    reference=(("tesla", 0.50, 0.645, 8.4),),
+    notes="Evo Tesla lives 25s, so one planted on an empty board is most of the way through its "
+          "life before the push arrives. The failure predicate is the CLOCK, not the outcome.",
+))
+
+register(Scenario(
+    name="ice_spirit_denies_the_hit",
+    goal="One elixir of freeze, spent on the thing that is already swinging at our tower.",
+    tier="foundational",
+    hand=("ice_spirit",),
+    elixir=4.0,
+    spawns=(("hog_rider", 1, 0.194, 0.60, 0.0),),
+    # THE SPIRIT IS A TEMPO CARD, not an answer: it does not kill the Hog, it costs him swings
+    # while the tower keeps firing. So the drill is scored purely on tower HP.
+    # THRESHOLDS FROM MEASUREMENT: the tower loses 1584 HP to this Hog unaided and 1267 with a
+    # well-timed spirit -- almost exactly one hog hit, which is what one elixir of freeze is worth.
+    # The first draft's 620 bar sat below both, so it failed a perfect line and read as impossible.
+    success=lambda e, s: (not _enemy(e, "hog_rider") and not princess_hp_lost(e, s, 1400.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1550.0),
+    time_limit=16.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "chip_defence"),
+    prereq=(),
+    reference=(("ice_spirit", 0.194, 0.72, 0.6),),
+    notes="Cheapest sufficient answer, at the extreme: one elixir that buys two hits. Played early "
+          "the freeze expires before the swing, which is why the threshold is tight.",
+))
+
+register(Scenario(
+    name="firecracker_answers_the_air",
+    goal="She is the deck's only air answer -- and she is played to DEFEND, not at the bridge.",
+    tier="foundational",
+    hand=("firecracker",),
+    elixir=6.0,
+    spawns=(("minions", 1, 0.194, 0.50, 0.0), ("minions", 1, 0.24, 0.54, 0.0)),
+    success=lambda e, s: (not _enemy(e) and not princess_hp_lost(e, s, 700.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1100.0),
+    time_limit=18.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=("firecracker_never_alone",),
+    reference=(("firecracker", 0.194, 0.70, 0.6),),
+    notes="The legitimate half of the never-alone rule: with air on the board she is not support, "
+          "she is the answer, and holding her is the mistake.",
+))
+
+register(Scenario(
+    name="eq_the_pump_on_sight",
+    goal="An Elixir Collector is a clock -- quake it before it pays for itself.",
+    tier="foundational",
+    hand=("earthquake",),
+    elixir=6.0,
+    spawns=(("elixir_collector", 1, 0.30, 0.16, 0.0),),
+    # THE QUAKE REACHES IT ONLY BECAUSE SPELLS MAY CROSS THE RIVER NOW. Before that fix this was
+    # a cast clamped to our own front row, roughly ten tiles short of the pump.
+    success=lambda e, s: (not _enemy(e, "elixir_collector") and played(s, "earthquake")),
+    failure=lambda e, s: ((float(e.t) - float(s.get("t0", 0.0))) >= 13.0
+                          and bool(_enemy(e, "elixir_collector"))),
+    time_limit=16.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("wincon_exec", "spell_waste"),
+    prereq=("eq_kills_the_spawner",),
+    reference=(("earthquake", 0.30, 0.16, 0.6),),
+    notes="Pump denial has no reward term in this deck at all -- icebow prices it through "
+          "_pump_rocket and hogeq has no equivalent. See HANDOFF SS6.0a.",
+))
+
+register(Scenario(
+    name="split_lane_needs_the_centre",
+    goal="One building answers BOTH lanes only if it is dead centre.",
+    tier="compound",
+    hand=("tesla",),
+    elixir=7.0,
+    spawns=(("royal_hogs", 1, 0.40, 0.44, 0.0),),
+    success=lambda e, s: (not _enemy(e) and not princess_hp_lost(e, s, 600.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 900.0),
+    time_limit=20.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "chip_defence"),
+    prereq=("tesla_pulls_the_wincon",),
+    reference=(("tesla", 0.50, 0.62, 0.6),),
+    notes="Royal Hogs split on arrival, so a Tesla planted in one lane watches the other half "
+          "walk past -- the centre tile is the only placement that answers the card at all.",
+))
+
+register(Scenario(
+    name="hold_the_cheap_answers",
+    goal="Spend NOTHING on a trickle the tower eats for free.",
+    tier="foundational",
+    hand=("the_log", "skeletons", "ice_spirit", "firecracker"),
+    elixir=6.0,
+    spawns=(("skeletons", 1, 0.30, 0.46, 0.0),),
+    # NO REFERENCE LINE ON PURPOSE: the correct play is to play nothing, which the do-nothing
+    # column already measures. Triage is the tier ABOVE every counter rule and the one both decks
+    # kept violating, so it gets its own scenario on each of them.
+    success=lambda e, s: (not _enemy(e) and float(s.get("spent", 0.0)) <= 0.0),
+    failure=lambda e, s: spent_more_than(e, s, 0.0),
+    time_limit=10.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_miss_idle", "elixir_trade"),
+    prereq=(),
+    notes="hogeq's twin of icebow's ignore_the_ignorable. The Log prior used to spend itself here "
+          "because its swarm rule counted BODIES -- one 1-elixir card is three of them.",
+))

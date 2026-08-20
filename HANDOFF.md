@@ -838,8 +838,8 @@ configured but **have never run** — BC has not been retrained since the soft-t
      pool and the remote workers. A drill is scored by the match's own reward terms, so the
      objective never changes between a 10-second drill and a 3-minute match — which is what keeps
      the skill from having to survive a transfer afterwards.
-   * **28 drills built and validated: 15 icebow, 13 hogeq.** Every one is winnable (a scripted
-     reference line passes 95–100%) and none is passable by doing nothing.
+   * **43 drills built and validated: 22 icebow, 21 hogeq.** Every one is winnable (a scripted
+     reference line passes it) and none is passable by doing nothing.
    * **Each Scenario carries a `reference` line** — the hand-written correct play in coordinates —
      and `run.py drills` plays it as a third column. That column is what separates a scenario that
      is BROKEN from one the doctrine merely cannot solve, and the second is a finding worth
@@ -849,13 +849,16 @@ configured but **have never run** — BC has not been retrained since the soft-t
    * `Scenario.setup` runs arbitrary engine state after the board (a woken king, a wounded tower,
      the clock in overtime); `DrillEnv` keeps a **play ledger** (what was deployed, where, when),
      which is the only way to score order (`played_before`) or restraint (`played`).
-   * **8 DOCTRINE GAPS the drills surfaced** — all winnable by the reference line, all missed by
+   * **11 DOCTRINE GAPS the drills surfaced** — all winnable by the reference line, all missed by
      the prior: icebow `bow_never_into_the_push`, `hold_the_spell_for_a_target`,
      `log_rolls_forward_not_backward`, `log_the_barrel_on_landing` (spends the Log on the Princess
      bait instead of holding it for the barrel), `nado_clump_for_the_wizard`,
      `skeletons_kill_the_miner`; hogeq `hog_never_into_the_push`, `hog_over_the_ignorable`,
      `skeletons_are_enough` (counters.yaml names skeletons→knight and the referee charges it −1.0
-     because `profile('skeletons').dps` is under the tank-answer bar).
+     because `profile('skeletons').dps` is under the tank-answer bar), `mm_leads_the_hog`,
+     `rocket_then_tornado` (R6's order — the reward's own +9.0 rocket/nado bonus reads
+     `eng.vortices` at ROCKET-cast time, so under the doctrinal order there is no vortex yet and
+     it can never pay), and both decks' triage drills where the prior spends anyway.
    * **REMOVED `nado_drag_off_the_tower`** — measured with and without a well-placed pull, our
      tower lost **950 HP either way**: the Hog dies to the princess on the same clock and the
      damage converges, so the drill could not tell a correct pull from no pull. The play is real

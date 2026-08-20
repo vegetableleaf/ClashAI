@@ -446,3 +446,175 @@ register(Scenario(
     notes="The Princess is deliberately left alive in the success test: answering her is not the "
           "job, and a drill that rewarded killing her would teach the very habit it exists to stop.",
 ))
+
+# =============================================================================================
+# TIER 2 -- COMPOUND: two cards, an order, and a timing window.
+# =============================================================================================
+
+register(Scenario(
+    name="rocket_then_tornado",
+    goal="ROCKET FIRST, then Tornado -- the blast has to land inside a live pull.",
+    tier="compound",
+    hand=("rocket", "tornado"),
+    elixir=10.0,
+    # A SPREAD MEDIUM GROUP: three bodies too far apart for one blast, each worth killing. The
+    # Tornado is what makes them one target, and the rocket is what kills them -- so the order is
+    # the entire play and the board a second later looks nearly the same either way.
+    spawns=(("musketeer", 1, 0.14, 0.44, 0.0), ("musketeer", 1, 0.30, 0.46, 0.0),
+            ("archers", 1, 0.22, 0.40, 0.0)),
+    success=lambda e, s: (played_before(s, "rocket", "tornado")
+                          and sum(1 for u in e.units if u.team == 1 and u.hp > 0) <= 1),
+    failure=lambda e, s: (played_before(s, "tornado", "rocket")
+                          or princess_hp_lost(e, s, 900.0)),
+    time_limit=16.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "nado_clump", "nado_combo"),
+    prereq=("nado_clump_for_the_wizard", "rocket_the_two_for_one"),
+    reference=(("rocket", 0.22, 0.44, 1.2), ("tornado", 0.22, 0.44, 1.8)),
+    notes="R6 in one board. The reward's own rocket+nado bonus reads eng.vortices at ROCKET-cast "
+          "time and needs a live vortex, so under the doctrinal order there is none yet -- see "
+          "HANDOFF SS6.0a. This drill is where that contradiction becomes a number.",
+))
+
+register(Scenario(
+    name="knight_guards_the_bow",
+    goal="The Knight goes IN FRONT of our X-Bow, between it and what is coming for it.",
+    tier="compound",
+    hand=("knight",),
+    elixir=6.0,
+    # OUR BOW IS ALREADY STANDING and a melee answer is walking at it. Everything the bow is worth
+    # depends on how long it keeps firing, so the bodyguard is the play -- and "in front" is a
+    # real constraint: a Knight dropped behind the bow watches it die.
+    spawns=(("x_bow", 0, 0.26, 0.56, 0.0), ("valkyrie", 1, 0.24, 0.42, 0.0)),
+    success=lambda e, s: (any(u.team == 0 and u.hp > 0 and u.spec.base == "x_bow" for u in e.units)
+                          and not any(u.team == 1 and u.hp > 0 for u in e.units)),
+    failure=lambda e, s: not any(u.team == 0 and u.hp > 0 and u.spec.base == "x_bow"
+                                 for u in e.units),
+    time_limit=20.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "xbow_lock"),
+    prereq=("knight_blocks_the_charge",),
+    reference=(("knight", 0.26, 0.50, 0.6),),
+    notes="Scored on the BOW SURVIVING, which is the thing the Knight is bought for -- killing the "
+          "Valkyrie in open ground somewhere else would be a fair trade and the wrong play.",
+))
+
+register(Scenario(
+    name="nado_the_sneaky_lock",
+    goal="Drag the defender off our X-Bow so the bow re-locks onto the tower.",
+    tier="compound",
+    hand=("tornado",),
+    elixir=6.0,
+    # THIS PLAY DID NOT EXIST until spells were allowed past the river: the bow stands AT the
+    # river and the cast has to land next to it, which `deploy_clamp` used to haul back into our
+    # own half. It is also the cheapest way to convert a stalled bow into tower damage.
+    spawns=(("x_bow", 0, 0.26, 0.53, 0.0), ("knight", 1, 0.26, 0.47, 0.0)),
+    success=lambda e, s: enemy_tower_hp_lost(e, s, 150.0),
+    failure=lambda e, s: not any(u.team == 0 and u.hp > 0 and u.spec.base == "x_bow"
+                                 for u in e.units),
+    time_limit=22.0,
+    randomise=("lane",),
+    graded_by=("nado_retarget", "xbow_lock", "chip_linear"),
+    prereq=("nado_king_activation", "knight_guards_the_bow"),
+    # THE BOW NEEDS A BODYGUARD TOO. A lone Tornado re-locks the bow and then watches it die: the
+    # Valkyrie kills it before it lands a shot, so the drill scored 0 for every cast on its own.
+    # The doctrine passes this by ALSO playing a Knight, which is the honest line -- the pull
+    # converts the bow's attention, the body keeps it alive long enough to matter.
+    reference=(("tornado", 0.26, 0.40, 1.2), ("knight", 0.26, 0.56, 2.4)),
+    notes="`nado_retarget` cannot pay for this -- it requires the pulled unit to be building_only "
+          "AND tower-locked -- and `nado_bad` can actively charge for it. A sampler-only play, "
+          "which is exactly the kind a drill is for.",
+))
+
+register(Scenario(
+    name="hold_the_tesla_for_their_wincon",
+    goal="A building has a lifetime. Do not spend it on an empty board.",
+    tier="compound",
+    hand=("tesla",),
+    elixir=9.0,
+    # THE WINCON ARRIVES LATE, and a Tesla planted at t=0 is most of the way through its lifetime
+    # by then. The user's own report: a Tesla in a good spot, dead of old age before the push came.
+    spawns=(("hog_rider", 1, 0.194, 0.44, 9.0),),
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and (first_play_t(s, "tesla") or 0.0) >= 7.0
+                          and not princess_hp_lost(e, s, 120.0)),
+    failure=lambda e, s: (((first_play_t(s, "tesla") or 99.0) < 5.0)
+                          or princess_hp_lost(e, s, 400.0)),
+    time_limit=22.0,
+    randomise=("lane", "elixir"),
+    graded_by=("building_waste", "threat_response"),
+    prereq=("tesla_pulls_the_wincon",),
+    reference=(("tesla", 0.50, 0.645, 8.4),),
+    notes="The failure predicate is the CLOCK, not the board: an early Tesla can still kill the "
+          "Hog and would score a win on outcome alone, which is how the habit survives.",
+))
+
+register(Scenario(
+    name="nado_pull_the_flock_back",
+    goal="Pull an air swarm BACKWARD, into our own tower's range -- direction is the play.",
+    tier="compound",
+    hand=("tornado",),
+    elixir=6.0,
+    # ALREADY PAST THE GUNS. The generic clump rule aims at the centre band, which for a flock at
+    # this depth is FORWARD of them -- it drags them away from the towers that are supposed to
+    # kill them. For air swarms the pull DIRECTION, not the clump centre, is the whole play.
+    spawns=(("minions", 1, 0.16, 0.66, 0.0), ("minions", 1, 0.24, 0.70, 0.0)),
+    # SCORED IN TOWER HP. Every minion dies in every line -- the towers get them eventually -- so
+    # a body count measured nothing at all. What the pull buys is what the towers paid for them:
+    # measured, 3311 HP doing nothing against 2029 for a correct backward pull.
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and not princess_hp_lost(e, s, 2400.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 2900.0),
+    time_limit=16.0,
+    randomise=("lane", "timing"),
+    graded_by=("nado_clump", "nado_bad"),
+    prereq=("nado_clump_for_the_wizard",),
+    reference=(("tornado", 0.20, 0.78, 0.6),),
+    notes="`nado_bad` fires when survivors end up CLOSER to our princesses, which is precisely "
+          "what this play does on purpose -- so a correct tornado-back is charged -0.3. Drill "
+          "kept as the measurement of that disagreement.",
+))
+
+register(Scenario(
+    name="never_rocket_their_king",
+    goal="Rocket the PRINCESS side. Waking their king for chip damage is a gift.",
+    tier="foundational",
+    hand=("rocket",),
+    elixir=8.0,
+    # TWO TARGETS, one of them a trap: a support parked behind their KING (where a rocket wakes
+    # the tower we least want awake) and an identical one beside a princess. Same card, same
+    # elixir, opposite value.
+    spawns=(("musketeer", 1, 0.50, 0.15, 0.0), ("musketeer", 1, 0.194, 0.19, 0.0)),
+    success=lambda e, s: (enemy_tower_hp_lost(e, s, 250.0)
+                          and not e.towers[1][2].active
+                          and played(s, "rocket")),
+    failure=lambda e, s: bool(e.towers[1][2].active),
+    time_limit=12.0,
+    randomise=("lane", "elixir"),
+    graded_by=("wincon_exec",),
+    prereq=("rocket_the_two_for_one",),
+    reference=(("rocket", 0.194, 0.229, 0.6),),
+    notes="Reads their king's `active` flag directly, so the drill fails the moment the blast "
+          "touches it -- no inference from where the cast was aimed.",
+))
+
+register(Scenario(
+    name="split_lane_needs_the_centre",
+    goal="One building answers BOTH lanes only if it is dead centre.",
+    tier="compound",
+    hand=("tesla",),
+    elixir=7.0,
+    spawns=(("royal_hogs", 1, 0.40, 0.44, 0.0),),
+    # ROYAL HOGS SPLIT on arrival, so a Tesla planted in one lane watches the other half walk past.
+    # The centre tile is not a preference here, it is the only placement that answers the card.
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and not princess_hp_lost(e, s, 600.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 900.0),
+    time_limit=20.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "chip_defence"),
+    prereq=("tesla_pulls_the_wincon",),
+    reference=(("tesla", 0.50, 0.62, 0.6),),
+    notes="`threat_response`'s building branch pays the same anywhere in 0.50 <= ny <= 0.80, so "
+          "the centre-vs-lane decision this rehearses is invisible to the reward.",
+))
