@@ -570,6 +570,28 @@ except. **hogeq's threat-gate memory has been inert whenever its perception loop
 
 Suites: icebow 543 OK, hogeq 42 baseline.
 
+## 3k. 2026-08-20 — the king rocket was FREE, and live never paid for the tornado combo (`c7aa9c3`)
+
+**"It learned to rocket cycle the opponent king tower."** Chip on the king was ALREADY off and was
+never the payoff — `_chip_progress` slices `[:2]` in both envs and live does not even read the
+king's HP (`enemy_tower_hp_boxes` has 2 boxes). **Measured: a king rocket scored exactly 0.0.**
+Zero was the bug — not a reward, but not a cost, while it dodges the leak penalty, so it was a
+FREE six-elixir cycle. The live `near_enemy_king → w_wincon_mis` guard exists but sits in the
+MINER branch; the rocket branch fell through to `return 0.0`. Now an explicit misplace both sides
+(sim 0.0 → **-1.0**, princess unchanged +0.75).
+⚠ Do not "restore" chip on the king: the overtime tiebreak reads PRINCESS HP, so king chip is
+worth nothing at any point in a match.
+
+**"It still doesn't understand the placement for rocket tornado."** Root cause: the sim has priced
+the combo since 2026-08-16 (`rocket_nado_mult`, `rocket_nado_window_s`) and **live had no term for
+it at all** — so a sim-trained checkpoint carried the TIMING across and had no gradient toward the
+TILE. Live now mirrors it: `_last_nado` remembers the cast point/time; a rocket within
+`rocket_nado_window_s` (2.5 s) AND `rocket_nado_radius` (**0.11 — deliberately tight, "the same
+tile" not "nearby"**) pays `w_wincon * rocket_nado_mult`; and with wheels on the rocket is SNAPPED
+to the tornado's tile ahead of the intercept assist.
+
+Suites: icebow 555 OK, hogeq 42 baseline.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
