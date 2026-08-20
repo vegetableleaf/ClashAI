@@ -618,3 +618,150 @@ register(Scenario(
     notes="`threat_response`'s building branch pays the same anywhere in 0.50 <= ny <= 0.80, so "
           "the centre-vs-lane decision this rehearses is invisible to the reward.",
 ))
+
+register(Scenario(
+    name="ice_wizard_behind_the_line",
+    goal="The Ice Wizard goes BEHIND the engagement -- he is 3 elixir of glass with a slow.",
+    tier="compound",
+    hand=("ice_wizard",),
+    elixir=6.0,
+    # A TANK PLUS A SPLASH BODY. Played in front the Ice Wizard is the first thing killed and the
+    # slow never lands; played behind, he slows the whole push for its entire walk. Same card,
+    # same second, and the only difference is a couple of tiles of depth.
+    spawns=(("knight", 1, 0.194, 0.44, 0.0), ("baby_dragon", 1, 0.194, 0.40, 0.0)),
+    success=lambda e, s: (any(u.team == 0 and u.hp > 0 and u.spec.base == "ice_wizard"
+                              for u in e.units)
+                          and not princess_hp_lost(e, s, 1100.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1600.0),
+    time_limit=22.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=(),
+    reference=(("ice_wizard", 0.194, 0.72, 0.6),),
+    notes="Scored on HIM SURVIVING as well as the tower holding: an Ice Wizard who traded himself "
+          "for the slow has not done the job the card is in the deck for.",
+))
+
+register(Scenario(
+    name="skeletons_stop_the_wall_breakers",
+    goal="Wall Breakers die to one cheap body placed in the right spot -- never to a Rocket.",
+    tier="foundational",
+    hand=("skeletons", "rocket", "the_log", "knight"),
+    elixir=8.0,
+    # THE THRESHOLDS, NOT THE DEPTH, WERE THE PROBLEM. Unanswered from here they cost 391 HP,
+    # which sat just UNDER the first draft's 400 bar -- so doing nothing passed 100% and the drill
+    # was scoring the tower. Pushed deeper they cost 782 but the Skeletons no longer arrive in
+    # time, and nothing passed. Here, with the bodies placed in front of the tower, a correct
+    # answer costs **0** against 391 -- which is the user's own note that Skeletons handle Wall
+    # Breakers with the tower's help, if they are placed correctly.
+    spawns=(("wall_breakers", 1, 0.194, 0.56, 0.0),),
+    # THE ELIXIR TRADE IS THE POINT. Rocketing a 2-elixir card is the exact play the counters work
+    # was commissioned to stop, so the drill fails on the SPEND even when the outcome is fine.
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and float(s.get("spent", 0.0)) <= 2.5
+                          and not princess_hp_lost(e, s, 200.0)),
+    failure=lambda e, s: (played(s, "rocket") or spent_more_than(e, s, 4.0)
+                          or princess_hp_lost(e, s, 300.0)),
+    time_limit=14.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=("skeletons_kill_the_miner",),
+    reference=(("skeletons", 0.194, 0.70, 0.6),),
+    notes="The user's own example of an unrealistic counter: rocketing Wall Breakers is a "
+          "horrible trade the advisor kept proposing. Here it is a hard failure.",
+))
+
+register(Scenario(
+    name="bow_defends_from_the_centre",
+    goal="A DEFENSIVE bow anchors the centre, where it covers both lanes and outranges the push.",
+    tier="compound",
+    hand=("x_bow",),
+    elixir=8.0,
+    spawns=(("giant", 1, 0.194, 0.44, 0.0),),
+    # THE OTHER HALF OF bow_never_into_the_push: the bow is not forbidden while a push is coming,
+    # it is forbidden FORWARD. Placed back and centre it is a defensive building that happens to
+    # threaten. Getting only the veto drilled would teach "never play your win condition".
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and not princess_hp_lost(e, s, 900.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1400.0),
+    time_limit=24.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "xbow_lock"),
+    prereq=("bow_never_into_the_push",),
+    reference=(("x_bow", 0.50, 0.66, 0.6),),
+    notes="Pairs with the veto drill so the policy learns WHERE rather than WHETHER -- the two "
+          "differ only in the row the bow lands on.",
+))
+
+register(Scenario(
+    name="matchup_hog_cycle",
+    goal="A full Hog-cycle sequence: answer each wave without ever falling behind on elixir.",
+    tier="matchup",
+    hand=(),
+    elixir=7.0,
+    # A REAL ROTATION rather than one card: hog, then the cheap follow-up, then the next hog. The
+    # tier exists to check that the Tier 1 and 2 skills survive contact with a deck that keeps
+    # coming, which a single-interaction drill cannot show.
+    spawns=(("hog_rider", 1, 0.194, 0.44, 0.0), ("skeletons", 1, 0.194, 0.46, 5.0),
+            ("hog_rider", 1, 0.806, 0.44, 11.0), ("musketeer", 1, 0.806, 0.40, 13.0)),
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and not princess_hp_lost(e, s, 1400.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 2200.0),
+    time_limit=34.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "elixir_trade", "chip_defence"),
+    prereq=("tesla_pulls_the_wincon", "ignore_the_ignorable"),
+    # NO REFERENCE LINE: a matchup is a 30s sequence of waves, and four fixed taps cannot
+    # answer it -- a scripted line scored 25% where the doctrine scores 62-94%. Here the
+    # doctrine column IS the reference, and a policy is measured against it rather than
+    # against a strawman.
+    notes="Both lanes, two win conditions and a trickle in between -- the trickle is there to see "
+          "whether triage survives when there is also something real to answer.",
+))
+
+register(Scenario(
+    name="matchup_lavaloon",
+    goal="Air only: the Tesla takes the hound, everything else goes on the Balloon.",
+    tier="matchup",
+    hand=(),
+    elixir=9.0,
+    spawns=(("lava_hound", 1, 0.194, 0.30, 0.0), ("balloon", 1, 0.194, 0.40, 7.0)),
+    # THE BALLOON IS THE CARD THAT MATTERS. The hound does nothing on its own; every elixir spent
+    # on it is elixir absent when the loon arrives, which is the mistake this rehearses.
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 and u.spec.base == "balloon"
+                                  for u in e.units)
+                          and not princess_hp_lost(e, s, 1200.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1800.0),
+    time_limit=30.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "chip_defence"),
+    prereq=("tesla_pulls_the_wincon",),
+    # NO REFERENCE LINE: a matchup is a 30s sequence of waves, and four fixed taps cannot
+    # answer it -- a scripted line scored 25% where the doctrine scores 62-94%. Here the
+    # doctrine column IS the reference, and a policy is measured against it rather than
+    # against a strawman.
+    notes="The Log and the Knight are both dead cards here, so the drill also rehearses NOT "
+          "playing them -- a hand full of ground answers against an all-air push.",
+))
+
+register(Scenario(
+    name="matchup_bridge_spam",
+    goal="A PEKKA behind a charging Ram: reset the charge, then kite the tank.",
+    tier="matchup",
+    hand=(),
+    elixir=9.0,
+    spawns=(("battle_ram", 1, 0.194, 0.46, 0.0), ("pekka", 1, 0.194, 0.42, 3.0)),
+    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+                          and not princess_hp_lost(e, s, 1500.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 2300.0),
+    time_limit=32.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=("knight_blocks_the_charge", "log_rolls_forward_not_backward"),
+    # NO REFERENCE LINE: a matchup is a 30s sequence of waves, and four fixed taps cannot
+    # answer it -- a scripted line scored 25% where the doctrine scores 62-94%. Here the
+    # doctrine column IS the reference, and a policy is measured against it rather than
+    # against a strawman.
+    notes="config.yaml names PEKKA bridge spam as the dominant top-1000 deck, so this is the "
+          "matchup the sim's opponent pool is most likely to be wrong about.",
+))

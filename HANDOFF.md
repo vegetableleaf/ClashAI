@@ -838,8 +838,9 @@ configured but **have never run** — BC has not been retrained since the soft-t
      pool and the remote workers. A drill is scored by the match's own reward terms, so the
      objective never changes between a 10-second drill and a 3-minute match — which is what keeps
      the skill from having to survive a transfer afterwards.
-   * **43 drills built and validated: 22 icebow, 21 hogeq.** Every one is winnable (a scripted
-     reference line passes it) and none is passable by doing nothing.
+   * **55 drills built and validated: 28 icebow, 27 hogeq**, across all three tiers
+     (foundational / compound / matchup). Every one is winnable and none is passable by doing
+     nothing — verified, not assumed.
    * **Each Scenario carries a `reference` line** — the hand-written correct play in coordinates —
      and `run.py drills` plays it as a third column. That column is what separates a scenario that
      is BROKEN from one the doctrine merely cannot solve, and the second is a finding worth
@@ -863,9 +864,14 @@ configured but **have never run** — BC has not been retrained since the soft-t
      tower lost **950 HP either way**: the Hog dies to the princess on the same clock and the
      damage converges, so the drill could not tell a correct pull from no pull. The play is real
      doctrine; this engine does not express its value on that board. Open question, not a drill.
-   * TODO: the drafted curricula run to ~77 scenarios (icebow 40 / hogeq 37) — see §6.0a for the
-     reward-coverage findings attached to the unbuilt ones. Then run a PPO comparison at
-     `drill_frac` 0.0 vs 0.3 to measure whether the mix actually helps.
+   * **READY FOR THE PPO A/B.** `run.py train-sim-ppo --drill-frac 0.3` against a plain
+     `--drill-frac 0` run is the measurement; the flag exists so the two arms differ by one word
+     rather than a config edit (an override that needs a file change between arms is one that
+     quietly never gets tested). Measured on the mix itself: 32.5% drills over 400 resets against
+     30% asked (1.1σ), and a drill episode is **20 steps against a match's 187 — ~9× cheaper**,
+     so the same wall-clock buys far more reps of the states that matter.
+   * TODO: the drafted curricula run to ~77 scenarios; 55 are built. §6.0a holds the
+     reward-coverage findings attached to the rest.
    * **Open finding the triage drill surfaced (not fixed):** an LLM-proposed, engine-verified rule
      (`x1|king_asleep|deep_0|worth_0|elx_6` → `knight`, gain 1.922, 3/3 wins) nominates a Knight on
      a quiet board at 6 elixir, which contradicts the deck's own banking doctrine (a 3.5-cycle deck

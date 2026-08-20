@@ -380,8 +380,12 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
             verdict = ("restraint drill (correct play is NONE) -- doctrine agrees"
                        if d >= 0.5 else
                        "restraint drill (correct play is NONE) -- DOCTRINE SPENDS ANYWAY")
-        elif r is not None and r < 0.5 and b < 0.5:
-            verdict = "UNWINNABLE -- even the reference line fails; fix the scenario"
+        elif r is not None and r < 0.5 and d < 0.5 and b < 0.5:
+            # UNWINNABLE means NOTHING passed it -- not merely that the hand-written line is worse
+            # than the doctrine. On the matchup drills the prior scores 62-94% where a scripted
+            # line scores 25%, which says the scenario is fine and the line is naive: a 34-second
+            # multi-wave sequence is not something four fixed coordinates can answer.
+            verdict = "UNWINNABLE -- nothing passes it (reference, doctrine and baseline all fail)"
         elif b >= 0.5 and best >= 0.5 and abs(best - b) < 0.2:
             verdict = "NOT DISCRIMINATING -- the board resolves itself"
         elif best < b:

@@ -499,3 +499,128 @@ register(Scenario(
     notes="hogeq's twin of icebow's ignore_the_ignorable. The Log prior used to spend itself here "
           "because its swarm rule counted BODIES -- one 1-elixir card is three of them.",
 ))
+
+register(Scenario(
+    name="skeletons_stop_the_wall_breakers",
+    goal="Wall Breakers die to one cheap body in front of the tower -- never to a spell.",
+    tier="foundational",
+    hand=("skeletons", "the_log", "ice_spirit", "tesla"),
+    elixir=7.0,
+    spawns=(("wall_breakers", 1, 0.194, 0.56, 0.0),),
+    # THE ELIXIR TRADE IS THE POINT: they are a 2-elixir card, so anything expensive spent on them
+    # is a loss even when the tower survives. The bodies go IN FRONT, where the tower helps.
+    success=lambda e, s: (not _enemy(e) and float(s.get("spent", 0.0)) <= 2.5
+                          and not princess_hp_lost(e, s, 200.0)),
+    failure=lambda e, s: spent_more_than(e, s, 4.0) or princess_hp_lost(e, s, 300.0),
+    time_limit=14.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=("skeletons_are_enough",),
+    reference=(("skeletons", 0.194, 0.70, 0.6),),
+    notes="Measured: unanswered they cost 391 HP, answered correctly they cost 0.",
+))
+
+register(Scenario(
+    name="log_the_barrel_on_landing",
+    goal="Hold the Log for the barrel -- and roll it the moment the goblins land.",
+    tier="compound",
+    hand=("the_log",),
+    elixir=6.0,
+    # THE BAIT COMES FIRST: a Princess at the bridge is the card the Log is always tempted by, and
+    # spending it there is why the barrel connects a few seconds later. Rotation discipline only
+    # exists as a skill when the temptation is on the board before the real target.
+    spawns=(("princess", 1, 0.194, 0.42, 0.0), ("goblin_barrel", 1, 0.194, 0.78, 4.0)),
+    success=lambda e, s: ((first_play_t(s, "the_log") or 0.0) >= 3.5
+                          and not princess_hp_lost(e, s, 1000.0)
+                          and not _enemy(e, "goblins")),
+    failure=lambda e, s: princess_hp_lost(e, s, 1300.0),
+    time_limit=16.0,
+    randomise=("lane",),
+    graded_by=("elixir_trade", "spell_waste"),
+    prereq=("log_the_ground_swarm",),
+    reference=(("the_log", 0.194, 0.88, 4.3),),
+    notes="The Princess is deliberately left alive in the success test: answering her is not the "
+          "job, and rewarding it would teach the very habit the drill exists to stop.",
+))
+
+register(Scenario(
+    name="hog_counterpush_behind_the_survivor",
+    goal="A defender who lived is a counter-push waiting to happen -- send the Hog in HIS lane.",
+    tier="compound",
+    hand=("hog_rider",),
+    elixir=5.0,
+    # OUR MIGHTY MINER SURVIVED THE DEFENCE and is standing forward. A Hog behind him arrives with
+    # a body already soaking, which is the cheapest offence this deck ever gets.
+    spawns=(("mighty_miner", 0, 0.806, 0.60, 0.0),),
+    success=lambda e, s: (enemy_tower_hp_lost(e, s, 0.0)
+                          and (play_xy(s, "hog_rider") or (0.0, 0.0))[0] > 0.5),
+    failure=lambda e, s: (not _hog_sent(e, s)
+                          and (float(e.t) - float(s.get("t0", 0.0))) >= 6.0),
+    time_limit=22.0,
+    randomise=("timing", "elixir"),
+    graded_by=("wincon_exec",),
+    prereq=("hog_send_on_a_quiet_board",),
+    reference=(("hog_rider", 0.806, 0.5625, 0.6),),
+    notes="No lane mirroring here on purpose: the survivor's lane IS the answer, so flipping the "
+          "board would flip the correct answer and the predicate reads the x it was played at.",
+))
+
+register(Scenario(
+    name="matchup_beatdown_golem",
+    goal="They committed a Golem at the back -- take the other lane and keep taking it.",
+    tier="matchup",
+    hand=(),
+    elixir=8.0,
+    spawns=(("golem", 1, 0.194, 0.14, 0.0), ("baby_dragon", 1, 0.194, 0.16, 6.0),
+            ("night_witch", 1, 0.194, 0.18, 12.0)),
+    # THE PUNISH IS THE PLAN, not the defence: out-tanking a Golem push costs more than it takes
+    # to chip the tower they left open. Success requires the chip, so a purely defensive line
+    # cannot pass however tidily it holds.
+    success=lambda e, s: (enemy_tower_hp_lost(e, s, 300.0)
+                          and not princess_hp_lost(e, s, 2200.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 3200.0),
+    time_limit=36.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "threat_response", "chip_offence"),
+    prereq=("hog_punish_the_back_investment",),
+    notes="No reference line: a 36-second three-wave sequence is not answerable by a handful of "
+          "fixed taps, so the doctrine column is the reference here.",
+))
+
+register(Scenario(
+    name="matchup_logbait",
+    goal="Two barrels in one segment: the Log belongs to the barrel, not to the bait.",
+    tier="matchup",
+    hand=(),
+    elixir=7.0,
+    spawns=(("princess", 1, 0.194, 0.42, 0.0), ("goblin_barrel", 1, 0.194, 0.78, 5.0),
+            ("goblin_gang", 1, 0.806, 0.44, 12.0), ("goblin_barrel", 1, 0.806, 0.78, 18.0)),
+    success=lambda e, s: not princess_hp_lost(e, s, 1800.0),
+    failure=lambda e, s: princess_hp_lost(e, s, 2600.0),
+    time_limit=32.0,
+    randomise=("timing",),
+    graded_by=("elixir_trade", "spell_waste", "chip_defence"),
+    prereq=("log_the_barrel_on_landing",),
+    notes="Two barrels means the Log cannot answer both, which is the whole matchup: the second "
+          "one has to be taken by skeletons or eaten deliberately.",
+))
+
+register(Scenario(
+    name="matchup_lavaloon",
+    goal="Air only: the Tesla takes the hound, the Firecracker is saved for the Balloon.",
+    tier="matchup",
+    hand=(),
+    elixir=9.0,
+    spawns=(("lava_hound", 1, 0.194, 0.30, 0.0), ("balloon", 1, 0.194, 0.40, 8.0)),
+    # THE BALLOON IS THE CARD THAT MATTERS. Every elixir spent on the hound is elixir missing when
+    # the loon arrives -- and the Log and the quake are both dead cards here, so the drill also
+    # rehearses NOT playing half the hand.
+    success=lambda e, s: (not _enemy(e, "balloon") and not princess_hp_lost(e, s, 1200.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 1900.0),
+    time_limit=30.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "chip_defence"),
+    prereq=("firecracker_answers_the_air",),
+    notes="Firecracker is the deck's only real air answer, so this is also the drill where "
+          "holding her (rather than the never-alone rule) is what wins.",
+))

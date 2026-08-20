@@ -154,10 +154,38 @@ def _cmd_train_sim_ppo(args) -> None:
               "Install the CUDA build:\n"
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
-    train_sim_ppo(_sized_config(args), matches=args.matches, resume=args.resume,
+    cfg = _sized_config(args)
+    if getattr(args, "drill_frac", None) is not None:
+        # A/B THE DRILL MIX FROM THE COMMAND LINE. The whole point of the mixing ratio is that it
+        # gets measured against 0.0 rather than assumed, and an override that needs a config edit
+        # between the two arms is an override that quietly never gets tested.
+        cfg = _DrillFracOverride(cfg, float(args.drill_frac))
+        print(f"[train-sim-ppo] drill mix: {float(args.drill_frac):.0%} of episodes are DRILLS")
+    train_sim_ppo(cfg, matches=args.matches, resume=args.resume,
                   workers=getattr(args, "workers", 0),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate)
+
+
+class _DrillFracOverride:
+    """Wraps a Config so `sim.drill_frac` reads back as the command-line value.
+
+    A thin proxy rather than a mutation: the rollout workers each re-read the config, and a value
+    written into the object here has to survive being handed to them, while everything else about
+    the config must stay exactly what was loaded from disk.
+    """
+
+    def __init__(self, cfg, frac: float):
+        self._cfg = cfg
+        self._frac = float(frac)
+
+    def get(self, *keys, **kw):
+        if tuple(keys) == ("sim", "drill_frac"):
+            return self._frac
+        return self._cfg.get(*keys, **kw)
+
+    def __getattr__(self, name):
+        return getattr(self._cfg, name)
 
 
 def _cmd_drills(args) -> None:
@@ -520,6 +548,10 @@ def main() -> None:
                      help="override train.device. CPU is MEASURED FASTER for this trainer (1.0 vs 0.2 "
                           "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
                           "the GPU entirely, so PPO can run alongside a detector train")
+    tsp.add_argument("--drill-frac", type=float, default=None,
+                     help="fraction of episodes that are DRILLS instead of full matches "
+                          "(overrides sim.drill_frac; 0 = plain matches, 0.3 = suggested mix). "
+                          "Use this to A/B the drill curriculum against a plain run.")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     drl = sub.add_parser("drills",
