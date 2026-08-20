@@ -189,7 +189,12 @@ class SimMatchEnv:
         # A RUSH win condition (Hog): bridge-only, never into a push, lane-aware. See _hog_wincon.
         self.hog_bridge_y = float(cfg.get("env", "hog_bridge_y", default=0.52))
         self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))
-        self.hog_support_mult = float(cfg.get("rewards", "hog_support_mult", default=1.0))       # win-condition card thrown away
+        self.hog_support_mult = float(cfg.get("rewards", "hog_support_mult", default=1.0))
+        # SUPPORT TROOPS: never played alone (see _support_alone). `support_targets` are the
+        # committed pushes they may legitimately escort.
+        self.support_bases = frozenset(cfg.get("sim", "support_cards", default=["firecracker"]) or ())
+        self.support_targets = frozenset(cfg.get("sim", "support_targets",
+                                                 default=["hog_rider", "mighty_miner"]) or ())       # win-condition card thrown away
         # cycle_plan / cycle_waste: DELETED -- see the _cycle_plan stub below for the full record.
         # The weights are no longer read (2026-08-12: the live env's copy was deleted too).
         # PER-TICK TERMS SCALE WITH agent_dt -- see the live env's note. A shorter decision period
@@ -803,6 +808,37 @@ class SimMatchEnv:
                 return same if u.spec.flying else not same
         return False
 
+    def _support_alone(self, card_id: int, nx: float, ny: float) -> float:
+        """A SUPPORT troop played with nothing to support and nothing to defend is a misplace.
+
+        User doctrine (2026-08-20): "firecracker is a support troop... she should be played to
+        support a mighty miner, help defend, or support hog rider. Never by herself." Before this
+        a lone bridge firecracker returned 0.0 -- free, which is the same shape as the king-rocket
+        exploit: bad in the game, costless in the reward, and it dodged the leak penalty simply by
+        being a play. She is 3 elixir with 130 HP; alone at the bridge she trades with whatever
+        looks at her first.
+
+        Returns 0.0 for every legitimate use, so the ordinary terms keep scoring those.
+        """
+        base = self.specs[card_id].base if 0 <= card_id < len(self.specs) else ""
+        if base not in self.support_bases:
+            return 0.0
+        # (1) supporting a committed push of ours -- Hog or Mighty Miner, same lane.
+        for ally in self.eng.units:
+            if (ally.team == 0 and ally.hp > 0 and ally.spec.base in self.support_targets
+                    and abs(ally.x - nx) <= 0.18 and ally.y <= self.hog_bridge_y):
+                return 0.0
+        # (2) helping defend -- a threat worth a card is on our half. Triage decides, so she is
+        # never obliged to answer a lone Skeletons, and threat_response scores the play itself.
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if committed and threat_value.group_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+            return 0.0
+        # (3) neither: she is out on her own.
+        return self.w_wincon_mis
+
     def _hog_synergy(self, card_id: int, nx: float, ny: float) -> float:
         """Credit a SUPPORT card that completes a Hog push (user doctrine, 2026-08-20).
 
@@ -810,30 +846,38 @@ class SimMatchEnv:
         reason to learn the pairing. Returns 0.0 whenever there is no committed Hog to support, so
         a support card on a quiet board is scored by the ordinary terms and nothing else.
         """
+        # The committed push being supported: the Hog, or the Mighty Miner going in ahead of him.
+        # The user names BOTH as legitimate escorts ("support a mighty miner... or support hog
+        # rider"), and an escort behind the mini-tank is the same play one card earlier.
         hog = next((u for u in self.eng.units
                     if u.team == 0 and u.hp > 0 and u.spec.base == "hog_rider"
                     and u.y < self.hog_bridge_y), None)
-        if hog is None:
-            return 0.0                                   # no committed Hog: not a combo
+        lead = hog or next((u for u in self.eng.units
+                            if u.team == 0 and u.hp > 0 and u.spec.base == "mighty_miner"
+                            and u.y < self.hog_bridge_y), None)
+        if lead is None:
+            return 0.0                                   # nothing committed: not a combo
         base = self.specs[card_id].base if 0 <= card_id < len(self.specs) else ""
-        same_lane = abs(nx - hog.x) <= 0.18
+        same_lane = abs(nx - lead.x) <= 0.18
         if base == "earthquake":
             # THE CLASSIC. Their BUILDING is what stops the Hog, and the quake deletes it while
             # clipping the tower behind it. Requires an actual building in the blast -- an EQ at
             # open ground is not the combo however close the Hog is.
             r = 3.5 / 18.0
-            if any(u.team == 1 and u.hp > 0 and u.spec.kind == "building"
-                   and abs(u.x - nx) <= r and abs(u.y - ny) <= r for u in self.eng.units):
+            if hog is not None and any(
+                    u.team == 1 and u.hp > 0 and u.spec.kind == "building"
+                    and abs(u.x - nx) <= r and abs(u.y - ny) <= r for u in self.eng.units):
                 return self.w_wincon * self.hog_support_mult
             return 0.0
         if base == "firecracker":
             # BEHIND HIM, same lane: she out-ranges the defence and shreds it while he tanks.
-            if same_lane and ny > hog.y:
+            if same_lane and ny > lead.y:
                 return self.w_wincon * self.hog_support_mult
-            return 0.0
+            return 0.0                                   # _support_alone judges the rest
         if base == "mighty_miner":
-            # The mini-tank eats the building's attention; the Hog arrives behind it.
-            if same_lane:
+            # The mini-tank eats the building's attention; the Hog arrives behind it. Requires the
+            # HOG specifically -- a Mighty Miner beside another Mighty Miner is not a push.
+            if same_lane and hog is not None:
                 return self.w_wincon * self.hog_support_mult
             return 0.0
         return 0.0
@@ -901,6 +945,9 @@ class SimMatchEnv:
         _syn = self._hog_synergy(card_id, nx, ny)
         if _syn:
             return _syn                                  # a support card completing a Hog push
+        _alone = self._support_alone(card_id, nx, ny)
+        if _alone:
+            return _alone                                # a support troop out on its own
         if card_id in self.xbow_ids:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction

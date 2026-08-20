@@ -1128,6 +1128,8 @@ sim:
                              # waits + 318 leak fires/40 matches + rocket spam. The x-bow
                              # LEDGER now carries the incentive; freedom beats the straitjacket
   agent_dt: 0.6                  # LOWERED 1.0 -> 0.6 (2026-08-20). MEASURED live: pipeline 0.37s, paced WAIT 0.49s -- the loop spent more of each decision waiting than working, and that wait is the largest single slice of reaction time. 0.6 keeps the wait positive (~0.23s) so the period still paces the loop rather than being saturated by it. MUST match play.act_period, and train.gamma / train.n_step / the per-tick reward scale move with it.                  # seconds of game time per agent decision (matches the live act cadence)
+  support_cards: []              # SUPPORT troops that must never be played by themselves (user doctrine). Empty here: icebow holds none -- its ice_wizard is a defensive multiplier and the defensive terms already score it.
+  support_targets: []            # the committed pushes a support troop may escort
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir: single -> DOUBLE at (regulation-60s); double CONTINUES through
                                 # overtime's first minute; TRIPLE only in the LAST 60s of overtime

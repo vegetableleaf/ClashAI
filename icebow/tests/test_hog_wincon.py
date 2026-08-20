@@ -156,8 +156,11 @@ class HogSynergyTests(unittest.TestCase):
         self.assertGreater(self.val("firecracker", 0.75, 0.55), 0.0)
 
     def test_firecracker_in_the_other_lane_is_not_an_escort(self):
+        """And under the never-alone rule it is worse than neutral: a support troop in the
+        OPPOSITE lane to the only committed push is supporting nothing, which is exactly what
+        "by herself" means. It was 0.0 (free) before the rule landed."""
         self.unit(0, "hog_rider", 0.75, 0.40)
-        self.assertEqual(0.0, self.val("firecracker", 0.25, 0.55))
+        self.assertLess(self.val("firecracker", 0.25, 0.55), 0.0)
 
     def test_firecracker_in_front_of_the_hog_is_not_an_escort(self):
         """She is the ranged support; ahead of the tank she dies to the thing he was tanking."""
@@ -182,9 +185,38 @@ class HogSynergyTests(unittest.TestCase):
         self.assertAlmostEqual(worst, got, places=5,
                                msg="the bonuses compounded again")
 
-    def test_a_support_card_on_a_quiet_board_earns_nothing_here(self):
-        """No committed Hog: these are ordinary cards and the ordinary terms score them."""
-        self.assertEqual(0.0, self.val("firecracker", 0.75, 0.55))
+    # ---- a support troop is NEVER played alone ------------------------------------
+    def test_a_lone_firecracker_at_the_bridge_is_a_misplace(self):
+        """User, 2026-08-20: "firecracker is a support troop, so it shouldn't be played at the
+        bridge by herself... Never by herself." She used to return 0.0 there -- FREE, the same
+        shape as the king-rocket exploit: bad in the game, costless in the reward, and a play at
+        all dodges the leak penalty. She is 3 elixir with 130 HP alone at the bridge."""
+        if "firecracker" not in self.ids:
+            self.skipTest("deck lacks firecracker")
+        self.assertLess(self.val("firecracker", 0.75, 0.47), 0.0)
+
+    def test_she_may_escort_a_mighty_miner(self):
+        """The user's second legitimate use -- an escort behind the mini-tank is the same play one
+        card earlier than escorting the Hog."""
+        self.unit(0, "mighty_miner", 0.75, 0.45)
+        self.assertGreater(self.val("firecracker", 0.75, 0.55), 0.0)
+
+    def test_she_may_help_defend_a_real_push(self):
+        """The third legitimate use. Scored 0.0 HERE on purpose -- threat_response owns defensive
+        plays and this term stays out of its way."""
+        self.unit(1, "giant", 0.30, 0.55)
+        self.unit(1, "musketeer", 0.30, 0.58)
+        self.assertEqual(0.0, self.val("firecracker", 0.35, 0.62))
+
+    def test_a_lone_ignorable_unit_does_not_license_her(self):
+        """Triage decides what "help defend" means, so a lone Skeletons is not a reason to spend
+        3 elixir -- the same tier that stopped the deck logging single skeletons."""
+        self.unit(1, "skeletons", 0.30, 0.55)
+        self.assertLess(self.val("firecracker", 0.35, 0.62), 0.0)
+
+    def test_the_win_condition_itself_is_not_treated_as_support(self):
+        """The rule must not leak onto the Hog: he is the push, not an escort."""
+        self.assertGreater(self.val("hog_rider", 0.75, 0.47), 0.0)
 
 
 class LiveTwinTests(unittest.TestCase):

@@ -1148,6 +1148,8 @@ sim:
   # second win condition -- it is 3 elixir of building removal, and pricing it as a wincon would pay
   # the agent for casting it alone, which is the single most common way this deck is misplayed.
   wincon_cards: [hog_rider]
+  support_cards: [firecracker]   # SUPPORT troops: never played by themselves (user doctrine). Legitimate uses are escorting a committed push in support_targets, or helping defend a threat that triage says is worth a card; anything else is a misplace. A lone bridge firecracker used to be FREE.
+  support_targets: [hog_rider, mighty_miner]   # the committed pushes a support troop may escort
   wincon_bank_floor: 0      # OFF, and for this deck it must STAY off. IceBow banked to 6 for the
                              # bow; Hog EQ is a 2.75 CYCLE deck whose entire advantage is arriving
                              # again before they have the answer -- holding elixir for the Hog
