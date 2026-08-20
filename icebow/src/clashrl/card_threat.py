@@ -239,27 +239,54 @@ def identity_threat_vector(items, db: CardDB, prev_depth: float = 0.0,
         front will be when a ~horizon-second-deploy defender finishes deploying.
     All-zero when nothing is recognised (so the policy falls back to the red-blob threat block)."""
     v = np.zeros(IDENTITY_DIM, dtype=np.float32)
-    seen = False
+    known = [(base, float(depth), profile(db, base)) for base, depth in items]
+    known = [k for k in known if k[2].known]
+    seen = bool(known)
     max_depth = 0.0
-    for base, depth in items:
-        p = profile(db, base)
-        if not p.known:
-            continue
-        seen = True
-        if p.tank:
-            v[1] = 1.0
-        if p.swarm:
-            v[2] = 1.0
-        if p.flying:
-            v[3] = 1.0
-        if p.siege or p.building:
-            v[4] = 1.0
-        if p.win_condition:
-            v[5] = 1.0
-        if p.building_targeting:
-            v[6] = 1.0
-        max_depth = max(max_depth, float(depth))
     if seen:
+        # PRIORITISE, DO NOT BLEND (2026-08-20). This used to OR every threat's role bits together
+        # and take the MAXIMUM depth across all of them, which describes a unit that is not on the
+        # board: a Golem at the bridge beside a lone Skeletons walking deep came out as
+        # "tank + swarm, 80% of the way in" -- the depth belonging to the harmless card. The
+        # urgency the reward and the advisor read was the SMALL threat's, so answering the vector
+        # meant answering the Skeletons and ignoring the Golem (the reported behaviour).
+        #
+        # Danger is already priced by threat_value.ignore_cost_frac: the share of a princess tower
+        # a card takes if ignored completely (Skeletons 0.4%, Golem 73%). Rank on it, break ties on
+        # depth, and let the winner describe itself.
+        from . import threat_value as _tv
+
+        def _danger(base):
+            try:
+                return float(_tv.ignore_cost_frac(db, base))
+            except Exception:  # noqa: BLE001 -- an unpriced card is not automatically harmless
+                return 0.0
+
+        scored = [(_danger(b), d, p, b) for b, d, p in known]
+        primary = max(scored, key=lambda s: (s[0], s[1]))
+        # Role bits: the primary, plus any OTHER threat that is not ignorable on its own -- a real
+        # multi-card push still reads as a push, while a stray Skeletons cannot paint "swarm" onto
+        # a Golem. If everything present is ignorable the old union stands; that board belongs to
+        # triage (group_ignore_frac), which refuses it outright.
+        floor = getattr(_tv, "IGNORE_FRAC", 0.05)
+        speak = [s for s in scored if s[0] >= floor] or scored
+        if primary not in speak:
+            speak = [primary] + speak
+        for _dgr, _dep, p, _b in speak:
+            if p.tank:
+                v[1] = 1.0
+            if p.swarm:
+                v[2] = 1.0
+            if p.flying:
+                v[3] = 1.0
+            if p.siege or p.building:
+                v[4] = 1.0
+            if p.win_condition:
+                v[5] = 1.0
+            if p.building_targeting:
+                v[6] = 1.0
+        # DEPTH IS THE PRIMARY'S: the urgency of the thing that actually has to be answered.
+        max_depth = float(primary[1])
         v[0] = 1.0
         v[7] = min(1.0, max_depth)
         vel = (max_depth - prev_depth) / dt if dt and dt > 1e-3 else 0.0

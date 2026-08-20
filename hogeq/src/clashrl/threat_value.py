@@ -79,6 +79,10 @@ def _bodies(db, base: str, enemy_level: int = 11):
     hp = _num(c, "hitpoints", "hp")
     dmg = _num(c, "damage", "damage_per_hit")
     hs = _num(c, "hit_speed", "hit_speed_s")
+    if not hs and (dmg or _num(c, "death_damage")) and hp:
+        flags = c.get("flags") or []
+        if c.get("kamikaze") or "kamikaze" in flags:
+            return None                   # handled by _burst_cost: it hits ONCE and dies
     if not hp or not dmg or not hs:
         return None                       # unknown card: never assume it is safe to ignore
     rng = _num(c, "range", "range_tiles") or 0.0
@@ -106,12 +110,50 @@ def _dealt(bodies, tower_level: int) -> float:
     return dealt
 
 
+
+def _burst_cost(db, base: str, tower_level: int, enemy_level: int):
+    """Tower HP a KAMIKAZE card lands on the way in, or None if it is not one.
+
+    These cards have `hitpoints` and `damage` but no `hit_speed`, because they do not have one --
+    they hit once and die. `_bodies` requires all three, so it returned None for every one of them
+    and `ignore_cost_frac` read that as "the tower cannot resolve this" -> inf -> NEVER IGNORABLE.
+    A 1-elixir Ice Spirit therefore outranked a Golem in every priority comparison, and Wall
+    Breakers read as must-answer-at-any-cost (2026-08-20).
+
+    The honest price is the burst itself, once per body, plus anything it leaves behind: a Battle
+    Ram breaks into two Barbarians and a Skeleton Barrel drops seven Skeletons, and those bodies
+    ARE resolved by the tower, so they go through the ordinary superlinear model.
+    """
+    c = db.get(base) if db is not None else None
+    if not c:
+        return None
+    flags = c.get("flags") or []
+    if not (c.get("kamikaze") or "kamikaze" in flags):
+        return None
+    hit = _num(c, "damage", "damage_per_hit") or 0.0
+    if not hit:
+        hit = _num(c, "death_damage") or 0.0
+    count = max(1, int(c.get("count") or 1))
+    dealt = levels.scale(hit, enemy_level, 11) * count
+    spawn = c.get("spawns") or {}
+    n_death = int(spawn.get("on_death") or 0)
+    if n_death and spawn.get("unit"):
+        # what it LEAVES BEHIND still has to be chewed through by the tower
+        sub = _bodies(db, str(spawn["unit"]), enemy_level)
+        if sub:
+            per = sub[0]
+            dealt += _dealt([per] * n_death, tower_level)
+    return dealt
+
 def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> float:
     """Fraction of one Princess Tower lost if this card walks in unanswered.
 
     ``inf`` means "the tower cannot resolve this on its own" -- it outranges us, it is a siege
     building, or we have no stats for it (unknown is never ignorable).
     """
+    burst = _burst_cost(db, base, tower_level, enemy_level)
+    if burst is not None:
+        return burst / float(tower_hp(tower_level))
     bodies = _bodies(db, base, enemy_level)
     if bodies is None:
         return float("inf")
