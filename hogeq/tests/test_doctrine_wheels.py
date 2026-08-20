@@ -214,5 +214,69 @@ class ExecutedActionTests(unittest.TestCase):
                       "the replay transition still stores the CHOSEN action: %s" % line.strip())
 
 
+class WherePlacementTests(unittest.TestCase):
+    """_where_cell maps the counter table's WHERE vocabulary onto real board coordinates.
+
+    Every word has to land somewhere DEFENSIBLE, because the table's whole value is that it
+    carries the location: "skeletons answer wall breakers AT_TOWER, where the princess tower
+    helps kill them" (user, 2026-08-20) is only useful if at_tower actually means that.
+    """
+
+    def setUp(self):
+        self.s = _Stub(tracks=[THREAT])
+        self.mine = _anchors(Config.load())[0]
+        self.kx, self.ky = (self.mine[2] if len(self.mine) >= 3 else (0.495, 0.72))
+        self.tx, self.ty = float(THREAT[0]), float(THREAT[1])
+
+    def place(self, where):
+        return LiveMatchEnv._where_cell(self.s, where, self.tx, self.ty)
+
+    def test_on_top_is_the_threat_itself(self):
+        x, y = self.place("on_top")
+        self.assertAlmostEqual(self.tx, x, places=3)
+        self.assertAlmostEqual(self.ty, y, places=3)
+
+    def test_in_front_is_between_the_threat_and_our_tower(self):
+        """Our towers are the HIGH-y end, so 'in front of the threat' must be DEEPER than it."""
+        self.assertGreater(self.place("in_front")[1], self.ty)
+
+    def test_behind_threat_is_shallower(self):
+        self.assertLess(self.place("behind_threat")[1], self.ty)
+
+    def test_at_tower_lands_by_the_threatened_princess(self):
+        x, y = self.place("at_tower")
+        px, py = min(self.mine[:2], key=lambda a: abs(a[0] - self.tx))
+        self.assertLess(abs(x - px), 0.02, "at_tower drifted off the threatened princess")
+        self.assertLess(y, py, "at_tower must be IN FRONT of the tower, not behind it")
+
+    def test_center_kite_pulls_toward_the_middle(self):
+        """The centre is where BOTH princess towers reach the push."""
+        x, _y = self.place("center_kite")
+        self.assertLess(abs(x - self.kx), abs(self.tx - self.kx),
+                        "center_kite did not move the fight toward the middle")
+
+    def test_opposite_lane_crosses_the_middle(self):
+        x, _y = self.place("opposite_lane")
+        self.assertNotEqual(x > self.kx, self.tx > self.kx,
+                            "opposite_lane stayed in the threat's own lane")
+
+    def test_king_activation_is_near_our_king(self):
+        x, y = self.place("king_activation")
+        self.assertLess(abs(x - self.kx), 0.12)
+        self.assertGreater(y, self.ty, "king activation must be deep, toward our king")
+
+    def test_an_unknown_word_returns_nothing(self):
+        """So a bad table row falls through to the hand-written geometry instead of placing
+        the card somewhere arbitrary."""
+        self.assertIsNone(self.place("somewhere_nice"))
+
+    def test_every_vocabulary_word_is_mapped(self):
+        """WHERE_VALUES is the contract between the table and the wheels: an unmapped word would
+        pass the builder's vocabulary check and then silently do nothing."""
+        from clashrl.counters import WHERE_VALUES
+        for w in sorted(WHERE_VALUES):
+            self.assertIsNotNone(self.place(w), "%s is in the vocabulary but unmapped" % w)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
