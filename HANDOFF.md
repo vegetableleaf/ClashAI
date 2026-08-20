@@ -592,6 +592,70 @@ to the tornado's tile ahead of the intercept assist.
 
 Suites: icebow 555 OK, hogeq 42 baseline.
 
+## 3l. 2026-08-20 — FIVE-TRACK ARCHITECTURE AUDIT (read this before more training)
+
+Five parallel audits: reward architecture, sim↔live parity, deck divergence, hogeq's test
+baseline, RL pipeline. **The headline: live training has been learning from plays that never
+happened.** Fixed items are in `0ab0dc4`; everything else below is an open, prioritised backlog.
+
+### THE VERDICT ON THE ARCHITECTURE
+BC → sim-PPO → live-DQN is **not** the blocker; the design is standard and defensible. Two other
+things are:
+1. **The live data contract was fiction.** Measured over 12 sessions / 3,647 plays: six-elixir
+   cards show a BIMODAL drop distribution — 27% drop by 4+ (deployed), **33% drop by ≤ 0**, which
+   is impossible if 6 elixir left the bar. Mechanism found: illegal cells. 122 of 188 illegal-cell
+   plays sat on grid row 12 with `min_own_gy` 13 — the X-Bow snap ran AFTER `deploy_clamp`.
+   *Fixed (re-clamp + deploy confirmation), but legal cells still only deploy ~42% by that metric —
+   **a second failure mode remains unidentified. Next live session, watch the `[deploy]` lines.***
+2. **The live sample budget is 2-3 orders short and cannot be fixed by tuning.** 72,378 live
+   decisions EVER vs 479,820 params and 2,072 legal actions = **0.15 decisions/param**, ~3.6
+   deployed plays per (card, cell). `policy_rl.pt` carries **743** cumulative live gradient steps.
+   The replay buffer is a local `deque` **discarded every launch** (never exceeds ~1,500 of
+   100,000; each transition redrawn ~64×; SB3/Rainbow use replay ratio 0.25, we use 1.0).
+   The sim yields ~300× more decisions per wall-clock hour.
+   **RECOMMENDATION: demote `train-rl` from trainer to VERIFIED EVALUATOR + corpus collector.**
+   Run greedy at the sim's gate threshold, record win rate, append verified transitions to a
+   persistent corpus, feed that back through BC. Live win rate (0.87% over 805 matches) vs sim
+   benchmark (27.6%) is the project's central unexplained quantity and is currently unmeasurable.
+
+### OPEN, RANKED (not yet fixed)
+1. **Live builds identity/memory/interaction blocks in FRAME coords; the sim uses BOARD coords.**
+   30 of 52 threat dims wrong. `env.py:510-511, 516, 550-555` (+ `play.py:371-392`). The warp
+   already exists 80 lines below (`env.py:586-611`) — mechanical fix, no retrain. Consequences
+   measured: `identity_front 0.44` lands at board 0.497 (the fix is inert); depth saturates at
+   0.575 so `threat_max_depth 0.65` **can never fire live**; interaction ETAs ~42% short.
+2. **Threat dims 0-15 mean different things in sim vs live** (`sim/view.py:200` vs
+   `threats.py:186`): sim slots 6-15 are always 0.0; live drives all 16. Needs a layout decision +
+   fresh PPO run.
+3. **hogeq's Hog earns ZERO wincon reward** in sim AND live — `_wincon_exec*` branch on
+   xbow/tornado/rocket/miner ids, all empty for that deck. Its largest positive term is inert.
+4. **The sim's whole X-Bow/tornado ledger is absent live** (8 terms incl. `xbow_into_push` −4.0).
+   Live pays a flat +3.0 for ANY forward bow including into a committed push; sim pays −4.0.
+   "Sim teaches bow-and-tornado; live un-teaches both."
+5. **Junk beats waiting**: with a threat on the board, waiting = −1.0 (`threat_miss_idle`) while a
+   tornado at nothing ≈ 0.0. There is NO spend term live at all. Live `threat_miss_idle` also
+   lacks all four guards the sim added after measuring "always play" as 8× optimal.
+6. **Live `_bonus` cap wraps only 2 of ~10 terms** → once the penalty budget saturates, wrong-card
+   spam becomes exactly free.
+7. **Deck divergence, Tier 1**: icebow's Earthquake building bonus is dead data (10.5× under-
+   modelled, EQ in 33/1000 meta decks); hogeq's Log aim assist is permanently disabled via a
+   `None` fallback though it runs the Log; icebow never got Firecracker recoil; hogeq never got the
+   Tesla king-clearance; `hogeq/tools/llm_eval.py` grades hogeq's prompt against ICEBOW doctrine
+   (7/13 expected answers are cards hogeq cannot play).
+8. **hogeq's 42-failure baseline: 0 are real bugs** — 41 are icebow tests copied into a deck
+   without those cards, 1 is a Cloudflare block. But ~55-70 MORE tests **pass green while
+   exercising unreachable code**. Plan: 6 rewrite, 35 skip-with-reason, 1 environment.
+
+### THE ROOT CAUSE BEHIND #7/#8
+The code forked, **so the tests forked too**. `test_aim_assists.py` exists only in icebow;
+`test_earthquake.py` only in hogeq — **each deck deleted the exact test that would have caught its
+own bug.** Recommended Phase 0 (~1 day, zero behaviour change, would have caught all six Tier-1
+findings): add `.gitattributes` (the CRLF mismatch is why `git diff` showed 614 changed lines where
+4 were real, which is why this drift went unreviewed), plus `tools/deck_parity.py` +
+`tests/test_deck_parity.py` with an explicit allow-list so divergence becomes opt-in and reviewed.
+Then Phases 1-5: reconcile → decouple `Config.load`'s root → one shared package, two deck dirs →
+deck plugin → one test suite run twice.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
