@@ -183,6 +183,12 @@ class SimMatchEnv:
         # whenever the referee happened not to see the push it answered. This file's own contract at the
         # top says rewards are computed from GROUND TRUTH; these three terms were the exception.
         self._threat_id_true = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        # GRADING SEES EVERY CARD, not just the ones the detector can name. `detector_cards` is a
+        # PERCEPTION whitelist (the live model's 26 classes) and belongs on the observation; using
+        # it here made the referee blind to 153 of the DB's 179 cards, so no answer to a Minion
+        # Horde, a Skeleton Army or a Battle Ram could ever be credited -- the identity vector came
+        # back all zeros and `_threat_response` read the board as quiet.
+        self._grade_cards = frozenset(self.db.cards.keys()) or self.detector_cards
         self._prev_ident_depth_true = 0.0
         self._opp_mem = card_threat.OpponentMemory(self.db)   # per-match opponent short-term memory (Stage 3)
 
@@ -454,7 +460,7 @@ class SimMatchEnv:
         self._prev_ident_depth = float(self._threat_id[7])
         # ...and the un-noised twin the REWARD grades against (never enters the observation).
         self._threat_id_true = card_threat.identity_threat_vector(
-            view.identity_items(self.eng, 0, self.detector_cards, self.identity_front),
+            view.identity_items(self.eng, 0, self._grade_cards, self.identity_front),
             self.db, prev_depth=self._prev_ident_depth_true, dt=self.agent_dt,
             horizon=self.predict_horizon)
         self._prev_ident_depth_true = float(self._threat_id_true[7])

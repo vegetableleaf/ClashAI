@@ -327,7 +327,22 @@ def scripted_policy(scenario):
         elapsed = float(env.eng.t) - float(env._drill.get("t0", 0.0))
         if elapsed < float(state.get("last", 1e9)):
             state["i"] = 0
+            state.pop("t0", None)
         state["last"] = elapsed
+        # THE LINE WAITS FOR THE BOARD IT ANSWERS. Scenario timings are jittered (`randomise`
+        # includes "timing"), so a line written against a fixed clock fires before the enemy
+        # exists on some reps -- and then measures something else entirely: a Firecracker played
+        # into an empty board is correctly billed -1.0 as support-played-alone, and a Log rolled
+        # through empty ground is correctly billed as a whiff. Both showed up as the reward
+        # "failing to price" a drill it was in fact pricing right. Timings are therefore relative
+        # to the first scripted enemy appearing, not to the episode clock.
+        if getattr(env, "opponent", None) is not None and getattr(env.opponent, "total", 0):
+            if not any(u.team == 1 and u.hp > 0 for u in env.eng.units):
+                return (0, 0, 0)                   # nothing has arrived yet: hold the line
+        # NOTE the clock is NOT re-based. Holding for the enemy fixes the too-early case; shifting
+        # the whole line to "seconds after it arrives" breaks the opposite one -- tesla_late_not_early
+        # deliberately waits out an arrival at t=9, and a re-based 8.4s put it at t=17.4, long past
+        # the moment it was meant to answer. The line fires at max(its own time, the enemy existing).
         if state["i"] >= len(plan):
             return (0, 0, 0)
         base, x, y, t = plan[state["i"]]
