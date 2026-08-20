@@ -23,6 +23,7 @@ import time
 
 from . import threat_value
 from .llm_advisor import HOLD as _HOLD
+from .replay_mine import SPAWN_SPELLS
 from collections import deque
 from pathlib import Path
 
@@ -362,7 +363,9 @@ def train_rl(cfg, init: str | None = None) -> None:
         bases = []
         for d in dets:
             if (d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42
-                    and int(getattr(d, "trk_hits", 2) or 2) >= 2):
+                    and int(getattr(d, "trk_hits", 2) or 2) >= 2
+                    and not (_db.kind(str(d.base)) == "spell"
+                             and str(d.base) not in SPAWN_SPELLS)):
                 # trk_hits < 2 = a single-frame sighting: the tracker refuses to SERVE those
                 # (track_min_hits) and the gate must refuse to TRIAGE them for the same reason --
                 # a 1-frame phantom used to open this gate and buy a spell (default 2 keeps dets
@@ -423,6 +426,19 @@ def train_rl(cfg, init: str | None = None) -> None:
             for d in dets:
                 if d.team not in ("mine", "enemy"):
                     continue
+                if d.team == "enemy":
+                    # THE LAST PHANTOM-CAST PATH (2026-08-20). The gate got the trk_hits >= 2
+                    # corroboration filter; this string did not -- so a 1-frame phantom was still
+                    # DESCRIBED to the advisor, which answered with a spell: live_20260819_230129
+                    # shows tornado casts at board mass 0.009 (empty screen). Same filter here.
+                    if int(getattr(d, "trk_hits", 2) or 2) < 2:
+                        continue
+                    # ...and enemy SPELLS are effects, not units: nothing counters a fireball, so
+                    # telling the advisor about one buys a wasted answer (user rule; spawn-spells
+                    # like graveyard/goblin_barrel DO demand an answer and stay).
+                    if (_db.kind(str(d.base)) == "spell"
+                            and str(d.base) not in SPAWN_SPELLS):
+                        continue
                 bx, by = w.frame_to_board(d.cx, d.gy)
                 name = str(d.base).replace("_", " ")
                 if d.team == "mine":

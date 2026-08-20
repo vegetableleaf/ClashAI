@@ -347,6 +347,8 @@ class LiveMatchEnv:
             forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
             motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
             min_hits=int(cfg.get("observation", "team_track_min_hits", default=2)),
+            is_spell=lambda b, _db=db: _db.kind(b) == "spell",   # enemy spells are never targets
+            phantom_stale_s=float(cfg.get("observation", "team_phantom_stale_s", default=6.0)),
             deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
             deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
         # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's

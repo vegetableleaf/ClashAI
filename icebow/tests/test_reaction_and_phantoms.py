@@ -201,5 +201,124 @@ class LeakGuardTests(unittest.TestCase):
         self.assertEqual((0, 0, 0), got)
 
 
+class SpellServingTests(unittest.TestCase):
+    """Enemy spells are effects, not units (user rule, 2026-08-20): never served as targets --
+    except the spawn-spells, which put units on the board and demand an answer."""
+
+    def _tracker(self):
+        return TeamTracker(own_cards=["knight"],
+                           is_spell=lambda b: b in ("fireball", "graveyard", "the_log"))
+
+    def _sight_twice(self, tr, base, y=0.62):
+        tr.tag([_det(base, 0.50, y)], 0.0)
+        d = _det(base, 0.50, y)
+        tr.tag([d], 0.3)
+        return d
+
+    def test_an_enemy_spell_is_never_served(self):
+        tr = self._tracker()
+        d = self._sight_twice(tr, "fireball")             # deck veto -> enemy, corroborated
+        self.assertEqual("enemy", d.team)
+        self.assertEqual([], tr.enemy_tracks(0.4),
+                         "their fireball was served as something to aim at")
+
+    def test_a_spawn_spell_is_served(self):
+        """Graveyard/barrel land units where they land -- the user's own exception."""
+        tr = self._tracker()
+        self._sight_twice(tr, "graveyard")
+        self.assertTrue(tr.enemy_tracks(0.4), "an enemy graveyard was ignored")
+
+    def test_spawn_spells_cover_the_wincon_spells(self):
+        from clashrl.replay_mine import SPAWN_SPELLS
+        self.assertIn("graveyard", SPAWN_SPELLS)
+        self.assertIn("goblin_barrel", SPAWN_SPELLS)
+
+
+class StaticPhantomTests(unittest.TestCase):
+    """A misdetected static re-sights every pass, so min_hits never kills it. A REAL enemy deep
+    in our half marches or takes tower fire; one that does neither for phantom_stale_s is not a
+    unit (their side is exempt: enemy buildings legitimately stand still and unhurt)."""
+
+    def _run(self, y=0.62, move=0.0, bars=False, seconds=7.0, own=("x_bow",)):
+        tr = TeamTracker(own_cards=list(own))
+        t, i = 0.0, 0
+        while t <= seconds:
+            d = _det("knight", 0.50, y + move * i)
+            if bars:
+                d.bar_vote = "enemy"
+            tr.tag([d], t)
+            t += 0.5
+            i += 1
+        return tr, t
+
+    def test_a_never_moving_never_hit_deep_track_stops_being_served(self):
+        tr, now = self._run()
+        self.assertEqual([], tr.enemy_tracks(now),
+                         "a 7-second stationary unhit 'enemy' deep in our half was still served")
+
+    def test_it_is_served_before_the_staleness_clock_runs_out(self):
+        tr = TeamTracker(own_cards=["x_bow"])
+        tr.tag([_det("knight", 0.50, 0.62)], 0.0)
+        tr.tag([_det("knight", 0.50, 0.62)], 0.4)
+        self.assertTrue(tr.enemy_tracks(0.5),
+                        "a young corroborated enemy was suppressed by the staleness rule")
+
+    def test_a_marching_enemy_is_served_forever(self):
+        tr, now = self._run(y=0.50, move=0.008)           # walking toward our towers
+        self.assertTrue(tr.enemy_tracks(now), "a genuinely marching enemy was demoted")
+
+    def test_an_enemy_taking_tower_fire_is_served_forever(self):
+        """A tank whacking our princess stands still -- but the tower shoots it, its HP bar
+        appears, and that bar evidence is exactly what keeps it real."""
+        tr, now = self._run(bars=True)
+        self.assertTrue(tr.enemy_tracks(now), "a stationary but BLEEDING enemy was demoted")
+
+    def test_their_side_statics_are_exempt(self):
+        """An enemy pump/tesla stands still and unhurt on their side for ages -- still real."""
+        tr, now = self._run(y=0.30)
+        self.assertTrue(tr.enemy_tracks(now), "their-side static (a building) was demoted")
+
+
+class SituationSpellFilterTests(unittest.TestCase):
+    """The advisor's situation string must skip 1-frame phantoms and non-spawn spells (mirrors
+    _situation's enemy-det conditions -- the closure itself lives in train_rl)."""
+
+    class _Kind:
+        SPELLS = {"fireball", "the_log", "rocket", "graveyard", "goblin_barrel", "earthquake"}
+
+        def kind(self, b):
+            return "spell" if b in self.SPELLS else "troop"
+
+    def _described(self, d):
+        from clashrl.replay_mine import SPAWN_SPELLS
+        _db = self._Kind()
+        if int(getattr(d, "trk_hits", 2) or 2) < 2:
+            return False
+        if _db.kind(str(d.base)) == "spell" and str(d.base) not in SPAWN_SPELLS:
+            return False
+        return True
+
+    def test_a_one_frame_phantom_is_not_described(self):
+        d = _det("knight", 0.5, 0.6, team="enemy")
+        d.trk_hits = 1
+        self.assertFalse(self._described(d),
+                         "a 1-frame phantom still reaches the advisor (tornado at mass 0.009)")
+
+    def test_an_enemy_spell_is_not_described(self):
+        d = _det("fireball", 0.5, 0.6, team="enemy")
+        d.trk_hits = 3
+        self.assertFalse(self._described(d), "the advisor is still told about enemy fireballs")
+
+    def test_a_spawn_spell_is_described(self):
+        d = _det("graveyard", 0.7, 0.6, team="enemy")
+        d.trk_hits = 2
+        self.assertTrue(self._described(d), "an enemy graveyard was hidden from the advisor")
+
+    def test_a_corroborated_troop_is_described(self):
+        d = _det("pekka", 0.5, 0.6, team="enemy")
+        d.trk_hits = 2
+        self.assertTrue(self._described(d))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

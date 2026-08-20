@@ -455,6 +455,30 @@ only because the buffer stores the EXECUTED action (a683d46). Defence always out
 
 16 new tests per deck. Suites: icebow 466 OK, hogeq 42 baseline.
 
+## 3h. 2026-08-20 late — enemy spells are not threats + the last phantom-cast path
+
+- **Enemy spells ignored everywhere** (user rule: "nothing can be placed to counter a spell"):
+  `enemy_tracks` never serves a non-spawn spell (so our spell wheels can't aim at THEIR spell and
+  a rocket landing near their zap no longer dodges its whiff bill), the threat gate skips spell
+  dets, and `_situation` never describes them to the advisor. Exception `SPAWN_SPELLS =
+  {graveyard, goblin_barrel, royal_delivery}` — those land units and demand answers.
+- **The remaining hallucinated casts had a measured path**: live_20260819_230129 shows tornado
+  casts at board mass 0.009 (empty screen) with raw_cell == cell — the CHOICE was the
+  hallucination, and it came from `_situation`, which had NO trk_hits filter (the gate got one
+  earlier, the advisor string didn't). A 1-frame phantom was described, the advisor answered
+  "tornado". `_situation` now requires trk_hits ≥ 2.
+- **Static-phantom demotion** (`observation.team_phantom_stale_s: 6.0`): a misdetected decoration
+  re-sights every pass so min_hits never kills it, and the deck veto reads it enemy forever. A
+  REAL enemy deep in our half (y > 0.55) marches or takes tower fire (bar evidence within
+  seconds); a track that has done neither for 6 s stops being served. Their side is exempt
+  (buildings legitimately stand still and unhurt).
+- The Karpathy-skills repo (multica-ai/andrej-karpathy-skills) was inspected, NOT installed:
+  third-party name-squat packaging four generic coding maxims as AI instruction files; nothing
+  technical to integrate, and third-party instruction files don't get vendored into this project.
+
+12 new tests per deck (spell serving + spawn exception, static demotion with all three escape
+hatches — march/bars/their-side — situation filter). Suites: icebow 478 OK, hogeq 42 baseline.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

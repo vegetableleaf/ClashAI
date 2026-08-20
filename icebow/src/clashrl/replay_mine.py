@@ -213,6 +213,12 @@ LOOKALIKES = {
 }
 
 
+
+# Spells that PUT UNITS ON THE BOARD where they land: the only spells worth answering (the user's
+# rule, 2026-08-20: "nothing can be placed to counter a spell... unless the spell is a wincon like
+# graveyard or goblin barrel"). Every other spell detection is an effect animation, not a target.
+SPAWN_SPELLS = frozenset({"graveyard", "goblin_barrel", "royal_delivery"})
+
 class TeamTracker:
     """LIVE team verdicts by EVIDENCE FUSION over short unit tracks, replacing the old colour-only
     guess. Colour was the weakest possible signal: the HP bar (the one reliable team colour) only
@@ -242,7 +248,7 @@ class TeamTracker:
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
                  track_radius: float = 0.12, forget_s: float = 4.5,
                  enemy_window_s: Optional[float] = None, motion_min: float = 0.05,
-                 min_hits: int = 2,
+                 min_hits: int = 2, is_spell=None, phantom_stale_s: float = 6.0,
                  deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38,
                  own_cards: Optional[Sequence[str]] = None, is_building=None,
                  building_mine_y: float = 0.50, building_enemy_y: float = 0.46):
@@ -275,6 +281,17 @@ class TeamTracker:
         # re-sighted within 1-2 perception periods (~0.1-0.2 s at 10 Hz), so demanding a second
         # sighting kills single-frame phantoms at almost no reaction cost.
         self.min_hits = max(1, int(min_hits))
+        # Non-spawn SPELL detections are never served as enemies (see SPAWN_SPELLS above): you
+        # cannot counter a fireball, and serving one let our spell wheels aim at THEIR spell and
+        # let a rocket landing near their zap effect dodge its whiff bill.
+        self._is_spell = is_spell if callable(is_spell) else (lambda b: False)
+        # STATIC-PHANTOM demotion (2026-08-20): a misdetected decoration re-sights every pass, so
+        # min_hits never kills it, and the deck veto reads it "enemy" forever. A REAL enemy deep
+        # in our half either MARCHES (net displacement) or ATTACKS and takes tower fire (an HP
+        # bar appears within seconds -> bar evidence). One that has done neither for this long is
+        # not a unit, and nothing should aim at it. Their-side tracks are exempt: enemy buildings
+        # (pumps, teslas) legitimately stand still and unhurt over there.
+        self.phantom_stale_s = float(phantom_stale_s)
         self.deep_mine_y = float(deep_mine_y)      # first seen BELOW this -> deep in MY half
         self.deep_enemy_y = float(deep_enemy_y)    # first seen ABOVE this -> deep in ENEMY half
         # BUILDING side prior (see _verdict): buildings cannot cross the river, so which half one
@@ -442,6 +459,14 @@ class TeamTracker:
                 continue
             if int(tr.get("hits", 0)) < self.min_hits:
                 continue                  # a 1-frame phantom is not an enemy anyone should aim at
+            base = str(tr.get("base") or "")
+            if self._is_spell(base) and base not in SPAWN_SPELLS:
+                continue                  # an enemy SPELL is an animation, never a target
+            if (tr["y"] > 0.55 and self.phantom_stale_s > 0
+                    and now - tr.get("t0", now) >= self.phantom_stale_s
+                    and abs(tr["x"] - tr["x0"]) + abs(tr["y"] - tr["y0"]) < 0.02
+                    and tr["bm"] + tr["be"] == 0):
+                continue                  # deep in our half, never moved, never took a hit: static phantom
             dt = tr["t"] - tr.get("t0", tr["t"])
             vx = vy = 0.0
             if dt >= 0.5:

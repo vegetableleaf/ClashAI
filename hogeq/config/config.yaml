@@ -418,6 +418,7 @@ observation:
   team_track_radius: 0.12        # keep 'mine' as the unit moves: within this of last frame's allied unit
   team_forget_s: 4.5             # a tracked own unit missed by the detector is CARRIED this long (frozen in place)
   team_track_min_hits: 2         # (2026-08-20) sightings before a track is SERVED as an enemy (gate/wheels/whiff): a 1-frame phantom used to be aimed at for 4.5s; a real unit re-sights within ~0.1-0.2s at 10Hz
+  team_phantom_stale_s: 6.0      # (2026-08-20) an "enemy" deep in our half that has NEVER moved and NEVER taken a hit for this long is a misdetected static (decoration/skin) and stops being served; their-side tracks exempt (buildings legitimately stand still)
                                  # before the tag lapses -- bridges ~2-3 missed reads at the act cadence, so a Miner
                                  # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
                                  # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
