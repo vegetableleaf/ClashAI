@@ -80,8 +80,9 @@ class _ScriptedOpponent:
 class DrillEnv(SimMatchEnv):
     """A SimMatchEnv pinned to one Scenario."""
 
-    def __init__(self, cfg, scenario: sc.Scenario, seed: int = 0, level: int = 11):
+    def __init__(self, cfg, scenario, seed: int = 0, level: int = 11):
         super().__init__(cfg, seed=seed)
+        # `scenario` may be None for DrillMixEnv, which picks one per episode in reset().
         self.scenario = scenario
         self._level = int(level)
         self._drill: dict = {}
@@ -158,7 +159,11 @@ class DrillEnv(SimMatchEnv):
         if getattr(opp, "total", 0) and getattr(opp, "placed", 0) < opp.total:
             return None
         if not st.get("armed"):
-            if not any(u.team == 1 and u.hp > 0 for u in eng.units):
+            # ...but a scenario that scripts NO enemies is armed at once. Waiting for an enemy that
+            # is never coming made `hog_send_on_a_quiet_board` unresolvable: the Hog was sent, it
+            # crossed, and the drill sat there because the guard was still waiting for something to
+            # arm against. A QUIET BOARD IS THE BOARD in that drill, not a missing one.
+            if getattr(opp, "total", 0) and not any(u.team == 1 and u.hp > 0 for u in eng.units):
                 return None
             st["armed"] = True
         # FAILURE IS CHECKED FIRST, deliberately: several drills can satisfy both at once (the
@@ -227,3 +232,138 @@ def run_drill(cfg, scenario: sc.Scenario, policy=None, reps: int = 50, seed: int
     out["elapsed"] /= n
     out["spent"] /= n
     return out
+
+
+def doctrine_policy(obs, env):
+    """The reference policy for a drill: play what the DOCTRINE would play, where it says.
+
+    This is the yardstick every scenario is measured against. A drill is only evidence of a
+    learnable skill if doing nothing FAILS it and the doctrine PASSES it -- if both score the same,
+    the scenario is measuring the board rather than the play, which is exactly how two of the first
+    four drills came to pass 15/15 on an empty action.
+
+    affordable card in hand scored the Hog push-veto drill at 28% by cheerfully sending the Hog
+    """
+    from . import doctrine
+
+    hand = [c for c in env._hand_ids() if 0 <= c < len(env.specs)]
+    want = {str(b) for b in (getattr(env.scenario, "hand", ()) or ())}
+    if want:                                          # restricted hand -> the drill named the card
+        hand = [c for c in hand
+                if str(env.deck_keys[c]).replace("_evo", "") in want] or hand
+    hand = [c for c in hand if float(env.eng.elixir[0]) >= float(env.specs[c].elixir)]
+    if not hand:
+        return (0, 0, 0)
+    # WHETHER to play is always the doctrine's call; the scenario's `hand` only narrows WHICH.
+    # These were tangled at first -- a restricted hand skipped the prior entirely and simply
+    # played the first card that had a cell -- which made the triage drill unpassable by
+    # construction: the reference policy could not express "hold", the one answer being rehearsed.
+    try:
+        pri = doctrine.doctrine_cards(env) or {}
+    except Exception:                                 # noqa: BLE001 -- a silent prior is not a crash
+        pri = {}
+    if not pri:
+        # THE DOCTRINE NOMINATES NOTHING -> HOLD. Falling through to "play the first affordable
+        # card" is what an untrained policy does, not a reference one. Triage is a tier ABOVE
+        return (0, 0, 0)
+    ranked = [c for c in sorted(hand, key=lambda c: -float(pri.get(c, 0.0)))]
+    if float(pri.get(ranked[0], 0.0)) <= 0.0:
+        return (0, 0, 0)                              # nothing IN HAND is nominated -> hold
+    hand = ranked
+    for cid in hand:
+        try:
+            cells = doctrine.doctrine_cells(env, cid)
+        except Exception:                             # noqa: BLE001
+            cells = None
+        if not cells:
+            continue
+        best = (max(cells, key=lambda kv: kv[1])[0] if isinstance(cells, list)
+                else max(cells, key=cells.get))
+        return (1, int(cid), int(best))
+    return (0, 0, 0)
+
+
+def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
+    """
+
+    Prints a table because the pass RATE is the number that says whether a skill is mastered -- a
+    mean reward hides the difference between "solved it every time" and "solved half and farmed
+    shaping in the rest".
+    """
+    rows = []
+    todo = list(names) if names else sc.names()
+    print("%-30s %8s %8s %8s   %s" % ("drill", "nothing", "doctrine", "policy", "verdict"))
+    print("-" * 78)
+    for name in todo:
+        s = sc.get(name)
+        base = run_drill(cfg, s, policy=None, reps=reps, seed=seed, level=level)
+        doc = run_drill(cfg, s, policy=doctrine_policy, reps=reps, seed=seed, level=level)
+        pol = (run_drill(cfg, s, policy=policy, reps=reps, seed=seed, level=level)
+               if policy is not None else None)
+        b, d = base["pass_rate"], doc["pass_rate"]
+        # A drill where doing nothing scores what the doctrine scores is not measuring the play.
+        if abs(d - b) < 0.2:
+            verdict = "NOT DISCRIMINATING -- baseline matches the oracle"
+        elif d < b:
+            verdict = "inverted (correct when the right play is NO play)"
+        else:
+            verdict = "ok"
+        print("%-30s %7.0f%% %7.0f%% %8s   %s"
+              % (name, 100 * b, 100 * d,
+                 ("%.0f%%" % (100 * pol["pass_rate"])) if pol else "-", verdict))
+        rows.append({"name": name, "tier": s.tier, "baseline": b, "doctrine": d,
+                     "policy": (pol["pass_rate"] if pol else None), "verdict": verdict})
+    return rows
+
+
+class DrillMixEnv(DrillEnv):
+    """A training env that plays a DRILL some fraction of episodes and a full match the rest.
+
+    Mixing rather than staging is deliberate. A drill concentrates experience on states the policy
+    rarely reaches by itself; it is not a different game, and it must not become one. Interleaving
+    keeps the full-match terms (the phase machine, the crown terms, the double-elixir flip) in the
+    same gradient as the rehearsed skill, so the skill is learned IN CONTEXT instead of having to
+    survive a transfer afterwards.
+
+    The choice is made per EPISODE, inside reset(), so a single object serves both the in-process
+    pool and the remote workers -- both of which just build envs and call reset().
+    """
+
+    def __init__(self, cfg, seed: int = 0, level: int = 11, frac=None, tiers=None):
+        sc.load_all()                                  # registry is filled by import side-effect
+        pool = sc.all_scenarios()
+        super().__init__(cfg, pool[0] if pool else None, seed=seed, level=level)
+        self.drill_frac = (float(cfg.get("sim", "drill_frac", default=0.0))
+                           if frac is None else float(frac))
+        want = tiers if tiers is not None else (cfg.get("sim", "drill_tiers", default=None) or None)
+        self._pool = [s for s in pool if not want or s.tier in set(want)]
+        self._in_drill = False
+
+    def reset(self):
+        self._in_drill = bool(self._pool) and float(self.rng.random()) < self.drill_frac
+        if not self._in_drill:
+            return SimMatchEnv.reset(self)
+        self.scenario = self._pool[int(self.rng.integers(len(self._pool)))
+                                   if hasattr(self.rng, "integers")
+                                   else int(self.rng.random() * len(self._pool)) % len(self._pool)]
+        return DrillEnv.reset(self)
+
+    def step(self, action):
+        if not self._in_drill:
+            return SimMatchEnv.step(self, action)
+        return DrillEnv.step(self, action)
+
+
+def make_train_env(cfg, seed: int = 0, level: int = 11):
+    """The env a trainer should build: a plain match, or a drill mix when one is configured.
+
+    Returns a bare SimMatchEnv when `sim.drill_frac` is 0, so a run that has not opted in is
+    byte-for-byte the run it was before.
+    """
+    try:
+        frac = float(cfg.get("sim", "drill_frac", default=0.0))
+    except Exception:  # noqa: BLE001
+        frac = 0.0
+    if frac <= 0.0:
+        return SimMatchEnv(cfg, seed=seed)
+    return DrillMixEnv(cfg, seed=seed, level=level)

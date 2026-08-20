@@ -226,3 +226,25 @@ def load_deck_scenarios(deck: str) -> int:
     except ModuleNotFoundError:
         pass
     return len(_REGISTRY)
+
+
+def load_all() -> int:
+    """Import EVERY `drills_*.py` in this package, whichever deck we are.
+
+    The registry is populated by import side-effect, so a trainer that never imported the deck's
+    drill module would mix in an empty pool and silently train ordinary matches -- a failure that
+    looks exactly like "drills do not help". Discovering the modules removes the chance to forget.
+    """
+    import importlib
+    import pkgutil
+    for m in pkgutil.iter_modules(__path__ if "__path__" in dir() else []):
+        pass
+    import os
+    here = os.path.dirname(os.path.abspath(__file__))
+    for fn in sorted(os.listdir(here)):
+        if fn.startswith("drills_") and fn.endswith(".py"):
+            try:
+                importlib.import_module("clashrl.sim.%s" % fn[:-3])
+            except Exception:  # noqa: BLE001 -- a broken drill file must not kill training
+                continue
+    return len(_REGISTRY)

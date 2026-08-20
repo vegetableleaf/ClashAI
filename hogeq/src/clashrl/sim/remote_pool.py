@@ -37,7 +37,8 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
     from clashrl.sim.opponents import SelfPlayOpponent, make_opponent
 
     cfg = Config.load()
-    envs = [SimMatchEnv(cfg, seed=seed0 + i) for i in range(n_envs)]
+    from clashrl.sim.drill_env import make_train_env
+    envs = [make_train_env(cfg, seed=seed0 + i) for i in range(n_envs)]
     state = {"league": [], "weights": [], "sp_prob": 0.0, "difficulty": 1.0}
     rng = random.Random(seed0 * 7919 + 13)
 
