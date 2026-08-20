@@ -363,6 +363,11 @@ class SimMatchEnv:
         self.w_nado_clump = r("nado_clump", 0.25)          # per extra enemy clumped at the vortex centre
         self.w_nado_combo = r("nado_combo", 0.6)           # >=2 pulled enemies dead shortly after (splash/rocket payoff)
         self.w_nado_king = r("nado_king_activate", 0.5)    # pull activated your sleeping king (once/match)
+        # BAD PULL (2026-08-19, user request): a tornado whose pulled units SURVIVE the window,
+        # earned no kill combo and no king activation, and ended up CLOSER to our princess towers
+        # than where the pull found them -- the cast actively improved the enemy's position.
+        # Ground truth from the engine, the live twin approximates via the team tracker.
+        self.w_nado_bad = r("nado_bad", -0.3)
         self.w_nado_retarget = r("nado_retarget", 0.4)     # dragged a tower-locked wincon off your tower
         # SIEGE WINDOW (2026-08-15, user doctrine): the offensive phase now runs until OVERTIME
         # begins, not until double elixir does. Flipping at 2x (regulation - 60 s) surrendered
@@ -1605,6 +1610,7 @@ class SimMatchEnv:
         self._nado_watch.append({
             "t0": self.eng.t, "cx": nx, "cy": ny,
             "pulled": pulled, "targeters": targeters,
+            "pulled_at": [(u.x, u.y) for u in pulled],   # cast positions, for the bad-pull check
             "king_was_asleep": not self.eng.towers[0][2].active,
             "early_done": False,
         })
@@ -1631,15 +1637,33 @@ class SimMatchEnv:
                         break                                    # one retarget credit per cast
             if age >= 3.5:
                 dead = sum(1 for u in w["pulled"] if u.hp <= 0)
+                king_hit = (w["king_was_asleep"] and not self._nado_king_credited
+                            and self.eng.towers[0][2].active
+                            and any(tile_dist(u.x, u.y, self.eng.towers[0][2].x,
+                                              self.eng.towers[0][2].y) <= self.eng.king_range + 1.0
+                                    for u in w["pulled"]))
                 if dead >= 2:
                     credit += self.w_nado_combo
-                if (w["king_was_asleep"] and not self._nado_king_credited
-                        and self.eng.towers[0][2].active
-                        and any(tile_dist(u.x, u.y, self.eng.towers[0][2].x,
-                                          self.eng.towers[0][2].y) <= self.eng.king_range + 1.0
-                                for u in w["pulled"])):
+                if king_hit:
                     credit += self.w_nado_king
                     self._nado_king_credited = True
+                if dead < 2 and not king_hit:
+                    # THE BAD PULL: nothing died, no activation -- did the cast leave survivors
+                    # CLOSER to our princess towers than where it found them? Doctrine's good
+                    # pulls all cash out inside this window (clump kill, king wake, retarget was
+                    # credited at 2 s); a pull that only relocated the push toward us made the
+                    # enemy's walk shorter for 3 elixir. Mean over survivors, gated at 1 tile so
+                    # incidental drift is free.
+                    mine = [t for t in self.eng.towers[0][:2] if getattr(t, "hp", 0) > 0]
+                    gains = []
+                    for u, (x0, y0) in zip(w["pulled"], w.get("pulled_at", ())):
+                        if u.hp <= 0 or not mine:
+                            continue
+                        d_then = min(tile_dist(x0, y0, t.x, t.y) for t in mine)
+                        d_now = min(tile_dist(u.x, u.y, t.x, t.y) for t in mine)
+                        gains.append(d_then - d_now)
+                    if gains and (sum(gains) / len(gains)) >= 1.0:
+                        credit += self.rw_stats.add("nado_bad", self.w_nado_bad)
                 continue                                         # fully evaluated -> drop
             keep.append(w)
         self._nado_watch = keep

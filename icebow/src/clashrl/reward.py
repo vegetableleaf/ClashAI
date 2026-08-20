@@ -21,6 +21,8 @@ from __future__ import annotations
 
 from typing import List, Tuple
 
+import math
+
 import cv2
 import numpy as np
 
@@ -608,3 +610,64 @@ class TowerTracker:
         ek = len(self.enemy_alive) >= 3 and (not self.enemy_alive[2] or self._enemy_low[2] >= 1)
         mk = len(self.mine_alive) >= 3 and (not self.mine_alive[2] or self._mine_low[2] >= 1)
         return ek, mk
+
+
+# ---- spell-impact verification (2026-08-19) ---------------------------------------------
+#
+# The live reward scored spells AT CAST by aim geometry alone -- the spell-impact frame sampler
+# was retired -- so a whiffed rocket paid the same as a landed one and `spell_waste` never fired
+# live (user report). These are the pure evaluators; env.py owns the pending queue and the
+# tracker. Tracker tracks are used instead of raw detections because they BRIDGE detector misses
+# (a unit absent from ~31% of passes is carried for forget_s), so a whiff verdict cannot be
+# manufactured by one missed frame.
+
+def spell_whiffed(cx, cy, radius, enemy_tracks, tower_anchors=(), tower_alive=(),
+                  tower_aim_radius=0.10):
+    """True when a spell aimed at (cx, cy) has NO enemy inside `radius` (board fraction) and is
+    not aimed at a live enemy tower. `enemy_tracks` are (x, y, ...) tuples from
+    TeamTracker.enemy_tracks -- positions survive detector blink-outs, which is the point."""
+    for tr in enemy_tracks:
+        if math.hypot(tr[0] - cx, tr[1] - cy) <= radius:
+            return False
+    for i, (ax, ay) in enumerate(tower_anchors):
+        alive = bool(tower_alive[i]) if i < len(tower_alive) else True
+        if alive and math.hypot(cx - ax, cy - ay) <= tower_aim_radius:
+            return False
+    return True
+
+
+def nado_regressed(pulled_at_cast, enemy_tracks_now, my_princess_anchors,
+                   follow_radius=0.22, gain_tiles=1.0, tiles_x=18.0, tiles_y=32.0):
+    """True when a tornado made things WORSE: the units it pulled are still alive (their tracks
+    persist near where the pull left them) and ended up CLOSER to our princess towers than when
+    the cast began, by more than `gain_tiles` -- with nothing to show for it (the caller only
+    invokes this when no kill combo and no king activation were credited).
+
+    `pulled_at_cast` is [(x, y)] captured at cast for enemies inside the pull radius. LIVE tracks
+    carry no identity handle across seconds, so survivors are matched by proximity: the nearest
+    current enemy track within `follow_radius` of each pulled unit's cast position stands in for
+    it. Approximate BY DESIGN (documented) -- the sim twin uses engine ground truth instead."""
+    if not pulled_at_cast or not my_princess_anchors:
+        return False
+
+    def d_home(x, y):
+        # TRUE TILES, per axis: the board is 18 x 32, so a normalized-space hypot understates
+        # vertical distance by nearly half -- a 2.2-tile pull toward our tower measured as 0.9
+        # "tiles" and slipped under the gain gate (caught by this function's own verification).
+        return min(math.hypot((x - ax) * tiles_x, (y - ay) * tiles_y)
+                   for ax, ay in my_princess_anchors)
+
+    deltas = []
+    for (px, py) in pulled_at_cast:
+        best, bd = None, follow_radius
+        for tr in enemy_tracks_now:
+            g = math.hypot(tr[0] - px, tr[1] - py)
+            if g <= bd:
+                best, bd = tr, g
+        if best is None:
+            continue                                  # died or left -- not a regression
+        deltas.append(d_home(px, py) - d_home(best[0], best[1]))
+    if not deltas:
+        return False                                  # everything it pulled is gone: fine
+    # positive delta = the survivor is CLOSER to our towers than where the pull found it
+    return (sum(deltas) / len(deltas)) >= gain_tiles

@@ -26,10 +26,18 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
-from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess,
-                     pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell,
-                     xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
-                     tesla_pull_cell)
+from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess, pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell, xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell, tesla_pull_cell)
+from .reward import spell_whiffed, nado_regressed
+# deck-dependent aim cells: hogeq's reward.py has no tornado/log-corridor helpers
+try:
+    from .reward import nado_king_cell
+except ImportError:
+    nado_king_cell = None
+try:
+    from .reward import log_corridor_cell
+except ImportError:
+    log_corridor_cell = None
+
 from .reward import TILE as _TILE
 from .clock import ElixirClock
 from .states import GameState
@@ -214,6 +222,19 @@ class LiveMatchEnv:
         # Per-term reward accounting -- which shaping term is actually driving the policy.
         from .reward_stats import RewardTerms
         self.rw_stats = RewardTerms()
+        # LIVE SPELL-IMPACT VERIFICATION (2026-08-19). The spell-impact frame sampler was retired
+        # (see the note above spell_effect_reward) and with it every consequence for a whiffed
+        # spell: _wincon_exec_live pays AT CAST by aim geometry, so a rocket into empty grass
+        # scored like a hit and `spell_waste` never fired live (user report). Every spell cast now
+        # enqueues (impact time, aim, blast radius); at impact the TEAM TRACKER -- which bridges
+        # detector misses for forget_s, so one blinked frame cannot fake a whiff -- is asked
+        # whether any enemy is inside the blast. Tornados additionally snapshot what they pulled
+        # and are re-checked ~4 s later for the BAD-PULL case: survivors dragged closer to our
+        # towers with no kill and no king activation is worse than a whiff.
+        self._pending_spells: list = []
+        self.w_spell_waste_live = r("spell_waste", -0.3)
+        self.w_nado_bad = r("nado_bad", -0.3)
+        self.training_wheels = bool(cfg.get("train", "training_wheels", default=True))
         self.rw_stats_path = cfg.path(f"data/reward_stats/live_{time.strftime('%Y%m%d_%H%M%S')}.jsonl")
         # CADENCE accounting (log 2026-08-12 item 5): where a live decision's wall time actually goes.
         # The per-match means are printed and appended to the reward-stats JSONL, so the trained-vs-
@@ -687,6 +708,32 @@ class LiveMatchEnv:
             self._ploop.record_play(cx, cy, time.time(), base=base)
         else:
             self._team_tracker.record_play(cx, cy, time.time(), base=base)
+        if card_id in self.spell_ids:
+            # blast radius from the KB (radius_tiles), normalized on the x axis like every live
+            # radius constant in reward.py; +1.5 tiles of lead slop so a predictive cast on a
+            # moving target is not billed as a whiff.
+            kb = self.db.get(base) or {}
+            r_tiles = float(kb.get("radius_tiles") or 2.5) + 1.5
+            is_rocket = card_id in self.rocket_ids
+            eta = self._impact_time(cx, cy, is_rocket=is_rocket) if is_rocket else 0.8
+            rec = {"t_eval": time.time() + eta + 0.4, "cx": cx, "cy": cy,
+                   "r": r_tiles / 18.0, "base": base, "kind": "whiff"}
+            self._pending_spells.append(rec)
+            if card_id in self.tornado_ids:
+                pull_r = 5.5 / 18.0
+                tracks0 = self._enemy_tracks_now()
+                pulled = [(tx, ty) for (tx, ty, *_rest) in tracks0
+                          if math.hypot(tx - cx, ty - cy) <= pull_r]
+                if pulled:
+                    # a cast aimed into the king-activation region (where nado_king_cell aims) is
+                    # activation INTENT: pulling a unit deep toward our king is the play there,
+                    # so that geometry is exempt from the bad-pull bill. TowerTracker carries no
+                    # king-activation state live, so intent-by-aim is the honest proxy.
+                    mk = _anchors(self.cfg)[0][2] if len(_anchors(self.cfg)[0]) >= 3 else (0.48, 0.72)
+                    king_cast = math.hypot(cx - mk[0], cy - mk[1]) <= 0.16
+                    self._pending_spells.append({"t_eval": time.time() + 4.0, "cx": cx, "cy": cy,
+                                                 "kind": "nado", "pulled": pulled,
+                                                 "king_cast": king_cast})
 
     def _lane_wincon(self):
         """The enemy WIN CONDITION currently pushing a lane, as ``(x, y, sight_radius)`` for the
@@ -859,6 +906,72 @@ class LiveMatchEnv:
                     and self.card_elixir[cid] <= self.elixir):
                 return self.w_threat_miss
         return 0.0
+
+    def _enemy_tracks_now(self):
+        """Bridged enemy positions (the tracker carries a unit across detector blink-outs for
+        forget_s, so one missed frame cannot fake an empty board)."""
+        try:
+            if self._ploop is not None and self._ploop.running:
+                return self._ploop.enemy_tracks(time.time())
+            return self._team_tracker.enemy_tracks(time.time())
+        except Exception:  # noqa: BLE001 -- perception hiccup: no verdicts this tick
+            return []
+
+    def _eval_pending_spells(self) -> float:
+        """Score due spell casts against the tracker's bridged reality. Returns the reward sum."""
+        if not self._pending_spells:
+            return 0.0
+        now = time.time()
+        due = [p for p in self._pending_spells if p["t_eval"] <= now]
+        if not due:
+            return 0.0
+        self._pending_spells = [p for p in self._pending_spells if p["t_eval"] > now]
+        tracks = self._enemy_tracks_now()
+        _, enemy_a, _ = _anchors(self.cfg)
+        mine_a = _anchors(self.cfg)[0]
+        total = 0.0
+        for p in due:
+            if p["kind"] == "whiff":
+                if spell_whiffed(p["cx"], p["cy"], p["r"], tracks,
+                                 tower_anchors=enemy_a[:2],
+                                 tower_alive=list(self.tower.enemy_alive)[:2],
+                                 tower_aim_radius=self.spell_aim_radius):
+                    total += self.rw_stats.add("spell_waste", self.w_spell_waste_live)
+            elif p["kind"] == "nado":
+                if p.get("king_cast"):
+                    continue                        # king-activation intent: never billed
+                if nado_regressed(p["pulled"], tracks, [tuple(a) for a in mine_a[:2]]):
+                    total += self.rw_stats.add("nado_bad", self.w_nado_bad)
+        return total
+
+    def _wheels_spell_aim(self, card_id: int, cell: int) -> int:
+        """Doctrine aim for non-rocket spells when the model's own aim covers no enemy."""
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        tracks = self._enemy_tracks_now()
+        base = card_threat.base_key(self.vision.deck_keys[card_id]) if 0 <= card_id < self.n_cards else ""
+        kb = self.db.get(base) or {}
+        r = (float(kb.get("radius_tiles") or 2.5) + 1.5) / 18.0
+        if any(math.hypot(t[0] - cx, t[1] - cy) <= r for t in tracks):
+            return cell                                   # the model aimed at something real
+        if card_id in self.tornado_ids and nado_king_cell is not None:
+            got = nado_king_cell(tracks, _anchors(self.cfg)[0], self.actions)
+            if got is not None:
+                return got
+        if base == "the_log" and log_corridor_cell is not None:
+            got = log_corridor_cell(cx, cy, tracks, self.actions)
+            if got is not None:
+                return got
+        # nearest tracked enemy, if any -- better a mediocre hit than a certain whiff
+        best, bd = None, 10.0
+        for t in tracks:
+            g = math.hypot(t[0] - cx, t[1] - cy)
+            if g < bd:
+                best, bd = t, g
+        if best is not None:
+            ngx, ngy = self.actions.coords_to_grid(best[0], best[1])
+            return int(ngy) * self.gw + int(ngx)
+        return cell
 
     def _wincon_exec_live(self, card_id: int, cx: float, cy: float) -> float:
         """(3) WIN-CONDITION execution: X-Bow forward-in-range (offence) / back-centre (defence), Miner
@@ -1050,6 +1163,17 @@ class LiveMatchEnv:
             cell = self._aim_weaker_tower(card_id, cell)
             if cell == pre_aim and card_id in self.rocket_ids:    # no tower/pump snap -> LEAD tracked troops
                 cell = self._aim_rocket_intercept(cell)
+            if self.training_wheels and card_id in self.spell_ids and card_id not in self.rocket_ids:
+                # TRAINING WHEELS (train.training_wheels, 2026-08-19): every remaining SPELL gets
+                # the same doctrine aim correction the rocket already had. The card is NEVER
+                # changed and a play is NEVER converted to a wait -- the DQN's stored action keeps
+                # its card axis, and cell-level correction is the already-accepted contract
+                # (raw_cell keeps the model's attempt for telemetry). Log snaps to its corridor
+                # over tracked enemies; a tornado with an empty aim goes to the king-activation
+                # cell when one exists, else onto the densest enemy clump; any other spell aimed
+                # at nothing snaps to the nearest tracked enemy. A model that has not yet learned
+                # WHERE spells go stops donating elixir while it learns WHEN they go.
+                cell = self._wheels_spell_aim(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
             if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
@@ -1211,6 +1335,7 @@ class LiveMatchEnv:
             # perception sees them. The old spend-tax + ambient-mass shape paid the policy for
             # idling under a building push -- ELIXIR_TRADE_DESIGN.md, implemented 2026-08-14.
             trd = self.rw_stats.add("elixir_trade", self._trade_reward(cur_elixir))
+            reward += self._eval_pending_spells()     # due spell impacts: whiffs + bad tornados
             if not play and cur_frac >= self.full_elixir:      # leak: the TRUE bar, not the floored one
                 lk = self.rw_stats.add("leak", self.w_leak)                                                            # (5) leaking at capacity
             reward += tr + wc + tmi + trd + lk

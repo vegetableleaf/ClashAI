@@ -356,8 +356,40 @@ def train_rl(cfg, init: str | None = None) -> None:
         dets = getattr(env, "_last_dets_all", None)
         if not dets:
             return True              # blind -> never suppress; the detector failing is not "quiet"
-        bases = [str(d.base) for d in dets
-                 if d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42]
+        seen = []                    # (x, y, base) counted so far, for de-duplication below
+        bases = []
+        for d in dets:
+            if d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42:
+                bases.append(str(d.base))
+                seen.append((float(d.cx), float(getattr(d, "gy", 0.0)), str(d.base)))
+        # BRIDGED MEMORY (2026-08-19, user report: "the advisor suggests HOLD despite the enemy
+        # making several plays"). Two holes, both real: (a) the detector misses a unit in ~31% of
+        # its passes, so a threat that blinked out on exactly the decision tick made the board
+        # read "quiet" -- the gate FORGOT an enemy it had already seen; (b) a freshly played
+        # enemy card is team "unknown" for its first seconds (no motion, no bar, no side evidence
+        # yet), which is precisely the answer window, and unknowns were silently dropped. The
+        # team tracker already solves (a) -- it carries tracks across misses for forget_s -- so
+        # the gate now triages its remembered enemies too, de-duplicated against the live
+        # detections by proximity. (b) stays deliberately unfixed HERE: after the 553fe5c team
+        # fixes, residual unknowns on our side are overwhelmingly OUR OWN deck cards, and
+        # counting them would re-create the phantom-threat bug in the opposite direction. The
+        # tracker resolves a real enemy to "enemy" within a second or two, and the memory above
+        # keeps it counted from then on even when the detector blinks.
+        try:
+            tracker = (env._ploop if (getattr(env, "_ploop", None) is not None
+                                      and env._ploop.running) else env._team_tracker)
+            for tr in tracker.enemy_tracks(time.time(), with_base=True):
+                x, y, b = float(tr[0]), float(tr[1]), (str(tr[4]) if len(tr) > 4 and tr[4] else "")
+                if y < 0.42 or not b:
+                    continue
+                if any(abs(x - sx) + abs(y - sy) < 0.06 and b == sb for sx, sy, sb in seen):
+                    continue         # the same unit is already counted from the live pass
+                bases.append(b)
+                seen.append((x, y, b))
+        except TypeError:
+            pass                     # tracker variant without with_base: live dets only
+        except Exception:  # noqa: BLE001 -- perception hiccup must not break the gate
+            pass
         if not bases:
             return False             # nothing of theirs on our side of the river
         return threat_value.group_ignore_frac(

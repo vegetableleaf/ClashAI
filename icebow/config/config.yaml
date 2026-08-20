@@ -565,7 +565,8 @@ rewards:
   counterfactual: 0.6
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
-  spell_waste: -0.3        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
+  spell_waste: -0.3
+  nado_bad: -0.3           # (2026-08-19) a tornado whose pulled units SURVIVE, wake no king, and end CLOSER to our towers -- the cast improved the enemy's position. Sim = engine truth; live = tracker approximation.        # (soft, shapable) a DAMAGE spell (rocket/log/RD) cast with NO unit in its blast AND not aimed at a tower = a whiff into emptiness. Kept small so it nudges, not forces.
   # -- TORNADO execution credit (positive-only, soft, inside correctness_cap): the pull's value is
   # COMPOSITE + DELAYED (clump -> splash/rocket payoff, king activation, dragging a wincon off a
   # tower), which outcome terms barely see. Measured from engine ground truth ~2-3.5s after the
@@ -636,6 +637,7 @@ train:
   # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
   # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
   # disable it for the session. OFF by default -- turn it on deliberately.
+  training_wheels: true               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
   llm_advisor: true
   llm_advisor_model: qwen2.5:latest   # 0.590s p50 WITH the doctrine prompt. gemma3:4b scores better
                                       # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it
