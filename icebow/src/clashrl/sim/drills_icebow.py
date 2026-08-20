@@ -413,11 +413,15 @@ register(Scenario(
     success=lambda e, s: (not any(u.team == 1 and u.hp > 0 and u.spec.base == "elixir_collector"
                                   for u in e.units)
                           and (first_play_t(s, "rocket") or 99.0) <= 3.0),
-    failure=lambda e, s: (((float(e.t) - float(s.get("t0", 0.0))) >= 5.0
+    # THE CAST BAR AND THE KILL BAR ARE DIFFERENT CLOCKS. Owner's correction: a rocket takes real
+    # time to reach a pump at the far end of the board, so demanding the kill by 5s was failing the
+    # travel, not the decision. The DECISION is still gated at 3s -- that is the skill being drilled
+    # -- while the pump gets the full 11s to actually die.
+    failure=lambda e, s: (((float(e.t) - float(s.get("t0", 0.0))) >= 11.0
                            and any(u.team == 1 and u.hp > 0 and u.spec.base == "elixir_collector"
                                    for u in e.units))
                           or ((first_play_t(s, "rocket") or 0.0) > 3.5)),
-    time_limit=10.0,
+    time_limit=14.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("wincon_exec",),
     prereq=("rocket_the_two_for_one",),

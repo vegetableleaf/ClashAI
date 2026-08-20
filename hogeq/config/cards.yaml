@@ -249,7 +249,7 @@ cards:
   # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
   mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
   # EVO FURNACE: "the spawn speed is decreased to 2.4 sec" (sides-vs-front is cosmetic here).
-  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}
+  furnace_evo: {lifetime_s: 28.0, spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}   # same building lifetime as the base Furnace; its EVO edge is the 2.4s Hot Spawn period
   # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
   # passively summon a Goblin." Imported hp 3223 flows via the overlay.
   goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
@@ -1117,7 +1117,11 @@ cards:
     # "Every 3 seconds... summon a Goblin"; "when defeated, it will also spawn two Goblins". The
     # intro prose still says the first wave is 0.8s, but the 6/10/2025 balance change raised it to
     # 1s -- the History section is newer than the prose, so the delay is overridden here.
-    spawns: {unit: goblins, count: 1, on_death: 2, delay: 1.0}
+    # Spawn Period 3.0s -- the wiki calls it the FASTEST of all buildings -- on a 10s lifetime,
+    # the SHORTEST of all buildings. Both were prose above and neither was in the data, so the
+    # threat model could not price what the drill actually puts on the board.
+    spawns: {unit: goblins, count: 1, on_death: 2, delay: 1.0, interval: 3.0}
+    lifetime_s: 10.0
     verified: true
 
   graveyard:
@@ -1684,11 +1688,11 @@ cards:
   # the attribute table is provably stale (see tombstone).
   # `spawn_range_tiles` present => the spawner only ticks while an enemy is inside it (Goblin Hut
   # stopped spawning automatically in the May 2025 update); absent => it spawns unconditionally.
-  goblin_hut: {kind: building, flags: [spawner], spawns: {unit: spear_goblins, count: 1, on_death: 1}, verified: true}   # "summon a Spear Goblin" every 2.2s when an enemy is in range; death spawn cut to 1 (from 3) on 6/6/2023
+  goblin_hut: {kind: building, flags: [spawner], lifetime_s: 30.0, spawns: {unit: spear_goblins, count: 1, on_death: 1, interval: 2.2}, verified: true}   # "summon a Spear Goblin"; Spawn Period 2.2s (wiki, 6/4/2026), lifetime 30s. Death spawn cut to 1 (from 3) on 6/6/2023
   # Tombstone: the attribute table says 4s but the prose says 3.5s AND the Common modifier says
   # "spawn speed is doubled, for a total of 1.75 seconds" -- 3.5/2 = 1.75, so the TABLE is stale.
   tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 2, on_death: 4, interval: 3.5}, verified: true}   # "a group of two Skeletons, with a 0.5 seconds delay from each other"
-  barbarian_hut: {kind: building, flags: [spawner], spawns: {unit: barbarians, count: 3, on_death: 1}, verified: true}   # "a group of three Barbarians" every 15s; "when defeated, it will also spawn a Barbarian"
+  barbarian_hut: {kind: building, flags: [spawner], lifetime_s: 30.0, spawns: {unit: barbarians, count: 3, on_death: 1, interval: 13.5}, verified: true}   # "a group of three Barbarians"; spawn speed 13.5s (wiki: "the lowest of all buildings") -- the old 15s in this comment was stale. "when defeated, it will also spawn a Barbarian"
   # GOBLIN CAGE. "When defeated, it will spawn a Goblin Brawler." The importer folded the BRAWLER's
   # stats into the cage -- hitpoints 1080 / damage 337 are his, and a cage does not attack at all.
   # The wiki keeps them apart as `cage_hp_11 = 780` and `hp_11 = 1080`, so the cage is the 780-hp
@@ -1722,7 +1726,7 @@ cards:
   # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
   # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
   # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
-  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
   # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
   # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
