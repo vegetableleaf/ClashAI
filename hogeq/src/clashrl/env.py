@@ -163,6 +163,18 @@ class LiveMatchEnv:
         self.elixir = 0                 # your current elixir (0-10), updated each step
         self.elixir_vec = np.zeros(1, np.float32)   # normalized elixir [0,1] -> policy input
         self.n_cards = max(1, len(self.vision.deck_keys))
+        # CHAMPION ABILITY: a pseudo-card in the action space that is a BUTTON on screen, not a tray
+        # slot. Ported from play.py, which has always done this correctly -- train-rl had no ability
+        # handling at all, so `_execute`'s slot lookup discarded every selection and the model could
+        # never play it once. Same three rules as play.py: one tap, only while he is on the arena,
+        # one activation per body.
+        self.ability_id = (self.vision.deck_keys.index(self.vision.ability_key)
+                           if getattr(self.vision, "ability_key", None) in self.vision.deck_keys
+                           else -1)
+        self.ability_xy = tuple(cfg.get("hand", "ability_button", default=[0.963, 0.758]))
+        self._champ_base = (card_threat.base_key(self.vision.ability_key)
+                            if getattr(self.vision, "ability_key", None) else None)
+        self._ability_spent = False
         self.hand_ids = [-1] * self.n_slots            # deck index in each tray slot
         self.hand_vec = np.zeros(self.n_cards, np.float32)   # multi-hot of cards in hand
         self.next_id = -1                              # deck index of the next (preview) card
@@ -504,6 +516,14 @@ class LiveMatchEnv:
         (Next=1.0 grading down for the hidden cards) so the policy can plan which cards to cycle to."""
         self.hand_ids = self.vision.recognize_hand(frame)
         self.hand_vec = self.vision.hand_multihot(self.hand_ids)
+        if self.ability_id >= 0:
+            # The button is live only while the champion is, and only once per body. Read from the
+            # detector, not from what we played: he can die at any moment, and offering an action
+            # the game refuses is how a policy learns that the action does nothing.
+            seen = self._champion_on_board()
+            if not seen:
+                self._ability_spent = False        # next body brings its own activation
+            self.hand_vec[self.ability_id] = 1.0 if (seen and not self._ability_spent) else 0.0
         self.next_id = self.vision.recognize_next(frame)
         self.next_vec = self._cycle_tracker.observe(self.hand_ids, self.next_id)
 
@@ -806,9 +826,36 @@ class LiveMatchEnv:
                 return self._last_obs
             self._nav.handle(frame, state)   # robust menu nav: located buttons + MATCH_END escalation + popup watchdog + logging
 
+
+    def _champion_on_board(self) -> bool:
+        """Is our champion on the arena right now? The ability button is dead unless he is.
+
+        Read from the DETECTOR (he is a tracked class, so this is a lookup) rather than from our
+        own play history, which goes stale the moment he dies.
+        """
+        if self._champ_base is None:
+            return False
+        try:
+            dets = getattr(self, "_last_dets_all", None) or ()
+            return any(getattr(d, "base", "") == self._champ_base
+                       and getattr(d, "team", "") == "mine" for d in dets)
+        except Exception:  # noqa: BLE001 -- a perception hiccup must not make the button "live"
+            return False
+
     def _execute(self, action: Action) -> None:
         play, card_id, cell = action
         if not play:
+            return
+        if card_id == self.ability_id and self.ability_id >= 0:
+            # ONE TAP on the calibrated button. No slot to select and no placement -- the ability
+            # acts on the champion wherever he stands, so the cell the policy produced is ignored,
+            # exactly as it is in the sim. Deliberately does NOT touch the cycle tracker or anchor a
+            # 'mine' detection: no card left the hand and no unit was deployed, and recording either
+            # would desync the hand model and mis-tag whatever sits under the button.
+            if not self._champion_on_board():
+                return                        # he died between the decision and the tap
+            self.controller.tap(*self.ability_xy)
+            self._ability_spent = True        # this body's single activation is gone
             return
         slot = next((s for s, c in enumerate(self.hand_ids) if c == card_id), -1)
         if slot < 0:                          # chosen card not in hand (unrecognized) -> skip
