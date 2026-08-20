@@ -510,11 +510,25 @@ Data lives in `config/counters.yaml` (`train.counter_table`); first row for a ke
 hand-written override survives a regenerate. **No table shipped yet** → empty table → every path
 keeps its previous behaviour.
 
-⚠ OPEN: the researched rows. The first fleet (21 agents) died on a Fable-5 usage limit with 0
-results; the second (13 agents, sonnet for the web-extraction batches) was still running at
-write time. Deliverable = `config/counters.yaml` per deck + the `where`→wheels placement mapping.
+**DONE (`0aad2c0`): 108 researched rows per deck** in `config/counters.yaml`. 17 agents, 178
+entries from deckshop / the CR wiki API / reddit guides, covering all 131 cards + 38 meta combos.
+The `where`→wheels mapping shipped in `1ea0cc6`.
+- Highlights: balloon→tesla PRE-PLACED centre (never knight); wall_breakers→the_log then
+  **skeletons at_tower** (the user's own note, found independently); lavaloon→ONE mitigation row;
+  graveyard→ice_wizard pre-placed ON the tower; three_musketeers→**tornado then rocket** (the
+  ordering the eval wanted); hog→tesla 4-3 centre. 16 icebow rows are `mitigation: true`.
+- ⚠ icebow's adversarial agent DIED on a session limit → I ran that audit locally
+  (`scratchpad/local_audit.py` pattern): 1 hard fail (rocket on a lone elixir_golem), 0 mechanics
+  contradictions. hogeq's agent passed with 7 corrections.
+- Two bugs the audit exposed, both fixed: `lookup()` broke ties by DICT ORDER (a golem+firecracker
+  push could answer the firecracker) → rows now carry `danger` and the most dangerous match wins;
+  and the sim's table nominations at 5.0/4.0 OVERRODE the hand-written rocket gates (two existing
+  doctrine tests caught it) → now 2.5/2.0. **Hierarchy: measured doctrine > researched table >
+  uniform floor.** Do not raise those weights.
+- Regenerate: `python tools/counters_build.py <research.json> --deck <deck>`. First row for a
+  threat key wins, so hand-written overrides go ABOVE the generated rows.
 
-Suites: icebow 509 OK, hogeq 42 baseline.
+Suites: icebow 527 OK, hogeq 42 baseline.
 
 ## 4. The central problem, and where it stands
 
