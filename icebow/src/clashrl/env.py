@@ -337,6 +337,15 @@ class LiveMatchEnv:
         self.w_elixir_trade = rw("elixir_trade", 1.0)         # (2) (enemy value eliminated - elixir spent), normalised
         self.w_wincon = rw("wincon_exec", 0.8)                # (3) win-condition executed right for the phase
         self.w_wincon_mis = rw("wincon_misplace", -0.6)       # win-condition thrown away
+        # A RUSH win condition (Hog Rider): bridge-only, never into a committed push, lane-aware.
+        # Separate from the X-Bow's term because four elixir that WALKS is judged on timing and
+        # lane, while a siege building is judged on standing geometry. Empty for decks without
+        # one, in which case nothing here changes.
+        _rush = set(cfg.get("sim", "wincon_cards", default=[]) or [])
+        self.rush_wincon_ids = {i for i, k in enumerate(self.vision.deck_keys)
+                                if card_threat.base_key(k) in _rush} - self.xbow_ids
+        self.hog_bridge_y = float(cfg.get("env", "hog_bridge_y", default=0.52))
+        self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))
         # (4) cycle_plan / cycle_waste: DELETED live too (2026-08-12). The sim deleted its copy after
         # 110 fires / 0 positives (see sim/env._cycle_plan's stub); live then measured the identical
         # action-tax shape -- 2 positives vs 24 negatives over 5 matches -- while being one of only
@@ -1375,6 +1384,33 @@ class LiveMatchEnv:
         ngx, ngy = self.actions.coords_to_grid(nx, ny)
         return int(ngy) * self.gw + int(ngx)
 
+    def _hog_wincon_live(self, card_id: int, cx: float, cy: float) -> float:
+        """Live twin of the sim's rush win-condition term -- see sim/env._hog_wincon.
+
+        Same three rules in the same order (never into a committed push, bridge only, lane bonus),
+        read from perception rather than engine truth: the tracker's bridged, corroborated enemy
+        positions, and the same triage gate the threat gate uses.
+        """
+        tracks = self._enemy_tracks_now(with_base=True)
+        bases = [str(t[4]) for t in tracks if len(t) > 4 and t[4] and float(t[1]) > 0.42]
+        if bases:
+            try:
+                if threat_value.group_ignore_frac(
+                        self.db, bases, tower_level=15) >= threat_value.IGNORE_FRAC:
+                    return self.w_wincon_mis      # a real push is on our half: not the moment
+            except Exception:  # noqa: BLE001 -- a KB miss must not turn into free credit
+                return 0.0
+        if cy > self.hog_bridge_y:
+            return self.w_wincon_mis              # sent from our own half, not the bridge
+        val = self.w_wincon
+        mass_l = sum(float(self.db.elixir(str(t[4])) or 0.0) for t in tracks
+                     if len(t) > 4 and t[4] and float(t[0]) < 0.5)
+        mass_r = sum(float(self.db.elixir(str(t[4])) or 0.0) for t in tracks
+                     if len(t) > 4 and t[4] and float(t[0]) >= 0.5)
+        if (mass_l or mass_r) and ((cx >= 0.5) if mass_l > mass_r else (cx < 0.5)):
+            val *= self.hog_punish_mult           # opposite lane to their commitment
+        return val
+
     def _wincon_exec_live(self, card_id: int, cx: float, cy: float) -> float:
         """(3) WIN-CONDITION execution: X-Bow forward-in-range (offence) / back-centre (defence), Miner
         chipping the princess (not the king), the defensive rocket-cycle chip. + right, - thrown away."""
@@ -1405,6 +1441,8 @@ class LiveMatchEnv:
                 val = 0.0
             self._xbow_play_t = time.time()      # every X-Bow play re-anchors the window
             return val
+        if card_id in self.rush_wincon_ids:
+            return self._hog_wincon_live(card_id, cx, cy)
         if card_id in self.tornado_ids:
             # THE DOCTRINAL HALF OF THE COMBO: the rocket went first and this tornado drags a real
             # clump onto its blast point. Credited on the TORNADO -- the card whose timing the

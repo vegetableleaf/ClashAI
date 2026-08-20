@@ -211,7 +211,10 @@ class SimMatchEnv:
         self.w_threat_miss = r("threat_miss", -1.0)          # wrong counter / wrong lane / ignored an ANSWERABLE threat
         self.w_elixir_trade = r("elixir_trade", 1.0)         # (enemy value eliminated - elixir spent), normalised
         self.w_wincon = r("wincon_exec", 0.8)                # deck win-condition executed correctly for the phase
-        self.w_wincon_mis = r("wincon_misplace", -0.6)       # win-condition card thrown away
+        self.w_wincon_mis = r("wincon_misplace", -0.6)
+        # A RUSH win condition (Hog): bridge-only, never into a push, lane-aware. See _hog_wincon.
+        self.hog_bridge_y = float(cfg.get("env", "hog_bridge_y", default=0.52))
+        self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))       # win-condition card thrown away
         # cycle_plan / cycle_waste: DELETED -- see the _cycle_plan stub below for the full record.
         # The weights are no longer read (2026-08-12: the live env's copy was deleted too).
         # PER-TICK TERMS SCALE WITH agent_dt -- see the live env's note. A shorter decision period
@@ -869,6 +872,44 @@ class SimMatchEnv:
                 return same if u.spec.flying else not same
         return False
 
+    def _hog_wincon(self, card_id: int, nx: float, ny: float) -> float:
+        """A RUSH win condition (Hog Rider): judged on TIMING and LANE, not standing geometry.
+
+        Deliberately not the X-Bow's term. The bow is a siege building scored on where it sits and
+        what it can reach; the Hog is four elixir that walks, so what matters is whether it was
+        sent at the bridge, into the right lane, and at a moment the board could afford.
+
+        Ordered so the vetoes win: a send into a committed push is a misplace however good the
+        lane was, because that is the play that turns a deficit into a loss.
+        """
+        # (a) NEVER INTO A COMMITTED PUSH -- the user's rule and the doctrine's. Triage decides
+        # what counts, so a couple of Skeletons over the river is not a "push" (the same
+        # group_ignore_frac gate every other tier in this project uses).
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if committed and threat_value.group_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+            return self.w_wincon_mis
+        # (b) BRIDGE ONLY. From our own half he walks the length of the board and is answered
+        # twice on the way; the deck's prompt says it and nothing scored it.
+        if ny > self.hog_bridge_y:
+            return self.w_wincon_mis
+        val = self.w_wincon
+        # (c) LANE. Opposite their committed mass is the punish; behind a defender who just
+        # survived is the counter-push. Either is the doctrinal send, so either pays the bonus.
+        enemy_mass_l = sum(u.spec.elixir for u in self.eng.units
+                           if u.team == 1 and u.hp > 0 and u.x < 0.5)
+        enemy_mass_r = sum(u.spec.elixir for u in self.eng.units
+                           if u.team == 1 and u.hp > 0 and u.x >= 0.5)
+        heavier_left = enemy_mass_l > enemy_mass_r
+        if (enemy_mass_l or enemy_mass_r) and ((nx >= 0.5) if heavier_left else (nx < 0.5)):
+            val *= self.hog_punish_mult                      # opposite lane to their commitment
+        elif any(u.team == 0 and u.hp > 0 and u.spec.kind == "troop"
+                 and abs(u.x - nx) < 0.18 and u.y > 0.42 for u in self.eng.units):
+            val *= self.hog_punish_mult                      # same lane, behind a live defender
+        return val
+
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
         forward-in-range (offensive) / back-centre (defensive), Miner chipping the princess (not the king),
@@ -876,6 +917,9 @@ class SimMatchEnv:
         thrown away. Non-win-condition cards return 0 (they're scored by threat_response / the trade term)."""
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
         d = min((tile_dist(nx, ny, t.x, t.y) for t in princesses), default=99.0)   # tiles
+        if card_id in getattr(self, "wincon_ids", ()) and card_id not in self.xbow_ids \
+                and card_id not in self.rocket_ids and card_id not in self.miner_ids:
+            return self._hog_wincon(card_id, nx, ny)
         if card_id in self.xbow_ids:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction

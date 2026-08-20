@@ -512,6 +512,7 @@ rewards:
   # and crown the X-Bow goes on to earn decide it, instead of the gap deciding it before the game does.
   wincon_exec: 3.0         # X-Bow forward-in-range (offence) / back-centre (defence), Miner chips the princess, rocket-cycle chip
   wincon_misplace: -1.0    # the win condition thrown away (X-Bow out of range / king-hugged, Miner on the enemy KING) -- scaled with wincon_exec so a misplace still stings
+  hog_punish_mult: 1.5     # (2026-08-20) a RUSH win condition sent to the lane OPPOSITE their committed mass (the punish), or same-lane behind a defender that just survived (the counter-push), earns this multiple of wincon_exec.
   xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
                            #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this
@@ -837,6 +838,7 @@ env:
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
+  hog_bridge_y: 0.52                   # BRIDGE ONLY: a rush win condition placed DEEPER than this (further into our own half) is a misplace -- it walks the length of the board and is answered twice on the way.
   spell_verify_fresh_s: 0.8            # (2026-08-20) a spell's HIT/WHIFF verdict only counts enemies SEEN within this window. The tracker bridges a track for team_forget_s (4.5s) so a real unit blinking out is not forgotten -- but a FALSE POSITIVE is remembered just as long, so every cast at a ghost read as a hit and spell_waste never fired.
   deploy_verify_s: 1.4                 # wait this long after a tap before judging whether the card left the elixir bar. The paced wait is event-interruptible (react_min_gap 0.15s), so the same-step read often lands before the game has drawn the deduction -- which reported 'did NOT leave the bar' for cards that were plainly played.
   fast_reaction_tick: true             # when PERCEPTION cuts the wait short (something just happened), skip the slow telemetry reads -- tower-HP OCR, colour mass, the 2x/3x badge -- and let the previous values stand. They are slow-moving quantities, and every millisecond spent on them sits between seeing a push and answering it. Paced ticks refresh everything.
