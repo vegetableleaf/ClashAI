@@ -114,17 +114,40 @@ class NadoRocketComboTests(unittest.TestCase):
                       "live still has no reward for the tornado-bundled rocket -- the reason a "
                       "sim-trained policy kept the timing and lost the placement")
 
-    def test_the_combo_credit_requires_BOTH_the_window_and_the_tile(self):
+    def test_the_combo_credit_requires_BOTH_the_timing_and_the_tile(self):
+        """Both halves, and the timing half is now the REAL condition rather than a crude
+        "within N seconds" window: the blast must land between the pull starting (cast +
+        tornado_time) and it ending (+ nado_pull_s). That is what makes the rule self-enforcing
+        about the order."""
         src = _live_src()
-        i = src.index("nado = getattr(self, \"_last_nado\", None)")
+        i = src.index('nado = getattr(self, "_last_nado", None)')
         window = src[i:i + 600]
-        self.assertIn("rocket_nado_window_s", window, "the timing half of the combo is gone")
+        self.assertIn("self.nado_pull_s", window, "the pull-window timing is gone")
+        self.assertIn("self.tornado_time", window, "the pull START (activation) is gone")
         self.assertIn("rocket_nado_radius", window, "the SAME-TILE half of the combo is gone")
 
-    def test_the_wheel_snaps_the_rocket_onto_the_tornado(self):
+    def test_the_wheel_snaps_the_tornado_onto_the_IN_FLIGHT_ROCKET(self):
+        """ORDER MATTERS and it is rocket-first (DOCTRINE_RESEARCH.md R6, Hunter correcting a
+        student: "play the rocket first and then tornado everything"). A pull lasts ~1.05 s and a
+        rocket's cast+travel is longer, so a tornado cast FIRST has released the clump before the
+        blast lands. The wheel must therefore aim the TORNADO at the rocket, not the reverse."""
         src = _live_src()
-        self.assertIn("SAME TILE AS THE TORNADO", src,
-                      "the wheels no longer place the rocket on the tornado's tile")
+        self.assertIn("SAME TILE AS THE ROCKET", src,
+                      "the wheel went back to snapping the rocket onto an old tornado -- the "
+                      "order the mechanics forbid")
+        self.assertNotIn("SAME TILE AS THE TORNADO", src)
+
+    def test_the_credit_requires_the_blast_to_land_inside_the_pull(self):
+        """The physical condition the order exists to produce -- coding it directly is
+        order-agnostic and self-enforcing."""
+        src = _live_src()
+        self.assertIn("_combo_lands_in_pull", src)
+        self.assertIn("nado_pull_s", src, "the pull duration is no longer part of the test")
+
+    def test_the_tornado_is_the_card_credited(self):
+        src = _live_src()
+        self.assertIn("_tornado_onto_rocket", src,
+                      "the doctrinal half of the combo (tornado onto an in-flight rocket) is gone")
 
     def test_the_window_and_radius_are_configured(self):
         cfg = Config.load()

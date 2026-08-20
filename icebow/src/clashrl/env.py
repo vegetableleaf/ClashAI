@@ -236,7 +236,13 @@ class LiveMatchEnv:
         self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
         # TORNADO -> ROCKET: the deck's signature combo is a SAME-TILE play, so the last tornado's
         # cast point and time are remembered for the rocket that should follow it.
-        self._last_nado = None           # (cx, cy, t) of the most recent tornado cast
+        self._last_nado = None           # (cx, cy, t_cast) of the most recent tornado cast
+        self._last_rocket = None         # (cx, cy, t_impact) of the most recent rocket cast
+        # A tornado's pull is SHORT. The combo works only when the rocket's blast lands while that
+        # pull is still gathering the clump, which is why doctrine is "rocket FIRST, then tornado
+        # onto the blast point" (DOCTRINE_RESEARCH.md R6): a tornado cast first has already let go
+        # by the time a slow rocket arrives.
+        self.nado_pull_s = float(cfg.get("env", "nado_pull_s", default=1.05))
         self.rocket_nado_window_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))
         self.rocket_nado_radius = float(cfg.get("env", "rocket_nado_radius", default=0.11))
         self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))
@@ -766,12 +772,16 @@ class LiveMatchEnv:
                    "r": r_tiles / 18.0, "base": base, "kind": "whiff"}
             self._pending_spells.append(rec)
             self._last_cast_rec = rec      # the reward tick attaches what this cast was PAID
+            if is_rocket:
+                # WHEN this rocket goes off, so a tornado cast after it can be timed onto the
+                # blast point -- the doctrinal order (R6).
+                self._last_rocket = (cx, cy, time.time() + eta)
             if card_id in self.tornado_ids:
                 pull_r = 5.5 / 18.0
                 tracks0 = self._enemy_tracks_now()
                 pulled = [(tx, ty) for (tx, ty, *_rest) in tracks0
                           if math.hypot(tx - cx, ty - cy) <= pull_r]
-                self._last_nado = (cx, cy, time.time())    # the rocket that follows aims HERE
+                self._last_nado = (cx, cy, time.time())    # pull centre, for combo timing
                 if pulled:
                     # a cast aimed into the king-activation region (where nado_king_cell aims) is
                     # activation INTENT: pulling a unit deep toward our king is the play there,
@@ -1099,6 +1109,30 @@ class LiveMatchEnv:
         ngx, ngy = self.actions.coords_to_grid(0.48, mid)
         return int(ngy) * self.gw + int(ngx)
 
+    def _combo_lands_in_pull(self, cx: float, cy: float, eta: float) -> bool:
+        """Will a rocket aimed at (cx, cy), landing `eta` from now, go off inside a tornado's
+        pull, on the same spot? Checks BOTH directions of the pair -- a tornado already cast, and
+        a tornado about to be cast onto a rocket that is already flying -- because the physical
+        condition is the same either way and only the correctly-timed order can satisfy it.
+        """
+        now = time.time()
+        impact = now + float(eta)
+        nado = getattr(self, "_last_nado", None)
+        if nado is not None and math.hypot(cx - nado[0], cy - nado[1]) <= self.rocket_nado_radius:
+            start = nado[2] + self.tornado_time                  # the pull begins on activation
+            if start <= impact <= start + self.nado_pull_s:
+                return True
+        return False
+
+    def _tornado_onto_rocket(self, cx: float, cy: float) -> bool:
+        """The DOCTRINAL order: a rocket is already in the air and this tornado lands on its
+        blast point in time to hold the clump there for it."""
+        rk = getattr(self, "_last_rocket", None)
+        if rk is None or math.hypot(cx - rk[0], cy - rk[1]) > self.rocket_nado_radius:
+            return False
+        start = time.time() + self.tornado_time                  # this pull begins on activation
+        return start <= rk[2] <= start + self.nado_pull_s
+
     def _where_cell(self, where, tx, ty, bow=None):
         """Map one WHERE vocabulary word onto board coordinates.
 
@@ -1245,6 +1279,11 @@ class LiveMatchEnv:
                 val = 0.0
             self._xbow_play_t = time.time()      # every X-Bow play re-anchors the window
             return val
+        if card_id in self.tornado_ids and self._tornado_onto_rocket(cx, cy):
+            # THE DOCTRINAL HALF OF THE COMBO: the rocket went first and this tornado drags the
+            # clump onto its blast point. Credited on the TORNADO because that is the card whose
+            # timing the player actually controls once the rocket is away.
+            return self.w_wincon * self.rocket_nado_mult
         if card_id in self.rocket_ids:
             # NEVER THE KING (2026-08-20, user report: the model learned to rocket-cycle it).
             # This branch used to fall through to `return 0.0` -- the existing near_enemy_king
@@ -1254,15 +1293,14 @@ class LiveMatchEnv:
             # this chip buys nothing at all.
             if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
                 return self.w_wincon_mis
-            # TORNADO -> ROCKET, THE SAME TILE (user: "the tornado and rocket need to be cast in
-            # the same tile for the combo to work most effectively"). The sim has priced this
-            # since 2026-08-16; live had NO term for it, which is exactly why a PPO checkpoint
-            # carried the TIMING over and never the placement -- nothing here ever paid for
-            # landing on the clump the tornado just made.
-            nado = getattr(self, "_last_nado", None)
-            if nado is not None and (time.time() - nado[2]) <= self.rocket_nado_window_s:
-                if math.hypot(cx - nado[0], cy - nado[1]) <= self.rocket_nado_radius:
-                    return self.w_wincon * self.rocket_nado_mult
+            # ROCKET + TORNADO, SAME TILE, and the rocket's blast must land INSIDE the pull
+            # (DOCTRINE_RESEARCH.md R6: "cast the ROCKET FIRST, then Tornado onto the blast
+            # point"). Paying "a rocket that follows a tornado" -- which is what this did at
+            # first, and what the sim has always done -- rewards the order the mechanics forbid:
+            # the pull is ~1.05 s and a rocket's cast+travel is longer, so a tornado cast first
+            # has released the clump before the blast arrives.
+            if self._combo_lands_in_pull(cx, cy, self._impact_time(cx, cy, is_rocket=True)):
+                return self.w_wincon * self.rocket_nado_mult
             pxy = self._pump_xy if self._pump_fresh() else None   # PUMP PUNISH mirror (perception-gated)
             if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius:
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -1420,14 +1458,14 @@ class LiveMatchEnv:
         if play:                                  # rocket / offensive miner -> aim the weaker enemy princess tower
             pre_aim = cell
             cell = self._aim_weaker_tower(card_id, cell)
-            if (self.training_wheels and card_id in self.rocket_ids
-                    and getattr(self, "_last_nado", None) is not None
-                    and (time.time() - self._last_nado[2]) <= self.rocket_nado_window_s):
-                # SAME TILE AS THE TORNADO (2026-08-20, user rule). The pull only holds the bundle
-                # together for a moment, and a rocket a couple of tiles off catches the edge of a
-                # clump that has already been gathered for it. The model had the timing and not
-                # the placement, so the wheels supply the placement while it learns.
-                ngx, ngy = self.actions.coords_to_grid(self._last_nado[0], self._last_nado[1])
+            if (self.training_wheels and card_id in self.tornado_ids
+                    and getattr(self, "_last_rocket", None) is not None
+                    and time.time() < self._last_rocket[2]):
+                # SAME TILE AS THE ROCKET, and the right way round (R6). A rocket is in the air:
+                # this tornado goes onto its blast point so the clump is still being held when it
+                # lands. The earlier version of this snapped the ROCKET onto an old tornado --
+                # the order the mechanics forbid, since a ~1.05 s pull has expired by then.
+                ngx, ngy = self.actions.coords_to_grid(self._last_rocket[0], self._last_rocket[1])
                 cell = int(ngy) * self.gw + int(ngx)
             elif cell == pre_aim and card_id in self.rocket_ids:  # no tower/pump snap -> LEAD tracked troops
                 cell = self._aim_rocket_intercept(cell)

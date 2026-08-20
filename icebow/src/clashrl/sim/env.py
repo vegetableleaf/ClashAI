@@ -959,14 +959,32 @@ class SimMatchEnv:
         hit, worth = self._rocket_blast(nx, ny)
         on_tower = d <= self.spell_aim_radius
 
-        nado = None                                          # TORNADO -> ROCKET
-        for wnd in reversed(self._nado_watch or ()):
-            if self.eng.t - float(wnd.get("t0", 0.0)) > self.rocket_nado_s:
-                continue
-            alive = [u for u in wnd.get("pulled", ()) if u.hp > 0 and u.spec.kind == "troop"]
-            if alive and tile_dist(nx, ny, float(wnd["cx"]), float(wnd["cy"])) <= _ROCKET_RADIUS + 1.0:
-                nado = alive
-                break
+        # ROCKET + TORNADO -- the blast must land INSIDE a live pull, on the same spot.
+        #
+        # This used to pay any rocket cast within rocket_nado_s of a tornado, i.e. the TORNADO
+        # -> ROCKET order, which is the one the mechanics forbid: a pull lasts pull_duration
+        # (~1.05 s) while a rocket's cast+travel is 0.4 s + distance (~1.4 s at range), so the
+        # clump is released before the blast arrives. DOCTRINE_RESEARCH.md R6 resolved the order
+        # from mechanics AND from Hunter correcting a student -- "play the rocket first and then
+        # tornado everything" -- and flagged this exact rule for inversion.
+        #
+        # Rather than encode an order, check the physical condition the order exists to produce:
+        # the sim knows a vortex's remaining pull (_Vortex.left) and a rocket's remaining flight,
+        # so ask whether THIS rocket will still find a pull running when it lands. The doctrinal
+        # order satisfies that; the reverse order satisfies it only in the narrow case where the
+        # tornado was cast so late that its pull outlives the flight, which is a correct play too.
+        eta = 0.4 + tile_dist(nx, ny, 0.5, 1.0) / 32.0       # mirrors the engine's spell delay
+        nado = None
+        for v in (self.eng.vortices or ()):
+            if v.team != 0 or v.left < eta:
+                continue                                     # pull ends before the blast lands
+            if tile_dist(nx, ny, v.x, v.y) <= _ROCKET_RADIUS + 1.0:
+                nado = [u for u in self.eng.units
+                        if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
+                        and tile_dist(u.x, u.y, v.x, v.y) <= _ROCKET_RADIUS + 1.0]
+                if nado:
+                    break
+                nado = None
         if nado is not None and worth >= self.rocket_min_worth:
             # Deliberately NOT multiplied by combo_mult as well: stacking the two multipliers
             # priced a tornado-bundled rocket at 18.0, six times an X-Bow play, which would have
