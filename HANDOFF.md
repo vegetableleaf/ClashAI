@@ -299,6 +299,30 @@ free**. Budget ~13 GB for a board-* run, and treat "YOLO ≈ 5 GB" as retired.
      mass tiers is in the CR pathing report (session log 2026-08-19); `card_mechanics.json`
      already carries per-card mass/collision the engine uses.
 
+## 3c. 2026-08-19 evening batch — live reward truthing (`3db2193`)
+
+Three user reports, all confirmed real:
+1. **Live `spell_waste` did not exist** — the spell-impact frame sampler was RETIRED (env.py's own
+   note) and spells were paid AT CAST by aim geometry. Now: a pending-impact queue verifies every
+   spell against the TEAM TRACKER at impact (tracks bridge the detector's ~31% per-pass misses, so
+   a blinked frame can't fake a whiff). Tower-aim exempt on LIVE towers only.
+2. **`nado_bad`** (both sims + live-approx): pulled units that survive, wake no king, and end ≥1
+   TRUE tile closer to our princess towers = the cast improved the enemy's position. The
+   verification caught a real bug pre-ship: normalized-space distance mixes the 18×32 anisotropy
+   (a 2.2-tile pull measured 0.9), distances are now per-axis tiles.
+3. **The HOLD-despite-enemy-plays gate**: `_needs_answer` read only the latest detector pass →
+   a threat blinking out on the decision tick made the board "quiet" (the model FORGOT enemies it
+   saw). The gate now triages the tracker's remembered enemies (with_base ported to hogeq),
+   deduped against live dets. **Deliberately NOT counting unknowns** — post-553fe5c they're mostly
+   our own cards; recorded so nobody "fixes" it back.
+4. **Training wheels ON** (`train.training_wheels`): doctrine aim-correction for all live spells
+   (log→corridor, tornado→king-cell else clump, else nearest enemy). CELL-ONLY — the card axis of
+   the stored DQN action is never altered, same contract as the existing aim assists.
+
+⚠ The running icebow PPO's reward landscape changed mid-run (crown damage `7bfe6ed` + sim
+`nado_bad`): PPO is on-policy so this is a shift, not corruption, but per-term comparisons across
+2026-08-19 evening straddle it.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
