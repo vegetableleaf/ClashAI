@@ -39,20 +39,41 @@ from .ppo_monitor import should_intervene  # noqa: F401  (kept importable for of
 _NEG = -1e9   # finite mask value (avoids -inf NaNs through log_softmax / entropy)
 
 
-def compute_gae(rew, val, done, boot, gamma: float, lam: float):
+def compute_gae(rew, val, done, boot, gamma: float, lam: float, trunc=None):
     """Generalized Advantage Estimation over a [T][K] rollout grid.
 
     rew/val/done: length-T sequences of K-sized float arrays; boot: [K] bootstrap values for the
-    states AFTER the last step. Returns (adv, ret) as [T, K] float32 (ret = adv + val)."""
+    states AFTER the last step. Returns (adv, ret) as [T, K] float32 (ret = adv + val).
+
+    TERMINAL vs TRUNCATED, and the difference is not cosmetic. A match that ENDS is terminal: the
+    future really is worth nothing, so the bootstrap is 0. An episode that was CUT SHORT -- a drill
+    whose predicate fired or whose time limit elapsed -- is truncated: the position was still worth
+    something, and telling the critic it was worth zero is a lie about an ordinary mid-match state.
+
+    Drills are played on the same state space as matches, so before this split every drill ending
+    asserted "this position is terminal and worth 0" and `delta` collapsed to `rew - val[t]` -- a
+    large negative wherever the critic had (correctly) valued the state above the drill's small
+    payoff. At drill_frac 0.4 that was 40% of episodes, which is why a higher drill mix made the
+    run worse rather than better.
+
+    `trunc` marks those steps. V(s_final) would need a forward pass on an observation the auto-reset
+    has already discarded, so V(s_t) stands in for it -- one decision apart, and a far better
+    estimate than zero. The GAE trace is cut at BOTH kinds of ending, because the next step belongs
+    to a different episode either way.
+    """
     T = len(rew)
     K = len(boot)
     adv = np.zeros((T, K), np.float32)
     last = np.zeros(K, np.float32)
     for t in reversed(range(T)):
         nxt_v = boot if t == T - 1 else val[t + 1]
-        mask = 1.0 - done[t]
-        delta = rew[t] + gamma * nxt_v * mask - val[t]
-        last = delta + gamma * lam * mask * last
+        ended = np.asarray(done[t], np.float32)
+        cut = np.zeros(K, np.float32) if trunc is None else np.asarray(trunc[t], np.float32)
+        # bootstrap: 0 at a true terminal, V(s_t) at a truncation, V(s_next) mid-episode
+        v_next = np.where(cut > 0.5, np.asarray(val[t], np.float32),
+                          np.asarray(nxt_v, np.float32) * (1.0 - ended))
+        delta = np.asarray(rew[t], np.float32) + gamma * v_next - np.asarray(val[t], np.float32)
+        last = delta + gamma * lam * (1.0 - ended) * last     # trace cut at ANY episode boundary
         adv[t] = last
     ret = adv + np.asarray(val, np.float32)
     return adv, ret
@@ -600,7 +621,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         """One PPO update over a finished rollout. roll holds [T] rows of K-sized per-env lists."""
         T = len(roll["rew"])
         adv, ret = compute_gae(roll["rew"], roll["val"], roll["done"], roll["boot"],
-                               gamma, gae_lambda)
+                               gamma, gae_lambda, trunc=roll.get("trunc"))
         # flatten [T, K] -> [N]
         def flat(key):
             return [roll[key][t][i] for t in range(T) for i in range(K)]
@@ -698,7 +719,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
-                    "act": [], "logp": [], "val": [], "rew": [], "done": [], "boot": None}
+                    "act": [], "logp": [], "val": [], "rew": [], "done": [], "trunc": [],
+                    "boot": None}
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
@@ -707,7 +729,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
-                rew_row, done_row = [], []
+                rew_row, done_row, trunc_row = [], [], []
                 if remote:
                     step_out = rpool.step_all(acts)
                 else:
@@ -723,6 +745,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         env = pool[i]
                         nobs, reward, done, info = env.step(acts[i])
                     rew_row.append(float(reward)); done_row.append(1.0 if done else 0.0)
+                    # A DRILL ENDING IS A CUT, NOT AN OUTCOME. It has a `drill` name and no match
+                    # `outcome`, so the position was still live when the episode stopped -- see
+                    # compute_gae for why bootstrapping 0 there poisons the critic.
+                    trunc_row.append(1.0 if (done and info.get("drill") is not None
+                                             and not info.get("outcome")) else 0.0)
                     ep_r[i] += reward
                     if done:
                         oc = info.get("outcome")
@@ -804,6 +831,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
                 roll["rew"].append(np.asarray(rew_row, np.float32))
                 roll["done"].append(np.asarray(done_row, np.float32))
+                roll["trunc"].append(np.asarray(trunc_row, np.float32))
             if not roll["rew"]:
                 break
             if len(win_hist) >= 20:
