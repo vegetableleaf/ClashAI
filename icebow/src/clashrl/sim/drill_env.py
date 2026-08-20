@@ -93,6 +93,7 @@ class DrillEnv(SimMatchEnv):
         s = self.scenario
         rng = self.rng
         mirror = ("lane" in s.randomise) and bool(rng.random() < 0.5)
+        self._drill_mirrored = bool(mirror)   # the reference line has to flip with the board
         jitter = float(rng.uniform(-0.6, 0.6)) if "timing" in s.randomise else 0.0
         spawns = []
         for base, team, x, y, t in s.spawns:
@@ -139,11 +140,15 @@ class DrillEnv(SimMatchEnv):
         self.eng.units.clear()                         # a drill starts from ITS board, not a match
         self._place_scenario()
         self._restrict_hand()
+        if self.scenario is not None and self.scenario.setup is not None:
+            # After the board, so a setup can reach the bodies it just placed by name.
+            self.scenario.setup(self)
         self._drill = {
             "t0": float(self.eng.t),
             "princess_hp0": sum(float(t.hp) for t in sc.our_princesses(self.eng)),
             "enemy_tower_hp0": sum(float(t.hp) for t in self.eng.towers[1][:2]),
             "spent": 0.0,
+            "plays": [],
         }
         self.last_verdict = None
         return self._obs() if hasattr(self, "_obs") else obs
@@ -182,6 +187,22 @@ class DrillEnv(SimMatchEnv):
         obs, reward, done, info = super().step(action)
         spent = max(0.0, pre - float(self.eng.elixir[0]))
         self._drill["spent"] = float(self._drill.get("spent", 0.0)) + spent
+        # THE PLAY LEDGER. Elixir dropping is the evidence the deploy actually happened -- the
+        # action is only a REQUEST, and the engine refuses it for cost, for an illegal cell, or for
+        # a card that is not really in hand. Recording on the request instead would make "played"
+        # mean "asked to play", the same fiction that made a third of live 6-elixir plays imaginary.
+        try:
+            want, cid, cell = int(action[0]), int(action[1]), int(action[2])
+        except Exception:  # noqa: BLE001 -- a malformed action is not a play
+            want = 0
+        if want and spent > 1e-6 and 0 <= cid < len(self.deck_keys):
+            gw = int(self.gw)
+            nx, ny = self.actions.cell_center(cell % gw, cell // gw)
+            self._drill.setdefault("plays", []).append(
+                {"t": float(self.eng.t) - float(self._drill.get("t0", 0.0)),
+                 "base": str(self.deck_keys[cid]).replace("_evo", ""),
+                 "card": str(self.deck_keys[cid]), "x": float(nx), "y": float(ny),
+                 "elixir": float(spent)})
         if not done:
             v = self._verdict()
             if v is not None:
@@ -286,6 +307,46 @@ def doctrine_policy(obs, env):
     return (0, 0, 0)
 
 
+
+def scripted_policy(scenario):
+    """Play a scenario's REFERENCE LINE -- the hand-written answer, in order, on its own clock.
+
+    The point is diagnostic. When a drill scores 0% for both the do-nothing baseline and the
+    doctrine oracle, those are two very different worlds: either nothing can pass it (the scenario
+    is broken) or the doctrine cannot find the answer (a finding about the doctrine). Only a line
+    known to be correct separates them.
+    """
+    plan = list(getattr(scenario, "reference", ()) or ())
+    state = {"i": 0}
+
+    def _policy(obs, env):
+        # NEW EPISODE -> REWIND THE LINE. `run_drill` reuses one policy object for every rep, so a
+        # cursor that only ever advances plays the line once and then sits out the remaining reps:
+        # 1 pass in 20 is exactly the 5% this scored before. Elapsed time falling is the episode
+        # boundary, and it is the only signal the policy gets.
+        elapsed = float(env.eng.t) - float(env._drill.get("t0", 0.0))
+        if elapsed < float(state.get("last", 1e9)):
+            state["i"] = 0
+        state["last"] = elapsed
+        if state["i"] >= len(plan):
+            return (0, 0, 0)
+        base, x, y, t = plan[state["i"]]
+        if elapsed < float(t):
+            return (0, 0, 0)
+        cid = next((c for c in env._hand_ids()
+                    if str(env.deck_keys[c]).replace("_evo", "") == str(base)), None)
+        if cid is None or float(env.eng.elixir[0]) < float(env.specs[cid].elixir):
+            return (0, 0, 0)                       # not yet affordable / not yet drawn: wait
+        # MIRROR WITH THE BOARD. `randomise=("lane",...)` flips the scenario's spawns, so a line
+        # written for the left lane has to flip with them or it answers the wrong side.
+        nx = float(x)
+        if getattr(env, "_drill_mirrored", False):
+            nx = 1.0 - nx
+        state["i"] += 1
+        return (1, int(cid), int(env.actions.cell_at(nx, float(y))))
+
+    return _policy
+
 def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
     """Run every registered drill baseline-vs-oracle and return the rows.
 
@@ -295,27 +356,48 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
     """
     rows = []
     todo = list(names) if names else sc.names()
-    print("%-30s %8s %8s %8s   %s" % ("drill", "nothing", "doctrine", "policy", "verdict"))
-    print("-" * 78)
+    print("%-30s %8s %8s %8s %8s   %s"
+          % ("drill", "nothing", "scripted", "doctrine", "policy", "verdict"))
+    print("-" * 94)
     for name in todo:
         s = sc.get(name)
         base = run_drill(cfg, s, policy=None, reps=reps, seed=seed, level=level)
+        ref = (run_drill(cfg, s, policy=scripted_policy(s), reps=reps, seed=seed, level=level)
+               if getattr(s, "reference", ()) else None)
         doc = run_drill(cfg, s, policy=doctrine_policy, reps=reps, seed=seed, level=level)
         pol = (run_drill(cfg, s, policy=policy, reps=reps, seed=seed, level=level)
                if policy is not None else None)
         b, d = base["pass_rate"], doc["pass_rate"]
-        # A drill where doing nothing scores what the doctrine scores is not measuring the play.
-        if abs(d - b) < 0.2:
-            verdict = "NOT DISCRIMINATING -- baseline matches the oracle"
-        elif d < b:
+        r = ref["pass_rate"] if ref else None
+        # The three columns answer three different questions, and collapsing them loses the one
+        # that matters most: whether a drill nobody passed is broken or merely hard.
+        best = max([x for x in (r, d) if x is not None], default=d)
+        # A RESTRAINT DRILL declares itself by having no reference line: its correct play is to
+        # play nothing, so a high do-nothing score is the DESIGN and not a defect. Reading those
+        # as "not discriminating" would delete exactly the drills that teach triage -- the tier
+        # the deck kept skipping -- because a random policy still fails them badly.
+        if r is None and not getattr(s, "reference", ()) and b >= 0.5:
+            verdict = ("restraint drill (correct play is NONE) -- doctrine agrees"
+                       if d >= 0.5 else
+                       "restraint drill (correct play is NONE) -- DOCTRINE SPENDS ANYWAY")
+        elif r is not None and r < 0.5 and b < 0.5:
+            verdict = "UNWINNABLE -- even the reference line fails; fix the scenario"
+        elif b >= 0.5 and best >= 0.5 and abs(best - b) < 0.2:
+            verdict = "NOT DISCRIMINATING -- the board resolves itself"
+        elif best < b:
             verdict = "inverted (correct when the right play is NO play)"
+        elif r is not None and r >= 0.5 and d < 0.3:
+            verdict = "DOCTRINE GAP -- winnable, but the prior does not find it"
+        elif abs(best - b) < 0.2:
+            verdict = "NOT DISCRIMINATING -- baseline matches the best line"
         else:
             verdict = "ok"
-        print("%-30s %7.0f%% %7.0f%% %8s   %s"
-              % (name, 100 * b, 100 * d,
+        print("%-30s %7.0f%% %8s %7.0f%% %8s   %s"
+              % (name, 100 * b, ("%.0f%%" % (100 * r)) if r is not None else "-", 100 * d,
                  ("%.0f%%" % (100 * pol["pass_rate"])) if pol else "-", verdict))
         rows.append({"name": name, "tier": s.tier, "baseline": b, "doctrine": d,
-                     "policy": (pol["pass_rate"] if pol else None), "verdict": verdict})
+                     "reference": r, "policy": (pol["pass_rate"] if pol else None),
+                     "verdict": verdict})
     return rows
 
 

@@ -74,6 +74,16 @@ class Scenario:
     randomise: Sequence[str] = ()               # what varies per rep: lane, timing, card, elixir
     graded_by: Sequence[str] = ()               # reward terms that already price this
     prereq: Sequence[str] = ()                  # drills to master first
+    # ARBITRARY ENGINE STATE, applied after the spawns land. A spawn list can only say "this card,
+    # here"; a great many interactions are only themselves once the king is already awake, the
+    # princess is at 60%, the clock is in overtime, or a defender is already locked onto our bow.
+    # One callable covers all of those without a dataclass field per drill.
+    setup: Optional[Callable] = None
+    # THE HAND-WRITTEN CORRECT LINE: (card base, x, y, earliest t). Played by `run.py drills` as a
+    # third column, which is the only way to tell a drill that is UNWINNABLE from one the doctrine
+    # merely cannot solve -- and the second of those is a finding, not a broken scenario. Also
+    # doubles as documentation: it states in coordinates what this drill thinks the answer is.
+    reference: Sequence[Tuple[str, float, float, float]] = ()
     notes: str = ""
 
     def __post_init__(self):
@@ -185,6 +195,53 @@ def negate(p: Predicate) -> Predicate:
     def _p(eng, s=None):
         return not p(eng, s)
     return _p
+
+
+# ---------------------------------------------------------------------------------------------
+# The PLAY LEDGER: what the agent actually played, where, and in what order. A card that was
+# played and then died leaves the same board as one never played, so outcome-only predicates
+# cannot express "never sent the Hog" or "rocket before tornado" -- these can.
+# ---------------------------------------------------------------------------------------------
+
+def plays(s):
+    return list((s or {}).get("plays", ()))
+
+
+def played(s, *bases) -> bool:
+    """Did we deploy any of these cards (and did the elixir actually leave the bar)?"""
+    want = set(bases)
+    return any(p["base"] in want for p in plays(s))
+
+
+def n_plays(s) -> int:
+    return len(plays(s))
+
+
+def first_play_t(s, base):
+    """Seconds into the drill when `base` was first deployed, or None."""
+    for p in plays(s):
+        if p["base"] == base:
+            return float(p["t"])
+    return None
+
+
+def played_before(s, first: str, second: str) -> bool:
+    """Both were played, and `first` went down strictly earlier -- an ORDER test.
+
+    Order is a real skill and an invisible one: the same two cards in the other sequence is a
+    different play entirely (rocket-then-tornado vs tornado-then-rocket), and the board a few
+    seconds later can look identical.
+    """
+    a, b = first_play_t(s, first), first_play_t(s, second)
+    return a is not None and b is not None and a < b
+
+
+def play_xy(s, base):
+    """Where `base` was first put down, or None."""
+    for p in plays(s):
+        if p["base"] == base:
+            return (float(p["x"]), float(p["y"]))
+    return None
 
 
 # ---------------------------------------------------------------------------------------------

@@ -14,7 +14,8 @@ building that stops him.
 """
 from __future__ import annotations
 
-from .scenarios import (Scenario, enemy_tower_hp_lost, princess_hp_lost, register,
+from .scenarios import (Scenario, enemy_tower_hp_lost, first_play_t, n_plays, played,
+                        played_before, play_xy, princess_hp_lost, register,
                         spent_more_than)
 
 _BRIDGE_ROW = 0.5625          # actions.min_own_gy = 13: the frontmost legal own-half row
@@ -59,6 +60,7 @@ register(Scenario(
     randomise=("lane", "elixir"),
     graded_by=("wincon_exec", "leak"),
     prereq=(),
+    reference=((("hog_rider", 0.194, 0.5625, 0.6)),),
     notes="Only became scorable once hog_bridge_y was floored at the action grid's front row -- "
           "before that every legal send was billed -1.0 and this drill was unpassable.",
 ))
@@ -67,7 +69,11 @@ register(Scenario(
     name="hog_never_into_the_push",
     goal="Never send the Hog into a committed enemy push -- the owner's hard rule.",
     tier="foundational",
-    hand=(),                      # the whole deck: the Hog has to be REFUSED, not merely absent
+    # THE HOG IS IN HAND -- he has to be REFUSED, not merely undrawn -- and so are the answers.
+    # Dealt the whole deck the reference defence was usually not in the opening hand, and the
+    # outcome went bimodal: held cleanly when the cards showed up, and exactly the do-nothing
+    # number when they did not. That measures the deal rather than the decision.
+    hand=("hog_rider", "tesla", "mighty_miner", "skeletons"),
     elixir=8.0,
     spawns=(("giant", 1, 0.30, 0.44, 0.0), ("musketeer", 1, 0.30, 0.40, 0.0)),
     # THE INVERSE DRILL, and the reason it is worth its own scenario: the answer is a defensive
@@ -87,6 +93,8 @@ register(Scenario(
     randomise=("lane", "timing", "elixir"),
     graded_by=("wincon_exec", "threat_response"),
     prereq=("hog_send_on_a_quiet_board",),
+    reference=(("mighty_miner", 0.30, 0.60, 0.6), ("tesla", 0.50, 0.62, 2.0),
+               ("skeletons", 0.30, 0.66, 4.0)),
     notes="Pairs with hog_send_on_a_quiet_board so the policy learns a CONDITION, not a reflex: "
           "one drill rewards the send, the other punishes it, and only the board separates them.",
 ))
@@ -104,6 +112,7 @@ register(Scenario(
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=(),
+    reference=((("tesla", 0.5, 0.645, 0.6)),),
     notes="A building ATTRACTS, it does not intercept: the skill is committing early enough that "
           "the pull has room to work, not placing it on top of the hog.",
 ))
@@ -121,6 +130,7 @@ register(Scenario(
     randomise=("lane", "timing"),
     graded_by=("threat_response", "spell_waste"),
     prereq=(),
+    reference=((("the_log", 0.194, 0.6, 0.6)),),
     notes="The Log is a CORRIDOR that rolls FORWARD from the cast point: anything behind the cast "
           "is untouched. A miss is unambiguous here because the swarm simply survives.",
 ))
@@ -152,7 +162,177 @@ register(Scenario(
     randomise=("lane", "timing"),
     graded_by=("wincon_exec", "spell_waste"),
     prereq=("hog_send_on_a_quiet_board",),
+    reference=((("earthquake", 0.26, 0.36, 0.6)),),
     notes="THE DECK'S NAMESAKE COMBO, and until the anywhere_ids fix it was an action the policy "
           "could not take at all: Earthquake aimed at their building was clamped back to our own "
           "front row, so the quake landed ~10 tiles behind the thing it was meant to kill.",
+))
+
+register(Scenario(
+    name="hog_punish_the_back_investment",
+    goal="They committed a tank at the back -- send the Hog at the OTHER lane immediately.",
+    tier="foundational",
+    hand=("hog_rider",),
+    elixir=6.0,
+    # A GOLEM AT THEIR BACK is the punish window in one card: nine elixir spent, nothing left in
+    # hand, and a long walk before it threatens anything. The lane is the whole decision.
+    spawns=(("golem", 1, 0.194, 0.14, 0.0),),
+    success=lambda e, s: enemy_tower_hp_lost(e, s, 0.0),
+    failure=lambda e, s: (not _hog_sent(e, s)
+                          and (float(e.t) - float(s.get("t0", 0.0))) >= 6.0),
+    time_limit=22.0,
+    randomise=("lane", "elixir"),
+    graded_by=("wincon_exec",),
+    prereq=("hog_send_on_a_quiet_board",),
+    reference=(("hog_rider", 0.806, 0.5625, 0.6),),
+    notes="Scored on the Hog actually CONNECTING rather than on the cell he was put in: a send "
+          "into the tank's own lane is answered on arrival and never chips anything.",
+))
+
+register(Scenario(
+    name="hog_over_the_ignorable",
+    goal="A lone Skeletons is not a push -- send the Hog and let the tower have them.",
+    tier="foundational",
+    hand=("hog_rider", "the_log", "skeletons", "ice_spirit"),
+    elixir=6.0,
+    spawns=(("skeletons", 1, 0.30, 0.46, 0.0),),
+    # THE TRICKLE IS BAIT, and the veto in _hog_wincon has to NOT fire on it. This is the same
+    # triage tier the icebow drill rehearses, seen from the attacking side: the question is not
+    # "can I answer that" but "is that a reason to cancel my plan".
+    success=lambda e, s: (_hog_crossed(e, s) and not played(s, "the_log", "skeletons", "ice_spirit")),
+    failure=lambda e, s: (played(s, "the_log", "skeletons", "ice_spirit")
+                          or (not _hog_sent(e, s)
+                              and (float(e.t) - float(s.get("t0", 0.0))) >= 6.0)),
+    time_limit=12.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("wincon_exec", "threat_miss_idle"),
+    prereq=("hog_send_on_a_quiet_board",),
+    reference=(("hog_rider", 0.806, 0.5625, 0.6),),
+    notes="Pairs with hog_never_into_the_push: same card, same question, opposite answer, and only "
+          "the SIZE of what is on the board separates them.",
+))
+
+register(Scenario(
+    name="mm_blocks_the_tank",
+    goal="Mighty Miner goes ON the tank's path -- he is the block, not a chaser.",
+    tier="foundational",
+    hand=("mighty_miner",),
+    elixir=6.0,
+    spawns=(("pekka", 1, 0.194, 0.44, 0.0),),
+    success=lambda e, s: (not _enemy(e, "pekka") and not princess_hp_lost(e, s, 600.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 600.0),
+    time_limit=22.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=(),
+    reference=(("mighty_miner", 0.194, 0.60, 0.6),),
+    notes="A PEKKA that reaches the tower costs several times what the Miner does, so the drill is "
+          "really about committing early enough that the block happens up the lane.",
+))
+
+register(Scenario(
+    name="firecracker_never_alone",
+    goal="Firecracker is SUPPORT -- never played by herself on a quiet board.",
+    tier="foundational",
+    hand=("firecracker", "hog_rider", "skeletons", "tesla"),
+    elixir=8.0,
+    spawns=(),                     # quiet: there is nothing for her to support and nothing to fear
+    # THE OWNER'S RULE, and an inverted drill by construction: the correct action is either the win
+    # condition or nothing, and the failure is the habit -- a lone Firecracker at the bridge, where
+    # she is answered by anything and buys nothing.
+    success=lambda e, s: (not played(s, "firecracker")
+                          and (float(e.t) - float(s.get("t0", 0.0))) >= 9.4),
+    failure=lambda e, s: played(s, "firecracker"),
+    time_limit=10.0,
+    randomise=("lane", "elixir"),
+    graded_by=("support_alone",),
+    prereq=(),
+    notes="No reference line: the correct play here is to not play her, which the do-nothing "
+          "column already measures. Kept as the negative half of firecracker_escorts_the_hog.",
+))
+
+register(Scenario(
+    name="firecracker_escorts_the_hog",
+    goal="Hog FIRST, Firecracker a beat later and behind him -- never the other way round.",
+    tier="compound",
+    hand=("hog_rider", "firecracker"),
+    elixir=9.0,
+    spawns=(("archers", 1, 0.194, 0.30, 2.0),),
+    # ORDER IS THE SKILL. She is 3 elixir of glass: ahead of the Hog she is the first thing shot,
+    # behind him she snipes what comes to answer him. The board looks nearly identical either way
+    # a second later, which is exactly why it needs its own drill and an ORDER predicate.
+    success=lambda e, s: (played_before(s, "hog_rider", "firecracker")
+                          and enemy_tower_hp_lost(e, s, 0.0)),
+    failure=lambda e, s: (played_before(s, "firecracker", "hog_rider")
+                          or (n_plays(s) >= 2 and not played(s, "hog_rider"))),
+    time_limit=20.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "support_alone"),
+    prereq=("hog_send_on_a_quiet_board", "firecracker_never_alone"),
+    reference=(("hog_rider", 0.194, 0.5625, 0.6), ("firecracker", 0.194, 0.62, 2.4)),
+    notes="The escort gate reads `u.y < hog_bridge_y`, so she is only legal once he has actually "
+          "crossed -- the beat in 'a beat later' is the deploy time plus his walk to the river.",
+))
+
+register(Scenario(
+    name="eq_kills_the_spawner",
+    goal="Earthquake the building -- it is the one card that reaches what the Hog cannot.",
+    tier="foundational",
+    hand=("earthquake",),
+    elixir=6.0,
+    # A TOMBSTONE (529 HP) dies to the quake's three ticks with room to spare, so a miss is
+    # unambiguous: the building either fell or it did not. It also keeps producing skeletons while
+    # it stands, which is what makes leaving it alive expensive rather than merely untidy.
+    spawns=(("tombstone", 1, 0.26, 0.36, 0.0),),
+    success=lambda e, s: (not _enemy(e, "tombstone") and played(s, "earthquake")),
+    failure=lambda e, s: ((float(e.t) - float(s.get("t0", 0.0))) >= 11.0
+                          and bool(_enemy(e, "tombstone"))),
+    time_limit=14.0,
+    randomise=("lane", "timing"),
+    graded_by=("wincon_exec", "spell_waste"),
+    prereq=(),
+    reference=(("earthquake", 0.26, 0.36, 0.6),),
+    notes="Only became a reachable action at all once spells were allowed past the river -- before "
+          "that the quake was clamped to our own front row, ten tiles short of the target.",
+))
+
+register(Scenario(
+    name="log_resets_the_charge",
+    goal="Roll the Log into a charging Battle Ram -- the knockback is the point.",
+    tier="foundational",
+    hand=("the_log",),
+    elixir=5.0,
+    spawns=(("battle_ram", 1, 0.194, 0.46, 0.0),),
+    success=lambda e, s: (not _enemy(e, "battle_ram") and not princess_hp_lost(e, s, 300.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 300.0),
+    time_limit=14.0,
+    randomise=("lane", "timing"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=("log_the_ground_swarm",),
+    reference=(("the_log", 0.194, 0.62, 1.2),),
+    notes="A connected charge costs a large chunk of tower; the same ram stopped early costs two "
+          "elixir. The HP threshold is what separates the two outcomes.",
+))
+
+register(Scenario(
+    name="skeletons_are_enough",
+    goal="One elixir of Skeletons answers a lone Knight -- the cheapest sufficient answer.",
+    tier="foundational",
+    hand=("skeletons", "tesla", "mighty_miner", "firecracker"),
+    elixir=6.0,
+    spawns=(("knight", 1, 0.194, 0.46, 0.0),),
+    # SPENT IS PART OF SUCCESS. A Tesla also answers a Knight, and it answers it for four elixir
+    # and a building slot the deck needs for their win condition. Triage is about the cheapest
+    # thing that WORKS, which is a different question from what works.
+    success=lambda e, s: (not _enemy(e, "knight") and float(s.get("spent", 0.0)) <= 1.5
+                          and not princess_hp_lost(e, s, 500.0)),
+    failure=lambda e, s: spent_more_than(e, s, 3.0) or princess_hp_lost(e, s, 500.0),
+    time_limit=18.0,
+    randomise=("lane", "timing", "elixir"),
+    graded_by=("threat_response", "elixir_trade"),
+    prereq=(),
+    reference=(("skeletons", 0.194, 0.66, 1.2),),
+    notes="counters.yaml names this row (knight -> skeletons, surround) and the reward charges it "
+          "-1.0, because profile('skeletons').dps is below the tank-answer bar. Drill kept as-is: "
+          "the doctrine is right and the referee is wrong, which the pass rate will show.",
 ))

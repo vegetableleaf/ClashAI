@@ -838,9 +838,31 @@ configured but **have never run** — BC has not been retrained since the soft-t
      pool and the remote workers. A drill is scored by the match's own reward terms, so the
      objective never changes between a 10-second drill and a 3-minute match — which is what keeps
      the skill from having to survive a transfer afterwards.
-   * TODO: build out the two drafted curricula (icebow 40 drills / hogeq 37, both agent-drafted
-     with per-drill reward-coverage findings — see §6.0a); only 4 + 5 of them are built. Then run
-     a PPO comparison at `drill_frac` 0.0 vs 0.3 to measure whether the mix actually helps.
+   * **28 drills built and validated: 15 icebow, 13 hogeq.** Every one is winnable (a scripted
+     reference line passes 95–100%) and none is passable by doing nothing.
+   * **Each Scenario carries a `reference` line** — the hand-written correct play in coordinates —
+     and `run.py drills` plays it as a third column. That column is what separates a scenario that
+     is BROKEN from one the doctrine merely cannot solve, and the second is a finding worth
+     keeping. Verdicts: `ok`, `DOCTRINE GAP` (winnable, prior misses it), `UNWINNABLE` (fix the
+     scenario), `restraint drill` (correct play is NONE — a high do-nothing score is the design),
+     `NOT DISCRIMINATING`.
+   * `Scenario.setup` runs arbitrary engine state after the board (a woken king, a wounded tower,
+     the clock in overtime); `DrillEnv` keeps a **play ledger** (what was deployed, where, when),
+     which is the only way to score order (`played_before`) or restraint (`played`).
+   * **8 DOCTRINE GAPS the drills surfaced** — all winnable by the reference line, all missed by
+     the prior: icebow `bow_never_into_the_push`, `hold_the_spell_for_a_target`,
+     `log_rolls_forward_not_backward`, `log_the_barrel_on_landing` (spends the Log on the Princess
+     bait instead of holding it for the barrel), `nado_clump_for_the_wizard`,
+     `skeletons_kill_the_miner`; hogeq `hog_never_into_the_push`, `hog_over_the_ignorable`,
+     `skeletons_are_enough` (counters.yaml names skeletons→knight and the referee charges it −1.0
+     because `profile('skeletons').dps` is under the tank-answer bar).
+   * **REMOVED `nado_drag_off_the_tower`** — measured with and without a well-placed pull, our
+     tower lost **950 HP either way**: the Hog dies to the princess on the same clock and the
+     damage converges, so the drill could not tell a correct pull from no pull. The play is real
+     doctrine; this engine does not express its value on that board. Open question, not a drill.
+   * TODO: the drafted curricula run to ~77 scenarios (icebow 40 / hogeq 37) — see §6.0a for the
+     reward-coverage findings attached to the unbuilt ones. Then run a PPO comparison at
+     `drill_frac` 0.0 vs 0.3 to measure whether the mix actually helps.
    * **Open finding the triage drill surfaced (not fixed):** an LLM-proposed, engine-verified rule
      (`x1|king_asleep|deep_0|worth_0|elx_6` → `knight`, gain 1.922, 3/3 wins) nominates a Knight on
      a quiet board at 6 elixir, which contradicts the deck's own banking doctrine (a 3.5-cycle deck
