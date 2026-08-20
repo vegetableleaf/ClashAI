@@ -401,7 +401,14 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
         return True
     if threat_id[2] >= 0.5 and (play.splash or play.spell):            # swarm -> splash / spell
         return True
-    if threat_id[1] >= 0.5 and (play.building or (play.dps or 0) >= 150):  # tank -> building / high DPS
+    if threat_id[1] >= 0.5 and (play.building or (play.dps or 0) >= 150
+                                or (play.swarm and play.melee)):
+        # A MELEE SWARM SURROUNDS A TANK, and raw DPS cannot see it. Skeletons are 74 dps against
+        # a 150 bar, so `counters.yaml`'s own row -- "knight -> skeletons, surround" -- was scored
+        # as no answer at all: measured on the `skeletons_are_enough` drill, the doctrinal play
+        # earned +0.30 over doing nothing while a Tesla answering the same Knight earned a full
+        # credit. Three bodies at 74 each is 222 dps arriving from three sides, which is the whole
+        # reason the play exists; the per-body number is the wrong unit to judge it in.
         return True
     if threat_id[6] >= 0.5 and play.building:                          # building-targeter -> a building
         return True
