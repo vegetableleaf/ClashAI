@@ -29,15 +29,23 @@ class FailSafeTests(unittest.TestCase):
         self.assertLess(time.time() - t0, 2.0, "a dead server must fail fast, not hang the loop")
 
     def test_repeated_failures_trip_the_breaker(self):
-        """A dead server costs real time per call to discover; after a few the advisor stops
-        asking, so the loop degrades to plain random exploration rather than bleeding budget."""
+        """A dead server costs real time per call to discover; after a few the advisor RESTS, so
+        the loop degrades to plain random exploration rather than bleeding budget.
+
+        The breaker used to be permanent (disabled=True for the session). That is what the user
+        saw on 2026-08-19: the model timing out five times early meant every later exploration
+        step was a uniform-random card, for the whole run. Resting is right; never waking is not,
+        so the assertion is now "it stopped calling", not "it is dead forever" -- recovery after
+        the cooldown is pinned in test_llm_advisor_latency.py.
+        """
         a = LLMAdvisor(model="qwen2.5:latest", timeout=0.2, port=1)
         for _ in range(a.max_consecutive_fails):
             a.suggest(SIT, HAND, 7)
-        self.assertTrue(a.disabled)
+        self.assertGreater(a._cooldown_until, time.time(), "the breaker never tripped")
+        self.assertFalse(a.disabled, "the breaker went back to disabling the whole session")
         before = a.calls
         self.assertIsNone(a.suggest(SIT, HAND, 7))
-        self.assertEqual(a.calls, before, "a disabled advisor must not make further calls")
+        self.assertEqual(a.calls, before, "a resting advisor must not make further calls")
 
     def test_empty_hand_is_none(self):
         a = LLMAdvisor(model="qwen2.5:latest", timeout=0.3, port=1)

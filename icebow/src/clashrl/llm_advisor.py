@@ -51,6 +51,28 @@ import time
 HOLD = "hold"
 
 
+
+def _parse_card(text, hand):
+    """Lenient read of a FREE-TEXT reply (the fast path sends no JSON schema).
+
+    Accepts `tornado`, `"tornado"`, `Tornado.`, `play tornado`; longest names are matched first so
+    `tesla_evo` never reads as `tesla`. Anything unrecognised is returned as-is and rejected by the
+    caller's hand check -- a wrong word must fail loudly to the fallback, not silently pick a card.
+    """
+    raw = (text or "").strip()
+    if not raw:
+        return ""
+    first = raw.splitlines()[0].strip().strip('"').strip("'")
+    t = first.lower().replace(" ", "_").strip(".,;:!?'\"")
+    if t == HOLD or t in hand:
+        return t
+    low = raw.lower().replace(" ", "_")
+    for c in sorted(list(hand) + [HOLD], key=len, reverse=True):
+        if c in low:
+            return c
+    return t
+
+
 class LLMAdvisor:
     """Suggests a card to explore with. Fails to None, never raises into the caller."""
 
@@ -72,6 +94,11 @@ class LLMAdvisor:
         self.max_consecutive_fails = int(g("train", "llm_advisor_max_fails", default=5) or 5)
         self._streak = 0
         self.disabled = False
+        # ...and how long it rests before trying again (see _note_fail).
+        self.cooldown_s = float(g("train", "llm_advisor_cooldown_s", default=30.0) or 30.0)
+        self.cooldown_max_s = float(g("train", "llm_advisor_cooldown_max_s", default=300.0) or 300.0)
+        self._cooldown_until = 0.0
+        self._cooldowns = 0
 
     # -- transport ------------------------------------------------------
     def _connection(self):
@@ -114,6 +141,8 @@ class LLMAdvisor:
     def _ask(self, situation: str, hand: list, elixir: float, plan: bool):
         if not hand or self.disabled:
             return []
+        if self._cooldown_until and time.time() < self._cooldown_until:
+            return []                     # resting after a failure streak; costs the loop nothing
         # SHARP RULES, not just roles. Measured on tools/llm_eval.py, putting the deck's actual
         # decision rules in the prompt moved gemma3:4b from 3/10 to 8/10 -- the ceiling was the
         # PROMPT, not the model.
@@ -174,10 +203,30 @@ class LLMAdvisor:
                   {"type": "object",
                    "properties": {"card": {"type": "string", "enum": opts}},
                    "required": ["card"]})
-        body = json.dumps({"model": self.model,
-                           "messages": [{"role": "user", "content": prompt}],
-                           "format": schema, "stream": False, "keep_alive": "60m",
-                           "options": {"temperature": 0.0, "num_predict": 48 if plan else 16}})
+        # FAST PATH for the single-card question (2026-08-19, measured): the JSON object costs 10
+        # generated tokens where the bare name costs 3, and at ~44 ms/token that difference alone
+        # is what pushed p50 (0.855 s) past the 0.90 s budget and made the advisor time out. Free
+        # text + the hand validation below measures p50 0.400 s with identical answers. The PLAN
+        # path keeps the schema: a multi-card sequence needs the structure, and it is off by
+        # default anyway.
+        if plan:
+            body = json.dumps({"model": self.model,
+                               "messages": [{"role": "user", "content": prompt}],
+                               "format": schema, "stream": False, "keep_alive": "60m",
+                               "options": {"temperature": 0.0, "num_predict": 48}})
+        else:
+            body = json.dumps({"model": self.model,
+                               # WORDING IS LOAD-BEARING, measured on the 13 engine-verified
+                               # cases: this exact line scores 11/13, while ending it with
+                               # "...or hold" scores 3/13 -- the model then holds 11 times, because
+                               # the last words of a prompt pull hard -- and appending nothing at
+                               # all scores 0/13 (it answers in prose the parser cannot read).
+                               # Do not "tidy" this line.
+                               "messages": [{"role": "user", "content": prompt
+                                             + "\nAnswer with the card name only."}],
+                               "stream": False, "keep_alive": "60m",
+                               "options": {"temperature": 0.0, "num_predict": 6,
+                                           "stop": ["\n"]}})
         self.calls += 1
         t0 = time.time()
         try:
@@ -185,8 +234,11 @@ class LLMAdvisor:
             c.request("POST", "/api/chat", body=body,
                       headers={"Content-Type": "application/json"})
             raw = c.getresponse().read()
-            msg = json.loads(json.loads(raw)["message"]["content"])
-            got = msg.get("cards") if plan else [msg.get("card")]
+            content = json.loads(raw)["message"]["content"]
+            if plan:
+                got = json.loads(content).get("cards")
+            else:
+                got = [_parse_card(content, hand)]
         except Exception as e:  # noqa: BLE001
             # Any failure at all: drop the connection so the next call starts clean, and let the
             # caller fall back. A live loop must never wait on this.
@@ -205,6 +257,8 @@ class LLMAdvisor:
         if out:
             self.hits += 1
             self._streak = 0
+            self._cooldowns = 0           # one good answer clears the backoff entirely
+            self._cooldown_until = 0.0
             return out
         self._note_fail("reply outside the hand: %r" % (got,))
         return []
@@ -214,7 +268,17 @@ class LLMAdvisor:
         self.last_error = why
         self._streak += 1
         if self._streak >= self.max_consecutive_fails:
-            self.disabled = True
+            # COOLDOWN, NOT DEATH (2026-08-19). This used to set disabled=True for the whole
+            # session: with a budget the model was only just missing, five consecutive timeouts
+            # arrived within the first handful of exploration steps and EVERY later decision fell
+            # back to a uniform-random card -- the reported "advisor keeps timing out so the model
+            # plays randomly". Resting is right (a dead server costs ~510 ms per call to rediscover
+            # and the bot is blind for it); never trying again is not. Backoff doubles per relapse
+            # so a genuinely dead server is still only probed occasionally.
+            self._cooldowns += 1
+            rest = min(self.cooldown_s * (2 ** (self._cooldowns - 1)), self.cooldown_max_s)
+            self._cooldown_until = time.time() + rest
+            self._streak = 0
 
     def warmup(self, seconds: float = 60.0):
         """Force the model into VRAM before the match starts, and report reachability.
@@ -241,6 +305,8 @@ class LLMAdvisor:
             self.total_s = 0.0
             self._streak = 0
             self.disabled = False
+            self._cooldown_until = 0.0
+            self._cooldowns = 0
         return got
 
     # -- reporting ------------------------------------------------------
@@ -250,8 +316,10 @@ class LLMAdvisor:
         return ("llm-advisor %s: %d calls, %d answered (%.0f%%), %d failed, mean %.0f ms%s%s"
                 % (self.model, self.calls, self.hits, 100.0 * self.hits / self.calls,
                    self.fails, 1000.0 * self.total_s / self.calls,
-                   " [DISABLED after %d consecutive failures]" % self.max_consecutive_fails
-                   if self.disabled else "",
+                   (" [DISABLED]" if self.disabled else
+                    " [resting %.0fs after %d consecutive failures]"
+                    % (max(0.0, self._cooldown_until - time.time()), self.max_consecutive_fails)
+                    if self._cooldown_until > time.time() else ""),
                    "" if not self.last_error else ", last error %s" % self.last_error))
 
     def close(self):

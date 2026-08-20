@@ -661,7 +661,9 @@ train:
   llm_advisor_timeout_s: 0.9          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
-  llm_advisor_max_fails: 5            # consecutive failures before it switches itself off
+  llm_advisor_max_fails: 5            # consecutive failures before it RESTS. It used to switch OFF for the whole session, so one slow patch made every later exploration step a random card (user report 2026-08-19).
+  llm_advisor_cooldown_s: 30          # how long it rests after a failure streak; doubles per relapse, and any single good answer clears it entirely.
+  llm_advisor_cooldown_max_s: 300     # ceiling on that backoff, so even a dead server is re-probed every few minutes.
   # PLACEMENT LOSS (clashrl/spatial_targets.py). Exact one-hot on a 432-cell grid calls a
   # strategically identical neighbour completely wrong, which is how the placement head keeps
   # collapsing onto one tile. Hybrid: a little exact credit to keep the peak sharp, most of the
