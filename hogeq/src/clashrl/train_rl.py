@@ -829,7 +829,16 @@ def train_rl(cfg, init: str | None = None) -> None:
                 nnxt = env.next_vec.copy()
                 nelx = env.elixir_vec.copy()
                 nthr = env.threat_vec.copy()
-                raw = (obs, hand, action, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx, thr, nthr)
+                # THE EXECUTED ACTION, not the chosen one (2026-08-19). env.step rewrites the
+                # CELL through the aim assists and the doctrine training wheels, so storing the
+                # policy's original cell credits a placement that never happened -- the model
+                # would learn that its own bad cell earned the corrected cell's reward, which is
+                # exactly how a training wheel becomes permanent. Q-learning is off-policy, so the
+                # executed action is the correct thing to learn from.
+                taken = getattr(env, "_last_exec_action", None)
+                if taken is None:
+                    taken = action
+                raw = (obs, hand, taken, reward, float(done), nobs, nhand, nxt, nnxt, elx, nelx, thr, nthr)
                 for tr in nstep.push(raw):
                     replay.append(tr)
                 if done:

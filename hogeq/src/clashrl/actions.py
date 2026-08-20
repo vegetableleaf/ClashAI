@@ -215,8 +215,22 @@ class ActionSpace:
         the arena box (clamped to the grid). The labeler + reward helpers quantize through here so
         their cells decode back to the same tap points the policy was trained on."""
         gw, gh = int(self.gw), int(self.gh)
-        fx = (nx - self.bx0) / (self.bx1 - self.bx0) if self.bx1 > self.bx0 else 0.0
-        fy = (ny - self.by0) / (self.by1 - self.by0) if self.by1 > self.by0 else 0.0
+        # THROUGH THE WARP, because cell_center comes back through it. This used to rescale the
+        # arena box LINEARLY while cell_center mapped grid -> frame through the perspective warp,
+        # so the two were only inverses when the warp was off. MEASURED on this deck (2026-08-19):
+        # 412 of 432 cells failed to round-trip; icebow, which had the fix, failed 0.
+        #
+        # It is the reverse direction that everything depends on -- the labeller turns a recorded
+        # human tap into the training cell here, and every aim assist turns a computed target point
+        # into a cell here. So a demonstration tapped at y=0.600 was stored as the cell whose tap
+        # point is 0.527, teaching the policy to play two rows further forward than the human did,
+        # and the aim assists landed short by the same amount. Both failures push the SAME way,
+        # toward the front of the arena.
+        if getattr(self.warp, "ok", False):
+            fx, fy = self.warp.frame_to_board(nx, ny)
+        else:
+            fx = (nx - self.bx0) / (self.bx1 - self.bx0) if self.bx1 > self.bx0 else 0.0
+            fy = (ny - self.by0) / (self.by1 - self.by0) if self.by1 > self.by0 else 0.0
         gx = min(gw - 1, max(0, int(fx * gw)))
         gy = min(gh - 1, max(0, int(fy * gh)))
         return gx, gy

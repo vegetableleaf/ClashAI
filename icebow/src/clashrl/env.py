@@ -232,6 +232,7 @@ class LiveMatchEnv:
         # and are re-checked ~4 s later for the BAD-PULL case: survivors dragged closer to our
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
+        self._last_exec_action = None
         # (the two weights live in the rw() block below with every other reward weight -- they were
         # briefly read up here, before rw() exists, which cost a live match to a TypeError)
         self.training_wheels = bool(cfg.get("train", "training_wheels", default=True))
@@ -979,6 +980,86 @@ class LiveMatchEnv:
             return int(ngy) * self.gw + int(ngx)
         return cell
 
+    def _base_of(self, card_id: int) -> str:
+        """Deck key -> KB base name (evo suffix stripped), or "" for an out-of-range id."""
+        if not (0 <= card_id < self.n_cards):
+            return ""
+        return card_threat.base_key(self.vision.deck_keys[card_id])
+
+    def _my_xbow_live(self):
+        """Our own X-Bow on the board, from the detector's MINE tags -- the anchor the deck's
+        defensive doctrine is written around ("keep the bow firing"). None when it is not out."""
+        for d in (getattr(self, "_last_dets_all", None) or []):
+            try:
+                if d.team == "mine" and card_threat.base_key(str(d.base)) == "x_bow":
+                    return float(d.cx), float(d.gy)
+            except Exception:  # noqa: BLE001 -- a malformed detection is not a bow
+                continue
+        return None
+
+    def _wheels_troop_aim(self, card_id: int, cell: int) -> int:
+        """Doctrine placement for the DEFENDERS (DOCTRINE.md 2; mirrors sim doctrine's
+        _bow_defence_cells, whose geometry is engine-verified).
+
+            knight     -- the bodyguard. With a bow out: one row in front of it, on the threat's
+                          side, so the answer walking at the bow hits him first. Without a bow:
+                          between the attacker and our tower -- a body-block, not a chase.
+            skeletons  -- ON the attacker. Three bodies on a distracted single-target melee kill
+                          it, and even losing them buys the bow two or three more shots.
+            ice_wizard -- BEHIND, deeper into our half and offset sideways: he is never the kill,
+                          he is the multiplier, and he must not share a spell radius with the bow.
+
+        Cell only, and only when the model is grossly off (a placement already within the
+        tolerance is the model's to keep -- the wheels exist to stop donations, not to freeze the
+        cell head). Returns the original cell whenever no rule applies.
+        """
+        base = self._base_of(card_id)
+        if base not in ("knight", "skeletons", "ice_wizard"):
+            return cell
+        tracks = self._enemy_tracks_now()
+        # the threat = the enemy that has come DEEPEST into our half (largest y is nearest our
+        # towers); nothing past the river means there is nothing to body-block.
+        threat = None
+        for t in tracks:
+            if float(t[1]) > 0.42 and (threat is None or float(t[1]) > float(threat[1])):
+                threat = t     # 0.42 = the river line train_rl._needs_answer already triages on
+        if threat is None:
+            return cell
+        tx, ty = float(threat[0]), float(threat[1])
+        row = 1.0 / float(self.gh)                    # one GRID row; smaller offsets quantise away
+        # OUR KING, from the anchors rather than a guess: it is the no-deploy footprint every
+        # placement below has to dodge, and the board centre the ranged defender pulls toward.
+        mine_a = _anchors(self.cfg)[0]
+        kx, ky = (mine_a[2] if len(mine_a) >= 3 else (0.495, 0.72))
+        bow = self._my_xbow_live()
+        if bow is not None:
+            bx, by = bow
+            toward = row if ty > by else -row         # one row from the bow, on the threat's side
+            if base == "knight":
+                nx, ny = bx, by + toward
+            elif base == "skeletons":
+                nx, ny = tx, ty
+            else:                                     # ice_wizard: behind the bow, offset sideways
+                nx, ny = bx + (0.06 if bx < kx else -0.06), by + 2 * row
+        else:
+            if base == "knight":
+                nx, ny = tx, ty + row                 # between the attacker and our tower
+            elif base == "skeletons":
+                nx, ny = tx, ty
+            else:
+                nx, ny = tx + (kx - tx) * 0.5, ty + 3 * row     # back and toward the centre
+        # never aim into our own king tower's footprint: the tap is a no-op there, so the card is
+        # "played" and nothing is placed (the same failure defensive_cell documents).
+        ny = min(ny, ky)
+        if abs(nx - kx) < 0.06 and ny > ky - 0.06:
+            nx = kx + (0.09 if tx >= kx else -0.09)
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        if math.hypot(cx - nx, cy - ny) <= 2.5 * row:
+            return cell                               # already doctrinal enough -- leave it alone
+        ngx, ngy = self.actions.coords_to_grid(nx, ny)
+        return int(ngy) * self.gw + int(ngx)
+
     def _wincon_exec_live(self, card_id: int, cx: float, cy: float) -> float:
         """(3) WIN-CONDITION execution: X-Bow forward-in-range (offence) / back-centre (defence), Miner
         chipping the princess (not the king), the defensive rocket-cycle chip. + right, - thrown away."""
@@ -1180,6 +1261,11 @@ class LiveMatchEnv:
                 # at nothing snaps to the nearest tracked enemy. A model that has not yet learned
                 # WHERE spells go stops donating elixir while it learns WHEN they go.
                 cell = self._wheels_spell_aim(card_id, cell)
+            elif self.training_wheels and play:
+                # ...and the DEFENDERS, which is where this deck's defence actually lives. Same
+                # contract: cell only, card untouched, and a placement the model already got
+                # roughly right is left alone (see _wheels_troop_aim's tolerance).
+                cell = self._wheels_troop_aim(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
             if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
@@ -1221,6 +1307,13 @@ class LiveMatchEnv:
                     if pull is not None:
                         cell = pull
             action = (play, card_id, cell)
+        # WHAT ACTUALLY HAPPENED (2026-08-19). Every assist above rewrites the CELL after the
+        # policy chose it, so on most plays the executed action is NOT the chosen one. The replay
+        # buffer must store THIS one: Q-learning is off-policy, so crediting the executed cell
+        # teaches the doctrine placement (the wheels become demonstrations), while crediting the
+        # model's original cell teaches it that its own bad cell earned the corrected cell's
+        # reward -- which is how a crutch becomes permanent.
+        self._last_exec_action = action
         now = time.time()                                     # -- cadence: decision-to-decision wall time
         if self._last_step_t is not None:
             self._cad["loop"] += now - self._last_step_t

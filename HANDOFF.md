@@ -378,6 +378,49 @@ scope is now collected from top-level statements only.
 
 Suites after: icebow 427 OK, hogeq 42 (its documented baseline; none from these files).
 
+## 3f. 2026-08-19 night — the advisor, the doctrine wheels, and a warp bug in hogeq
+
+**The advisor (`b07b983`).** User: "the advisor keeps timing out which causes the model to play
+randomly." Both halves confirmed, two independent causes:
+- The single-card answer was a JSON object (`{ "card": "tornado" }` = 10 generated tokens at ~44
+  ms) -> p50 **0.855 s** against a 0.90 s budget. It was losing by 20 ms. Reproduction: **0 of 15**
+  calls answered. Bare card name (3 tokens) -> p50 **0.492 s**, **15 of 15**.
+- The circuit breaker was PERMANENT (`disabled=True` for the session). At a ~40% timeout rate five
+  in a row arrives immediately, so every later exploration step was a uniform-random card. Now a
+  cooldown (30 s, doubling, 300 s cap) that any single good answer clears.
+- **The prompt's last line is load-bearing** — scored on tools/llm_eval.py's 13 engine-verified
+  cases: `"Answer with the card name only."` **11/13**; `"...or hold."` **3/13** (holds 11x);
+  nothing appended **0/13**; the old JSON schema **7/13**. Shipped the 3/13 wording first and the
+  eval caught it. A top-level string enum was fast, "valid", and answered `hold` 12/12 — latency
+  alone would have shipped a bot that never plays.
+
+**Doctrine wheels for the defenders + the buffer fix (this batch).** Already wheeled before:
+x_bow lane/lock/depth, tesla centre-pull, rocket weaker-tower/pump/intercept (unconditional,
+predating the flag), plus 08-19's spell wheels. Added: `_wheels_troop_aim` for **knight**
+(bodyguard one row in front of the bow on the threat's side; body-block between attacker and tower
+when no bow is out), **skeletons** (onto the attacker), **ice_wizard** (behind and offset, out of
+one spell radius with the bow) — mirroring sim `_bow_defence_cells`, geometry derived from the real
+tower anchors, king-footprint guarded, and a one-cell tolerance so a placement the model already
+got right is left alone.
+
+⚠ **THE PREREQUISITE, do not undo:** `train_rl` stored the action the POLICY chose while `env.step`
+executes a doctrine-corrected CELL. That teaches backwards — the model's bad cell gets credited
+with the corrected cell's reward, so it learns the mistake was right and the wheel can never come
+off. `env._last_exec_action` now carries the executed action and the replay buffer stores THAT
+(Q-learning is off-policy, so this is the correct form). This affected the pre-existing rocket/xbow
+/tesla assists too, for as long as they have existed.
+
+**hogeq's `coords_to_grid` never got icebow's warp fix.** Measured: round-tripping every cell
+through `cell_center -> coords_to_grid` mismatched **412 of 432** cells in hogeq, **0 of 432** in
+icebow. hogeq still rescaled the arena box LINEARLY while `cell_center` maps through the
+perspective warp. Everything that turns a POINT into a CELL goes through it — the labeller (human
+tap -> training cell) and every aim assist — so **hogeq's recorded demonstrations were stored ~2
+rows toward the enemy end of where the human actually tapped, and its aim assists landed short by
+the same amount**. Fixed (now 0/432). Consequence worth acting on: hogeq BC data labelled before
+this is systematically shifted, so a re-label (or re-record) is the honest next step there.
+
+Suites: icebow 450 OK, hogeq 42 (unchanged baseline — the warp fix added none).
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
