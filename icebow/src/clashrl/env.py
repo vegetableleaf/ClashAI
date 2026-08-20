@@ -233,6 +233,15 @@ class LiveMatchEnv:
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
         self._last_exec_action = None
+        # The researched counter table drives WHERE a doctrine answer goes (see _where_cell).
+        # Empty when the deck ships no config/counters.yaml, and the wheels then keep their
+        # hand-written geometry exactly as before.
+        try:
+            from .counters import load as _load_counters
+            self.counter_table = _load_counters(cfg)
+        except Exception:  # noqa: BLE001 -- a bad table must never stop a match starting
+            from .counters import CounterTable as _CT
+            self.counter_table = _CT([])
         # (the two weights live in the rw() block below with every other reward weight -- they were
         # briefly read up here, before rw() exists, which cost a live match to a TypeError)
         self.training_wheels = bool(cfg.get("train", "training_wheels", default=True))
@@ -1015,6 +1024,43 @@ class LiveMatchEnv:
                 continue
         return None
 
+    def _where_cell(self, where, tx, ty, bow=None):
+        """Map one WHERE vocabulary word onto board coordinates.
+
+        Our towers are at the HIGH-y end, so "in front of the threat" means DEEPER than it (+y):
+        between the attacker and what it is walking at. Every offset clears at least one grid row,
+        because the 24-row grid quantises anything smaller straight back onto the same cell (the
+        lesson the sim's doctrine offsets already carry).
+        """
+        row = 1.0 / float(self.gh)
+        mine_a = _anchors(self.cfg)[0]
+        kx, ky = (mine_a[2] if len(mine_a) >= 3 else (0.495, 0.72))
+        if where == "on_top" or where == "surround":
+            return tx, ty
+        if where == "in_front":
+            return tx, ty + row
+        if where == "behind_threat":
+            return tx, ty - row
+        if where == "center_kite":
+            # centre of our half: the push has to walk a longer diagonal under fire, and BOTH
+            # princess towers reach the middle.
+            return kx, min(ty + 2 * row, ky - 2 * row)
+        if where == "at_tower":
+            # tight to the threatened princess, one row in front of it -- the tower's own dps
+            # joins the defence (skeletons vs wall breakers, per the user).
+            px, py = min(mine_a[:2], key=lambda a: abs(a[0] - tx)) if len(mine_a) >= 2 else (kx, ky)
+            return px, py - row
+        if where == "opposite_lane":
+            return (2.0 * kx - tx), ty
+        if where == "king_activation":
+            got = nado_king_cell(self._enemy_tracks_now(), mine_a, self.actions) \
+                if nado_king_cell is not None else None
+            if got is not None:
+                gx, gy = got % self.gw, got // self.gw
+                return self.actions.cell_center(gx, gy)
+            return kx, ky - row
+        return None
+
     def _wheels_troop_aim(self, card_id: int, cell: int) -> int:
         """Doctrine placement for the DEFENDERS (DOCTRINE.md 2; mirrors sim doctrine's
         _bow_defence_cells, whose geometry is engine-verified).
@@ -1032,7 +1078,9 @@ class LiveMatchEnv:
         cell head). Returns the original cell whenever no rule applies.
         """
         base = self._base_of(card_id)
-        if base not in ("knight", "skeletons", "ice_wizard"):
+        table = getattr(self, "counter_table", None)
+        tabled = bool(table) and len(table) > 0
+        if not tabled and base not in ("knight", "skeletons", "ice_wizard"):
             return cell
         tracks = self._enemy_tracks_now()
         # the threat = the enemy that has come DEEPEST into our half (largest y is nearest our
@@ -1045,6 +1093,20 @@ class LiveMatchEnv:
             return cell
         tx, ty = float(threat[0]), float(threat[1])
         row = 1.0 / float(self.gh)                    # one GRID row; smaller offsets quantise away
+        # THE RESEARCHED PLACEMENT WINS when the table has one for this card against this threat
+        # group -- that is the whole point of recording WHERE per row ("skeletons vs wall
+        # breakers go AT_TOWER, so the princess tower helps kill them"). The hand-written
+        # geometry below stays as the fallback for cards and boards the table does not cover.
+        if tabled:
+            names = [str(t[4]) for t in tracks
+                     if len(t) > 4 and t[4] and float(t[1]) > 0.42]
+            for resp in table.responses(names, hand_bases=[base]):
+                spot = self._where_cell(str(resp.get("where") or ""), tx, ty)
+                if spot is not None:
+                    ngx, ngy = self.actions.coords_to_grid(spot[0], spot[1])
+                    return int(ngy) * self.gw + int(ngx)
+        if base not in ("knight", "skeletons", "ice_wizard"):
+            return cell                               # no table row and no hand-written rule
         # OUR KING, from the anchors rather than a guess: it is the no-deploy footprint every
         # placement below has to dodge, and the board centre the ranged defender pulls toward.
         mine_a = _anchors(self.cfg)[0]
