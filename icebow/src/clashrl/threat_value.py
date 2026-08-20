@@ -219,7 +219,16 @@ def _spawner_cost(db, base: str, tower_level: int, enemy_level: int):
     unit_cost = ignore_cost_frac(db, unit, tower_level, enemy_level)
     if unit_cost is None or unit_cost != unit_cost or unit_cost == float("inf"):
         return None
-    return min(_SPAWNER_CAP, unit_cost * _SPAWNER_WAVES)
+    # HOW MANY WAVES IT ACTUALLY GETS, from the card's own interval and lifetime. These were prose
+    # in the comments beside the entries ("every 2.2s", "Every 3 seconds... summon a Goblin") and
+    # absent from the data, so the model had to guess a flat two waves for every hut -- which
+    # priced a Goblin Drill (3s period, 10s life) the same as a Barbarian Hut (13.5s, 30s life).
+    # `_SPAWNER_WAVES` survives only as the fallback for a spawner whose interval is still unknown.
+    spawn = (db.get(base) or {}).get("spawns") or {}
+    every = _num(spawn, "interval")
+    life = _num(db.get(base) or {}, "lifetime", "lifetime_s")
+    waves = (float(life) / float(every)) if (every and life) else _SPAWNER_WAVES
+    return min(_SPAWNER_CAP, unit_cost * max(1.0, waves))
 
 
 def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> float:
@@ -234,15 +243,17 @@ def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11
     econ = _economy_cost(db, base, tower_level, enemy_level)
     if econ is not None:
         return econ                        # already a tower FRACTION, not raw damage
-    bodies0 = _bodies(db, base, enemy_level)
-    if bodies0 is None:
-        spawned = _spawner_cost(db, base, tower_level, enemy_level)
-        if spawned is not None:
-            return spawned                 # a hut is worth exactly what comes out of it
+    # A SPAWNER IS WORTH AT LEAST WHAT COMES OUT OF IT, whether or not it also shoots. The Furnace
+    # carries damage and a hit speed, so the body model answered first and the spawn was never
+    # priced -- it scored as a lone turret while the Fire Spirits it actually threatens you with
+    # went uncounted. Taking the MAX keeps a pure hut priced by its spawn and an attacking spawner
+    # priced by whichever half is worse, without double-counting the two.
+    spawned = _spawner_cost(db, base, tower_level, enemy_level)
     bodies = _bodies(db, base, enemy_level)
     if bodies is None:
-        return float("inf")
-    return _dealt(bodies, tower_level) / float(tower_hp(tower_level))
+        return spawned if spawned is not None else float("inf")
+    own = _dealt(bodies, tower_level) / float(tower_hp(tower_level))
+    return max(own, spawned) if spawned is not None else own
 
 
 def triage(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> str:
