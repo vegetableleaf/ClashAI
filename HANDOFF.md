@@ -479,6 +479,43 @@ only because the buffer stores the EXECUTED action (a683d46). Defence always out
 12 new tests per deck (spell serving + spawn exception, static demotion with all three escape
 hatches — march/bars/their-side — situation filter). Suites: icebow 478 OK, hogeq 42 baseline.
 
+## 3i. 2026-08-20 — counter validity + the counter table
+
+User: "the advisor is suggesting unrealistic counters... knight on a balloon (knight can't even
+see the balloon) or rocketing wall breakers (a horrible elixir trade)."
+
+**The veto (`65fda67`), `threat_value.pick_invalid`** — both failures were ALREADY forbidden in
+the advisor prompt IN WORDS and shipped anyway; same lesson as the triage tier (52a238e), so the
+rule is KB code:
+- `can_touch`: an ALL-flying group needs an air-attacker, tornado (repositioning air is the
+  answer), or a non-ground-only spell. `the_log` rolls, `earthquake` shakes the ground — neither
+  reaches a balloon. A MIXED group never vetoes a ground card.
+- `trade_sane`: a SPELL costing 3+ more than the whole group it erases is a losing move (rocket 6
+  on wall_breakers 2). Troops are never trade-vetoed — which is why **skeletons stay a legal wall
+  breakers answer with the tower helping** (user's note, pinned by a test).
+- LIVE: vetoes the advisor's pick, falls back to the doctrine/cheapest-valid answer, never random.
+  `_needs_answer` split so the triaged group is computed once and shared with the veto.
+- SIM: `doctrine_cards` filters nominations at BOTH exits; offensive nominations exempt.
+- MEASURED on tools/llm_eval.py (+3 cases for the reported bugs): old prompt **13/16** and it
+  answered the balloon case with `the_log` — the user's bug reproduced in the harness; new prompt
+  **14/16** (balloon→tesla, wall_breakers→the_log). The remaining miss (three_musketeers: rocket
+  vs tornado) is the known nado→rocket ordering item, not a regression.
+
+**The table plumbing (`a363a87`), `clashrl/counters.py`** — rows are threat_cards → ordered
+respond[{card, when, where, note}], looked up combo-first (an exact combo beats its parts; a
+superset push still finds it), filtered to what is in hand. Consumers: advisor-vetoed → doctrine
+answer; **advisor-silent → doctrine answer instead of a uniform-random card** (the measured cause
+of the "plays randomly" sessions); sim `doctrine_cards` nominates the same rows at 5.0/4.0.
+Data lives in `config/counters.yaml` (`train.counter_table`); first row for a key wins so a
+hand-written override survives a regenerate. **No table shipped yet** → empty table → every path
+keeps its previous behaviour.
+
+⚠ OPEN: the researched rows. The first fleet (21 agents) died on a Fable-5 usage limit with 0
+results; the second (13 agents, sonnet for the web-extraction batches) was still running at
+write time. Deliverable = `config/counters.yaml` per deck + the `where`→wheels placement mapping.
+
+Suites: icebow 509 OK, hogeq 42 baseline.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
