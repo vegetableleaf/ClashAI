@@ -313,15 +313,21 @@ Three user reports, all confirmed real:
 3. **The HOLD-despite-enemy-plays gate**: `_needs_answer` read only the latest detector pass →
    a threat blinking out on the decision tick made the board "quiet" (the model FORGOT enemies it
    saw). The gate now triages the tracker's remembered enemies (with_base ported to hogeq),
-   deduped against live dets. **Deliberately NOT counting unknowns** — post-553fe5c they're mostly
+   deduped against live dets — and the advisor's `_situation` string appends them too, labelled
+   "briefly out of sight" (follow-up commit), since the LLM was otherwise still TOLD an empty
+   board. **Deliberately NOT counting unknowns** — post-553fe5c they're mostly
    our own cards; recorded so nobody "fixes" it back.
 4. **Training wheels ON** (`train.training_wheels`): doctrine aim-correction for all live spells
    (log→corridor, tornado→king-cell else clump, else nearest enemy). CELL-ONLY — the card axis of
    the stored DQN action is never altered, same contract as the existing aim assists.
 
-⚠ The running icebow PPO's reward landscape changed mid-run (crown damage `7bfe6ed` + sim
-`nado_bad`): PPO is on-policy so this is a shift, not corruption, but per-term comparisons across
-2026-08-19 evening straddle it.
+⚠ CORRECTED (the NOTE inside 3db2193's commit message is WRONG about this): the overnight
+icebow PPO spawned its workers 19:39 on 08-19, BEFORE the 21:44 sim edits -- Python imports once,
+so that run has NO `nado_bad` anywhere in it, and it has had the crown-damage values since step 0
+(committed earlier that day). Nothing straddled. `nado_bad` first applies to the NEXT sim launch;
+the live terms (spell_waste-at-impact, wheels, gate memory) to the next train-rl session. Caveat
+only if a worker crashes and respawns after 21:44: that worker imports the NEW sim -- check worker
+process creation times before comparing per-term stats.
 
 ## 4. The central problem, and where it stands
 

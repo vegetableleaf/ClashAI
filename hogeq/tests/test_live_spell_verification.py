@@ -176,5 +176,61 @@ class ThreatGateMemoryTests(unittest.TestCase):
                          "one skeletons group was double-counted into a real threat")
 
 
+class AdvisorSituationMemoryTests(unittest.TestCase):
+    """The other half of the HOLD report: the gate remembering is not enough if the ADVISOR's
+    situation string still describes one detector pass -- the LLM was literally told "nothing on
+    the board" while a remembered enemy marched. Replicates _situation's memory-append block
+    (it is a closure in train_rl, like _needs_answer above)."""
+
+    class _Warp:
+        def frame_to_board(self, x, y):
+            return x, y                                  # identity: frame coords ARE board coords
+
+    def _remembered_groups(self, dets, tracker):
+        import time as _t
+        seen_xy = [(float(d.cx), float(d.gy), str(d.base)) for d in dets if d.team == "enemy"]
+        groups = {}
+        w = self._Warp()
+        for tr in tracker.enemy_tracks(_t.time(), with_base=True):
+            x, y, b = float(tr[0]), float(tr[1]), (str(tr[4]) if len(tr) > 4 and tr[4] else "")
+            if not b:
+                continue
+            if any(abs(x - sx) + abs(y - sy) < 0.06 and b == sb for sx, sy, sb in seen_xy):
+                continue
+            seen_xy.append((x, y, b))
+            bx, by = w.frame_to_board(x, y)
+            where = ("deep in your half" if by > 0.66 else
+                     "in your half" if by > 0.52 else
+                     "at the bridge" if by > 0.44 else "on their side")
+            lane = "left" if bx < 0.42 else "right" if bx > 0.58 else "centre"
+            groups[(b.replace("_", " "), where + ", briefly out of sight", lane)] = 1
+        return groups
+
+    def _marching(self, base="knight"):
+        import time as _t
+        now = _t.time()
+        tr = TeamTracker(own_cards=["hog_rider", "tesla"])
+        d0 = Detection(base, 0.50, 0.55, 0.05, 0.05, 0.9, "unknown", None, None, None)
+        tr.tag([d0], now - 1.0)
+        d1 = Detection(base, 0.50, 0.62, 0.05, 0.05, 0.9, "unknown", None, None, None)
+        tr.tag([d1], now - 0.5)
+        return tr
+
+    def test_a_blinked_enemy_is_still_described_to_the_advisor(self):
+        import time as _t
+        tr = self._marching()
+        tr.tag([], _t.time())                            # the advisor-tick blink
+        groups = self._remembered_groups([], tr)
+        self.assertTrue(any(n == "knight" and "briefly out of sight" in wh
+                            for (n, wh, _l) in groups),
+                        "the advisor was told nothing about a remembered marching knight")
+
+    def test_a_unit_the_pass_already_reports_is_not_repeated_from_memory(self):
+        tr = self._marching()
+        live = Detection("knight", 0.50, 0.62, 0.05, 0.05, 0.9, "enemy", None, None, None)
+        self.assertEqual({}, self._remembered_groups([live], tr),
+                         "the same knight was described twice (once live, once from memory)")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

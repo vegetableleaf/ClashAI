@@ -413,7 +413,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         degrades the description instead of breaking the call.
         """
         dets = getattr(env, "_last_dets_all", None) or []
-        groups, mine, dropped = {}, {}, []
+        groups, mine, dropped, seen_xy = {}, {}, [], []
         try:
             w = env.actions.warp
             for d in dets:
@@ -440,8 +440,35 @@ def train_rl(cfg, init: str | None = None) -> None:
                 lane = "left" if bx < 0.42 else "right" if bx > 0.58 else "centre"
                 k = (name, where, lane)
                 groups[k] = groups.get(k, 0) + 1
+                seen_xy.append((float(d.cx), float(d.gy), str(d.base)))
         except Exception:  # noqa: BLE001
             groups = {}
+        # REMEMBERED enemies (2026-08-19, same report as the _needs_answer fix: "the advisor
+        # suggests HOLD despite the enemy making several plays"). This string read ONE detector
+        # pass, and the detector misses a unit in ~31% of them -- so an enemy that blinked out on
+        # the advisor tick was simply not mentioned and the advisor reasoned about an empty board.
+        # The tracker carries those units across misses; whatever it remembers that the live pass
+        # did not report is appended, labelled so the advisor knows the position is memory.
+        try:
+            w = env.actions.warp
+            tracker = (env._ploop if (getattr(env, "_ploop", None) is not None
+                                      and env._ploop.running) else env._team_tracker)
+            for tr in tracker.enemy_tracks(time.time(), with_base=True):
+                x, y, b = float(tr[0]), float(tr[1]), (str(tr[4]) if len(tr) > 4 and tr[4] else "")
+                if not b:
+                    continue
+                if any(abs(x - sx) + abs(y - sy) < 0.06 and b == sb for sx, sy, sb in seen_xy):
+                    continue         # already told from the live pass
+                seen_xy.append((x, y, b))
+                bx, by = w.frame_to_board(x, y)
+                where = ("deep in your half" if by > 0.66 else
+                         "in your half" if by > 0.52 else
+                         "at the bridge" if by > 0.44 else "on their side")
+                lane = "left" if bx < 0.42 else "right" if bx > 0.58 else "centre"
+                k = (b.replace("_", " "), where + ", briefly out of sight", lane)
+                groups[k] = groups.get(k, 0) + 1
+        except Exception:  # noqa: BLE001 -- memory is a bonus; never break the description
+            pass
         if groups or mine:
             en = "; ".join("%s%s %s (%s lane)" % (n, " x%d" % c if c > 1 else "", wh, ln)
                            for (n, wh, ln), c in list(groups.items())[:5]) or "nothing"
