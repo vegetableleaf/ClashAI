@@ -28,7 +28,7 @@ from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
 from . import threat_value
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess, pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell, xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell, tesla_pull_cell)
-from .reward import spell_whiffed, nado_regressed
+from .reward import spell_whiffed, nado_regressed, lead_point, lead_velocity
 # deck-dependent aim cells: hogeq's reward.py has no tornado/log-corridor helpers
 try:
     from .reward import nado_king_cell
@@ -235,6 +235,13 @@ class LiveMatchEnv:
         self._pending_spells: list = []
         self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
         self._failed_deploys = 0         # taps that never moved the elixir bar (see the tick)
+        self._pending_deploys: list = []  # deploy checks awaiting evidence (settled >= 1.4s later)
+        self._fast_tick = False          # this decision was woken by perception: skip slow reads
+        self.fast_reaction_tick = bool(cfg.get("env", "fast_reaction_tick", default=True))
+        # How long to wait before judging whether a card left the bar. The tap, the deploy
+        # animation and the bar redraw all have to finish first; judging in the same step read a
+        # bar that had not updated yet and cried wolf on cards that were plainly played.
+        self.deploy_verify_s = float(cfg.get("env", "deploy_verify_s", default=1.4))
         # TORNADO -> ROCKET: the deck's signature combo is a SAME-TILE play, so the last tornado's
         # cast point and time are remembered for the rocket that should follow it.
         self._last_nado = None           # (cx, cy, t_cast) of the most recent tornado cast
@@ -699,6 +706,7 @@ class LiveMatchEnv:
         # seconds would otherwise come due during the NEXT match and be judged against its
         # (empty, by definition) opening board -- a phantom whiff billed to the wrong match.
         self._pending_spells.clear()
+        self._pending_deploys.clear()   # a check from the last match cannot be settled in this one
         self._cad.clear()                 # cadence accounting is per match
         self._cad_n = 0
         self._last_step_t = None
@@ -880,11 +888,17 @@ class LiveMatchEnv:
         the clump dragged), not a hit-them point."""
         gx, gy = cell % self.gw, cell // self.gw
         cx, cy = self.actions.cell_center(gx, gy)
-        tracks = (self._ploop.enemy_tracks(time.time()) if self._ploop is not None and self._ploop.running
-                  else self._team_tracker.enemy_tracks(time.time()))
-        tgt = spell_intercept_cell(cx, cy, tracks, self._impact_time(cx, cy, is_rocket=True),
-                                   self.spell_lead_radius, self.actions)
-        return tgt if tgt is not None else cell
+        tracks = self._enemy_tracks_now(with_base=True)
+        # KB-GROUNDED LEAD (2026-08-20). This used to rely purely on the tracker's velocity, which
+        # is a LIFETIME AVERAGE and is exactly ZERO for a track under 0.5 s old -- so a hog that had
+        # just crossed was "led" by nothing and the blast landed where it had been standing. The
+        # lead now falls back to the card's known walking speed down the lane.
+        got = lead_point(cx, cy, tracks, self._impact_time(cx, cy, is_rocket=True),
+                         self.spell_lead_radius * 18.0, self.db)
+        if got is None:
+            return cell
+        gx2, gy2 = self.actions.coords_to_grid(got[0], got[1])
+        return int(gy2) * self.gw + int(gx2)
 
     # ============ CORRECTNESS-FIRST reward helpers (mirror the sim; from live perception) ============
     def _same_lane(self, cx: float) -> bool:
@@ -989,6 +1003,40 @@ class LiveMatchEnv:
         except Exception:  # noqa: BLE001 -- perception hiccup: no verdicts this tick
             return []
 
+    def _eval_pending_deploys(self, cur_elixir: float) -> float:
+        """Settle deploy checks whose evidence has had time to appear.
+
+        A LIKELIHOOD test, not a threshold. Elixir regenerates while we wait, so both hypotheses
+        are carried forward to now -- deployed = pre - cost + regen, not-deployed = pre + regen --
+        and the reading is assigned to whichever it sits closer to. Anything inside the dead band
+        (the integer bar genuinely cannot separate them) is left alone: a missed detection costs
+        nothing, a false one withholds credit for a play that really happened.
+        """
+        if not self._pending_deploys:
+            return 0.0
+        now = time.time()
+        due = [d for d in self._pending_deploys if d["t_eval"] <= now]
+        if not due:
+            return 0.0
+        self._pending_deploys = [d for d in self._pending_deploys if d["t_eval"] > now]
+        for d in due:
+            elapsed = max(0.0, now - d["t0"])
+            regen = 0.357 * float(d["mult"]) * elapsed          # 1 elixir / 2.8 s at 1x
+            if_deployed = d["pre"] - d["cost"] + regen
+            if_not = d["pre"] + regen
+            if if_not - if_deployed < 1.5:
+                continue                                        # too close to call: say nothing
+            obs = float(cur_elixir)
+            if abs(obs - if_not) + 0.75 < abs(obs - if_deployed):
+                self._failed_deploys += 1
+                if self.spell_verify_log:
+                    name = (self.vision.deck_keys[d["card"]]
+                            if 0 <= d["card"] < self.n_cards else str(d["card"]))
+                    print("[deploy] %s never left the bar: %.0f -> %.0f after %.1fs "
+                          "(deployed would read ~%.1f, not-deployed ~%.1f)"
+                          % (name, d["pre"], obs, elapsed, if_deployed, if_not), flush=True)
+        return 0.0
+
     def _eval_pending_spells(self) -> float:
         """Score due spell casts against FRESHLY SEEN reality. Returns the reward sum.
 
@@ -1066,7 +1114,16 @@ class LiveMatchEnv:
             if got is not None:
                 return got
         if base == "the_log" and log_corridor_cell is not None:
-            got = log_corridor_cell(cx, cy, tracks, self.actions)
+            # LEAD THE LOG TOO. Its own roll adds travel time on top of the cast delay, so a
+            # corridor drawn through where the enemies stand NOW misses a marching push by the
+            # time the roll arrives (user, 2026-08-20). Advance the tracks first, then draw the
+            # corridor through the predicted positions.
+            eta = self._impact_time(cx, cy, is_rocket=False)
+            led = []
+            for t in tracks:
+                vx, vy = lead_velocity(t, self.db)
+                led.append((t[0] + vx * eta, t[1] + vy * eta) + tuple(t[2:]))
+            got = log_corridor_cell(cx, cy, led or tracks, self.actions)
             if got is not None:
                 return got
         # nearest tracked enemy, if any -- better a mediocre hit than a certain whiff
@@ -1617,11 +1674,16 @@ class LiveMatchEnv:
             t0 = time.time()
             remaining = self.act_period if self._last_frame_t is None else \
                 max(0.0, self._last_frame_t + self.act_period - t0)
+            woke = False
             if self._ploop is not None and self._ploop.running:
                 if remaining > 0.0:
-                    self._ploop.wait_event(remaining, self.react_min_gap)
+                    # wait_event returns True when PERCEPTION cut the wait short -- this decision
+                    # exists because something just happened. That answer was being discarded;
+                    # it is the cleanest signal available for "be quick now".
+                    woke = bool(self._ploop.wait_event(remaining, self.react_min_gap))
             elif remaining > 0.0:
                 time.sleep(remaining)
+            self._fast_tick = woke and self.fast_reaction_tick
             self._cad["wait"] += time.time() - t0
             t0 = time.time()
             frame = self._grab()
@@ -1632,7 +1694,7 @@ class LiveMatchEnv:
 
         t0 = time.time()
         state = self.vision.detect_state(frame)
-        self._cad["vision"] += time.time() - t0
+        self._cad["state"] += time.time() - t0
         if state == GameState.IN_MATCH:
             t0 = time.time()
             prev_princess = list(self.tower.mine_alive[:2])
@@ -1656,8 +1718,13 @@ class LiveMatchEnv:
                 if prev_princess[i] and not self.tower.mine_alive[i]:
                     reward += self.w_lose
                     self.rw_stats.add("lose_own_tower", self.w_lose)
-            cur_mass = enemy_mass(frame, self.cfg)
-            self._last_mass = cur_mass
+            # SKIPPED ON A REACTION TICK: a colour-mass estimate is a slow-moving quantity and
+            # this is time sitting between seeing a push and answering it.
+            if self._fast_tick and self._last_mass is not None:
+                cur_mass = float(self._last_mass)
+            else:
+                cur_mass = enemy_mass(frame, self.cfg)
+                self._last_mass = cur_mass
             my_hp = float(sum(self.tower_hp.my_hp))
             # CONSERVATIVE AFFORDABILITY (2026-08-16). The bar cannot be read finely enough to
             # tell 2.99 pips from 3.00, and the GAME requires the full amount -- so a card the
@@ -1673,11 +1740,14 @@ class LiveMatchEnv:
             # both want accuracy rather than caution.
             cur_frac = self.vision.read_elixir_frac(frame)
             cur_elixir = int(max(0.0, cur_frac - self.elixir_margin))
-            new_mult = self.clock.update(frame)                  # 2x/3x elixir clock (time + optional badge)
+            # The clock is TIME-driven; the badge is only a cross-check, so on a reaction tick
+            # the elapsed-time reading stands on its own.
+            new_mult = (self.elixir_mult if self._fast_tick
+                        else self.clock.update(frame))       # 2x/3x elixir clock (time + badge)
             if new_mult != self.elixir_mult:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
             self.elixir_mult = new_mult
-            self._cad["vision"] += time.time() - t0              # tower reads + HP OCR + mass + elixir + clock
+            self._cad["reads"] += time.time() - t0               # tower reads + HP OCR + mass + elixir + clock
             # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
             # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
             # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
@@ -1710,19 +1780,18 @@ class LiveMatchEnv:
             # Conservative on purpose: the bar is read as an INTEGER, so only an expensive card
             # whose reading did not fall AT ALL is treated as failed. Cheap cards and partial
             # drops are left alone rather than risk withholding credit for a real play.
-            deployed = True
             if play and 0 <= card_id < self.n_cards:
-                cost = float(self.card_elixir[card_id])
-                if cost >= 3.0 and (float(pre_elixir) - float(cur_elixir)) <= 0.0:
-                    deployed = False
-                    self._failed_deploys += 1
-                    self._last_exec_action = (0, 0, 0)   # the buffer must not store fiction
-                    if self.spell_verify_log:
-                        print("[deploy] %s did NOT leave the bar (%.0f -> %.0f, cost %.0f) -- "
-                              "credit withheld, stored as a wait"
-                              % (self.vision.deck_keys[card_id], pre_elixir, cur_elixir, cost),
-                              flush=True)
-            if play and deployed:
+                # QUEUE the deploy check; do not judge it now. The paced wait is
+                # event-interruptible (react_min_gap 0.15 s), so this step's elixir read can land
+                # a fraction of a second after the tap -- before the game has even drawn the
+                # deduction. Judging there reported "did NOT leave the bar" for cards the user
+                # could watch being played (2026-08-20 report).
+                self._pending_deploys.append(
+                    {"t_eval": time.time() + self.deploy_verify_s, "t0": time.time(),
+                     "card": card_id, "cost": float(self.card_elixir[card_id]),
+                     "pre": float(pre_elixir), "mult": int(self.elixir_mult)})
+            reward += self._eval_pending_deploys(cur_elixir)
+            if play:
                 tr = self.rw_stats.add("threat_response", self._bonus(self._threat_response_live(card_id, cx, cy)))   # (1) counter the assessed threat
                 wc = self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec_live(card_id, cx, cy)))            # (3) win-condition executed right
             else:
@@ -1821,8 +1890,8 @@ class LiveMatchEnv:
         # item 5 (trained act_period 1.0 vs the ~2.2 s that was actually served).
         cad = {}
         if self._cad_n:
-            order = ("loop", "wait", "spell", "grab", "vision", "hand", "threat", "obs", "act",
-                     "det_age")
+            order = ("loop", "wait", "spell", "grab", "state", "reads", "hand", "threat", "obs",
+                     "act", "det_age")
             cad = {k: round(self._cad[k] / self._cad_n, 3) for k in order if self._cad.get(k)}
             print(f"[cadence] {self._cad_n} decisions | "
                   + "  ".join(f"{k} {v:.2f}s" for k, v in cad.items()), flush=True)

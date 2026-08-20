@@ -612,3 +612,53 @@ def nado_regressed(pulled_at_cast, enemy_tracks_now, my_princess_anchors,
         return False                                  # everything it pulled is gone: fine
     # positive delta = the survivor is CLOSER to our towers than where the pull found it
     return (sum(deltas) / len(deltas)) >= gain_tiles
+
+
+# Tiles per second, from the KB's speed words. Clash Royale's published bands: slow 45, medium 60,
+# fast 90, very fast 120 "units"; one tile is 1000 units per minute, i.e. tiles/s = band / 60.
+_SPEED_TILES_S = {"slow": 0.75, "medium": 1.0, "fast": 1.5, "very_fast": 2.0, "very fast": 2.0}
+
+
+def lead_velocity(track, db=None, toward_y: float = 1.0):
+    """(vx, vy) in board units/second for a tracked enemy, in TILE-correct terms.
+
+    Prefers the tracker's measured velocity. Falls back to the card's KNOWN WALKING SPEED when the
+    track is too young to have one -- enemy_tracks reports zero velocity below 0.5 s of history,
+    which is exactly the window in which a just-crossed win condition needs leading most (user
+    report, 2026-08-20). A unit on our half is walking at our towers, so the fallback points down
+    the lane; `toward_y` is +1 because our towers sit at the high-y end of the board.
+    """
+    vx = float(track[2]) if len(track) > 2 else 0.0
+    vy = float(track[3]) if len(track) > 3 else 0.0
+    if abs(vx) > 1e-6 or abs(vy) > 1e-6:
+        return vx, vy
+    base = str(track[4]) if len(track) > 4 and track[4] else ""
+    if not base or db is None:
+        return 0.0, 0.0
+    c = db.get(base) or {}
+    if (c.get("kind") or "") not in ("troop", "champion"):
+        return 0.0, 0.0                                   # buildings and spells do not walk
+    speed = str(c.get("speed") or "medium").strip().lower().replace("-", "_")
+    tiles_s = _SPEED_TILES_S.get(speed, 1.0)
+    return 0.0, toward_y * tiles_s / 32.0                  # board units: 32 tiles down the y axis
+
+
+def lead_point(cx, cy, tracks, impact_s, snap_radius_tiles, db=None,
+               tiles_x=18.0, tiles_y=32.0):
+    """Where the enemies the policy aimed at will BE when the spell lands.
+
+    Distances are measured in TRUE TILES (the board is 18x32, so a normalised radius is nearly
+    twice as permissive down the y axis -- the bug that made a river tornado "hit" things 12 tiles
+    away). Returns None when nothing tracked is near the aim, so the caller's own aim stands.
+    """
+    pts = []
+    for t in tracks:
+        if math.hypot((t[0] - cx) * tiles_x, (t[1] - cy) * tiles_y) > snap_radius_tiles:
+            continue
+        vx, vy = lead_velocity(t, db)
+        pts.append((t[0] + vx * impact_s, t[1] + vy * impact_s))
+    if not pts:
+        return None
+    tx = min(0.98, max(0.02, sum(p[0] for p in pts) / len(pts)))
+    ty = min(0.98, max(0.02, sum(p[1] for p in pts) / len(pts)))
+    return tx, ty
