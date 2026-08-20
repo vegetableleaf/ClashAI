@@ -530,6 +530,46 @@ The `where`→wheels mapping shipped in `1ea0cc6`.
 
 Suites: icebow 527 OK, hogeq 42 baseline.
 
+## 3j. 2026-08-20 late — the phantom-credit bug, the defensive bow, the LLM out of the reaction path
+
+**Why `spell_waste` stopped firing AND whiffs still paid (`5b04c17`).** ONE mechanism, and it was
+my own 08-19 fix biting back: the tracker BRIDGES a track for `team_forget_s` (4.5 s) so a real
+unit blinking out is not forgotten — and a FALSE POSITIVE is remembered exactly as long. A
+rocket's whole flight is ~1 s, so at impact the phantom was still "inside the blast" → no whiff
+billed → and the credit `_wincon_exec_live` paid at cast STOOD. **The model was being taught that
+casting at ghosts pays.**
+- Verdicts now run on FRESH sightings only (`env.spell_verify_fresh_s: 0.8` — still several 10 Hz
+  periods, so real 1-3 frame gaps are bridged). `enemy_tracks` grew `max_age`; memory callers
+  (threat gate, `_situation`) are untouched.
+- A whiff HANDS BACK the at-cast credit (`spell_waste_clawback`) → a whiffed spell is strictly
+  negative.
+- **`[spell]` log line per impact**: aim, radius, `N fresh, M remembered`, and a `PHANTOM` marker
+  when only memory saw the target. This is the line that separates "detector false positive" from
+  "model casting at nothing" — read it before diagnosing further.
+
+**Defensive bow / "a back build is not a quiet board" (user).** `_needs_answer` only triaged OUR
+half, so a golem assembling behind their king read as quiet and the loop hunted for PRESSURE —
+which is how the leak-guard fired an offensive bow into a push already paid for.
+`threat_value.massing_in_back` (shared): real elixir at/behind their princess line (y ≤ 0.28) AND
+nothing on our half (y > 0.42). On that board: the gate says answer, the wheel plays the bow into
+the back-centre band, **env.step SKIPS its forward lane/lock/depth snap** (that snap is what makes
+a bow offensive), the sim doctrine aims the same spot ABOVE the phase flag, and the prompt says it.
+
+**Reaction latency, part 2** (perception healthy, det age 0.07 s). The loop is
+`choose(obs) → execute → wait → observe`, so the advisor's ~0.5 s sits between seeing a threat and
+tapping. Defence decisions now consult the **counter table first** (dict lookup, and measurably
+more accurate) and skip the LLM on a hit — **75% of answerable meta threats covered (66/88**;
+spells and triage-ignorable cards excluded, since neither should be answered). Gaps still go to the
+advisor. `react_min_gap` 0.30 → 0.15 (it is slept BEFORE the event is checked = a hard floor).
+⚠ Uncovered-but-answerable, worth a follow-up research pass: berserker, electro/ice/fire/heal
+spirits, knight, goblins, mini_pekka, and enemy buildings (tesla, bomb_tower, furnace, goblin_cage).
+
+**Latent bug found on the way:** hogeq's `PerceptionLoop.enemy_tracks` never got the `with_base`
+port — the gate calls it with `with_base=True`, raising TypeError, swallowed by the gate's own
+except. **hogeq's threat-gate memory has been inert whenever its perception loop runs.** Fixed.
+
+Suites: icebow 543 OK, hogeq 42 baseline.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
