@@ -214,7 +214,10 @@ class SimMatchEnv:
         self.w_wincon_mis = r("wincon_misplace", -0.6)       # win-condition card thrown away
         # cycle_plan / cycle_waste: DELETED -- see the _cycle_plan stub below for the full record.
         # The weights are no longer read (2026-08-12: the live env's copy was deleted too).
-        self.w_leak = r("leak_penalty", -0.2)                # sitting at elixir capacity, leaking
+        # PER-TICK TERMS SCALE WITH agent_dt -- see the live env's note. A shorter decision period
+        # must not silently multiply the terms that are charged once per decision.
+        self._tick_scale = float(cfg.get("sim", "agent_dt", default=1.0)) / 1.0
+        self.w_leak = r("leak_penalty", -0.2) * self._tick_scale   # at elixir capacity, leaking
         self.correctness_cap = r("correctness_cap", 8.0)     # per-match cap on correctness shaping (anti-farm, BOTH signs)
         self._match_penalty = 0.0                            # symmetric twin of _match_bonus (see _bonus)
         # Per-term reward accounting -- which shaping term is actually driving the policy.

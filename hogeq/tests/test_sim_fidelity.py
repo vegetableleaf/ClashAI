@@ -23,7 +23,15 @@ def _quiet(seed=42):
 
 
 def _tick(env, seconds):
-    for _ in range(int(seconds)):
+    """Advance roughly `seconds` of GAME TIME.
+
+    This used to take one step per second, which silently assumed sim.agent_dt == 1.0 -- the
+    helper never honoured its own parameter name. Lowering the decision period to 0.6 s exposed
+    it: every "after ~3 s" assertion was really testing 1.8 s. Convert through the env's own dt so
+    these stay time-based whatever the period is.
+    """
+    dt = float(getattr(env, "agent_dt", 1.0)) or 1.0
+    for _ in range(max(1, int(round(float(seconds) / dt)))):
         env.step((False, 0, 0))
 
 

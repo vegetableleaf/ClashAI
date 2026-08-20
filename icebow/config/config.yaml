@@ -615,8 +615,8 @@ outcome:
 # --- DQN / training hyperparameters (RL fine-tune) -----------------------
 train:
   device: "cuda"                 # "cuda" (GPU) or "cpu"
-  gamma: 0.99
-  n_step: 3                      # N-STEP returns (sim trainer): each transition's target carries the next N real rewards
+  gamma: 0.994                   # RAISED with agent_dt 1.0 -> 0.6: 0.99^0.6 = 0.994 keeps the discount half-life at ~69 SECONDS (114.9 decisions). Left at 0.99 the horizon would have shrunk to 41s purely as an artefact of deciding more often, making the agent short-sighted for no reason anyone chose.
+  n_step: 5                      # N-STEP returns (sim trainer): each transition's target carries the next N real rewards
                                  # + a bootstrap N states ahead -> consequences (overspend -> counter-push -> tower damage)
                                  # reach the CAUSING action's target directly = faster/stronger cause-and-effect credit.
                                  # 1 = classic 1-step TD (old behaviour). Small values (3-5) are standard (Rainbow uses 3).
@@ -647,7 +647,7 @@ train:
                                       # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it
                                       # to 3.020s -- unusable inside a 1.0s act_period. Raising act_period
                                       # to ~3.5s would buy those two cases at the cost of reaction time.
-  llm_advisor_timeout_s: 0.9          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
+  llm_advisor_timeout_s: 0.55          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
   llm_advisor_max_fails: 5            # consecutive failures before it RESTS. It used to switch OFF for the whole session, so one slow patch made every later exploration step a random card (user report 2026-08-19).
@@ -905,7 +905,7 @@ env:
 
 # --- Running the trained policy live -------------------------------------
 play:
-  act_period: 1.0                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
+  act_period: 0.6                # LOWERED 1.0 -> 0.6 with sim.agent_dt (2026-08-20) -- see the note there.                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
                                  # trained its reaction timing + per-step reward economics at 1.0s): between
                                  # decisions the model is BLIND, so this bounds its reaction time to a new threat.
                                  # The gate head still no-ops freely, so a faster cadence adds decision
@@ -1124,7 +1124,7 @@ sim:
                              # hostage for a wincon the policy would not play -> 70% forced
                              # waits + 318 leak fires/40 matches + rocket spam. The x-bow
                              # LEDGER now carries the incentive; freedom beats the straitjacket
-  agent_dt: 1.0                  # seconds of game time per agent decision (matches the live act cadence)
+  agent_dt: 0.6                  # LOWERED 1.0 -> 0.6 (2026-08-20). MEASURED live: pipeline 0.37s, paced WAIT 0.49s -- the loop spent more of each decision waiting than working, and that wait is the largest single slice of reaction time. 0.6 keeps the wait positive (~0.23s) so the period still paces the loop rather than being saturated by it. MUST match play.act_period, and train.gamma / train.n_step / the per-tick reward scale move with it.                  # seconds of game time per agent decision (matches the live act cadence)
   sub_dt: 0.1                    # physics sub-tick within each agent step
   regulation_s: 180             # elixir: single -> DOUBLE at (regulation-60s); double CONTINUES through
                                 # overtime's first minute; TRIPLE only in the LAST 60s of overtime

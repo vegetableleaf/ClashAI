@@ -341,7 +341,14 @@ class LiveMatchEnv:
         # 110 fires / 0 positives (see sim/env._cycle_plan's stub); live then measured the identical
         # action-tax shape -- 2 positives vs 24 negatives over 5 matches -- while being one of only
         # three terms that fired at all. Same term, same shape, same fix.
-        self.w_leak = rw("leak_penalty", -0.2)                # (5) sitting at elixir capacity, leaking
+        # PER-TICK TERMS ARE SCALED BY THE DECISION PERIOD (2026-08-20). `leak` and
+        # `threat_miss_idle` are charged once per DECISION, so shortening the period would bill
+        # them more times per second of game time for identical play -- a silent re-weighting of
+        # the two terms that already dominate the live ledger. Scaling by dt keeps their
+        # per-SECOND rate fixed, and keeps it fixed through any future change of period. Terms
+        # driven by EVENTS (wincon_exec, threat_response, crown, chip, spell_waste) are untouched.
+        self._tick_scale = float(self.act_period) / 1.0
+        self.w_leak = rw("leak_penalty", -0.2) * self._tick_scale     # (5) at capacity, leaking
         self.w_spell_waste_live = rw("spell_waste", -0.3)     # (6) spell verified at IMPACT: hit nothing
         self.w_nado_bad = rw("nado_bad", -0.3)                # tornado that improved the enemy's position
         self.correctness_cap = rw("correctness_cap", 20.0)    # per-match cap on POSITIVE shaping (anti-farm)
@@ -991,7 +998,13 @@ class LiveMatchEnv:
         for cid in self.hand_ids:
             if (0 <= cid < len(self._deck_profiles) and card_threat.counters(self._deck_profiles[cid], tid)
                     and self.card_elixir[cid] <= self.elixir):
-                return self.w_threat_miss
+                # PER-TICK, so it carries the decision-period scale (2026-08-20). This is charged
+                # every decision the threat goes unanswered, whereas the SAME weight used by
+                # _threat_response_live is charged per PLAY -- shortening the period must not
+                # quietly multiply the idle charge while leaving the play charge alone. Measured
+                # at -246.0 over 144 matches, this is the largest negative term in the live
+                # ledger, so an accidental 1.67x would have been a serious re-weighting.
+                return self.w_threat_miss * self._tick_scale
         return 0.0
 
     def _enemy_tracks_now(self, max_age=None, with_base=False):

@@ -176,7 +176,11 @@ class ThreatTimingTests(unittest.TestCase):
         for u in list(env.eng.units):                # the push dies; the board goes quiet
             if u.team == 1:
                 _kill(env, u)
-        for _ in range(5):                           # >= 3 s of sustained engine-time quiet
+        # TIME-BASED, not step-based: the refill needs >= 3 s of engine time, and `range(5)` only
+        # delivered that while a decision was 1.0 s. Lowering the period to 0.6 s put this exactly
+        # on the boundary (5 x 0.6 = 3.0) -- the same latent assumption _tick carried.
+        _dt = float(getattr(env, "agent_dt", 1.0)) or 1.0
+        for _ in range(int(round(5.0 / _dt))):       # >= 3 s of sustained engine-time quiet
             env.step((False, 0, 0))
         self.assertEqual(env._threat_credits, 0, "sustained quiet must refill the budget")
         env.eng.elixir[1] = 10.0
