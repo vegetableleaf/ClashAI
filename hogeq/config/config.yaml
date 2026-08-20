@@ -467,6 +467,33 @@ observation:
     - pekka
     - lava_hound
     - mega_knight
+    # -- PROMOTED 2026-08-20 BY TRAINING VOLUME, bar 250 boxes = the level of ice_spirit (271)
+    #    and princess (300), i.e. as reliable as members already trusted, intersected with the
+    #    cards meta_decks.yaml actually plays. The old list was picked by DECK RELEVANCE, not
+    #    reliability: its floor was 53 boxes (bowler) while spear_goblins -- the second-largest
+    #    class in the whole dataset -- was excluded. Anything below the bar is still GRADED, via
+    #    the reward-only identity vector (env._threat_id_true); it just stays out of the
+    #    observation, which must keep modelling what perception can be trusted to name.
+    - spear_goblins        # 5136 train boxes
+    - minions              # 3509 train boxes
+    - giant                # 2900 train boxes
+    - goblins              # 2815 train boxes
+    - mini_pekka           # 1730 train boxes
+    - tesla                # 1095 train boxes
+    - guards               # 969 train boxes
+    - goblin_hut           # 954 train boxes
+    - goblin_cage          # 932 train boxes
+    - firecracker          # 628 train boxes
+    - valkyrie             # 588 train boxes
+    - barbarians           # 538 train boxes
+    - x_bow                # 530 train boxes
+    - bomber               # 506 train boxes
+    - elixir_collector     # 456 train boxes
+    - bats                 # 433 train boxes
+    - prince               # 342 train boxes
+    - royal_giant          # 334 train boxes
+    - royal_recruits       # 309 train boxes
+    - the_log              # 253 train boxes
     # -- HOLD until labelled (broken/unmeasured on board-13; ADD here once recall is proven -- NO retrain needed):
     #    valkyrie (R 0.33 -- DIAGNOSED 2026-08-06, NOT an annotation problem: box-geometry CoV 0.37 is as tight as
     #    knight/mega_knight. The detector FINDS 6/12 correctly but 2 of them at conf 0.14, and mislabels 4 more as

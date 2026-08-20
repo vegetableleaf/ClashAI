@@ -45,6 +45,9 @@ from .states import GameState
 from .nav import MenuNavigator
 from .threats import ThreatTracker, Threat
 from . import card_threat
+# Spawn-spells DEMAND an answer (the bodies land and walk); every other enemy spell is an effect
+# that nothing counters, so it must not become a "threat" the referee expects a card for.
+_SPAWN_SPELLS = frozenset({"graveyard", "goblin_barrel", "royal_delivery"})
 from . import interactions
 from . import replay_bc
 from .cycle import CycleTracker
@@ -395,7 +398,14 @@ class LiveMatchEnv:
         self.threat_credit_budget = int(cfg.get("env", "threat_credit_budget", default=2))
         self._threat_credits = 0                          # positives granted this threat episode
         self._detector = None
-        self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # last identity block (for reward)
+        self._threat_id = np.zeros(card_threat.IDENTITY_DIM, np.float32)   # OBSERVATION identity block
+        # REWARD-SIDE TWIN, mirroring sim/env._threat_id_true. The observation is limited to the
+        # classes the detector names RELIABLY (`detector_cards`); the referee must not be, or no
+        # answer to anything outside that list can ever be credited -- which is exactly what made
+        # a Skeleton Army or a Battle Ram read as a quiet board. Built from every CORROBORATED
+        # enemy detection instead, since the detector does see them.
+        self._threat_id_true = np.zeros(card_threat.IDENTITY_DIM, np.float32)
+        self._prev_ident_depth_true = 0.0
         self._prev_ident_depth = 0.0        # deepest recognised-threat depth last step (for velocity)
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
@@ -555,6 +565,23 @@ class LiveMatchEnv:
         self._threat_id = card_threat.identity_threat_vector(
             items, self.db, prev_depth=self._prev_ident_depth, dt=dt, horizon=self.predict_horizon)
         self._prev_ident_depth = float(self._threat_id[7])
+        # ...and the REWARD's twin, from every corroborated enemy rather than only the named ones.
+        # `trk_hits >= 2` is the same corroboration the advisor gate and `_situation` apply, so all
+        # three argue about one board; enemy SPELLS stay out because nothing counters an effect.
+        true_items = []
+        for d in (getattr(self, "_last_dets_all", None) or ()):
+            if getattr(d, "team", "") != "enemy" or float(getattr(d, "gy", 0.0)) < self.identity_front:
+                continue
+            if int(getattr(d, "trk_hits", 2) or 2) < 2:
+                continue
+            b = str(getattr(d, "base", "") or "")
+            if not b or (self.db.kind(b) == "spell" and b not in _SPAWN_SPELLS):
+                continue
+            true_items.append((b, card_threat.identity_depth(d.gy, self.identity_front)))
+        self._threat_id_true = card_threat.identity_threat_vector(
+            true_items, self.db, prev_depth=self._prev_ident_depth_true, dt=dt,
+            horizon=self.predict_horizon)
+        self._prev_ident_depth_true = float(self._threat_id_true[7])
         self._prev_ident_t = now
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
         # Slot 5 carries the current opponent-elixir estimate (normalized), inferred from symmetric
@@ -948,7 +975,7 @@ class LiveMatchEnv:
         prof = self._deck_profiles[card_id] if 0 <= card_id < len(self._deck_profiles) else None
         if prof is None:
             return 0.0
-        tid = self._threat_id
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             # NO RECOGNISED THREAT -> NOT GRADED. The quiet-board branch here used to charge
             # w_threat_miss * 0.4 for a reactive card on a quiet board. The sim retired that branch
@@ -1006,7 +1033,7 @@ class LiveMatchEnv:
     def _threat_miss_idle_live(self, cur_mass: float) -> float:
         """No play while an ANSWERABLE threat is recognised (a KB counter is in hand AND affordable) =
         a missed defence (uncapped penalty)."""
-        tid = self._threat_id
+        tid = self._threat_id_true
         if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
             return 0.0
         for cid in self.hand_ids:
