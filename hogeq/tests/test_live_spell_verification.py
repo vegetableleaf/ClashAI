@@ -16,6 +16,7 @@ gate wiring are exercised through minimal stand-ins shaped like the live objects
 """
 from __future__ import annotations
 
+import io
 import os
 import sys
 import unittest
@@ -230,6 +231,166 @@ class AdvisorSituationMemoryTests(unittest.TestCase):
         live = Detection("knight", 0.50, 0.62, 0.05, 0.05, 0.9, "enemy", None, None, None)
         self.assertEqual({}, self._remembered_groups([live], tr),
                          "the same knight was described twice (once live, once from memory)")
+
+class LiveEnvInitLintTests(unittest.TestCase):
+    """STATIC guard on live env.py, added after it cost a match mid-training (2026-08-19).
+
+    `self.w_spell_waste_live = ("spell_waste", -0.3)` shipped: the config-reader call had lost its
+    function name in patching, so the weight was a TUPLE and the first genuine whiff crashed
+    train-rl at `float(value)` -- after the detection had worked perfectly. hogeq had the same line
+    reading `r(...)`, a name that does not exist in live env.py at all (its reader is `rw`), which
+    would have raised NameError the moment a live env was built.
+
+    Neither was caught because NO test constructs the live MatchEnv -- it needs a window and a
+    detector, so every existing test uses SimMatchEnv. This lints the source instead: reward
+    weights must be scalars, and no function may call a bare name that is not bound anywhere in
+    its own scope, the module, or builtins.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import ast
+        cls.ast = ast
+        cls.path = os.path.join(os.path.dirname(__file__), "..", "src", "clashrl", "env.py")
+        with io.open(cls.path, encoding="utf-8") as fh:
+            cls.tree = ast.parse(fh.read())
+
+    def _bound_in(self, fn):
+        """Every name bound inside a function: args, assignments, loops, with/except, imports."""
+        ast = self.ast
+        names = {}
+
+        def note(name, lineno):
+            if name and (name not in names or lineno < names[name]):
+                names[name] = lineno
+
+        a = fn.args
+        for arg in list(a.args) + list(a.posonlyargs) + list(a.kwonlyargs):
+            note(arg.arg, fn.lineno)
+        for extra in (a.vararg, a.kwarg):
+            if extra:
+                note(extra.arg, fn.lineno)
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
+                note(node.id, node.lineno)
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                for al in node.names:
+                    note(al.asname or al.name.split(".")[0], node.lineno)
+            elif isinstance(node, ast.ExceptHandler) and node.name:
+                note(node.name, node.lineno)
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                if node is not fn:
+                    note(node.name, node.lineno)
+        return names
+
+    def _module_names(self):
+        """MODULE scope only -- deliberately NOT ast.walk. Walking descends into function bodies,
+        so a local variable in one method (env.py binds a bare `r` inside _wheels_spell_aim) would
+        count as globally visible and mask exactly the NameError this checks for; verified by
+        re-injecting the shipped bug. Module-level if/try/with ARE descended (the tolerant
+        `try: from .reward import nado_king_cell` block lives in one)."""
+        ast = self.ast
+        out = set()
+
+        def scan(body):
+            for node in body:
+                if isinstance(node, (ast.Import, ast.ImportFrom)):
+                    for al in node.names:
+                        out.add(al.asname or al.name.split(".")[0])
+                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    out.add(node.name)                     # the name, never the body
+                elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+                    tgts = node.targets if isinstance(node, ast.Assign) else [node.target]
+                    for t in tgts:
+                        for n in ast.walk(t):
+                            if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store):
+                                out.add(n.id)
+                elif isinstance(node, (ast.If, ast.Try, ast.With, ast.For, ast.While)):
+                    for attr in ("body", "orelse", "finalbody", "handlers"):
+                        for sub in getattr(node, attr, []) or []:
+                            scan(sub.body if isinstance(sub, ast.ExceptHandler) else [sub])
+        scan(self.tree.body)
+        return out
+
+    def _functions(self):
+        ast = self.ast
+        return [n for n in ast.walk(self.tree)
+                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+
+    def test_every_reward_weight_is_a_scalar_not_a_container(self):
+        ast = self.ast
+        bad = []
+        for fn in self._functions():
+            for node in ast.walk(fn):
+                if not isinstance(node, ast.Assign):
+                    continue
+                for tgt in node.targets:
+                    if (isinstance(tgt, ast.Attribute) and isinstance(tgt.value, ast.Name)
+                            and tgt.value.id == "self" and tgt.attr.startswith("w_")
+                            and isinstance(node.value, (ast.Tuple, ast.List, ast.Dict, ast.Set))):
+                        bad.append("line %d: self.%s = %s"
+                                   % (node.lineno, tgt.attr, type(node.value).__name__))
+        self.assertEqual([], bad,
+                         "reward weight(s) assigned a container -- rw_stats.add() does float(value) "
+                         "and dies on the first fire: " + "; ".join(bad))
+
+    def test_no_function_calls_a_name_that_is_never_bound(self):
+        """The hogeq half: `r(...)` where the reader is named `rw`. Only bare-name calls are
+        checked (self.x() / mod.x() resolve at runtime), against local + module + builtin scope."""
+        import builtins
+        ast = self.ast
+        mod = self._module_names() | set(dir(builtins))
+        bad = []
+        for fn in self._functions():
+            local = self._bound_in(fn)
+            for node in ast.walk(fn):
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                    n = node.func.id
+                    if n in mod:
+                        continue
+                    if n in local and local[n] <= node.lineno:
+                        continue
+                    if n in local:
+                        where = "bound at line %d but USED at line %d" % (local[n], node.lineno)
+                    else:
+                        where = "never bound"
+                    bad.append("%s() in %s(): %s" % (n, fn.name, where))
+        self.assertEqual([], bad,
+                         "call(s) to unbound or late-bound name(s) -- NameError the moment the "
+                         "live env runs: " + "; ".join(bad))
+
+    def test_reset_clears_the_pending_spell_queue(self):
+        """Cross-match leak: a spell cast in the closing seconds comes due during the NEXT match,
+        whose opening board is empty by definition -- a phantom whiff billed to a match that never
+        cast it. reset() must drop the queue."""
+        ast = self.ast
+        resets = [fn for fn in self._functions() if fn.name == "reset"]
+        self.assertTrue(resets, "live env.py has no reset()")
+        cleared = False
+        for fn in resets:
+            for node in ast.walk(fn):
+                if (isinstance(node, ast.Attribute) and node.attr in ("clear", "_pending_spells")
+                        and "_pending_spells" in ast.dump(fn)):
+                    cleared = True
+        self.assertTrue(cleared,
+                        "reset() never touches _pending_spells -- last match's casts bill the next")
+
+    def test_the_spell_verification_weights_read_through_the_config(self):
+        """Both weights must come from a reader call, so config/config.yaml actually controls them."""
+        ast = self.ast
+        found = {}
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.Assign):
+                for tgt in node.targets:
+                    if (isinstance(tgt, ast.Attribute) and isinstance(tgt.value, ast.Name)
+                            and tgt.value.id == "self"
+                            and tgt.attr in ("w_spell_waste_live", "w_nado_bad")):
+                        found[tgt.attr] = node.value
+        self.assertEqual({"w_spell_waste_live", "w_nado_bad"}, set(found),
+                         "the live spell-verification weights vanished from env.py")
+        for attr, val in found.items():
+            self.assertIsInstance(val, ast.Call,
+                                  "self.%s is not read through a config reader" % attr)
 
 
 if __name__ == "__main__":

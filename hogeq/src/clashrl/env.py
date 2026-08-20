@@ -232,8 +232,8 @@ class LiveMatchEnv:
         # and are re-checked ~4 s later for the BAD-PULL case: survivors dragged closer to our
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
-        self.w_spell_waste_live = r("spell_waste", -0.3)
-        self.w_nado_bad = r("nado_bad", -0.3)
+        # (the two weights live in the rw() block below with every other reward weight -- they were
+        # briefly read up here, before rw() exists, which cost a live match to a TypeError)
         self.training_wheels = bool(cfg.get("train", "training_wheels", default=True))
         self.rw_stats_path = cfg.path(f"data/reward_stats/live_{time.strftime('%Y%m%d_%H%M%S')}.jsonl")
         # CADENCE accounting (log 2026-08-12 item 5): where a live decision's wall time actually goes.
@@ -298,6 +298,8 @@ class LiveMatchEnv:
         # action-tax shape -- 2 positives vs 24 negatives over 5 matches -- while being one of only
         # three terms that fired at all. Same term, same shape, same fix.
         self.w_leak = rw("leak_penalty", -0.2)                # (5) sitting at elixir capacity, leaking
+        self.w_spell_waste_live = rw("spell_waste", -0.3)     # (6) spell verified at IMPACT: hit nothing
+        self.w_nado_bad = rw("nado_bad", -0.3)                # tornado that improved the enemy's position
         self.correctness_cap = rw("correctness_cap", 20.0)    # per-match cap on POSITIVE shaping (anti-farm)
         self.w_take = rw("take_enemy_tower", 1.0); self.w_lose = rw("lose_own_tower", -1.0)   # the CROWN jump on a take/loss
         self.tower_chip_scale = rw("tower_chip_scale", 0.3)   # convex chip POOL per tower (small; the crown is the jump)
@@ -644,6 +646,10 @@ class LiveMatchEnv:
         self._match_bonus = 0.0
         self._match_penalty = 0.0
         self.rw_stats.new_match()
+        # spells still in flight belong to the match that cast them: a cast in the final
+        # seconds would otherwise come due during the NEXT match and be judged against its
+        # (empty, by definition) opening board -- a phantom whiff billed to the wrong match.
+        self._pending_spells.clear()
         self._cad.clear()                 # cadence accounting is per match
         self._cad_n = 0
         self._last_step_t = None

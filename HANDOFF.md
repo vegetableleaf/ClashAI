@@ -351,6 +351,33 @@ The user saw the evening PPO's winrate "collapse". Findings, all verified from c
   resume — before, a RANDOM critic trained alongside a warm policy from minibatch 0, the exact
   hazard class of the 2026-08-14 head-sharpness incident.
 
+## 3e. 2026-08-19 late — the live-reward batch crashed a real match (and why nothing caught it)
+
+User ran `train-rl` (icebow); it died mid-match at `float(value)` in reward_stats.add.
+
+- **icebow:** `self.w_spell_waste_live = ("spell_waste", -0.3)` — the reader call had lost its
+  function name in patching, so the weight was a TUPLE. The detection worked perfectly; billing
+  the FIRST TRUE WHIFF is what crashed. Live env.py's reader is `rw`, defined ~55 lines BELOW
+  where I put the reads.
+- **hogeq:** same lines read `r(...)` — a name that exists nowhere in live env.py. Its live env
+  would have raised NameError on construction: `train-rl` was 100% broken there, undetected.
+- **Both weights now live in the `rw()` block** with every other reward weight.
+- **Third bug, found while auditing:** `reset()` never cleared `_pending_spells`, so a spell cast
+  in a match's closing seconds came due during the NEXT match and was judged against its empty
+  opening board — a guaranteed phantom whiff billed to a match that never cast it. Fixed.
+
+**WHY THE 16 TESTS MISSED IT: no test constructs the live `MatchEnv`.** It needs a window and a
+detector, so every test in both decks uses `SimMatchEnv`; the live wiring had never executed. The
+new `LiveEnvInitLintTests` lints the SOURCE instead (AST): no `self.w_*` may be a container, no
+function may call a bare name unbound in local+module+builtin scope, both spell weights must come
+from a reader call, and `reset()` must clear the queue. **Verified non-vacuous** by re-injecting
+both shipped bugs and confirming each test fails (`scratchpad/verify_lint_catches.py`).
+Building the lint exposed a bug IN the lint: `ast.walk` for module scope descends into function
+bodies, so a local `r` inside `_wheels_spell_aim` masked the very NameError being checked — module
+scope is now collected from top-level statements only.
+
+Suites after: icebow 427 OK, hogeq 42 (its documented baseline; none from these files).
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
