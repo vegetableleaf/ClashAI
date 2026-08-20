@@ -22,10 +22,12 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-19**, at commit `HEAD` (hogeq DOCTRINE_RESEARCH.md rewritten as the merged 6-section doctrine:
-guide facts + 4 watched videos, send-ladder T1-T5 / hold-vetoes H1-H5 for the Hog, per-card placement tables (the
-sim's `SS2` references still resolve), spell timing, 16 synergy lines, matchups, 11 logged contradictions. One sim
-change requested (its S6 C8): quiet-board Hog bar 4 -> 7 in single elixir only; keep 4 in x2/OT and punish windows).
+Last updated: **2026-08-20**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+validated -- `sim/scenarios.py` + `sim/drill_env.py` + 4 seed icebow drills, each measured baseline-vs-oracle.
+Building it surfaced three real bugs, all fixed and all cross-deck: every spell but Rocket was forbidden from
+the enemy half (the whole Hog+EQ combo was an UNREACHABLE action), every legal Hog send scored -1.0 against a
+threshold sitting in front of the frontmost legal row, and the king-activation prior told the model to cast
+Tornados 8.7 tiles from a 5.5-tile pull. See SS5, SS6.0 and the two new traps in SS8.)
 
 ---
 
@@ -757,6 +759,9 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `(this)` | **Every spell except Rocket was forbidden from the enemy half — in BOTH decks.** `anywhere_ids` was the literal set `{rocket, miner}`, so `deploy_clamp` hauled every other spell back to our own front row. In Clash Royale *all* spells may be cast anywhere (verified against the card DB's own `kind`). This did not make the offensive Log, the Tornado sneaky-lock at the river, or the **entire Hog+Earthquake combo** merely unlearned — it made them **unreachable actions**, and it silently desynced the doctrine prior from the executed action on every cast aimed past the river. Fixed in sim, live and `play.py` for both decks; troops still clamp correctly. | icebow Tornado aimed at (0.25,0.30) landed at y **0.562 — clamped back 8.4 tiles**, now lands 0.312; The Log clamped back 4.6 tiles, now exact; hogeq Earthquake aimed at their building (0.25,0.271) landed on **our own front row**, now lands 0.271. Knight/Skeletons still clamp 8.4 tiles (correct) |
+| `(this)` | **hogeq: every legal Hog send scored −1.0** — the term I added last session to *cure* the zero-Hog collapse was teaching "never play Hog". `hog_bridge_y` was 0.52 while `min_own_gy`=13 puts the frontmost reachable row at 0.5625, so `ny > thr` was true for every playable cell. Its unit test passed because it calls the term at y=0.47, **a cell `deploy_clamp` can never produce**. Fixed by FLOORING the threshold at the action grid's own frontmost own-half row + 1 tile, so a reward threshold can never again sit where the action space cannot reach. | `_hog_wincon` at the bridge row (gy 13, y 0.5625) **−1.00 → +3.00**; rows 14/15/16 stay −1.00 (correct: bridge-only). hogeq suite unchanged at its 42 baseline (3 fail + 39 err) with the change stashed and unstashed |
+| `(this)` | **The king-activation prior told the model to cast Tornados that could not pull anything.** The gate (`u.y > 0.52`) is satisfied the instant a Hog touches the bridge, and `_king_spots` emitted the front-of-king candidate **unconditionally** — only the second spot ever checked reach. Replaced with the real precondition: does the attacker's PATH pass within the 5.5-tile radius while the vortex lives (`spell_delay + 1.05s`)? A snapshot test is wrong both ways — it rejects the regression board's working cast at 6.40 tiles (the Hog marches *into* the vortex) and accepts the bridge whiff at 8.7. | drill harness: prior fired at y=0.528 with the cast point **8.7 tiles** from a 5.5-tile pull, hog walked through untouched every rep; now **no cells offered** until the pull is physically possible. `nado_king_activation` drill **0% → 100%** under the doctrine oracle. icebow 600 tests OK |
 | `(this)` | **The live advisor told hogeq to play icebow.** `llm_advisor.py`'s prompt opened "ICEBOW deck (X-Bow control)... answer 'hold' and spend NOTHING", `tools/llm_doctrine.py`'s proposer described the icebow cards, `config/llm_doctrine.json` held 72 icebow rules (quiet board at 10 elixir -> Tesla), and `train_rl.py`'s quiet-board branch was HARD-CODED to "find the x_bow or HOLD" — the user-reported passivity, in four places. All four reworked from `DOCTRINE_RESEARCH.md`: pressure-first prompts, a regenerated 19-rule engine-verified table, and the live ladder = Hog at the bridge from 4 elixir -> cheapest cycle from 6 (ability excluded) -> hold only when too poor. | tiny-model probe of the exact reported case: quiet board -> **hog_rider** (was hold); table regen kept 19/27 with measured gains (e.g. quiet+10elx -> mighty_miner **+1.71**, deep_2+7elx -> hog_rider +0.36) |
 | `(this)` | **The Hog had no placement rule** — `doctrine_cards` nominated it but `doctrine_cells` explored it uniformly over 432 cells. New branches from the research: hog (bridge column + inner-side tile + arena-edge auto-pig-push, lane picked opposite committed mass / weaker live tower, dead lanes excluded), mighty_miner (ON the tank, tile-exact; deliberate NO-SPOT vs swarms; bridge-punish spots on a quiet board), firecracker (kite band 4th-6th tile staggered to the other lane, behind-line anti-air off the tower column, layered behind a crossing Hog), ice_spirit (Hog escort > defensive freeze > bridge probes), skeletons (centreline dash-kite vs Bandit/Prince/Ram — the video short's tile-exact rule). | 12 new tests (`test_hogeq_doctrine_cells.py`), all green; suites: icebow 371 OK, hogeq back to the 41-failure baseline (+ the royaleapi Cloudflare flake) |
 | `71963bd` | **Pressure doctrine encoded from DOCTRINE_RESEARCH.md (hogeq)**: C8 elixir split (quiet x1 bar 7, x2/OT 4), T1 punish window (>=5 per-body elixir deep in their half, troop OR pump; SS5.3 pekka veto in x1 -- deck or board evidence), T2 survivor window also drops the bar; merged ENGINE-ANCHORED cell branches for hog/MM/FC/ice-spirit (bridges = princess columns 3.5/18 + 14.5/18, kite bands from the near bank 17/32, FC air depth from the tower line) replacing BOTH earlier drafts, which had transcribed the research legend's LIVE-frame coords into the board-true sim. Adversarial 3-lens review: 1 blocker + 16 real findings, all fixed. | 31 doctrine tests green (spec file + new); full suite 41 baseline + royaleapi flake only |
@@ -792,6 +797,49 @@ configured but **have never run** — BC has not been retrained since the soft-t
 ---
 
 ## 6. Open work
+
+0. **DRILLS — segmented mini-sims (owner's idea, 2026-08-20).** Framework is IN and validated;
+   the curriculum is drafted and mostly unbuilt.
+   * `sim/scenarios.py` — `Scenario` dataclass (board, scripted spawns, restricted hand, two
+     engine-reading predicates, `randomise`, `graded_by`, `prereq`) + predicate helpers + registry.
+   * `sim/drill_env.py` — `DrillEnv(SimMatchEnv)`, so a drill is scored by **the match's own reward
+     terms**. A drill concentrates experience; it never changes the objective. `run_drill()` reports
+     a pass RATE, which is the number that says whether a skill is mastered.
+   * `sim/drills_icebow.py` — 4 seed drills, each measured baseline-vs-oracle (see §8's trap):
+     `nado_king_activation` 0%→**100%**, `tesla_pulls_the_wincon` 0%→100%,
+     `log_the_ground_swarm` 0%→100%, `ignore_the_ignorable` 100%→12% (deliberately inverted: the
+     right play is NO play).
+   * Success/failure for the king drill is the OWNER'S rule: success = the attacker now targets our
+     **king**; failure = it keeps damaging the **princess** (threshold 3 hog hits — at 1 hit the
+     drill ended before the interaction could happen).
+   * **Card choice is load-bearing.** Sweeping all 432 action cells: Hog **8** winning cells,
+     Balloon 13, Knight **0–4**, Miner 1. A Knight re-picks the nearest tower when the pull breaks
+     its lock and the princess is always nearer, so the window collapses. The CR wiki independently
+     says the same — reliable for Hog/Barrel/Miner, *"extremely inconsistent"* for Knight/Valkyrie/
+     Mega Knight since the 2020 rework. **The sim is faithful here.**
+   * TODO: build out the two drafted curricula (icebow 40 drills / hogeq 37, both agent-drafted with
+     per-drill reward-coverage findings — see §6.0a); port the framework to hogeq + write
+     `drills_hogeq.py`; wire a drill/full-match mixing ratio into `train-sim-ppo` (proposal: 70/30)
+     with a CLI that reports pass rates per drill.
+
+0a. **Reward-coverage findings from the drill drafts (NOT yet verified by me — treat as leads).**
+   The two curriculum agents each audited the reward against the doctrine. The three I *did* verify
+   were all real and are now fixed (the two `anywhere_ids`/`hog_bridge_y` blockers and the king
+   prior, §5). Unverified but specific, highest-value first:
+   * `_rocket_value` reads `eng.vortices` at ROCKET-cast time and requires a live vortex, so the
+     9.0 rocket+tornado payout can only fire for the tornado-first order that R6 says is **wrong**.
+   * R1 is implemented twice, incompatibly: the prior gates on *knight-or-tesla in hand*, the reward
+     on *anything affordable* — so on the exact R1 board the correct rocket is billed −0.5 as waste.
+   * `nado_king_activate` never reads `u.target`, so a king woken by chip damage inside the window
+     collects the activation credit (this is the owner's own correction, unfixed in the reward).
+   * `nado_bad` punishes the tornado-BACK pull, which doctrine mandates, and the sneaky lock.
+   * `threat_response`'s building branch is placement-blind across all of `0.50 ≤ ny ≤ 0.80`, so the
+     centre-pull and king-clearance rules the sampler codes are invisible to the reward.
+   * `rocket_combo_hp_frac` 1.5 calls a 2226 HP body one-shottable (golden_knight/prince/bowler all
+     survive) — systematic false positive on the 2-for-1.
+   * Correct HOLDS pay zero and cost `leak`: triage, rotation discipline, holding the Tesla for
+     their wincon. `counterfactual` is zero-mean and off by default.
+   * `threat_credit_budget` 2 structurally under-credits any 3-card split-lane defence.
 
 1. **Retrain BC for icebow with the fixed labels** — existing labels are biased forward 0–3 rows and
    the current policy learned that shift. Steps:
@@ -909,6 +957,22 @@ configured but **have never run** — BC has not been retrained since the soft-t
 * **The detector audit trap**: an offline tool that reads the *live screen* instead of the video it
   claims to analyse. `LiveMatchEnv.__init__` starts a 10 Hz perception thread and `_detect_enemies`
   returns its snapshot if <2 s old.
+* **A reward verified at a coordinate the ACTION SPACE cannot produce.** `_hog_wincon` was measured
+  "0.00 → +3.00" last session and shipped — at y=0.47, which `deploy_clamp` never emits. At every
+  legal row it returned −1.0, so the fix for the zero-Hog collapse was teaching the opposite of what
+  it claimed. Its unit test calls the same illegal y, so the test agreed with the bug. **Whenever a
+  reward reads a coordinate, evaluate it at `actions.cell_center(...)` values only** — the grid, not
+  the config, is the authority on what is expressible. Same family as the offline-tool trap above:
+  the check and the system under test were looking at different worlds.
+* **A snapshot answers a question about motion wrongly in BOTH directions.** The first
+  king-activation reach filter tested distance at the instant of casting: it rejected a cast that
+  works from 6.40 tiles (the attacker marches into the vortex during its 1.05 s life) *and* accepted
+  one that whiffs from 8.7 (closing only in y while a 4.2-tile lane gap never closes). If the effect
+  has a duration and the target has a velocity, the test has to be against the **path**, not a point.
+* **Drills must be measured against a DO-NOTHING baseline.** Two of the first four scenarios were
+  passing 15/15 with an empty action — the tower resolves a swarm on its own, and "no enemy alive"
+  is trivially true before the scripted spawn lands. A drill nobody can fail teaches nothing, so
+  every scenario is scored both ways (baseline vs oracle) and only a gap between them is evidence.
 * **A model's own val set can change under you.** board-26's val is 81% Roboflow images that
   did not exist when board-25 was validated, so comparing their per-epoch mAP measures the val
   set as much as the model. Before comparing two training runs, check the val set is the same

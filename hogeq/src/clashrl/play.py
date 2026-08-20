@@ -185,10 +185,16 @@ def play(cfg) -> None:
     tower_tracker = TowerTracker(cfg)         # tower alive/destroyed flags
     threat_tracker = ThreatTracker(cfg)       # live enemy-threat vector -> policy input
     from .clock import ElixirClock
+    from .cards import CardDB as _PlayCardDB
+    _pdb = _PlayCardDB(cfg)                  # card kinds decide which cards may be aimed anywhere
     clock = ElixirClock(cfg, vision)          # 2x/3x elixir multiplier (feeds the phase machine)
     aim_radius = float(cfg.get("env", "spell_tower_aim_radius", default=0.12))
+    # EVERY SPELL GOES ANYWHERE (the game's rule); Miner / Goblin Drill are the deploy-anywhere
+    # troops. The old literal {rocket, miner} clamped Tornado, Log and Earthquake back to our own
+    # half, which deleted the offensive Log, the river sneaky-lock and the Hog+EQ combo outright.
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
-                    if (key[:-4] if key.endswith("_evo") else key) in ("rocket", "miner")}
+                    if ((_pdb.get(card_threat.base_key(key)) or {}).get("kind") == "spell"
+                        or card_threat.base_key(key) in ("miner", "goblin_drill"))}
     xbow_ids = {i for i, key in enumerate(vision.deck_keys)
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))

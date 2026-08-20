@@ -199,8 +199,13 @@ class LiveMatchEnv:
                 self.tesla_ids.add(i)
             elif base == "ice_wizard":
                 self.defensive_kind[i] = "ice_wizard"
-        # ROCKET and MINER may target ANYWHERE; every other card (troops, X-Bow, royal delivery) is your-half only.
-        self.anywhere_ids = self.rocket_ids | self.miner_ids
+        # EVERY SPELL MAY TARGET ANYWHERE, plus the deploy-anywhere troops (Miner / Goblin Drill).
+        # This used to read `self.rocket_ids | self.miner_ids`, which is not the game's rule: it
+        # confined Tornado, The Log and Earthquake to our own half, so the offensive Log, the
+        # Tornado sneaky-lock at the river and the whole Hog+Earthquake combo were unreachable
+        # actions rather than merely unlearned ones. `spell_ids` is already computed above from the
+        # card DB's own `kind`, so the rule now comes from the cards instead of a literal.
+        self.anywhere_ids = self.spell_ids | self.miner_ids
         # cards played only to REACT to a threat (defenders + Royal Delivery / Tornado); on a QUIET board they're premature.
         self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids | self.tornado_ids
         # --- perception geometry the reward + spell-impact timing still use ---

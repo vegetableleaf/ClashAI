@@ -24,7 +24,7 @@ import math
 
 from .. import card_threat
 from .. import threat_value
-from .engine import _TILES_X, _TILES_Y, _TORNADO_RADIUS, build_spec
+from .engine import _TILES_X, _TILES_Y, _TORNADO_DURATION, _TORNADO_RADIUS, build_spec
 
 
 def _tower_level(env) -> int:
@@ -174,6 +174,15 @@ def _opp_cards(env) -> set:
 # Heavy building-targeters on a lane march (Giant, Golem, Battle Ram) still do not activate, and
 # that agrees with the guides rather than contradicting them: those want a building "in the 4-3
 # placement" pulling them centre first, a two-card setup no single cast expresses.
+# Slack on the pull radius for the king-activation spots. MEASURED TO ZERO, deliberately: half a
+# tile of "safety" rejected casts that demonstrably work -- the doctrine regression test activates
+# the king from 5.24 tiles, and a 5.0 cutoff threw it away. The vortex is a hard-edged 5.5-tile
+# area, the attacker is MARCHING TOWARD our king while the spell lands (so the gap only shrinks),
+# and the bug this filter exists to kill was a cast at 7.6 tiles -- nowhere near the boundary. The
+# honest radius catches that and keeps every real activation.
+_KING_REACH_MARGIN = 0.0
+
+
 def _king_spots(env, u):
     """Candidate Tornado casts that drag ``u`` into our king. MIRRORED BY CONSTRUCTION.
 
@@ -200,16 +209,56 @@ def _king_spots(env, u):
     """
     kt = env.eng.towers[0][2]
     side = -1.0 if u.x < kt.x else 1.0
-    out = [(kt.x + side * 0.5 / 18.0, kt.y - 4.5 / 32.0)]
+    cands = [(kt.x + side * 0.5 / 18.0, kt.y - 4.5 / 32.0)]
     dxt, dyt = (u.x - kt.x) * 18.0, (u.y - kt.y) * 32.0
     d = (dxt * dxt + dyt * dyt) ** 0.5
     if d > 1e-6:
         # as close to the king as the pull can still reach the attacker from, capped where the
         # calibration sweep showed activations (3.0-4.0 tiles for tower-arrivals)
         stand = min(4.0, max(3.0, d - _TORNADO_RADIUS + 0.3))
-        if d - stand <= _TORNADO_RADIUS:
-            out.append((kt.x + (dxt / d) * stand / 18.0, kt.y + (dyt / d) * stand / 32.0))
+        cands.append((kt.x + (dxt / d) * stand / 18.0, kt.y + (dyt / d) * stand / 32.0))
+    # REACHABILITY, THE PRECONDITION THAT WAS MISSING -- and it is a question about the attacker's
+    # PATH, not its current tile. The gate above (`u.y > 0.52`) is satisfied the moment a Hog
+    # touches the bridge, and the front-of-king candidate used to be emitted unconditionally, so
+    # the prior fired at y=0.528 with the cast point 8.7 tiles away and a 5.5-tile pull: measured
+    # in the drill harness, the hog walked through that whiff untouched every single time, three
+    # elixir gone.
+    #
+    # But a snapshot test is equally wrong the other way. The doctrine regression board casts on a
+    # Hog 6.40 tiles out and the activation LANDS, because the Hog marches into the vortex during
+    # the spell delay plus the 1.05s the vortex lives. So the real test is whether the path it will
+    # walk in that window passes within the radius -- exact for a unit holding its heading, which
+    # is what a marching attacker is. The bridge case still fails it: that hog closes only in y
+    # while the 4.2-tile lane gap never closes, and it ends the window 6.5 tiles away.
+    #
+    # Distances are TRUE TILES PER AXIS. The board is 18x32, so a normalised hypot understates y by
+    # 1.8x -- the same anisotropy that made spell_whiffed judge a tornado's blast as 7 tiles wide
+    # and 12 tall.
+    window = _TORNADO_DURATION + float(getattr(u.spec, "spell_delay", 0.0) or 0.4)
+    out = [(sx, sy) for sx, sy in cands if _path_enters_pull(u, sx, sy, window)]
     return out
+
+
+def _path_enters_pull(u, sx, sy, secs):
+    """Does ``u``'s next ``secs`` of walking pass within the Tornado's pull radius of (sx, sy)?
+
+    Minimum distance from the point to the SEGMENT the unit will cover, all in true tiles. A unit
+    already inside answers True at t=0, so this strictly generalises the snapshot test it replaces.
+    """
+    px, py = u.x * 18.0, u.y * 32.0
+    qx, qy = sx * 18.0, sy * 32.0
+    tgt = getattr(u, "target", None)                  # walk toward what it is actually going for
+    hx = (float(getattr(tgt, "x", u.x)) - u.x) * 18.0 if tgt is not None else 0.0
+    hy = (float(getattr(tgt, "y", u.y)) - u.y) * 32.0 if tgt is not None else 1.0
+    n = (hx * hx + hy * hy) ** 0.5
+    if n <= 1e-6:                                     # no heading -> straight at our end
+        hx, hy, n = 0.0, 1.0, 1.0
+    reach = max(0.0, float(getattr(u.spec, "speed", 1.0)) * float(secs))
+    dx, dy = hx / n * reach, hy / n * reach
+    L2 = dx * dx + dy * dy
+    t = 0.0 if L2 < 1e-9 else max(0.0, min(1.0, ((qx - px) * dx + (qy - py) * dy) / L2))
+    cx, cy = px + t * dx, py + t * dy
+    return ((qx - cx) ** 2 + (qy - cy) ** 2) ** 0.5 <= _TORNADO_RADIUS - _KING_REACH_MARGIN
 
 
 def llm_state_key(env) -> str:

@@ -160,7 +160,15 @@ class SimMatchEnv:
 
         def _base(k):
             return k[:-4] if k.endswith("_evo") else k
-        self.anywhere_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) in ("rocket", "miner")}
+        # EVERY SPELL GOES ANYWHERE -- that is the actual Clash Royale rule, and the old literal
+        # {rocket, miner} broke it for every other spell in both decks. Measured before the fix: a
+        # Tornado aimed 8.4 tiles into the enemy half landed on our own front row instead, and
+        # hogeq's Earthquake could not be put on an enemy building at all, which made the deck's
+        # signature Hog+EQ combo an action the policy was incapable of taking. Miner (and Goblin
+        # Drill) stay in on their own merit: deploy-anywhere TROOPS, not spells.
+        self.anywhere_ids = {i for i, k in enumerate(self.deck_keys)
+                             if (self.specs[i].kind == "spell"
+                                 or _base(k) in ("miner", "goblin_drill"))}
         self.miner_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "miner"}
         self.xbow_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "x_bow"}
         # Stage 3: your deck's KB profiles (played-card role) + the last identity block, for the
@@ -188,6 +196,15 @@ class SimMatchEnv:
         self.w_wincon_mis = r("wincon_misplace", -0.6)
         # A RUSH win condition (Hog): bridge-only, never into a push, lane-aware. See _hog_wincon.
         self.hog_bridge_y = float(cfg.get("env", "hog_bridge_y", default=0.52))
+        # FLOORED AT WHAT THE ACTION GRID CAN ACTUALLY REACH. Configured at 0.52 this threshold sat
+        # in FRONT of the frontmost legal own-half row (0.5625 for an 18x24 grid), so `ny > thr`
+        # was true for every cell the policy could play and EVERY legal Hog send scored -1.0 --
+        # while the unit test passed because it calls the term at y=0.47, a cell deploy_clamp can
+        # never produce. A reward threshold read against a coordinate must be expressed in the
+        # coordinates the ACTION SPACE can produce, so the grid gets the final say here: the send
+        # row plus a tile of slack, which is the bridge and one row behind it.
+        _front_own = float(self.actions.cell_center(0, self.actions.min_own_gy)[1])
+        self.hog_bridge_y = max(self.hog_bridge_y, _front_own + 1.0 / 32.0)
         self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))
         self.hog_support_mult = float(cfg.get("rewards", "hog_support_mult", default=1.0))
         # SUPPORT TROOPS: never played alone (see _support_alone). `support_targets` are the
