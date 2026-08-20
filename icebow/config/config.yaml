@@ -513,6 +513,7 @@ rewards:
   wincon_exec: 3.0         # X-Bow forward-in-range (offence) / back-centre (defence), Miner chips the princess, rocket-cycle chip
   wincon_misplace: -1.0    # the win condition thrown away (X-Bow out of range / king-hugged, Miner on the enemy KING) -- scaled with wincon_exec so a misplace still stings
   hog_punish_mult: 1.5     # (2026-08-20) a RUSH win condition sent to the lane OPPOSITE their committed mass (the punish), or same-lane behind a defender that just survived (the counter-push), earns this multiple of wincon_exec.
+  hog_support_mult: 1.25   # (2026-08-20) a SUPPORT card completing a Hog push -- earthquake on the building defending him, firecracker behind him, Mighty Miner tanking ahead -- earns this multiple of wincon_exec. The doctrine prior already AIMED these cells; nothing PAID for them, so there was no gradient toward the pairing.
   xbow_deep_frac: 0.25     # (soft) a defensive X-Bow placed BEHIND your princess towers earns only this fraction of wincon_exec
                            #   -- the full credit sits in the centre band behind the bridge (env.xbow_defense_front/back)
   rocket_combo_mult: 3.0   # rocket 2-for-1 (a princess tower + a one-shottable support in ONE blast) = wincon_exec x this

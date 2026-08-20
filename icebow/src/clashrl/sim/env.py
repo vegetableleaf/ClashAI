@@ -188,7 +188,8 @@ class SimMatchEnv:
         self.w_wincon_mis = r("wincon_misplace", -0.6)
         # A RUSH win condition (Hog): bridge-only, never into a push, lane-aware. See _hog_wincon.
         self.hog_bridge_y = float(cfg.get("env", "hog_bridge_y", default=0.52))
-        self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))       # win-condition card thrown away
+        self.hog_punish_mult = float(cfg.get("rewards", "hog_punish_mult", default=1.5))
+        self.hog_support_mult = float(cfg.get("rewards", "hog_support_mult", default=1.0))       # win-condition card thrown away
         # cycle_plan / cycle_waste: DELETED -- see the _cycle_plan stub below for the full record.
         # The weights are no longer read (2026-08-12: the live env's copy was deleted too).
         # PER-TICK TERMS SCALE WITH agent_dt -- see the live env's note. A shorter decision period
@@ -802,6 +803,41 @@ class SimMatchEnv:
                 return same if u.spec.flying else not same
         return False
 
+    def _hog_synergy(self, card_id: int, nx: float, ny: float) -> float:
+        """Credit a SUPPORT card that completes a Hog push (user doctrine, 2026-08-20).
+
+        The doctrine prior already aims these cells; nothing paid for them, so the policy had no
+        reason to learn the pairing. Returns 0.0 whenever there is no committed Hog to support, so
+        a support card on a quiet board is scored by the ordinary terms and nothing else.
+        """
+        hog = next((u for u in self.eng.units
+                    if u.team == 0 and u.hp > 0 and u.spec.base == "hog_rider"
+                    and u.y < self.hog_bridge_y), None)
+        if hog is None:
+            return 0.0                                   # no committed Hog: not a combo
+        base = self.specs[card_id].base if 0 <= card_id < len(self.specs) else ""
+        same_lane = abs(nx - hog.x) <= 0.18
+        if base == "earthquake":
+            # THE CLASSIC. Their BUILDING is what stops the Hog, and the quake deletes it while
+            # clipping the tower behind it. Requires an actual building in the blast -- an EQ at
+            # open ground is not the combo however close the Hog is.
+            r = 3.5 / 18.0
+            if any(u.team == 1 and u.hp > 0 and u.spec.kind == "building"
+                   and abs(u.x - nx) <= r and abs(u.y - ny) <= r for u in self.eng.units):
+                return self.w_wincon * self.hog_support_mult
+            return 0.0
+        if base == "firecracker":
+            # BEHIND HIM, same lane: she out-ranges the defence and shreds it while he tanks.
+            if same_lane and ny > hog.y:
+                return self.w_wincon * self.hog_support_mult
+            return 0.0
+        if base == "mighty_miner":
+            # The mini-tank eats the building's attention; the Hog arrives behind it.
+            if same_lane:
+                return self.w_wincon * self.hog_support_mult
+            return 0.0
+        return 0.0
+
     def _hog_wincon(self, card_id: int, nx: float, ny: float) -> float:
         """A RUSH win condition (Hog Rider): judged on TIMING and LANE, not standing geometry.
 
@@ -828,7 +864,17 @@ class SimMatchEnv:
         # twice on the way -- the deck's own prompt says it and nothing scored it.
         if ny > self.hog_bridge_y:
             return self.w_wincon_mis
-        val = self.w_wincon
+        # (c) THE BEST APPLICABLE BONUS, not the product of all of them. These overlap by
+        # construction -- a Mighty Miner ahead of the Hog IS a surviving friendly troop in the
+        # lane, so multiplying "behind the mini-tank" by "counter-push" counted ONE FACT TWICE and
+        # paid 4.50 where the send plus its best bonus is worth 3.75.
+        bonuses = [1.0]
+        # (c0) BEHIND THE MINI-TANK. Mighty Miner goes first and eats the defending building's
+        # attention; the Hog arriving behind him in the same lane completes the pair from the
+        # other side -- whichever card is played SECOND is the one making the decision.
+        if any(u.team == 0 and u.hp > 0 and u.spec.base == "mighty_miner"
+               and abs(u.x - nx) <= 0.18 and u.y <= self.hog_bridge_y for u in self.eng.units):
+            bonuses.append(self.hog_support_mult)
         # (c) LANE. Opposite their committed mass is the punish; behind a defender who just
         # survived is the counter-push. Either is the doctrinal send.
         mass_l = sum(u.spec.elixir for u in self.eng.units
@@ -836,11 +882,11 @@ class SimMatchEnv:
         mass_r = sum(u.spec.elixir for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.x >= 0.5)
         if (mass_l or mass_r) and ((nx >= 0.5) if mass_l > mass_r else (nx < 0.5)):
-            val *= self.hog_punish_mult
+            bonuses.append(self.hog_punish_mult)
         elif any(u.team == 0 and u.hp > 0 and u.spec.kind == "troop"
                  and abs(u.x - nx) < 0.18 and u.y > 0.42 for u in self.eng.units):
-            val *= self.hog_punish_mult
-        return val
+            bonuses.append(self.hog_punish_mult)
+        return self.w_wincon * max(bonuses)
 
     def _wincon_exec(self, card_id: int, nx: float, ny: float) -> float:
         """(3) WIN-CONDITION execution: the deck's doctrine done right for the current phase -- X-Bow
@@ -852,6 +898,9 @@ class SimMatchEnv:
         if card_id in getattr(self, "wincon_ids", ()) and card_id not in self.xbow_ids \
                 and card_id not in self.rocket_ids and card_id not in self.miner_ids:
             return self._hog_wincon(card_id, nx, ny)
+        _syn = self._hog_synergy(card_id, nx, ny)
+        if _syn:
+            return _syn                                  # a support card completing a Hog push
         if card_id in self.xbow_ids:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction

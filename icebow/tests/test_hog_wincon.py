@@ -97,6 +97,96 @@ class HogWinconTests(unittest.TestCase):
         self.assertGreater(self.env.hog_punish_mult, 1.0)
 
 
+class HogSynergyTests(unittest.TestCase):
+    """The three combos the user named: hog behind Mighty Miner, firecracker behind the hog to
+    snipe the defending building, and the classic Hog + Earthquake.
+
+    The PLACEMENTS already existed -- sim/doctrine.py aims firecracker several tiles behind a
+    crossing Hog (F-11), has the MM tank rules, and has a fixed Earthquake spot on their princess.
+    What did not exist is a REWARD confirming any of it, so the prior nominated the cell, the
+    policy played it, and the referee paid exactly what it would have paid for that card anywhere
+    else. A scaffold holding up nothing.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.env = SimMatchEnv(Config.load(), seed=9)
+        cls.env.reset()
+        cls.ids = {s.base: i for i, s in enumerate(cls.env.specs)}
+
+    def setUp(self):
+        for need in ("hog_rider",):
+            if need not in self.ids:
+                self.skipTest("this deck holds no rush win condition")
+        self.env.eng.units.clear()
+
+    def unit(self, team, base, x, y):
+        sp = build_spec(self.env.eng.db, base, 11)
+        u = Unit(spec=sp, team=team, x=x, y=y, hp=sp.hp)
+        u.deploy_left = 0.0
+        self.env.eng.units.append(u)
+        return u
+
+    def val(self, base, x, y):
+        if base not in self.ids:
+            self.skipTest("deck lacks " + base)
+        return self.env._wincon_exec(self.ids[base], x, y)
+
+    # ---- hog + earthquake ----------------------------------------------------------
+    def test_earthquake_on_the_building_defending_a_committed_hog(self):
+        """THE CLASSIC. Their building is what stops the Hog; the quake deletes it and clips the
+        tower in the same cast."""
+        self.unit(0, "hog_rider", 0.75, 0.40)
+        self.unit(1, "cannon", 0.72, 0.28)
+        self.assertGreater(self.val("earthquake", 0.72, 0.28), 0.0)
+
+    def test_earthquake_at_open_ground_is_not_the_combo(self):
+        self.unit(0, "hog_rider", 0.75, 0.40)
+        self.assertEqual(0.0, self.val("earthquake", 0.72, 0.28))
+
+    def test_earthquake_without_a_committed_hog_is_not_the_combo(self):
+        """A quake on a building with no Hog to benefit is just a quake -- the ordinary terms
+        score it, and this one must not."""
+        self.unit(1, "cannon", 0.72, 0.28)
+        self.assertEqual(0.0, self.val("earthquake", 0.72, 0.28))
+
+    # ---- hog + firecracker ---------------------------------------------------------
+    def test_firecracker_behind_the_hog_in_the_same_lane(self):
+        self.unit(0, "hog_rider", 0.75, 0.40)
+        self.assertGreater(self.val("firecracker", 0.75, 0.55), 0.0)
+
+    def test_firecracker_in_the_other_lane_is_not_an_escort(self):
+        self.unit(0, "hog_rider", 0.75, 0.40)
+        self.assertEqual(0.0, self.val("firecracker", 0.25, 0.55))
+
+    def test_firecracker_in_front_of_the_hog_is_not_an_escort(self):
+        """She is the ranged support; ahead of the tank she dies to the thing he was tanking."""
+        self.unit(0, "hog_rider", 0.75, 0.40)
+        self.assertEqual(0.0, self.val("firecracker", 0.75, 0.30))
+
+    # ---- mighty miner + hog --------------------------------------------------------
+    def test_a_hog_sent_behind_a_committed_mighty_miner_beats_a_bare_send(self):
+        bare = self.val("hog_rider", 0.75, 0.47)
+        self.env.eng.units.clear()
+        self.unit(0, "mighty_miner", 0.75, 0.45)
+        self.assertGreater(self.val("hog_rider", 0.75, 0.47), bare)
+
+    # ---- the bonuses must not compound ---------------------------------------------
+    def test_overlapping_bonuses_take_the_best_not_the_product(self):
+        """A Mighty Miner ahead of the Hog IS a surviving friendly troop in the lane, so the
+        "behind the mini-tank" and "counter-push" bonuses describe ONE fact. Multiplying them
+        counted it twice."""
+        self.unit(0, "mighty_miner", 0.75, 0.45)
+        got = self.val("hog_rider", 0.75, 0.47)
+        worst = self.env.w_wincon * max(self.env.hog_support_mult, self.env.hog_punish_mult)
+        self.assertAlmostEqual(worst, got, places=5,
+                               msg="the bonuses compounded again")
+
+    def test_a_support_card_on_a_quiet_board_earns_nothing_here(self):
+        """No committed Hog: these are ordinary cards and the ordinary terms score them."""
+        self.assertEqual(0.0, self.val("firecracker", 0.75, 0.55))
+
+
 class LiveTwinTests(unittest.TestCase):
     """Live must implement the same three rules, or a sim-trained policy meets a different
     referee the moment it plays for real -- the exact failure mode that lost the tornado combo."""
