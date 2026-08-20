@@ -402,6 +402,7 @@ observation:
                                  # them tagged 'mine' for their whole life without over-tagging your-side engagements
   team_track_radius: 0.12        # keep 'mine' as the unit moves: within this of last frame's allied unit
   team_forget_s: 4.5             # a tracked own unit missed by the detector is CARRIED this long (frozen in place)
+  team_track_min_hits: 2         # (2026-08-20) sightings before a track is SERVED as an enemy (gate/wheels/whiff): a 1-frame phantom used to be aimed at for 4.5s; a real unit re-sights within ~0.1-0.2s at 10Hz
                                  # before the tag lapses -- bridges ~2-3 missed reads at the act cadence, so a Miner
                                  # digging at the red enemy tower doesn't flip to 'enemy' the first time a read misses it.
                                  # Tracks link by CARD IDENTITY (same base card only), so the longer memory can't leak
@@ -637,7 +638,8 @@ train:
   # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
   # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
   # disable it for the session. OFF by default -- turn it on deliberately.
-  training_wheels: true               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
+  training_wheels: true
+  offense_leak_guard: 9.5             # (2026-08-20) on a QUIET board at this elixir, a greedy WAIT becomes the pressure play (icebow: X-Bow; hogeq: Hog) -- the punish/outcycle window; leaking is never doctrine               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
   llm_advisor: true
   llm_advisor_model: qwen2.5:latest   # 0.590s p50 WITH the doctrine prompt. gemma3:4b scores better
                                       # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it

@@ -346,6 +346,7 @@ class LiveMatchEnv:
             track_radius=float(cfg.get("observation", "team_track_radius", default=0.12)),
             forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
             motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
+            min_hits=int(cfg.get("observation", "team_track_min_hits", default=2)),
             deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
             deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
         # Stage-3b gate: the troop-INTERACTION block (predicted tower pressure) -- live twin of the sim's
@@ -608,14 +609,29 @@ class LiveMatchEnv:
         thread); otherwise one synchronous detector pass. [] if the detector is off/unavailable."""
         if self._detector is None:
             return []
+        if self._ploop is not None and not self._ploop.running:
+            # SAY IT AND HEAL IT (2026-08-20). The old failure mode was silent: the perception
+            # thread died, this method fell through to 1 Hz synchronous detection, and reaction
+            # time tripled with nothing in the log -- the user's "responds to a hog 4-5 s after
+            # placement" session. Rate-limited so a flapping loop doesn't spam.
+            if time.time() - getattr(self, "_percep_warn_t", 0.0) > 10.0:
+                self._percep_warn_t = time.time()
+                print("[env] perception loop NOT RUNNING -- act loop is detecting at its own "
+                      "pace (reaction degraded); attempting restart", flush=True)
+            self._ploop.ensure_alive()
         if self._ploop is not None and self._ploop.running:
             self._ploop.set_towers(self.tower.mine_alive, self.tower.enemy_alive)  # pocket gating stays fresh
             dets, age = self._ploop.snapshot()
             if age <= 2.0:                                # healthy loop -> use the snapshot
+                self._cad["det_age"] += float(age)        # per-match mean lands in the cadence line
                 dets = self._det_hold.merge(dets, time.time())   # bridge detector flicker
                 self._last_dets_all = dets
                 self._last_dets_age = float(age)          # trade-potential validity gate reads this
                 return [d for d in dets if d.team == "enemy" and d.base in self.detector_cards]
+            if time.time() - getattr(self, "_percep_warn_t", 0.0) > 10.0:
+                self._percep_warn_t = time.time()
+                print("[env] perception snapshot is %.1fs STALE -- falling back to synchronous "
+                      "detection this tick" % age, flush=True)
         try:
             dets = self._detector.detect(frame, conf=self.detector_conf)
         except Exception:
@@ -1518,12 +1534,25 @@ class LiveMatchEnv:
         # item 5 (trained act_period 1.0 vs the ~2.2 s that was actually served).
         cad = {}
         if self._cad_n:
-            order = ("loop", "wait", "spell", "grab", "vision", "hand", "threat", "obs", "act")
+            order = ("loop", "wait", "spell", "grab", "vision", "hand", "threat", "obs", "act",
+                     "det_age")
             cad = {k: round(self._cad[k] / self._cad_n, 3) for k in order if self._cad.get(k)}
             print(f"[cadence] {self._cad_n} decisions | "
                   + "  ".join(f"{k} {v:.2f}s" for k, v in cad.items()), flush=True)
+        # PERCEPTION HEALTH (2026-08-20): the 4-5 s reaction sessions were a DEGRADED loop nobody
+        # could see. passes ~= hz * match_seconds when healthy; wakes counts event-driven early
+        # decisions; det_age (cadence) is how stale each decision's snapshot was. A session with
+        # passes near zero or det_age near act_period is running blind-between-decisions again.
+        percep = {}
+        if self._ploop is not None:
+            percep = {"running": bool(self._ploop.running),
+                      "passes": int(getattr(self._ploop, "passes", 0)),
+                      "wakes": int(getattr(self._ploop, "wakes", 0))}
+            print("[perception] running=%s passes=%d wakes=%d" %
+                  (percep["running"], percep["passes"], percep["wakes"]), flush=True)
         self.rw_stats.dump_match(self.rw_stats_path,
                                  {"outcome": outcome, "decisions": self._cad_n, "cadence": cad,
+                                  "perception": percep,
                                   # NB key must NOT be "plays": dump_match merges match_summary() LAST,
                                   # whose int "plays" count would silently clobber this array (it did,
                                   # 2026-08-13 -- the whole day's per-play detail was lost to that).

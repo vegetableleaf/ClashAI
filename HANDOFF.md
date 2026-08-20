@@ -421,6 +421,40 @@ this is systematically shifted, so a re-label (or re-record) is the honest next 
 
 Suites: icebow 450 OK, hogeq 42 (unchanged baseline — the warp fix added none).
 
+## 3g. 2026-08-20 — reaction latency, phantom tracks, offense windows
+
+User: reactions land 4-5 s late (hog reaches the tower first); false positives on the allied side
+whiff spells into random tiles; and the model needs offensive windows, not all-game defence.
+
+**Latency.** The healthy chain is ~1.3 s (10 Hz perception → event wake → 0.5 s advisor → act).
+The 4-5 s sessions were the DEGRADED chain: the perception thread dies silently → `_detect_enemies`
+falls back to 1 Hz synchronous detection with nothing in the log → motion classification needs
+seconds → (pre-`b07b983`) the advisor burned another 0.9 s timing out. Fixes:
+- `PerceptionLoop.ensure_alive()` — a dead loop restarts itself and SAYS SO; `_detect_enemies`
+  warns (rate-limited) on a dead loop or a stale snapshot instead of silently degrading.
+- The wake event now also fires on a **fresh first sighting** (track hits == 1) at gy ≤ 0.50 of a
+  card we don't own — placement IS the commitment; waiting for the classifier ("enemy" needs
+  motion_min = 0.05 of net march) cost 0.3-0.7 s per reaction.
+- Found while testing: an unowned card deep in OUR half classifies enemy on FIRST sighting via
+  the deck veto — Miner/Barrel-style materialisations already wake with zero classification delay.
+- **Per-match health line**: `[perception] running/passes/wakes` + `det_age` in the cadence line.
+  passes ≈ hz × seconds when healthy; det_age near act_period = blind-between-decisions again.
+
+**Phantoms.** Confirmed the user's guess: a 1-frame false positive classified by side-prior or a
+bar misread became an enemy TRACK served for forget_s = 4.5 s → gate opened → spell wheels aimed
+at it → whiff into grass. Now: tracks carry `hits`; `enemy_tracks` serves only ≥ `min_hits`
+(**observation.team_track_min_hits: 2**, ~0.1-0.2 s corroboration at 10 Hz), dets carry
+`d.trk_hits`, and `_needs_answer`'s live-det path requires ≥ 2 (default 2 when unannotated).
+
+**Offense.** The quiet-board pressure rule (bow at 6+) lived on EXPLORATION steps only — a greedy
+model at 10 elixir just leaked. New leak-guard wheel (**train.offense_leak_guard: 9.5**): a greedy
+WAIT on a quiet board at ≥ 9.5 elixir becomes the pressure play (icebow X-Bow, hogeq Hog at the
+bridge) — the punish/outcycle/second-bow window. The ONE sanctioned wait→play conversion; sound
+only because the buffer stores the EXECUTED action (a683d46). Defence always outranks it
+(needs_answer suppresses).
+
+16 new tests per deck. Suites: icebow 466 OK, hogeq 42 baseline.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

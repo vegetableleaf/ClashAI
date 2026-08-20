@@ -315,6 +315,8 @@ def train_rl(cfg, init: str | None = None) -> None:
     advisor = None
     advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
     plan: list = []          # the advisor's remaining ordered cards for this board
+    wheels_on = bool(cfg.get("train", "training_wheels", default=True))
+    offense_leak_guard = float(cfg.get("train", "offense_leak_guard", default=9.5))
     advisor_plan = bool(cfg.get("train", "llm_advisor_plan", default=False))
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor  # noqa: F401  (HOLD imported at module scope below)
@@ -362,7 +364,12 @@ def train_rl(cfg, init: str | None = None) -> None:
         seen = []                    # (x, y, base) counted so far, for de-duplication below
         bases = []
         for d in dets:
-            if d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42:
+            if (d.team == "enemy" and float(getattr(d, "gy", 0.0)) >= 0.42
+                    and int(getattr(d, "trk_hits", 2) or 2) >= 2):
+                # trk_hits < 2 = a single-frame sighting: the tracker refuses to SERVE those
+                # (track_min_hits) and the gate must refuse to TRIAGE them for the same reason --
+                # a 1-frame phantom used to open this gate and buy a spell (default 2 keeps dets
+                # from sources that don't annotate corroboration counting, e.g. tests).
                 bases.append(str(d.base))
                 seen.append((float(d.cx), float(getattr(d, "gy", 0.0)), str(d.base)))
         # BRIDGED MEMORY (2026-08-19, user report: "the advisor suggests HOLD despite the enemy
@@ -817,9 +824,30 @@ def train_rl(cfg, init: str | None = None) -> None:
             thr = env.threat_vec.copy()
             while running["v"]:
                 eps = epsilon(step)
+                na = _needs_answer(env)
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
                                 _situation(env) if advisor is not None else "",
-                                needs_answer=_needs_answer(env))
+                                needs_answer=na)
+                # LEAK-GUARD OFFENSE WHEEL (2026-08-20, user request: "the model should pressure
+                # with x-bow when possible... defending all game won't work"). The quiet-board
+                # pressure rule above lives on EXPLORATION steps only, so a greedy policy at full
+                # elixir just leaked -- banking is doctrine, leaking never is. On a quiet board at
+                # offense_leak_guard elixir a greedy WAIT becomes the bow: the punish/outcycle
+                # window (they overspent elsewhere or we outcycled them). This is the ONE
+                # sanctioned wait->play conversion, sound
+                # only because the buffer stores the EXECUTED action (a683d46) -- the model learns
+                # the hog it actually played; doctrine aim fixes the cell.
+                if (wheels_on and action[0] == 0 and not na
+                        and env.elixir >= offense_leak_guard):
+                    _bow = next((i for i, v in enumerate(env.hand_vec)
+                                 if v > 0.5 and _base_key(card_names[i]) == "hog_rider"
+                                 and card_elixir[i] <= env.elixir + 1e-6), None)
+                    if _bow is not None:
+                        gx, gy = env.actions.coords_to_grid(0.75, 0.44)   # bridge, stronger-lane bias is the assists' job
+                        action = (1, _bow, int(gy) * env.gw + int(gx))
+                        if advisor_log:
+                            print("[train-rl]   wheels: leak-guard Hog (%.1f elixir, quiet "
+                                  "board) -> pressure" % env.elixir)
                 nobs, reward, done, info = env.step(action)
                 if tl is not None:
                     tl.add(env._last_frame)         # collect a frame for the training timelapse

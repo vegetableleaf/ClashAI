@@ -27,6 +27,8 @@ class PerceptionLoop:
         self._tracker = tracker
         self._conf = float(conf)
         self.hz = min(20.0, max(1.0, float(hz)))
+        self.wakes = 0                    # event wake-ups fired (visible health: reactions ARE event-driven)
+        self.passes = 0                   # detector passes completed (visible health: ~hz * seconds)
         self._preview = preview                     # LivePreview: fed per pass -> near-realtime boxes
         self._recorder = recorder                   # OverlayReplayRecorder: same, for the saved clips
         self._cap_factory = cap_factory             # test hook; default = own WindowCapture from cfg
@@ -105,6 +107,50 @@ class PerceptionLoop:
             return True
         return False
 
+
+    def _should_wake(self, dets, now) -> bool:
+        """True when this pass shows a NEW enemy commitment worth an early decision.
+
+        Two triggers:
+        1. Rising classified-enemy count vs the recent window (the original rule).
+        2. A FRESH first sighting (track hits == 1) on the enemy side or the bridge band, of a
+           card that is not ours (2026-08-20). Placement IS the commitment: waiting for the
+           classifier to call it "enemy" costs 0.3-0.7 s of march (motion evidence needs
+           motion_min of net travel), which against a Hog is most of the bridge-to-tower run.
+           A phantom can fire this too -- the cost is one early decision (~0.35 s pipeline),
+           rate-limited by react_min_gap, while a late reaction costs a tower.
+        """
+        n_enemy = sum(1 for d in dets if d.team == "enemy")
+        recent = [c for (tt, c) in self._cnt_hist if now - tt <= 1.5]
+        fire = n_enemy > (max(recent) if recent else 0)
+        self._cnt_hist.append((now, n_enemy))
+        while self._cnt_hist and now - self._cnt_hist[0][0] > 3.0:
+            self._cnt_hist.popleft()
+        if not fire:
+            own = getattr(self._tracker, "own_cards", None) or ()
+            for d in dets:
+                if (int(getattr(d, "trk_hits", 0) or 0) == 1
+                        and float(getattr(d, "gy", 1.0)) <= 0.50
+                        and str(d.base) not in own):
+                    fire = True
+                    break
+        return fire
+
+    def ensure_alive(self) -> bool:
+        """Restart the perception thread if it died (capture hiccup, exception storm). The old
+        failure mode was SILENT: the thread exited, .running went False, and the act loop fell
+        back to 1 Hz synchronous detection for the rest of the session -- reaction time
+        quietly tripled. Returns True when the loop is running after the call."""
+        if self.running:
+            return True
+        if self._stop.is_set():
+            return False                  # deliberately stopped -- do not resurrect
+        self._thread = None
+        self.start()
+        print("[perception] loop was DEAD -- restarted (reaction time was degraded to the act "
+              "loop's own pace while it was down)", flush=True)
+        return self.running
+
     # -- the loop -------------------------------------------------------
     def _run(self) -> None:
         try:
@@ -132,14 +178,10 @@ class PerceptionLoop:
                     self._tracker.tag(dets, now)         # evidence fusion at perception rate
                     self._dets = dets
                     self._t = now
-                # rising enemy-count edge (vs the recent window) = a NEW commitment -> wake the act loop
-                n_enemy = sum(1 for d in dets if d.team == "enemy")
-                recent = [c for (tt, c) in self._cnt_hist if now - tt <= 1.5]
-                if n_enemy > (max(recent) if recent else 0):
+                if self._should_wake(dets, now):
                     self._event.set()
-                self._cnt_hist.append((now, n_enemy))
-                while self._cnt_hist and now - self._cnt_hist[0][0] > 3.0:
-                    self._cnt_hist.popleft()
+                    self.wakes += 1
+                self.passes += 1
                 if self._preview is not None:             # boxes now refresh at perception rate
                     self._preview.update(None, dets, self._region)
                 if self._recorder is not None:

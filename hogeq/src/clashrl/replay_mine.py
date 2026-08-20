@@ -242,6 +242,7 @@ class TeamTracker:
     def __init__(self, spawn_radius: float = 0.10, spawn_window_s: float = 2.5,
                  track_radius: float = 0.12, forget_s: float = 4.5,
                  enemy_window_s: Optional[float] = None, motion_min: float = 0.05,
+                 min_hits: int = 2,
                  deep_mine_y: float = 0.62, deep_enemy_y: float = 0.38,
                  own_cards: Optional[Sequence[str]] = None, is_building=None,
                  building_mine_y: float = 0.50, building_enemy_y: float = 0.46):
@@ -267,6 +268,13 @@ class TeamTracker:
         self.track_radius = float(track_radius)
         self.forget_s = float(forget_s)
         self.motion_min = float(motion_min)        # net |dy| that counts as marching (not jitter/knockback)
+        # CORROBORATION before a track is SERVED as an enemy (2026-08-20, user report: "a single
+        # flicker elicits a response"). A 1-frame phantom that the side prior or a bar misread
+        # calls 'enemy' used to be served for the full forget_s (4.5 s): the threat gate opened,
+        # the spell wheels aimed at it, and a spell whiffed into an empty tile. A REAL unit is
+        # re-sighted within 1-2 perception periods (~0.1-0.2 s at 10 Hz), so demanding a second
+        # sighting kills single-frame phantoms at almost no reaction cost.
+        self.min_hits = max(1, int(min_hits))
         self.deep_mine_y = float(deep_mine_y)      # first seen BELOW this -> deep in MY half
         self.deep_enemy_y = float(deep_enemy_y)    # first seen ABOVE this -> deep in ENEMY half
         # BUILDING side prior (see _verdict): buildings cannot cross the river, so which half one
@@ -390,7 +398,8 @@ class TeamTracker:
                 trk["x"], trk["y"], trk["t"] = dx, dy, t
             else:
                 trk = {"x": dx, "y": dy, "x0": dx, "y0": dy, "base": d.base, "t0": t,
-                       "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0}
+                       "t": t, "team": "unknown", "rank": 9, "bm": 0, "be": 0, "hits": 0}
+            trk["hits"] = int(trk.get("hits", 0)) + 1     # sightings, incl. this one
             if d.bar_vote == "mine":
                 trk["bm"] += 1
             elif d.bar_vote == "enemy":
@@ -411,6 +420,7 @@ class TeamTracker:
                     if nb != d.base:
                         d.cls = nb                                # lookalike relabel (base follows cls)
             d.team = trk["team"]
+            d.trk_hits = trk["hits"]      # corroboration count, for gates that must ignore 1-frame phantoms
             live.append(trk)
         # GAP BRIDGING: carry forward recent tracks NOT matched this read; they age out after forget_s.
         self._tracks = live + prev
@@ -429,6 +439,8 @@ class TeamTracker:
         for tr in self._tracks:
             if tr["team"] != "enemy" or now - tr["t"] > self.forget_s:
                 continue
+            if int(tr.get("hits", 0)) < self.min_hits:
+                continue                  # a 1-frame phantom is not an enemy anyone should aim at
             dt = tr["t"] - tr.get("t0", tr["t"])
             vx = vy = 0.0
             if dt >= 0.5:
