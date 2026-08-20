@@ -1,0 +1,755 @@
+# COUNTER TABLE -- icebow. What this deck plays against what, WHEN, and WHERE.
+#
+# Researched from counter guides, then re-validated against this repo's own card
+# database by tools/counters_build.py: every response is in this deck, passes
+# threat_value.pick_invalid (so it can physically touch the threat and the trade is
+# sane), and uses only when/where words the wheels can execute.
+#
+# Consumed by the live advisor path (vetoed pick / silent advisor) and the sim's
+# doctrine prior, so both sides answer a push the same way. THE FIRST ROW FOR A
+# THREAT KEY WINS: put hand-written overrides ABOVE the generated rows and they
+# survive a regenerate.
+#
+# generated from research_tables.json
+counters:
+  - threat: "hog_rider"
+    threat_cards: [hog_rider]
+    danger: 0.34
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "4-3 centre plant pulls him off the tower; +1 trade or better"}
+      - {card: tornado, when: at_bridge, where: king_activation, note: "LONE hog only: drag him to the king for a permanent 3rd tower"}
+      - {card: knight, when: at_bridge, where: in_front, note: "body-block when Tesla is cycling; accepts about one tower hit"}
+  - threat: "hog_rider+ice_golem"
+    threat_cards: [hog_rider, ice_golem]
+    danger: 0.4483
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "both target buildings: one pull absorbs the whole push"}
+      - {card: skeletons, when: on_place, where: on_top, note: "pop the Ice Golem early so its death-slow misses the real answer"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the pair so the towers finish the hog further out"}
+  - threat: "hog_rider+freeze"
+    threat_cards: [hog_rider, freeze]
+    danger: inf
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "1-elixir bait: if they freeze this, the real answer lands free"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "he retargets the building; a frozen Tesla only delays, never loses"}
+      - {card: ice_wizard, when: in_our_half, where: center_kite, note: "slow stacks with the pull so the tower finishes him"}
+  - threat: "hog_rider+earthquake"
+    threat_cards: [hog_rider, earthquake]
+    danger: inf
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "anti-EQ (0-3) spot: ~3 tiles off the river, above their quake"}
+      - {card: knight, when: at_bridge, where: in_front, note: "EQ kills buildings: carry with a body while the quake burns"}
+      - {card: skeletons, when: last_moment, where: surround, note: "only after the 3s quake expires, else they are free value"}
+  - threat: "hog_rider+musketeer"
+    threat_cards: [hog_rider, musketeer]
+    danger: 0.8915
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "the pull redirects the hog; she is the rocket target, not him"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "fire only when she and the tower line up in one blast"}
+      - {card: knight, when: at_bridge, where: in_front, note: "block the hog when Tesla is out and eat her chip"}
+  - threat: "hog_cycle_2_6"
+    threat_cards: [hog_rider, ice_golem, musketeer]
+    danger: 1.3263
+    mitigation: true
+    respond:
+      - {card: rocket, when: in_our_half, where: at_tower, note: "their hardest matchup: rocket-cycle the tower, do not out-defend"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "even 4-for-4, but Tesla and tower survive into the next cycle"}
+      - {card: tornado, when: at_bridge, where: king_activation, note: "activate the king early; it pays every cycle after"}
+  - threat: "royal_giant"
+    threat_cards: [royal_giant]
+    danger: 0.5791
+    respond:
+      - {card: tesla, when: at_bridge, where: at_tower, note: "drags him off-axis before he lands more than one or two shots"}
+      - {card: knight, when: on_place, where: in_front, note: "blocks his escort so the Tesla can solo the tank"}
+      - {card: x_bow, when: pre_place, where: at_tower, note: "second defensive building denies a re-lock if the Tesla dies"}
+  - threat: "royal_giant+lightning"
+    threat_cards: [royal_giant, lightning]
+    danger: inf
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "vary centre and corner; assume lightning is held for the building"}
+      - {card: knight, when: on_place, where: in_front, note: "a body answer survives lightning where the building does not"}
+      - {card: x_bow, when: pre_place, where: at_tower, note: "keep a second, different-typed answer for after it lands"}
+  - threat: "royal_giant+fisherman"
+    threat_cards: [royal_giant, fisherman]
+    danger: 1.2343
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "1 elixir baits the hook before you commit the real answer"}
+      - {card: tesla, when: pre_place, where: at_tower, note: "place tight to the tower so a hook pull is short"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the RG from outside hook range"}
+  - threat: "giant"
+    threat_cards: [giant]
+    danger: 0.7279
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "he is slow: plant early, he only ever targets buildings"}
+      - {card: skeletons, when: on_place, where: behind_threat, note: "surround his back while the pull holds his aggro"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the push; kill the SUPPORT, never race the giant"}
+  - threat: "giant+witch"
+    threat_cards: [giant, witch]
+    danger: 1.3753
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull the giant off-axis, away from her splash and spawns"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "she is the real threat: rocket her cluster, not the tank"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "splash ends the skeleton stream once she is chipped"}
+  - threat: "giant+graveyard"
+    threat_cards: [giant, graveyard]
+    danger: inf
+    respond:
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "pre-placed ON the tower his splash shreds each spawning wave"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "separate answer for the giant; never let one card carry both"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "drag stray skeletons to the king: activation plus kill"}
+  - threat: "giant+sparky"
+    threat_cards: [giant, sparky]
+    danger: 2.7164
+    respond:
+      - {card: tornado, when: at_bridge, where: center_kite, note: "drag her mid-windup: displacement resets the 2.5s charge"}
+      - {card: rocket, when: last_moment, where: behind_threat, note: "fire while she is dragged and cannot shoot back"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "the giant is low priority; the pull buys time for Sparky"}
+  - threat: "golem"
+    threat_cards: [golem]
+    danger: 0.7031
+    mitigation: true
+    respond:
+      - {card: x_bow, when: on_place, where: opposite_lane, note: "his 8 elixir buys no defence: lock the far tower at once"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the whole push; out-tempo him, never race his HP"}
+      - {card: rocket, when: last_moment, where: behind_threat, note: "clear the clumped golemites or support for more than it cost"}
+  - threat: "golem+night_witch"
+    threat_cards: [golem, night_witch]
+    danger: 2.3143
+    mitigation: true
+    respond:
+      - {card: x_bow, when: on_place, where: opposite_lane, note: "punish the 8-elixir window before the push even forms"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "his splash ends the bat stream the golem is screening"}
+      - {card: rocket, when: last_moment, where: behind_threat, note: "the witch plus a second support in one blast pays the 6"}
+  - threat: "elixir_golem"
+    threat_cards: [elixir_golem]
+    danger: 0.361
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "building-targeting: the pull holds every blob off the tower"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "do NOT burst it: slow it and let the towers work"}
+  - threat: "royal_hogs"
+    threat_cards: [royal_hogs]
+    danger: 0.535
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "dead-centre so one building pulls BOTH lanes"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the pack so the towers out-damage them"}
+      - {card: the_log, when: on_place, where: in_front, note: "not a kill: chip plus pushback buys the tower time"}
+  - threat: "ram_rider"
+    threat_cards: [ram_rider]
+    danger: 0.2384
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "knockback resets the charge before she can snare and connect"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "building-targeting: the pull finishes what the reset started"}
+      - {card: skeletons, when: on_place, where: surround, note: "swarm splits her single-target damage once she is stopped"}
+  - threat: "battle_ram"
+    threat_cards: [battle_ram]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "roll head-on INTO the charge: knockback resets it"}
+      - {card: tesla, when: on_place, where: in_front, note: "a PASSIVE building pulls the charge; one already fighting is ignored"}
+      - {card: skeletons, when: on_place, where: surround, note: "clean up the two barbarians the ram drops when it breaks"}
+  - threat: "pekka+battle_ram"
+    threat_cards: [pekka, battle_ram]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "reset the ram first: it is the part that reaches the tower"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull both; PEKKA is slow and only lethal where she is escorted"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the pair; kite the PEKKA centre, never rocket her"}
+  - threat: "battle_ram+mother_witch"
+    threat_cards: [battle_ram, mother_witch]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "reset the ram without feeding her cheap bodies to curse"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "remove the witch outright before she tags anything"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "the pull carries the ram while the spell handles the witch"}
+  - threat: "wall_breakers"
+    threat_cards: [wall_breakers]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "one roll kills both before they connect: an even 2-for-2"}
+      - {card: skeletons, when: at_bridge, where: at_tower, note: "placed so the tower assists the kill when the Log is cycling"}
+  - threat: "goblin_drill"
+    threat_cards: [goblin_drill]
+    danger: inf
+    respond:
+      - {card: skeletons, when: on_place, where: on_top, note: "onto the emerging spot; a Tesla is far too slow for a drill"}
+      - {card: the_log, when: last_moment, where: on_top, note: "held for the pop: clips the drill and its goblins together"}
+      - {card: ice_wizard, when: in_our_half, where: on_top, note: "splash sweeps repeat waves once the Log is committed"}
+  - threat: "miner"
+    threat_cards: [miner]
+    danger: 0.1729
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "3-body triangle on a tower-locked miner: +2 every rotation"}
+      - {card: ice_wizard, when: on_place, where: at_tower, note: "backup splash denies the chip when skeletons are cycling"}
+  - threat: "miner+poison"
+    threat_cards: [miner, poison]
+    danger: inf
+    respond:
+      - {card: knight, when: on_place, where: at_tower, note: "high HP outlasts the DoT where a swarm is simply wiped"}
+      - {card: tesla, when: pre_place, where: at_tower, note: "hides underground between shots; not baited off by the poison"}
+  - threat: "miner_control"
+    threat_cards: [miner, princess]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "triangle on the tower-locked miner: +2 every rotation"}
+      - {card: the_log, when: at_bridge, where: at_tower, note: "the roll answers the princess; she is the recurring chip"}
+      - {card: knight, when: pre_place, where: in_front, note: "screen the bow: miner control snipes buildings, not just towers"}
+  - threat: "mortar"
+    threat_cards: [mortar]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: knight, when: on_place, where: in_front, note: "walks inside the 3.5-tile blind spot, forcing a free retarget"}
+      - {card: tesla, when: at_bridge, where: at_tower, note: "a bridge-line mortar sits in range: out-shoot its own cycle"}
+      - {card: skeletons, when: last_moment, where: surround, note: "cheap chip finishes what the Knight forced to retarget"}
+  - threat: "mortar+miner"
+    threat_cards: [mortar, miner]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: skeletons, when: on_place, where: on_top, note: "1 elixir onto the miner the instant he tunnels in"}
+      - {card: knight, when: on_place, where: in_front, note: "into the mortar blind spot: it cannot fire at anything that close"}
+      - {card: rocket, when: in_our_half, where: at_tower, note: "out-race the chip; their siege sits out of reach otherwise"}
+  - threat: "x_bow_mirror"
+    threat_cards: [x_bow]
+    danger: inf
+    respond:
+      - {card: rocket, when: on_place, where: on_top, note: "one cast kills their bow before it seats and starts firing"}
+      - {card: knight, when: on_place, where: in_front, note: "body-block theirs while our own bow out-trades it"}
+      - {card: x_bow, when: pre_place, where: at_tower, note: "counter-bow: whoever defends cheaper wins the siege mirror"}
+  - threat: "suspicious_bush"
+    threat_cards: [suspicious_bush]
+    danger: inf
+    respond:
+      - {card: skeletons, when: last_moment, where: on_top, note: "right on the bush: the only reliable +1 with zero tower damage"}
+      - {card: the_log, when: on_place, where: on_top, note: "pops the bush and clears the goblins it hides in one roll"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "it beelines the nearest building, so the pull intercepts free"}
+  - threat: "enemy_defensive_building"
+    threat_cards: [cannon]
+    danger: 0.152
+    respond:
+      - {card: the_log, when: on_place, where: in_front, note: "kill-the-defender beats fight-the-building: shove them off"}
+      - {card: tornado, when: on_place, where: behind_threat, note: "drag their DEFENDER off the bow, never the building itself"}
+      - {card: knight, when: pre_place, where: in_front, note: "pre-shield the bow through its 3.5s deploy window"}
+  - threat: "balloon"
+    threat_cards: [balloon]
+    danger: 0.5426
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "plant BEFORE it crosses: its deploy time is why this is early"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "Tesla dead: drag it to the king, the death bomb lands there"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow under its path so it dies before a second bomb"}
+  - threat: "balloon+freeze"
+    threat_cards: [balloon, freeze]
+    danger: inf
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "plant EARLY; expect freeze on it and hold the follow-up"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "the freeze-proof line: the king finishes it for free"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "bridges the frozen seconds once the Tesla is locked out"}
+  - threat: "balloon+inferno_dragon"
+    threat_cards: [balloon, inferno_dragon]
+    danger: 0.8206
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "hides between shots, wasting the dragon's single-target ramp"}
+      - {card: rocket, when: last_moment, where: on_top, note: "the balloon is the tower-killer; the dragon alone chips little"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow both: his splash reaches air where the Log cannot"}
+  - threat: "lumberjack+balloon"
+    threat_cards: [lumberjack, balloon]
+    danger: 1.4093
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "plant early: rage speeds the loon but not the building's DPS"}
+      - {card: rocket, when: last_moment, where: on_top, note: "one cast kills both once the rage clumps them"}
+      - {card: knight, when: at_bridge, where: in_front, note: "block the lumberjack so his rage drops away from the loon"}
+  - threat: "miner+balloon"
+    threat_cards: [miner, balloon]
+    danger: 1.1587
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "one building answers the loon; never stack answers on the miner"}
+      - {card: skeletons, when: on_place, where: surround, note: "triangle on the MINER only: he is the ground half of the push"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "mandatory line when the Tesla is out of rotation"}
+  - threat: "lava_hound"
+    threat_cards: [lava_hound]
+    danger: 0.1579
+    mitigation: true
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "the hound alone is 0 threat: splash the pups, ignore it"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "free chip; never spend more than this on a hound body"}
+      - {card: rocket, when: last_moment, where: on_top, note: "only for the pup clump the instant the hound pops"}
+  - threat: "lavaloon"
+    threat_cards: [lava_hound, balloon]
+    danger: 2.012
+    mitigation: true
+    respond:
+      - {card: rocket, when: last_moment, where: at_tower, note: "6 erases the 5-cost loon plus popped pups: our only clean line"}
+      - {card: tesla, when: on_place, where: at_tower, note: "dropped as the loon deploys, it pulls it off the tower path"}
+      - {card: tornado, when: last_moment, where: king_activation, note: "Tesla down: drag the loon onto the king to finish it free"}
+  - threat: "lava_hound+skeleton_dragons"
+    threat_cards: [lava_hound, skeleton_dragons]
+    danger: 0.9361
+    mitigation: true
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "focus the squishy dragons; the hound barely retaliates"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "free chip on the hound while the splash clears the dragons"}
+  - threat: "minion_horde"
+    threat_cards: [minion_horde]
+    danger: 0.372
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "no arrows in this deck: IW IS the horde answer, so protect him"}
+      - {card: tornado, when: last_moment, where: center_kite, note: "clump them onto his splash and the evo Tesla pulse"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "the pulse plus tower finishes what the splash started"}
+  - threat: "minions"
+    threat_cards: [minions]
+    danger: 0.0804
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "splash is the only thing we own that touches an air swarm"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pulse plus tower; the Log can never touch these"}
+  - threat: "mega_minion"
+    threat_cards: [mega_minion]
+    danger: 0.1522
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "steady single-target chip drops it before it reaches anything"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow halves its DPS on our bow or Tesla"}
+  - threat: "baby_dragon"
+    threat_cards: [baby_dragon]
+    danger: 0.1224
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "reliable positive trade, and it covers the ground half too"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "keep him OFF-AXIS: the dragon punishes our clumps"}
+  - threat: "inferno_dragon"
+    threat_cards: [inferno_dragon]
+    danger: 0.1099
+    respond:
+      - {card: tesla, when: pre_place, where: at_tower, note: "the evo stun pulse resets its ramp; place it adjacent to the bow"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow stretches the ramp; the Log can never touch it"}
+      - {card: tornado, when: last_moment, where: king_activation, note: "drag it off a locked bow and into the king's reach"}
+  - threat: "skeleton_dragons"
+    threat_cards: [skeleton_dragons]
+    danger: 0.1184
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "one splash pass handles the low-HP pair"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "handles them easily; save it if a building-targeter is coming"}
+  - threat: "electro_dragon"
+    threat_cards: [electro_dragon]
+    danger: 0.1665
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "a building eats the chain stun without losing DPS uptime"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "stay outside the 3.5-tile chain and slow it from range"}
+  - threat: "phoenix"
+    threat_cards: [phoenix]
+    danger: 0.2122
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "splash covers the bird and the egg it leaves behind"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "sustained chip kills the first life; the tower gets the egg"}
+  - threat: "skeleton_barrel"
+    threat_cards: [skeleton_barrel]
+    danger: inf
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "the barrel is AIR: his splash kills it and the skeletons it drops"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "building-targeting: the pull takes the barrel off the tower"}
+  - threat: "goblin_barrel"
+    threat_cards: [goblin_barrel]
+    danger: inf
+    respond:
+      - {card: the_log, when: last_moment, where: at_tower, note: "cast as they land: kills all three before they swing, 2-for-3"}
+      - {card: skeletons, when: last_moment, where: on_top, note: "eats the barrel on landing when the Log is mid-cycle"}
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "pre-placed splash covers the landing spot all rotation"}
+  - threat: "goblin_barrel+princess"
+    threat_cards: [goblin_barrel, princess]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: the_log, when: pre_place, where: at_tower, note: "HOLD it for the barrel: the princess is bait, not the target"}
+      - {card: skeletons, when: last_moment, where: on_top, note: "eats the barrel so the Log stays reserved for the real one"}
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "parked splash answers both without spending the Log"}
+  - threat: "goblin_barrel+goblin_gang"
+    threat_cards: [goblin_barrel, goblin_gang]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "rolled through the gang it carries on to clip the barrel goblins"}
+      - {card: skeletons, when: last_moment, where: on_top, note: "covers the barrel while the Log is committed to the gang"}
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "splash at the tower handles whatever the roll missed"}
+  - threat: "skeleton_army"
+    threat_cards: [skeleton_army]
+    danger: 0.5823
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "roll through the pack: the Log IS the answer here"}
+      - {card: ice_wizard, when: in_our_half, where: on_top, note: "splash secondary when the Log is cycling"}
+  - threat: "goblin_gang"
+    threat_cards: [goblin_gang]
+    danger: 0.3817
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "kills the stabbers and hurts the spears for a +1 trade"}
+      - {card: ice_wizard, when: in_our_half, where: on_top, note: "splash mops the survivors; never rocket a gang"}
+  - threat: "guards"
+    threat_cards: [guards]
+    danger: 0.0061
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "knocks all three shields off in one roll for the tower to finish"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "splash chews shield and body together once shoved"}
+  - threat: "graveyard"
+    threat_cards: [graveyard]
+    danger: inf
+    respond:
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "pre-placed ON the tower his splash shreds each spawn wave"}
+      - {card: skeletons, when: on_place, where: surround, note: "perimeter bodies back the splash; do not stack into a poison"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "drag the skeletons to the king: activation plus the kill"}
+  - threat: "graveyard+poison"
+    threat_cards: [graveyard, poison]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: ice_wizard, when: pre_place, where: at_tower, note: "he survives the cloud where a swarm is simply wiped"}
+      - {card: tornado, when: in_our_half, where: king_activation, note: "pull the wave to the king; the poison cannot follow it"}
+      - {card: knight, when: on_place, where: at_tower, note: "high-HP body outlasts the DoT when IW is out of rotation"}
+  - threat: "barbarians"
+    threat_cards: [barbarians]
+    danger: 1.4642
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "knockback plus chip; they are slow and the tower does the rest"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the pack so both towers out-damage them"}
+      - {card: tornado, when: last_moment, where: center_kite, note: "clump them for the IW splash and the Tesla pulse"}
+  - threat: "elite_barbarians"
+    threat_cards: [elite_barbarians]
+    danger: 1.1389
+    respond:
+      - {card: ice_wizard, when: pre_place, where: behind_threat, note: "slow FIRST: they shred any mini-tank that face-tanks them"}
+      - {card: the_log, when: at_bridge, where: in_front, note: "roll INTO the sprint; knockback buys the towers a full swing"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "slowed and logged E-Barbs die to the towers for +1"}
+  - threat: "three_musketeers"
+    threat_cards: [three_musketeers]
+    danger: inf
+    respond:
+      - {card: tornado, when: on_place, where: center_kite, note: "pull all three back together the moment they split"}
+      - {card: rocket, when: last_moment, where: at_tower, note: "onto the clump: 6 for their 9 and it clips a tower"}
+      - {card: tesla, when: at_bridge, where: at_tower, note: "the lone split musketeer dies to Tesla plus tower for profit"}
+  - threat: "royal_recruits"
+    threat_cards: [royal_recruits]
+    danger: 1.2063
+    mitigation: true
+    respond:
+      - {card: the_log, when: on_place, where: in_front, note: "cheap chip plus pushback buys huge time against their slow walk"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the line; a split push is answered lane by lane"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "centre pull drags both flanks into one tower's fire"}
+  - threat: "royal_delivery"
+    threat_cards: [royal_delivery]
+    danger: 0.0409
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "pops the recruit's shield so the tower finishes it"}
+      - {card: knight, when: on_place, where: in_front, note: "it is built for swarms: a single mini-tank shrugs it off"}
+  - threat: "rascals"
+    threat_cards: [rascals]
+    danger: 1.7196
+    respond:
+      - {card: the_log, when: on_place, where: at_tower, note: "one roll kills both girls, the real DPS; the boy is left toothless"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "splash finishes the girls and slows the boy"}
+  - threat: "bomber"
+    threat_cards: [bomber]
+    danger: 0.0152
+    respond:
+      - {card: knight, when: on_place, where: on_top, note: "he is low HP: any mini-tank on him ends it immediately"}
+      - {card: the_log, when: on_place, where: on_top, note: "one roll kills him outright"}
+  - threat: "archers"
+    threat_cards: [archers]
+    danger: 0.0736
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "one roll kills a split pair for a clean +1"}
+      - {card: knight, when: on_place, where: center_kite, note: "sent centre he distracts and kills them for zero tower damage"}
+  - threat: "firecracker"
+    threat_cards: [firecracker]
+    danger: 0.0026
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "cast as she hops back; the shove plus tower finishes her"}
+      - {card: knight, when: on_place, where: king_activation, note: "bait her shrapnel onto our king: a permanent 3rd tower for 3"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow her off-axis; never clump into the spark trails"}
+  - threat: "dart_goblin"
+    threat_cards: [dart_goblin]
+    danger: 0.0142
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "216 HP dies outright to one roll for a cheap positive trade"}
+      - {card: knight, when: on_place, where: in_front, note: "walks through his chip; he has no answer to sustained melee"}
+  - threat: "princess"
+    threat_cards: [princess]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: the_log, when: at_bridge, where: at_tower, note: "one-shots her at parity; the roll covers 9.6 tiles from our side"}
+      - {card: skeletons, when: on_place, where: on_top, note: "AFTER she locks the tower she will not retarget: pure mitigation"}
+  - threat: "magic_archer"
+    threat_cards: [magic_archer]
+    danger: 0.0459
+    respond:
+      - {card: the_log, when: at_bridge, where: on_top, note: "an exact kill at level parity, before he lines up the tower"}
+      - {card: knight, when: on_place, where: in_front, note: "any body in his firing line blocks the pierce shot's value"}
+  - threat: "musketeer"
+    threat_cards: [musketeer]
+    danger: 0.13
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "1 elixir plus tower stops all her chip: a +3 trade"}
+      - {card: knight, when: on_place, where: in_front, note: "body-block her off the bow when she escorts a tank"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "only as part of a tower-aligned 2-for-1"}
+  - threat: "wizard"
+    threat_cards: [wizard]
+    danger: 0.1458
+    respond:
+      - {card: rocket, when: on_place, where: behind_threat, note: "5-cost squishy support: the classic 2-for-1 with tower chip"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "outslow him from off-axis; never clump into his splash"}
+      - {card: knight, when: on_place, where: in_front, note: "block him off the bow while the tower works"}
+  - threat: "witch"
+    threat_cards: [witch]
+    danger: 0.0901
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "roll through the spawn stream to her: spawn value compounds fast"}
+      - {card: knight, when: on_place, where: on_top, note: "on top of her; never send skeletons into her splash"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "when she and a second support share one blast"}
+  - threat: "night_witch"
+    threat_cards: [night_witch]
+    danger: 0.1959
+    respond:
+      - {card: ice_wizard, when: on_place, where: on_top, note: "splash one-shots her bats and slows her, for 1 less than she costs"}
+      - {card: the_log, when: on_place, where: on_top, note: "rolls through HER; her bats are AIR and stay the IW's job"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "with a second support in blast; her spawns never stop otherwise"}
+  - threat: "mother_witch"
+    threat_cards: [mother_witch]
+    danger: 0.0505
+    respond:
+      - {card: knight, when: on_place, where: on_top, note: "a mini-tank kills her outright; do not feed her cheap bodies"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "removes her before she curses anything, if tower-aligned"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow her cast rate and splash the cursed hogs"}
+  - threat: "executioner"
+    threat_cards: [executioner]
+    danger: 0.0867
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "keep OFF-AXIS: he exists to punish our clumps"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull him off the bow; a building ignores the boomerang line"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "only in a tower-aligned 2-for-1"}
+  - threat: "bowler"
+    threat_cards: [bowler]
+    danger: 0.2492
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "off-axis from the boulder line; slow his 2.5s reload"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "ground-only: the pull holds him while the towers work"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "he is 5 and slow: a tower-aligned blast pays"}
+  - threat: "valkyrie"
+    threat_cards: [valkyrie]
+    danger: 0.347
+    respond:
+      - {card: skeletons, when: on_place, where: behind_threat, note: "at her BACK: her spin cannot cover the bow and behind at once"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull her off the bow; never place the IW adjacent to her"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "range her down from outside the spin"}
+  - threat: "hunter"
+    threat_cards: [hunter]
+    danger: 0.03
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "keep distance: his point-blank burst kills mini-tanks"}
+      - {card: skeletons, when: on_place, where: surround, note: "he fires one direction at a time; a surround overwhelms it"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "soaks the shotgun while the towers answer him"}
+  - threat: "electro_wizard"
+    threat_cards: [electro_wizard]
+    danger: 0.0378
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "low HP: the roll plus tower ends him"}
+      - {card: knight, when: on_place, where: in_front, note: "block him off the bow; his stun does not stop a mini-tank"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "tower-aligned 2-for-1 only"}
+  - threat: "zappies"
+    threat_cards: [zappies]
+    danger: 0.1571
+    respond:
+      - {card: ice_wizard, when: in_our_half, where: on_top, note: "splash slow neutralises all three without trading into the stun"}
+      - {card: the_log, when: on_place, where: on_top, note: "one roll clears the trio for a strong trade"}
+  - threat: "sparky"
+    threat_cards: [sparky]
+    danger: 0.4774
+    respond:
+      - {card: tornado, when: last_moment, where: center_kite, note: "drag her mid-windup: displacement resets the 2.5s charge"}
+      - {card: rocket, when: last_moment, where: at_tower, note: "fire while she is dragged and cannot shoot back"}
+      - {card: skeletons, when: on_place, where: surround, note: "triangle eats one shot cheaply when nado and rocket are down"}
+  - threat: "sparky+goblin_giant"
+    threat_cards: [sparky, goblin_giant]
+    danger: 1.0515
+    respond:
+      - {card: tornado, when: at_bridge, where: center_kite, note: "reset her charge; the evo Tesla pulse also stuns her"}
+      - {card: rocket, when: last_moment, where: at_tower, note: "onto the clump once the nado stacks giant and Sparky"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pulls the building-targeting giant off-lane after she is handled"}
+  - threat: "prince"
+    threat_cards: [prince]
+    danger: 0.5506
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "roll head-on DURING the windup: knockback resets the charge"}
+      - {card: knight, when: at_bridge, where: in_front, note: "block the reset prince so he recharges into a body, not a tower"}
+      - {card: skeletons, when: on_place, where: surround, note: "surround only once the charge is spent"}
+  - threat: "dark_prince"
+    threat_cards: [dark_prince]
+    danger: 0.2348
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "resets the charge and chips the shield"}
+      - {card: knight, when: at_bridge, where: in_front, note: "body-block; skeletons first would be erased by his splash"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow him off-axis once the shield is spent"}
+  - threat: "prince+dark_prince"
+    threat_cards: [prince, dark_prince]
+    danger: 1.235
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "one roll resets BOTH charges"}
+      - {card: knight, when: at_bridge, where: in_front, note: "block on-path; a reset double-prince dies to Tesla plus tower"}
+      - {card: skeletons, when: last_moment, where: surround, note: "only AFTER the dark prince's shield and splash are spent"}
+  - threat: "bandit"
+    threat_cards: [bandit]
+    danger: 0.1573
+    respond:
+      - {card: skeletons, when: last_moment, where: surround, note: "bait the i-framed dash 2 tiles ahead of her line"}
+      - {card: knight, when: at_bridge, where: in_front, note: "finishes her once the dash is spent; never IW first into a dash"}
+  - threat: "bridge_spam"
+    threat_cards: [battle_ram, bandit]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "one roll resets a charging ram and clips the bandit"}
+      - {card: skeletons, when: last_moment, where: surround, note: "bait her i-framed dash for 1 elixir before the Knight lands"}
+      - {card: knight, when: at_bridge, where: in_front, note: "body-block the reset rider so it recharges into him"}
+  - threat: "boss_bandit"
+    threat_cards: [boss_bandit]
+    danger: 0.616
+    mitigation: true
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "keep a body INSIDE 3.5 tiles of her landing: no window, no dash"}
+      - {card: knight, when: at_bridge, where: in_front, note: "smother the post-grenade landing ~6 tiles behind where she vanished"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "the pull continues through both of her teleports"}
+  - threat: "royal_ghost"
+    threat_cards: [royal_ghost]
+    danger: 0.168
+    respond:
+      - {card: knight, when: on_place, where: in_front, note: "a body IN his path forces him to materialise; IW cannot target him"}
+      - {card: skeletons, when: on_place, where: surround, note: "his splash hits one at a time; the swarm surrounds him"}
+  - threat: "mega_knight"
+    threat_cards: [mega_knight]
+    danger: 0.6848
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "spread, never clumped: they eat the jump, he takes damage mid-jump"}
+      - {card: knight, when: on_place, where: center_kite, note: "walk-tank kites him centre; never stack him with the skeletons"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "finishes him from 4+ tiles once the jump is absorbed"}
+  - threat: "mega_knight+miner"
+    threat_cards: [mega_knight, miner]
+    danger: 1.5397
+    respond:
+      - {card: skeletons, when: on_place, where: king_activation, note: "bait his jump in front of the king: the slam splash wakes it"}
+      - {card: knight, when: on_place, where: on_top, note: "adjacent placement denies the jump; he just walks up and swings"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "eat the miner chip and range the Mega Knight down"}
+  - threat: "mega_knight+bats"
+    threat_cards: [mega_knight, bats]
+    danger: 2.1248
+    respond:
+      - {card: ice_wizard, when: on_place, where: behind_threat, note: "the only card we own that answers the bats AND chips him"}
+      - {card: skeletons, when: on_place, where: surround, note: "spread to absorb the 240 spawn damage and the jump"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull plus pulse carries the MK while the IW clears the air"}
+  - threat: "pekka"
+    threat_cards: [pekka]
+    danger: 1.9073
+    respond:
+      - {card: knight, when: on_place, where: center_kite, note: "kite her CENTRE off the bow; she never reaches the tower after"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow the kite; never rocket a 7-cost tank for partial HP"}
+      - {card: skeletons, when: on_place, where: surround, note: "surround only once she is committed and kited"}
+  - threat: "lumberjack"
+    threat_cards: [lumberjack]
+    danger: 0.3972
+    respond:
+      - {card: knight, when: at_bridge, where: in_front, note: "block him so the rage drops away from the rest of the push"}
+      - {card: the_log, when: at_bridge, where: in_front, note: "knockback plus chip; kill him AWAY from his allies"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow blunts the rage tempo he leaves behind"}
+  - threat: "golden_knight"
+    threat_cards: [golden_knight]
+    danger: 0.3279
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "1-elixir bait within 5 tiles of the river cancels his free dash"}
+      - {card: knight, when: at_bridge, where: in_front, note: "his damage is low: a mini-tank outlasts and kills him"}
+  - threat: "archer_queen"
+    threat_cards: [archer_queen]
+    danger: 0.1722
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "waste her ability: she cannot one-shot three bodies"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "the pull carries her once the invisibility pops"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "only if she stalls with support in one blast"}
+  - threat: "mighty_miner"
+    threat_cards: [mighty_miner]
+    danger: 0.2349
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "he cannot one-shot them; the swarm forces the ability out"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "centred it drags him in on either lane, even through the dig"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow his single-target melee from range"}
+  - threat: "monk"
+    threat_cards: [monk]
+    danger: 0.4039
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "a pulled monk is off-lane and his parry never reaches the turret"}
+      - {card: skeletons, when: on_place, where: surround, note: "melee swarm: the deflect does nothing inside a surround"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "HOLD the rocket: his parry reflects projectiles back"}
+  - threat: "skeleton_king"
+    threat_cards: [skeleton_king]
+    danger: 0.3065
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "pop his summoned skeletons first, before the soul charge builds"}
+      - {card: knight, when: on_place, where: in_front, note: "his hits are low: a mini-tank outlasts him"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "splash denies the souls that power his ability"}
+  - threat: "little_prince"
+    threat_cards: [little_prince]
+    danger: 0.0496
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "clips him and the Guardienne together"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow resets his ramping DPS when he is forced to move"}
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull him off the bow; 6-elixir rocket on a 3-cost is losing math"}
+  - threat: "ronin"
+    threat_cards: [ronin]
+    danger: 0.4797
+    respond:
+      - {card: tesla, when: pre_place, where: at_tower, note: "buildings are ranged and bypass his parry entirely"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "ranged damage never triggers the parry"}
+      - {card: skeletons, when: on_place, where: surround, note: "parry blocks one hit per 3.5s; a surround overwhelms it"}
+  - threat: "fisherman"
+    threat_cards: [fisherman]
+    danger: 0.1149
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "hooking one still leaves the rest; he has no splash"}
+      - {card: knight, when: on_place, where: in_front, note: "keep the bow a row back vs him; block him on approach"}
+      - {card: the_log, when: at_bridge, where: on_top, note: "chip plus knockback before he can hook the bow"}
+  - threat: "goblin_giant"
+    threat_cards: [goblin_giant]
+    danger: 0.3793
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "building-targeting: the pull takes him off-lane for free"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow him and splash the spear goblins on his back"}
+      - {card: skeletons, when: on_place, where: behind_threat, note: "at his back, where the spear goblins cannot screen"}
+  - threat: "giant_skeleton"
+    threat_cards: [giant_skeleton]
+    danger: 0.7138
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull him off the tower so the death bomb lands in open field"}
+      - {card: knight, when: on_place, where: center_kite, note: "kite him AWAY before he dies: the bomb is the real damage"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "slow him so the towers finish him further out"}
+  - threat: "giant_skeleton+wizard"
+    threat_cards: [giant_skeleton, wizard]
+    danger: 1.6316
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "pull the skeleton off-axis; kill him away from our tower"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "the wizard is the rocket target, never the tank"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "off-axis slow; never clump into the wizard's splash"}
+  - threat: "electro_giant"
+    threat_cards: [electro_giant]
+    danger: 0.3335
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "building-targeting: pull him off-lane, outside the reflect ring"}
+      - {card: ice_wizard, when: in_our_half, where: behind_threat, note: "RANGED ONLY: his reflect punishes everything adjacent"}
+      - {card: rocket, when: on_place, where: behind_threat, note: "kill his support; no single card we own solos his HP"}
+  - threat: "elixir_collector"
+    threat_cards: [elixir_collector]
+    danger: inf
+    respond:
+      - {card: rocket, when: on_place, where: on_top, note: "fire within 12s of placement; clip a princess if aligned, never king"}
+  - threat: "tombstone"
+    threat_cards: [tombstone]
+    danger: inf
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "one roll kills it and the death-spawn skeletons for +1"}
+  - threat: "goblin_hut"
+    threat_cards: [goblin_hut]
+    danger: inf
+    respond:
+      - {card: rocket, when: on_place, where: on_top, note: "one-shots the hut and chips the tower if placed near both"}
+      - {card: the_log, when: last_moment, where: on_top, note: "finishes a low-HP hut and its death-spawn goblin"}

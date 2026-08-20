@@ -74,6 +74,14 @@ def build(rows, deck_bases, db, log=print):
             dropped.append((threat, "no response survived validation"))
             continue
         clean = {"threat": threat or "+".join(cards), "threat_cards": cards, "respond": keep}
+        # DANGER: the share of a princess tower this group takes if ignored completely. Baked in
+        # here so the runtime lookup can break ties without a card database -- and so a row for a
+        # card that is ignorable alone can never outrank a real threat's row.
+        try:
+            clean["danger"] = round(float(threat_value.group_ignore_frac(db, cards,
+                                                                         tower_level=15)), 4)
+        except Exception:  # noqa: BLE001 -- an unrankable row still ships, just at rank 0
+            clean["danger"] = 0.0
         if row.get("mitigation"):
             clean["mitigation"] = True
         out.append(clean)
@@ -102,6 +110,8 @@ def dump_yaml(rows, path, deck, source_note=""):
     for r in rows:
         L.append("  - threat: %s\n" % json.dumps(r["threat"]))
         L.append("    threat_cards: [%s]\n" % ", ".join(r["threat_cards"]))
+        if r.get("danger") is not None:
+            L.append("    danger: %s\n" % r["danger"])
         if r.get("mitigation"):
             L.append("    mitigation: true\n")
         L.append("    respond:\n")

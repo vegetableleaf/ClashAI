@@ -76,10 +76,18 @@ class CounterTable:
         exact = self._by_key.get(frozenset(bases))
         if exact is not None:
             return exact
-        best, best_n = None, 0
+        best, best_rank = None, None
         for key, row in self._by_key.items():
-            if key <= bases and len(key) > best_n:
-                best, best_n = row, len(key)
+            if not key <= bases:
+                continue
+            # MOST SPECIFIC first, then MOST DANGEROUS. Ties used to resolve by dict order, so a
+            # golem+firecracker push could match the FIRECRACKER row -- an ignorable card
+            # answering for a tank, which is the reported "unrealistic counter" class arriving
+            # through a different door. `danger` is baked in at build time (the share of a
+            # princess tower the group takes if ignored).
+            rank = (len(key), float(row.get("danger") or 0.0))
+            if best_rank is None or rank > best_rank:
+                best, best_rank = row, rank
         return best
 
     def responses(self, threat_bases, hand_bases=()) -> List[dict]:

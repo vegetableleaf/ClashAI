@@ -1,0 +1,747 @@
+# COUNTER TABLE -- hogeq. What this deck plays against what, WHEN, and WHERE.
+#
+# Researched from counter guides, then re-validated against this repo's own card
+# database by tools/counters_build.py: every response is in this deck, passes
+# threat_value.pick_invalid (so it can physically touch the threat and the trade is
+# sane), and uses only when/where words the wheels can execute.
+#
+# Consumed by the live advisor path (vetoed pick / silent advisor) and the sim's
+# doctrine prior, so both sides answer a push the same way. THE FIRST ROW FOR A
+# THREAT KEY WINS: put hand-written overrides ABOVE the generated rows and they
+# survive a regenerate.
+#
+# generated from research_tables.json
+counters:
+  - threat: "archer_queen"
+    threat_cards: [archer_queen]
+    danger: 0.1722
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "2250 HP body outlasts her; she has no splash and cannot shake a melee lock."}
+      - {card: skeletons, when: on_place, where: surround, note: "Three bodies split her single-target fire for 1 elixir against her 5."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "6-tile sparks out-range her once Skeletons hold her in place."}
+  - threat: "archers"
+    threat_cards: [archers]
+    danger: 0.0736
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 leaves 304-HP Archers alive; the shove plus tower fire finishes them."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks hit both from 6 tiles, outside their 5."}
+  - threat: "baby_dragon"
+    threat_cards: [baby_dragon]
+    danger: 0.1224
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Air-capable at 5.5 tiles; his splash never reaches the building."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sit her back so his splash never catches her 304 HP."}
+  - threat: "balloon"
+    threat_cards: [balloon]
+    danger: 0.5426
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Balloon is buildings-only: a 4-3 Tesla steals its aggro outright."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Deck's only ranged AA; sparks chip it while Tesla holds the aggro."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze hits air and buys Tesla and the tower one more volley."}
+  - threat: "bandit"
+    threat_cards: [bandit]
+    danger: 0.1573
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "Inside 3 tiles she cannot start a dash; 1e denies her whole gimmick."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Dash damage is wasted on a 2250-HP body that ignores knockback."}
+      - {card: the_log, when: at_bridge, where: in_front, note: "Roll resets the dash if she is already charging."}
+  - threat: "barbarian_hut"
+    threat_cards: [barbarian_hut]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage strips its 1164 HP to a sliver in one cast."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks finish the hut and clear each 3-Barbarian wave."}
+  - threat: "barbarians"
+    threat_cards: [barbarians]
+    danger: 1.4642
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "4-3 plant drags all five to center so both towers fire on them."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Five sparks per volley hit the pack; recoil keeps them off her."}
+      - {card: earthquake, when: on_place, where: on_top, note: "50% ground slow doubles the time both towers get to shoot."}
+  - threat: "battle_healer"
+    threat_cards: [battle_healer]
+    danger: 0.2642
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Sustained single-target damage outpaces her heal-per-hit."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Lures her to center where her heal aura covers nothing."}
+  - threat: "battle_ram"
+    threat_cards: [battle_ram]
+    danger: inf
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only: a PASSIVE pre-planted Tesla pulls the ram off the tower."}
+      - {card: the_log, when: at_bridge, where: in_front, note: "Knockback resets the charge before it can connect."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks clear the two Barbarians the ram drops on impact."}
+  - threat: "berserker"
+    threat_cards: [berserker]
+    danger: 0.1359
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "896 HP folds to a melee lock before her rage stacks matter."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Building damage never feeds her hit-triggered rage."}
+  - threat: "bomb_tower"
+    threat_cards: [bomb_tower]
+    danger: 0.1635
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage strips its 1356 HP and reopens the Hog lane."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "Punish the defensive spend in the lane the tower cannot cover."}
+  - threat: "bomber"
+    threat_cards: [bomber]
+    danger: 0.0152
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 against 304 HP: the roll plus one tower tap ends him for 2."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Out-ranges his lob from 6 tiles and kills him before he lands one."}
+  - threat: "boss_bandit"
+    threat_cards: [boss_bandit]
+    danger: 0.616
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "Bodies inside her charge-trigger range stop the dash before it starts."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Knockback-immune 2250-HP body absorbs her burst and holds her still."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Untargetable mid-dash: Tesla picks her up the instant she lands and keeps firing."}
+  - threat: "bowler"
+    threat_cards: [bowler]
+    danger: 0.2492
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "knockback_immune: his boulder cannot shove Mighty Miner back at all."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats his 4; sparks chip him with no boulder in reply."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Steady damage while he grinds into a knockback-immune body."}
+  - threat: "cannon"
+    threat_cards: [cannon]
+    danger: 0.152
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage deletes its 824 HP outright for 3 elixir."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "The Hog+EQ engine: remove the lure, then commit the Hog."}
+  - threat: "cannon_cart"
+    threat_cards: [cannon_cart]
+    danger: 0.4345
+    respond:
+      - {card: mighty_miner, when: on_place, where: in_front, note: "Ground-only targeting; his HP pool outlasts the shield phase."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Out-ranges the cart and keeps firing after the shield breaks."}
+  - threat: "dark_prince"
+    threat_cards: [dark_prince]
+    danger: 0.2348
+    respond:
+      - {card: the_log, when: at_bridge, where: in_front, note: "Knockback resets his charge before the shield hit lands."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "His splash is wasted on one large body; 2250 beats 1200 HP."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls him center so both towers add damage."}
+  - threat: "dart_goblin"
+    threat_cards: [dart_goblin]
+    danger: 0.0142
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 one-shots his 261 HP for a clean 2-for-3."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Matches his range at 6 tiles when Log is cycled away."}
+  - threat: "electro_dragon"
+    threat_cards: [electro_dragon]
+    danger: 0.1665
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "5.5-tile building beats his 3.5 chain, and it hides from spells."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles keeps her outside the chain that would stun-lock her."}
+  - threat: "electro_giant"
+    threat_cards: [electro_giant]
+    danger: 0.3335
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only: Tesla holds him at 5.5, outside his 3-tile reflect."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Stay beyond the shock ring; sparks chip him for free."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Only if you accept the reflect stun; Explosive Escape bails him out."}
+  - threat: "electro_wizard"
+    threat_cards: [electro_wizard]
+    danger: 0.0378
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "714 HP folds to a melee lock; his stun does not stop the damage."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Out-ranges his 5-tile zap from 6 tiles."}
+      - {card: the_log, when: on_place, where: on_top, note: "266 is chip only, but the shove buys the tower two free shots."}
+  - threat: "elite_barbarians"
+    threat_cards: [elite_barbarians]
+    danger: 1.1389
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "4-3 plant drags both to center for double-tower fire."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "2250 HP holds both while Tesla and the tower do the killing."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks hit both bodies; the Evo recoil kicks her back, it does not push them."}
+  - threat: "elixir_collector"
+    threat_cards: [elixir_collector]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage kills the 1070-HP pump: 3 elixir denies their 6."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "They are 6 elixir down with no defence -- take the tempo now."}
+  - threat: "elixir_golem"
+    threat_cards: [elixir_golem]
+    danger: 0.361
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks catch the whole split chain; it never targets her back."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only: he takes zero damage back through every split."}
+  - threat: "executioner"
+    threat_cards: [executioner]
+    danger: 0.0867
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "1280 HP and 70 DPS lose to a body he cannot splash away."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Out-ranges the boomerang and keeps firing through it."}
+  - threat: "firecracker"
+    threat_cards: [firecracker]
+    danger: 0.0026
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 vs her 304: roll plus a tower tap kills, and denies the hop."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "1e freeze holds her in tower range for the finish."}
+  - threat: "fisherman"
+    threat_cards: [fisherman]
+    danger: 0.1149
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "1e bait eats the hook before you commit anything real."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Being hooked in only drops him exactly where he wants to be."}
+  - threat: "flying_machine"
+    threat_cards: [flying_machine]
+    danger: 0.0741
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles matches its range; 3 elixir answers its 4 cleanly."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "5.5-tile air coverage when Firecracker is out of cycle."}
+  - threat: "furnace"
+    threat_cards: [furnace]
+    danger: 0.0603
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage kills its 727 HP and the spirits standing on it."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks clear each Fire Spirit pair before it reaches the tower."}
+  - threat: "giant"
+    threat_cards: [giant]
+    danger: 0.7279
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only: he lands every hit and takes nothing back."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Steals the Giant's aggro at 4-3 and pulls him off-axis."}
+      - {card: firecracker, when: on_place, where: behind_threat, note: "Snipe the support riding behind him; the Giant is the easy half."}
+  - threat: "giant_skeleton"
+    threat_cards: [giant_skeleton]
+    danger: 0.7138
+    respond:
+      - {card: skeletons, when: on_place, where: center_kite, note: "Drag him to center so the death bomb lands away from the tower."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls him off-tower, and a Tesla is cheap to lose to the bomb."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Finish him in open ground, never beside your own tower."}
+  - threat: "goblin_barrel"
+    threat_cards: [goblin_barrel]
+    danger: inf
+    respond:
+      - {card: the_log, when: last_moment, where: at_tower, note: "266 kills all three 202-HP Goblins on landing; hold Log for this."}
+      - {card: skeletons, when: on_place, where: at_tower, note: "1e block when Log is mid-cycle; they trade into the Goblins."}
+      - {card: ice_spirit, when: on_place, where: at_tower, note: "Freeze on the landing spot buys the tower a full volley."}
+  - threat: "goblin_brawler"
+    threat_cards: [goblin_brawler]
+    danger: 0.3094
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "Single-target only: survivors close in after each 337-damage swing."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "2250 HP beats his 1080 in a straight melee race."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Adds damage while Skeletons split his attention."}
+  - threat: "goblin_cage"
+    threat_cards: [goblin_cage]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage kills the 780-HP cage before it tanks a push."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Handles the Brawler the cage drops when it dies."}
+  - threat: "goblin_demolisher"
+    threat_cards: [goblin_demolisher]
+    danger: 0.1956
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Below 50% HP he doubles speed and rushes a building -- give him Tesla."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Out-ranges his dynamite lobs and chips him before the enrage."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "1e freeze stalls the enraged sprint for one tower volley."}
+  - threat: "goblin_drill"
+    threat_cards: [goblin_drill]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "hits_hidden plus 4x building damage: the only card that hits it buried."}
+      - {card: the_log, when: on_place, where: on_top, note: "266 wipes each 202-HP Goblin wave as it surfaces."}
+      - {card: firecracker, when: in_our_half, where: at_tower, note: "Sparks clear repeat waves if the drill outlives the zone."}
+  - threat: "goblin_gang"
+    threat_cards: [goblin_gang]
+    danger: 0.3817
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 wipes all six 202-HP bodies for a 2-for-3."}
+      - {card: earthquake, when: on_place, where: on_top, note: "The 3-second zone clears the gang when Log is cycled away."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Five sparks per volley cover the spread formation."}
+  - threat: "goblin_giant"
+    threat_cards: [goblin_giant]
+    danger: 0.3793
+    respond:
+      - {card: mighty_miner, when: on_place, where: in_front, note: "Buildings-only: free hits on the tank the whole way in."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Clears the Spear Goblins riding on its back."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls it off-axis so both towers contribute."}
+  - threat: "goblin_hut"
+    threat_cards: [goblin_hut]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage strips its 1228 HP to a sliver in one cast."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "Punish the defensive investment while it still stands."}
+  - threat: "goblin_machine"
+    threat_cards: [goblin_machine]
+    danger: 0.3948
+    respond:
+      - {card: mighty_miner, when: on_place, where: in_front, note: "High-HP body wins the exchange against its short reach."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Out-ranges it and keeps damage on it the entire walk."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze buys the tower an extra volley on a weakened machine."}
+  - threat: "goblinstein"
+    threat_cards: [goblinstein]
+    danger: 0.6626
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "The Monster targets buildings; Tesla absorbs its whole aggro."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Kill the Doctor -- his death removes the Lightning Link entirely."}
+      - {card: firecracker, when: on_place, where: behind_threat, note: "Snipes the Doctor from 6 tiles while Tesla holds the Monster."}
+  - threat: "golden_knight"
+    threat_cards: [golden_knight]
+    danger: 0.3279
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "A 1e body within 5 tiles of the river cancels the free dash chain."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "His low per-hit damage cannot break a 2250-HP body."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Keeps damage on him once the dash is spent."}
+  - threat: "golem"
+    threat_cards: [golem]
+    danger: 0.7031
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only: every hit is free, and he ignores the death knockback."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Holds the Golem's aggro through its whole slow walk in."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "They spent 8 on no defence -- race the far lane, don't out-tank it."}
+  - threat: "graveyard"
+    threat_cards: [graveyard]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: earthquake, when: on_place, where: at_tower, note: "3s zone kills 81-HP Skeletons as they spawn: this deck's Poison stand-in."}
+      - {card: mighty_miner, when: on_place, where: at_tower, note: "Explosive Escape's 366 bomb over 2.5 tiles wipes a clumped wave for 1."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks thin each wave; sit her back or the swarm eats her 304 HP."}
+  - threat: "guards"
+    threat_cards: [guards]
+    danger: 0.0061
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 pops all three shields but the bodies live -- tower or sparks finish them."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks strip shields and bodies together from 6 tiles."}
+  - threat: "hog_rider"
+    threat_cards: [hog_rider]
+    danger: 0.34
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "4-3 plant: four tiles from the river, three from the side."}
+      - {card: skeletons, when: on_place, where: surround, note: "1e triangle on a Tesla-locked Hog finishes him for a big trade."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "Freeze denies one tower hit when Tesla is on cooldown."}
+  - threat: "hunter"
+    threat_cards: [hunter]
+    danger: 0.03
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats his 3.5; the Evo recoil kicks her back, out of his burst range."}
+      - {card: skeletons, when: on_place, where: surround, note: "He fires one direction at a time; survivors close on him."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "2250 HP absorbs a point-blank volley his 885 cannot answer."}
+  - threat: "ice_golem"
+    threat_cards: [ice_golem]
+    danger: 0.043
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Triage: a lone Ice Golem is a 2e lure -- spend nothing, keep Tesla for the follow-up."}
+      - {card: skeletons, when: on_place, where: on_top, note: "If he escorts a real push, 1e stalls his 34 DPS; never pay more than that."}
+  - threat: "ice_wizard"
+    threat_cards: [ice_wizard]
+    danger: 0.0294
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "688 HP and 52 DPS lose badly to a melee lock."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats his 5.5, and sparks out-damage his chip."}
+      - {card: the_log, when: on_place, where: on_top, note: "266 is chip only, but the shove buys the tower free shots."}
+  - threat: "inferno_dragon"
+    threat_cards: [inferno_dragon]
+    danger: 0.1099
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Ranged AA at 6 tiles, outside his 3.5-tile beam."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze hits air and resets his damage ramp to zero."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "1152 HP soaks the ramp while sparks and the tower kill him."}
+  - threat: "knight"
+    threat_cards: [knight]
+    danger: 0.3022
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "No splash: three bodies handle 1766 HP for 1 elixir."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Wins the straight melee race when Skeletons are cycled away."}
+  - threat: "lava_hound"
+    threat_cards: [lava_hound]
+    danger: 0.1579
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only Hound locks the Tesla; win by racing, not by killing it."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Only ranged AA here; she also clears the Pups when it pops."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "Freeze the Pups after the pop to buy the tower a volley."}
+  - threat: "little_prince"
+    threat_cards: [little_prince]
+    danger: 0.0496
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "Any displacement resets his attack ramp; the roll zeroes his stage."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "698 HP cannot survive a melee lock once the ramp is reset."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Matches his range and out-trades his 87 DPS."}
+  - threat: "lumberjack"
+    threat_cards: [lumberjack]
+    danger: 0.3972
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "Kill him away from their push so the Rage drops on nothing."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Absorbs his burst; Rage on death does not help a corpse."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls him center so the Rage pool lands far from their push."}
+  - threat: "magic_archer"
+    threat_cards: [magic_archer]
+    danger: 0.0459
+    respond:
+      - {card: ice_spirit, when: on_place, where: on_top, note: "1e freeze lets the tower land the finish on his 529 HP."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Closes the gap; his pierce is worthless against one big body."}
+      - {card: the_log, when: on_place, where: on_top, note: "Shove breaks his firing line, but 266 is chip and not a kill."}
+  - threat: "mega_knight"
+    threat_cards: [mega_knight]
+    danger: 0.6848
+    respond:
+      - {card: skeletons, when: on_place, where: on_top, note: "1e eats the spawn splash and the jump; never stack two cards for it."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Adjacent placement denies the jump wind-up; he ignores the slam."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Steady damage while he is stuck on a 2250-HP body."}
+  - threat: "mega_minion"
+    threat_cards: [mega_minion]
+    danger: 0.1522
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats his melee reach; 3 elixir answers his 3."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Out-ranges and out-damages his 837 HP."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze buys a tower volley when both are cycled away."}
+  - threat: "mighty_miner"
+    threat_cards: [mighty_miner]
+    danger: 0.2349
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "He is single-target: three bodies stall him and force the ability."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "A 5.5-tile building he must walk into; he has no ranged answer."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks chip him from outside his 1.6-tile reach."}
+  - threat: "miner"
+    threat_cards: [miner]
+    danger: 0.1729
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "1e triangle on a tower-locked Miner is +2 elixir every rotation."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze plus tower fire when Skeletons are cycled away."}
+  - threat: "mini_pekka"
+    threat_cards: [mini_pekka]
+    danger: 0.6672
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "755 damage per swing wasted on 81-HP bodies: a +3 trade."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze buys the tower two extra hits on his 1433 HP."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls him center so both towers fire while Skeletons stall."}
+  - threat: "minion_horde"
+    threat_cards: [minion_horde]
+    danger: 0.372
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Five sparks per volley cover all six 230-HP bodies: 3 against their 5."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "A 5.5-tile air building they have to fly into."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze holds the clump in tower range for the finish."}
+  - threat: "minions"
+    threat_cards: [minions]
+    danger: 0.0804
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks clear all three 230-HP bodies from 6 tiles."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "1e splash hits air; with the tower it clears the trio."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Reliable air coverage while Firecracker is cycling."}
+  - threat: "monk"
+    threat_cards: [monk]
+    danger: 0.4039
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Melee damage is never deflected by Pensive Protection."}
+      - {card: skeletons, when: on_place, where: surround, note: "Melee bodies bypass the deflect; he is single-target only."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Hold her sparks until Pensive drops -- projectiles reflect back."}
+  - threat: "mortar"
+    threat_cards: [mortar]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage plus hits_hidden strips its 1369 HP almost to zero."}
+      - {card: hog_rider, when: at_bridge, where: on_top, note: "Buildings-only: he beelines it and sits inside its close blind spot."}
+  - threat: "mother_witch"
+    threat_cards: [mother_witch]
+    danger: 0.0505
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "529 HP folds fast, and one big body gives her nothing cheap to curse."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Snipes her from 6 tiles before she tags anything."}
+      - {card: the_log, when: on_place, where: on_top, note: "Clears the Hogs a curse leaves behind; never feed her Skeletons."}
+  - threat: "musketeer"
+    threat_cards: [musketeer]
+    danger: 0.13
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "1e against her 4 stops all chip; she kills one body per second."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "721 HP loses to a melee lock she has no way to kite."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "She out-ranges Tesla at 6; use it to soak while Skeletons close."}
+  - threat: "night_witch"
+    threat_cards: [night_witch]
+    danger: 0.1959
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Her Bats fly -- Firecracker is the only card here that clears them."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Air-capable building handles the Bat stream she keeps spawning."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Body-blocks her 906 HP while the sparks clear the Bats."}
+  - threat: "pekka"
+    threat_cards: [pekka]
+    danger: 1.9073
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "755 per swing into 81-HP bodies buys three free seconds for 1 elixir."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls her center; she has 7 elixir in and no tower damage yet."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Chips her from 6 tiles while Skeletons keep resetting her target."}
+  - threat: "phoenix"
+    threat_cards: [phoenix]
+    danger: 0.2122
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks kill the bird, then the egg before it can hatch back."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Keeps firing through both lives without needing a re-place."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze holds it in tower range through the revive."}
+  - threat: "prince"
+    threat_cards: [prince]
+    danger: 0.5506
+    respond:
+      - {card: skeletons, when: on_place, where: surround, note: "Bodies in his path deny the charge bonus and split his single hits."}
+      - {card: the_log, when: at_bridge, where: in_front, note: "Knockback resets the charge if he is already rolling."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Knockback-immune with 2250 HP: the charge hit does not move him."}
+  - threat: "princess"
+    threat_cards: [princess]
+    danger: inf
+    respond:
+      - {card: the_log, when: at_bridge, where: at_tower, note: "266 one-shots her 261 HP for a clean 2-for-3."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "She out-ranges everything here at 9; only trade if she walks in."}
+  - threat: "ram_rider"
+    threat_cards: [ram_rider]
+    danger: 0.2384
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only: a passive Tesla takes both the ram and the snare."}
+      - {card: the_log, when: at_bridge, where: in_front, note: "Knockback resets her charge before it connects."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Her snare stops movement, not damage; he still grinds her down."}
+  - threat: "rascals"
+    threat_cards: [rascals]
+    danger: 1.7196
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 kills both Rascal Girls, leaving the Boy with no damage output."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks clear the Girls when Log is committed elsewhere."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Finishes the 1940-HP Boy once the Girls are gone."}
+  - threat: "ronin"
+    threat_cards: [ronin]
+    danger: 0.4797
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Building shots bypass the parry; 4 elixir beats his 5."}
+      - {card: skeletons, when: on_place, where: surround, note: "Parry blocks one hit per 3.5s; three bodies overwhelm the window."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks arrive faster than the parry cycle can absorb them."}
+  - threat: "royal_ghost"
+    threat_cards: [royal_ghost]
+    danger: 0.168
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "His splash is wasted on one body; 2250 outlasts the invisible opener."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Keeps damage on him each time he turns visible to attack."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Chips him from 6 tiles once he commits to a target."}
+  - threat: "royal_giant"
+    threat_cards: [royal_giant]
+    danger: 0.5791
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Tesla's 5.5 beats his 5.0: it out-ranges him and steals his aggro."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only: every hit is free while he pounds the Tesla."}
+      - {card: firecracker, when: on_place, where: behind_threat, note: "Snipe the escort; the Royal Giant itself is the easy half."}
+  - threat: "royal_hogs"
+    threat_cards: [royal_hogs]
+    danger: 0.535
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only: one Tesla lures all four into a single clump."}
+      - {card: the_log, when: on_place, where: in_front, note: "Knockback resets the clump and buys the tower a full volley."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Five sparks cover all four bodies once Tesla has grouped them."}
+  - threat: "royal_recruits"
+    threat_cards: [royal_recruits]
+    danger: 1.2063
+    mitigation: true
+    respond:
+      - {card: the_log, when: on_place, where: in_front, note: "266 pops shields across the rank and shoves the whole line back."}
+      - {card: earthquake, when: on_place, where: on_top, note: "3s zone plus 50% slow grinds the 547-HP bodies in one lane."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks finish the unshielded rank; you can only cover one lane."}
+  - threat: "rune_giant"
+    threat_cards: [rune_giant]
+    danger: 0.2257
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Her own damage is low; a big body outlasts the enchant window."}
+      - {card: firecracker, when: on_place, where: behind_threat, note: "Kill the buffed support, not her -- the buff dies with its target."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Holds her aggro while the sparks clear what she enchanted."}
+  - threat: "skeleton_army"
+    threat_cards: [skeleton_army]
+    danger: 0.5823
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 wipes all fifteen 81-HP Skeletons for a 2-for-3."}
+      - {card: earthquake, when: on_place, where: on_top, note: "The 3-second zone clears the whole swarm when Log is cycling."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Five sparks per volley shred the spread if both spells are gone."}
+  - threat: "skeleton_barrel"
+    threat_cards: [skeleton_barrel]
+    danger: inf
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "It flies: sparks pop the 532-HP barrel before it drops its payload."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Airborne and buildings-only -- Tesla pulls it and shoots it down."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "1e splash hits air and stalls it inside tower range."}
+  - threat: "skeleton_dragons"
+    threat_cards: [skeleton_dragons]
+    danger: 0.1184
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats their 3.5; sparks hit both 560-HP bodies."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Out-ranges their splash and kills them one at a time."}
+      - {card: ice_spirit, when: on_place, where: on_top, note: "Freeze holds the pair together for a tower volley."}
+  - threat: "skeleton_king"
+    threat_cards: [skeleton_king]
+    danger: 0.3065
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "266 wipes the 81-HP Skeletons his ability summons."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "One big body denies him the cheap deaths that charge his souls."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Clears the summoned wave from range without feeding him kills."}
+  - threat: "sparky"
+    threat_cards: [sparky]
+    danger: 0.4774
+    respond:
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze resets her 2.5s charge: the cheapest answer to a 6-cost."}
+      - {card: skeletons, when: on_place, where: surround, note: "Three bodies eat one blast and reset her wind-up again."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "2250 HP survives a hit; she is knockback-immune so no shove helps."}
+  - threat: "spirit_empress"
+    threat_cards: [spirit_empress]
+    danger: 0.2704
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "She swaps to a flying form; Firecracker covers both from 6 tiles."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Air-capable building handles the flight phase."}
+      - {card: skeletons, when: on_place, where: surround, note: "Ground form only: 3 bodies split her fire; they cannot touch her flying form."}
+  - threat: "suspicious_bush"
+    threat_cards: [suspicious_bush]
+    danger: inf
+    respond:
+      - {card: the_log, when: on_place, where: on_top, note: "One roll pops the Bush and clears the Goblins it was hiding."}
+      - {card: skeletons, when: last_moment, where: on_top, note: "Dropped right on it, 1e absorbs the Goblins for zero tower damage."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "The Bush beelines the nearest building, so Tesla intercepts free."}
+  - threat: "three_musketeers"
+    threat_cards: [three_musketeers]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "They spent 9 on no defence: punish the far lane, don't kill all three."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Handles the lone split Musketeer; the pair still needs the tower."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks hit all three while grouped -- there is no big spell here."}
+  - threat: "tombstone"
+    threat_cards: [tombstone]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage kills its 529 HP outright and clears Hog's path."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "This is the Hog+EQ engine: delete the lure, then commit."}
+  - threat: "valkyrie"
+    threat_cards: [valkyrie]
+    danger: 0.347
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Her 360 splash is wasted on one body; 2250 outlasts her 1907."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Never feed her Skeletons -- let the building take the aggro."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Chips her from 6 tiles, well outside her melee reach."}
+  - threat: "wall_breakers"
+    threat_cards: [wall_breakers]
+    danger: inf
+    respond:
+      - {card: the_log, when: on_place, where: in_front, note: "266 leaves each 330-HP Breaker at 64; the shove plus tower finishes."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Buildings-only: they detonate on the Tesla, not on your tower."}
+      - {card: ice_spirit, when: on_place, where: in_front, note: "1e freeze stops them dead while the tower cleans up."}
+  - threat: "witch"
+    threat_cards: [witch]
+    danger: 0.0901
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "839 HP loses the melee race, and her Skeletons cannot save her."}
+      - {card: the_log, when: on_place, where: on_top, note: "Clears the 81-HP Skeleton stream she keeps producing."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks hit her and the spawn wave together from 6 tiles."}
+  - threat: "wizard"
+    threat_cards: [wizard]
+    danger: 0.1458
+    respond:
+      - {card: mighty_miner, when: on_place, where: on_top, note: "832 HP and no escape: a melee lock beats his 201 DPS."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "6 tiles beats his 5.5 -- keep her out of the splash."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Soaks the fireballs while the tower and sparks finish him."}
+  - threat: "x_bow"
+    threat_cards: [x_bow]
+    danger: inf
+    respond:
+      - {card: earthquake, when: on_place, where: on_top, note: "4x building damage takes roughly two thirds of its 1600 HP."}
+      - {card: hog_rider, when: at_bridge, where: on_top, note: "Buildings-only: he walks straight onto the bow and tears it down."}
+  - threat: "zappies"
+    threat_cards: [zappies]
+    danger: 0.1571
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "Sparks hit all three 529-HP bodies from outside their range."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Their stun does not stop him closing; 2250 HP outlasts the trio."}
+      - {card: the_log, when: on_place, where: on_top, note: "266 will not kill them, but the shove resets all three at once."}
+  - threat: "lava_hound+balloon"
+    threat_cards: [lava_hound, balloon]
+    danger: 2.012
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Both are buildings-only, so one Tesla holds the Hound and the Balloon."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Only ranged AA here: prioritise the Balloon and ignore the Hound."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze on the Balloon buys Tesla and the tower one more volley."}
+  - threat: "balloon+freeze"
+    threat_cards: [balloon, freeze]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Plant early so it is already chipping before Freeze locks the zone."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Engage from range so a tower-aimed Freeze lands nowhere near her."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "Cheap enough that losing it to the Freeze costs you nothing."}
+  - threat: "lumberjack+balloon"
+    threat_cards: [lumberjack, balloon]
+    danger: 1.4093
+    mitigation: true
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "Rage does not speed a building's fire; Tesla still takes the Balloon."}
+      - {card: firecracker, when: on_place, where: at_tower, note: "Kill the Balloon first -- the Lumberjack alone chips almost nothing."}
+      - {card: skeletons, when: on_place, where: surround, note: "Stall the Lumberjack so his Rage pool drops away from the Balloon."}
+  - threat: "hog_rider+earthquake"
+    threat_cards: [hog_rider, earthquake]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: mighty_miner, when: on_place, where: in_front, note: "2250 HP walks through the 3s zone that wipes Skeletons; he chases the Hog down."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Plant BEFORE the Hog crosses -- a building added after he locks never pulls him."}
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze denies one Hog hit; cheap enough to lose to their zone."}
+  - threat: "miner+wall_breakers"
+    threat_cards: [miner, wall_breakers]
+    danger: inf
+    respond:
+      - {card: the_log, when: on_place, where: in_front, note: "One roll clips both Breakers and the Miner if they land together."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Breakers are buildings-only: they detonate on the Tesla."}
+      - {card: skeletons, when: on_place, where: surround, note: "1e handles whichever half the roll did not cover."}
+  - threat: "golem+night_witch"
+    threat_cards: [golem, night_witch]
+    danger: 2.3143
+    respond:
+      - {card: firecracker, when: on_place, where: at_tower, note: "The Bats fly -- she is the only answer to the spawn stream."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only Golem: free hits, and he ignores the death knockback."}
+      - {card: hog_rider, when: at_bridge, where: opposite_lane, note: "13 elixir and no defence left -- race, do not try to out-tank it."}
+  - threat: "giant+graveyard"
+    threat_cards: [giant, graveyard]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: earthquake, when: on_place, where: at_tower, note: "One zone covers the spawning Skeletons and chips the Giant at once."}
+      - {card: mighty_miner, when: on_place, where: at_tower, note: "Explosive Escape's 366 bomb wipes a clumped wave for 1 elixir."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls the Giant off-axis so the Graveyard is the only problem left."}
+  - threat: "graveyard+poison"
+    threat_cards: [graveyard, poison]
+    danger: inf
+    mitigation: true
+    respond:
+      - {card: mighty_miner, when: on_place, where: at_tower, note: "2250 HP shrugs off the Poison that wipes Skeletons and Firecracker."}
+      - {card: earthquake, when: on_place, where: at_tower, note: "Your own zone kills the Skeletons as they surface under theirs."}
+      - {card: ice_spirit, when: on_place, where: at_tower, note: "Cheap enough to spend into the Poison without losing the trade."}
+  - threat: "pekka+battle_ram"
+    threat_cards: [pekka, battle_ram]
+    danger: inf
+    respond:
+      - {card: tesla, when: pre_place, where: center_kite, note: "The Ram is buildings-only: a passive Tesla eats the charge outright."}
+      - {card: the_log, when: at_bridge, where: in_front, note: "Resets the Ram's charge and clips the Barbarians it drops."}
+      - {card: skeletons, when: on_place, where: surround, note: "Stall the PEKKA: 755 per swing into 81-HP bodies is a huge trade."}
+  - threat: "goblin_barrel+princess"
+    threat_cards: [goblin_barrel, princess]
+    danger: inf
+    respond:
+      - {card: the_log, when: last_moment, where: at_tower, note: "Rotation discipline: hold Log for the barrel, never for the Princess."}
+      - {card: firecracker, when: pre_place, where: at_tower, note: "Pre-parked sparks cover the landing zone so Log stays in hand."}
+      - {card: skeletons, when: on_place, where: at_tower, note: "1e block on the barrel when Log is genuinely mid-cycle."}
+  - threat: "mega_knight+miner"
+    threat_cards: [mega_knight, miner]
+    danger: 1.5397
+    respond:
+      - {card: skeletons, when: on_place, where: on_top, note: "1e baits the jump and the spawn splash; never stack two cards for it."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Adjacent placement denies the jump wind-up; he is knockback-immune."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Keeps damage on MK while he is locked onto a 2250-HP body."}
+  - threat: "sparky+goblin_giant"
+    threat_cards: [sparky, goblin_giant]
+    danger: 1.0515
+    respond:
+      - {card: ice_spirit, when: last_moment, where: on_top, note: "1e freeze resets Sparky's charge and stalls the whole 12e push."}
+      - {card: mighty_miner, when: on_place, where: in_front, note: "Goblin Giant is buildings-only: free hits while Sparky is reset."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "Pulls the Giant off-axis so Sparky never lines up on the tower."}
+  - threat: "royal_giant+fisherman"
+    threat_cards: [royal_giant, fisherman]
+    danger: 1.2343
+    respond:
+      - {card: skeletons, when: pre_place, where: in_front, note: "1e bait eats the hook before you commit Tesla or Mighty Miner."}
+      - {card: tesla, when: pre_place, where: center_kite, note: "5.5 out-ranges the Royal Giant's 5.0 and steals his aggro."}
+      - {card: mighty_miner, when: on_place, where: on_top, note: "Buildings-only Royal Giant: free hits once the hook is spent."}

@@ -778,7 +778,13 @@ def _table_nominations(env, w):
     for rank, resp in enumerate(got[:2]):
         cid = affordable.get(str(resp.get("card")))
         if cid is not None:
-            w[cid] = max(w.get(cid, 0.0), 5.0 - rank)      # 5.0 then 4.0, under the wincon rule
+            # UNDER the hand-written rules, deliberately. Those are measured and quote-verified
+            # (the rocket gates in particular encode "only WITH value, never a lone sparky"), and
+            # the first version of this nominated at 5.0/4.0 -- overriding them, which two
+            # existing doctrine tests caught immediately. The researched table's job is to fill
+            # GAPS, not to relitigate a rule someone measured: measured doctrine > researched
+            # table > uniform floor.
+            w[cid] = max(w.get(cid, 0.0), 2.5 - 0.5 * rank)
     return w
 
 
