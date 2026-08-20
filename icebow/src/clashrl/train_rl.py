@@ -226,7 +226,11 @@ def train_rl(cfg, init: str | None = None) -> None:
 
         def push(self, tr):
             self.buf.append(tr)
-            if len(self.buf) >= self.n:
+            # `not done` guard (2026-08-20 audit): without it exactly one transition per episode
+            # bootstraps off the POST-TERMINAL state while carrying done=0 -- and that is the
+            # window holding the win/loss reward. train_sim.py has always had this guard; the
+            # live port dropped it.
+            if len(self.buf) >= self.n and float(self.buf[-1][4]) < 0.5:
                 out = self._emit(self.n, 0.0)
                 self.buf.pop(0)
                 return [out]

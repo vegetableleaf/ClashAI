@@ -234,6 +234,7 @@ class LiveMatchEnv:
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
         self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
+        self._failed_deploys = 0         # taps that never moved the elixir bar (see the tick)
         # TORNADO -> ROCKET: the deck's signature combo is a SAME-TILE play, so the last tornado's
         # cast point and time are remembered for the rocket that should follow it.
         self._last_nado = None           # (cx, cy, t_cast) of the most recent tornado cast
@@ -246,6 +247,8 @@ class LiveMatchEnv:
         self.rocket_nado_window_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))
         self.rocket_nado_radius = float(cfg.get("env", "rocket_nado_radius", default=0.11))
         self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))
+        # a combo must CATCH something: enemy elixir inside the pull, mirroring the sim's gate
+        self.rocket_min_worth = float(cfg.get("rewards", "rocket_min_worth", default=4.0))
         # A spell verdict runs on FRESH sightings only: a false positive is remembered exactly as
         # long as a real unit, so 4.5 s of memory made every cast at a ghost look like a hit.
         self.spell_verify_fresh_s = float(cfg.get("env", "spell_verify_fresh_s", default=0.8))
@@ -765,11 +768,17 @@ class LiveMatchEnv:
             # radius constant in reward.py; +1.5 tiles of lead slop so a predictive cast on a
             # moving target is not billed as a whiff.
             kb = self.db.get(base) or {}
-            r_tiles = float(kb.get("radius_tiles") or 2.5) + 1.5
             is_rocket = card_id in self.rocket_ids
             eta = self._impact_time(cx, cy, is_rocket=is_rocket) if is_rocket else 0.8
+            # RADIUS IN TILES (2026-08-20). This used to be normalised by /18 and then compared
+            # against normalised distance, which stretched every blast down the 32-tile axis --
+            # tornado's 5.5-tile pull scored as a hit up to 12.4 tiles away, so a cast into the
+            # river "landed on" whatever was in their half. The lead allowance is physical now
+            # too: a troop covers roughly a tile per second, so a spell in flight for `eta`
+            # seconds gets `eta` tiles of slop rather than a flat 1.5 that was itself mis-scaled.
+            r_tiles = float(kb.get("radius_tiles") or 2.5) + float(eta)
             rec = {"t_eval": time.time() + eta + 0.4, "cx": cx, "cy": cy,
-                   "r": r_tiles / 18.0, "base": base, "kind": "whiff"}
+                   "r": r_tiles, "base": base, "kind": "whiff"}
             self._pending_spells.append(rec)
             self._last_cast_rec = rec      # the reward tick attaches what this cast was PAID
             if is_rocket:
@@ -965,7 +974,7 @@ class LiveMatchEnv:
                 return self.w_threat_miss
         return 0.0
 
-    def _enemy_tracks_now(self, max_age=None):
+    def _enemy_tracks_now(self, max_age=None, with_base=False):
         """Bridged enemy positions (the tracker carries a unit across detector blink-outs for
         forget_s, so one missed frame cannot fake an empty board).
 
@@ -975,8 +984,8 @@ class LiveMatchEnv:
         """
         try:
             if self._ploop is not None and self._ploop.running:
-                return self._ploop.enemy_tracks(time.time(), max_age=max_age)
-            return self._team_tracker.enemy_tracks(time.time(), max_age=max_age)
+                return self._ploop.enemy_tracks(time.time(), with_base, max_age)
+            return self._team_tracker.enemy_tracks(time.time(), with_base, max_age)
         except Exception:  # noqa: BLE001 -- perception hiccup: no verdicts this tick
             return []
 
@@ -999,8 +1008,8 @@ class LiveMatchEnv:
         if not due:
             return 0.0
         self._pending_spells = [p for p in self._pending_spells if p["t_eval"] > now]
-        fresh = self._enemy_tracks_now(max_age=self.spell_verify_fresh_s)
-        remembered = self._enemy_tracks_now()          # for the log line only: fresh vs memory
+        fresh = self._enemy_tracks_now(max_age=self.spell_verify_fresh_s, with_base=True)
+        remembered = self._enemy_tracks_now(with_base=True)   # log only: fresh vs memory
         _, enemy_a, _ = _anchors(self.cfg)
         mine_a = _anchors(self.cfg)[0]
         total = 0.0
@@ -1011,15 +1020,21 @@ class LiveMatchEnv:
                                      tower_alive=list(self.tower.enemy_alive)[:2],
                                      tower_aim_radius=self.spell_aim_radius)
                 if self.spell_verify_log:
-                    n_f = sum(1 for t in fresh
-                              if math.hypot(t[0] - p["cx"], t[1] - p["cy"]) <= p["r"])
-                    n_m = sum(1 for t in remembered
-                              if math.hypot(t[0] - p["cx"], t[1] - p["cy"]) <= p["r"])
-                    print("[spell] %-9s at (%.2f, %.2f) r=%.2f -> %s | in blast: %d fresh, "
-                          "%d remembered%s"
+                    def _in(tracks):
+                        return [t for t in tracks
+                                if math.hypot((t[0] - p["cx"]) * 18.0,
+                                              (t[1] - p["cy"]) * 32.0) <= p["r"]]
+                    f_in, m_in = _in(fresh), _in(remembered)
+                    # NAME what is in the blast. The user could not tell whether a "hit" was a
+                    # real enemy, one of OUR units mis-tagged, or a phantom -- so say which cards
+                    # the verdict is standing on.
+                    who = ", ".join(sorted({str(t[4]) for t in f_in
+                                            if len(t) > 4 and t[4]})) or "-"
+                    print("[spell] %-9s at (%.2f, %.2f) r=%.1f tiles -> %s | in blast: %d fresh "
+                          "(%s), %d remembered%s"
                           % (p.get("base", "?"), p["cx"], p["cy"], p["r"],
-                             "WHIFF" if miss else "hit", n_f, n_m,
-                             "  <- PHANTOM: only memory saw it" if miss and n_m else ""),
+                             "WHIFF" if miss else "hit", len(f_in), who, len(m_in),
+                             "  <- PHANTOM: only memory saw it" if miss and m_in else ""),
                           flush=True)
                 if miss:
                     total += self.rw_stats.add("spell_waste", self.w_spell_waste_live)
@@ -1043,8 +1058,8 @@ class LiveMatchEnv:
         tracks = self._enemy_tracks_now()
         base = card_threat.base_key(self.vision.deck_keys[card_id]) if 0 <= card_id < self.n_cards else ""
         kb = self.db.get(base) or {}
-        r = (float(kb.get("radius_tiles") or 2.5) + 1.5) / 18.0
-        if any(math.hypot(t[0] - cx, t[1] - cy) <= r for t in tracks):
+        r_tiles = float(kb.get("radius_tiles") or 2.5) + 1.0
+        if any(math.hypot((t[0] - cx) * 18.0, (t[1] - cy) * 32.0) <= r_tiles for t in tracks):
             return cell                                   # the model aimed at something real
         if card_id in self.tornado_ids and nado_king_cell is not None:
             got = nado_king_cell(tracks, _anchors(self.cfg)[0], self.actions)
@@ -1109,29 +1124,49 @@ class LiveMatchEnv:
         ngx, ngy = self.actions.coords_to_grid(0.48, mid)
         return int(ngy) * self.gw + int(ngx)
 
+    def _combo_worth(self, cx: float, cy: float) -> float:
+        """Enemy elixir standing inside the pull, from FRESH sightings only.
+
+        A combo that catches nothing is not a combo. The first version of this credit tested only
+        geometry and timing, so rocket-then-tornado on any tile paid the full multiplier with no
+        effect on the board whatsoever -- and the wheels automated it. The sim never had that
+        hole: it requires real troops worth at least rocket_min_worth. Fresh tracks, not
+        remembered ones, for the same reason spell verdicts use them (a phantom is remembered
+        exactly as long as a real unit).
+        """
+        pull_tiles = float(self.cfg.get("env", "nado_pull_tiles", default=5.5))
+        worth = 0.0
+        for t in self._enemy_tracks_now(max_age=self.spell_verify_fresh_s, with_base=True):
+            if math.hypot((t[0] - cx) * 18.0, (t[1] - cy) * 32.0) > pull_tiles:
+                continue
+            base = str(t[4]) if len(t) > 4 and t[4] else ""
+            if base and (self.db.kind(base) or "") == "spell":
+                continue                                          # an effect is not a body
+            worth += float((self.db.elixir(base) or 0.0) if base else 0.0)
+        return worth
+
     def _combo_lands_in_pull(self, cx: float, cy: float, eta: float) -> bool:
         """Will a rocket aimed at (cx, cy), landing `eta` from now, go off inside a tornado's
-        pull, on the same spot? Checks BOTH directions of the pair -- a tornado already cast, and
-        a tornado about to be cast onto a rocket that is already flying -- because the physical
-        condition is the same either way and only the correctly-timed order can satisfy it.
-        """
-        now = time.time()
-        impact = now + float(eta)
+        pull, on the same spot -- AND catch something worth the six elixir?"""
         nado = getattr(self, "_last_nado", None)
-        if nado is not None and math.hypot(cx - nado[0], cy - nado[1]) <= self.rocket_nado_radius:
-            start = nado[2] + self.tornado_time                  # the pull begins on activation
-            if start <= impact <= start + self.nado_pull_s:
-                return True
-        return False
+        if nado is None or math.hypot(cx - nado[0], cy - nado[1]) > self.rocket_nado_radius:
+            return False
+        start = nado[2] + self.tornado_time                      # the pull begins on activation
+        impact = time.time() + float(eta)
+        if not (start <= impact <= start + self.nado_pull_s):
+            return False
+        return self._combo_worth(cx, cy) >= self.rocket_min_worth
 
     def _tornado_onto_rocket(self, cx: float, cy: float) -> bool:
-        """The DOCTRINAL order: a rocket is already in the air and this tornado lands on its
-        blast point in time to hold the clump there for it."""
+        """The DOCTRINAL order: a rocket is already in the air, this tornado lands on its blast
+        point in time to hold a REAL clump there for it."""
         rk = getattr(self, "_last_rocket", None)
         if rk is None or math.hypot(cx - rk[0], cy - rk[1]) > self.rocket_nado_radius:
             return False
         start = time.time() + self.tornado_time                  # this pull begins on activation
-        return start <= rk[2] <= start + self.nado_pull_s
+        if not (start <= rk[2] <= start + self.nado_pull_s):
+            return False
+        return self._combo_worth(cx, cy) >= self.rocket_min_worth
 
     def _where_cell(self, where, tx, ty, bow=None):
         """Map one WHERE vocabulary word onto board coordinates.
@@ -1279,11 +1314,17 @@ class LiveMatchEnv:
                 val = 0.0
             self._xbow_play_t = time.time()      # every X-Bow play re-anchors the window
             return val
-        if card_id in self.tornado_ids and self._tornado_onto_rocket(cx, cy):
-            # THE DOCTRINAL HALF OF THE COMBO: the rocket went first and this tornado drags the
-            # clump onto its blast point. Credited on the TORNADO because that is the card whose
-            # timing the player actually controls once the rocket is away.
-            return self.w_wincon * self.rocket_nado_mult
+        if card_id in self.tornado_ids:
+            # THE DOCTRINAL HALF OF THE COMBO: the rocket went first and this tornado drags a real
+            # clump onto its blast point. Credited on the TORNADO -- the card whose timing the
+            # player still controls once the rocket is away -- and on that card ONLY, so the pair
+            # cannot be billed twice. Guarded on BODIES: without that, this branch paid the full
+            # multiplier for two casts at an empty tile, which is how it became a 9-point exploit
+            # within hours of shipping (audit, 2026-08-20).
+            if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon_mis                          # never rescue a king cast
+            if self._tornado_onto_rocket(cx, cy):
+                return self.w_wincon * self.rocket_nado_mult
         if card_id in self.rocket_ids:
             # NEVER THE KING (2026-08-20, user report: the model learned to rocket-cycle it).
             # This branch used to fall through to `return 0.0` -- the existing near_enemy_king
@@ -1300,7 +1341,10 @@ class LiveMatchEnv:
             # the pull is ~1.05 s and a rocket's cast+travel is longer, so a tornado cast first
             # has released the clump before the blast arrives.
             if self._combo_lands_in_pull(cx, cy, self._impact_time(cx, cy, is_rocket=True)):
-                return self.w_wincon * self.rocket_nado_mult
+                # The narrow legitimate reverse case: a tornado cast so late that its pull is
+                # still running when the rocket lands. Paid at half, because the doctrinal order
+                # is the one being taught and this must not become the cheaper way to earn it.
+                return self.w_wincon * self.rocket_nado_mult * 0.5
             pxy = self._pump_xy if self._pump_fresh() else None   # PUMP PUNISH mirror (perception-gated)
             if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius:
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -1520,6 +1564,12 @@ class LiveMatchEnv:
                                                 self.deploy_top, self.actions)
                 if depth is not None:
                     cell = depth
+                # RE-CLAMP. The lane/lock/depth chain above runs AFTER deploy_clamp and can walk
+                # the bow off the deployable area entirely -- MEASURED, 122 live plays landed on
+                # grid row 12 with min_own_gy 13, one row past the line, where the arena tap does
+                # nothing and the card never leaves the bar. Illegal-cell plays deployed 24% of
+                # the time against 42% for legal ones (2026-08-20 audit).
+                cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
             elif card_id in self.tesla_ids:
                 # CENTRE-PULL: a win condition dropped at one bridge beelines the near tower and only
                 # that tower shoots it. Placing the Tesla at the far edge of the wincon's OWN aggro
@@ -1650,7 +1700,29 @@ class LiveMatchEnv:
             gx, gy = cell % self.gw, cell // self.gw
             cx, cy = self.actions.cell_center(gx, gy)
             tr = wc = tmi = lk = 0.0
-            if play:
+            # DID THE CARD ACTUALLY DEPLOY? (2026-08-20 audit.) `_execute` sends two taps and
+            # returns; nothing ever confirmed a deployment, so the correctness terms were paid
+            # from the INTENDED (card, cell) whether or not anything happened. MEASURED on six-
+            # elixir cards: 33% of plays showed the bar not falling at all -- impossible if six
+            # elixir had been spent -- so a third of the win-condition credit was paid for
+            # nothing, and the replay buffer stored those as real plays.
+            #
+            # Conservative on purpose: the bar is read as an INTEGER, so only an expensive card
+            # whose reading did not fall AT ALL is treated as failed. Cheap cards and partial
+            # drops are left alone rather than risk withholding credit for a real play.
+            deployed = True
+            if play and 0 <= card_id < self.n_cards:
+                cost = float(self.card_elixir[card_id])
+                if cost >= 3.0 and (float(pre_elixir) - float(cur_elixir)) <= 0.0:
+                    deployed = False
+                    self._failed_deploys += 1
+                    self._last_exec_action = (0, 0, 0)   # the buffer must not store fiction
+                    if self.spell_verify_log:
+                        print("[deploy] %s did NOT leave the bar (%.0f -> %.0f, cost %.0f) -- "
+                              "credit withheld, stored as a wait"
+                              % (self.vision.deck_keys[card_id], pre_elixir, cur_elixir, cost),
+                              flush=True)
+            if play and deployed:
                 tr = self.rw_stats.add("threat_response", self._bonus(self._threat_response_live(card_id, cx, cy)))   # (1) counter the assessed threat
                 wc = self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec_live(card_id, cx, cy)))            # (3) win-condition executed right
             else:

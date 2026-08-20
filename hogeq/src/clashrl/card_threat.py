@@ -138,6 +138,17 @@ def profile(db: CardDB, name: str) -> ThreatProfile:
     building = kind == "building"
     building_targeting = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     dps = c.get("dps") if c.get("dps") is not None else c.get("damage_per_second")
+    # RAMPING ATTACKERS (2026-08-20 audit). Mighty Miner and the Inferno family publish their
+    # FIRST-STAGE damage, so the KB stored Mighty Miner at 40 damage / 100 dps -- roughly a tenth
+    # of the ~1000 he reaches on one target. This layer only decides ROLES, and the tank branch of
+    # counters() tests `dps >= 150`, so the deck's designated tank-melter read as "not an answer
+    # to a tank" and was charged the full misread penalty every time he did his job.
+    # Deliberately role-layer only: sim/engine.py builds its combat model from `damage`/`dps` and
+    # is untouched, so this cannot double-count anything there.
+    ramp = c.get("damage_ramp") or {}
+    stages, hit_s = ramp.get("damages") or (), float(ramp.get("hit_speed") or 0.0)
+    if stages and hit_s > 0.0:
+        dps = max(float(dps or 0.0), float(stages[-1]) / hit_s)
     reach = db.attack_range(base)                        # melee | short | long | None
     out = cache[base] = ThreatProfile(
         name=base,
@@ -347,6 +358,17 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
         # returned True, so the referee PAID for logging minions/bats. That is the "model logs
         # air cards" behaviour the user reported, taught directly by this table.
         # One guard up front, so no branch can ever credit an unreachable threat.
+        return False
+    if (getattr(play, "building_targeting", False) and play.kind == "troop"
+            and threat_id[6] < 0.5):
+        # ...AND THE SAME TRUTH ON THE GROUND (2026-08-20 audit). A building-targeting TROOP --
+        # Hog Rider, Ram Rider, Battle Ram, Balloon -- walks straight past a knight or a pekka to
+        # reach a building. It can no more "counter" a tank than the Log can counter a Minion
+        # Horde, yet the tank branch below credited it on raw DPS (Hog is 198), so the referee
+        # paid +1.0 for answering a tank with the deck's own win condition. Compounded in hogeq,
+        # where _wincon_exec has no hog branch at all: this misread was the ONLY positive reward
+        # the Hog Rider could earn anywhere, actively teaching "defend with your win condition".
+        # The exception is threat_id[6] -- an enemy building-targeter, where trading them is real.
         return False
     if threat_id[3] >= 0.5:                                            # flying threat -> air defence
         return True

@@ -554,13 +554,21 @@ class TowerTracker:
 # (a unit absent from ~31% of passes is carried for forget_s), so a whiff verdict cannot be
 # manufactured by one missed frame.
 
-def spell_whiffed(cx, cy, radius, enemy_tracks, tower_anchors=(), tower_alive=(),
-                  tower_aim_radius=0.10):
-    """True when a spell aimed at (cx, cy) has NO enemy inside `radius` (board fraction) and is
-    not aimed at a live enemy tower. `enemy_tracks` are (x, y, ...) tuples from
-    TeamTracker.enemy_tracks -- positions survive detector blink-outs, which is the point."""
+def spell_whiffed(cx, cy, radius_tiles, enemy_tracks, tower_anchors=(), tower_alive=(),
+                  tower_aim_radius=0.10, tiles_x=18.0, tiles_y=32.0):
+    """True when a spell aimed at (cx, cy) has NO enemy within `radius_tiles` TILES, and is not
+    aimed at a live enemy tower.
+
+    THE RADIUS IS IN TILES, and the comparison scales each axis by the board's own dimensions.
+    This used to take a normalised radius and compare normalised Euclidean distance, which
+    silently stretched every blast vertically: the board is 18 x 32, so tornado's 5.5-tile pull
+    became 7.0 tiles wide and 12.4 TILES TALL and "hit" half the arena (user, 2026-08-20 -- a
+    tornado cast in the river was scored as a hit). Same bug nado_regressed had and the same fix.
+
+    `enemy_tracks` are (x, y, ...) tuples from TeamTracker.enemy_tracks.
+    """
     for tr in enemy_tracks:
-        if math.hypot(tr[0] - cx, tr[1] - cy) <= radius:
+        if math.hypot((tr[0] - cx) * tiles_x, (tr[1] - cy) * tiles_y) <= radius_tiles:
             return False
     for i, (ax, ay) in enumerate(tower_anchors):
         alive = bool(tower_alive[i]) if i < len(tower_alive) else True

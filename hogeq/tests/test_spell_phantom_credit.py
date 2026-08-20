@@ -47,9 +47,9 @@ class FreshEvidenceTests(unittest.TestCase):
         fresh = tr.enemy_tracks(2.4, max_age=0.8)
         self.assertTrue(remembered, "probe broken: the track should still be remembered")
         self.assertEqual([], fresh, "a 2s-stale track was served as fresh evidence")
-        self.assertFalse(spell_whiffed(0.50, 0.56, 0.12, remembered),
+        self.assertFalse(spell_whiffed(0.50, 0.56, 3.0, remembered),
                          "probe broken: memory should have masked the whiff")
-        self.assertTrue(spell_whiffed(0.50, 0.56, 0.12, fresh),
+        self.assertTrue(spell_whiffed(0.50, 0.56, 3.0, fresh),
                         "the phantom cast is STILL not billed as a whiff")
 
     def test_a_real_unit_under_the_spell_is_not_billed(self):
@@ -59,7 +59,7 @@ class FreshEvidenceTests(unittest.TestCase):
         tr.tag([], 0.6)                                          # one blinked pass
         fresh = tr.enemy_tracks(0.7, max_age=0.8)
         self.assertTrue(fresh, "a one-frame blink wrongly emptied the fresh view")
-        self.assertFalse(spell_whiffed(0.50, 0.56, 0.12, fresh),
+        self.assertFalse(spell_whiffed(0.50, 0.56, 3.0, fresh),
                          "a spell landing on a real (briefly blinked) unit was billed a whiff")
 
     def test_a_continuously_seen_unit_stays_fresh(self):

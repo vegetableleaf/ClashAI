@@ -833,6 +833,7 @@ env:
   rocket_nado_window_s: 2.5            # TORNADO -> ROCKET is a timing play: the rocket only counts as the combo within this long of the tornado cast (matches the sim's term).
   rocket_nado_radius: 0.11             # ...and within this of the TORNADO'S OWN TILE. The user's rule: 'the tornado and rocket need to be cast in the same tile for the combo to work most effectively' -- the pull holds the bundle for a moment only.
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.
+  nado_pull_tiles: 5.5                 # the tornado's actual pull radius in TILES. The combo credit requires real enemy bodies inside it worth rewards.rocket_min_worth -- without that gate the credit paid in full for two casts at an empty tile.
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
@@ -1350,7 +1351,7 @@ sim:
   # BACK TO 0.25 (2026-08-14): the SPATIAL cell head lands with the next run, which starts from a
   # fresh BC -- repopulation phase again, so the high floor applies. Anneal to 0.10 only after
   # policy-stats shows healthy spread AND board-conditioned placement on the new head.
-  ppo_cell_explore_floor: 0.25
+  ppo_cell_explore_floor: 0.15   # LOWERED from 0.25 (2026-08-20 audit). The rollout stores the MIXTURE log-prob, so ratio = pi_new/mu has a ceiling of 1/(1-floor); at 0.25 that is 1.333, ABOVE the 1.2 clip, so every cell with pi > ~2% was clipped before the first gradient step and its positive-advantage gradient deleted -- the cell head could be pushed DOWN but never UP. 0.15 -> ceiling 1.176, back inside the band.
   ppo_cell_entropy: 0.05        # entropy bonus for the CELL head alone (>= ppo_entropy; 5x here)
   # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md -> sim/doctrine.py; user-approved 2026-08-14). When a
   # doctrine rule matches the current (card, board state), this share of the CELL FLOOR's mass is

@@ -1501,7 +1501,12 @@ cards:
   # entry supersedes it, and every champion except the Boss Bandit now gets exactly one activation.
   # Tracked PER BODY (Unit.ability_left), so a Mighty Miner who dies and is cycled back gets his
   # one use again -- it is one use per deployment, not one per match.
+  # DAMAGE RAMP (wiki, L11): 40 -> 204 -> 409 per hit at 0.4 s, i.e. ~1022 dps on one target
+  # once he is stage 3. The KB's published `damage`/`dps` are stage ONE, which made the deck's
+  # tank-melter read as a 100-dps chip unit in the ROLE layer (card_threat reads `damage_ramp`;
+  # sim/engine.py does not, so its combat model is unchanged).
   mighty_miner: {range: melee, flags: [knockback_immune],
+                 damage_ramp: {damages: [40, 204, 409], hit_speed: 0.4},
                  ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0,
                  ability_bomb_damage: 366, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8,
                  verified: false}

@@ -29,19 +29,19 @@ from clashrl.replay_mine import Detection, TeamTracker            # noqa: E402
 
 class SpellWhiffTests(unittest.TestCase):
     def test_empty_blast_is_a_whiff(self):
-        self.assertTrue(spell_whiffed(0.5, 0.3, 0.12, []))
+        self.assertTrue(spell_whiffed(0.5, 0.3, 3.0, []))
 
     def test_an_enemy_inside_the_blast_is_not(self):
-        self.assertFalse(spell_whiffed(0.5, 0.3, 0.12, [(0.55, 0.33, 0, 0)]))
+        self.assertFalse(spell_whiffed(0.5, 0.3, 3.0, [(0.55, 0.33, 0, 0)]))
 
     def test_a_live_tower_aim_is_exempt(self):
         """Rocket/EQ chip on a standing tower is a legitimate cast, never a whiff."""
-        self.assertFalse(spell_whiffed(0.25, 0.21, 0.12, [],
+        self.assertFalse(spell_whiffed(0.25, 0.21, 3.0, [],
                                        tower_anchors=[(0.25, 0.21)], tower_alive=[True]))
 
     def test_a_dead_tower_is_no_exemption(self):
         """Rocketing rubble is exactly the waste this term exists to price."""
-        self.assertTrue(spell_whiffed(0.25, 0.21, 0.12, [],
+        self.assertTrue(spell_whiffed(0.25, 0.21, 3.0, [],
                                       tower_anchors=[(0.25, 0.21)], tower_alive=[False]))
 
     def test_the_tracker_bridges_a_detector_blink(self):
@@ -55,7 +55,7 @@ class SpellWhiffTests(unittest.TestCase):
         tr.tag([], 1.0)                                    # the detector BLINKS: empty pass
         tracks = tr.enemy_tracks(1.2)
         self.assertTrue(tracks, "the tracker forgot the enemy after one missed pass")
-        self.assertFalse(spell_whiffed(0.50, 0.66, 0.12, tracks),
+        self.assertFalse(spell_whiffed(0.50, 0.66, 3.0, tracks),
                          "a spell landing on a remembered enemy was billed as a whiff")
 
 
