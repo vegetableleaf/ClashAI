@@ -279,6 +279,41 @@ def trade_sane(db, base: str, threat_bases) -> bool:
     return cost < group + SPELL_OVERKILL_MARGIN
 
 
+def primary_threat(db, bases, tower_level: int = 15, enemy_level: int = 11):
+    """The member of the group that decides what an answer has to be able to reach.
+
+    Ranked by what each card costs to IGNORE on its own -- the same triage number every other
+    tier here uses -- so a Balloon outranks the Skeletons walking beside it by the margin the
+    card database says it should, rather than by a hand-written list of "important" cards.
+    """
+    best, best_v = None, -1.0
+    for b in dict.fromkeys(b for b in (bases or ()) if b):
+        try:
+            v = float(group_ignore_frac(db, [b], tower_level=tower_level, enemy_level=enemy_level))
+        except Exception:  # noqa: BLE001 -- an unknown card is not the primary threat
+            continue
+        if v > best_v:
+            best, best_v = b, v
+    return best
+
+
+def misses_primary(db, base: str, bases, tower_level: int = 15, enemy_level: int = 11):
+    """Why `base` cannot reach the group's PRIMARY threat, or None when it can.
+
+    Deliberately NOT folded into `pick_invalid`. That function answers "is this card a legal
+    answer at all", and its callers use it as a hard veto; this one answers "is this card an
+    answer to the thing that actually matters here", which is only a veto when something better
+    is available. A Log on the skeletons beside a Balloon is the wrong answer when the hand holds
+    a Tornado, and the best available play when it does not -- and only the caller knows which.
+    """
+    prime = primary_threat(db, bases, tower_level=tower_level, enemy_level=enemy_level)
+    if not prime or not base:
+        return None
+    if can_touch(db, base, [prime]):
+        return None
+    return "cannot touch %s, the biggest thing on the board" % prime
+
+
 def pick_invalid(db, base: str, threat_bases):
     """Why `base` cannot answer this threat group, or None when it is a legal answer."""
     if not base:

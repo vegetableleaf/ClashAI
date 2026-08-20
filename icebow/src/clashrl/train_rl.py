@@ -353,6 +353,29 @@ def train_rl(cfg, init: str | None = None) -> None:
         print("[train-rl] LLM exploration advisor OFF (set train.llm_advisor: true to enable); "
               "epsilon steps pick a random card")
 
+
+    def _visible_enemy_bases(env):
+        """Every enemy the ADVISOR WAS TOLD ABOUT, by the same filter `_situation` describes them.
+
+        Deliberately NOT depth-filtered, because this answers a different question from
+        `_counted_threats`. That one asks "is this worth a card", where a threat still on their
+        own half correctly reads as "not yet". This asks "can the card the advisor named even
+        touch what it was shown", and a Balloon is equally untouchable by The Log on either side
+        of the river. Keeping one filter for both questions is what let a lone Balloon draw a Log:
+        the prompt described it, the group did not contain it, and the veto had nothing to test.
+        """
+        out = []
+        for d in (getattr(env, "_last_dets_all", None) or ()):
+            if getattr(d, "team", "") != "enemy":
+                continue
+            if int(getattr(d, "trk_hits", 2) or 2) < 2:
+                continue                 # 1-frame phantom: the prompt skips these too
+            b = str(getattr(d, "base", "") or "")
+            if not b or (_db.kind(b) == "spell" and b not in SPAWN_SPELLS):
+                continue                 # nothing counters a fireball; spawn-spells DO count
+            out.append(b)
+        return tuple(out)
+
     def _counted_threats(env):
         """The triaged enemy group as base names: live corroborated non-spell dets + the
         tracker's remembered enemies, deduplicated. None = the detector is blind (callers must
@@ -578,7 +601,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         return None if best is None else best[1]
 
     def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir, situation="",
-               needs_answer=True, threat_bases=()):
+               needs_answer=True, threat_bases=(), seen_bases=()):
         # playable = in hand AND affordable (mirrors play.py) -> the policy never selects a card it
         # can't pay for, which otherwise wastes the turn on a "Not enough Elixir!" no-op.
         playable = [i for i, v in enumerate(hand_vec)
@@ -667,17 +690,55 @@ def train_rl(cfg, init: str | None = None) -> None:
                 if pick is not None and pick in card_names:
                     idx = card_names.index(pick)
                     if idx in playable:
-                        why = _pick_invalid(_base_key(pick), threat_bases) if needs_answer else None
+                        pbase = _base_key(pick)
+                        # VALIDATE AGAINST WHAT THE ADVISOR WAS SHOWN, not only against what
+                        # triage counted. `threat_bases` is depth-filtered (>= 0.42), so a Balloon
+                        # still on their side made it empty -> needs_answer False -> the pick was
+                        # accepted with no validation whatsoever. "Can this card touch that" is
+                        # not conditional on "is that worth a card": a ground-only spell misses a
+                        # flyer on either side of the river.
+                        _val = tuple(threat_bases) or tuple(seen_bases or ())
+                        why = _pick_invalid(pbase, _val) if _val else None
+                        if why is None and _val:
+                            # ...AND DOES IT ANSWER THE THING THAT MATTERS? `pick_invalid` only
+                            # rejects a card that can touch NOTHING in the group, so one skeleton
+                            # walking beside a Balloon made The Log a "legal" answer to a Balloon
+                            # -- the user's repeated report, and the reason it kept surviving: a
+                            # Balloon essentially never arrives alone, so the all-air test almost
+                            # never fired on the board it was written for.
+                            #
+                            # Only a veto when the hand can actually do better. If nothing here
+                            # reaches the Balloon then logging the skeletons IS the best available
+                            # play, and rejecting it would drop through to a RANDOM card, which is
+                            # strictly worse than deliberate mitigation.
+                            miss = threat_value.misses_primary(_db, pbase, _val)
+                            if miss:
+                                better = [i for i in playable
+                                          if not _pick_invalid(_base_key(card_names[i]), _val)
+                                          and not threat_value.misses_primary(
+                                              _db, _base_key(card_names[i]), _val)]
+                                if better:
+                                    why = miss
                         if why is None:
                             c = idx
                         else:
-                            alt = _kb_answer(playable, threat_bases)
+                            alt = _kb_answer(playable, _val)
+                            if alt is not None and threat_value.misses_primary(
+                                    _db, _base_key(card_names[alt]), _val):
+                                alt = next((i for i in playable
+                                            if not _pick_invalid(_base_key(card_names[i]), _val)
+                                            and not threat_value.misses_primary(
+                                                _db, _base_key(card_names[i]), _val)), alt)
                             if advisor_log:
                                 print("[train-rl]   advisor pick %s REJECTED (%s) -> %s"
                                       % (pick, why,
-                                         card_names[alt] if alt is not None else "no valid card"))
-                            if alt is not None:
-                                c = alt
+                                         card_names[alt] if alt is not None else
+                                         "nothing better in hand, KEEPING it as mitigation"))
+                            # NO VALID ALTERNATIVE -> KEEP THE ADVISOR'S PICK. Leaving c as None
+                            # here fell through to "advisor gave nothing -> RANDOM card", which
+                            # both mis-reported what happened (the advisor gave plenty) and threw
+                            # away a deliberate play for a coin flip.
+                            c = alt if alt is not None else idx
             if c is None and needs_answer and len(counter_table) and threat_bases:
                 # THE ADVISOR GAVE NOTHING (timeout, cooldown, dead server) and there IS a threat.
                 # Before the table the only fallback was a uniform-random card -- the measured
@@ -937,7 +998,8 @@ def train_rl(cfg, init: str | None = None) -> None:
                     _db, tb, tower_level=_tower_level) >= threat_value.IGNORE_FRAC)
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
                                 _situation(env) if advisor is not None else "",
-                                needs_answer=na, threat_bases=tuple(tb or ()))
+                                needs_answer=na, threat_bases=tuple(tb or ()),
+                                seen_bases=_visible_enemy_bases(env))
                 # LEAK-GUARD OFFENSE WHEEL (2026-08-20, user request: "the model should pressure
                 # with x-bow when possible... defending all game won't work"). The quiet-board
                 # pressure rule above lives on EXPLORATION steps only, so a greedy policy at full

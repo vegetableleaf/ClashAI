@@ -46,26 +46,26 @@ class AirReachTests(_Base):
                                  "%s was allowed against a flying unit" % spell)
 
     def test_air_capable_cards_are_allowed(self):
-        for card in ("tesla", "firecracker"):
+        for card in ("tesla", "ice_wizard", "rocket"):
             self.assertIsNone(self.invalid(card, ["balloon"]),
                               "%s was wrongly vetoed against air" % card)
 
     def test_tornado_is_allowed_against_air(self):
         """It deals no meaningful damage but it REPOSITIONS flying units -- dragging a balloon
-        into an activated king tower is the answer in the decks that hold it."""
+        into an activated king tower is the deck's actual answer."""
         self.assertIsNone(self.invalid("tornado", ["balloon"]))
 
     def test_a_mixed_group_does_not_veto_ground_cards(self):
         """Only an ALL-flying group is untouchable. A balloon escorted by a hog still has a hog
         in it, and the knight has real work to do."""
-        self.assertIsNone(self.invalid("mighty_miner", ["balloon", "hog_rider"]))
+        self.assertIsNone(self.invalid("knight", ["balloon", "hog_rider"]))
 
     def test_swarms_cannot_answer_a_minion_horde(self):
         self.assertIsNotNone(self.invalid("skeletons", ["minion_horde"]))
 
     def test_an_empty_group_vetoes_nothing(self):
         """No threat = an offensive play (a bow on a quiet board); the veto must not fire."""
-        self.assertIsNone(self.invalid("mighty_miner", []))
+        self.assertIsNone(self.invalid("knight", []))
         self.assertIsNone(self.invalid("rocket", []))
 
 
@@ -94,7 +94,7 @@ class TradeSanityTests(_Base):
 
     def test_troops_are_never_trade_vetoed(self):
         """A defending troop survives and keeps working; only spells are judged on price."""
-        self.assertIsNone(self.invalid("mighty_miner", ["skeletons"]))
+        self.assertIsNone(self.invalid("knight", ["skeletons"]))
 
     def test_a_spawn_spell_answer_is_not_trade_vetoed(self):
         """Graveyard/goblin_barrel are not 'answers' in this sense; the rule targets damage
@@ -133,3 +133,75 @@ class SharedRulesTests(_Base):
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)
+
+
+class PrimaryThreatTests(_Base):
+    """A group is not one threat -- it has a PRIMARY, and the answer must reach THAT one.
+
+    `pick_invalid` only rejects a card that can touch NOTHING in the group, which is the right
+    rule for a hard veto and the wrong one for choosing an answer: one skeleton walking beside a
+    Balloon made The Log a "legal" answer to a Balloon. Since a Balloon essentially never arrives
+    alone, the all-air test almost never fired on the board it was written for.
+    """
+
+    def primary(self, group):
+        return tv.primary_threat(self.db, group)
+
+    def misses(self, base, group):
+        return tv.misses_primary(self.db, base, group)
+
+    def test_the_reported_bug_log_on_a_balloon_with_chaff(self):
+        """THE user report. A lone Balloon was already vetoed; a Balloon plus anything on the
+        ground was not, and that is the board the play actually happens on."""
+        self.assertEqual(self.primary(["balloon", "skeletons"]), "balloon")
+        self.assertIsNotNone(self.misses("the_log", ["balloon", "skeletons"]))
+        self.assertIsNotNone(self.misses("the_log", ["balloon", "goblin_gang"]))
+
+    def test_the_primary_is_the_costliest_thing_to_ignore(self):
+        """Ranked by the project's own triage number per card, not a hand-written list."""
+        self.assertEqual(self.primary(["hog_rider", "skeletons"]), "hog_rider")
+        self.assertEqual(self.primary(["giant", "musketeer"]), "giant")
+
+    def test_a_card_that_reaches_the_primary_is_allowed(self):
+        """The Log against minions+knight is fine: the KNIGHT is the primary and it walks."""
+        self.assertEqual(self.primary(["minions", "knight"]), "knight")
+        self.assertIsNone(self.misses("the_log", ["minions", "knight"]))
+
+    def test_air_capable_answers_are_never_blocked(self):
+        for base in ("tornado", "rocket", "ice_wizard", "tesla"):
+            self.assertIsNone(self.misses(base, ["balloon", "skeletons"]),
+                              "%s can reach the balloon" % base)
+
+    def test_an_empty_group_has_no_primary(self):
+        self.assertIsNone(self.primary([]))
+        self.assertIsNone(self.misses("the_log", []))
+
+
+class AdvisorGateWiringTests(_Base):
+    """The veto has to be ASKED. It was correct all along and simply never consulted.
+
+    `_situation` describes every corroborated enemy to the advisor; `_counted_threats` also
+    requires `gy >= 0.42`. A Balloon still on their own side is therefore in the PROMPT and not in
+    the group -- so `threat_bases` was empty, `needs_answer` was False, and the gate read
+    `why = _pick_invalid(...) if needs_answer else None`, accepting the pick unvalidated. That is
+    the lone-Balloon report: not a wrong rule, an unasked one.
+
+    Source-level because the gate is a closure inside train_rl and cannot be imported; the
+    behaviour it guards is covered by the threat_value tests above.
+    """
+
+    def setUp(self):
+        import pathlib
+        p = pathlib.Path(__file__).resolve().parents[1] / "src" / "clashrl" / "train_rl.py"
+        self.src = p.read_text(encoding="utf-8")
+
+    def test_the_pick_is_validated_against_what_the_advisor_was_shown(self):
+        self.assertIn("_visible_enemy_bases", self.src,
+                      "the advisor's pick must be checkable against the enemies it was DESCRIBED")
+        self.assertIn("_val = tuple(threat_bases) or tuple(seen_bases or ())", self.src,
+                      "an empty triage group must fall back to the described enemies")
+
+    def test_validity_is_not_gated_on_worth(self):
+        """'Can this card touch it' must not be conditional on 'is it worth a card'."""
+        self.assertNotIn("_pick_invalid(pbase, threat_bases) if needs_answer else None", self.src,
+                         "the veto is gated on needs_answer again -- a quiet board skips it")
