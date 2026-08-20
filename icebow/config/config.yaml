@@ -855,10 +855,26 @@ env:
                                  # defense is 1-2 cards; the 4th role-match adds no information)
   arena_region: [0.03, 0.10, 0.97, 0.86]
   defeat_cap: 0.15               # 'full push' enemy-mass scale / per-step clip for the trade term
-  spell_eval_time: 2.4           # cap on the predicted impact time / longest spell wait (s)
+  spell_eval_time: 4.0           # cap on the predicted impact time / longest spell wait (s). Raised
+                                 # from 2.4, which was BELOW the Log's own 3.4s roll time -- the cap
+                                 # truncated the wait, so correcting the eta alone would have changed
+                                 # nothing while this clamped it back under the arrival.
+  log_impact_time: 3.4           # seconds for The Log to finish rolling its 9.6 tiles: wiki projectile
+                                 # speed 170, and CR's speed unit is ~60 per tile/second (Hog Rider is
+                                 # "Fast (90)" and covers ~1.5 tiles/s), so 170/60 = 2.83 tiles/s.
+  spell_verify_slop_tiles: 0.5   # fixed tolerance on the blast radius for detector jitter. NOT a lead
+                                 # allowance: the verdict now runs at arrival, so there is nothing to
+                                 # lead. The old allowance was the flight time itself, which inflated a
+                                 # rocket's 2.5-tile blast to 4.1 and credited bodies well outside it.
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
-  rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
+  rocket_travel_rate: 2.2        # DEPRECATED (kept so an old config still loads): seconds per
+                                 # NORMALISED unit, which mixed the 18- and 32-tile axes and ranked
+                                 # targets by the wrong distance -- 20.0 tiles scored a LONGER
+                                 # flight than 20.8. Superseded by rocket_speed_tiles.
+  rocket_speed_tiles: 14.0       # rocket flight speed, TILES per second. Calibrated to reproduce the
+                                 # old far-tower flight (27.8 tiles -> 2.29s) so only the ranking by
+                                 # distance changes, not the magnitudes.
   rocket_nado_window_s: 2.5            # TORNADO -> ROCKET is a timing play: the rocket only counts as the combo within this long of the tornado cast (matches the sim's term).
   rocket_nado_radius: 0.11             # ...and within this of the TORNADO'S OWN TILE. The user's rule: 'the tornado and rocket need to be cast in the same tile for the combo to work most effectively' -- the pull holds the bundle for a moment only.
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.

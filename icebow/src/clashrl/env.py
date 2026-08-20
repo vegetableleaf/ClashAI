@@ -285,6 +285,17 @@ class LiveMatchEnv:
         # A spell verdict runs on FRESH sightings only: a false positive is remembered exactly as
         # long as a real unit, so 4.5 s of memory made every cast at a ghost look like a hit.
         self.spell_verify_fresh_s = float(cfg.get("env", "spell_verify_fresh_s", default=0.8))
+        # SECONDS FOR THE LOG TO FINISH ROLLING: 9.6 tiles at 2.83 tiles/s (wiki projectile speed
+        # 170; CR's speed unit is ~60 per tile/second). The verdict cannot be taken before this or
+        # it judges a roll that has not arrived.
+        self.log_impact_time = float(cfg.get("env", "log_impact_time", default=3.4))
+        # Rocket flight speed in TILES per second. Replaces `rocket_travel_rate`, which was
+        # seconds-per-NORMALISED-unit and therefore ranked targets by the wrong distance.
+        self.rocket_speed_tiles = float(cfg.get("env", "rocket_speed_tiles", default=14.0))
+        # Fixed tolerance on the blast radius for detector jitter -- NOT a lead allowance. See the
+        # note where r_tiles is built: the old allowance grew with flight time and inflated a
+        # rocket's 2.5-tile blast to 4.1.
+        self.spell_verify_slop_tiles = float(cfg.get("env", "spell_verify_slop_tiles", default=0.5))
         self.spell_verify_log = bool(cfg.get("env", "spell_verify_log", default=True))
         self._last_exec_action = None
         # The researched counter table drives WHERE a doctrine answer goes (see _where_cell).
@@ -878,14 +889,29 @@ class LiveMatchEnv:
             # moving target is not billed as a whiff.
             kb = self.db.get(base) or {}
             is_rocket = card_id in self.rocket_ids
-            eta = self._impact_time(cx, cy, is_rocket=is_rocket) if is_rocket else 0.8
+            # WAIT FOR THE SPELL TO ARRIVE. The Log's 0.8 here was the cast delay, not the ROLL:
+            # at 170 projectile speed (CR's unit is ~60 per tile/second) it covers 2.83 tiles/s
+            # over 9.6 tiles, so the corridor is not fully swept for ~3.4s. Judging at 0.8 scored
+            # the verdict a third of the way down the lane, which is why a body that walked out of
+            # the path before the roll reached it was still counted as hit.
+            if base == "the_log":
+                eta = self.log_impact_time
+            elif is_rocket:
+                eta = self._impact_time(cx, cy, is_rocket=True)
+            else:
+                eta = self._impact_time(cx, cy, is_rocket=False)
             # RADIUS IN TILES (2026-08-20). This used to be normalised by /18 and then compared
             # against normalised distance, which stretched every blast down the 32-tile axis --
             # tornado's 5.5-tile pull scored as a hit up to 12.4 tiles away, so a cast into the
             # river "landed on" whatever was in their half. The lead allowance is physical now
             # too: a troop covers roughly a tile per second, so a spell in flight for `eta`
             # seconds gets `eta` tiles of slop rather than a flat 1.5 that was itself mis-scaled.
-            r_tiles = float(kb.get("radius_tiles") or 2.5) + float(eta)
+            # THE REAL RADIUS, plus a small FIXED tolerance for detector jitter. The old
+            # `+ eta` was a lead allowance -- necessary only for a check that fires before impact
+            # and has to guess where a body will be. Judged at arrival there is nothing to guess,
+            # and the allowance was large: a rocket 1.6s out was scored with a 4.1-tile blast
+            # against a real 2.5, so bodies well outside it were credited as hits.
+            r_tiles = float(kb.get("radius_tiles") or 2.5) + self.spell_verify_slop_tiles
             rec = {"t_eval": time.time() + eta + 0.4, "cx": cx, "cy": cy,
                    "r": r_tiles, "base": base, "kind": "whiff"}
             self._pending_spells.append(rec)
@@ -2076,8 +2102,16 @@ class LiveMatchEnv:
         if not is_rocket:
             return self.tornado_time
         ox, oy = self.rocket_origin
-        d = ((cx - ox) ** 2 + (cy - oy) ** 2) ** 0.5
-        return min(max(self.rocket_base_time + self.rocket_travel_rate * d, 0.6), self.spell_eval_time)
+        # TRUE TILE DISTANCE OVER A FIXED VELOCITY. This was a normalised Euclidean distance times
+        # a per-unit rate, which mixes the 18-tile and 32-tile axes: measured, a target 20.0 tiles
+        # away scored a LONGER flight (1.79s) than one 20.8 tiles away (1.73s), because the second
+        # was further along the cheap axis. Same anisotropy that made a Tornado's 5.5-tile pull
+        # read as 12.4 tiles down-board. Speed is calibrated to preserve the far-tower flight the
+        # old fit produced (27.8 tiles, 2.29s), so magnitudes are unchanged and only the RANKING
+        # by distance is corrected.
+        d_tiles = (((cx - ox) * 18.0) ** 2 + ((cy - oy) * 32.0) ** 2) ** 0.5
+        return min(max(self.rocket_base_time + d_tiles / self.rocket_speed_tiles, 0.6),
+                   self.spell_eval_time)
 
     def _resolve_terminal(self) -> Tuple[float, Optional[str], dict]:
         """Read the result: end-of-match scoreboard crowns cross-checked against the
