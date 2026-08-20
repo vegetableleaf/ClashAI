@@ -405,13 +405,19 @@ register(Scenario(
     hand=("rocket",),
     elixir=8.0,
     spawns=(("elixir_collector", 1, 0.30, 0.16, 0.0),),
+    # ON SIGHT MEANS ON SIGHT. The first cut allowed 11 seconds, which is not the play: a pump
+    # generates 1 elixir every 8.5s over a 70s life, so every second it stands is elixir already
+    # banked and unrecoverable. The owner's rule -- rocket it AS IT IS PLACED -- is a TIMING skill,
+    # so the clock is in the predicate: the cast has to be away inside 3s of the pump appearing,
+    # and a pump still standing at 5s has already paid for part of itself.
     success=lambda e, s: (not any(u.team == 1 and u.hp > 0 and u.spec.base == "elixir_collector"
                                   for u in e.units)
-                          and played(s, "rocket")),
-    failure=lambda e, s: ((float(e.t) - float(s.get("t0", 0.0))) >= 11.0
-                          and any(u.team == 1 and u.hp > 0 and u.spec.base == "elixir_collector"
-                                  for u in e.units)),
-    time_limit=14.0,
+                          and (first_play_t(s, "rocket") or 99.0) <= 3.0),
+    failure=lambda e, s: (((float(e.t) - float(s.get("t0", 0.0))) >= 5.0
+                           and any(u.team == 1 and u.hp > 0 and u.spec.base == "elixir_collector"
+                                   for u in e.units))
+                          or ((first_play_t(s, "rocket") or 0.0) > 3.5)),
+    time_limit=10.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("wincon_exec",),
     prereq=("rocket_the_two_for_one",),

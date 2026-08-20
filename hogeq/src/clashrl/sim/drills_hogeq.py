@@ -450,10 +450,16 @@ register(Scenario(
     spawns=(("elixir_collector", 1, 0.30, 0.16, 0.0),),
     # THE QUAKE REACHES IT ONLY BECAUSE SPELLS MAY CROSS THE RIVER NOW. Before that fix this was
     # a cast clamped to our own front row, roughly ten tiles short of the pump.
-    success=lambda e, s: (not _enemy(e, "elixir_collector") and played(s, "earthquake")),
-    failure=lambda e, s: ((float(e.t) - float(s.get("t0", 0.0))) >= 13.0
-                          and bool(_enemy(e, "elixir_collector"))),
-    time_limit=16.0,
+    # ON SIGHT MEANS ON SIGHT -- see the icebow twin. A pump banks 1 elixir every 8.5s, so the
+    # seconds before the answer are elixir that cannot be taken back; the clock belongs in the
+    # predicate rather than in the notes. The quake is slower than a rocket (three ticks), so the
+    # cast bar is the same but the kill is allowed a little longer to land.
+    success=lambda e, s: (not _enemy(e, "elixir_collector")
+                          and (first_play_t(s, "earthquake") or 99.0) <= 3.0),
+    failure=lambda e, s: (((float(e.t) - float(s.get("t0", 0.0))) >= 8.0
+                           and bool(_enemy(e, "elixir_collector")))
+                          or ((first_play_t(s, "earthquake") or 0.0) > 3.5)),
+    time_limit=12.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("wincon_exec", "spell_waste"),
     prereq=("eq_kills_the_spawner",),

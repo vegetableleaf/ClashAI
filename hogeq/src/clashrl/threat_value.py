@@ -47,6 +47,23 @@ TOWER_RANGE = 7.5
 
 #: Below this fraction of our tower, a lone threat is not worth a card.
 IGNORE_FRAC = 0.05
+#: How many waves of its spawn a HUT is worth. Deliberately small: each wave is resolved by the
+#: tower before the next arrives, so they do not pool, and only `tombstone` carries a spawn
+#: `interval` in the card data -- Goblin Hut, Barbarian Hut, Furnace and Goblin Drill have none, so
+#: a lifetime-accurate count cannot be computed for them. Two waves is the conservative reading of
+#: "it keeps producing", and it lands the ordering where the doctrine puts it: a Tombstone's
+#: skeletons stay ignorable, a Goblin Hut's spear goblins become worth a cheap answer.
+_SPAWNER_WAVES = 2.0
+#: Ceiling on a spawner's price. Past a full tower the exact number stops changing any decision --
+#: everything above MUST_ANSWER_FRAC is answered -- and Barbarian Hut times two waves would
+#: otherwise read as six tower-fractions and outrank every real push on the board.
+_SPAWNER_CAP = 1.0
+#: Tower fraction that ONE elixir of enemy advantage eventually costs us. MEASURED across the 113
+#: troops in the card DB: a fully-ignored card costs a median 0.120 tower per elixir of its cost
+#: (p25 0.061, mean 0.154). The conservative p25 is used because elixir HANDED to an opponent is
+#: not damage DELIVERED -- you still defend against whatever they spend it on -- so the cheap end
+#: is the honest one. Used to price elixir-producing buildings, which deal no damage themselves.
+ELIXIR_TO_TOWER = 0.061
 #: Above this, it must be answered -- letting it through loses the tower outright over a match.
 MUST_ANSWER_FRAC = 0.20
 
@@ -147,6 +164,64 @@ def _burst_cost(db, base: str, tower_level: int, enemy_level: int):
             dealt += _dealt([per] * n_death, tower_level)
     return dealt
 
+def _economy_cost(db, base: str, tower_level: int, enemy_level: int):
+    """Tower fraction an ELIXIR-PRODUCING building costs if it is left alone, or None.
+
+    A pump deals no damage, so the body model cannot see it and scored it `inf` -- "the tower
+    cannot resolve this" -- which made a collector an infinite, must-answer-at-any-cost threat.
+    Scoring it 0 instead would be the opposite error: the threat is INDIRECT but real. The elixir
+    buys a push you would not otherwise face, it funds further pumps, and in double elixir that
+    advantage arrives as a single push you cannot hold.
+
+    Priced from the card's own numbers -- what it produces, less what it cost them -- converted at
+    the measured tower-per-elixir rate. Deliberately the NET swing: they already paid for it, and
+    that payment is a tempo loss you punish by attacking, not a reason to fear the building more.
+    """
+    c = db.get(base) if db is not None else None
+    if not c:
+        return None
+    every = _num(c, "gen_every_s", "generate_every_s")
+    life = _num(c, "lifetime", "lifetime_s")
+    if not every or not life:
+        return None                       # not a producer: fall through to the body model
+    produced = float(life) / float(every)
+    net = max(0.0, produced - float(_num(c, "elixir") or 0.0))
+    return net * ELIXIR_TO_TOWER
+
+
+def _spawner_cost(db, base: str, tower_level: int, enemy_level: int):
+    """Tower fraction a SPAWNING building costs, priced by the bodies it puts out, or None.
+
+    Huts have hitpoints and no attack, so the body model saw nothing and scored them all `inf` --
+    a Tombstone and a Barbarian Hut equally and infinitely threatening. What separates them is
+    what comes out: a couple of Skeletons is a trickle, three Barbarians is a push, and the card
+    database already knows the difference.
+
+    Priced on ONE WAVE plus the death spawn rather than the lifetime total. A hut's whole output
+    pooled together would rank a Tombstone above a Golem, because `_dealt` is superlinear in count
+    and thirty seconds of skeletons is a lot of them -- but they do not arrive together. The tower
+    resolves each wave before the next, so the group that actually has to be answered is the one
+    standing there at once.
+    """
+    c = db.get(base) if db is not None else None
+    if not c:
+        return None
+    spawn = c.get("spawns") or {}
+    unit = str(spawn.get("unit") or "")
+    if not unit:
+        return None
+    # WHAT COMES OUT, priced as its own card -- not as a body count. Counting bodies made the
+    # `on_death` field dominate and inverted the ordering: a Tombstone (2 + 4 skeletons) scored
+    # ABOVE a Goblin Hut, when the difference that matters is that skeletons are skeletons and
+    # spear goblins are not. Per card at tournament level the DB already separates them cleanly --
+    # skeletons 0.024, spear_goblins 0.045, goblins 0.403, barbarians 3.18 -- so the spawner
+    # inherits that and the ranking comes out of the card data instead of a hand-written table.
+    unit_cost = ignore_cost_frac(db, unit, tower_level, enemy_level)
+    if unit_cost is None or unit_cost != unit_cost or unit_cost == float("inf"):
+        return None
+    return min(_SPAWNER_CAP, unit_cost * _SPAWNER_WAVES)
+
+
 def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11) -> float:
     """Fraction of one Princess Tower lost if this card walks in unanswered.
 
@@ -156,6 +231,14 @@ def ignore_cost_frac(db, base: str, tower_level: int = 15, enemy_level: int = 11
     burst = _burst_cost(db, base, tower_level, enemy_level)
     if burst is not None:
         return burst / float(tower_hp(tower_level))
+    econ = _economy_cost(db, base, tower_level, enemy_level)
+    if econ is not None:
+        return econ                        # already a tower FRACTION, not raw damage
+    bodies0 = _bodies(db, base, enemy_level)
+    if bodies0 is None:
+        spawned = _spawner_cost(db, base, tower_level, enemy_level)
+        if spawned is not None:
+            return spawned                 # a hut is worth exactly what comes out of it
     bodies = _bodies(db, base, enemy_level)
     if bodies is None:
         return float("inf")
