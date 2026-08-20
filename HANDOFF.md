@@ -864,6 +864,20 @@ configured but **have never run** — BC has not been retrained since the soft-t
      tower lost **950 HP either way**: the Hog dies to the princess on the same clock and the
      damage converges, so the drill could not tell a correct pull from no pull. The play is real
      doctrine; this engine does not express its value on that board. Open question, not a drill.
+   * **VERIFIED END TO END.** A 60-episode run at `--drill-frac 0.3` reports
+     `12W-32L | drills 16 (7% pass)` — drills happening, counted apart from the match record, and
+     the untrained pass rate is the number that should climb. Three integration bugs were found
+     by running it rather than by reading it, all fixed:
+     (a) `win_hist.append(1 if oc == "win" else 0)` recorded **every drill as a loss** — and that
+     EMA drives the CURRICULUM DIFFICULTY, the PFSP ledger and the checkpoint gate, so the A/B
+     would have read "drills make it worse" for a reason unrelated to drills;
+     (b) the worker payload carried only `outcome`/`pfsp`, so the drill flag never crossed the
+     process boundary and the fix above did nothing where it mattered;
+     (c) `_worker` calls `Config.load()` — it re-reads config.yaml in its own process — so
+     `--drill-frac` set the parent's copy, printed a banner, and produced 60 matches out of 60.
+     **All three are the same shape:** a value the parent computes that the side doing the work
+     never receives. When a knob is added, follow it to the process that acts on it and verify by
+     BEHAVIOUR, not by the banner saying it was set.
    * **READY FOR THE PPO A/B.** `run.py train-sim-ppo --drill-frac 0.3` against a plain
      `--drill-frac 0` run is the measurement; the flag exists so the two arms differ by one word
      rather than a config edit (an override that needs a file change between arms is one that

@@ -443,16 +443,22 @@ class DrillMixEnv(DrillEnv):
         return DrillEnv.step(self, action)
 
 
-def make_train_env(cfg, seed: int = 0, level: int = 11):
+def make_train_env(cfg, seed: int = 0, level: int = 11, frac=None):
     """The env a trainer should build: a plain match, or a drill mix when one is configured.
 
     Returns a bare SimMatchEnv when `sim.drill_frac` is 0, so a run that has not opted in is
     byte-for-byte the run it was before.
     """
-    try:
-        frac = float(cfg.get("sim", "drill_frac", default=0.0))
-    except Exception:  # noqa: BLE001
-        frac = 0.0
+    # `frac` ARRIVES FROM THE CALLER when there is one, because the rollout workers re-read
+    # config.yaml from disk in their own process and would otherwise ignore an in-memory override
+    # -- which is exactly what `--drill-frac` is. Falling back to the config keeps a plain run
+    # byte-for-byte what it was.
+    if frac is None:
+        try:
+            frac = float(cfg.get("sim", "drill_frac", default=0.0))
+        except Exception:  # noqa: BLE001
+            frac = 0.0
+    frac = float(frac or 0.0)
     if frac <= 0.0:
         return SimMatchEnv(cfg, seed=seed)
-    return DrillMixEnv(cfg, seed=seed, level=level)
+    return DrillMixEnv(cfg, seed=seed, level=level, frac=frac)

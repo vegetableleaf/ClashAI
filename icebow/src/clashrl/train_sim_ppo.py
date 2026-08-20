@@ -87,7 +87,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         import torch as _t
         _t.set_num_threads(max(2, 4))
         from .sim.remote_pool import RemotePool
-        rpool = RemotePool(K, workers, seed=seed)
+        rpool = RemotePool(K, workers, seed=seed,
+                           drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)) or None)
         pool = []                                   # rollout envs live in the workers
         e0 = SimMatchEnv(cfg, seed=seed + 10_000)   # local metadata/mask twin (never stepped)
         print(f"[train-sim-ppo] ROLLOUT WORKERS: {len(rpool.procs)} processes x "
@@ -689,6 +690,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     print(f"[train-sim-ppo] {device}: {K} env(s), horizon {horizon} (batch {horizon * K}), up to "
           f"{matches} matches (cards={n_cards}, cells={n_cells}). Ctrl+C to stop + save.")
     done_n = wins = losses = draws = 0
+    drills_done = drill_pass = 0     # drills are counted apart from the match record
     win_hist: deque = deque(maxlen=max(log_every, 50))
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     stats = None
@@ -714,7 +716,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     if remote:
                         pay = step_out[i]
                         nobs, reward, done = pay["obs"], pay["rew"], pay["done"]
-                        info = {"outcome": pay["outcome"], "pfsp": pay["pfsp"]}
+                        info = {"outcome": pay["outcome"], "pfsp": pay["pfsp"],
+                                "drill": pay.get("drill"), "verdict": pay.get("verdict")}
                         env = None
                     else:
                         env = pool[i]
@@ -733,8 +736,20 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             opp = getattr(env, "opponent", None)   # PFSP attribution (before reset)
                             if isinstance(opp, SelfPlayOpponent) and hasattr(opp.net, "_pfsp"):
                                 opp.net._pfsp.append(1.0 if oc == "win" else (0.5 if oc == "draw" else 0.0))
-                        wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
-                        win_hist.append(1 if oc == "win" else 0); rew_hist.append(ep_r[i])
+                        # A DRILL IS NOT A LOST MATCH. It ends on its own predicate and has no
+                        # `outcome`, so folding it into win_hist records a loss that never
+                        # happened -- three in ten at drill_frac 0.3. The winrate EMA drives the
+                        # CURRICULUM DIFFICULTY, the PFSP ledger and the checkpoint gate, so that
+                        # would have eased the opponent pool and then read as "drills make it
+                        # worse" for a reason with nothing to do with drills.
+                        is_drill = info.get("drill") is not None
+                        if is_drill:
+                            drills_done += 1
+                            drill_pass += 1 if info.get("verdict") == "pass" else 0
+                        else:
+                            wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
+                            win_hist.append(1 if oc == "win" else 0)
+                        rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
                         if done_n % log_every == 0:
@@ -743,8 +758,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             mps = done_n / max(1e-6, time.time() - t0)
                             xs = (f" pl={stats[0]:+.3f} vl={stats[1]:.3f} ent={stats[2]:.2f} "
                                   f"clip={stats[3]:.2f}") if stats else ""
-                            print(f"[train-sim-ppo] {done_n} matches: winrate={wr:4.0f}% "
-                                  f"avg_rew={ar:+.1f} {mps:.1f} m/s total {wins}W-{losses}L-{draws}D{xs}",
+                            # Drills are reported SEPARATELY, never folded into the winrate: a
+                            # mix that is silently not happening looks exactly like a mix that is
+                            # not helping, and those two have to be distinguishable at a glance.
+                            ds = (f" | drills {drills_done} "
+                                  f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass)"
+                                  if drills_done else "")
+                            print(f"[train-sim-ppo] {done_n} episodes: winrate={wr:4.0f}% "
+                                  f"avg_rew={ar:+.1f} {mps:.1f} ep/s total {wins}W-{losses}L-{draws}D{xs}{ds}",
                                   flush=True)
                         if done_n % save_every == 0:
                             save()

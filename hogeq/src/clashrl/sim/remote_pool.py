@@ -23,7 +23,7 @@ from pathlib import Path
 _SRC = str(Path(__file__).resolve().parents[2])
 
 
-def _worker(conn, n_envs: int, seed0: int) -> None:
+def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
     if _SRC not in sys.path:
         sys.path.insert(0, _SRC)
     import random
@@ -38,7 +38,9 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
 
     cfg = Config.load()
     from clashrl.sim.drill_env import make_train_env
-    envs = [make_train_env(cfg, seed=seed0 + i) for i in range(n_envs)]
+    # drill_frac ARRIVES FROM THE PARENT, because this worker re-reads config.yaml from disk and
+    # would otherwise ignore any in-memory override -- which is exactly what `--drill-frac` is.
+    envs = [make_train_env(cfg, seed=seed0 + i, frac=drill_frac) for i in range(n_envs)]
     state = {"league": [], "weights": [], "sp_prob": 0.0, "difficulty": 1.0}
     rng = random.Random(seed0 * 7919 + 13)
 
@@ -80,7 +82,8 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
     for e in envs:
         e.opponent_provider = provider
 
-    def payload(i, env, obs, rew=0.0, done=False, outcome=None, pfsp=None):
+    def payload(i, env, obs, rew=0.0, done=False, outcome=None, pfsp=None,
+                drill=None, verdict=None):
         hand = env._hand_ids() if hasattr(env, "_hand_ids") else []
         return {
             "obs": obs, "hand": env.hand_vec.copy(), "nxt": env.next_vec.copy(),
@@ -90,6 +93,10 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
             # so its (already generous) placement prior and rewards were both unreachable.
             "dcard": doctrine_cards(env),
             "rew": float(rew), "done": bool(done), "outcome": outcome, "pfsp": pfsp,
+            # WHICH DRILL, if this episode was one. The parent decides what counts as a match from
+            # this, and without it every drill was recorded as a played-and-lost match -- which
+            # feeds the winrate EMA, and through it the curriculum difficulty and the gate.
+            "drill": drill, "verdict": verdict,
         }
 
     obs_cache = [e.reset() for e in envs]
@@ -106,8 +113,10 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
                 for i, e in enumerate(envs):
                     nobs, reward, done, info = e.step(acts[i])
                     outcome = pfsp = None
+                    drill = verdict = None
                     if done:
                         outcome = info.get("outcome")
+                        drill, verdict = info.get("drill"), info.get("verdict")
                         opp = getattr(e, "opponent", None)
                         if isinstance(opp, SelfPlayOpponent):
                             src = getattr(opp, "_src_sd", None)
@@ -115,7 +124,7 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
                                          if sd_ is src), None)
                         nobs = e.reset()
                     obs_cache[i] = nobs
-                    out.append(payload(i, e, nobs, reward, done, outcome, pfsp))
+                    out.append(payload(i, e, nobs, reward, done, outcome, pfsp, drill, verdict))
                 conn.send(out)
             elif kind == "league":
                 state["league"] = msg[1]
@@ -136,7 +145,7 @@ def _worker(conn, n_envs: int, seed0: int) -> None:
 class RemotePool:
     """Parent-side handle: the trainer's env surface, sharded over worker processes."""
 
-    def __init__(self, n_envs: int, workers: int, seed: int = 0):
+    def __init__(self, n_envs: int, workers: int, seed: int = 0, drill_frac=None):
         ctx = mp.get_context("spawn")
         self.K = int(n_envs)
         workers = max(1, min(int(workers), self.K))
@@ -150,7 +159,7 @@ class RemotePool:
             if n <= 0:
                 continue
             parent_c, child_c = ctx.Pipe()
-            pr = ctx.Process(target=_worker, args=(child_c, n, s0), daemon=True)
+            pr = ctx.Process(target=_worker, args=(child_c, n, s0, drill_frac), daemon=True)
             pr.start()
             self.shards.append(n)
             self.conns.append(parent_c)
