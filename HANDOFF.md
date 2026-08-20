@@ -878,6 +878,17 @@ configured but **have never run** — BC has not been retrained since the soft-t
      **All three are the same shape:** a value the parent computes that the side doing the work
      never receives. When a knob is added, follow it to the process that acts on it and verify by
      BEHAVIOUR, not by the banner saying it was set.
+   * **A/B RUNNING (icebow, started 2026-08-20 ~14:10).** Two arms, same seed 11, 4000 episodes
+     each, 8 envs / 7 workers apiece so the 16 cores are split evenly:
+     `--drill-frac 0.3 --out data/policy_ppo_drill.pt` (log `data/ppo_drill.log`) against
+     `--drill-frac 0 --out data/policy_ppo_control.pt` (log `data/ppo_control.log`).
+     Watch with **`python tools/ab_progress.py --watch`**. ~0.3 ep/s per arm -> roughly 4 hours.
+     hogeq is being run separately by the owner on another machine.
+     NOTE: `--out` exists because both arms otherwise write `train.sim_ppo_checkpoint` and each
+     would finish by overwriting the other -- the comparison would be a run against itself.
+     Read the ROLLING avg-N eval, not a single point: 150 matches carries about ±4pp. Eval plays
+     pure full matches in both arms, which is what makes them comparable at all; the drill arm's
+     **drill pass rate** is the more direct signal and moves earlier.
    * **READY FOR THE PPO A/B.** `run.py train-sim-ppo --drill-frac 0.3` against a plain
      `--drill-frac 0` run is the measurement; the flag exists so the two arms differ by one word
      rather than a config edit (an override that needs a file change between arms is one that

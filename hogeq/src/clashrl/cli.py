@@ -155,6 +155,12 @@ def _cmd_train_sim_ppo(args) -> None:
               "  pip install torch --index-url https://download.pytorch.org/whl/cu128")
         return
     cfg = _sized_config(args)
+    if getattr(args, "out", None):
+        # SEPARATE CHECKPOINTS PER ARM. Both arms of an A/B write train.sim_ppo_checkpoint, so
+        # running them at the same time means each finishes by overwriting the other's policy --
+        # and the comparison would be between one run and itself.
+        cfg = _KeyOverride(cfg, ("train", "sim_ppo_checkpoint"), str(args.out))
+        print(f"[train-sim-ppo] checkpoint -> {args.out}")
     if getattr(args, "drill_frac", None) is not None:
         # A/B THE DRILL MIX FROM THE COMMAND LINE. The whole point of the mixing ratio is that it
         # gets measured against 0.0 rather than assumed, and an override that needs a config edit
@@ -165,6 +171,23 @@ def _cmd_train_sim_ppo(args) -> None:
                   workers=getattr(args, "workers", 0),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate)
+
+
+class _KeyOverride:
+    """Wraps a Config so ONE key reads back as an override, leaving everything else on disk."""
+
+    def __init__(self, cfg, key, value):
+        self._cfg = cfg
+        self._key = tuple(key)
+        self._value = value
+
+    def get(self, *keys, **kw):
+        if tuple(keys) == self._key:
+            return self._value
+        return self._cfg.get(*keys, **kw)
+
+    def __getattr__(self, name):
+        return getattr(self._cfg, name)
 
 
 class _DrillFracOverride:
@@ -548,6 +571,10 @@ def main() -> None:
                      help="override train.device. CPU is MEASURED FASTER for this trainer (1.0 vs 0.2 "
                           "match/s) -- the match engine is CPU-bound and the net is tiny -- and it frees "
                           "the GPU entirely, so PPO can run alongside a detector train")
+    tsp.add_argument("--out", default=None,
+                     help="checkpoint path for THIS run (overrides train.sim_ppo_checkpoint). "
+                          "Required when running two arms of an A/B at once, or each finishes by "
+                          "overwriting the other.")
     tsp.add_argument("--drill-frac", type=float, default=None,
                      help="fraction of episodes that are DRILLS instead of full matches "
                           "(overrides sim.drill_frac; 0 = plain matches, 0.3 = suggested mix). "
