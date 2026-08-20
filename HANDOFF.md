@@ -329,6 +329,28 @@ the live terms (spell_waste-at-impact, wheels, gate memory) to the next train-rl
 only if a worker crashes and respawns after 21:44: that worker imports the NEW sim -- check worker
 process creation times before comparing per-term stats.
 
+## 3d. 2026-08-19 ~22:00 — the "collapsed" PPO was a SCRATCH run (and the log was stale)
+
+The user saw the evening PPO's winrate "collapse". Findings, all verified from checkpoints:
+- **`data/ppo_percard.log` stopped 08-17 17:28** — everything read from it about the evening run
+  (including the "19k matches, ladder 9%" I sent to Discord) described the Aug-17 run. Tonight's
+  run logged only to its console. **Tee future runs to a file.**
+- **Tonight's 19:39 launch had NO `--resume`/`--init`** (verified from the process command line) —
+  it trained FROM SCRATCH, reached 3,016 matches, banked ladder-avg 12.2% @1500, and **overwrote
+  `policy_sim_ppo.pt` + `policy_sim_ppo_best.pt`**, clobbering the Aug-17→19 warm lineage's end
+  state (no backup of it exists). Rollout winrate is curriculum-pinned near ~30% BY DESIGN
+  (difficulty rises whenever the window beats it) — judge runs by the `EVAL @` avg-5 lines only.
+- **`policy.pt` (BC, Aug 17) is `in_ch: 3`** — the sim needs `in_ch: 12`, so `--init data/policy.pt`
+  silently falls back to scratch (shape gate). A BC warm start needs BC re-run on the 12-channel
+  canvas first.
+- **Strongest surviving compatible checkpoint: `policy_sim_ppo_best_win40_14300.pt`** (Aug 16,
+  banked ladder avg-5 33.2%, in_ch 12/thr 52/gate present, heads measured healthy: card-head norm
+  0.09, gate absmax 0.90 — no `--reset-gate` needed). Recommended restart:
+  `run.py train-sim-ppo --matches 800000 --envs 96 --workers 12 --size 432 --init data\policy_sim_ppo_best_win40_14300.pt`
+- **Fix (both decks): value warmup now engages on `--init` warm starts** (`warm_loaded`), not just
+  resume — before, a RANDOM critic trained alongside a warm policy from minibatch 0, the exact
+  hazard class of the 2026-08-14 head-sharpness incident.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

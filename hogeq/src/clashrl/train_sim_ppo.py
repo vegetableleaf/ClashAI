@@ -140,6 +140,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
     resumed_best_wr = -1.0
+    warm_loaded = False
     # RESUME only into a MATCHING architecture. Flipping observation.use_detector_canvas changes the
     # image width (3 -> 9), so an older checkpoint's conv1 cannot load -- and because the watchdog
     # relaunches this trainer with --resume, a hard failure here would crash-loop instead of
@@ -206,8 +207,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     elif init:
         # WARM-START from any compatible checkpoint (e.g. the DDQN champion policy_sim_best.pt).
         # Q-heads read as logits = a Boltzmann policy over the learned Q values (greedy behaviour is
-        # preserved as the mode); the value head starts FRESH, so the first updates are noisy while
-        # it calibrates -- advantage normalization keeps that survivable.
+        # preserved as the mode); the value head starts FRESH -- value warmup below trains the
+        # critic alone first, so a RANDOM critic never gets to shove the warm policy (2026-08-19;
+        # before that, only advantage normalization stood between them).
         p = cfg.path(init)
         if p.exists():
             ck = torch.load(p, map_location="cpu")
@@ -222,6 +224,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                       f"{p.name} (value head fresh"
                       + (", gate RESET -- the source gate had collapsed to always-play)" if reset_gate
                          else ")"))
+                warm_loaded = True
                 if dropped:
                     # Say it loudly. A partially-loaded net looks warm and behaves fresh in the
                     # part that was dropped, and that is exactly the confusion worth preventing.
@@ -279,11 +282,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # the head at the tanh rails again (x_bow -109 within one autosave). Scale adds SHARPNESS,
     # not expressiveness: rankings need relative differences only. So the heads' weight norms are
     # clamped to head_norm_mult x their (healthy, post-guard) startup norms after every step, and
-    # the first value_warmup minibatches on a resume train the VALUE head alone so the critic
+    # the first value_warmup minibatches on a resume OR --init warm start train the VALUE head
+    # alone so the critic
     # recalibrates before it is allowed to shove the policy.
     _card_ref = float(net.policy.card_head.weight.norm()) or 1.0
     _cell_ref = float(net.policy.cell_conv[-1].weight.norm()) or 1.0
-    _warm = {"left": value_warmup if (resume and ppo_path.exists()) else 0}
+    _warm = {"left": value_warmup if ((resume and ppo_path.exists()) or warm_loaded) else 0}
     if _warm["left"]:
         print(f"[train-sim-ppo] value warmup: first {_warm['left']} minibatches train the critic only")
 
