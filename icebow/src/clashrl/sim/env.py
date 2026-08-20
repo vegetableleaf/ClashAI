@@ -206,6 +206,7 @@ class SimMatchEnv:
         # Per-term reward accounting -- which shaping term is actually driving the policy.
         from ..reward_stats import RewardTerms
         self.rw_stats = RewardTerms()
+        self._pending_spell_checks: list = []
         # OUTCOME compass -- DEMOTED so correctness dominates (winning is not the objective).
         self.w_win = r("win", 2.0); self.w_loss = r("loss", -2.0)
         self.w_take = r("take_enemy_tower", 1.0); self.w_lose = r("lose_own_tower", -1.0)   # the CROWN jump on a take/loss
@@ -509,6 +510,7 @@ class SimMatchEnv:
         self._enemy_seen = set()          # enemy spec.keys fielded this match (context modifiers)
         self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []   # trade event ledger
         self._threat_credits = 0          # threat-response credits paid this episode (budgeted)
+        self._pending_spell_checks = []   # damage-spell casts awaiting their impact verdict
         self._tid_unlit_t = None          # engine-time stamp of sustained threat quiet (hysteresis)
         self._threat_miss_last = -1e9     # engine-time of the last threat_miss charge (throttle)
         # MATCHUP-aware doctrine. The X-Bow playstyle is SIEGE FIRST, then turtle once ahead -- the
@@ -1642,6 +1644,52 @@ class SimMatchEnv:
                 return True
         return False
 
+    def _arm_spell_check(self, nx: float, ny: float, spec) -> None:
+        """Snapshot what a just-cast damage spell COULD hit, to be settled once it lands.
+
+        Judging at cast is the bug this replaces: the engine resolves spells after a delay and the
+        board moves in between. The snapshot is deliberately generous in radius -- the question is
+        not "was the aim good" but "did anything at all take damage from it", so a lead that looks
+        wide at cast and lands perfectly must not be pre-judged.
+        """
+        rad = max(self.spell_waste_radius, float(spec.pull_radius or 0.0),
+                  float(spec.spell_radius or 0.0)) + 2.0
+        land = float(self.eng.t) + float(getattr(spec, "spell_delay", 0.0) or 0.0)
+        hp = {id(u): float(u.hp) for u in self.eng.units
+              if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad}
+        towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
+        self._pending_spell_checks.append(
+            {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
+             "hp": hp, "tw": towers})
+
+    def _settle_spell_casts(self) -> float:
+        """Charge spell_waste for casts that, once resolved, damaged NOTHING.
+
+        The user's own test: "if nothing gets damaged and no knockback is observed, the spell was a
+        miss". Damage rather than proximity, so a rolling Log, a lingering Poison zone, a Tornado's
+        spread damage and an instant Rocket are all judged by the same question -- and a unit that
+        DIED counts, since it is missing from the engine entirely.
+        """
+        if not self._pending_spell_checks:
+            return 0.0
+        now = float(self.eng.t)
+        due = [p for p in self._pending_spell_checks if p["t"] <= now]
+        if not due:
+            return 0.0
+        self._pending_spell_checks = [p for p in self._pending_spell_checks if p["t"] > now]
+        live = {id(u): float(u.hp) for u in self.eng.units if u.hp > 0}
+        tw_now = {id(t): float(t.hp) for t in self.eng.towers[1]}
+        total = 0.0
+        for p in due:
+            dealt = 0.0
+            for uid, hp0 in p["hp"].items():
+                dealt += max(0.0, hp0 - live.get(uid, 0.0))   # gone from the engine = it died
+            for tid, hp0 in p["tw"].items():
+                dealt += max(0.0, hp0 - tw_now.get(tid, hp0))
+            if dealt <= 0.0:
+                total += self.rw_stats.add("spell_waste", self.w_spell_waste)
+        return total
+
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:
         """True when a DAMAGE spell is cast with NOTHING to hit -- no enemy unit within its blast radius AND
         not aimed at a live enemy princess tower (chipping a tower is a valid target). A SOFT nudge against
@@ -1766,8 +1814,15 @@ class SimMatchEnv:
                 if card_id in self.damage_spell_ids:
                     # trade ledger: enemy deaths near this cast within 3 s credit as OUR kill
                     self._ev_spells.append((nx, ny, float(spec.spell_radius or 2.0), self.eng.t))
-                if card_id in self.damage_spell_ids and self._spell_no_target(nx, ny, spec):
-                    reward += self.rw_stats.add("spell_waste", self.w_spell_waste)                                    # (soft) damage spell cast into emptiness
+                if card_id in self.damage_spell_ids:
+                    # DO NOT JUDGE IT YET. This used to charge spell_waste immediately, from
+                    # `_spell_no_target(nx, ny, spec)` -- "is anything near the aim RIGHT NOW" --
+                    # while the engine resolves the spell later (a rocket's cast+travel is over a
+                    # second at range) and troops walk the whole time. The sim was therefore
+                    # rewarding aim-where-they-stand and punishing the lead, teaching the exact
+                    # "doesn't lead its target" behaviour the user reported (2026-08-20). Settled
+                    # on DAMAGE ACTUALLY DEALT once it lands -- see _settle_spell_casts.
+                    self._arm_spell_check(nx, ny, spec)
                 reward += self.rw_stats.add("building_waste", self._building_waste(card_id))   # a Tesla spent on a quiet board while their wincon is still in hand
                 reward += self.rw_stats.add("xbow_into_push",
                                             self._xbow_into_push(card_id, nx, ny))   # a forward bow dropped onto a committed push
@@ -1853,6 +1908,7 @@ class SimMatchEnv:
         # --- OUTCOME compass (DEMOTED: winning is not the objective, just a faint direction) ---
         # CONVEX tower-chip proxy: partial chip is worth sub-proportionally little; the CROWN below is the
         # big JUMP when a tower is actually destroyed (a tower at 1-2 HP still works -> worth far less).
+        reward += self._settle_spell_casts()   # spells that landed since the last step
         ep = self._chip_progress(self.eng.towers[1])
         reward += self.rw_stats.add("chip_offence", (ep - self._prev_chip_prog) * self.tower_chip_scale)
         self._prev_chip_prog = ep
