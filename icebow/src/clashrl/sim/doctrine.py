@@ -739,6 +739,49 @@ def _hold_the_building(env, w: Dict[int, float], quiet: bool) -> Dict[int, float
 
 
 
+def _counter_table(env):
+    """The researched table for this deck, loaded once per env and cached on it."""
+    t = getattr(env, "_counter_table_cache", None)
+    if t is None:
+        try:
+            from ..counters import load as _load
+            t = _load(env.cfg)
+        except Exception:  # noqa: BLE001 -- a missing/parse-failed table must not break rollouts
+            t = None
+        if t is None:
+            from ..counters import CounterTable
+            t = CounterTable([])
+        env._counter_table_cache = t
+    return t
+
+
+def _table_nominations(env, w):
+    """Bump the researched answer for whatever is committed on our half.
+
+    The live side consults the same table when the advisor is vetoed or silent; nominating it
+    here keeps sim exploration and live exploration meaning the same thing, which is the standing
+    rule for every doctrine change in this project. Weight sits just under the Tesla-for-their-
+    wincon rule (6.0) so the hand-written tier still leads where it has an opinion.
+    """
+    table = _counter_table(env)
+    if not len(table):
+        return w
+    committed = [u for u in _enemies(env) if u.y > 0.42 and u.spec.kind != "spell"]
+    if not committed:
+        return w
+    hand = set(env._hand_ids())
+    affordable = {}
+    for i in hand:
+        if env.eng.elixir[0] >= env.specs[i].elixir:
+            affordable.setdefault(env.specs[i].base, i)
+    got = table.responses([u.spec.base for u in committed], hand_bases=list(affordable))
+    for rank, resp in enumerate(got[:2]):
+        cid = affordable.get(str(resp.get("card")))
+        if cid is not None:
+            w[cid] = max(w.get(cid, 0.0), 5.0 - rank)      # 5.0 then 4.0, under the wincon rule
+    return w
+
+
 def _veto_impossible(env, w):
     """Drop nominations that physically cannot answer what is committed on OUR half.
 
@@ -930,7 +973,7 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # ---- ROCKET -----------------------------------------------------------------------------
     rid = _holdable("rocket")
     if rid is None:
-        return _hold_the_building(env, _veto_impossible(env, w), quiet) or None
+        return _hold_the_building(env, _veto_impossible(env, _table_nominations(env, w)), quiet) or None
 
     def bump(v):
         _bump(rid, v)
@@ -1049,4 +1092,4 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
                 if cheapest_stack >= 7.0:
                     bump(3.5)
 
-    return _hold_the_building(env, _veto_impossible(env, w), quiet) or None
+    return _hold_the_building(env, _veto_impossible(env, _table_nominations(env, w)), quiet) or None

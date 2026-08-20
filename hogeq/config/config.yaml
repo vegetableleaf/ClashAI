@@ -654,6 +654,7 @@ train:
   # offline doctrine table instead). Measured on this machine: qwen2.5 7B answers in 0.589 s p50
   # against the 1.0 s act_period. Any timeout falls back to random, and five consecutive failures
   # disable it for the session. OFF by default -- turn it on deliberately.
+  counter_table: config/counters.yaml  # (2026-08-20) researched threat -> ordered response (card/when/where). Consumed by the live advisor path (veto fallback + advisor-silent fallback) and the sim's card prior, so both sides answer a push identically. Missing file = empty table = previous behaviour.
   training_wheels: true
   offense_leak_guard: 9.5             # (2026-08-20) on a QUIET board at this elixir, a greedy WAIT becomes the pressure play (icebow: X-Bow; hogeq: Hog) -- the punish/outcycle window; leaking is never doctrine               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
   llm_advisor: true

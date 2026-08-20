@@ -317,6 +317,13 @@ def train_rl(cfg, init: str | None = None) -> None:
     advisor_log = bool(cfg.get("train", "llm_advisor_log", default=True))
     plan: list = []          # the advisor's remaining ordered cards for this board
     wheels_on = bool(cfg.get("train", "training_wheels", default=True))
+    # THE COUNTER TABLE (config/counters.yaml): researched threat -> ordered response, each with
+    # WHEN and WHERE. Empty when the deck has no table yet, and every consumer below then keeps
+    # the behaviour it had before -- so this is additive, never a new failure mode.
+    from .counters import load as _load_counters
+    counter_table = _load_counters(cfg)
+    if len(counter_table):
+        print("[train-rl] counter table: %d researched rows" % len(counter_table), flush=True)
     offense_leak_guard = float(cfg.get("train", "offense_leak_guard", default=9.5))
     advisor_plan = bool(cfg.get("train", "llm_advisor_plan", default=False))
     if bool(cfg.get("train", "llm_advisor", default=False)):
@@ -532,10 +539,21 @@ def train_rl(cfg, init: str | None = None) -> None:
         return threat_value.pick_invalid(_db, base, threat_bases)
 
     def _kb_answer(playable, threat_bases):
-        """Cheapest playable card that VALIDLY engages the group -- troops and buildings before
-        spells (a body defends and survives; a spell is spent). The deterministic fallback when
-        the advisor's pick is vetoed: falling back to random would re-teach the exact habit the
-        veto exists to remove."""
+        """The doctrine answer for this threat, else the cheapest card that VALIDLY engages it.
+
+        DOCTRINE FIRST (2026-08-20): the researched counter table knows that Wall Breakers want
+        Skeletons at the tower and a Balloon wants a Tornado into the King -- specifics no
+        role-matcher can express. Only when the table has no opinion does this fall back to
+        cheapest-valid (troops and buildings before spells: a body defends and survives, a spell
+        is spent). Falling back to RANDOM, which is what happened before the veto existed, would
+        re-teach the exact habit the veto exists to remove."""
+        if len(counter_table) and threat_bases:
+            want = counter_table.best_card(
+                threat_bases, hand_bases=[_base_key(card_names[i]) for i in playable])
+            if want:
+                for i in playable:
+                    if _base_key(card_names[i]) == want and not _pick_invalid(want, threat_bases):
+                        return i
         best = None
         for i in playable:
             base = _base_key(card_names[i])
@@ -639,6 +657,15 @@ def train_rl(cfg, init: str | None = None) -> None:
                                          card_names[alt] if alt is not None else "no valid card"))
                             if alt is not None:
                                 c = alt
+            if c is None and needs_answer and len(counter_table) and threat_bases:
+                # THE ADVISOR GAVE NOTHING (timeout, cooldown, dead server) and there IS a threat.
+                # Before the table the only fallback was a uniform-random card -- the measured
+                # cause of the user's "the model plays randomly" sessions. The researched answer
+                # is a far better exploration sample than noise, and Double-DQN is off-policy so
+                # any behaviour policy is legal here.
+                c = _kb_answer(playable, threat_bases)
+                if c is not None and advisor_log:
+                    print("[train-rl]   explore: advisor silent -> DOCTRINE %s" % card_names[c])
             if c is None and advisor is not None and advisor_log:
                 # The fallback is invisible otherwise, and "the plays look random" is exactly what
                 # a silent fallback produces. Say which it was.
