@@ -656,6 +656,41 @@ findings): add `.gitattributes` (the CRLF mismatch is why `git diff` showed 614 
 Then Phases 1-5: reconcile → decouple `Config.load`'s root → one shared package, two deck dirs →
 deck plugin → one test suite run twice.
 
+## 3m. 2026-08-20 — decision period 1.0s → 0.6s (`c328bef`). RETRAIN REQUIRED (sim).
+
+Driven by the user's cadence line: pipeline 0.37 s vs **paced wait 0.49 s** — the loop waited more
+than it worked. 0.6 s keeps the wait positive (~0.23 s); **do not go below ~0.45 s** or the period
+becomes shorter than the pipeline and the served cadence drifts off the trained one again.
+
+**Everything that had to move with it** (a lone `agent_dt` edit would have been silently
+destructive):
+| knob | 1.0s | 0.6s | why |
+|---|---|---|---|
+| `sim.agent_dt` / `play.act_period` | 1.0 | **0.6** | must always match each other |
+| `train.gamma` | 0.99 | **0.994** | `0.99^0.6` — holds the half-life at 69 SECONDS, not 41 |
+| `train.n_step` | 3 | **5** | keeps ~3.0 s of credit reach-back |
+| `leak`, `threat_miss_idle` | — | **× dt** | charged per DECISION; would otherwise bill 1.67× per second |
+| `llm_advisor_timeout_s` | 0.9 | **0.55** | a 0.9 s call overran a 0.6 s decision every time |
+
+Per-tick scaling is applied **in code** (`self._tick_scale`, both envs) rather than by editing
+weights, so it stays correct through any future period change. Event-driven terms (wincon_exec,
+threat_response, crown, chip, spell_waste) are per PLAY and untouched.
+
+### RETRAINING: what is and isn't needed
+- **Checkpoints still LOAD** — no observation/action shape depends on dt (verified against
+  `policy_sim_ppo_best_win40_14300.pt`: in_ch 12, threat 52, cells 432 unchanged).
+- **But the MDP changed**, so the value head is calibrated to the old horizon and the old per-tick
+  reward rates. **Run a fresh `train-sim-ppo --init <best>` (warm start, NOT from scratch)** and
+  let the critic re-converge — the value-warmup path added in `ea25251` now covers `--init`, which
+  is exactly this case.
+- Judge it on the `EVAL @` avg-5 ladder lines; the bar to beat is the 33.2% banked by
+  `policy_sim_ppo_best_win40_14300.pt`.
+- ⚠ Sim reward totals before and after are **not comparable** — leak/idle now bill 0.6× per
+  decision by design. Compare per-SECOND or compare win rates, not raw episode sums.
+- Two latent test bugs surfaced (not caused) by the change: `_tick(env, seconds)` stepped once per
+  second regardless of dt, and a quiet-refill loop used `range(5)` for "≥3 s". Both are now
+  time-based.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
