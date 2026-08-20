@@ -877,10 +877,19 @@ env:
   log_impact_time: 3.4           # seconds for The Log to finish rolling its 9.6 tiles: wiki projectile
                                  # speed 170, and CR's speed unit is ~60 per tile/second (Hog Rider is
                                  # "Fast (90)" and covers ~1.5 tiles/s), so 170/60 = 2.83 tiles/s.
-  spell_verify_slop_tiles: 0.5   # fixed tolerance on the blast radius for detector jitter. NOT a lead
-                                 # allowance: the verdict now runs at arrival, so there is nothing to
-                                 # lead. The old allowance was the flight time itself, which inflated a
-                                 # rocket's 2.5-tile blast to 4.1 and credited bodies well outside it.
+  spell_verify_slop_tiles: 0.0   # blast tolerance for detector jitter. ZERO: a spell's blast is the
+                                 # CARD'S blast. This was 0.5, and that alone made the rocket's 2.0-tile
+                                 # blast 2.5 -- a near-miss on a Royal Giant scored as a hit (user,
+                                 # 2026-08-20). Jitter cuts both ways but the errors do not cost the
+                                 # same: a false WHIFF bills -0.3 on a good cast, while a false HIT pays
+                                 # for a miss, which is the failure reported over and over.
+  spell_tower_aim_tiles: 2.2     # "aimed at a live enemy tower" = a real target, so not a whiff --
+                                 # as a CIRCLE in tiles. The whiff test used to compare a NORMALISED
+                                 # distance against spell_tower_aim_radius (0.12), which on an 18x32
+                                 # board is 2.2 tiles wide and 3.8 TILES TALL: a rocket almost four
+                                 # tiles BELOW a tower was exempt from the verdict entirely, and a
+                                 # Royal Giant is usually walking straight at one. NB the SIM has its
+                                 # own sim.spell_tower_aim_tiles (3.8) for a different purpose.
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
   rocket_travel_rate: 2.2        # DEPRECATED (kept so an old config still loads): seconds per

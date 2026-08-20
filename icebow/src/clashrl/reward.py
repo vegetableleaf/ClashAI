@@ -622,7 +622,7 @@ class TowerTracker:
 # manufactured by one missed frame.
 
 def spell_whiffed(cx, cy, radius_tiles, enemy_tracks, tower_anchors=(), tower_alive=(),
-                  tower_aim_radius=0.10, tiles_x=18.0, tiles_y=32.0):
+                  tower_aim_radius=0.10, tiles_x=18.0, tiles_y=32.0, tower_aim_tiles=None):
     """True when a spell aimed at (cx, cy) has NO enemy within `radius_tiles` TILES, and is not
     aimed at a live enemy tower.
 
@@ -637,9 +637,15 @@ def spell_whiffed(cx, cy, radius_tiles, enemy_tracks, tower_anchors=(), tower_al
     for tr in enemy_tracks:
         if math.hypot((tr[0] - cx) * tiles_x, (tr[1] - cy) * tiles_y) <= radius_tiles:
             return False
+    # AIMED AT A LIVE TOWER = a real target, so not a whiff -- but measured in TILES. This clause
+    # kept a normalised comparison after the blast test above was converted, and the board is
+    # 18 x 32: a `tower_aim_radius` of 0.12 is 2.2 tiles wide and 3.8 TILES TALL, so a rocket
+    # almost four tiles BELOW a tower was exempt from the whiff verdict entirely. A Royal Giant is
+    # usually walking straight at a tower, which is how a near-miss on one came back "hit".
+    aim_t = float(tower_aim_tiles) if tower_aim_tiles else float(tower_aim_radius) * tiles_x
     for i, (ax, ay) in enumerate(tower_anchors):
         alive = bool(tower_alive[i]) if i < len(tower_alive) else True
-        if alive and math.hypot(cx - ax, cy - ay) <= tower_aim_radius:
+        if alive and math.hypot((cx - ax) * tiles_x, (cy - ay) * tiles_y) <= aim_t:
             return False
     return True
 

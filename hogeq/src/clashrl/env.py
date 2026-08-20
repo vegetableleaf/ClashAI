@@ -295,7 +295,15 @@ class LiveMatchEnv:
         # Fixed tolerance on the blast radius for detector jitter -- NOT a lead allowance. See the
         # note where r_tiles is built: the old allowance grew with flight time and inflated a
         # rocket's 2.5-tile blast to 4.1.
-        self.spell_verify_slop_tiles = float(cfg.get("env", "spell_verify_slop_tiles", default=0.5))
+        # ZERO BY DEFAULT: a spell's blast is the CARD'S blast. This started at 0.5 as "detector
+        # jitter tolerance" and the owner caught what it actually does -- a rocket's 2.0-tile blast
+        # became 2.5, and a near-miss on a Royal Giant scored as a hit. Jitter cuts both ways, but
+        # the errors are not equally costly: a false WHIFF bills -0.3 on a good cast, while a false
+        # HIT pays for a miss, which is the failure reported over and over.
+        self.spell_verify_slop_tiles = float(cfg.get("env", "spell_verify_slop_tiles", default=0.0))
+        # "Aimed at a tower" as a circle in TILES, replacing the normalised radius that was 2.2
+        # wide and 3.8 tall. 2.2 keeps the horizontal reach the old value had.
+        self.spell_aim_tiles = float(cfg.get("env", "spell_tower_aim_tiles", default=2.2))
         self.spell_verify_log = bool(cfg.get("env", "spell_verify_log", default=True))
         self._last_exec_action = None
         # The researched counter table drives WHERE a doctrine answer goes (see _where_cell).
@@ -1205,7 +1213,8 @@ class LiveMatchEnv:
                     miss = spell_whiffed(p["cx"], p["cy"], p["r"], fresh,
                                          tower_anchors=enemy_a[:2],
                                          tower_alive=list(self.tower.enemy_alive)[:2],
-                                         tower_aim_radius=self.spell_aim_radius)
+                                         tower_aim_radius=self.spell_aim_radius,
+                                         tower_aim_tiles=self.spell_aim_tiles)
                 if self.spell_verify_log:
                     def _in(tracks):
                         return [t for t in tracks
