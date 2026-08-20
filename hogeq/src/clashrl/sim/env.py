@@ -1014,6 +1014,15 @@ class SimMatchEnv:
                       Guides call out "lone tanks" and single low-value units; the user names
                       Skeletons and Goblins. Priced as a misplace, not merely as zero.
         """
+        # NEVER THE KING (2026-08-20, user: "there's no reason for an icebow player to
+        # intentionally rocket cycle the king tower"). This measured 0.0 -- not rewarded, but not
+        # charged either, while it still dodged the leak penalty, so dumping six elixir into the
+        # king was a FREE cycle and the policy duly learned it. The king has roughly twice a
+        # princess's HP, the chip is worth nothing on the tiebreak (which reads princess HP), and
+        # it wakes the tower. Priced as a misplace, like every other six-elixir throwaway.
+        king = self.eng.towers[1][2]
+        if tile_dist(nx, ny, king.x, king.y) <= self.spell_aim_radius:
+            return self.w_wincon_mis
         pr = self._pump_rocket(nx, ny)                       # PUMP PUNISH: fresh elixir collector
         if pr != 0.0:
             return pr

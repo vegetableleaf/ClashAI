@@ -830,6 +830,8 @@ env:
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
   rocket_travel_rate: 2.2        # rocket flight time added per unit distance to target (s)
+  rocket_nado_window_s: 2.5            # TORNADO -> ROCKET is a timing play: the rocket only counts as the combo within this long of the tornado cast (matches the sim's term).
+  rocket_nado_radius: 0.11             # ...and within this of the TORNADO'S OWN TILE. The user's rule: 'the tornado and rocket need to be cast in the same tile for the combo to work most effectively' -- the pull holds the bundle for a moment only.
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)

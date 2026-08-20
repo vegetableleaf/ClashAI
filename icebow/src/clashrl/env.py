@@ -234,6 +234,12 @@ class LiveMatchEnv:
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
         self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
+        # TORNADO -> ROCKET: the deck's signature combo is a SAME-TILE play, so the last tornado's
+        # cast point and time are remembered for the rocket that should follow it.
+        self._last_nado = None           # (cx, cy, t) of the most recent tornado cast
+        self.rocket_nado_window_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))
+        self.rocket_nado_radius = float(cfg.get("env", "rocket_nado_radius", default=0.11))
+        self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))
         # A spell verdict runs on FRESH sightings only: a false positive is remembered exactly as
         # long as a real unit, so 4.5 s of memory made every cast at a ghost look like a hit.
         self.spell_verify_fresh_s = float(cfg.get("env", "spell_verify_fresh_s", default=0.8))
@@ -765,6 +771,7 @@ class LiveMatchEnv:
                 tracks0 = self._enemy_tracks_now()
                 pulled = [(tx, ty) for (tx, ty, *_rest) in tracks0
                           if math.hypot(tx - cx, ty - cy) <= pull_r]
+                self._last_nado = (cx, cy, time.time())    # the rocket that follows aims HERE
                 if pulled:
                     # a cast aimed into the king-activation region (where nado_king_cell aims) is
                     # activation INTENT: pulling a unit deep toward our king is the play there,
@@ -1239,6 +1246,23 @@ class LiveMatchEnv:
             self._xbow_play_t = time.time()      # every X-Bow play re-anchors the window
             return val
         if card_id in self.rocket_ids:
+            # NEVER THE KING (2026-08-20, user report: the model learned to rocket-cycle it).
+            # This branch used to fall through to `return 0.0` -- the existing near_enemy_king
+            # guard lives in the MINER branch below and never applied to a rocket. Zero is not
+            # neutral in practice: it dodges the leak penalty, so it was a free way to dump six
+            # elixir. The king has ~twice a princess's HP and the tiebreak reads PRINCESS HP, so
+            # this chip buys nothing at all.
+            if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon_mis
+            # TORNADO -> ROCKET, THE SAME TILE (user: "the tornado and rocket need to be cast in
+            # the same tile for the combo to work most effectively"). The sim has priced this
+            # since 2026-08-16; live had NO term for it, which is exactly why a PPO checkpoint
+            # carried the TIMING over and never the placement -- nothing here ever paid for
+            # landing on the clump the tornado just made.
+            nado = getattr(self, "_last_nado", None)
+            if nado is not None and (time.time() - nado[2]) <= self.rocket_nado_window_s:
+                if math.hypot(cx - nado[0], cy - nado[1]) <= self.rocket_nado_radius:
+                    return self.w_wincon * self.rocket_nado_mult
             pxy = self._pump_xy if self._pump_fresh() else None   # PUMP PUNISH mirror (perception-gated)
             if pxy is not None and math.hypot(cx - pxy[0], cy - pxy[1]) <= self.pump_aim_radius:
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -1396,7 +1420,16 @@ class LiveMatchEnv:
         if play:                                  # rocket / offensive miner -> aim the weaker enemy princess tower
             pre_aim = cell
             cell = self._aim_weaker_tower(card_id, cell)
-            if cell == pre_aim and card_id in self.rocket_ids:    # no tower/pump snap -> LEAD tracked troops
+            if (self.training_wheels and card_id in self.rocket_ids
+                    and getattr(self, "_last_nado", None) is not None
+                    and (time.time() - self._last_nado[2]) <= self.rocket_nado_window_s):
+                # SAME TILE AS THE TORNADO (2026-08-20, user rule). The pull only holds the bundle
+                # together for a moment, and a rocket a couple of tiles off catches the edge of a
+                # clump that has already been gathered for it. The model had the timing and not
+                # the placement, so the wheels supply the placement while it learns.
+                ngx, ngy = self.actions.coords_to_grid(self._last_nado[0], self._last_nado[1])
+                cell = int(ngy) * self.gw + int(ngx)
+            elif cell == pre_aim and card_id in self.rocket_ids:  # no tower/pump snap -> LEAD tracked troops
                 cell = self._aim_rocket_intercept(cell)
             if self.training_wheels and card_id in self.spell_ids and card_id not in self.rocket_ids:
                 # TRAINING WHEELS (train.training_wheels, 2026-08-19): every remaining SPELL gets
