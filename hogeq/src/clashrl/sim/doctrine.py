@@ -903,6 +903,37 @@ def _hold_the_building(env, w: Dict[int, float], quiet: bool) -> Dict[int, float
             if not (env.specs[c].kind == "building" and not env.specs[c].siege)}
 
 
+
+def _veto_impossible(env, w):
+    """Drop nominations that physically cannot answer what is committed on OUR half.
+
+    The live twin (train_rl's advisor pick gate) exists because the advisor suggested a knight
+    against a balloon and a rocket against wall breakers (user, 2026-08-20). The sim's prior can
+    nominate the same impossible answers, and a knight swinging at air is not a lesson -- it is
+    noise the policy then has to unlearn. Rules live in threat_value so both sides veto
+    identically.
+
+    Only the COMMITTED group on our half is judged: an offensive nomination (rocket at their
+    collector, the quiet-board X-Bow) is answering nothing and must pass through untouched.
+    """
+    if not w:
+        return w
+    committed = [u for u in _enemies(env) if u.y > 0.42 and u.spec.kind != "spell"]
+    if not committed:
+        return w
+    bases = [u.spec.base for u in committed]
+    out = {}
+    for cid, weight in w.items():
+        try:
+            base = env.specs[cid].base
+        except Exception:  # noqa: BLE001 -- an id we cannot resolve is not one we can veto
+            out[cid] = weight
+            continue
+        if threat_value.pick_invalid(env.db, base, bases) is None:
+            out[cid] = weight
+    return out
+
+
 def doctrine_cards(env) -> Optional[Dict[int, float]]:
     """{card_id: weight} prior over WHICH card to play now, or None to leave the floor uniform.
 
@@ -1138,7 +1169,7 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
     # ---- ROCKET -----------------------------------------------------------------------------
     rid = _holdable("rocket")
     if rid is None:
-        return _hold_the_building(env, w, quiet) or None
+        return _hold_the_building(env, _veto_impossible(env, w), quiet) or None
 
     def bump(v):
         _bump(rid, v)
@@ -1199,4 +1230,4 @@ def doctrine_cards(env) -> Optional[Dict[int, float]]:
         if not others:
             bump(3.0)
 
-    return _hold_the_building(env, w, quiet) or None
+    return _hold_the_building(env, _veto_impossible(env, w), quiet) or None

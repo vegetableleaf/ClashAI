@@ -106,6 +106,27 @@ CASES = [
          hand=["the_log", "tesla", "rocket", "knight"], elixir=5,
          answer="hold",
          why="threat_value: 1.5% of a tower if ignored; the tower handles it"),
+    dict(id="balloon_needs_air_answer",
+         state="Enemy lone Balloon has crossed the bridge in the right lane, flying toward your "
+               "RIGHT princess tower. Nothing else is on the board.",
+         hand=["knight", "tesla", "skeletons", "the_log"], elixir=7,
+         answer="tesla",
+         why="KB: knight/skeletons/the_log attacks_air=false; the balloon FLIES -- tesla is the "
+             "only card in this hand that can touch it (user report: advisor said knight)"),
+    dict(id="balloon_nado_king_hand",
+         state="Enemy lone Balloon just crossed the bridge in the left lane, flying toward your "
+               "LEFT princess tower. Your king tower is ASLEEP.",
+         hand=["tornado", "knight", "skeletons", "ice_wizard"], elixir=6,
+         answer="tornado",
+         why="icebow doctrine: tornado the balloon into the king -- activation AND the king "
+             "shoots air; ice_wizard only slows what still arrives"),
+    dict(id="wall_breakers_cheap_answer",
+         state="Enemy Wall Breakers just crossed the bridge in the right lane, running at your "
+               "RIGHT princess tower. Nothing else is on the board.",
+         hand=["rocket", "the_log", "knight", "ice_wizard"], elixir=8,
+         answer="the_log",
+         why="2-elixir bodies die to the 2-elixir log, even trade full stop; rocket is 6-for-2 "
+             "(user report: advisor said rocket)"),
     dict(id="real_push_answer_it",
          state="A GIANT with a MUSKETEER behind it has crossed the bridge into your half.",
          hand=["tesla", "the_log", "skeletons", "rocket"], elixir=7,

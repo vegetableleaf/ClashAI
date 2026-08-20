@@ -345,7 +345,14 @@ def train_rl(cfg, init: str | None = None) -> None:
         print("[train-rl] LLM exploration advisor OFF (set train.llm_advisor: true to enable); "
               "epsilon steps pick a random card")
 
-    def _needs_answer(env) -> bool:
+    def _counted_threats(env):
+        """The triaged enemy group as base names: live corroborated non-spell dets + the
+        tracker's remembered enemies, deduplicated. None = the detector is blind (callers must
+        not read blind as quiet). Shared by _needs_answer and the advisor pick gate so both
+        argue about the SAME group."""
+        return _needs_answer(env, _group_only=True)
+
+    def _needs_answer(env, _group_only: bool = False):
         """Is anything on the board actually worth spending a card on?
 
         DECIDED IN CODE, NOT BY THE MODEL. This is exactly computable from our own card DB -- an
@@ -361,7 +368,7 @@ def train_rl(cfg, init: str | None = None) -> None:
         """
         dets = getattr(env, "_last_dets_all", None)
         if not dets:
-            return True              # blind -> never suppress; the detector failing is not "quiet"
+            return None if _group_only else True   # blind -> never suppress; not "quiet"
         seen = []                    # (x, y, base) counted so far, for de-duplication below
         bases = []
         for d in dets:
@@ -403,6 +410,8 @@ def train_rl(cfg, init: str | None = None) -> None:
             pass                     # tracker variant without with_base: live dets only
         except Exception:  # noqa: BLE001 -- perception hiccup must not break the gate
             pass
+        if _group_only:
+            return bases
         if not bases:
             return False             # nothing of theirs on our side of the river
         return threat_value.group_ignore_frac(
@@ -512,8 +521,33 @@ def train_rl(cfg, init: str | None = None) -> None:
         return ("ENEMY: a %s threat is %.0f%% of the way to your king and %s."
                 % ("/".join(roles) or "recognised", 100.0 * depth, pace))
 
+
+    def _pick_invalid(base, threat_bases):
+        """Why this card cannot answer THIS threat group (None = valid).
+
+        The rules live in threat_value (KB-grounded, shared with the sim's doctrine) because the
+        advisor prompt already forbade both failures IN WORDS and produced them anyway: a
+        ground-only card against an all-air group ("knight can't even see the balloon") and a
+        spell far pricier than what it erases ("rocketing wall breakers", 6-for-2)."""
+        return threat_value.pick_invalid(_db, base, threat_bases)
+
+    def _kb_answer(playable, threat_bases):
+        """Cheapest playable card that VALIDLY engages the group -- troops and buildings before
+        spells (a body defends and survives; a spell is spent). The deterministic fallback when
+        the advisor's pick is vetoed: falling back to random would re-teach the exact habit the
+        veto exists to remove."""
+        best = None
+        for i in playable:
+            base = _base_key(card_names[i])
+            if _pick_invalid(base, threat_bases):
+                continue
+            key = (1 if _db.kind(base) == "spell" else 0, card_elixir[i])
+            if best is None or key < best[0]:
+                best = (key, i)
+        return None if best is None else best[1]
+
     def choose(obs, hand_vec, next_vec, elixir_vec, threat_vec, eps, elixir, situation="",
-               needs_answer=True):
+               needs_answer=True, threat_bases=()):
         # playable = in hand AND affordable (mirrors play.py) -> the policy never selects a card it
         # can't pay for, which otherwise wastes the turn on a "Not enough Elixir!" no-op.
         playable = [i for i, v in enumerate(hand_vec)
@@ -594,7 +628,17 @@ def train_rl(cfg, init: str | None = None) -> None:
                 if pick is not None and pick in card_names:
                     idx = card_names.index(pick)
                     if idx in playable:
-                        c = idx
+                        why = _pick_invalid(_base_key(pick), threat_bases) if needs_answer else None
+                        if why is None:
+                            c = idx
+                        else:
+                            alt = _kb_answer(playable, threat_bases)
+                            if advisor_log:
+                                print("[train-rl]   advisor pick %s REJECTED (%s) -> %s"
+                                      % (pick, why,
+                                         card_names[alt] if alt is not None else "no valid card"))
+                            if alt is not None:
+                                c = alt
             if c is None and advisor is not None and advisor_log:
                 # The fallback is invisible otherwise, and "the plays look random" is exactly what
                 # a silent fallback produces. Say which it was.
@@ -840,10 +884,12 @@ def train_rl(cfg, init: str | None = None) -> None:
             thr = env.threat_vec.copy()
             while running["v"]:
                 eps = epsilon(step)
-                na = _needs_answer(env)
+                tb = _counted_threats(env)
+                na = True if tb is None else (bool(tb) and threat_value.group_ignore_frac(
+                    _db, tb, tower_level=_tower_level) >= threat_value.IGNORE_FRAC)
                 action = choose(obs, hand, nxt, elx, thr, eps, env.elixir,
                                 _situation(env) if advisor is not None else "",
-                                needs_answer=na)
+                                needs_answer=na, threat_bases=tuple(tb or ()))
                 # LEAK-GUARD OFFENSE WHEEL (2026-08-20, user request: "the model should pressure
                 # with x-bow when possible... defending all game won't work"). The quiet-board
                 # pressure rule above lives on EXPLORATION steps only, so a greedy policy at full

@@ -146,3 +146,69 @@ def group_ignore_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) -
     if not pooled:
         return 0.0
     return _dealt(pooled, tower_level) / float(tower_hp(tower_level))
+
+
+# ---------------------------------------------------------------------------------------------
+# CAN THIS CARD EVEN ANSWER THAT? (2026-08-20, user report: "the advisor is suggesting unrealistic
+# counters... placing knight on a balloon (knight can't even see the balloon) or rocketing wall
+# breakers (a horrible elixir trade)".)
+#
+# The advisor prompt already forbade both IN WORDS and still produced them, exactly like the triage
+# tier above: the fix is KB-grounded CODE that vetoes the pick, not a louder sentence. Used by the
+# live advisor path and by the sim's doctrine so both sides refuse the same impossible answers.
+
+# Spells that cannot touch a flying unit: the log ROLLS along the ground, the quake SHAKES it.
+GROUND_ONLY_SPELLS = frozenset({"the_log", "earthquake", "barbarian_barrel"})
+# Spawn spells are threats in their own right (units land), so they are never "just a spell".
+SPAWN_SPELL_BASES = frozenset({"graveyard", "goblin_barrel", "royal_delivery"})
+# A spell this much MORE expensive than everything it would erase is a losing trade by itself.
+SPELL_OVERKILL_MARGIN = 3.0
+
+
+def can_touch(db, base: str, threat_bases) -> bool:
+    """False when every unit in the threat FLIES and `base` cannot reach the air.
+
+    Air is answered by an air-attacking troop/building, by tornado (it repositions flying units
+    even though it deals no real damage), or by a damage spell that is not ground-only. A knight
+    cannot see a balloon at all -- that suggestion was the user's report, and it came from a
+    table that only reasoned about roles.
+    """
+    bases = [b for b in (threat_bases or ()) if b]
+    if not bases:
+        return True
+    if not all(bool(db.is_flying(b)) for b in bases):
+        return True                      # something in the group walks -> any card can engage it
+    if db.attacks_air(base):
+        return True
+    if base == "tornado":
+        return True                      # pulls air: repositioning IS the answer (king activation)
+    return db.kind(base) == "spell" and base not in GROUND_ONLY_SPELLS
+
+
+def trade_sane(db, base: str, threat_bases) -> bool:
+    """False for a SPELL that costs far more than the whole group it would erase.
+
+    Only spells are judged: a troop survives its defence and keeps working, so its cost is not
+    spent the way a spell's is. Rocket (6) on wall breakers (2) is the reported case -- a 4-elixir
+    loss for a hit the log takes for 2.
+    """
+    if db.kind(base) != "spell" or base in SPAWN_SPELL_BASES:
+        return True
+    bases = [b for b in (threat_bases or ()) if b]
+    if not bases:
+        return True
+    group = sum(float(db.elixir(b) or 0.0) for b in bases)
+    cost = float(db.elixir(base) or 0.0)
+    return cost < group + SPELL_OVERKILL_MARGIN
+
+
+def pick_invalid(db, base: str, threat_bases):
+    """Why `base` cannot answer this threat group, or None when it is a legal answer."""
+    if not base:
+        return None
+    if not can_touch(db, base, threat_bases):
+        return "cannot touch an all-air group"
+    if not trade_sane(db, base, threat_bases):
+        group = sum(float(db.elixir(b) or 0.0) for b in (threat_bases or ()) if b)
+        return "a %.0f-elixir spell on a %.0f-elixir group" % (float(db.elixir(base) or 0.0), group)
+    return None
