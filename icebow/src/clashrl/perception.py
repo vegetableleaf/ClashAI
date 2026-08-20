@@ -74,9 +74,9 @@ class PerceptionLoop:
         with self._lock:
             self._tracker.set_towers(mine_alive, enemy_alive)
 
-    def enemy_tracks(self, now: float, with_base: bool = False):
+    def enemy_tracks(self, now: float, with_base: bool = False, max_age=None):
         with self._lock:
-            return self._tracker.enemy_tracks(now, with_base)
+            return self._tracker.enemy_tracks(now, with_base, max_age)
 
     def reset_tracker(self) -> None:
         with self._lock:

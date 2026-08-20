@@ -443,7 +443,7 @@ class TeamTracker:
         self._tracks = live + prev
         return dets
 
-    def enemy_tracks(self, now: float, with_base: bool = False):
+    def enemy_tracks(self, now: float, with_base: bool = False, max_age=None):
         """[(x, y, vx, vy)] for RECENT enemy tracks: current position + LIFETIME-average velocity
         (normalized/s, from the first-seen point -- smooth, jitter-proof, right for marching troops).
         Young tracks (<0.5s of history) report zero velocity; speeds are clamped to sane troop pace
@@ -457,6 +457,12 @@ class TeamTracker:
         for tr in self._tracks:
             if tr["team"] != "enemy" or now - tr["t"] > self.forget_s:
                 continue
+            if max_age is not None and now - tr["t"] > float(max_age):
+                continue                  # STALE: not seen recently enough to be evidence of
+                                          # anything. The default (None) keeps the full forget_s
+                                          # bridge for callers that want memory; a verdict about
+                                          # what a spell HIT must not run on 4.5 s-old memory,
+                                          # because a false positive lives exactly that long.
             if int(tr.get("hits", 0)) < self.min_hits:
                 continue                  # a 1-frame phantom is not an enemy anyone should aim at
             base = str(tr.get("base") or "")

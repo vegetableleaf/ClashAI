@@ -572,7 +572,14 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
             _add_spot(w, env, 0.50, 0.645, 3.5, 1.2)
 
     elif base == "x_bow":
-        if env._defensive:
+        # THEY ARE BUILDING IN THE BACK -> defensive bow, whatever the match PHASE says
+        # (2026-08-20, user rule). _defensive below is a phase flag (set on a tower trade or in
+        # overtime); this reads the board RIGHT NOW, and it outranks the phase because a forward
+        # bow into an assembling beatdown is blocked before it ever locks.
+        if threat_value.massing_in_back(
+                env.db, [(u.x, u.y, u.spec.base) for u in _enemies(env)]):
+            _add_spot(w, env, 0.48, 0.55, 5.0, 1.5)          # back-centre band, above the phase spots
+        elif env._defensive:
             _add_spot(w, env, 0.48, 0.55, 4.0, 1.5)          # #56: defensive bow, centre band
         else:
             # #53/#47: behind-bridge lock spots. Opposite lane of the enemy's committed mass

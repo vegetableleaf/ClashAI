@@ -74,9 +74,13 @@ class PerceptionLoop:
         with self._lock:
             self._tracker.set_towers(mine_alive, enemy_alive)
 
-    def enemy_tracks(self, now: float):
+    def enemy_tracks(self, now: float, with_base: bool = False, max_age=None):
+        # with_base was ported to hogeq's TeamTracker but NOT to this passthrough (found
+        # 2026-08-20): train_rl's gate calls enemy_tracks(..., with_base=True), which raised
+        # TypeError here and was swallowed by the gate's own except -- so the threat-gate MEMORY
+        # fix has been silently inert in this deck the whole time the perception loop is running.
         with self._lock:
-            return self._tracker.enemy_tracks(now)
+            return self._tracker.enemy_tracks(now, with_base, max_age)
 
     def reset_tracker(self) -> None:
         with self._lock:

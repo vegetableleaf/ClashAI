@@ -26,6 +26,7 @@ from .actions import ActionSpace
 from .capture import WindowCapture
 from .controller import Controller
 from .outcome import outcome_reward, read_scoreboard
+from . import threat_value
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess, pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell, xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell, tesla_pull_cell)
 from .reward import spell_whiffed, nado_regressed
 # deck-dependent aim cells: hogeq's reward.py has no tornado/log-corridor helpers
@@ -232,6 +233,11 @@ class LiveMatchEnv:
         # and are re-checked ~4 s later for the BAD-PULL case: survivors dragged closer to our
         # towers with no kill and no king activation is worse than a whiff.
         self._pending_spells: list = []
+        self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
+        # A spell verdict runs on FRESH sightings only: a false positive is remembered exactly as
+        # long as a real unit, so 4.5 s of memory made every cast at a ghost look like a hit.
+        self.spell_verify_fresh_s = float(cfg.get("env", "spell_verify_fresh_s", default=0.8))
+        self.spell_verify_log = bool(cfg.get("env", "spell_verify_log", default=True))
         self._last_exec_action = None
         # The researched counter table drives WHERE a doctrine answer goes (see _where_cell).
         # Empty when the deck ships no config/counters.yaml, and the wheels then keep their
@@ -753,6 +759,7 @@ class LiveMatchEnv:
             rec = {"t_eval": time.time() + eta + 0.4, "cx": cx, "cy": cy,
                    "r": r_tiles / 18.0, "base": base, "kind": "whiff"}
             self._pending_spells.append(rec)
+            self._last_cast_rec = rec      # the reward tick attaches what this cast was PAID
             if card_id in self.tornado_ids:
                 pull_r = 5.5 / 18.0
                 tracks0 = self._enemy_tracks_now()
@@ -941,18 +948,33 @@ class LiveMatchEnv:
                 return self.w_threat_miss
         return 0.0
 
-    def _enemy_tracks_now(self):
+    def _enemy_tracks_now(self, max_age=None):
         """Bridged enemy positions (the tracker carries a unit across detector blink-outs for
-        forget_s, so one missed frame cannot fake an empty board)."""
+        forget_s, so one missed frame cannot fake an empty board).
+
+        `max_age` demands FRESH evidence instead: a verdict about what a spell actually hit must
+        not run on memory, because a false-positive detection is remembered for exactly as long
+        as a real unit (see _eval_pending_spells).
+        """
         try:
             if self._ploop is not None and self._ploop.running:
-                return self._ploop.enemy_tracks(time.time())
-            return self._team_tracker.enemy_tracks(time.time())
+                return self._ploop.enemy_tracks(time.time(), max_age=max_age)
+            return self._team_tracker.enemy_tracks(time.time(), max_age=max_age)
         except Exception:  # noqa: BLE001 -- perception hiccup: no verdicts this tick
             return []
 
     def _eval_pending_spells(self) -> float:
-        """Score due spell casts against the tracker's bridged reality. Returns the reward sum."""
+        """Score due spell casts against FRESHLY SEEN reality. Returns the reward sum.
+
+        The verdict deliberately does NOT use the tracker's bridged memory (2026-08-20, user:
+        "spell waste is not triggering and the model is getting rewarded for casting spells at
+        nothing"). A false-positive detection produces a track that is remembered for forget_s --
+        4.5 s, longer than a rocket's entire flight -- so the phantom was still "inside the blast"
+        at impact, no waste was billed, and the credit _wincon_exec_live paid at cast stood. The
+        model was being taught that casting at ghosts pays. A unit genuinely under a spell is
+        being detected continuously; one that has not been SEEN for spell_verify_fresh_s is not
+        evidence that anything was hit.
+        """
         if not self._pending_spells:
             return 0.0
         now = time.time()
@@ -960,21 +982,40 @@ class LiveMatchEnv:
         if not due:
             return 0.0
         self._pending_spells = [p for p in self._pending_spells if p["t_eval"] > now]
-        tracks = self._enemy_tracks_now()
+        fresh = self._enemy_tracks_now(max_age=self.spell_verify_fresh_s)
+        remembered = self._enemy_tracks_now()          # for the log line only: fresh vs memory
         _, enemy_a, _ = _anchors(self.cfg)
         mine_a = _anchors(self.cfg)[0]
         total = 0.0
         for p in due:
             if p["kind"] == "whiff":
-                if spell_whiffed(p["cx"], p["cy"], p["r"], tracks,
-                                 tower_anchors=enemy_a[:2],
-                                 tower_alive=list(self.tower.enemy_alive)[:2],
-                                 tower_aim_radius=self.spell_aim_radius):
+                miss = spell_whiffed(p["cx"], p["cy"], p["r"], fresh,
+                                     tower_anchors=enemy_a[:2],
+                                     tower_alive=list(self.tower.enemy_alive)[:2],
+                                     tower_aim_radius=self.spell_aim_radius)
+                if self.spell_verify_log:
+                    n_f = sum(1 for t in fresh
+                              if math.hypot(t[0] - p["cx"], t[1] - p["cy"]) <= p["r"])
+                    n_m = sum(1 for t in remembered
+                              if math.hypot(t[0] - p["cx"], t[1] - p["cy"]) <= p["r"])
+                    print("[spell] %-9s at (%.2f, %.2f) r=%.2f -> %s | in blast: %d fresh, "
+                          "%d remembered%s"
+                          % (p.get("base", "?"), p["cx"], p["cy"], p["r"],
+                             "WHIFF" if miss else "hit", n_f, n_m,
+                             "  <- PHANTOM: only memory saw it" if miss and n_m else ""),
+                          flush=True)
+                if miss:
                     total += self.rw_stats.add("spell_waste", self.w_spell_waste_live)
+                    # ...and take BACK what the cast was paid by aim geometry. Without this a
+                    # whiffed spell nets "a small penalty minus the credit it already banked",
+                    # which is why casting at nothing could still come out ahead.
+                    paid = float(p.get("paid") or 0.0)
+                    if paid > 0.0:
+                        total += self.rw_stats.add("spell_waste_clawback", -paid)
             elif p["kind"] == "nado":
                 if p.get("king_cast"):
                     continue                        # king-activation intent: never billed
-                if nado_regressed(p["pulled"], tracks, [tuple(a) for a in mine_a[:2]]):
+                if nado_regressed(p["pulled"], fresh, [tuple(a) for a in mine_a[:2]]):
                     total += self.rw_stats.add("nado_bad", self.w_nado_bad)
         return total
 
@@ -1023,6 +1064,33 @@ class LiveMatchEnv:
             except Exception:  # noqa: BLE001 -- a malformed detection is not a bow
                 continue
         return None
+
+    def _enemy_massing_back(self) -> bool:
+        """Are they BUILDING in their own back half (beatdown setup) with nothing committed yet?
+
+        Read from the tracker's bridged, corroborated enemy tracks -- the same source the threat
+        gate and the spell wheels use, so a single-frame phantom cannot fake a beatdown.
+        """
+        try:
+            tracks = self._enemy_tracks_now()
+            units = [(t[0], t[1], (t[4] if len(t) > 4 else "")) for t in tracks]
+            return threat_value.massing_in_back(self.db, units)
+        except Exception:  # noqa: BLE001 -- perception hiccup: assume no beatdown, act normally
+            return False
+
+    def _defensive_bow_cell(self, cell: int) -> int:
+        """Pull an X-Bow back into the DEFENSIVE centre band (env.xbow_defense_front/back).
+
+        Kept as a correction rather than a hard coordinate so a model that already chose a
+        defensive spot keeps its own cell -- the training-wheels contract everywhere else.
+        """
+        gx, gy = cell % self.gw, cell // self.gw
+        cx, cy = self.actions.cell_center(gx, gy)
+        if self.xbow_defense_front <= cy <= self.xbow_defense_back and abs(cx - 0.48) <= 0.14:
+            return cell                                   # already a defensive bow: leave it
+        mid = 0.5 * (self.xbow_defense_front + self.xbow_defense_back)
+        ngx, ngy = self.actions.coords_to_grid(0.48, mid)
+        return int(ngy) * self.gw + int(ngx)
 
     def _where_cell(self, where, tx, ty, bow=None):
         """Map one WHERE vocabulary word onto board coordinates.
@@ -1347,7 +1415,14 @@ class LiveMatchEnv:
                 # roughly right is left alone (see _wheels_troop_aim's tolerance).
                 cell = self._wheels_troop_aim(card_id, cell)
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)  # rocket + miner go anywhere; rest = your half
-            if card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
+            # DEFENSIVE BOW when they are BUILDING IN THE BACK (2026-08-20, user rule). The
+            # forward snap below is what makes an offensive bow lock; running it while a beatdown
+            # is assembling is precisely how six elixir gets blocked before it fires a shot. Same
+            # card, opposite intent -- so the snap is skipped and the bow keeps the back-centre
+            # cell the leak-guard/doctrine chose for it.
+            if card_id in self.xbow_ids and self._enemy_massing_back():
+                cell = self._defensive_bow_cell(cell)
+            elif card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -1514,6 +1589,11 @@ class LiveMatchEnv:
             # perception sees them. The old spend-tax + ambient-mass shape paid the policy for
             # idling under a building push -- ELIXIR_TRADE_DESIGN.md, implemented 2026-08-14.
             trd = self.rw_stats.add("elixir_trade", self._trade_reward(cur_elixir))
+            if self._last_cast_rec is not None:
+                # What the aim geometry paid for THIS cast, remembered so a whiff can hand it
+                # back at impact (see _eval_pending_spells' clawback).
+                self._last_cast_rec["paid"] = float(tr) + float(wc)
+                self._last_cast_rec = None
             reward += self._eval_pending_spells()     # due spell impacts: whiffs + bad tornados
             if not play and cur_frac >= self.full_elixir:      # leak: the TRUE bar, not the floored one
                 lk = self.rw_stats.add("leak", self.w_leak)                                                            # (5) leaking at capacity

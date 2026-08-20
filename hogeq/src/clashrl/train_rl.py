@@ -420,6 +420,18 @@ def train_rl(cfg, init: str | None = None) -> None:
         if _group_only:
             return bases
         if not bases:
+            # A BACK BUILD IS NOT A QUIET BOARD (2026-08-20, user). This gate only ever triaged
+            # what was on OUR half, so a golem assembling behind their king read as "nothing to
+            # answer" and the loop went hunting for a PRESSURE play -- which is exactly how the
+            # offensive X-Bow came to look correct against a push that was already paid for. The
+            # board is not quiet, it is pre-defensive: say so, and the defensive answer follows.
+            try:
+                units = [(t[0], t[1], (t[4] if len(t) > 4 else ""))
+                         for t in tracker.enemy_tracks(time.time(), with_base=True)]
+                if threat_value.massing_in_back(_db, units):
+                    return True
+            except Exception:  # noqa: BLE001 -- perception hiccup must not break the gate
+                pass
             return False             # nothing of theirs on our side of the river
         return threat_value.group_ignore_frac(
             _db, bases, tower_level=_tower_level) >= threat_value.IGNORE_FRAC
@@ -605,6 +617,24 @@ def train_rl(cfg, init: str | None = None) -> None:
                     if advisor_log:
                         print("[train-rl]   explore: HOLD (quiet board, banking toward the Hog)")
                     return (0, 0, 0)
+            if c is None and needs_answer and len(counter_table) and threat_bases:
+                # THE FAST PATH, and also the accurate one (2026-08-20). A defence decision is
+                # where latency actually costs towers, and the advisor's ~0.5 s sits between
+                # seeing the threat and answering it. The researched table resolves in
+                # microseconds and was validated against the card DB, so when it has an in-hand
+                # answer for THIS threat there is nothing to ask an LLM about. The advisor still
+                # gets every board the table has no row for.
+                _want = counter_table.best_card(
+                    threat_bases, hand_bases=[_base_key(card_names[i]) for i in playable])
+                if _want:
+                    for _i in playable:
+                        if (_base_key(card_names[_i]) == _want
+                                and not _pick_invalid(_want, threat_bases)):
+                            c = _i
+                            if advisor_log:
+                                print("[train-rl]   explore: DOCTRINE %s (table hit, advisor "
+                                      "skipped)" % _want)
+                            break
             if c is None and advisor is not None:
                 # A DEFENCE IS USUALLY MORE THAN ONE CARD, and the live loop plays one card per
                 # decision -- so the answer is a SEQUENCE spent over consecutive turns. Ask once,

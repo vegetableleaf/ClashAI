@@ -212,3 +212,39 @@ def pick_invalid(db, base: str, threat_bases):
         group = sum(float(db.elixir(b) or 0.0) for b in (threat_bases or ()) if b)
         return "a %.0f-elixir spell on a %.0f-elixir group" % (float(db.elixir(base) or 0.0), group)
     return None
+
+
+# ---------------------------------------------------------------------------------------------
+# ARE THEY BUILDING IN THE BACK? (2026-08-20, user rule.)
+#
+# The beatdown signature: elixir committed deep in their OWN half with nothing on ours yet. It is
+# the one board where a full elixir bar should buy a DEFENSIVE X-Bow rather than an offensive one
+# -- the offensive bow walks into a push that is already paid for and is blocked before it locks.
+#
+# Coordinates: both the sim and the live frame put THEIR princesses at y ~ 0.204 and treat y > 0.42
+# as our half, so one threshold pair serves both sides.
+BACK_Y = 0.28              # at or behind their princess line
+OUR_HALF_Y = 0.42          # the river line _needs_answer already triages on
+BACK_MIN_ELIXIR = 4.0      # a lone cheap card in the back is cycling, not building
+
+
+def massing_in_back(db, units, back_y: float = BACK_Y, our_half_y: float = OUR_HALF_Y,
+                    min_elixir: float = BACK_MIN_ELIXIR) -> bool:
+    """True when they are BUILDING: `units` is [(x, y, base)] of enemy units.
+
+    Requires BOTH halves of the signature -- meaningful elixir parked deep in their half, and
+    nothing of theirs committed on ours. Once a push crosses the river this goes False and the
+    ordinary defensive path (counter table, threat gate) takes over, which is why the caller can
+    treat it as "the board is quiet BUT it is about to stop being quiet".
+    """
+    back = 0.0
+    for u in (units or ()):
+        try:
+            x, y, base = float(u[0]), float(u[1]), str(u[2])
+        except Exception:  # noqa: BLE001 -- a malformed track is not a beatdown
+            continue
+        if y > our_half_y:
+            return False                      # already committed on our half: this is a defence
+        if y <= back_y and base:
+            back += float(db.elixir(base) or 0.0)
+    return back >= min_elixir
