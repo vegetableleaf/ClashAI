@@ -347,7 +347,7 @@ def scripted_policy(scenario):
 
     return _policy
 
-def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
+def report(cfg, names=None, reps=25, seed=5, policy=None, level=11, reward_mode=False):
     """Run every registered drill baseline-vs-oracle and return the rows.
 
     Prints a table because the pass RATE is the number that says whether a skill is mastered -- a
@@ -356,12 +356,42 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=11):
     """
     rows = []
     todo = list(names) if names else sc.names()
-    print("%-30s %8s %8s %8s %8s   %s"
-          % ("drill", "nothing", "scripted", "doctrine", "policy", "verdict"))
-    print("-" * 94)
+    if reward_mode:
+        # DOES THE REWARD PAY FOR THE CORRECT PLAY? A drill only teaches if passing it earns more
+        # than failing it. Where the two are equal the interaction is UNPRICED: the policy can be
+        # given the state a thousand times and there is no gradient toward the right answer, so
+        # mixing that drill into training buys nothing. This is the direct test, per drill, and it
+        # replaces arguing about which reward term ought to fire.
+        print("%-30s %9s %9s %9s   %s"
+              % ("drill", "R(nothing)", "R(correct)", "delta", "priced?"))
+        print("-" * 88)
+    else:
+        print("%-30s %8s %8s %8s %8s   %s"
+              % ("drill", "nothing", "scripted", "doctrine", "policy", "verdict"))
+        print("-" * 94)
     for name in todo:
         s = sc.get(name)
         base = run_drill(cfg, s, policy=None, reps=reps, seed=seed, level=level)
+        if reward_mode:
+            ref = (run_drill(cfg, s, policy=scripted_policy(s), reps=reps, seed=seed, level=level)
+                   if getattr(s, "reference", ()) else None)
+            rb = float(base["reward"])
+            rr = float(ref["reward"]) if ref else None
+            if rr is None:
+                # A restraint drill has no reference line; its "correct play" IS the baseline,
+                # so the question does not apply and reporting a delta would invent one.
+                verdict, delta = "restraint drill (no reference)", None
+            else:
+                delta = rr - rb
+                verdict = ("UNPRICED -- the correct play earns no more than doing nothing"
+                           if delta <= 0.05 else
+                           ("weak (%.2f)" % delta if delta < 0.5 else "priced"))
+            print("%-30s %9.2f %9s %9s   %s"
+                  % (name, rb, ("%.2f" % rr) if rr is not None else "-",
+                     ("%+.2f" % delta) if delta is not None else "-", verdict))
+            rows.append({"name": name, "tier": s.tier, "r_nothing": rb, "r_correct": rr,
+                         "delta": delta, "verdict": verdict, "graded_by": list(s.graded_by)})
+            continue
         ref = (run_drill(cfg, s, policy=scripted_policy(s), reps=reps, seed=seed, level=level)
                if getattr(s, "reference", ()) else None)
         doc = run_drill(cfg, s, policy=doctrine_policy, reps=reps, seed=seed, level=level)

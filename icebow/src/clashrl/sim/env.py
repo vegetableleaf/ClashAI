@@ -23,7 +23,7 @@ from .. import detect_obs
 from .. import interactions
 from .. import threat_value
 from ..cycle import cycle_vector
-from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS
+from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS, _TILES_X, _TILES_Y
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
 from . import view
@@ -338,6 +338,11 @@ class SimMatchEnv:
         # Same shape as spell_waste but for the card that has to still BE there later.
         self.w_building_waste = r("building_waste", -0.4)
         self.spell_waste_radius = float(cfg.get("sim", "spell_waste_tiles", default=4.5))
+        # DAMAGE PREVENTED, priced in tower fractions by the triage model (see _settle_spell_casts).
+        # Measured before this existed: a Log saving 35% of a Princess Tower was paid +0.285, while
+        # a good offensive rocket earns +10 -- the policy was being told defending does not matter.
+        self.w_spell_defence = r("spell_defence", 1.0)
+        self.spell_defence_cap = float(cfg.get("rewards", "spell_defence_cap", default=1.5))
         # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
         # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
         # tower), which plain outcome terms barely see -- so a WELL-EXECUTED pull is credited by its
@@ -1661,6 +1666,31 @@ class SimMatchEnv:
                 return True
         return False
 
+
+    def _in_roll_corridor(self, nx: float, ny: float, u, spec, margin: float = 1.5,
+                          back: float = 0.4) -> bool:
+        """Is `u` inside the forward corridor a rolling spell will sweep?
+
+        Measured in TRUE TILES PER AXIS -- the board is 18x32, so a normalised radius understates y
+        by 1.8x, the same anisotropy that made a Tornado's blast read as 7 tiles wide and 12 tall.
+        The margin is generous on purpose: this snapshot decides whether the cast is later allowed
+        to be called a WHIFF, so catching a body that walks into the corridor mid-roll matters more
+        than excluding one that walks out. A whiff has to be unambiguous to be charged.
+        """
+        fwd = -1.0 if u.team == 1 else 1.0          # our rolls travel toward the ENEMY end (low y)
+        ahead = (ny - float(u.y)) * _TILES_Y * (1.0 if fwd < 0 else -1.0)
+        # ASYMMETRIC MARGINS, and the asymmetry is the doctrine. A roll goes FORWARD: the engine
+        # gives it about a tile of back-slop and nothing more, so anything further behind the cast
+        # is untouchable -- that IS the "played it too high, hit nothing" failure. A generous
+        # backward margin re-broke the whiff test in a subtle way: bodies the roll never reached
+        # sat in the snapshot, the TOWER shot them during the settle window, and their damage was
+        # credited to the spell. Forward stays generous, because a body walking INTO the corridor
+        # during the roll is genuinely hit.
+        if ahead < -back or ahead > float(spec.roll_len) + margin:
+            return False                            # behind the cast, or past the end of the roll
+        lateral = abs(float(u.x) - nx) * _TILES_X
+        return lateral <= float(spec.spell_radius or 0.0) + margin
+
     def _arm_spell_check(self, nx: float, ny: float, spec) -> None:
         """Snapshot what a just-cast damage spell COULD hit, to be settled once it lands.
 
@@ -1672,12 +1702,55 @@ class SimMatchEnv:
         rad = max(self.spell_waste_radius, float(spec.pull_radius or 0.0),
                   float(spec.spell_radius or 0.0)) + 2.0
         land = float(self.eng.t) + float(getattr(spec, "spell_delay", 0.0) or 0.0)
-        hp = {id(u): float(u.hp) for u in self.eng.units
-              if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad}
+        if getattr(spec, "rolls", False) and float(getattr(spec, "roll_len", 0.0) or 0.0) > 0.0:
+            # A ROLLING SPELL IS A LINE, NOT A CIRCLE. Snapshotting a disc around the cast point
+            # charged spell_waste for every correct Log: the card is cast BEHIND a group precisely
+            # so the corridor sweeps through it, and at 9.6 tiles of roll its victims sit well
+            # outside a ~4 tile disc -- so `dealt` came back 0 and the roll was judged a miss.
+            # Measured before this: rolling through a Skeleton Army and killing all of it scored
+            # -0.150 against 0.000 for not casting at all.
+            caught = [u for u in self.eng.units
+                      if u.team == 1 and u.hp > 0 and self._in_roll_corridor(nx, ny, u, spec)]
+        else:
+            caught = [u for u in self.eng.units
+                      if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
+        hp = {id(u): float(u.hp) for u in caught}
+        # WHAT each catch would COST US if it lived, kept alongside the HP so the settle can pay
+        # for damage prevented. Only bodies already on OUR half count as defence -- killing things
+        # on their side is offence and is priced by the chip / win-condition terms.
+        worth = {id(u): str(u.spec.base) for u in caught if float(u.y) > 0.5}
         towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
         self._pending_spell_checks.append(
             {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
-             "hp": hp, "tw": towers})
+             "hp": hp, "tw": towers, "worth": worth,
+             # RE-SNAPSHOT AT LANDING. The cast-time picture cannot contain a body that has not
+             # spawned yet, so every pre-emptive cast -- pre-Log a swarm, Log the barrel as it
+             # lands, both doctrine -- resolved against an empty list and was charged as a whiff.
+             "snap_at": land, "aim": (float(nx), float(ny)), "spec": spec, "rad": float(rad)})
+
+
+    def _resnap_spell_check(self, p) -> None:
+        """Re-take a pending spell's before-picture at the moment it LANDS.
+
+        The cast-time snapshot is kept as well (units are merged, keeping the EARLIER hp for
+        anything in both) so a body that was already dying when the spell arrived still counts the
+        damage it took. Everything else -- the corridor for a rolling spell, the disc for a blast,
+        the our-half filter for the defensive credit -- is the same geometry as the arm, just
+        evaluated later.
+        """
+        spec, (nx, ny), rad = p.get("spec"), p.get("aim", (0.0, 0.0)), float(p.get("rad", 0.0))
+        if spec is None:
+            return
+        if getattr(spec, "rolls", False) and float(getattr(spec, "roll_len", 0.0) or 0.0) > 0.0:
+            caught = [u for u in self.eng.units
+                      if u.team == 1 and u.hp > 0 and self._in_roll_corridor(nx, ny, u, spec)]
+        else:
+            caught = [u for u in self.eng.units
+                      if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
+        for u in caught:
+            p["hp"].setdefault(id(u), float(u.hp))          # keep the earlier hp if already known
+            if float(u.y) > 0.5:
+                p.setdefault("worth", {}).setdefault(id(u), str(u.spec.base))
 
     def _settle_spell_casts(self) -> float:
         """Charge spell_waste for casts that, once resolved, damaged NOTHING.
@@ -1690,6 +1763,12 @@ class SimMatchEnv:
         if not self._pending_spell_checks:
             return 0.0
         now = float(self.eng.t)
+        # LANDING PASS: refresh the before-picture for anything that has just resolved, so a body
+        # that spawned or walked in during the flight is measured rather than missed.
+        for p in self._pending_spell_checks:
+            if p.get("snap_at") is not None and now >= float(p["snap_at"]):
+                self._resnap_spell_check(p)
+                p["snap_at"] = None
         due = [p for p in self._pending_spell_checks if p["t"] <= now]
         if not due:
             return 0.0
@@ -1705,6 +1784,23 @@ class SimMatchEnv:
                 dealt += max(0.0, hp0 - tw_now.get(tid, hp0))
             if dealt <= 0.0:
                 total += self.rw_stats.add("spell_waste", self.w_spell_waste)
+                continue
+            # IT LANDED -- pay for the damage it PREVENTED. Symmetric with the whiff charge above
+            # and settled on the same evidence: the bodies that are gone, not the ones the aim was
+            # near. Priced by the triage model, so a trickle earns nearly nothing and a committed
+            # push earns real credit; the tower fraction it would have cost us IS what killing it
+            # is worth.
+            gone = [b for uid, b in (p.get("worth") or {}).items() if uid not in live]
+            if gone:
+                try:
+                    saved = float(threat_value.bodies_ignore_frac(
+                        self.db, gone, tower_level=self._tower_level_for_triage))
+                except Exception:  # noqa: BLE001 -- an unknown card is not a payday
+                    saved = 0.0
+                if saved > 0.0:
+                    total += self.rw_stats.add(
+                        "spell_defence",
+                        self.w_spell_defence * min(saved, self.spell_defence_cap))
         return total
 
     def _spell_no_target(self, nx: float, ny: float, spec) -> bool:

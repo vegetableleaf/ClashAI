@@ -225,7 +225,16 @@ def _cmd_drills(args) -> None:
     if args.policy:
         pol = _drill_policy_from_checkpoint(args.policy, args.device)
     rows = _report(Config.load(args.config), names=names, reps=args.reps, seed=args.seed,
-                   policy=pol, level=args.level)
+                   policy=pol, level=args.level, reward_mode=bool(getattr(args, "reward", False)))
+    if getattr(args, "reward", False):
+        gaps = [r for r in rows if str(r.get("verdict", "")).startswith("UNPRICED")]
+        if gaps:
+            print("")
+            print("%d UNPRICED interaction(s) -- drilling these cannot teach them, "
+                  "because passing earns no more than failing:" % len(gaps))
+            for r in gaps:
+                print("   %-30s graded_by %s" % (r["name"], ", ".join(r["graded_by"]) or "-"))
+        return
     bad = [r for r in rows if r["verdict"].startswith("NOT DISCRIMINATING")]
     if bad:
         print("\n%d drill(s) NOT DISCRIMINATING -- doing nothing scores what the doctrine scores, "
@@ -591,6 +600,10 @@ def main() -> None:
     drl.add_argument("--tier", default=None,
                      help="only this tier: foundational | compound | matchup")
     drl.add_argument("--level", type=int, default=11, help="card level for scripted spawns")
+    drl.add_argument("--reward", action="store_true",
+                     help="REWARD-GAP mode: per drill, the episode reward for doing nothing vs "
+                          "for the correct play. Where they are equal the interaction is unpriced "
+                          "and training on that drill cannot teach it.")
     drl.add_argument("--policy", default=None,
                      help="also score a trained checkpoint (e.g. data/policy_sim.pt)")
     drl.add_argument("--device", default=None, help="torch device for --policy")
