@@ -396,6 +396,7 @@ class OverlayReplayRecorder:
         self._region_cfg = cfg.get("window", "region", default=None)
         self._dets: list = []
         self._start_req = False          # a new match asked for a clip
+        self._end_req = False            # the match ended: close the clip at the next frame
         self._lock = threading.Lock()
         self._thread = None
         self.n_clips = 0
@@ -410,6 +411,19 @@ class OverlayReplayRecorder:
             return
         with self._lock:
             self._start_req = True
+
+    def end_match(self) -> None:
+        """Call when a match ENDS -- closes the clip in progress.
+
+        The clip used to end on a timer (`seconds`), which was right when the goal was the
+        diagnostic opening and wrong once the goal is the whole match: a timer either cuts the
+        match short or keeps rolling through the results screen into the next one. `seconds` is
+        now only a safety cap for a missed terminal read.
+        """
+        if not self.enabled:
+            return
+        with self._lock:
+            self._end_req = True
 
     def update(self, dets) -> None:
         """Cache the newest tagged detections (and start the recorder thread on first use)."""
@@ -452,9 +466,12 @@ class OverlayReplayRecorder:
             try:
                 with self._lock:
                     start_req, dets = self._start_req, self._dets
-                    self._start_req = False
-                if (start_req or (t_end and t0 >= t_end)) and writer is not None:
-                    writer.release()                           # new match cuts the clip; else it ran its length
+                    end_req, self._start_req, self._end_req = self._end_req, False, False
+                if (start_req or end_req or (t_end and t0 >= t_end)) and writer is not None:
+                    # end_req is the NORMAL close now (the match ended); start_req still cuts a
+                    # clip that somehow survived into the next match; the t_end arm is the safety
+                    # cap for a terminal read that never came.
+                    writer.release()
                     self.n_clips += 1
                     print(f"[overlay-replay] saved {path} ({n_frames} frames, "
                           f"captured {n_grabs / max(1e-6, time.time() - t_start):.1f} fps)", flush=True)
@@ -467,10 +484,11 @@ class OverlayReplayRecorder:
                         self.enabled = False
                         break
                 if start_req:
-                    t_end = t0 + self.seconds
+                    t_end = t0 + self.seconds                  # SAFETY CAP -- end_match() is what
+                                                               # normally ends the clip
                     t_start, n_frames, n_grabs = t0, 0, 0
                     size = None                                # (re)derive from the next frame
-                if not t_end or t0 >= t_end:
+                if not t_end or t0 >= t_end or end_req:
                     t_end = 0.0
                     time.sleep(period)
                     continue

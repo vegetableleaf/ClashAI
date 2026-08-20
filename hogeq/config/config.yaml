@@ -988,8 +988,8 @@ play:
 # is printed when each clip closes -- check it if the video looks stuttery.
 overlay_replay:
   enabled: true              # master gate
-  seconds: 60                # record this much of each match, from the moment IN_MATCH is detected
-  max_clips: 5               # HARD CAP per session (process lifetime). train-rl plays unattended for
+  seconds: 420               # SAFETY CAP, not the intended length (2026-08-20). The clip now runs from IN_MATCH until the match actually ENDS, so it spans the whole match; this only stops a runaway if a terminal read is missed. 420s covers 3 min regulation + 2 min overtime + the tiebreak.
+  max_clips: 10              # HARD CAP per session (process lifetime). train-rl plays unattended for
                              # hours, so an uncapped recorder quietly fills the disk with clips nobody
                              # watches -- and the early ones are the useful ones anyway, since they all
                              # show the same policy. On the last clip the recorder shuts its thread down

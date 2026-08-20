@@ -1911,6 +1911,7 @@ class LiveMatchEnv:
                                                 "unrecognised": int(self._not_in_match)}
 
         # match is over -> resolve win/loss terminal reward, then exit
+        self._replay_rec.end_match()     # the clip spans the whole match: close it here
         reward, outcome, detail = self._resolve_terminal()
         self.last_outcome = outcome
         # Per-term breakdown for THIS match: the action-tax signature (a term that fires often and
