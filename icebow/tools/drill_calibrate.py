@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 
 from clashrl.config import Config                       # noqa: E402
 from clashrl.sim import scenarios as sc                 # noqa: E402
-from clashrl.sim.drill_env import DrillEnv, scripted_policy   # noqa: E402
+from clashrl.sim.drill_env import DrillEnv, scripted_policy, doctrine_policy   # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -72,15 +72,20 @@ def main():
     print("%-11s %9s %9s %9s %9s %9s %8s %8s" % ("arm", "mean", "min", "p25", "p75", "max",
                                                  "spent", "enemy alive"))
     print("-" * 84)
+    # A MATCHUP DRILL HAS NO REFERENCE LINE ON PURPOSE -- "a matchup is a 30s sequence of waves,
+    # and four fixed taps cannot answer it", so its doctrine column IS its reference. Calibrating
+    # one against an empty line would compare doing nothing with doing nothing.
+    has_ref = bool(getattr(base, "reference", ()))
+    ref_label = "REFERENCE" if has_ref else "DOCTRINE"
+    ref_pol = (lambda: scripted_policy(base)) if has_ref else (lambda: doctrine_policy)
     rows = {}
-    for label, pol in (("IGNORED", None),
-                       ("REFERENCE", (lambda: scripted_policy(base)))):
+    for label, pol in (("IGNORED", None), (ref_label, ref_pol)):
         r = arm(cfg, open_s, base, pol, reps, horizon)
         rows[label] = r
         print("%-11s %9.1f %9.1f %9.1f %9.1f %9.1f %8.1f %6d/%d"
               % (label, r["mean"], r["min"], r["p25"], r["p75"], r["max"], r["spent"],
                  r["alive"], r["n"]))
-    a, b = rows["IGNORED"], rows["REFERENCE"]
+    a, b = rows["IGNORED"], rows[ref_label]
     print("")
     if b["max"] < a["min"]:
         mid = (b["max"] + a["min"]) / 2.0

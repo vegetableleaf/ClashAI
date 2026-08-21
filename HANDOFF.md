@@ -777,6 +777,36 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### Drill state at ladder levels (2026-08-21, ready to train)
+
+`run.py drills` — **0 UNWINNABLE, 0 passable by doing nothing**, 24 of 28 reference lines at 100%,
+none below 84%. `run.py drills --outcomes` — **28 of 28 pay most for passing.**
+
+Reference lines are not documentation: they are the report's winnability proof AND the source of
+`drill_prior_cells`, the exploration prior the trainer samples inside a drill. A stale line aims the
+trainer's own prior at a cell that no longer works, which is why they were refreshed rather than
+left as a cosmetic gap. `tools/drill_ref_sweep.py` sweeps one step of a line and reports each
+candidate's pass rate; `tools/drill_calibrate.py` reports the do-nothing vs correct-line damage
+distributions so a threshold lands in the measured gap (it falls back to the DOCTRINE arm for
+matchup drills, which have no reference line by design).
+
+**The doctrine of the retune, and it is real Clash Royale:** every drill wanted its defender
+placed DEEPER, where our own tower is already shooting, instead of out front where it fights alone.
+Level-11 boards hid this because a weak attacker died either way.
+
+⚠ **TRAPS this batch added to the list**
+* **A 1-2 card restricted hand lets a card be REPLAYED IMMEDIATELY.** Both cards are always in
+  `cycle[:4]`, so there is no cycle cost — a real hand is 4 of 8. `nado_clump_for_the_wizard`'s
+  doctrine column read 96% by casting tornado three times in two seconds. Elixir is the only brake;
+  keep drill starting elixir tight, and distrust a doctrine column that spams one card.
+* **"All enemies dead" is not evidence** when the tower kills them anyway (Miner), when they are
+  kamikaze (Wall Breakers), or when every line kills them eventually (minions).
+* **Do not interpolate a placement.** For `tesla_pulls_the_wincon`, (0.56, 0.725) passes 100% and
+  (0.50, 0.725) — the obvious "same but deeper" — passes **0%**. Measure the point you ship.
+
+⚠ **hogeq's 27 drills have NOT been retuned.** The level fix landed in both decks, so its
+thresholds are still level-11 numbers facing ladder enemies — expect the same breakage icebow had.
+
 ### Retuning the curriculum for ladder levels (2026-08-21)
 
 Levelling the drills correctly broke four of them. All four are fixed, and `tools/drill_calibrate.py`

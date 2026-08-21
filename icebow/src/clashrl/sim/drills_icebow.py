@@ -822,9 +822,20 @@ register(Scenario(
     # coming, which a single-interaction drill cannot show.
     spawns=(("hog_rider", 1, 0.194, 0.44, 0.0), ("skeletons", 1, 0.194, 0.46, 5.0),
             ("hog_rider", 1, 0.806, 0.44, 11.0), ("musketeer", 1, 0.806, 0.40, 13.0)),
+    # BARS MEASURED AGAINST THE DOCTRINE, because a matchup has no reference line (see below) --
+    # so the doctrine column is what "a correct answer" means here. 25 reps at ladder levels,
+    # predicates stripped, over the full 34s:
+    #
+    #     IGNORED    mean 8249   min 6983   12/25 enemies still alive
+    #     DOCTRINE   mean 3071   max 5942    1/25 alive     (5178 HP saved for 14.1 elixir)
+    #
+    # 3700 is the doctrine's own p75, so good play clears it most of the time; 6900 sits just under
+    # what doing NOTHING concedes at its best (6983), so the do-nothing line always fails. The old
+    # 1400/2200 came from level 11 waves -- at ladder levels two Hogs connecting spend that on
+    # their own, so the drill recorded ZERO passes in 40 exploratory episodes and taught nothing.
     success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
-                          and not princess_hp_lost(e, s, 1400.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 2200.0),
+                          and not princess_hp_lost(e, s, 3700.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 6900.0),
     time_limit=34.0,
     randomise=("lane", "timing"),
     graded_by=("threat_response", "elixir_trade", "chip_defence"),
