@@ -1475,6 +1475,22 @@ sim:
   ppo_drill_cell_floor: 0.75    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
+  ppo_sil_coef: 0.0             # SELF-IMITATION on drill successes. OFF by default.
+                                # WHY IT EXISTS: cells are sampled from (1-floor)*policy +
+                                # floor*prior and the stored log-prob is the MIXTURE's, so PPO forms
+                                # r = pi/mu. Measured on a 4000-match checkpoint, on the cell the
+                                # prior recommends: pi 0.0101, mu 0.2827, r 0.0125 -- the drill's
+                                # advantage arrives at ~1% strength, and the cell head was still
+                                # indistinguishable from an untrained net. Annealing the floor lifts
+                                # r to ~0.08 and no further; the attenuation is inherent to
+                                # importance sampling from a strong prior.
+                                # WHAT IT DOES: on steps of a drill episode that PASSED, a plain
+                                # cross-entropy pulling the card and cell heads toward the action
+                                # actually taken. The drill's own predicate certified that outcome,
+                                # so there is no critic estimate and no importance weight. 0.05 is a
+                                # sensible first value.
+                                # UNVALIDATED: no controlled comparison has been run. Turn it on
+                                # deliberately, against a baseline, not as a default.
   ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
                                 # floor buys the rare success and then throws its gradient away: the
                                 # stored log-prob is the mixture's, so PPO forms r = pi/mu, and

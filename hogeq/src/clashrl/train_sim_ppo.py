@@ -289,6 +289,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # nine of the 28 drills produced 0-3 passes in 60 episodes even with their reference cell in
     # the prior -- too rare to learn from. A drill exists to make a rare state common, so it is
     # explored differently from a match, where the point is to evaluate the policy's own head.
+    # SELF-IMITATION on drill successes -- a gradient channel that does NOT pass through the PPO
+    # importance ratio. See ppo_sil_coef in config.yaml for the measurement that motivates it.
+    sil_coef = float(cfg.get("sim", "ppo_sil_coef", default=0.0))
     drill_cell_floor = float(cfg.get("sim", "ppo_drill_cell_floor", default=0.75))
     # ...AND IT ANNEALS, for the same reason the cell-entropy coefficient does. A high fixed floor
     # buys the rare success and then throws away its gradient: the stored log-prob is the mixture's,
@@ -704,6 +707,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         g_f = torch.tensor([a[0] for a in flat("act")], device=device)
         c_f = torch.tensor([a[1] for a in flat("act")], device=device)
         cell_f = torch.tensor([a[2] for a in flat("act")], device=device)
+        sil_f = (torch.tensor(flat("sil"), dtype=torch.float32, device=device)
+                 if roll.get("sil") else torch.zeros(N, device=device))
         obs_f, hand_f = flat("obs"), flat("hand")
         nxt_f, elx_f, thr_f = flat("nxt"), flat("elx"), flat("thr")
 
@@ -755,6 +760,21 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # untrained net). High early, when collapse is the danger and there is nothing
                     # worth sharpening onto; decaying to a floor once the reward is worth following.
                     loss = pl + vf_coef * vl - ent_coef * ent.mean() - _cell_ent_now() * cell_ent.mean()
+                    # SELF-IMITATION on VERIFIED-CORRECT actions. The PPO term above reaches the
+                    # cell head through r = pi/mu, and with a strong drill prior that ratio is
+                    # ~0.01 -- measured -- so a drill success contributes almost nothing however
+                    # large its advantage. This term is a plain cross-entropy toward the action
+                    # actually taken on steps of a drill the agent PASSED: the drill's predicate
+                    # already certified the outcome, so no critic estimate is involved and no
+                    # importance weight applies. Mean over marked steps, so it does not grow with
+                    # how many drills happened to pass in a rollout.
+                    if sil_coef > 0.0:
+                        sil_b = sil_f[mb_t]
+                        denom = sil_b.sum()
+                        if float(denom) > 0.0:
+                            sil_lp = play * (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
+                                             + lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1))
+                            loss = loss - sil_coef * (sil_b * sil_lp).sum() / denom
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
@@ -806,7 +826,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
                     "act": [], "logp": [], "val": [], "rew": [], "done": [], "trunc": [],
-                    "boot": None}
+                    # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
+                    # episode the agent PASSED. Filled in retroactively when the episode ends,
+                    # because that is when the verdict exists.
+                    "sil": [], "boot": None}
+            ep_from = [0] * K                              # first step of each env's current episode
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
@@ -860,6 +884,16 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             drills_done += 1
                             drill_pass += 1 if info.get("verdict") == "pass" else 0
                             drill_steps += ep_n[i]
+                            # MARK THE EPISODE FOR SELF-IMITATION, now that its verdict exists. The
+                            # steps are already in the rollout; this walks back over the ones that
+                            # belong to this env's just-finished episode. An episode that began in
+                            # an earlier rollout is marked only over the part present here, which is
+                            # the part that can still receive a gradient.
+                            if sil_coef > 0.0 and info.get("verdict") == "pass":
+                                for _tt in range(ep_from[i], len(roll["sil"])):
+                                    roll["sil"][_tt][i] = 1.0
+                        if True:
+                            ep_from[i] = len(roll["sil"])   # next episode starts after this row
                         else:
                             match_steps += ep_n[i]
                             wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
@@ -929,6 +963,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["rew"].append(np.asarray(rew_row, np.float32))
                 roll["done"].append(np.asarray(done_row, np.float32))
                 roll["trunc"].append(np.asarray(trunc_row, np.float32))
+                roll["sil"].append(np.zeros(K, np.float32))
             if not roll["rew"]:
                 break
             if len(win_hist) >= 20:
