@@ -777,6 +777,22 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### PARKED, deliberately: anneal `ppo_drill_gate_floor` too (2026-08-21)
+
+`ppo_drill_cell_floor` now anneals 0.75 → 0.20 (`01c036b`). **`ppo_drill_gate_floor` is still a
+fixed 0.85 and has the same problem** — the gate is sampled from `(1-floor)*policy + floor*prior`
+and the stored log-prob is the mixture's, so the gate's importance ratio is crushed exactly like the
+cell head's was, and the timing prior does the work the policy should be learning. Measured
+consequence: the drills where the policy scores 0% against a passing doctrine are mostly TIMING
+drills (`hold_the_spell_for_a_target`, `log_the_ground_swarm`, `nado_the_sneaky_lock`).
+
+**Not changed on purpose.** Owner: ship one training change at a time "so we don't confound the
+effects of multiple changes". The cell-floor anneal is being measured on its own first; both share a
+motivation, so shipping them together would make either result unattributable.
+
+**Revisit when** the cell-floor anneal has a verdict — if placement improves and timing drills stay
+at 0%, this is the next lever.
+
 ### ⚠⚠ CORRECTION: THE CELL HEAD WAS LEARNING ALL ALONG (2026-08-21, 05:15)
 
 **I raised a false alarm and recommended a restart on the strength of it. Retracted.** Entropy is
