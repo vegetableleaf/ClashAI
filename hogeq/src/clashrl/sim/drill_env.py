@@ -51,6 +51,15 @@ def deploy_unit(eng, team: int, db, base: str, x: float, y: float, level: int = 
     return ok
 
 
+# Cards used purely as DISTRACTORS on a drill board. Chosen to be ordinary, cheap-to-medium threats
+# that a real match is full of and that no drill is ABOUT, so they add board state without turning
+# into a second interaction the grader might confuse for the first.
+_NOISE_CARDS = frozenset((
+    "knight", "archers", "spear_goblins", "goblins", "minions", "bomber", "musketeer",
+    "barbarians", "mega_minion", "fire_spirit", "ice_spirit", "bats", "skeletons",
+))
+
+
 class _ScriptedOpponent:
     """Plays exactly the scenario's spawns, at their scripted times, and nothing else.
 
@@ -112,6 +121,15 @@ class DrillEnv(SimMatchEnv):
             lvl = self._our_level(base) if team == 0 else self._enemy_level()
             spawns.append((base, team, float(x), float(y),
                            max(0.0, float(t) + jitter), int(lvl)))
+        # THE DRILL'S LANE, from the first enemy spawn AFTER mirroring. Noise goes in the other
+        # one and the HP predicates read only this tower, so a distractor chipping the far side
+        # cannot read as this drill's answer failing.
+        lane = None
+        for base, team, x, y, t, lvl in spawns:
+            if team == 1:
+                lane = 0 if float(x) < 0.5 else 1
+                break
+        self._drill_lane = lane
         # our side is placed immediately; the opponent's are scripted
         for base, team, x, y, t, lvl in spawns:
             if team == 0:
@@ -123,6 +141,45 @@ class DrillEnv(SimMatchEnv):
             elix = max(0.0, min(10.0, elix + float(rng.uniform(-2.0, 2.0))))
         self.eng.elixir[0] = elix
         self.eng.elixir[1] = 10.0                      # the script pays for its own spawns
+        self._place_noise(lane)
+
+    def _place_noise(self, lane) -> None:
+        """Distractor cards in the OTHER lane -- a board with more than one thing on it.
+
+        A clean single-interaction drill has exactly one moment that matters, so WAIT is correct
+        for most of its steps. Measured, training 30% of steps on that taught the gate to wait
+        everywhere: plays per step fell 10.4% -> 5.9% and the policy dropped from 10% winrate to 0,
+        below an untrained net. Real boards always have something else on them, and the owner's
+        read is that this specificity is why the drills did not transfer.
+
+        The distractors are TAGGED, so `enemy_units()` hides them from every predicate while the
+        engine simulates them and the policy sees them. They land in the opposite lane so the
+        lane-aware HP predicates stay about the drill's own interaction.
+        """
+        n = float(self.cfg.get("sim", "drill_noise", default=0.0))
+        if n <= 0.0 or lane is None:
+            return
+        pool = [k for k in getattr(self.eng.db, "cards", {})
+                if str(k) in _NOISE_CARDS]
+        if not pool:
+            return
+        far_x = 0.806 if int(lane) == 0 else 0.194     # the lane the drill is NOT about
+        rng = self.rng
+        k = int(n) + (1 if float(rng.random()) < (n - int(n)) else 0)
+        for _i in range(max(0, k)):
+            base = pool[int(float(rng.random()) * len(pool)) % len(pool)]
+            team = 1 if float(rng.random()) < 0.75 else 0        # mostly theirs, sometimes ours
+            x = min(0.95, max(0.05, far_x + float(rng.uniform(-0.06, 0.06))))
+            y = float(rng.uniform(0.30, 0.46)) if team == 1 else float(rng.uniform(0.60, 0.75))
+            before = {id(u) for u in self.eng.units}
+            if deploy_unit(self.eng, team, self.eng.db, str(base), x, y, self._enemy_level()
+                           if team == 1 else self._our_level(str(base))):
+                # TAG EVERY BODY THE CARD PRODUCED. Matching one unit by position missed the rest
+                # of a squad -- bats is five units, archers two -- and an untagged distractor is
+                # visible to the GRADER, which is the one thing noise must never be.
+                for u in self.eng.units:
+                    if id(u) not in before:
+                        u.drill_noise = True
 
     def _play_slot(self, card_id: int) -> None:
         """One play per DEALT CARD in a restricted-hand drill.
@@ -296,7 +353,9 @@ class DrillEnv(SimMatchEnv):
             self.scenario.setup(self)
         self._drill = {
             "t0": float(self.eng.t),
-            "princess_hp0": sum(float(t.hp) for t in sc.our_princesses(self.eng)),
+            "lane": getattr(self, "_drill_lane", None),
+            "princess_hp0": sum(float(t.hp) for t in sc.our_princesses(
+                self.eng, {"lane": getattr(self, "_drill_lane", None)})),
             "enemy_tower_hp0": sum(float(t.hp) for t in self.eng.towers[1][:2]),
             "spent": 0.0,
             "plays": [],
@@ -344,7 +403,7 @@ class DrillEnv(SimMatchEnv):
         # than the spread the roll alone produces, and the two outcomes overlap however the bar is
         # placed. A COUNT does not move with level: an Ice Spirit denies a hit at 13 and at 16.
         # One step per connection at a 0.6s period against a 1.6s hit speed.
-        now_hp = sum(float(t.hp) for t in self.eng.towers[0][:2])
+        now_hp = sum(float(t.hp) for t in sc.our_princesses(self.eng, self._drill))
         was_hp = float(self._drill.get("_hp_prev", now_hp))
         if now_hp < was_hp - 1e-6:
             self._drill["hits_taken"] = int(self._drill.get("hits_taken", 0)) + 1
@@ -500,7 +559,11 @@ def scripted_policy(scenario):
         # "failing to price" a drill it was in fact pricing right. Timings are therefore relative
         # to the first scripted enemy appearing, not to the episode clock.
         if getattr(env, "opponent", None) is not None and getattr(env.opponent, "total", 0):
-            if not any(u.team == 1 and u.hp > 0 for u in env.eng.units):
+            # THE DRILL'S OWN enemies, not the distractors: `sc.enemy_units` skips tagged noise.
+            # Scanning every team-1 unit let a distractor satisfy this check, so the line fired
+            # before the threat it answers even existed -- measured, reference columns fell from
+            # 100% to 53-93% the moment noise was switched on.
+            if not sc.enemy_units(env.eng):
                 return (0, 0, 0)                   # nothing has arrived yet: hold the line
         # NOTE the clock is NOT re-based. Holding for the enemy fixes the too-early case; shifting
         # the whole line to "seconds after it arrives" breaks the opposite one -- tesla_late_not_early

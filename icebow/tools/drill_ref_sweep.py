@@ -44,7 +44,8 @@ def line_policy(steps):
         # the reference runner will not reproduce: measured, it read 35% where the report read 0%,
         # and its "100%" candidate scored 0% once shipped.
         if getattr(env, "opponent", None) is not None and getattr(env.opponent, "total", 0):
-            if not any(u.team == 1 and u.hp > 0 for u in env.eng.units):
+            # the DRILL'S enemies, not distractors -- see scripted_policy
+            if not sc.enemy_units(env.eng):
                 return (0, 0, 0)
         if float(env.eng.t) - float(env._drill.get("t0", 0.0)) < float(t):
             return (0, 0, 0)

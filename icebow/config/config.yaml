@@ -1339,6 +1339,26 @@ sim:
   # suggested starting point -- enough to concentrate experience on states the policy almost
   # never reaches, not so much that the full-match terms (phase machine, crown terms, the
   # double-elixir flip) stop appearing in the gradient.
+  drill_noise: 0.5           # DISTRACTOR CARDS per drill episode (0 = off, 1.5 = one or two).
+                            # WHY: a clean single-interaction drill has exactly one moment that
+                            # matters, so WAIT is the correct action for most of its steps. Training
+                            # 30% of steps on that taught the gate to wait EVERYWHERE -- measured,
+                            # plays/step fell 10.4% -> 5.9% and the policy went from 10% winrate to
+                            # 0%, below an untrained net. Real boards always have something else on
+                            # them (owner, 2026-08-21).
+                            # Distractors are TAGGED: the engine simulates them and the policy sees
+                            # them, but `enemy_units()` hides them from every predicate, so the 12
+                            # "no enemy alive" drills and the 37 HP drills keep their meaning. They
+                            # spawn in the lane the drill is NOT about, and the HP predicates are
+                            # lane-aware, so a distractor cannot read as the drill's answer failing.
+                            # LEVEL CHOSEN BY MEASUREMENT (reference = the drill's own correct
+                            # line; it should still pass, or the drill is grading luck):
+                            #   noise 0    reference ~98%   baseline 0%
+                            #   noise 0.5  reference  93%   baseline 3%   <- shipped
+                            #   noise 1.0  reference  89%
+                            #   noise 1.5  reference ~83%, and rocket_then_tornado goes UNWINNABLE
+                            # Above ~1 the distractors stop adding context and start deciding the
+                            # outcome.
   drill_frac: 0.0
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier

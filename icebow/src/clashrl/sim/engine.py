@@ -939,6 +939,12 @@ class Unit:
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
     charge_dist: float = 0.0     # tiles walked without attacking -- arms the charge bonus
+    # DRILL DISTRACTOR. A unit the engine simulates and the policy sees, but that the drill's
+    # GRADER ignores (scenarios.enemy_units skips it). Drills present one clean interaction, so
+    # WAIT is correct for most of their steps and the gate learned to wait everywhere -- measured,
+    # plays/step 10.4% -> 5.9% and winrate 10% -> 0%. Noise puts something else on the board.
+    # A field rather than a set-on-the-instance because Unit uses __slots__.
+    drill_noise: bool = False
     hook_left: float = 0.0       # Fisherman: seconds remaining in an active hook-pull motion
     hook_windup_left: float = 0.0  # fixed pre-throw wind-up time
     hook_out_left: float = 0.0   # hook projectile travel time OUT to target

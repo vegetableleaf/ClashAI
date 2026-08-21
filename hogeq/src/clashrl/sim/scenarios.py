@@ -106,12 +106,35 @@ def our_king(eng):
     return t[2] if len(t) > 2 else None
 
 
-def our_princesses(eng):
-    return [t for t in eng.towers[0][:2]]
+def our_princesses(eng, s=None):
+    """Our princess towers -- or just the ONE the drill's interaction threatens, when the drill
+    recorded a lane.
+
+    Lane-awareness exists so a drill can carry NOISE in the other lane without that noise reading
+    as the drill's own answer failing. With no lane recorded (every scenario before noise existed)
+    this returns both towers, exactly as it always did.
+    """
+    towers = [t for t in eng.towers[0][:2]]
+    lane = (s or {}).get("lane")
+    if lane is None or not towers:
+        return towers
+    return [towers[int(lane)]] if int(lane) < len(towers) else towers
 
 
 def enemy_units(eng):
-    return [u for u in eng.units if u.team == 1 and u.hp > 0]
+    """Live enemies the DRILL IS ABOUT -- tagged noise is deliberately invisible here.
+
+    Noise units are real to the engine and real in the observation the policy sees; they are only
+    hidden from the grader. Without this, every "no enemy alive" predicate would be unsatisfiable
+    the moment a distractor was added, and 12 drills use exactly that.
+    """
+    return [u for u in eng.units
+            if u.team == 1 and u.hp > 0 and not getattr(u, "drill_noise", False)]
+
+
+def noise_units(eng):
+    """The distractors, for diagnostics that want to see them."""
+    return [u for u in eng.units if u.hp > 0 and getattr(u, "drill_noise", False)]
 
 
 def targets_our_king(eng, _s=None) -> bool:
@@ -140,7 +163,7 @@ def princess_hp_lost(eng, s, limit: float) -> bool:
     start = (s or {}).get("princess_hp0")
     if start is None:
         return False
-    return (start - sum(float(t.hp) for t in our_princesses(eng))) > limit
+    return (start - sum(float(t.hp) for t in our_princesses(eng, s))) > limit
 
 
 def all_enemies_dead(eng, _s=None) -> bool:
