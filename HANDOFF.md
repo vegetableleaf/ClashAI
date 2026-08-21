@@ -777,6 +777,34 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### Retuning the curriculum for ladder levels (2026-08-21)
+
+Levelling the drills correctly broke four of them. All four are fixed, and `tools/drill_calibrate.py`
+is the tool that did it: it runs a drill's two extremes -- **do nothing** and **its own reference
+line** -- with the predicates stripped, and reports each arm's damage distribution. A threshold
+belongs in the GAP between them; if there is no gap, the scenario needs rethinking rather than a new
+number. Every bar below is now measured, not guessed.
+
+* **`skeletons_kill_the_miner`** -- a MITIGATION drill (owner). Ignored 401 HP, answered 217: 184 HP
+  saved for ~1 elixir, 46%. Old bars demanded the Miner die (he dies either way -- the tower gets
+  him) and under 350 HP, which no one-elixir answer can reach.
+* **`knight_guards_the_bow`** -- its predicate required the Valkyrie DEAD while its own notes said
+  *"scored on the BOW SURVIVING… killing the Valkyrie would be the wrong play"*. She is a
+  Knight-counter by design: pinned by level, the reference went 75% at L11 → 65/55/35/35% at L13-16.
+  Scored on the bow surviving now: **100% at every level including 16**, baseline 0%.
+* **`skeletons_stop_the_wall_breakers`** -- swept the answer: `y=0.66 at t=0.0` holds damage to a
+  mean of 183 against 497 for the old `(0.70, t=0.6)` (breakers are fast; the half second cost more
+  than the placement). Bar at 450 because **ignored never drops below 472** -- doing nothing cannot
+  pass, by measurement. "All enemies dead" dropped: Wall Breakers are kamikaze.
+* **`nado_pull_the_flock_back`** -- the Tornado is the ENABLER, not the answer, the same correction
+  `nado_the_sneaky_lock` already carries. Six ladder minions deal ~950 dps and kill a 4424 HP tower
+  in ~5 s, so a damage-free pull bought 130 HP for 3 elixir. With the Ice Wizard dealt alongside it:
+  ignored 4372 (min 4150) vs 2588 (max 3132) -- clean separation, bar at 3600.
+
+**State: 0 UNWINNABLE, 0 passable by doing nothing.** Reference lines still below par at ladder
+levels (drill winnable, hand-written line stale): `nado_clump_for_the_wizard` scripted **0%** while
+doctrine passes 96%, `split_lane` 40%, `knight_blocks_the_charge` 68%, `tesla_pulls_the_wincon` 68%.
+
 ### ⚠⚠ EVERY DRILL PUT OUR REAL-LEVEL CARDS AGAINST LEVEL 11 ENEMIES (owner caught this, 2026-08-21)
 
 > *"just need to make sure it isn't putting the model's level 14-16 cards up against level 11

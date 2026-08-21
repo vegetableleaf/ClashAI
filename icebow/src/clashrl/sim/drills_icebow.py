@@ -528,8 +528,15 @@ register(Scenario(
     # depends on how long it keeps firing, so the bodyguard is the play -- and "in front" is a
     # real constraint: a Knight dropped behind the bow watches it die.
     spawns=(("x_bow", 0, 0.26, 0.56, 0.0), ("valkyrie", 1, 0.24, 0.42, 0.0)),
+    # SCORED ON THE BOW SURVIVING -- which is what these notes always said, and what the predicate
+    # did not do. It also required the Valkyrie DEAD, and she is a Knight-counter by design: at
+    # ladder levels a Knight buys the bow time, he does not win that fight. Measured with the enemy
+    # level pinned, the reference line goes 75% at L11 -> 65 / 55 / 35 / 35% at L13-16, so the kill
+    # clause turned a real skill into a coin flip that the drill then reported as UNWINNABLE. The
+    # Knight is bought to keep the bow FIRING; whether the Valkyrie also dies is the tower's
+    # business.
     success=lambda e, s: (any(u.team == 0 and u.hp > 0 and u.spec.base == "x_bow" for u in e.units)
-                          and not any(u.team == 1 and u.hp > 0 for u in e.units)),
+                          and played(s, "knight")),
     failure=lambda e, s: not any(u.team == 0 and u.hp > 0 and u.spec.base == "x_bow"
                                  for u in e.units),
     time_limit=20.0,
@@ -600,7 +607,13 @@ register(Scenario(
     name="nado_pull_the_flock_back",
     goal="Pull an air swarm BACKWARD, into our own tower's range -- direction is the play.",
     tier="compound",
-    hand=("tornado",),
+    # THE TORNADO IS THE ENABLER, NOT THE ANSWER -- the same correction nado_the_sneaky_lock
+    # already carries ("a lone Tornado re-locks the bow and then watches it die"). Measured at
+    # ladder levels, six minions deal ~950 dps and take a 4424 HP princess tower down in about five
+    # seconds; a damage-free pull only moves them, so doing nothing cost 4372 HP and the correct
+    # pull cost 4242 -- 130 HP for 3 elixir, and the drill was UNWINNABLE on its own terms. The
+    # pull has to hand them to something that kills them, so the Ice Wizard is dealt with it.
+    hand=("tornado", "ice_wizard"),
     elixir=6.0,
     # ALREADY PAST THE GUNS. The generic clump rule aims at the centre band, which for a flock at
     # this depth is FORWARD of them -- it drags them away from the towers that are supposed to
@@ -609,14 +622,26 @@ register(Scenario(
     # SCORED IN TOWER HP. Every minion dies in every line -- the towers get them eventually -- so
     # a body count measured nothing at all. What the pull buys is what the towers paid for them:
     # measured, 3311 HP doing nothing against 2029 for a correct backward pull.
-    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
-                          and not princess_hp_lost(e, s, 2400.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 2900.0),
+    # BARS RE-MEASURED AT LADDER LEVELS with the pull's enabling card in hand, 30 reps, predicates
+    # stripped:
+    #
+    #     IGNORED               mean 4372   min 4150   max 4424   (a princess tower dies)
+    #     TORNADO + WIZARD      mean 2588   min 1910   max 3132
+    #
+    # 3600 sits in the gap: doing nothing CANNOT reach it (its best case is 4150) and the correct
+    # line always clears it (its worst is 3132). The old 2400/2900 came from level 11 minions and
+    # a lone Tornado, where the same board cost 3311 unanswered.
+    #
+    # "All enemies dead" dropped: the towers get every minion eventually in every line, so it was
+    # measuring the board, not the pull -- 1/30 alive doing nothing against 0/30 for the answer.
+    success=lambda e, s: (played(s, "tornado")
+                          and not princess_hp_lost(e, s, 3600.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 4000.0),
     time_limit=16.0,
     randomise=("lane", "timing"),
     graded_by=("nado_clump", "nado_bad"),
     prereq=("nado_clump_for_the_wizard",),
-    reference=(("tornado", 0.20, 0.78, 0.6),),
+    reference=(("tornado", 0.20, 0.78, 0.6), ("ice_wizard", 0.20, 0.74, 1.8)),
     notes="`nado_bad` fires when survivors end up CLOSER to our princesses, which is precisely "
           "what this play does on purpose -- so a correct tornado-back is charged -0.3. Drill "
           "kept as the measurement of that disagreement.",
@@ -704,16 +729,34 @@ register(Scenario(
     spawns=(("wall_breakers", 1, 0.194, 0.56, 0.0),),
     # THE ELIXIR TRADE IS THE POINT. Rocketing a 2-elixir card is the exact play the counters work
     # was commissioned to stop, so the drill fails on the SPEND even when the outcome is fine.
-    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+    # RECALIBRATED FOR LADDER LEVELS. The old bars (200 pass / 300 fail) were set against level 11
+    # breakers; at 13-16 they hit for ~518 each and no answer could reach 200, so the drill went
+    # UNWINNABLE -- reference, doctrine and baseline all 0%. Measured over 30 reps at ladder levels
+    # with the predicates stripped:
+    #
+    #     IGNORED                    mean 827   min 472   max 1250
+    #     SKELETONS y=0.66 t=0.0     mean 183   min   0   max  625
+    #
+    # 450 is the bar because IGNORED NEVER GOES BELOW 472: doing nothing cannot pass, by
+    # measurement rather than by hope, while the correct line clears it most of the time. It does
+    # not clear it always -- a level 16 breaker that connects costs 625 and fails the drill, which
+    # is honest: at that level one does get through.
+    #
+    # "All enemies dead" is gone. Wall Breakers are KAMIKAZE and die on contact either way, so it
+    # was never evidence about the play -- the same do-nothing trap as the Miner's "no enemy alive".
+    success=lambda e, s: (played(s, "skeletons")
                           and float(s.get("spent", 0.0)) <= 2.5
-                          and not princess_hp_lost(e, s, 200.0)),
+                          and not princess_hp_lost(e, s, 450.0)),
     failure=lambda e, s: (played(s, "rocket") or spent_more_than(e, s, 4.0)
-                          or princess_hp_lost(e, s, 300.0)),
+                          or princess_hp_lost(e, s, 500.0)),
     time_limit=14.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=("skeletons_kill_the_miner",),
-    reference=(("skeletons", 0.194, 0.70, 0.6),),
+    # IMMEDIATELY, AND FURTHER FORWARD. Swept at ladder levels: y=0.66 at t=0.0 holds the damage to
+    # a mean of 183, against 497 for the old (0.70, t=0.6) -- the breakers are fast, so the half
+    # second cost more than the placement did.
+    reference=(("skeletons", 0.194, 0.66, 0.0),),
     notes="The user's own example of an unrealistic counter: rocketing Wall Breakers is a "
           "horrible trade the advisor kept proposing. Here it is a hard failure.",
 ))
