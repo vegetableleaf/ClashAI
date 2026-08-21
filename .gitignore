@@ -53,3 +53,8 @@ data/webcache/
 # copy of the repo that no one reviews. Regenerate with `/graphify .` instead of committing it.
 graphify-out/
 raw/
+
+# scratch probes written during diagnosis
+s_tmp.py
+align_tmp.py
+wr_eval_tmp.py
