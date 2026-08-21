@@ -697,7 +697,22 @@ class SimMatchEnv:
         # of sustained quiet, engine-timed in _observe -- a flickering assessment cannot refill it.
         dpt = float(tid[7]) if len(tid) > 7 else 0.5
         deep_ok = self.threat_min_depth <= dpt <= self.threat_max_depth
-        budget_ok = self._threat_credits < self.threat_credit_budget
+        # THE BUDGET IS THE SIZE OF THE THREAT, not a constant. A flat 2 is right for a push and
+        # wrong for a lone Miner: it funded a SECOND credit for a second card thrown at a one-card
+        # threat, so over-answering out-earned the cheapest sufficient answer -- measured on
+        # skeletons_kill_the_miner, whose pass condition is "answered for <= 1.5 elixir", episodes
+        # that failed by over-spending took +1.130 from this term against +0.556 for the ones that
+        # passed. The cheapest sufficient answer is the tier above every counter rule, and this was
+        # paying a premium to violate it.
+        #
+        # Counted in CARDS via the same collapse _threat_miss_idle triages with -- bodies are not
+        # cards, and one Skeletons is nine bodies. Still capped by threat_credit_budget, so a real
+        # two-card push funds exactly what it funded before.
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        n_cards = len(threat_value.cards_from_bodies(
+            self.db, [u.spec.base for u in committed])) if committed else 1
+        budget_ok = self._threat_credits < max(1, min(self.threat_credit_budget, n_cards))
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
         if prof.kind == "building":

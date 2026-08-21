@@ -206,7 +206,12 @@ register(Scenario(
     name="bank_to_six_then_bow",
     goal="A 3.5-cycle deck BANKS. Hold, then spend the bank on the win condition.",
     tier="foundational",
-    hand=("x_bow",),
+    # THE TEMPTATION HAS TO BE DEALT. The failure branch below names the cards you would dump the
+    # bar on, and once `hand` actually restricted the hand they stopped being dealt -- so nothing
+    # could fail the drill and it passed 60/60. Same reasoning ignore_the_ignorable already records:
+    # a restraint drill has to hold the thing you are being asked not to spend on. X-Bow first, so
+    # the card the drill is named for is in the opening hand.
+    hand=("x_bow", "knight", "skeletons", "ice_wizard", "tesla"),
     elixir=2.0,
     spawns=(),                     # a quiet board is the whole board
     # Success is the bow going down at all -- from 2 elixir that cannot happen until the bank has
@@ -513,7 +518,12 @@ register(Scenario(
     name="nado_the_sneaky_lock",
     goal="Drag the defender off our X-Bow so the bow re-locks onto the tower.",
     tier="compound",
-    hand=("tornado",),
+    # THE KNIGHT IS PART OF THE LINE, so it has to be part of the hand. The reference plays
+    # both and the notes say why -- the pull converts the bow's attention, the body keeps it
+    # alive long enough to matter -- but `hand` named only the Tornado. That was harmless
+    # while a declared hand merely reordered the cycle; now that it restricts, an undeclared
+    # card would make the drill's own answer unplayable.
+    hand=("tornado", "knight"),
     elixir=6.0,
     # THIS PLAY DID NOT EXIST until spells were allowed past the river: the bow stands AT the
     # river and the cast has to land next to it, which `deploy_clamp` used to haul back into our

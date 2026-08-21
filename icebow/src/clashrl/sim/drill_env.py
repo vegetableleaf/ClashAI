@@ -125,15 +125,30 @@ class DrillEnv(SimMatchEnv):
         # `cycle` holds SLOT indices, not card ids -- _slot_card_id(slot) maps one to the other,
         # and a slot can present either its base card or its Evolution. Filling cycle with card
         # ids indexes slot_evo_id out of range, which is exactly what it did on the first run.
+        # ORDERED BY THE SCENARIO'S OWN DECLARATION, not by slot index. The hand is `cycle[:4]`, so
+        # with more than four wanted cards which ones are actually dealt was decided by deck layout
+        # -- a drill could open without the card it is named for. Declared order is what a drill
+        # author expects to be dealt.
+        order = {str(b): i for i, b in enumerate(self.scenario.hand or ())}
         wanted_slots = []
         for slot in range(self.n_slots):
             cid = self._slot_card_id(slot)
             key = str(self.deck_keys[cid]) if 0 <= cid < len(self.deck_keys) else ""
-            if key in want or key.replace("_evo", "") in want:
-                wanted_slots.append(slot)
+            base = key.replace("_evo", "")
+            if key in want or base in want:
+                wanted_slots.append((order.get(key, order.get(base, 99)), slot))
+        wanted_slots = [s for _i, s in sorted(wanted_slots)]
         if wanted_slots:
-            rest = [s for s in self.cycle if s not in wanted_slots]
-            self.cycle = wanted_slots + rest
+            # ONLY these. `cycle[:4]` is the hand, so putting the wanted slots FIRST and keeping the
+            # rest -- which is what this did -- left three other deck cards in hand and playable.
+            # Measured on nado_king_activation, the policy answered the Hog with the rest of the
+            # deck and collected +1.0 threat_response a time for it, so episodes that never
+            # performed the drill's technique out-earned the ones that did. A drill that deals
+            # cards it does not name is not measuring the interaction it is named after.
+            #
+            # The scenarios are checked against this: every reference line is playable from its own
+            # declared hand, so the drill's answer is never the thing this rules out.
+            self.cycle = list(wanted_slots)
 
     def drill_prior_gate(self):
         """P(play) the REFERENCE LINE would use right now, or None when it has no opinion.
@@ -159,6 +174,20 @@ class DrillEnv(SimMatchEnv):
             t_next = float(ref[i][3])
         except Exception:  # noqa: BLE001 -- a reference without a clock cannot time anything
             return None
+        # CANNOT NOMINATE WHAT THE LINE CANNOT PAY FOR. bank_to_six_then_bow opens at 2 elixir with a
+        # 6-cost X-Bow written at t=0 ("first thing" -- you cannot bank before the match starts), so
+        # a purely clock-based prior nominated PLAY from the opening tick and the card head, which
+        # can only choose among AFFORDABLE cards, picked the cheap ones the drill fails you for
+        # dumping the bar on: 0 passes in 60, the prior itself driving the failure. Holding until the
+        # card is affordable also survives `randomise=("elixir",)`, which moves the moment the bank
+        # fills by a couple of seconds every episode.
+        base_next = str(ref[i][0])
+        for cid, key in enumerate(self.deck_keys):
+            if str(key).replace("_evo", "") != base_next:
+                continue
+            if float(self.eng.elixir[0]) < float(self.specs[cid].elixir):
+                return 0.02
+            break
         # One agent step of slack, so the prior does not sit one tick behind the line it mirrors.
         now = float(self.eng.t) - float(self._drill.get("t0", 0.0))
         return 0.90 if now >= t_next - 0.3 else 0.03
@@ -637,7 +666,8 @@ def outcomes(cfg, names=None, reps=60, seed=5, level=11):
         except Exception:  # noqa: BLE001
             pg = None
         if pg is not None:
-            p_play = 0.4 * p_play + 0.6 * float(pg)
+            gf = float(cfg.get("sim", "ppo_drill_gate_floor", default=0.85))
+            p_play = (1.0 - gf) * p_play + gf * float(pg)
         if not hand or _rnd.random() >= p_play:
             return (0, 0, 0)
         cid = _rnd.choice(hand)

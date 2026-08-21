@@ -1447,7 +1447,7 @@ sim:
   ppo_drill_cell_floor: 0.75    # WHERE. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
-  ppo_drill_gate_floor: 0.6     # WHEN, from the drill's reference line, which records the time each
+  ppo_drill_gate_floor: 0.85    # WHEN, from the drill's reference line, which records the time each
                                 # card is played. The gate was the one head with no prior at all,
                                 # and it is the one the timing drills turn on: bank_to_six,
                                 # hold_the_spell, hold_the_tesla and nado_king_activation are passed
@@ -1455,6 +1455,11 @@ sim:
                                 # near-50/50 gate reaches with probability ~0.5^N. Measured ZERO
                                 # passes in 60 episodes for every one of them, so they could not be
                                 # learned however the reward was tuned. 0 = no prior.
+                                # 0.85 rather than 0.6 because of the LONGEST hold: bank_to_six
+                                # cannot afford its X-Bow for ~19 steps, and at 0.6 the mixture
+                                # still plays at 0.23/step, so holding all the way through is
+                                # 0.77^19 ~ 1 in 80 (measured: 0 passes in 60, twice). At 0.85 it
+                                # is ~1 in 6, while a prior that says PLAY still fires at 0.84.
   # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md -> sim/doctrine.py; user-approved 2026-08-14). When a
   # doctrine rule matches the current (card, board state), this share of the CELL FLOOR's mass is
   # sampled from the doctrine placement distribution instead of uniform: anti-EQ Tesla spot,

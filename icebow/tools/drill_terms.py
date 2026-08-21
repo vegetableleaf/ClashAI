@@ -38,7 +38,8 @@ def explore(env, rnd):
     except Exception:  # noqa: BLE001
         pg = None
     if pg is not None:
-        p_play = 0.4 * p_play + 0.6 * float(pg)
+        gf = float(env.cfg.get("sim", "ppo_drill_gate_floor", default=0.85))
+        p_play = (1.0 - gf) * p_play + gf * float(pg)
     if not hand or rnd.random() >= p_play:
         return (0, 0, 0)
     cid = rnd.choice(hand)

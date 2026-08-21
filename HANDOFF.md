@@ -696,6 +696,145 @@ threat_response, crown, chip, spell_waste) are per PLAY and untouched.
   second regardless of dt, and a quiet-refill loop used `range(5)` for "≥3 s". Both are now
   time-based.
 
+## 3n. 2026-08-20 — why the drill pass rate sat at the random baseline (four root causes)
+
+Owner's call after three PPO runs stuck at 17–20% against a 16.7% random baseline: *"I'd rather the
+process be slow and accurate… go with option 1"* — fix each interaction's reward individually
+rather than bolt a drill-completion bonus on top. Doing that end-to-end on the first drill found
+that the problem was never a single reward weight.
+
+**`run.py drills --outcomes` is the acceptance test now.** `--reward` asks whether the correct play
+beats idling, and a drill can pass that while still teaching its own opposite. `--outcomes` asks the
+question the optimiser actually asks: *under the trainer's own exploration, does PASSING pay more
+than every other outcome?* At the start, **14 of 28 icebow drills said no.**
+`tools/drill_terms.py <drill> [reps]` is the follow-up — per-REWARD-TERM means split by outcome, so
+when a drill pays for the wrong thing it names the term responsible.
+
+### The four causes, in the order they were found
+
+1. **The king-activation credit measured a different event than the drill.** `king_hit` required the
+   king to be AWAKE plus something NEAR it. Waking is a consequence of the king taking *damage*,
+   which is strictly after the retarget — and the proximity proxy is the §6.0a false positive (a
+   king woken by chip collects the credit while the attacker walks past). The real event is the
+   owner's own wording: *the attacker is now going for the KING* — an identity test on `u.target`,
+   which the drill's success predicate already used. It was also gated behind `age >= 3.5`, and **a
+   drill ENDS the instant its success predicate fires**, so the episode was over before the window
+   opened. Now per-tick, on `u.target`.
+
+2. **The tornado graded itself on a snapshot taken before the pull happened.** `_register_nado`
+   recorded membership at the DECISION instant; the engine applies the pull on the following
+   advance. Measured on the drill's own reference line, which passes 100%:
+
+   | t | hog distance to vortex centre | radius 5.5 |
+   |---|---|---|
+   | 3.60 | 5.53 tiles — snapshot taken here | OUT |
+   | 4.20 | 5.09 tiles — vortex applies here | IN |
+   | 4.80 | on the centre, targeting our KING | — |
+
+   `pulled` was **empty**, and clump/retarget/combo/king/bad-pull all iterate it, so the entire
+   `nado` family was silent. Same defect already fixed for rocket and log (judge a spell when it
+   LANDS); the tornado was never included, and unlike those it is not an instant — the vortex pulls
+   for its duration, so membership now accrues across the window, recording each unit's position and
+   tower lock AT CAPTURE. **The tornado is in the icebow hand for every matchup drill**, so this one
+   silent credit was suppressing far more than the tornado drills.
+
+3. **The gate was the one head with no exploration prior.** Five drills recorded ZERO passes in 60
+   episodes and four were the same kind — the skill is WHEN, not where. Each is passed by waiting
+   several seconds and then playing; the card head has a prior and the cell head has one, but the
+   gate sampled from the policy alone at ~50/50 per step, so a twelve-step hold arrives with
+   probability ~0.5¹². **No reward can fix that**: `hold_the_tesla` already paid correctly in the
+   direction it could express (timeout +0.66 beat playing early +0.01), but the outcome it exists to
+   teach was never once generated. Every drill already carries the answer — its `reference` line
+   records WHEN each card is played, a field used until now only by the report's third column.
+
+4. **`hand=("tornado",)` did not restrict the hand.** `_restrict_hand` set
+   `cycle = wanted_slots + rest` and the hand is `cycle[:4]`, so a drill naming one card still dealt
+   three others, all playable — against its own docstring ("a rep must fail for the RIGHT reason").
+   Measured on `nado_king_activation`: `threat_response` pays **zero** for a pull spell by design
+   (it is judged by `_nado_shaping`), yet it read +0.286 on passes and **+0.839 on timeouts** — the
+   policy was answering the Hog with the rest of the deck and collecting +1.0 a time, so episodes
+   that never performed the technique out-earned the ones that did. Not a broken reward: blocking a
+   Hog with a body IS a real answer. A broken **drill** — it claimed to present one card and
+   presented four, so its pass rate was never evidence about the technique. This contaminated all 25
+   drills that declare a hand.
+
+5. **The reward paid for the second card thrown at a one-card threat.** `threat_credit_budget` is a
+   flat **2** — "a real defense is 1-2 cards, not 4" — which is right for a push and wrong for a lone
+   Miner. `skeletons_kill_the_miner` passes only if the answer costs ≤ 1.5 elixir (one Skeletons), so
+   a passing episode can collect at most one +1.0 credit while an episode that keeps throwing
+   Skeletons collects both and fails on `spent > 3.0`:
+
+   | term | pass (n=9) | fail (n=46) |
+   |---|---|---|
+   | `threat_response` | +0.556 | **+1.130** |
+   | `elixir_trade` | +0.271 | +0.141 |
+   | **episode** | +0.587 | **+1.188** |
+
+   The cheapest sufficient answer is the tier *above* every counter rule, and this term was paying a
+   premium to violate it. The budget now scales with how many enemy **cards** are committed (via the
+   same `cards_from_bodies` collapse `_threat_miss_idle` triages with — bodies are not cards), still
+   capped by the configured budget, so a real two-card push funds exactly what it funded before.
+   ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
+   depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
+
+### What the hand restriction broke, and the two follow-on fixes
+
+* **A discipline drill needs the temptation in hand.** `bank_to_six_then_bow` fails if you dump the
+  bar on knight/skeletons/ice_wizard/tesla but declared `hand=("x_bow",)`. Once the hand actually
+  restricted, that branch became unreachable and the drill passed **60/60** — a drill nothing can
+  fail measures nothing. Its hand now deals the temptations, as `ignore_the_ignorable` already did
+  ("THE TEMPTATION MUST BE A COUNTER, not the whole deck"). A source scan found this was the **only**
+  such mismatch across both decks.
+* **`_restrict_hand` dealt in slot order**, so with more than four wanted cards which ones reached
+  the opening hand was an accident of deck layout — a drill could open without the card it is named
+  for. It follows the scenario's declared order now.
+* **The timing prior has to know what the line costs.** `bank_to_six` opens at 2 elixir with a 6-cost
+  X-Bow written at `t=0` ("first thing" — you cannot bank before the match starts). The gate prior
+  read that literally, nominated PLAY from the opening tick, and the card head — which can only pick
+  among *affordable* cards — chose the cheap ones the drill fails you for. The prior holds until the
+  next reference card is affordable, which also survives `randomise=("elixir",)` moving the moment
+  the bank fills every episode.
+* **The gate floor went 0.6 → 0.85.** At 0.6 the mixture still plays at 0.23/step while the prior
+  says HOLD; `bank_to_six` needs ~19 consecutive holds, so 0.77¹⁹ ≈ 1 in 80 (measured: 0 passes in
+  60, twice). At 0.85 it is ~1 in 6, and a prior that says PLAY still fires at 0.84.
+
+### Two left open, deliberately
+
+* **`bow_defends_from_the_centre` — the reward is RIGHT and the drill is wrong.** Its failing
+  episodes out-earn its passing ones because the bow locked and chipped the enemy tower
+  (`xbow_lock` +0.309, `chip_offence` +0.267, `take_enemy_tower` firing in one of four): those are
+  **crown trades** — our princess ate the Giant, their tower came down — which is good Clash Royale.
+  The drill fails on our princess HP alone and cannot tell a tower lost for nothing from one traded
+  for theirs. A fix is written (stop failing once an enemy princess tower has fallen) but **not
+  applied**: at n=4 it does not clear the evidence bar the acceptance test now enforces, and acting
+  on four episodes is the exact mistake that bar exists to prevent.
+* **`skeletons_kill_the_miner` residue.** The budget fix cut the over-answering premium
+  (`threat_response` on fails +1.130 → +0.783) and the verdict fell to `weak`, but passing still
+  trails slightly. The remaining cause is that a *single* correct answer earns credit only if it
+  lands inside the narrow `intercept` lane window, while repeat plays get more chances at it — more
+  shots, more likely to collect. Fixing that means changing the shape of every `threat_response`
+  credit in both decks, so it is measured and recorded rather than rushed.
+
+### Also fixed: the acceptance test was convicting drills on two-sample means
+
+It failed a drill whenever *any* outcome out-earned PASS, regardless of evidence — `timeout +5.55
+(n=2)` beating `pass +2.15 (n=13)`. Acting on that would have meant rewriting reward terms that
+work. A rival now needs **n ≥ 5 AND a lead wider than two standard errors of the difference**; a
+real-but-unproven lead prints as `weak` and is left alone. Separately, a **restraint** drill is
+passed by doing nothing, so exploration can never record a pass and "nothing to learn from" was
+backwards — when no episode passes, the do-nothing line is scored and, if it is the drill's own
+correct answer, becomes the PASS column.
+
+### Traps this batch (add to §8)
+
+* **A drill ends on its success predicate, so any reward that resolves on a delay cannot pay it.**
+  The king credit waited 3.5 s for an episode that ended at 0.6 s.
+* **A cast-time snapshot is one agent step stale.** Anything measuring "what this spell caught" must
+  read the board when the spell APPLIES, not when it is requested.
+* **`--reward` (correct play beats idling) is not the same question as `--outcomes` (passing pays
+  most).** The king drill scored +1.10 on the first while paying +0.24 to time out and −0.28 to pass.
+* **A significance-free comparison of outcome means is noise.** Two episodes cannot outvote thirteen.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
