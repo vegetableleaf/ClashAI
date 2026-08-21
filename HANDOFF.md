@@ -1219,10 +1219,20 @@ addressing drill CONTENT. The fault is in the OPTIMISER, it predates the drills,
 Same eval harness, 24 episodes/checkpoint, icebow, 700 matches of `train-sim-ppo`, drills at 0.3:
 
 ```
-untrained (fresh net)          reward  -6.78     <- the baseline to beat
-mult=4.0  seeds 41,42          reward -25.46     3.8x WORSE than doing nothing
-mult=1.0  seeds 41,42 (ship)   reward -33.96     5.0x WORSE than doing nothing
+untrained  5 inits x 40 eps    reward -13.57 +- 0.24 (sd ACROSS INITS)   <- the baseline
+mult=4.0   seeds 41,42         reward -25.46     1.9x worse than doing nothing
+mult=1.0   seeds 41,42         reward -29.53 / -33.96   2.2-2.5x worse
+drill_frac 0.0 (no drills)     reward -28.22     2.1x worse
+per-head clipping ON           reward -35.35     2.6x worse (NO improvement)
 ```
+
+> **CORRECTION (same day).** An earlier version of this section, and commit `4767a7b`, quoted the
+> untrained baseline as **-6.78** and claimed 3.8x-5.0x degradation. That number came from a
+> differently-configured one-off eval and is NOT reproducible. Re-measured properly -- 5 independent
+> inits x 40 episodes -- untrained is **-13.57 with sd 0.24**, so the degradation is ~2x, not ~5x.
+> The direction and the significance are unchanged (every trained result is dozens of standard
+> deviations below baseline); only the magnitude was wrong. Baseline script:
+> `<scratch>/baseline.py`. Do not quote a single-draw untrained number again -- it moved by 2x.
 
 Training does not plateau, it does not overfit -- it moves the policy AWAY from its own reward
 signal, hard, from the very first episodes. An untrained net beats every checkpoint we produced.
@@ -1292,6 +1302,50 @@ Printed every `log_every` episodes:
 
 **The gate-pressure metric is UNDER-POWERED as written**: it resets each window, so sd (0.011)
 exceeds the between-arm difference (0.010). Accumulate across a whole run before comparing arms.
+
+### PER-HEAD CLIPPING: implemented, measured, DOES NOT FIX IT
+
+`ppo_clip_per_head` (default false) gives each head its own ratio and its own trust region, so the
+432-way cell head cannot delete the gate's update. Measured A/B, 700 matches, seeds 41/42:
+
+```
+per-head ON    P(play) 0.137   reward -35.35
+baseline OFF   P(play) 0.186   reward -29.53
+```
+
+No improvement (worse, inside noise). The head-coupling defect is REAL -- sd(log r) gate 0.002 vs
+cell 0.478, measured six times -- but it is NOT what degrades the policy. Left in, default off.
+
+### WHERE THE COLLAPSE ACTUALLY COMES FROM (measured, narrow, unresolved)
+
+The gate is **not** starved and **not** throttled:
+
+```
+GRAD NORM per head:  gate 0.028-0.049   card 0.010-0.031   cell 0.00003-0.0001   value 0.30-1.39
+```
+
+The gate has the LARGEST policy-head gradient. `_clamp_heads()` never touches it. The cell head's
++-61% log-prob swings come from Adam taking ~lr-sized steps on a near-zero gradient, not from
+learning signal.
+
+The engine is a small, near-noiseless, EVERY-UPDATE push on the gate at states where it PLAYED:
+
+```
+GATE drift:  PLAY steps -0.169 / -0.386 / -0.408     WAIT steps -0.044 / -0.007 / +0.012
+```
+
+Play log-prob falls 0.17-0.41 per update; wait is flat. The gate's mean movement is ~11x its own
+sd -- a systematic drive, not noise -- and that compounds 0.5 -> 0.06 over hundreds of updates.
+
+RULED OUT by measurement (not argument): drills (identical at drill_frac 0.0), joint-ratio clip
+coupling (per-head fix did nothing), clip bound width (mult=4.0 mitigates ~25%, does not fix),
+gate gradient starvation (largest gradient), `_clamp_heads()` (does not touch the gate), floors
+clipping plays by construction (only 0-3% clipped at epoch 0).
+
+STILL OPEN: three terms touch the gate logits -- the PPO surrogate, the entropy bonus, and the
+value loss through the shared trunk `z`. A probe that takes each term's gradient w.r.t. the gate
+logits and reports its signed push on (logit_play - logit_wait) is instrumented and was running
+when this was written. Whichever term is large and negative is the cause.
 
 ### NEXT: find why plain-match PPO moves against its reward
 

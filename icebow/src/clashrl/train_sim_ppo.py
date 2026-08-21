@@ -274,6 +274,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # clipping caps positive-advantage updates while negative ones keep pushing, the gate decays
     # toward waiting no matter what the reward says. See ppo_clip_play_mult in config.yaml.
     clip_play_mult = float(cfg.get("sim", "ppo_clip_play_mult", default=1.0))
+    clip_per_head = bool(cfg.get("sim", "ppo_clip_per_head", default=False))
     lr = float(cfg.get("sim", "ppo_lr", default=0.00025))
     ent_coef = float(cfg.get("sim", "ppo_entropy", default=0.01))
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
@@ -457,11 +458,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 p_c_mix = p_c_pure
             lp_c_mix = p_c_mix.clamp_min(1e-12).log()
             c_samp = torch.multinomial(p_c_mix.clamp_min(1e-12), 1).squeeze(1)
-            acts, logps = [], []
+            acts, logps, lparts = [], [], []
             for i in range(len(obs_b)):
                 g = int(g_samp[i])
                 if g == 0:
                     acts.append((0, 0, 0)); logps.append(float(lp_g[i, 0]))
+                    lparts.append((float(lp_g[i, 0]), 0.0, 0.0))   # wait: gate only
                     continue
                 ci = int(c_samp[i])
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
@@ -504,7 +506,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 cell = int(torch.multinomial(p_cell.clamp_min(1e-12), 1))
                 acts.append((1, ci, cell))
                 logps.append(float(lp_g[i, 1] + lp_c_mix[i, ci] + lp_cell[cell]))
-        return acts, logps, [float(v) for v in val]
+                lparts.append((float(lp_g[i, 1]), float(lp_c_mix[i, ci]),
+                               float(lp_cell[cell])))
+        return acts, logps, [float(v) for v in val], lparts
 
     def _drill_gate(env):
         """Local-pool twin of RemotePool.drill_gate."""
@@ -559,6 +563,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
+    _terms = {"want": True, "ppo": 0.0, "entropy": 0.0, "value": 0.0, "n": 0}
+    _gnorm = {"want": True, "gate": 0.0, "card": 0.0, "cell": 0.0, "val": 0.0,
+              "n": 0, "gate_w": 0.0}
+    _ep0 = {"want": True}
+    _lastep = {"want": True}
     _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0,
                    "play_block": 0.0, "wait_block": 0.0, "play_push": 0.0, "wait_push": 0.0,
                    "play_raw": 0.0, "wait_raw": 0.0,
@@ -722,6 +731,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         adv_f = (adv_f - adv_f.mean()) / (adv_f.std() + 1e-8)
         ret_f = torch.tensor(ret.reshape(-1), device=device)
         oldlp_f = torch.tensor(flat("logp"), dtype=torch.float32, device=device)
+        # PER-HEAD old log-probs [N,3] = (gate, card, cell). Needed to see WHICH head
+        # moves a play out of the trust region -- measured, a play swings +-35-46% while
+        # a wait swings +-0.5-2.4% (17-84x), which three comparable heads cannot explain.
+        oldp_f = (torch.tensor(flat("lparts"), dtype=torch.float32, device=device)
+                  if roll.get("lparts") else torch.zeros(N, 3, device=device))
         g_f = torch.tensor([a[0] for a in flat("act")], device=device)
         c_f = torch.tensor([a[1] for a in flat("act")], device=device)
         cell_f = torch.tensor([a[2] for a in flat("act")], device=device)
@@ -748,6 +762,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         tot_pl = tot_vl = tot_ent = tot_clip = 0.0
         nb = 0
         idx_all = np.arange(N)
+        _ep0["want"] = True     # one epoch-0 reading per UPDATE
+        _lastep["want"] = True
         for _ep in range(n_epochs):
             np.random.shuffle(idx_all)
             for s in range(0, N, minibatch):
@@ -777,11 +793,120 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 cell_ent = play * (-(lp_cell.exp() * lp_cell).sum(1))
                 a_b, r_b, ol_b = adv_f[mb_t], ret_f[mb_t], oldlp_f[mb_t]
                 ratio = (new_lp - ol_b).exp()
+                # EPOCH-0 RATIO. The rollout stores the MIXTURE log-prob mu = (1-f)*pi_old + f*prior,
+                # so on the FIRST pass -- pi_new still == pi_old, no gradient step taken yet -- a
+                # play's ratio is pi_old/mu, which is ABOVE 1 wherever the policy is more confident
+                # than the prior. Ceiling is 1/(1-f) per floored head and they MULTIPLY: with card
+                # and cell floors both 0.15 that is 1.176^2 = 1.384, past the 1.2 clip. A wait has
+                # no gate floor, so its epoch-0 ratio is exactly 1. If plays sit above 1 here while
+                # waits sit at 1, plays are clipped BY CONSTRUCTION and their positive-advantage
+                # gradient is deleted before training has done anything at all.
+                if _ep0["want"] and _ep == 0:
+                    with torch.no_grad():
+                        _rd, _pmm = ratio.detach(), play.detach()
+                        if float(_pmm.sum()) > 0 and float((1.0 - _pmm).sum()) > 0:
+                            _rp = float((_rd * _pmm).sum() / _pmm.sum())
+                            _rw = float((_rd * (1.0 - _pmm)).sum() / (1.0 - _pmm).sum())
+                            _hi = float(((_rd > 1.0 + clip_eps).float() * _pmm).sum() / _pmm.sum())
+                            print("[train-sim-ppo] EPOCH-0 ratio  PLAY mean %.4f  WAIT mean %.4f  "
+                                  "| %.1f%% of plays ALREADY outside the %.2f clip before any step"
+                                  % (_rp, _rw, 100.0 * _hi, 1.0 + clip_eps), flush=True)
+                            _ep0["want"] = False
+                # LAST-EPOCH SPREAD. Epoch 0 showed plays only 2.4% off-centre and NOTHING clipped,
+                # so the 12-25x clip gap is not present at the start of an update -- it ACCUMULATES
+                # over the epochs. A play's log-ratio is the SUM of three heads' log-ratio changes
+                # (gate + card + cell), a wait's is the gate alone, so if the heads move roughly
+                # independently a play should random-walk out of the trust region about sqrt(3)
+                # faster. Compare the SPREAD, not the mean: sd(log r) by kind on the final epoch.
+                if _ep == n_epochs - 1 and _lastep["want"]:
+                    with torch.no_grad():
+                        _lr = (new_lp - ol_b).detach()
+                        _pmm = play.detach()
+                        _np_, _nw = float(_pmm.sum()), float((1.0 - _pmm).sum())
+                        if _np_ > 8 and _nw > 8:
+                            _lp_p = _lr[_pmm > 0.5]; _lp_w = _lr[_pmm <= 0.5]
+                            _sp, _sw = float(_lp_p.std()), float(_lp_w.std())
+                            print("[train-sim-ppo] LAST-EPOCH sd(log ratio)  PLAY %.4f  WAIT %.4f  "
+                                  "ratio %.2fx  (sqrt(3)=1.73 if the 3 heads move independently)"
+                                  % (_sp, _sw, (_sp / _sw) if _sw > 1e-9 else float('nan')), flush=True)
+                            _lastep["want"] = False
+                            # WHICH HEAD moves the play out of the band. new_lp - old_lp for a play
+                            # is d(gate) + d(card) + d(cell); the stored per-head old log-probs let
+                            # us split it. If d(cell) dominates, then a play whose GATE decision was
+                            # right is being clipped for a reason that has nothing to do with the
+                            # gate -- the 432-way cell head's movement discards the gate's update,
+                            # while a wait (gate alone) is never clipped and updates freely. That is
+                            # a gate that cannot learn to play, next to a cell head that learns fine
+                            # (measured: cell_struct 90.8x untrained, 60 distinct cells).
+                            _pm_i = _pmm > 0.5
+                            if int(_pm_i.sum()) > 8:
+                                _dg = (lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
+                                       - oldp_f[mb_t][:, 0]).detach()[_pm_i]
+                                _dc = (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
+                                       - oldp_f[mb_t][:, 1]).detach()[_pm_i]
+                                _dq = (lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1)
+                                       - oldp_f[mb_t][:, 2]).detach()[_pm_i]
+                                if _gnorm["n"]:
+                                    _k = float(_gnorm["n"])
+                                    print("[train-sim-ppo]   GRAD NORM per head: gate %.5f  "
+                                          "card %.5f  cell %.5f  value %.5f   | gate weight "
+                                          "norm %.3f"
+                                          % (_gnorm["gate"] / _k, _gnorm["card"] / _k,
+                                             _gnorm["cell"] / _k, _gnorm["val"] / _k,
+                                             _gnorm["gate_w"]), flush=True)
+                                    for _k2 in ("gate", "card", "cell", "val"):
+                                        _gnorm[_k2] = 0.0
+                                    _gnorm["n"] = 0
+                            # SIGNED mean, not |mean|. The gate moves ~11x its own sd EVERY update -- a small,
+                            # near-noiseless drift, which is what compounds 0.5 -> 0.06 over hundreds of updates.
+                            # The cell head is the reverse (mean 0.068 vs sd 0.478: almost pure noise). So the
+                            # SIGN of the gate drift is the whole question, and the first version of this line
+                            # printed .abs() and destroyed exactly that.
+                            print("[train-sim-ppo]   PLAY log-ratio BY HEAD  sd: gate %.4f  "
+                                  "card %.4f  CELL %.4f   (SIGNED mean %+.4f / %+.4f / %+.4f)"
+                                  % (float(_dg.std()), float(_dc.std()), float(_dq.std()),
+                                     float(_dg.mean()), float(_dc.mean()), float(_dq.mean())), flush=True)
+                            # The gate drift on WAIT steps too -- the play-only mask above never sees them.
+                            # If play log-prob falls while wait log-prob rises, the gate is being walked
+                            # toward waiting from both sides on every update.
+                            _pw_i = ~_pm_i
+                            if int(_pw_i.sum()) > 8:
+                                _dgw = (lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
+                                        - oldp_f[mb_t][:, 0]).detach()[_pw_i]
+                                print("[train-sim-ppo]   GATE drift: PLAY steps %+.5f  WAIT steps %+.5f"
+                                      "   (+ = that action becoming MORE likely)"
+                                      % (float(_dg.mean()), float(_dgw.mean())), flush=True)
                 s1 = ratio * a_b
                 # PER-ACTION-KIND BOUND: wider for plays, whose ratio carries three log-probs.
                 eps_b = clip_eps * (1.0 + (clip_play_mult - 1.0) * play)
                 s2 = torch.clamp(ratio, 1.0 - eps_b, 1.0 + eps_b) * a_b
                 pl = -torch.min(s1, s2).mean()
+                if clip_per_head:
+                    # PER-HEAD TRUST REGIONS. Clipping the JOINT ratio lets the noisiest head
+                    # decide the fate of every head's update. Measured, on play steps:
+                    #     sd(log r)  gate 0.0019   card 0.0284   CELL 0.4781
+                    # The 432-way cell head moves 250x more than the gate. Its +-61% swing throws
+                    # the sample outside the +-20% band, and the min() deletes the gradient for the
+                    # WHOLE play -- including the gate's 0.2% move, which was never out of bounds.
+                    # A wait carries the gate alone, is essentially never clipped, and updates
+                    # freely both ways. So the gate's reinforcement for PLAYING is censored while
+                    # its reinforcement for WAITING is not, and it decays regardless of reward.
+                    # That is "decay from start": P(play) 0.5 -> 0.06-0.25 in every run, with or
+                    # without drills, while the cell head itself learns fine (90.8x untrained).
+                    #
+                    # Giving each head its own ratio and its own clip removes the coupling: the
+                    # cell head can still be clipped for its own excursions, and the gate is judged
+                    # only on how far the GATE moved.
+                    def _surr(r):
+                        return torch.min(r * a_b, torch.clamp(r, 1.0 - clip_eps, 1.0 + clip_eps) * a_b)
+                    op = oldp_f[mb_t]
+                    r_g = (lp_g.gather(1, g_b.view(-1, 1)).squeeze(1) - op[:, 0]).exp()
+                    r_c = (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1) - op[:, 1]).exp()
+                    r_q = (lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1) - op[:, 2]).exp()
+                    # mean over the heads that ACTED: 1 for a wait, 3 for a play, so a play does
+                    # not silently get 3x the gradient magnitude of a wait.
+                    per = _surr(r_g) + play * (_surr(r_c) + _surr(r_q))
+                    pl = -(per / (1.0 + 2.0 * play)).mean()
                 vl = F.mse_loss(val, r_b)
                 if _warm["left"] > 0:
                     _warm["left"] -= 1
@@ -809,7 +934,52 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             sil_lp = play * (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
                                              + lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1))
                             loss = loss - sil_coef * (sil_b * sil_lp).sum() / denom
+                # WHICH LOSS TERM DRIVES THE GATE. Measured, the gate drifts -0.169 on play steps and
+                # -0.044 on wait steps every update -- consistently, at 11x its own noise. Three terms
+                # touch the gate logits: the PPO surrogate, the entropy bonus, and (via the shared trunk
+                # z) the value loss. Attributing the drift to any of them by argument has failed all day,
+                # so take the gradient of each term separately w.r.t. the GATE LOGITS and report the push
+                # on (logit_play - logit_wait). Gradient descent moves logits AGAINST the gradient, so the
+                # push is -(d term / d logit_play - d term / d logit_wait). Negative push = that term is
+                # driving the gate toward WAITING.
+                if _terms["want"] and not _warm["left"]:
+                    with torch.enable_grad():
+                        _ent_term = -ent_coef * ent.mean() - _cell_ent_now() * cell_ent.mean()
+                        for _nm, _t in (("ppo", pl), ("entropy", _ent_term), ("value", vf_coef * vl)):
+                            try:
+                                _g = torch.autograd.grad(_t, gq_m, retain_graph=True,
+                                                         allow_unused=True)[0]
+                            except Exception:
+                                _g = None
+                            if _g is None:
+                                _terms[_nm] = float("nan"); continue
+                            _push = -(_g[:, 1] - _g[:, 0])
+                            _terms[_nm] = float(_push.sum())      # sum: total pull on the gate this minibatch
+                        _terms["n"] += 1
+                        if _terms["n"] % 40 == 0:
+                            print("[train-sim-ppo]   GATE PUSH BY LOSS TERM (+ = toward PLAY):  "
+                                  "ppo %+.5f   entropy %+.5f   value %+.5f"
+                                  % (_terms["ppo"], _terms["entropy"], _terms["value"]), flush=True)
                 opt.zero_grad(); loss.backward()
+                # IS THE GATE STARVED OF GRADIENT? Measured, a play's log-prob moves +-61% on the
+                # CELL head per update while the GATE moves +-0.2% -- 250x. Clipping does not cause
+                # that (it is visible before any clip), and _clamp_heads() never touches the gate.
+                # So either the gate receives far less gradient than the other heads, or it receives
+                # it and cannot act on it. Adam normalises per-parameter, so a small gradient still
+                # yields a ~lr-sized step: if the gate's grad norm is comparable to the others and
+                # it STILL barely moves, the cause is downstream (saturation, the shared trunk), not
+                # starvation. Record both the raw grad norms and the realised parameter movement.
+                if _gnorm["want"]:
+                    with torch.no_grad():
+                        def _gn(m):
+                            g = [q.grad for q in m.parameters() if q.grad is not None]
+                            return float(torch.cat([q.reshape(-1) for q in g]).norm()) if g else 0.0
+                        _gnorm["gate"] += _gn(net.gate)
+                        _gnorm["card"] += _gn(net.policy.card_head)
+                        _gnorm["cell"] += _gn(net.policy.cell_conv[-1])
+                        _gnorm["val"] += _gn(net.value)
+                        _gnorm["n"] += 1
+                        _gnorm["gate_w"] = float(net.gate.weight.detach().norm())
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
                 _clamp_heads()                                # sharpness cap: heads can rank, not rail
@@ -907,7 +1077,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
-                    "act": [], "logp": [], "val": [], "rew": [], "done": [], "trunc": [],
+                    "act": [], "logp": [], "lparts": [], "val": [], "rew": [], "done": [], "trunc": [],
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
@@ -916,11 +1086,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
-                acts, logps, vals = choose_sample(cobs, chand, cnxt, celx, cthr)
+                acts, logps, vals, lparts = choose_sample(cobs, chand, cnxt, celx, cthr)
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
+                roll["lparts"].append(lparts)
                 rew_row, done_row, trunc_row = [], [], []
                 if remote:
                     step_out = rpool.step_all(acts)

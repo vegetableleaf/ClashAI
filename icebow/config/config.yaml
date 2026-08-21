@@ -1432,6 +1432,13 @@ sim:
   ppo_minibatch: 512            # minibatch size within a rollout
   ppo_clip: 0.2
   ppo_clip_play_mult: 1.0   # scales the PPO clip bound for PLAY actions only (1.0 = old behaviour).
+  ppo_clip_per_head: false   # clip EACH head against its OWN ratio instead of the joint one.
+                             # Measured on play steps: sd(log r) gate 0.0019 / card 0.0284 /
+                             # CELL 0.4781 -- the 432-way cell head moves 250x more than the
+                             # gate, so clipping the JOINT ratio lets the cell head delete the
+                             # gate's update (+-61% swing vs a +-20% band). A wait carries the
+                             # gate alone and is never clipped, so the gate's reinforcement for
+                             # PLAYING is censored while WAITING is not -> "decay from start".
                             # A play's importance ratio is a product over gate x card x cell -- the
                             # cell head is 432-way -- while a wait's is the 2-way gate alone. One
                             # epsilon is therefore not one trust region: MEASURED on a fresh run,
