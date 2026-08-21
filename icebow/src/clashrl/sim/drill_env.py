@@ -135,6 +135,34 @@ class DrillEnv(SimMatchEnv):
             rest = [s for s in self.cycle if s not in wanted_slots]
             self.cycle = wanted_slots + rest
 
+    def drill_prior_gate(self):
+        """P(play) the REFERENCE LINE would use right now, or None when it has no opinion.
+
+        The gate is the only head without an exploration prior, and it is the one the timing drills
+        turn on. Sampled from the policy alone it sits near 50/50 per step, so a drill that is
+        passed by holding for twelve steps and then playing is reached with probability ~0.5^12 --
+        measured, zero passes in 60 episodes for every hold drill, which is why they never taught
+        anything however the reward was tuned.
+
+        The line already knows: each reference step carries the time it is played at. Before the
+        next step's time this says HOLD, after it says PLAY, and once the line is finished it says
+        hold -- a drill's line is the whole answer, so anything past it is extra spending.
+        """
+        s = getattr(self, "scenario", None)
+        ref = list(getattr(s, "reference", ()) or ()) if s is not None else []
+        if not ref:
+            return None
+        i = len(self._drill.get("plays", ()))
+        if i >= len(ref):
+            return 0.02                                  # line complete -- further plays are waste
+        try:
+            t_next = float(ref[i][3])
+        except Exception:  # noqa: BLE001 -- a reference without a clock cannot time anything
+            return None
+        # One agent step of slack, so the prior does not sit one tick behind the line it mirrors.
+        now = float(self.eng.t) - float(self._drill.get("t0", 0.0))
+        return 0.90 if now >= t_next - 0.3 else 0.03
+
     def drill_prior_cells(self, card_id: int):
         """[(cell, weight)] for the REFERENCE play of this card, or None.
 
@@ -600,7 +628,17 @@ def outcomes(cfg, names=None, reps=60, seed=5, level=11):
         hand = [c for c in env._hand_ids()
                 if 0 <= c < len(env.specs)
                 and float(env.eng.elixir[0]) >= float(env.specs[c].elixir)]
-        if not hand or _rnd.random() < 0.45:
+        # PLAY/HOLD, with the same drill timing prior the trainer blends into its gate (0.6 of the
+        # decision, from the drill's reference line). Without it this sampler holds at a flat 0.55
+        # per step and the timing drills are unreachable here even once training can pass them.
+        p_play = 0.55
+        try:
+            pg = env.drill_prior_gate() if hasattr(env, "drill_prior_gate") else None
+        except Exception:  # noqa: BLE001
+            pg = None
+        if pg is not None:
+            p_play = 0.4 * p_play + 0.6 * float(pg)
+        if not hand or _rnd.random() >= p_play:
             return (0, 0, 0)
         cid = _rnd.choice(hand)
         if _rnd.random() < 0.75 and _rnd.random() < 0.6:
@@ -633,15 +671,64 @@ def outcomes(cfg, names=None, reps=60, seed=5, level=11):
             got.setdefault((info or {}).get("verdict", "?"), []).append(tot)
         mean = {k: sum(v) / len(v) for k, v in got.items() if v}
         n = {k: len(v) for k, v in got.items()}
+
+        # A RESTRAINT DRILL IS PASSED BY DOING NOTHING, so exploration -- which plays something in
+        # most episodes -- can never record a pass, and calling that "nothing to learn from" would
+        # be exactly backwards. Score the do-nothing line; if it is this drill's correct answer, it
+        # IS the passing behaviour and belongs in the PASS column.
+        restraint = False
+        if "pass" not in mean:
+            idle = []
+            for k in range(max(6, int(reps) // 6)):
+                env = DrillEnv(cfg, s, seed=7000 + k, level=level)
+                env.reset()
+                done, tot, info = False, 0.0, {}
+                while not done:
+                    _o, r, done, info = env.step((0, 0, 0))
+                    tot += float(r)
+                idle.append((tot, (info or {}).get("verdict", "?")))
+            if idle and all(v == "pass" for _t, v in idle):
+                restraint = True
+                got["pass"] = [t for t, _v in idle]
+                mean["pass"] = sum(got["pass"]) / len(got["pass"])
+                n["pass"] = len(got["pass"])
+
         p = mean.get("pass")
-        others = [v for k, v in mean.items() if k != "pass"]
+
+        def _sem2(key):
+            """Squared standard error of `key`'s mean -- the width the comparison has to clear."""
+            v = got.get(key) or []
+            if len(v) < 2:
+                return float("inf")            # one episode says nothing about its own spread
+            m = sum(v) / len(v)
+            return (sum((x - m) ** 2 for x in v) / (len(v) - 1)) / len(v)
+
+        # A RIVAL OUTCOME ONLY COUNTS IF THE EVIDENCE IS THERE. Comparing bare means failed drills
+        # on two-episode flukes (timeout +5.55 from n=2 against pass +2.15 from n=13), which would
+        # have sent this rewriting reward terms that are working.
+        MIN_N = 5
+        rivals = [(k, mean[k]) for k in mean if k != "pass"]
         if p is None:
             verdict = "NO PASSES -- nothing to learn from"
-        elif others and p <= max(others):
-            best = max(mean, key=mean.get)
-            verdict = "NO -- '%s' pays more (%+.2f vs %+.2f)" % (best, max(others), p)
         else:
-            verdict = "yes"
+            beat, weak = None, None
+            for k, m in sorted(rivals, key=lambda kv: -kv[1]):
+                if m <= p:
+                    continue
+                lead = m - p
+                if n.get(k, 0) >= MIN_N and lead > 2.0 * ((_sem2(k) + _sem2("pass")) ** 0.5):
+                    beat = (k, m)
+                    break
+                if weak is None:
+                    weak = (k, m)
+            if beat:
+                verdict = "NO -- '%s' pays more (%+.2f vs %+.2f)" % (beat[0], beat[1], p)
+            elif weak:
+                verdict = "yes (weak: '%s' %+.2f n=%d not significant)" % (
+                    weak[0], weak[1], n.get(weak[0], 0))
+            else:
+                verdict = "yes" + (" (restraint: PASS column is the do-nothing line)"
+                                   if restraint else "")
         def _c(k):
             return ("%+.2f (n=%d)" % (mean[k], n[k])) if k in mean else "-"
         print("%-30s %16s %16s %16s   %s"

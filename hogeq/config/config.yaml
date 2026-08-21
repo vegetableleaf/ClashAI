@@ -1465,6 +1465,24 @@ sim:
                                 # sharpen the head, reached only once there is something worth
                                 # sharpening onto.
   ppo_cell_entropy_anneal: 3000 # episodes over which it decays, linearly. 0 = constant (old behaviour).
+
+  # A DRILL IS EXPLORED DIFFERENTLY FROM A MATCH. A match wants the policy mostly following its own
+  # head, because that behaviour is what is being evaluated. A drill exists to CONCENTRATE
+  # experience on one interaction the policy would otherwise never reach -- making a rare state
+  # common is the whole point -- so it gets its own, much higher floors. Both stay MIXTURES: the
+  # stored log-prob is the mixture's, so the PPO ratio remains exact importance sampling and the
+  # policy still has to choose the action and is still graded on the outcome.
+  ppo_drill_cell_floor: 0.75    # WHERE. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
+                                # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
+                                # with their reference cell in the prior -- too rare to learn from.
+  ppo_drill_gate_floor: 0.6     # WHEN, from the drill's reference line, which records the time each
+                                # card is played. The gate was the one head with no prior at all,
+                                # and it is the one the timing drills turn on: bank_to_six,
+                                # hold_the_spell, hold_the_tesla and nado_king_activation are passed
+                                # by holding several steps and then playing, which the policy's own
+                                # near-50/50 gate reaches with probability ~0.5^N. Measured ZERO
+                                # passes in 60 episodes for every one of them, so they could not be
+                                # learned however the reward was tuned. 0 = no prior.
   # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md -> sim/doctrine.py; user-approved 2026-08-14). When a
   # doctrine rule matches the current (card, board state), this share of the CELL FLOOR's mass is
   # sampled from the doctrine placement distribution instead of uniform: anti-EQ Tesla spot,

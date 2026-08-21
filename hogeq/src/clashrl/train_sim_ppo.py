@@ -290,6 +290,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # the prior -- too rare to learn from. A drill exists to make a rare state common, so it is
     # explored differently from a match, where the point is to evaluate the policy's own head.
     drill_cell_floor = float(cfg.get("sim", "ppo_drill_cell_floor", default=0.75))
+    # ...and the GATE gets one too, inside a drill. Without it the timing drills are unreachable:
+    # holding for N steps happens with probability ~0.5^N, so `hold_the_tesla_for_their_wincon`
+    # (twelve steps) recorded zero passes in 60 episodes and could not be learned at all.
+    drill_gate_floor = float(cfg.get("sim", "ppo_drill_gate_floor", default=0.6))
     # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md; log 2026-08-14): when a doctrine rule matches the
     # current (card, board), this share of the CELL FLOOR's mass samples from the doctrine
     # distribution instead of uniform -- known-good placements get their outcomes SEEN early, and
@@ -377,8 +381,27 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             cq, ceq, gq, val = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                    elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
             cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
-            lp_g = F.log_softmax(gq_m, dim=1)
-            g_samp = torch.multinomial(lp_g.exp(), 1).squeeze(1)
+            # GATE SAMPLING, with a DRILL TIMING PRIOR mixed in. Same shape as the card and cell
+            # floors below and for the same reason: a head that never samples an action gets no
+            # gradient for it. Here the unsampled action is HOLDING -- the gate sits near 50/50
+            # early in training, so a drill passed by waiting twelve steps and then playing is
+            # reached with probability ~0.5^12, and every timing drill measured zero passes in 60
+            # episodes. The prior is the drill's own reference line, which records when each card
+            # is played. Stored log-prob is the MIXTURE's, so the PPO ratio stays exact.
+            p_g = F.log_softmax(gq_m, dim=1).exp()
+            if drill_gate_floor > 0.0:
+                for i in range(p_g.shape[0]):
+                    if not in_drill[i]:
+                        continue
+                    pg = rpool.drill_gate(i) if remote else _drill_gate(pool[i])
+                    if pg is None or float(p_g[i, 1]) < 1e-6:
+                        continue                 # no line, or PLAY is masked -- never nominate it
+                    prior = torch.zeros_like(p_g[i])
+                    prior[1] = float(min(1.0, max(0.0, pg)))
+                    prior[0] = 1.0 - float(prior[1])
+                    p_g[i] = (1.0 - drill_gate_floor) * p_g[i] + drill_gate_floor * prior
+            lp_g = p_g.clamp_min(1e-12).log()
+            g_samp = torch.multinomial(p_g.clamp_min(1e-12), 1).squeeze(1)
             # Card sampling from a MIXTURE: (1-floor)*policy + floor*uniform(playable). The STORED
             # log-prob below is this mixture's (the true behaviour policy mu), so the PPO ratio the
             # update forms -- pi_new(card)/mu(card), pi_new being the pure softmax it recomputes --
@@ -458,6 +481,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 acts.append((1, ci, cell))
                 logps.append(float(lp_g[i, 1] + lp_c_mix[i, ci] + lp_cell[cell]))
         return acts, logps, [float(v) for v in val]
+
+    def _drill_gate(env):
+        """Local-pool twin of RemotePool.drill_gate."""
+        try:
+            return env.drill_prior_gate() if hasattr(env, "drill_prior_gate") else None
+        except Exception:  # noqa: BLE001 -- a bad reference must not break the rollout
+            return None
 
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Deterministic mode of the policy (benchmark): gate by LOGIT compare, argmax card/cell."""

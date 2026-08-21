@@ -100,6 +100,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             # IS THIS ENV IN A DRILL RIGHT NOW -- needed every step, not just at the end, because
             # the parent picks the exploration floor per step and the envs live out here.
             "in_drill": bool(getattr(env, "_in_drill", False)),
+            # WHEN the drill's reference line would play. The gate is sampled in the parent and the
+            # envs live out here, the same split that made --drill-frac a no-op for two runs.
+            "dgate": (env.drill_prior_gate() if hasattr(env, "drill_prior_gate") else None),
         }
 
     obs_cache = [e.reset() for e in envs]
@@ -210,6 +213,10 @@ class RemotePool:
 
     def doctrine_card(self, i: int):
         return (self.last[i] or {}).get("dcard") or {}
+
+    def drill_gate(self, i: int):
+        """P(play) the current drill's reference line would use, or None outside a drill."""
+        return (self.last[i] or {}).get("dgate")
 
     def close(self):
         for c in self.conns:
