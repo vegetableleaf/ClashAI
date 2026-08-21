@@ -14,8 +14,8 @@ building that stops him.
 """
 from __future__ import annotations
 
-from .scenarios import (Scenario, enemy_tower_hp_lost, first_play_t, n_plays, played,
-                        played_before, play_xy, princess_hp_lost, register,
+from .scenarios import (Scenario, enemy_tower_hp_lost, first_play_t, hits_at_most, hits_taken,
+                        n_plays, played, played_before, play_xy, princess_hp_lost, register,
                         spent_more_than)
 
 _BRIDGE_ROW = 0.5625          # actions.min_own_gy = 13: the frontmost legal own-half row
@@ -156,13 +156,28 @@ register(Scenario(
     # tower without ever landing a hit. With the quake the Cannon is gone at 2.4s, he still has
     # 808 HP, and he connects at 4.8s. The elixir buys TEMPO AND HIS HEALTH BAR, so the predicate
     # has to read the thing downstream of both.
-    success=lambda e, s: enemy_tower_hp_lost(e, s, 0.0),
+    #
+    # "HIS HITS", PLURAL -- and now a measured number. `> 0.0` meant ONE chip counted, and at ladder
+    # levels an unaided Hog lands one 30% of the time, so the do-nothing baseline passed 36-40% and
+    # the drill was scoring the board again -- the same failure this comment already records at 88%.
+    # Measured, 30 reps, predicates stripped:
+    #
+    #     IGNORED      enemy tower dmg mean 140   max 765    connected  9/30
+    #     EARTHQUAKE   enemy tower dmg mean 829   p75 1147   connected 27/30
+    #
+    # 800 is about two Hog hits at these levels and sits ABOVE what an unaided Hog has ever managed
+    # here (765), so doing nothing cannot pass -- by measurement rather than by hope.
+    success=lambda e, s: enemy_tower_hp_lost(e, s, 800.0),
     failure=lambda e, s: (not _our(e, "hog_rider")) or spent_more_than(e, s, 4.0),
     time_limit=16.0,
     randomise=("lane", "timing"),
     graded_by=("wincon_exec", "spell_waste"),
     prereq=("hog_send_on_a_quiet_board",),
-    reference=((("earthquake", 0.26, 0.36, 0.6)),),
+    # CAST IMMEDIATELY, AND DEEPER. Swept at ladder levels against the measured 800 bar: the old
+    # (0.26, 0.36, t=0.6) passes 44%, (0.20, 0.28, t=0.0) passes 84%. The half second is most of it
+    # -- every tick of quake the Cannon eats before it starts shooting is a tick our Hog keeps his
+    # health bar for -- and the quake's radius still covers the Cannon from a row further in.
+    reference=((("earthquake", 0.20, 0.28, 0.0)),),
     notes="THE DECK'S NAMESAKE COMBO, and until the anywhere_ids fix it was an action the policy "
           "could not take at all: Earthquake aimed at their building was clamped back to our own "
           "front row, so the quake landed ~10 tiles behind the thing it was meant to kill.",
@@ -300,16 +315,30 @@ register(Scenario(
     name="log_resets_the_charge",
     goal="Roll the Log into a charging Battle Ram -- the knockback is the point.",
     tier="foundational",
-    hand=("the_log",),
-    elixir=5.0,
+    # THE LOG RESETS THE CHARGE; IT DOES NOT ANSWER THE RAM. Measured in hits taken, 25 reps at
+    # ladder levels: ignored 6-7, a lone Log exactly 6 -- half a hit for 2 elixir, and the drill
+    # only ever "passed" by casting the Log three or four times, which the restricted-hand replay
+    # bug allowed. With the body that finishes what the reset started it is 4-5, which never
+    # overlaps doing nothing. Same shape as icebow's nado_pull_the_flock_back: the cheap card is
+    # the ENABLER, and a drill that hands you only the enabler is not teaching the play.
+    hand=("the_log", "skeletons"),
+    elixir=6.0,
     spawns=(("battle_ram", 1, 0.194, 0.46, 0.0),),
-    success=lambda e, s: (not _enemy(e, "battle_ram") and not princess_hp_lost(e, s, 300.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 300.0),
+    # SCORED IN HITS, for the same reason as ice_spirit_denies_the_hit: enemy levels roll 13-16, so
+    # an HP bar moves +-32% between episodes while a connection is a connection at any level. The
+    # old 300 HP bar was a level-11 number and unreachable here. Measured:
+    #
+    #     IGNORED          hits 6-7      LOG only  exactly 6      LOG + SKELETONS  4-5
+    #
+    # 5 sits in the gap -- doing nothing never gets below 6. "Ram dead" is dropped: a Battle Ram
+    # ALWAYS dies, it is kamikaze and breaks into Barbarians on contact, so it was never evidence.
+    success=lambda e, s: (played(s, "the_log") and hits_at_most(s, 5)),
+    failure=lambda e, s: hits_taken(s) >= 7,
     time_limit=14.0,
     randomise=("lane", "timing"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=("log_the_ground_swarm",),
-    reference=(("the_log", 0.194, 0.62, 1.2),),
+    reference=(("the_log", 0.194, 0.62, 1.2), ("skeletons", 0.194, 0.70, 1.8)),
     notes="A connected charge costs a large chunk of tower; the same ram stopped early costs two "
           "elixir. The HP threshold is what separates the two outcomes.",
 ))
@@ -324,9 +353,21 @@ register(Scenario(
     # SPENT IS PART OF SUCCESS. A Tesla also answers a Knight, and it answers it for four elixir
     # and a building slot the deck needs for their win condition. Triage is about the cheapest
     # thing that WORKS, which is a different question from what works.
-    success=lambda e, s: (not _enemy(e, "knight") and float(s.get("spent", 0.0)) <= 1.5
-                          and not princess_hp_lost(e, s, 500.0)),
-    failure=lambda e, s: spent_more_than(e, s, 3.0) or princess_hp_lost(e, s, 500.0),
+    # SKELETONS DISTRACT A KNIGHT, THEY DO NOT KILL ONE -- counters.yaml's own row says "surround".
+    # Requiring the Knight DEAD was the same negation-for-mitigation error the Miner drill had, and
+    # at ladder levels it made this unpassable: measured over 30 reps with the predicates stripped,
+    # the reference line still leaves the Knight alive 6/30, and no placement sweep beat 16%.
+    #
+    #     IGNORED     mean 1752   min 1218
+    #     SKELETONS   mean 1230   p25 882      -> 522 HP saved for 0.8 elixir
+    #
+    # 1200 is the bar because IGNORED NEVER GOES BELOW 1218: doing nothing cannot pass, by
+    # measurement. SPENT <= 1.5 stays -- a Tesla also answers a Knight, for four elixir and the
+    # building slot the deck needs for their win condition, and the cheapest sufficient answer is
+    # the whole point of the drill.
+    success=lambda e, s: (played(s, "skeletons") and float(s.get("spent", 0.0)) <= 1.5
+                          and not princess_hp_lost(e, s, 1200.0)),
+    failure=lambda e, s: spent_more_than(e, s, 3.0) or princess_hp_lost(e, s, 1500.0),
     time_limit=18.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
@@ -412,8 +453,19 @@ register(Scenario(
     # THRESHOLDS FROM MEASUREMENT: the tower loses 1584 HP to this Hog unaided and 1267 with a
     # well-timed spirit -- almost exactly one hog hit, which is what one elixir of freeze is worth.
     # The first draft's 620 bar sat below both, so it failed a perfect line and read as impossible.
-    success=lambda e, s: (not _enemy(e, "hog_rider") and not princess_hp_lost(e, s, 1400.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 1550.0),
+    # SCORED IN HITS DENIED, NOT HITPOINTS. An Ice Spirit denies A HIT -- that is the whole card --
+    # and a hit is the same event at level 13 and at level 16, where an HP bar is not: enemy levels
+    # roll 13-16 (+-32% damage), so the spread the roll alone produces (ignored ranged 2294-4424 HP)
+    # is far wider than the 670 HP the freeze buys, and no absolute bar could ever separate them.
+    # The drill read UNWINNABLE, which was a fact about the unit of measurement, not the play.
+    # Measured over 25 reps, predicates stripped:
+    #
+    #     IGNORED     hits taken mean 7.56   range 6-9
+    #     ICE SPIRIT  hits taken mean 6.04   range 5-7
+    #
+    # The Hog dies to the tower either way, so his death is not evidence -- the denied hit is.
+    success=lambda e, s: (not _enemy(e, "hog_rider") and hits_at_most(s, 6)),
+    failure=lambda e, s: hits_taken(s) >= 8,
     time_limit=16.0,
     randomise=("lane", "timing"),
     graded_by=("threat_response", "chip_defence"),

@@ -173,6 +173,20 @@ def enemy_tower_hp_lost(eng, s, limit: float) -> bool:
     return (start - sum(float(t.hp) for t in eng.towers[1][:2])) > limit
 
 
+def hits_taken(s) -> int:
+    """How many agent steps our princess towers took damage in -- see DrillEnv.step.
+
+    The LEVEL-INVARIANT alternative to an HP threshold. Enemy levels roll 13-16, so the same play
+    costs a different number of hitpoints every episode and a fixed HP bar cannot separate a small
+    effect from the noise; the number of connections it prevents is the same at every level.
+    """
+    return int((s or {}).get("hits_taken", 0))
+
+
+def hits_at_most(s, n: int) -> bool:
+    return hits_taken(s) <= int(n)
+
+
 def spent_more_than(eng, s, limit: float) -> bool:
     """The agent has committed more elixir than the interaction is worth -- the failure mode
     triage exists to prevent, and one a purely outcome-based predicate would never catch."""

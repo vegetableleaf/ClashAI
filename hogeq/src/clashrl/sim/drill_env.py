@@ -124,6 +124,29 @@ class DrillEnv(SimMatchEnv):
         self.eng.elixir[0] = elix
         self.eng.elixir[1] = 10.0                      # the script pays for its own spawns
 
+    def _play_slot(self, card_id: int) -> None:
+        """One play per DEALT CARD in a restricted-hand drill.
+
+        `SimMatchEnv._play_slot` sends a played slot to the back of the cycle, which is right for a
+        real 8-card deck and wrong here: a drill dealt one or two cards has nothing else in the
+        cycle, so the card is back in hand immediately and can be replayed for as long as the
+        elixir lasts. Measured, that is exactly how several doctrine columns were passing --
+        tornado three times in two seconds, ice_spirit five times -- while the drill's own
+        single-cast reference line scored 0%. The trainer explores in here too, so it was a
+        strategy the policy could learn as well as the oracle.
+
+        A real hand is 4 of 8: replaying a card costs three other plays. With one or two dealt that
+        is unreachable, so the honest model is that the card is spent. No reference line in either
+        deck replays a card, so nothing's own answer becomes unplayable; matchup drills declare no
+        hand at all and keep the ordinary cycle.
+        """
+        super()._play_slot(card_id)
+        if not (self.scenario is not None and getattr(self.scenario, "hand", ())):
+            return
+        slot = self.slot_of.get(card_id)
+        if slot is not None and slot in self.cycle:
+            self.cycle.remove(slot)
+
     def _enemy_level(self) -> int:
         """A ladder opponent's card level, rolled the way `make_opponent` rolls it.
 
@@ -316,6 +339,16 @@ class DrillEnv(SimMatchEnv):
         obs, reward, done, info = super().step(action)
         spent = max(0.0, pre - float(self.eng.elixir[0]))
         self._drill["spent"] = float(self._drill.get("spent", 0.0)) + spent
+        # HITS TAKEN, because an HP bar cannot survive the ladder level roll. Enemy levels vary
+        # 13-16 (+-32% damage), so for a drill whose play buys ONE denied hit the effect is smaller
+        # than the spread the roll alone produces, and the two outcomes overlap however the bar is
+        # placed. A COUNT does not move with level: an Ice Spirit denies a hit at 13 and at 16.
+        # One step per connection at a 0.6s period against a 1.6s hit speed.
+        now_hp = sum(float(t.hp) for t in self.eng.towers[0][:2])
+        was_hp = float(self._drill.get("_hp_prev", now_hp))
+        if now_hp < was_hp - 1e-6:
+            self._drill["hits_taken"] = int(self._drill.get("hits_taken", 0)) + 1
+        self._drill["_hp_prev"] = now_hp
         # THE PLAY LEDGER. Elixir dropping is the evidence the deploy actually happened -- the
         # action is only a REQUEST, and the engine refuses it for cost, for an illegal cell, or for
         # a card that is not really in hand. Recording on the request instead would make "played"
