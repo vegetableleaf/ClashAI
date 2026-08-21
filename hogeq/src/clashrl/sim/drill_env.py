@@ -90,6 +90,107 @@ class _ScriptedOpponent:
                 self.placed += 1
 
 
+def compose_components(pool, rng, n_max=3):
+    """Pick 2..n_max scenarios and lay them out as one board.
+
+    Lanes ALTERNATE so two components do not spawn on top of each other, and each component gets a
+    START OFFSET so the number of live interactions rises and falls within the episode rather than
+    being fixed at N.
+    """
+    names = list(pool)
+    if len(names) < 2:
+        return []
+    n = 2 + int(float(rng.random()) * max(1, n_max - 1))
+    n = max(2, min(n_max, min(n, len(names))))
+    picked, seen = [], set()
+    while len(picked) < n and len(seen) < len(names):
+        j = int(float(rng.random()) * len(names)) % len(names)
+        if j in seen:
+            continue
+        seen.add(j)
+        picked.append(names[j])
+    out = []
+    for i, s in enumerate(picked):
+        # SIMULTANEOUS BY DEFAULT. Consecutive components are barely different from two separate
+        # drills -- the policy answers one, then the other, and never has to hold both. The offset
+        # is bimodal: often exactly 0 so several interactions land AT ONCE and the policy must
+        # triage between them, otherwise a short overlap while the first is still live. Either way
+        # the board carries more than one decision at a time, which a real match always does.
+        if i == 0:
+            offset = 0.0
+        elif float(rng.random()) < 0.45:
+            offset = 0.0                               # land together: triage under pressure
+        else:
+            offset = float(rng.uniform(0.6, 3.5))      # overlapping, not sequential
+        out.append({"scenario": s, "lane": i % 2, "offset": round(offset, 1), "tag": i})
+    return out
+
+
+def compound_verdict(env):
+    """(verdict, per-component results) for a compound episode.
+
+    Two levels, per the owner's spec. Each component is graded by ITS OWN predicates against ONLY
+    its own units -- the `_drill_component` filter makes `enemy_units` component-local, so a Hog
+    belonging to interaction 2 cannot satisfy interaction 1's "no enemy alive". Then the OVERALL
+    board is graded on what the tower actually paid, because acing two interactions while the third
+    takes the tower down is not playing the board well.
+    """
+    comps = getattr(env, "_components", None)
+    if not comps:
+        return None, []
+    results = []
+    for c in comps:
+        s = c["scenario"]
+        st = c.setdefault("state", dict(env._drill))
+        st["t0"] = env._drill.get("t0", 0.0)
+        env.eng._drill_component = c["tag"]
+        try:
+            if c.get("done") is None:
+                if s.success is not None and s.success(env.eng, st):
+                    c["done"] = "pass"
+                elif s.failure is not None and s.failure(env.eng, st):
+                    c["done"] = "fail"
+        finally:
+            env.eng._drill_component = None
+        results.append(c.get("done"))
+    elapsed = float(env.eng.t) - float(env._drill.get("t0", 0.0))
+    limit = max(float(c["scenario"].time_limit) + float(c["offset"]) for c in comps)
+    if elapsed < limit and any(r is None for r in results):
+        return None, results                        # still playing out
+    passed = sum(1 for r in results if r == "pass")
+    need = float(env.cfg.get("sim", "drill_compound_pass_frac", default=0.6))
+    bar = float(env.cfg.get("sim", "drill_compound_hp_frac", default=0.45))
+    hp0 = float(env._drill.get("compound_hp0") or 1.0)
+    lost = hp0 - sum(float(t.hp) for t in env.eng.towers[0][:2])
+    held = lost <= bar * hp0                        # OVERALL: did the towers survive the board
+    ok = (passed >= need * len(results)) and held
+    return ("pass" if ok else "fail"), results
+
+
+class _ComponentOpponent:
+    """Scripted opponent for a COMPOUND board: each spawn carries its component tag, so the unit it
+    creates can be attributed to the interaction it belongs to."""
+
+    def __init__(self, spawns, db):
+        self._todo = sorted(spawns, key=lambda s: s[4])
+        self._db = db
+        self.deck_keys = [s[0] for s in spawns]
+        self.placed = 0
+        self.total = sum(1 for s in spawns if s[1] == 1)
+
+    def act(self, eng) -> None:
+        while self._todo and self._todo[0][4] <= eng.t:
+            base, team, x, y, _t, lvl, tag = self._todo.pop(0)
+            if team != 1:
+                continue
+            before = {id(u) for u in eng.units}
+            if deploy_unit(eng, 1, self._db, base, float(x), float(y), int(lvl)):
+                self.placed += 1
+                for u in eng.units:
+                    if id(u) not in before:
+                        u.drill_tag = int(tag)
+
+
 class DrillEnv(SimMatchEnv):
     """A SimMatchEnv pinned to one Scenario."""
 
@@ -244,7 +345,8 @@ class DrillEnv(SimMatchEnv):
         reason. With the whole deck in hand, a missed king-activation could mean "did not know to
         Tornado" or merely "drew Skeletons", and the two are indistinguishable in the pass rate.
         """
-        want = {str(b) for b in (self.scenario.hand or ())}
+        want = {str(b) for b in (getattr(self, "_compound_hand", None)
+                                 or (self.scenario.hand if self.scenario is not None else ()) or ())}
         if not want:
             return
         # `cycle` holds SLOT indices, not card ids -- _slot_card_id(slot) maps one to the other,
@@ -346,7 +448,11 @@ class DrillEnv(SimMatchEnv):
     def reset(self) -> np.ndarray:
         obs = super().reset()
         self.eng.units.clear()                         # a drill starts from ITS board, not a match
-        self._place_scenario()
+        self._components = self._pick_components()
+        if self._components:
+            self._place_components()
+        else:
+            self._place_scenario()
         self._restrict_hand()
         if self.scenario is not None and self.scenario.setup is not None:
             # After the board, so a setup can reach the bodies it just placed by name.
@@ -359,12 +465,60 @@ class DrillEnv(SimMatchEnv):
             "enemy_tower_hp0": sum(float(t.hp) for t in self.eng.towers[1][:2]),
             "spent": 0.0,
             "plays": [],
+            # OVERALL bar for a compound board: what both towers were worth at the start.
+            "compound_hp0": sum(float(t.hp) for t in self.eng.towers[0][:2]),
         }
         self.last_verdict = None
         return self._obs() if hasattr(self, "_obs") else obs
 
     # -- the episode ---------------------------------------------------------------------
+    def _pick_components(self):
+        """The components of a COMPOUND episode, or [] for an ordinary single-interaction drill.
+
+        Gated on `sim.drill_compound_frac` and off by default, so every drill measured so far keeps
+        its meaning. Only scenarios that declare a hand are eligible: a matchup already IS a
+        multi-interaction board and composing two of them stacks two full decks of intent.
+        """
+        frac = float(self.cfg.get("sim", "drill_compound_frac", default=0.0))
+        if frac <= 0.0 or float(self.rng.random()) >= frac:
+            return []
+        pool = [s for s in sc.all_scenarios() if getattr(s, "hand", ())]
+        n_max = int(self.cfg.get("sim", "drill_compound_n", default=3))
+        return compose_components(pool, self.rng, n_max=n_max)
+
+    def _place_components(self) -> None:
+        """Lay every component on the board, lane-separated, time-staggered and TAGGED."""
+        rng = self.rng
+        all_spawns, our_hand = [], []
+        for c in self._components:
+            s = c["scenario"]
+            our_hand.extend(list(s.hand or ()))
+            flip = (c["lane"] == 1)
+            for base, team, x, y, t in s.spawns:
+                nx = (1.0 - float(x)) if flip else float(x)
+                lvl = self._our_level(base) if team == 0 else self._enemy_level()
+                all_spawns.append((base, team, nx, float(y),
+                                   max(0.0, float(t) + float(c["offset"])), int(lvl), c["tag"]))
+        for base, team, x, y, t, lvl, tag in all_spawns:
+            if team != 0:
+                continue
+            before = {id(u) for u in self.eng.units}
+            if deploy_unit(self.eng, 0, self.eng.db, base, x, y, lvl):
+                for u in self.eng.units:
+                    if id(u) not in before:
+                        u.drill_tag = tag
+        self.opponent = _ComponentOpponent([sp for sp in all_spawns if sp[1] == 1],
+                                           self.eng.db)
+        self._drill_lane = None                        # a compound board spans both lanes
+        # The union of the components' hands, so every interaction on the board is answerable.
+        self._compound_hand = tuple(dict.fromkeys(our_hand))
+        self.eng.elixir[0] = min(10.0, max(float(c["scenario"].elixir) for c in self._components))
+        self.eng.elixir[1] = 10.0
+
     def _verdict(self) -> Optional[str]:
+        if getattr(self, "_components", None):
+            v, _res = compound_verdict(self)
+            return v
         s, eng, st = self.scenario, self.eng, self._drill
         # NOT ARMED YET -> no verdict. The scripted opponent places its spawns from inside step(),
         # so the board is empty on the first tick and a predicate like "no enemy is alive" is

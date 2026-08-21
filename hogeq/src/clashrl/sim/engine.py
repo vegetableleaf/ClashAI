@@ -976,6 +976,10 @@ class Unit:
     # plays/step 10.4% -> 5.9% and winrate 10% -> 0%. Noise puts something else on the board.
     # A field rather than a set-on-the-instance because Unit uses __slots__.
     drill_noise: bool = False
+    # WHICH COMPONENT of a compound drill spawned this unit (-1 = the only interaction, or noise).
+    # A compound episode runs several drills on one board and each one's predicates must see only
+    # its own units, or "no enemy alive" is answered by a different drill's Hog.
+    drill_tag: int = -1
     hook_left: float = 0.0       # Fisherman: seconds remaining in an active hook-pull motion
     hook_windup_left: float = 0.0  # fixed pre-throw wind-up time
     hook_out_left: float = 0.0   # hook projectile travel time OUT to target

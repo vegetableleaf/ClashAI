@@ -1387,6 +1387,25 @@ sim:
                             #   noise 1.5  reference ~83%, and rocket_then_tornado goes UNWINNABLE
                             # Above ~1 the distractors stop adding context and start deciding the
                             # outcome.
+  drill_compound_frac: 0.0  # share of drill episodes that are COMPOUND -- several interactions on
+                            # ONE board (0 = off). Owner's design: "a random mix of N drills, where
+                            # N can vary randomly with time as well to represent the different
+                            # complexities of game states".
+                            # WHY: noise puts other CARDS on the board; a compound puts other
+                            # DECISIONS on it, which is what a real match actually is. A single
+                            # interaction has one moment that matters, so WAIT is right for most of
+                            # its steps -- and training on that taught the gate to wait everywhere
+                            # (plays/step 10.4% -> 5.9%, winrate 10% -> 0%).
+                            # Components are lane-separated and START AT STAGGERED OFFSETS, so the
+                            # number of live interactions rises and falls WITHIN an episode instead
+                            # of sitting at N.
+  drill_compound_n: 3       # at most this many components per compound board
+  drill_compound_pass_frac: 0.5    # share of components that must pass...
+  drill_compound_hp_frac: 0.25    # ...AND the towers must keep this much of their HP. Two-level, as
+                            # specified: per-component predicates (each graded against ONLY its own
+                            # units, via the drill_tag filter) plus the overall board outcome, since
+                            # acing two interactions while the third takes the tower is not playing
+                            # the board well.
   drill_frac: 0.0
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier

@@ -128,8 +128,14 @@ def enemy_units(eng):
     hidden from the grader. Without this, every "no enemy alive" predicate would be unsatisfiable
     the moment a distractor was added, and 12 drills use exactly that.
     """
-    return [u for u in eng.units
-            if u.team == 1 and u.hp > 0 and not getattr(u, "drill_noise", False)]
+    tag = getattr(eng, "_drill_component", None)
+    out = [u for u in eng.units
+           if u.team == 1 and u.hp > 0 and not getattr(u, "drill_noise", False)]
+    if tag is None:
+        return out
+    # COMPOUND DRILL: only the component currently being graded. Set by the verdict while it walks
+    # the components; unset for every ordinary drill, which therefore behaves exactly as before.
+    return [u for u in out if int(getattr(u, "drill_tag", -1)) == int(tag)]
 
 
 def noise_units(eng):

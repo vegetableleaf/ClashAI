@@ -777,6 +777,37 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### Drill realism: NOISE (shipped on) and COMPOUND boards (built, default off) — 2026-08-21
+
+Owner's diagnosis of why drills did not transfer: *"the situations in drills are highly specific,
+but in real matches the game state will almost always consist of multiple drill-specific
+interactions along with some other cards that … exist purely as noise."* It matches the measured
+failure — a single-interaction board makes WAIT correct for most of the episode, and training 30% of
+steps on that took plays/step from 10.4% to 5.9% and winrate from 10% to 0%.
+
+**NOISE (`sim.drill_noise: 0.5`, ON).** Distractor cards per episode. Tagged (`Unit.drill_noise`) and
+skipped by `enemy_units()`, so the engine simulates them and the POLICY sees them while the GRADER
+is blind — otherwise the 12 "no enemy alive" and 37 HP predicates all become lies. They spawn in the
+lane the drill is NOT about, and `princess_hp_lost`/`hits_taken` are lane-aware. Level chosen by
+measurement (the reference line must still pass, or the drill grades luck): 0 → ~98%, **0.5 → 93%**,
+1.0 → 89%, 1.5 → ~83% with one drill unwinnable.
+
+**COMPOUND (`sim.drill_compound_frac: 0.0`, OFF).** Several interactions on one board.
+* **SIMULTANEOUS, not consecutive** (owner's correction — consecutive "would not be much different
+  from non-compound drills"). Offsets are bimodal: ~45% land exactly together so the policy must
+  triage, the rest overlap at 0.6–3.5s. Measured, **17 of 25 boards carry ≥2 simultaneous
+  components**. My first cut used 3–9s × i, which against 12–22s time limits was two drills in a
+  trench coat.
+* **TWO-LEVEL GRADING**, as specified: each component judged by its own predicates against ONLY its
+  own units (`Unit.drill_tag` + the `_drill_component` filter — without it one drill's "no enemy
+  alive" is answered by another's Hog), AND the overall board (`drill_compound_hp_frac: 0.25`),
+  because acing two interactions while the third takes the tower is not playing the board well.
+* Calibrated: **do-nothing 5%, doctrine 55%**. Bars are `pass_frac 0.5`, `hp_frac 0.25` — the first
+  cut (0.6/0.45) had the oracle at 28% and the HP bar never binding at all.
+
+**Sequencing (owner):** noise-only run first, compounds after it has a verdict — one training change
+at a time.
+
 ### ⚠⚠⚠ THE RUN IS DEGRADING, AND `best_wr` HID IT (2026-08-21, 10:50)
 
 **`best_wr` is a HIGH-WATER MARK, not a current score.** It only ever ratchets upward, so "flat at
