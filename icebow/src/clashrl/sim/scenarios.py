@@ -84,6 +84,15 @@ class Scenario:
     # merely cannot solve -- and the second of those is a finding, not a broken scenario. Also
     # doubles as documentation: it states in coordinates what this drill thinks the answer is.
     reference: Sequence[Tuple[str, float, float, float]] = ()
+    # SUBGOALS: start states from EASIEST (nearest the goal) to hardest, for drills whose difficulty
+    # is the LENGTH of the required sequence rather than any single decision. Each entry may set
+    # `elixir` (start the bar here) and/or `skip_s` (fast-forward the episode clock, so scripted
+    # spawns that were due have already happened). The drill's own predicates are untouched -- a
+    # subgoal changes where the episode BEGINS, never what counts as success, because a drill that
+    # invents its own objective trains a policy that is good at drills.
+    # Measured need: bank_to_six_then_bow passes 2/40 because it wants ~19 consecutive holds THEN a
+    # play; from 6 elixir the only thing left to learn is the play.
+    subgoals: Sequence[dict] = ()
     notes: str = ""
 
     def __post_init__(self):

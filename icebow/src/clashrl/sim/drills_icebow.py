@@ -170,6 +170,9 @@ register(Scenario(
     randomise=("lane", "timing"),
     graded_by=("spell_waste", "elixir_trade"),
     prereq=(),
+    # SUBGOALS: the gang lands at t=5 and the skill is holding the Log until it does. Start near
+    # the arrival, then earlier, so the hold is learned from the end backwards.
+    subgoals=({"skip_s": 4.0}, {"skip_s": 2.5}, {"skip_s": 1.0}),
     reference=((("the_log", 0.194, 0.6, 5.4)),),
     notes="The hallucinated-cast failure in its simplest form: the board is empty, the spell is in "
           "hand, and the only correct action is to keep holding it.",
@@ -229,6 +232,11 @@ register(Scenario(
     randomise=("lane", "elixir"),
     graded_by=("wincon_exec", "leak"),
     prereq=(),
+    # SUBGOALS -- this drill passes 2/40 because it wants ~19 consecutive holds and THEN a play,
+    # which is exponentially unlikely however strong the prior. Starting at 6 leaves only the play
+    # to learn; then 4, then the full 2. The predicates never change: the bar it must not leak past
+    # and the cards it must not dump are exactly as written.
+    subgoals=({"elixir": 6.0}, {"elixir": 4.5}, {"elixir": 3.0}),
     reference=((("x_bow", 0.5, 0.62, 0)),),
     notes="Banking is correct play for THIS deck (3.5 cycle, not 2.9) and the reward's leak term "
           "pushes the other way, so the discipline needs rehearsing explicitly.",
@@ -616,6 +624,10 @@ register(Scenario(
     randomise=("lane", "elixir"),
     graded_by=("building_waste", "threat_response"),
     prereq=("tesla_pulls_the_wincon",),
+    # SUBGOALS: the Hog arrives at t=9 and the whole skill is not spending the Tesla before then.
+    # Skipping most of the wait puts the episode at the decision itself; as the policy learns to
+    # play THERE, the start walks back and it has to hold for it.
+    subgoals=({"skip_s": 7.0}, {"skip_s": 4.5}, {"skip_s": 2.0}),
     reference=(("tesla", 0.50, 0.645, 8.4),),
     notes="The failure predicate is the CLOCK, not the board: an early Tesla can still kill the "
           "Hog and would score a win on outcome alone, which is how the habit survives.",

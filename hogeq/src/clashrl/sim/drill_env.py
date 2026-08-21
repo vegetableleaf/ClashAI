@@ -338,6 +338,52 @@ class DrillEnv(SimMatchEnv):
             pass
         return int(self._level) if self._level is not None else 11
 
+    def _subgoal_stage(self):
+        """Which start state to use, from the curriculum's own per-drill pass rate.
+
+        Nearest the goal while the drill is unreachable, walking backwards as it is mastered, and
+        the full drill once the policy can pass it. Returns None for the drill exactly as written.
+        """
+        s = getattr(self, "scenario", None)
+        stages = list(getattr(s, "subgoals", ()) or ()) if s is not None else []
+        if not stages:
+            return None
+        p = None
+        if hasattr(self, "_pass_rate"):
+            p = self._pass_rate(getattr(s, "name", ""))
+        if p is None:
+            return stages[0]                            # unseen: start from the easiest stage
+        if p >= 0.60:
+            return None                                 # mastered: the whole sequence, as written
+        # walk backwards through the stages as the pass rate climbs toward 0.60
+        idx = min(len(stages) - 1, int((p / 0.60) * len(stages)))
+        return stages[idx]
+
+    def _apply_subgoal(self) -> None:
+        """Move the episode's start toward the moment that matters."""
+        st = self._subgoal_stage()
+        if not st:
+            return
+        if "elixir" in st:
+            self.eng.elixir[0] = float(st["elixir"])
+        skip = float(st.get("skip_s", 0.0) or 0.0)
+        if skip > 0.0:
+            # Let the scripted spawns that were due actually happen, so the board looks the way it
+            # would have at that moment rather than being empty with a shifted clock.
+            dt = float(getattr(self, "sub_dt", 0.1)) or 0.1
+            steps = int(max(0.0, skip) / dt)
+            for _ in range(min(steps, 600)):
+                if getattr(self, "opponent", None) is not None:
+                    self.opponent.act(self.eng)
+                self.eng.advance(dt)          # the engine's own name for a physics sub-tick
+        # THE SKIP MUST BE TRANSPARENT TO THE PREDICATES. Several of these drills grade on ELAPSED
+        # TIME -- hold_the_spell fails if the Log is played before 4.5s -- so restarting the clock at
+        # the new start turned the correct play into a too-early one and made the drill unpassable:
+        # measured, 6% -> 0%. Backdating t0 by the skip means the episode simply BEGINS four seconds
+        # in, which is what a subgoal is supposed to mean.
+        self._subgoal_skip = skip
+        self._drill_subgoal = st
+
     def _restrict_hand(self) -> None:
         """Deal only the cards the interaction needs.
 
@@ -448,17 +494,19 @@ class DrillEnv(SimMatchEnv):
     def reset(self) -> np.ndarray:
         obs = super().reset()
         self.eng.units.clear()                         # a drill starts from ITS board, not a match
+        self._subgoal_skip = 0.0
         self._components = self._pick_components()
         if self._components:
             self._place_components()
         else:
             self._place_scenario()
         self._restrict_hand()
+        self._apply_subgoal()
         if self.scenario is not None and self.scenario.setup is not None:
             # After the board, so a setup can reach the bodies it just placed by name.
             self.scenario.setup(self)
         self._drill = {
-            "t0": float(self.eng.t),
+            "t0": float(self.eng.t) - float(getattr(self, "_subgoal_skip", 0.0) or 0.0),
             "lane": getattr(self, "_drill_lane", None),
             "princess_hp0": sum(float(t.hp) for t in sc.our_princesses(
                 self.eng, {"lane": getattr(self, "_drill_lane", None)})),
