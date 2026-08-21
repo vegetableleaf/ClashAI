@@ -777,6 +777,43 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ⚠ THE DRILL PRIOR WAS THROWING AWAY ITS OWN GRADIENT (2026-08-21, ~02:30)
+
+The overnight watchdog caught the cell head still untrained at 4000 matches, and the diagnosis is
+the most important thing in this batch: **a high fixed exploration floor buys the rare success and
+then discards it.**
+
+    trained cell entropy   6.0652 of 6.0684      fresh (untrained)   6.0684 of 6.0684
+
+Not the entropy bonus — that anneal completed at 3000 episodes and the head did not move. It is the
+IMPORTANCE RATIO. Cells are sampled from `(1-floor)*policy + floor*prior` with floor **0.75** inside
+a drill, and the stored log-prob is the mixture's (which is what keeps PPO exact). So the update
+forms `r = pi/mu`, and measured on the live checkpoint, on the cell the prior recommends:
+
+| | |
+|---|---|
+| `pi(cell)` — the policy | 0.0101 (uniform 0.00231) |
+| `mu(cell)` — what the sampler used | **0.2827** |
+| `r = pi/mu` | **median 0.0125** |
+
+The surrogate delivers `r*A`, so **the drill's advantage arrives at ~1% of its strength** — an ~80×
+attenuation on precisely the samples carrying the drill's signal. Every drill fix in this batch was
+real, and almost none of it could reach the cell head.
+
+**Fixed (small, reversible):** `ppo_drill_cell_floor` now anneals 0.75 → 0.20 over 6000 episodes,
+exactly as the cell-entropy coefficient does and for the symmetric reason — high early when the
+success has to be generated at all, decaying so `mu` approaches `pi` and the successes finally
+teach. Trainer smoke-tested.
+
+⚠ **This does not fully close the gap.** At floor 0.20 with `pi` at 0.01 the ratio is ~0.08 — 6×
+better, still small. **The real fix is an auxiliary self-imitation term** (cross-entropy pulling the
+card/cell heads toward the actions taken in episodes that PASSED a drill), which does not pass
+through the ratio at all. That is a change to the update itself and wants a waking decision.
+
+**A general lesson for any prior in this trainer:** the strength of a sampling prior and the
+learnability of what it demonstrates trade off directly. A prior strong enough to make a rare
+action common is, by the same arithmetic, strong enough to stop that action from teaching.
+
 ### hogeq drills retuned for ladder levels (2026-08-21 overnight)
 
 **0 UNWINNABLE, 0 NOT DISCRIMINATING, 0 passable by doing nothing** across all 27, at the levels the

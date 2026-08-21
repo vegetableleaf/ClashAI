@@ -290,6 +290,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # the prior -- too rare to learn from. A drill exists to make a rare state common, so it is
     # explored differently from a match, where the point is to evaluate the policy's own head.
     drill_cell_floor = float(cfg.get("sim", "ppo_drill_cell_floor", default=0.75))
+    # ...AND IT ANNEALS, for the same reason the cell-entropy coefficient does. A high fixed floor
+    # buys the rare success and then throws away its gradient: the stored log-prob is the mixture's,
+    # so PPO forms r = pi/mu, and at floor 0.75 the sampler puts 0.28 on the prior's cell while pi
+    # is 0.010 -- r ~ 0.0125, i.e. the drill's advantage arrives at ~1% strength (measured on the
+    # 4000-match checkpoint, whose cell head was still indistinguishable from untrained). Decaying
+    # the floor lets mu approach pi so those successes finally teach.
+    drill_cell_floor_end = float(cfg.get("sim", "ppo_drill_cell_floor_end", default=drill_cell_floor))
+    drill_cell_floor_anneal = float(cfg.get("sim", "ppo_drill_cell_floor_anneal", default=0.0))
     # ...and the GATE gets one too, inside a drill. Without it the timing drills are unreachable:
     # holding for N steps happens with probability ~0.5^N, so `hold_the_tesla_for_their_wincon`
     # (twelve steps) recorded zero passes in 60 episodes and could not be learned at all.
@@ -456,7 +464,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # so no amount of reward tuning can move it. The stored log-prob is the MIXTURE's,
                 # so the PPO ratio stays exact importance sampling (same argument as the card floor).
                 p_cell_pure = F.log_softmax(ceq_i, dim=0).exp()
-                floor_i = drill_cell_floor if in_drill[i] else cell_floor
+                floor_i = _drill_floor_now() if in_drill[i] else cell_floor
                 if floor_i > 0.0:
                     cm = cmask.float()
                     p_floor = cm / cm.sum().clamp_min(1.0)
@@ -656,6 +664,18 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 ee[i], et[i] = e.elixir_vec.copy(), e.threat_vec.copy()
         return 100.0 * wins / max(1, played)
 
+
+    def _drill_floor_now() -> float:
+        """Drill cell-exploration floor for the CURRENT point in training.
+
+        Linear from `ppo_drill_cell_floor` to `ppo_drill_cell_floor_end` over
+        `ppo_drill_cell_floor_anneal` episodes. With anneal 0 this is a constant and the behaviour
+        is exactly what it was.
+        """
+        if drill_cell_floor_anneal <= 0.0:
+            return drill_cell_floor
+        f = min(1.0, max(0.0, float(_prog.get("n", 0)) / drill_cell_floor_anneal))
+        return drill_cell_floor + (drill_cell_floor_end - drill_cell_floor) * f
 
     def _cell_ent_now() -> float:
         """Cell-entropy coefficient for the CURRENT point in training.

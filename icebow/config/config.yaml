@@ -1444,9 +1444,18 @@ sim:
   # common is the whole point -- so it gets its own, much higher floors. Both stay MIXTURES: the
   # stored log-prob is the mixture's, so the PPO ratio remains exact importance sampling and the
   # policy still has to choose the action and is still graded on the outcome.
-  ppo_drill_cell_floor: 0.75    # WHERE. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
+  ppo_drill_cell_floor: 0.75    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
+  ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
+                                # floor buys the rare success and then throws its gradient away: the
+                                # stored log-prob is the mixture's, so PPO forms r = pi/mu, and
+                                # MEASURED on the 4000-match checkpoint the sampler put 0.28 on the
+                                # prior's cell while pi was 0.010 -- r ~ 0.0125, so the drill's
+                                # advantage arrived at ~1% strength and the cell head was still
+                                # indistinguishable from an untrained net (6.0652 vs 6.0684 of 6.0684).
+                                # Decaying the floor lets mu approach pi so the successes teach.
+  ppo_drill_cell_floor_anneal: 6000  # episodes to decay over. 0 = constant (old behaviour).
   ppo_drill_gate_floor: 0.85    # WHEN, from the drill's reference line, which records the time each
                                 # card is played. The gate was the one head with no prior at all,
                                 # and it is the one the timing drills turn on: bank_to_six,
