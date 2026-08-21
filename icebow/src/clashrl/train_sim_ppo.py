@@ -24,6 +24,7 @@ Usage (PowerShell), from icebow/:
 """
 from __future__ import annotations
 
+import os
 import random
 import signal
 import time
@@ -130,6 +131,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # lets it run alongside a detector train without an OOM risk.
     device = torch.device(device) if device else _pick_device(cfg)
 
+    value_detach = bool(cfg.get("sim", "ppo_value_detach", default=False))
+
     class PPONet(nn.Module):
         """Actor-critic over the SAME PolicyNet trunk/heads the DQN uses (logits, not Q) + a value head."""
 
@@ -141,7 +144,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
             z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
-            return cards, cells, self.gate(z), self.value(z).squeeze(-1)
+            # VALUE HEAD ON A DETACHED TRUNK (ppo_value_detach). The critic carries 10-30x the
+            # gate's gradient norm (value 0.30-1.39 vs gate 0.03-0.05) and shares this trunk with
+            # it, so every critic step reshapes the features `gate = Linear(z, 2)` reads. Measured,
+            # the gate moves AGAINST its own policy gradient: the PPO term pushes +0.014 toward
+            # PLAY and entropy +0.0002 toward PLAY, yet log pi(play) falls 0.17-0.41 per update on
+            # the states where it played. Neither policy term explains that; representation drift
+            # driven by the critic is the only remaining path. Detaching lets the critic fit V
+            # without dragging the trunk, at the cost of a weaker critic (it becomes a linear probe
+            # on policy features) -- which is why this is a FLAG, not a default.
+            v_in = z.detach() if value_detach else z
+            return cards, cells, self.gate(z), self.value(v_in).squeeze(-1)
 
     net = PPONet().to(device)
 
@@ -563,8 +576,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
-    _terms = {"want": True, "ppo": 0.0, "entropy": 0.0, "value": 0.0, "n": 0}
-    _gnorm = {"want": True, "gate": 0.0, "card": 0.0, "cell": 0.0, "val": 0.0,
+    _probe = bool(os.environ.get("CLASHRL_GATE_PROBE"))   # heavy diagnostics: 3 extra
+    _terms = {"want": _probe, "ppo": 0.0, "entropy": 0.0, "value": 0.0, "n": 0}
+    _gnorm = {"want": _probe, "gate": 0.0, "card": 0.0, "cell": 0.0, "val": 0.0,
               "n": 0, "gate_w": 0.0}
     _ep0 = {"want": True}
     _lastep = {"want": True}

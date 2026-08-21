@@ -1434,6 +1434,12 @@ sim:
   ppo_clip_play_mult: 1.0   # scales the PPO clip bound for PLAY actions only (1.0 = old behaviour).
   ppo_clip_per_head: false   # clip EACH head against its OWN ratio instead of the joint one.
                              # Measured on play steps: sd(log r) gate 0.0019 / card 0.0284 /
+  ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
+                             # 10-30x the gate's gradient (0.30-1.39 vs 0.03-0.05) and shares
+                             # the trunk, so its steps reshape the features the gate reads.
+                             # Measured: PPO pushes the gate +0.014 TOWARD play and entropy
+                             # +0.0002 toward play, yet log pi(play) falls 0.17-0.41 per
+                             # update -- no policy term explains that. Costs critic quality.
                              # CELL 0.4781 -- the 432-way cell head moves 250x more than the
                              # gate, so clipping the JOINT ratio lets the cell head delete the
                              # gate's update (+-61% swing vs a +-20% band). A wait carries the
