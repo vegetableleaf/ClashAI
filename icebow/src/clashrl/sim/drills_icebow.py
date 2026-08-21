@@ -80,7 +80,12 @@ register(Scenario(
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=(),
-    reference=((("tesla", 0.5, 0.645, 0.6)),),
+    # DEEPER AND ONE TILE OFF CENTRE, both MEASURED. Swept at ladder levels: the old (0.50, 0.645)
+    # passes 75%, (0.56, 0.725) passes 100% -- while (0.50, 0.725), which looks like the obvious
+    # "same but deeper", passes 0% and was tried. Exact centre one row back puts the Tesla where it
+    # no longer wins the race for nearest-building, so the Hog keeps his tower lock; a tile across
+    # restores the pull. Do not "tidy" this back to 0.50 without re-running tools/drill_ref_sweep.py.
+    reference=((("tesla", 0.56, 0.725, 0.6)),),
     notes="The centre-pull geometry already exists (reward.tesla_pull_cell); this rehearses "
           "committing to it early enough that the pull has room to work.",
 ))
@@ -254,14 +259,23 @@ register(Scenario(
     # SPREAD ON PURPOSE -- three bodies far enough apart that no single splash reaches two of them.
     # Clumping is the entire play, so the board has to start un-clumped or the drill measures the
     # spawn instead of the pull.
-    spawns=(("minions", 1, 0.14, 0.44, 0.0), ("minions", 1, 0.30, 0.46, 0.0),
-            ("minions", 1, 0.22, 0.40, 0.0)),
+    # TWO SQUADS, NOT THREE. Three is nine minions, and at ladder levels nine minions deal enough
+    # dps to take a princess tower down in seconds -- measured, the Tornado-into-Ice-Wizard line
+    # bought -7 HP for 5.6 elixir, i.e. nothing at all, because the answer never mattered. The
+    # drill teaches CLUMPING, so the board only has to be un-clumped and answerable; making it
+    # unanswerable measures the spawn instead of the pull, which is the trap these spawns were
+    # already written to avoid.
+    spawns=(("minions", 1, 0.14, 0.44, 0.0), ("minions", 1, 0.30, 0.46, 0.0)),
     # SCORED IN TOWER HP, not in bodies. Every minion dies in every line -- the tower gets them
     # eventually -- so counting corpses measured nothing. What the pull actually buys is how much
     # the tower paid on the way: measured, doing nothing costs 3204 HP, a Tornado into the Ice
     # Wizard costs 854, and the same two cards in the wrong order cost 1068. That spread is the
     # skill, and it is invisible to a body count.
-    success=lambda e, s: (played(s, "tornado") and not princess_hp_lost(e, s, 1500.0)
+    # 1900 RE-MEASURED AT LADDER LEVELS (25 reps, predicates stripped): ignored costs a mean 2997
+    # and never less than 2170; the Tornado-then-Wizard line costs a mean 1380 and never more than
+    # 1638. The bar sits in that gap, so doing nothing cannot reach it and the correct line always
+    # clears it. The old 1500 was measured against level 11 minions.
+    success=lambda e, s: (played(s, "tornado") and not princess_hp_lost(e, s, 1900.0)
                           and not any(u.team == 1 and u.hp > 0 for u in e.units)),
     failure=lambda e, s: princess_hp_lost(e, s, 2200.0) or spent_more_than(e, s, 9.0),
     time_limit=16.0,
@@ -295,7 +309,11 @@ register(Scenario(
     # SKELETONS FIRST, THEN THE KNIGHT -- the order IS the skill, and the play ledger scores order
     # (`played_before`), so leading with the Knight is a distinguishable mistake and not merely a
     # worse score.
-    reference=(("skeletons", 0.194, 0.60, 0.6), ("knight", 0.194, 0.64, 2.4)),
+    # BOTH SET BACK FOR LADDER LEVELS -- and both points MEASURED, not interpolated. Swept: the old
+    # line passes 50%, skeletons at (0.194, 0.68) passes 100%, knight at (0.254, 0.72) passes 100%.
+    # The pattern repeats across the retuned drills: a harder-hitting attacker has to be met where
+    # our own tower is already shooting it, not out in front where the defender fights alone.
+    reference=(("skeletons", 0.194, 0.68, 0.6), ("knight", 0.254, 0.72, 2.4)),
     notes="A Prince that connects costs far more than the Knight does, so the trade is only good "
           "if the block happens BEFORE the charge lands -- which is what the HP bar measures. The "
           "cheap body goes first precisely so the Knight is not what absorbs it.",
@@ -686,7 +704,10 @@ register(Scenario(
     randomise=("lane", "timing"),
     graded_by=("threat_response", "chip_defence"),
     prereq=("tesla_pulls_the_wincon",),
-    reference=(("tesla", 0.50, 0.62, 0.6),),
+    # SET BACK FOR LADDER LEVELS, and STILL CENTRED -- the centre is this drill's whole premise, so
+    # the sweep's marginally better off-centre spots are not taken. Measured: the old (0.50, 0.62,
+    # 0.6) passes 45%, (0.50, 0.70, 1.2) passes 90%.
+    reference=(("tesla", 0.50, 0.70, 1.2),),
     notes="`threat_response`'s building branch pays the same anywhere in 0.50 <= ny <= 0.80, so "
           "the centre-vs-lane decision this rehearses is invisible to the reward.",
 ))
