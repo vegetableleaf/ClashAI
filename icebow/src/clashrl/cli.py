@@ -278,6 +278,24 @@ def _drill_policy_from_checkpoint(path: str, device: str = None):
         print(f"[drills] could not load {path}: {exc}")
         return None
 
+    # THE GATE HEAD, if the checkpoint carries one (every PPO checkpoint does). A drill report that
+    # ignores it is not reporting the policy.
+    gate = None
+    try:
+        import torch.nn as _nn
+        if "gate" in ck:
+            gate = _nn.Linear(net.embed_dim, 2)
+            gate.load_state_dict(ck["gate"])
+            gate.eval()
+    except Exception:  # noqa: BLE001 -- a checkpoint without a gate still measures card+cell
+        gate = None
+    # `sim.ppo_gate_threshold`, read from the default config -- this helper takes no cfg, and the
+    # threshold is what separates "the policy" from "a policy that plays on every affordable step".
+    try:
+        gate_tau = float(Config.load(None).get("sim", "ppo_gate_threshold", default=0.25))
+    except Exception:  # noqa: BLE001
+        gate_tau = 0.25
+
     def _t(v):
         return torch.as_tensor(_np.asarray(v)[None], dtype=torch.float32, device=dev)
 
@@ -285,9 +303,12 @@ def _drill_policy_from_checkpoint(path: str, device: str = None):
         with torch.no_grad():
             x = _t(_np.asarray(obs, dtype=_np.float32).transpose(2, 0, 1)) \
                 if _np.asarray(obs).ndim == 3 else _t(obs)
-            cards, cells = net(x, _t(env.hand_vec), _t(env.next_vec),
-                               _t(env.elixir_vec), _t(env.threat_vec))
-            c = cards[0].clone()
+            # forward_parts gives the embedding the GATE reads plus the PER-CARD cell maps. The old
+            # `net(...)` two-tuple discarded the embedding and returned cells as (B, n_cards,
+            # n_cells), which the caller then argmaxed FLAT -- an index over cards x cells, not a
+            # cell.
+            z, cards, cells = net.forward_parts(x, _t(env.hand_vec), _t(env.next_vec),
+                                                _t(env.elixir_vec), _t(env.threat_vec))
             # SAME MASK AS TRAINING: in hand and affordable. Without it this measures the head's
             # raw preference, not the policy that would actually be executed.
             playable = [i for i in env._hand_ids()
@@ -295,11 +316,25 @@ def _drill_policy_from_checkpoint(path: str, device: str = None):
                         and float(env.eng.elixir[0]) >= float(env.specs[i].elixir)]
             if not playable:
                 return (0, 0, 0)
-            keep = torch.full_like(c, float("-inf"))
+            # THE GATE DECIDES WHETHER TO PLAY AT ALL, exactly as the trainer's greedy benchmark
+            # does: threshold the play PROBABILITY at sim.ppo_gate_threshold. Without this the
+            # column measured a policy that plays on every affordable step, which is not what any
+            # checkpoint does -- and it reported 0% on drills the real policy passes 8/8.
+            if gate is not None:
+                g = gate(z)[0]
+                if float(torch.softmax(g, dim=0)[1]) <= gate_tau:
+                    return (0, 0, 0)
+            keep = torch.full_like(cards[0], float("-inf"))
             for i in playable:
-                keep[i] = c[i]
+                keep[i] = cards[0][i]
             card = int(torch.argmax(keep).item())
-            cell = int(torch.argmax(cells[0]).item())
+            # PER-CARD map, then the same cell mask training applies: every cell for an "anywhere"
+            # card (spells, miner), the deployable set otherwise.
+            row = cells[0, card].clone()
+            if card not in getattr(env, "anywhere_ids", set()):
+                dep = _np.asarray(env.actions.deployable_mask(False), dtype=bool)
+                row[~torch.as_tensor(dep, device=row.device)] = float("-inf")
+            cell = int(torch.argmax(row).item())
         return (1, card, cell)
     return _policy
 
