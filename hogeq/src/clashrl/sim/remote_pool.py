@@ -99,6 +99,8 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             "drill": drill, "verdict": verdict,
             # IS THIS ENV IN A DRILL RIGHT NOW -- needed every step, not just at the end, because
             "in_drill": bool(getattr(env, "_in_drill", False)),
+            # WHEN the drill's reference line would play. The gate is sampled in the parent and the
+            "dgate": (env.drill_prior_gate() if hasattr(env, "drill_prior_gate") else None),
         }
 
     obs_cache = [e.reset() for e in envs]
@@ -209,6 +211,10 @@ class RemotePool:
 
     def doctrine_card(self, i: int):
         return (self.last[i] or {}).get("dcard") or {}
+
+    def drill_gate(self, i: int):
+        """P(play) the current drill's reference line would use, or None outside a drill."""
+        return (self.last[i] or {}).get("dgate")
 
     def close(self):
         for c in self.conns:
