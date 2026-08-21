@@ -777,6 +777,25 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ☀ WHEN YOU WAKE (2026-08-21 morning) — what happened overnight, ranked
+
+1. **RESTART THE icebow RUN.** It launched 01:14 and does not have the floor anneal (`01c036b`),
+   so its cell head will stay flat. It is not wasted — card head and gate are learning (card entropy
+   2.27 → 1.72, best_wr 11.3) — it just is not learning placement.
+2. **hogeq drills are clean and ready** (`c8e6059`): 27/27, 0 unwinnable, 0 not-discriminating.
+   Pull and the hogeq run is good to go.
+3. **One real finding**: the drill prior was throwing away its own gradient (r = 0.0125, so the
+   drill advantage arrived at ~1% strength). Floor anneal shipped; `ppo_sil_coef` shipped OFF as the
+   deeper fix, **unvalidated — decide against a baseline**.
+4. **Two false alarms, both from my own instrument, both fixed.** The elixir alerts were a
+   640-observation sample of a ~1% event; at 2400 observations the bar reaches 6 in 9.8% of steps
+   and `x_bow` is played *more* often than it is affordable. The watchdog now samples 2400 and
+   debounces over two consecutive cycles. ⚠ **Treat a single watchdog cycle as a hypothesis, not a
+   finding** — that is the lesson, and it cost two Discord alarms to learn.
+5. **Open, not urgent**: `rocket` is never SELECTED even when affordable (0.0% of plays against 1.8%
+   affordability) — the exact failure the doctrine CARD prior exists to address. Re-check on a run
+   that has the floor anneal.
+
 ### ⚠ THE DRILL PRIOR WAS THROWING AWAY ITS OWN GRADIENT (2026-08-21, ~02:30)
 
 The overnight watchdog caught the cell head still untrained at 4000 matches, and the diagnosis is
