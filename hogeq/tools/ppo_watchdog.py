@@ -85,7 +85,7 @@ def _entropy(p) -> float:
     return float(-(p * np.log(p)).sum())
 
 
-def health(ckpt: Path, envs: int = 4, steps: int = 160) -> dict:
+def health(ckpt: Path, envs: int = 6, steps: int = 400) -> dict:
     """Run the trained net on real boards and measure gate / cell / elixir behaviour."""
     import torch.nn as nn
     from clashrl.config import Config
@@ -226,6 +226,11 @@ def main() -> int:
         ckpt = _ROOT / a.ckpt
     logf = _ROOT / "data" / "ppo_watchdog.log"
     last_m, last_change, alerted = -1, time.time(), set()
+    # DEBOUNCE. `elixir >= 6` is a ~1% event, and at the old 640-observation sample it
+    # read 1.6% one cycle and 0.0% the next -- the 0.0% fired an alert that a 1600-step
+    # probe then contradicted (x_bow affordable 1.3% of steps, played 2.4% of plays).
+    # A condition now has to hold on two CONSECUTIVE cycles before it is believed.
+    _streak = {}
 
     while True:
         now = datetime.now().strftime("%H:%M")
@@ -268,8 +273,15 @@ def main() -> int:
             alerts.append("STALLED -- checkpoint unchanged for %.0f minutes at matches=%d."
                           % (idle_min, h["matches"]))
 
+        keys = {v.split("(")[0].split("--")[0].strip() for v in alerts}
+        for k in list(_streak):
+            if k not in keys:
+                _streak.pop(k, None)                      # broke the streak -> start again
         for v in alerts:
             key = v.split("(")[0].split("--")[0].strip()
+            _streak[key] = _streak.get(key, 0) + 1
+            if _streak[key] < 2 and not key.startswith(("PROCESS", "STALLED")):
+                continue                                  # one cycle is not evidence
             if key in alerted:
                 continue                                  # one alert per condition, not per cycle
             alerted.add(key)
