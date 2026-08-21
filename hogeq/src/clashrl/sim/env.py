@@ -783,6 +783,21 @@ class SimMatchEnv:
         n_cards = len(threat_value.cards_from_bodies(
             self.db, [u.spec.base for u in committed])) if committed else 1
         budget_ok = self._threat_credits < max(1, min(self.threat_credit_budget, n_cards))
+        # ...AND NOTHING IS PAID FOR ANSWERING A THREAT THAT DID NOT NEED ANSWERING. _threat_miss_idle
+        # has carried this triage waiver since 2026-08-16 -- it will not fine you for ignoring a lone
+        # Skeletons, 0.38% of a tower -- but the CREDIT side never got the mirror and paid a full
+        # +1.0 for any role-valid counter at any recognised threat. That stayed hidden only because
+        # the counter table happened to return False for a body against a swarm; once that hole was
+        # closed, `ignore_the_ignorable` -- the drill whose whole content is NOT answering a trickle
+        # -- immediately began paying more to spend (+0.09) than to hold (+0.00).
+        #
+        # Zero rather than a penalty: playing at a trickle is not a MISREAD, it is just not worth
+        # paying for, and elixir_trade already prices the elixir. Triage is the tier above every
+        # counter rule, so both halves of this term now agree about what is worth a card.
+        if committed and threat_value.bodies_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
+            return 0.0
         tx, ty = self._threat_pos()
         intercept = abs(nx - tx) <= self.intercept_lane and ny >= 0.5   # same lane, on your defensive half
         if prof.kind == "building":

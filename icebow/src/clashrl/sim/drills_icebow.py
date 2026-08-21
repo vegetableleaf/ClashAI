@@ -275,9 +275,14 @@ register(Scenario(
 
 register(Scenario(
     name="knight_blocks_the_charge",
-    goal="Put a body in the path of a charging attacker before it reaches the tower.",
+    goal="Spend a CHEAP body on the charge, then answer with the real one.",
     tier="foundational",
-    hand=("knight",),
+    # THE KNIGHT MUST NOT EAT THE CHARGE ITSELF (owner, 2026-08-21). A Prince's charge lands for
+    # DOUBLE, so the 1-elixir body that absorbs it -- and resets the charge -- is worth far more
+    # than it costs, and the Knight then fights an unbuffed Prince instead of opening the fight
+    # already down most of its HP. With only the Knight dealt, the drill could not express that
+    # line at all: the sole thing it could rehearse was walking the Knight into the charge.
+    hand=("skeletons", "knight"),
     elixir=6.0,
     spawns=(("prince", 1, 0.194, 0.44, 0.0),),
     success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
@@ -287,9 +292,13 @@ register(Scenario(
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=(),
-    reference=((("knight", 0.194, 0.62, 0.6)),),
+    # SKELETONS FIRST, THEN THE KNIGHT -- the order IS the skill, and the play ledger scores order
+    # (`played_before`), so leading with the Knight is a distinguishable mistake and not merely a
+    # worse score.
+    reference=(("skeletons", 0.194, 0.60, 0.6), ("knight", 0.194, 0.64, 2.4)),
     notes="A Prince that connects costs far more than the Knight does, so the trade is only good "
-          "if the block happens BEFORE the charge lands -- which is what the HP bar measures.",
+          "if the block happens BEFORE the charge lands -- which is what the HP bar measures. The "
+          "cheap body goes first precisely so the Knight is not what absorbs it.",
 ))
 
 register(Scenario(
@@ -703,7 +712,14 @@ register(Scenario(
     # threaten. Getting only the veto drilled would teach "never play your win condition".
     success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
                           and not princess_hp_lost(e, s, 900.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 1400.0),
+    # A CROWN TRADE IS NOT THE MISTAKE THIS DRILL PUNISHES. Failing on our princess HP alone could
+    # not tell a tower lost for nothing from a tower traded for theirs, and measured over 60
+    # episodes the "failures" out-earned the passes (+1.03 vs +0.54) on exactly that: xbow_lock
+    # +0.309, chip_offence +0.267, and take_enemy_tower firing in one of four. The reward is right
+    # -- that trade is good Clash Royale -- so the drill's bookkeeping is what has to give. A bow
+    # thrown forward for nothing still fails; a bow that took their tower no longer does.
+    failure=lambda e, s: (princess_hp_lost(e, s, 1400.0)
+                          and not any(t.hp <= 0 for t in e.towers[1][:2])),
     time_limit=24.0,
     randomise=("lane", "timing"),
     graded_by=("wincon_exec", "xbow_lock"),

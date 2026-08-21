@@ -61,6 +61,8 @@ class _ScriptedOpponent:
     """
 
     def __init__(self, spawns, db, level: int = 11):
+        # Each spawn carries its OWN level: (base, team, x, y, t, level). A single level for the
+        # whole script cannot express a ladder opponent, whose cards are individually levelled.
         self._todo = sorted(spawns, key=lambda s: s[4])
         self._db = db
         self._level = int(level)
@@ -70,21 +72,26 @@ class _ScriptedOpponent:
 
     def act(self, eng) -> None:
         while self._todo and self._todo[0][4] <= eng.t:
-            base, team, x, y, _t = self._todo.pop(0)
+            sp = self._todo.pop(0)
+            base, team, x, y = sp[0], sp[1], sp[2], sp[3]
+            lvl = int(sp[5]) if len(sp) > 5 else self._level
             if team != 1:
                 continue                              # our side is placed at reset, not acted
-            if deploy_unit(eng, 1, self._db, base, float(x), float(y), self._level):
+            if deploy_unit(eng, 1, self._db, base, float(x), float(y), lvl):
                 self.placed += 1
 
 
 class DrillEnv(SimMatchEnv):
     """A SimMatchEnv pinned to one Scenario."""
 
-    def __init__(self, cfg, scenario, seed: int = 0, level: int = 11):
+    def __init__(self, cfg, scenario, seed: int = 0, level=None):
         super().__init__(cfg, seed=seed)
         # `scenario` may be None for DrillMixEnv, which picks one per episode in reset().
         self.scenario = scenario
-        self._level = int(level)
+        # None = roll each enemy's level from the ladder distribution the full sim uses, which is
+        # what makes a drill the same fight as a match. An int PINS every spawn to that level, the
+        # same fair-eval override make_opponent(level=...) offers.
+        self._level = None if level is None else int(level)
         self._drill: dict = {}
         self.last_verdict: Optional[str] = None
 
@@ -99,18 +106,56 @@ class DrillEnv(SimMatchEnv):
         for base, team, x, y, t in s.spawns:
             if mirror:
                 x = 1.0 - float(x)
-            spawns.append((base, team, float(x), float(y), max(0.0, float(t) + jitter)))
+            # LEVEL PER SPAWN: the enemy rolls a ladder level (or the fair-eval pin), and OUR
+            # pre-placed bodies are our own cards at our own levels -- a level 11 Knight standing
+            # beside the level 16 one from hand is the same mismatch this fixes.
+            lvl = self._our_level(base) if team == 0 else self._enemy_level()
+            spawns.append((base, team, float(x), float(y),
+                           max(0.0, float(t) + jitter), int(lvl)))
         # our side is placed immediately; the opponent's are scripted
-        for base, team, x, y, t in spawns:
+        for base, team, x, y, t, lvl in spawns:
             if team == 0:
-                deploy_unit(self.eng, 0, self.eng.db, base, x, y, self._level)
+                deploy_unit(self.eng, 0, self.eng.db, base, x, y, lvl)
         self.opponent = _ScriptedOpponent([sp for sp in spawns if sp[1] == 1],
-                                          self.eng.db, self._level)
+                                          self.eng.db, 11)
         elix = float(s.elixir)
         if "elixir" in s.randomise:
             elix = max(0.0, min(10.0, elix + float(rng.uniform(-2.0, 2.0))))
         self.eng.elixir[0] = elix
         self.eng.elixir[1] = 10.0                      # the script pays for its own spawns
+
+    def _enemy_level(self) -> int:
+        """A ladder opponent's card level, rolled the way `make_opponent` rolls it.
+
+        Drills used to hardcode 11 while our own hand plays at real account levels (up to 16) and
+        match training rolls the enemy from [13,14,15,16] -- so every drill was a fight our cards
+        could not lose in the way the real one can. Level 11 -> 14 is +32% HP and +32% damage, and
+        it changes the ANSWER: `skeletons_kill_the_miner`'s reference line passes 100% at 11 and 0%
+        at 14.
+        """
+        if self._level is not None:
+            return int(self._level)
+        lv = list(self.cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16]))
+        lw = list(self.cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1]))
+        if not lv:
+            return 11
+        tot = float(sum(float(w) for w in lw)) or 1.0
+        r, acc = float(self.rng.random()) * tot, 0.0
+        for l_i, w_i in zip(lv, lw):
+            acc += float(w_i)
+            if r <= acc:
+                return int(l_i)
+        return int(lv[-1])
+
+    def _our_level(self, base: str) -> int:
+        """The level OUR deck actually plays this card at -- our pre-placed units are our cards."""
+        try:
+            for k, lv in zip(self.deck_keys, self.deck_card_levels):
+                if str(k).replace("_evo", "") == str(base):
+                    return int(lv)
+        except Exception:  # noqa: BLE001
+            pass
+        return int(self._level) if self._level is not None else 11
 
     def _restrict_hand(self) -> None:
         """Deal only the cards the interaction needs.
@@ -307,7 +352,7 @@ class DrillEnv(SimMatchEnv):
 
 
 def run_drill(cfg, scenario: sc.Scenario, policy=None, reps: int = 50, seed: int = 0,
-              level: int = 11) -> dict:
+              level=None) -> dict:
     """Play `reps` repetitions and report the pass rate.
 
     A pass RATE is the honest measure of whether a skill is mastered -- a mean reward hides the
@@ -447,7 +492,7 @@ def scripted_policy(scenario):
 
     return _policy
 
-def report(cfg, names=None, reps=25, seed=5, policy=None, level=11, reward_mode=False):
+def report(cfg, names=None, reps=25, seed=5, policy=None, level=None, reward_mode=False):
     """Run every registered drill baseline-vs-oracle and return the rows.
 
     Prints a table because the pass RATE is the number that says whether a skill is mastered -- a
@@ -548,7 +593,7 @@ class DrillMixEnv(DrillEnv):
     pool and the remote workers -- both of which just build envs and call reset().
     """
 
-    def __init__(self, cfg, seed: int = 0, level: int = 11, frac=None, tiers=None):
+    def __init__(self, cfg, seed: int = 0, level=None, frac=None, tiers=None):
         sc.load_all()                                  # registry is filled by import side-effect
         pool = sc.all_scenarios()
         super().__init__(cfg, pool[0] if pool else None, seed=seed, level=level)
@@ -617,7 +662,7 @@ class DrillMixEnv(DrillEnv):
         return DrillEnv.step(self, action)
 
 
-def make_train_env(cfg, seed: int = 0, level: int = 11, frac=None):
+def make_train_env(cfg, seed: int = 0, level=None, frac=None):
     """The env a trainer should build: a plain match, or a drill mix when one is configured.
 
     Returns a bare SimMatchEnv when `sim.drill_frac` is 0, so a run that has not opted in is
@@ -638,7 +683,7 @@ def make_train_env(cfg, seed: int = 0, level: int = 11, frac=None):
     return DrillMixEnv(cfg, seed=seed, level=level, frac=frac)
 
 
-def outcomes(cfg, names=None, reps=60, seed=5, level=11):
+def outcomes(cfg, names=None, reps=60, seed=5, level=None):
     """Per drill: the mean episode reward of each OUTCOME, under the trainer's own exploration.
 
     The acceptance test for a drill is not "does the right play beat idling" -- that is

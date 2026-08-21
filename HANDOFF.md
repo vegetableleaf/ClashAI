@@ -777,6 +777,95 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ⚠⚠ EVERY DRILL PUT OUR REAL-LEVEL CARDS AGAINST LEVEL 11 ENEMIES (owner caught this, 2026-08-21)
+
+> *"just need to make sure it isn't putting the model's level 14-16 cards up against level 11
+> opponents, because that mismatch is a fatal mistake and large level differences will completely
+> change how interactions work."*
+
+It was. `DrillEnv` hardcoded `level=11` for every scripted spawn, while:
+
+* **our hand** plays at the deck's real account levels — `x_bow` 16, `knight` 16, `skeletons` 15,
+  `tornado`/`tesla`/`rocket`/`the_log` 14, `ice_wizard` 12 (`SimMatchEnv` builds specs from
+  `db.deck_levels()`);
+* **full-match training** rolls the opponent from `sim.enemy_levels` [13,14,15,16] weighted
+  [3,5,2,1] — mean ≈ 14.1 — explicitly *"so the opponent's card levels vary like a real ladder
+  opponent"*.
+
+So a drill was a level 16 Knight against a level 11 Prince where training is a level 16 Knight
+against a level 14 one. **Level 11 → 14 is +32% HP and +32% damage** on every card measured.
+
+**It changes the answer, not the margin.** Each drill's own hand-written reference line — the play
+the report certifies as correct — run against the enemy level it should have faced:
+
+| drill | L11 | L14 | L16 |
+|---|---|---|---|
+| `skeletons_kill_the_miner` | 100% | **0%** | 0% |
+| `knight_blocks_the_charge` | 100% | 90% | **0%** |
+| `tesla_pulls_the_wincon` | 100% | 100% | **0%** |
+
+`skeletons_kill_the_miner` teaches *"one elixir answers a Miner"*. Against the Miner training
+actually faces, it does not. **The drill was rehearsing a play that loses**, and every pass rate in
+this batch before this point was measured on the wrong board.
+
+**The fix** mirrors `make_opponent`: enemy spawns roll their level from the same ladder
+distribution, per spawn, off the env's seeded rng (a rep stays reproducible), and an explicit
+`--level` still pins them for fair eval — the same override `make_opponent(level=...)` already
+offers. Our own pre-placed bodies take our deck's real level for that card, since a level 11 Knight
+beside the level 16 one from hand is the same bug wearing a different hat.
+
+**FALLOUT — the curriculum was calibrated on an easier board.** At ladder levels, four drills are
+now UNWINNABLE (reference, doctrine and baseline all fail) and several reference lines have
+degraded:
+
+* `skeletons_kill_the_miner` 0% · `skeletons_stop_the_wall_breakers` 0% ·
+  `nado_pull_the_flock_back` 0% · `knight_guards_the_bow` 36%
+* degraded: `knight_blocks_the_charge` 68%, `tesla_pulls_the_wincon` 68%, `split_lane` 40%,
+  `nado_clump_for_the_wizard` scripted 0% (but doctrine 96% — the reference line, not the drill)
+
+These need retuning against the real levels — thresholds and reference placements both. **Do not
+"fix" them by pinning the level back to 11**: that is the bug, and it is the reason they looked
+fine. ⚠ Any drill pass rate quoted from before this commit was measured against level 11 enemies
+and is not comparable to one measured after.
+
+### ⚠ THE BIGGEST ONE: half the cards in the game could not be answered, so every answer was fined
+
+`card_threat.counters()` is the role table the referee grades defence with — air-defence vs flying,
+splash vs swarm, DPS/building vs tank, building vs building-targeter, body vs a bare win condition.
+A threat matching **none** of those falls off the end and returns False for *every card in the
+deck*, and `_threat_response` then charges `w_threat_miss` (−1.0) for the defence as a misread.
+
+Measured across the card database:
+
+> **154 non-spell cards; 74 match NO threat class, and no card in the deck counters them.**
+>
+> `mini_pekka` (472 dps), `sparky` (333), `lumberjack` (320), `prince` (279), `elite_barbarians`
+> (274), `musketeer` (217), `wizard` (201), `bandit` (194), `archer_queen` (188), `witch` (123) …
+
+None is a tank, a swarm, air, siege or building-targeting, and none carries the curated
+`win_condition` flag — so to the referee, a Prince charging your tower is a threat nothing can
+answer, and **defending is always a mistake**. This is not a drill artefact: `card_threat` is shared
+with the live side, so the same hole sat under `train_rl`'s counter validation and the advisor.
+
+Surfaced by `knight_blocks_the_charge`, a drill whose entire content is putting a body in front of a
+Prince: `threat_response` read **−0.604 on the episodes that PASSED it**. The drill's correct play,
+fined every time, on the drill built to teach it.
+
+**The fix**: the branch that should have caught them was already there and already argued the case —
+a bare win condition "walks (or tunnels) straight at the tower, so the answer is simply a BODY that
+engages it". Equally true of a Prince or a Musketeer. The only thing stopping them was that the
+branch also demanded the `win_condition` bit, which is a **deck-role label** ("this is what the deck
+wins with"), not a claim about what answers the card. Gate dropped to what the reasoning needs: a
+ground threat that is not a tank and not siege is answered by a body. 74 → **0**.
+
+Deliberately unchanged, because these are the cases where "any body will do" is false: tanks still
+need real DPS, a building, or a melee swarm to surround them; air still needs air defence; siege
+keeps its own rule; our own siege still cannot defend; a spell is still not a body.
+
+**`tools/counters_check.py`** (both decks) is the permanent guard — twelve cases, each one a real bug
+once, each recorded in that function's comments. This table has been widened or narrowed five times
+in the project's history, so it now fails loudly instead of relying on a careful reading of the diff.
+
 ### What the hand restriction broke, and the two follow-on fixes
 
 * **A discipline drill needs the temptation in hand.** `bank_to_six_then_bow` fails if you dump the

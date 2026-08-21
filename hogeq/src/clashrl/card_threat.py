@@ -425,12 +425,28 @@ def counters(play: ThreatProfile, threat_id: np.ndarray) -> bool:
     # therefore never reaches this function, so a branch for it would be dead code. Answering it --
     # e.g. a Tesla at the bridge, which outranges nothing but sits close enough to shell the bow --
     # requires the threat block to see ACROSS the river first.
-    if (threat_id[5] >= 0.5 and threat_id[1] < 0.5 and threat_id[4] < 0.5
-            and threat_id[3] < 0.5):
+    if threat_id[1] < 0.5 and threat_id[4] < 0.5 and threat_id[3] < 0.5:
         # ...and NOT FLYING (2026-08-15): the docstring above always said "not air", but the
         # code never checked the bit -- so a ground Knight dropped "against" a Balloon was
         # credited +1.0 for a body-block that cannot touch it. A flying bare win condition is
         # answered by the air-defence branch at the top, nothing else.
+        #
+        # NO LONGER REQUIRES THE `win_condition` BIT (2026-08-21). It used to, and that left a
+        # hole this table could not see out of: MEASURED over the card database, 154 non-spell
+        # cards, of which **74 matched no threat class at all** -- not a tank, not a swarm, not
+        # air, not siege, not building-targeting, and not carrying the curated win-condition flag.
+        # For every one of them `counters()` returned False for EVERY card in the deck, so
+        # _threat_response fined the defence -1.0 as a misread. The list is not exotic:
+        # mini_pekka (472 dps), sparky, lumberjack, prince, elite_barbarians, musketeer, wizard,
+        # bandit, archer_queen, witch. Surfaced by `knight_blocks_the_charge`, whose whole content
+        # is putting a body in front of a Prince: threat_response read -0.604 on the episodes that
+        # PASSED it.
+        #
+        # `win_condition` is a DECK-ROLE label ("this is what the deck wins with"), not a claim
+        # about what answers the card, so it was never the right gate. The reasoning above needs
+        # only that the thing walks at your tower on the ground: a body engages it. Tanks (bit 1),
+        # air (bit 3) and siege (bit 4) keep their stricter rules, because those are precisely the
+        # threats where "any body will do" is false.
         return play.kind == "troop" or (play.building and not play.siege)
     return False
 

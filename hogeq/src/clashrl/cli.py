@@ -630,7 +630,13 @@ def main() -> None:
     drl.add_argument("--only", default=None, help="comma list of drill names (default: all)")
     drl.add_argument("--tier", default=None,
                      help="only this tier: foundational | compound | matchup")
-    drl.add_argument("--level", type=int, default=11, help="card level for scripted spawns")
+    # DEFAULT None = roll each enemy's level from the ladder distribution the full sim uses
+    # (sim.enemy_levels). It used to default to 11 while OUR deck plays at real account levels up to
+    # 16 and match training rolls the enemy 13-16 -- so every drill was a fight against cards three
+    # levels below the ones it was preparing for. Pass --level to PIN it (fair eval / diagnosis).
+    drl.add_argument("--level", type=int, default=None,
+                     help="PIN scripted spawns to this card level (default: roll 13-16 like the "
+                          "ladder opponent the full sim uses)")
     drl.add_argument("--outcomes", action="store_true",
                      help="ACCEPTANCE TEST: per drill, the mean reward of each OUTCOME under the "
                           "trainer's own exploration. Passing must pay more than failing OR timing "
