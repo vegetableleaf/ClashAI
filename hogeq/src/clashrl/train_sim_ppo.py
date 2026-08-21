@@ -788,8 +788,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             # Drills are reported SEPARATELY, never folded into the winrate: a
                             # mix that is silently not happening looks exactly like a mix that is
                             # not helping, and those two have to be distinguishable at a glance.
+                            # BOTH shares. The episode count is what the mix controls; the STEP
+                            # share is what the optimiser actually sees, and they differ by an
+                            # order of magnitude (48% of episodes was 8% of steps). Printing only
+                            # the first is how a drill mix that was barely training got mistaken
+                            # for one that was not working.
                             ds = (f" | drills {drills_done} "
-                                  f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass)"
+                                  f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass, "
+                                  f"{100.0 * drills_done / max(1, done_n):.0f}% of eps)"
                                   if drills_done else "")
                             print(f"[train-sim-ppo] {done_n} episodes: winrate={wr:4.0f}% "
                                   f"avg_rew={ar:+.1f} {mps:.1f} ep/s total {wins}W-{losses}L-{draws}D{xs}{ds}",

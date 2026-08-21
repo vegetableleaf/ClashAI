@@ -467,14 +467,48 @@ class DrillMixEnv(DrillEnv):
         sc.load_all()                                  # registry is filled by import side-effect
         pool = sc.all_scenarios()
         super().__init__(cfg, pool[0] if pool else None, seed=seed, level=level)
+        # TARGET SHARE OF TRAINING STEPS, not of episodes. See the module note: a drill is ~19
+        # steps against a match's ~186, so picking drills half the time still left them at 8% of
+        # the gradient -- and split across 28 scenarios, none of them ever had enough signal.
         self.drill_frac = (float(cfg.get("sim", "drill_frac", default=0.0))
                            if frac is None else float(frac))
+        self._len_drill = 20.0        # running mean episode lengths, seeded with measured values
+        self._len_match = 186.0
+        self._n_drill = self._n_match = 0
+        self._ep_steps = 0
         want = tiers if tiers is not None else (cfg.get("sim", "drill_tiers", default=None) or None)
         self._pool = [s for s in pool if not want or s.tier in set(want)]
         self._in_drill = False
 
+    def _episode_prob(self) -> float:
+        """Episode probability that delivers the configured share of STEPS.
+
+        Solving `target = p*Ld / (p*Ld + (1-p)*Lm)` for p gives
+
+            p = target * Lm / (Ld * (1 - target) + target * Lm)
+
+        With the measured 19-step drill and 186-step match, a 30% step share needs p ~= 0.80 --
+        four episodes in five. Nobody would guess that from the outside, which is why the knob
+        counting episodes went unnoticed for two runs.
+        """
+        t = max(0.0, min(0.95, float(self.drill_frac)))
+        if t <= 0.0:
+            return 0.0
+        ld, lm = max(1.0, self._len_drill), max(1.0, self._len_match)
+        return max(0.0, min(0.98, t * lm / (ld * (1.0 - t) + t * lm)))
+
     def reset(self):
-        self._in_drill = bool(self._pool) and float(self.rng.random()) < self.drill_frac
+        # fold the episode that just ended into the length estimates (they drift: drills lengthen
+        # as the policy stops failing them instantly, matches shorten as it starts winning)
+        if self._ep_steps > 0:
+            if self._in_drill:
+                self._n_drill += 1
+                self._len_drill += (self._ep_steps - self._len_drill) / min(50, self._n_drill)
+            else:
+                self._n_match += 1
+                self._len_match += (self._ep_steps - self._len_match) / min(50, self._n_match)
+        self._ep_steps = 0
+        self._in_drill = bool(self._pool) and float(self.rng.random()) < self._episode_prob()
         if not self._in_drill:
             return SimMatchEnv.reset(self)
         self.scenario = self._pool[int(self.rng.integers(len(self._pool)))
@@ -483,6 +517,7 @@ class DrillMixEnv(DrillEnv):
         return DrillEnv.reset(self)
 
     def step(self, action):
+        self._ep_steps += 1
         if not self._in_drill:
             return SimMatchEnv.step(self, action)
         return DrillEnv.step(self, action)
