@@ -37,6 +37,15 @@ def line_policy(steps):
         if i >= len(steps):
             return (0, 0, 0)
         base, nx, ny, t = steps[i]
+        # HOLD FOR THE ENEMY, exactly as scripted_policy does -- the drill's own runner fires at
+        # max(the line's time, the enemy existing), because `randomise` jitters spawn timings and a
+        # line played into an empty board measures something else entirely. Without this the sweep
+        # scores a DIFFERENT policy than the report's third column and can recommend a placement
+        # the reference runner will not reproduce: measured, it read 35% where the report read 0%,
+        # and its "100%" candidate scored 0% once shipped.
+        if getattr(env, "opponent", None) is not None and getattr(env.opponent, "total", 0):
+            if not any(u.team == 1 and u.hp > 0 for u in env.eng.units):
+                return (0, 0, 0)
         if float(env.eng.t) - float(env._drill.get("t0", 0.0)) < float(t):
             return (0, 0, 0)
         cid = next((j for j, k in enumerate(env.deck_keys)

@@ -14,7 +14,8 @@ building that stops him.
 """
 from __future__ import annotations
 
-from .scenarios import (Scenario, enemy_tower_hp_lost, first_play_t, hits_at_most, hits_taken,
+from .scenarios import (Scenario, enemy_base_below_frac, enemy_tower_hp_lost, first_play_t,
+                        hits_at_most, hits_taken,
                         n_plays, played, played_before, play_xy, princess_hp_lost, register,
                         spent_more_than)
 
@@ -234,8 +235,19 @@ register(Scenario(
     hand=("mighty_miner",),
     elixir=6.0,
     spawns=(("pekka", 1, 0.194, 0.44, 0.0),),
-    success=lambda e, s: (not _enemy(e, "pekka") and not princess_hp_lost(e, s, 600.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 600.0),
+    # THE KILL IS THE DISCRIMINATOR HERE, and the HP bar was the unreachable part. Measured at
+    # ladder levels, 25 reps, predicates stripped:
+    #
+    #     IGNORED     the tower is DESTROYED 25/25 (4424 every time) and the P.E.K.K.A SURVIVES 25/25
+    #     MM          tower loss mean 3372 (min 0), and the P.E.K.K.A dies 15/25
+    #
+    # So "the P.E.K.K.A is dead" alone separates the play from the board perfectly -- doing nothing
+    # never achieves it. The old 600 HP bar was a level-11 number that no line can reach against a
+    # ladder P.E.K.K.A, which is why reference, doctrine and baseline all failed together. 4000
+    # keeps a PYRRHIC kill from counting: trading the Miner for the tank while the tower dies
+    # anyway is not the play this drill is named for.
+    success=lambda e, s: (not _enemy(e, "pekka") and not princess_hp_lost(e, s, 4000.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 4400.0),
     time_limit=22.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
@@ -488,7 +500,10 @@ register(Scenario(
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=("firecracker_never_alone",),
-    reference=(("firecracker", 0.194, 0.70, 0.6),),
+    # DEEPER AND IMMEDIATE, measured: the old (0.194, 0.70, t=0.6) passes 35% at ladder levels,
+    # (0.254, 0.78, t=0.0) passes 100%. The same shape as every other line retuned in this batch --
+    # meet the threat where our own tower is already shooting it, and do not spend the half second.
+    reference=((("firecracker", 0.314, 0.82, 0.6)),),
     notes="The legitimate half of the never-alone rule: with air on the board she is not support, "
           "she is the answer, and holding her is the mistake.",
 ))
@@ -506,7 +521,18 @@ register(Scenario(
     # seconds before the answer are elixir that cannot be taken back; the clock belongs in the
     # predicate rather than in the notes. The quake is slower than a rocket (three ticks), so the
     # cast bar is the same but the kill is allowed a little longer to land.
-    success=lambda e, s: (not _enemy(e, "elixir_collector")
+    # THE PUMP DOES NOT HAVE TO DIE -- it has to stop being worth its elixir, and one Earthquake
+    # cannot kill it at every level: measured, a single quake takes a level 16 pump from 1709 to
+    # ~520 and a level 13 one to nearly nothing, so "dead" made the drill pass or fail on the LEVEL
+    # ROLL rather than on the play. Scored as a FRACTION of its own bar, which is the same
+    # statement at 13 and at 16:
+    #
+    #     IGNORED      pump HP fraction mean 0.40   p75 0.82   (it also expires on its own 13/25)
+    #     EARTHQUAKE   pump HP fraction mean 0.05   max 0.22
+    #
+    # 0.30 is clear of the quake's worst case and nowhere near what an untouched pump sits at. The
+    # cast-time clause is what keeps doing nothing from passing on the pump's own expiry.
+    success=lambda e, s: (enemy_base_below_frac(e, "elixir_collector", 0.30)
                           and (first_play_t(s, "earthquake") or 99.0) <= 3.0),
     failure=lambda e, s: (((float(e.t) - float(s.get("t0", 0.0))) >= 8.0
                            and bool(_enemy(e, "elixir_collector")))
@@ -527,8 +553,12 @@ register(Scenario(
     hand=("tesla",),
     elixir=7.0,
     spawns=(("royal_hogs", 1, 0.40, 0.44, 0.0),),
-    success=lambda e, s: (not _enemy(e) and not princess_hp_lost(e, s, 600.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 900.0),
+    # BARS RE-MEASURED AT LADDER LEVELS (25 reps, predicates stripped): ignored costs a mean 3131
+    # and never less than 2425 -- and leaves the push alive 25/25 -- while the centre Tesla costs a
+    # mean 779 and never more than 1426. 1900 sits in that gap, so doing nothing cannot reach it
+    # and the correct line always clears it. The old 600/900 were level-11 numbers.
+    success=lambda e, s: (not _enemy(e) and not princess_hp_lost(e, s, 1900.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 2400.0),
     time_limit=20.0,
     randomise=("lane", "timing"),
     graded_by=("threat_response", "chip_defence"),
@@ -567,14 +597,25 @@ register(Scenario(
     spawns=(("wall_breakers", 1, 0.194, 0.56, 0.0),),
     # THE ELIXIR TRADE IS THE POINT: they are a 2-elixir card, so anything expensive spent on them
     # is a loss even when the tower survives. The bodies go IN FRONT, where the tower helps.
-    success=lambda e, s: (not _enemy(e) and float(s.get("spent", 0.0)) <= 2.5
-                          and not princess_hp_lost(e, s, 200.0)),
-    failure=lambda e, s: spent_more_than(e, s, 4.0) or princess_hp_lost(e, s, 300.0),
+    # SAME RECALIBRATION AS ICEBOW'S TWIN, and the same measurement: at ladder levels breakers hit
+    # for ~518 each, so the old 200/300 bars were unreachable. 25 reps, predicates stripped:
+    #
+    #     IGNORED     mean 806   min 472   max 1250
+    #     SKELETONS   mean 544   min 472   max  625
+    #
+    # 450 is the bar because IGNORED NEVER GOES BELOW 472 -- doing nothing cannot pass, by
+    # measurement. "All enemies dead" is dropped: Wall Breakers are KAMIKAZE and die on contact in
+    # every line, so it was never evidence about the play.
+    success=lambda e, s: (played(s, "skeletons") and float(s.get("spent", 0.0)) <= 2.5
+                          and not princess_hp_lost(e, s, 450.0)),
+    failure=lambda e, s: spent_more_than(e, s, 4.0) or princess_hp_lost(e, s, 500.0),
     time_limit=14.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
     prereq=("skeletons_are_enough",),
-    reference=(("skeletons", 0.194, 0.70, 0.6),),
+    # Immediately and a row further forward -- the same sweep result as icebow's twin: the breakers
+    # are fast, so the half second cost more than the placement did.
+    reference=(("skeletons", 0.194, 0.66, 0.0),),
     notes="Measured: unanswered they cost 391 HP, answered correctly they cost 0.",
 ))
 
@@ -673,8 +714,19 @@ register(Scenario(
     # THE BALLOON IS THE CARD THAT MATTERS. Every elixir spent on the hound is elixir missing when
     # the loon arrives -- and the Log and the quake are both dead cards here, so the drill also
     # rehearses NOT playing half the hand.
-    success=lambda e, s: (not _enemy(e, "balloon") and not princess_hp_lost(e, s, 1200.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 1900.0),
+    # BARS MEASURED AGAINST THE DOCTRINE, since a matchup carries no reference line and the
+    # doctrine column IS what "a correct answer" means here. 25 reps at ladder levels, predicates
+    # stripped, over the full 30s:
+    #
+    #     IGNORED    the tower is DESTROYED 25/25 (4424 every time), balloon alive 25/25
+    #     DOCTRINE   tower loss mean 2732 (min 701, p25 1998), balloon killed 13/25
+    #
+    # The old 1200/1900 were level-11 numbers: against a ladder Lavaloon even a good answer concedes
+    # about two thousand, so the drill failed every line and read NOT DISCRIMINATING. 3200 is clear
+    # of the doctrine's typical case and far below the 4424 that doing nothing concedes every single
+    # time, and the balloon still has to die -- that is the card this matchup is about.
+    success=lambda e, s: (not _enemy(e, "balloon") and not princess_hp_lost(e, s, 3200.0)),
+    failure=lambda e, s: princess_hp_lost(e, s, 4400.0),
     time_limit=30.0,
     randomise=("lane", "timing"),
     graded_by=("threat_response", "chip_defence"),

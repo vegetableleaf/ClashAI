@@ -23,6 +23,8 @@ WHAT IT WATCHES, and why each one is here rather than invented:
               dependent reward unreachable. Also flags the opposite failure, collapse to a
               handful of cells (it once sat on 3 of 432, 79% of plays on one tile).
   ELIXIR      the bar never reaches 6, so X-Bow and Rocket can never be played at all.
+              Only after 6000 matches: early on the policy is near-random and plays far too
+              often to bank anything, which is the ENTROPY SCHEDULE, not a fault.
 
 Health is appended to data/ppo_watchdog.log every cycle whether or not it alerts, so the morning
 has a trace rather than just the last state. The webhook is a SECRET: read from
@@ -155,14 +157,24 @@ def health(ckpt: Path, envs: int = 4, steps: int = 160) -> dict:
                 pcell = torch.softmax(ceq[i, top], dim=0).numpy()
                 cell_ent.append(_entropy(pcell))
                 cells.append(int(np.argmax(pcell)))
+                # SAMPLE THE CARD FROM THE CARD HEAD, not hand[0]. Taking the first affordable
+                # card means taking the CHEAPEST one nearly every time, which drains the bar under
+                # the probe's own policy and then reads as "elixir never reaches 6" -- a property
+                # of the measurement, not of the run. The policy picks a card; so must this.
                 hand = [c for c in e._hand_ids()
                         if 0 <= c < len(e.specs) and e.eng.elixir[0] >= e.specs[c].elixir]
+                if hand:
+                    w = np.asarray([pc[i][c] for c in hand], dtype=np.float64)
+                    w = w / w.sum() if w.sum() > 0 else None
+                    pick = int(np.random.choice(hand, p=w)) if w is not None else int(hand[0])
+                else:
+                    pick = None
                 # SAMPLE the gate, do not threshold it. Forcing a play whenever P(play)>0.25
                 # drains the bar under the probe's own policy, which then reads as "elixir never
                 # reaches 6" -- an artifact of the measurement, not of the run. Training samples;
                 # so does this.
                 play = bool(hand) and bool(np.random.random() < pg[i])
-                act = (1, int(hand[0]), int(e0.n_cells // 2)) if play else (0, 0, 0)
+                act = (1, pick, int(e0.n_cells // 2)) if (play and pick is not None) else (0, 0, 0)
                 nobs, _r, done, _i = e.step(act)
                 obs[i] = e.reset() if done else nobs
     return {
@@ -195,7 +207,7 @@ def verdicts(h: dict, matches: int) -> list:
     if matches >= 4000 and (frac < 0.25 or h["cell_distinct"] <= 3):
         out.append("CELL HEAD COLLAPSED (%.2f of %.2f, %d distinct cells)."
                    % (h["cell_ent"], h["cell_ent_max"], h["cell_distinct"]))
-    if matches >= 2000 and h["elixir_ge6"] < 0.005:
+    if matches >= 6000 and h["elixir_ge6"] < 0.005:
         out.append("ELIXIR NEVER REACHES 6 (%.2f%% of steps) -- X-Bow and Rocket are unplayable."
                    % (100.0 * h["elixir_ge6"]))
     return out

@@ -777,6 +777,33 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### hogeq drills retuned for ladder levels (2026-08-21 overnight)
+
+**0 UNWINNABLE, 0 NOT DISCRIMINATING, 0 passable by doing nothing** across all 27, at the levels the
+model actually plays. Same tools as icebow (`drill_calibrate.py`, `drill_ref_sweep.py`), both ported.
+
+**The bug that was hiding six of them:** a restricted hand let ONE CARD BE REPLAYED FOREVER. The
+hand is `cycle[:4]`, so a drill dealt one or two cards has every card permanently in hand and a
+played card returns with no cycle cost (a real hand is 4 of 8). Doctrine columns were passing by
+spamming — `ice_spirit` ×5, `the_log` ×3-4, `earthquake` ×2, icebow's `tornado` ×3 in two seconds —
+while each drill's own single-cast reference scored 0%. That reads as "stale line" and was really
+"the column is cheating". **The trainer explores inside drills too, so it was a line the POLICY
+could learn.** A drill that declares a hand now gets ONE PLAY PER DEALT CARD.
+
+**Two new measurement primitives, both forced by the ladder level roll:**
+* `hits_taken` / `hits_at_most` — enemy levels roll 13-16 (±32% damage), so for a drill whose play
+  buys one denied hit the effect is *smaller than the spread the roll itself produces* and no HP bar
+  can separate it. A denied hit is the same event at 13 and at 16. This is what made
+  `ice_spirit_denies_the_hit` (7.56 → 6.04 hits) and `log_resets_the_charge` measurable at all.
+* `enemy_base_below_frac` — a FRACTION of a card's own bar. One Earthquake takes a level 16 pump to
+  22% and a level 13 one to nearly nothing, so "the pump died" scored the LEVEL ROLL, not the play.
+
+⚠ **`drill_ref_sweep.py` had a real defect, now fixed**: it played on the clock while
+`scripted_policy` HOLDS until the first enemy appears (timings are relative to the arrival, since
+`randomise` jitters spawns). The sweep therefore scored a different policy than the report's third
+column — it read 35% where the report read 0%, and its "100%" candidate scored 0% once shipped.
+**Always confirm a swept placement against `run.py drills` before keeping it.**
+
 ### Drill state at ladder levels (2026-08-21, ready to train)
 
 `run.py drills` — **0 UNWINNABLE, 0 passable by doing nothing**, 24 of 28 reference lines at 100%,

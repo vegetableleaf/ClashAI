@@ -187,6 +187,20 @@ def hits_at_most(s, n: int) -> bool:
     return hits_taken(s) <= int(n)
 
 
+def enemy_base_below_frac(eng, base: str, frac: float) -> bool:
+    """Is every enemy `base` on the board under `frac` of its OWN max HP (or gone)?
+
+    A FRACTION, because enemy levels roll 13-16 and an absolute HP bar means something different
+    in each episode: one Earthquake takes an Elixir Collector to 22% of its bar at any level, but
+    that is 1187 hitpoints at 16 and 950 at 13. Scoring the fraction is the same statement about
+    the play at every level; scoring the hitpoints is not.
+    """
+    live = [u for u in enemy_units(eng) if u.spec.base == base]
+    if not live:
+        return True                                   # dead, or never there, counts as under
+    return all(float(u.hp) <= frac * max(1.0, float(u.spec.hp)) for u in live)
+
+
 def spent_more_than(eng, s, limit: float) -> bool:
     """The agent has committed more elixir than the interaction is worth -- the failure mode
     triage exists to prevent, and one a purely outcome-based predicate would never catch."""
