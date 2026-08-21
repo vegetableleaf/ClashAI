@@ -907,12 +907,21 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             if sil_coef > 0.0 and info.get("verdict") == "pass":
                                 for _tt in range(ep_from[i], len(roll["sil"])):
                                     roll["sil"][_tt][i] = 1.0
-                        if True:
-                            ep_from[i] = len(roll["sil"])   # next episode starts after this row
                         else:
                             match_steps += ep_n[i]
                             wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
                             win_hist.append(1 if oc == "win" else 0)
+                        # NEXT EPISODE'S FIRST ROW, for the self-imitation mask. This must sit
+                        # OUTSIDE the drill/match branch -- an earlier version of this line was
+                        # written as `if True:` immediately after the drill block, which stole the
+                        # `else:` belonging to `if is_drill:` and made the ENTIRE match-accounting
+                        # branch dead code: no wins, no losses, no win_hist. The visible symptom was
+                        # "0W-0L-0D" on a run with real matches; the invisible one was far worse,
+                        # because win_hist drives the winrate EMA, which drives CURRICULUM
+                        # DIFFICULTY -- with it permanently empty the difficulty falls to its floor
+                        # and the policy trains against the easiest opponents while being evaluated
+                        # against full-strength ones.
+                        ep_from[i] = len(roll["sil"])
                         rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0; ep_n[i] = 0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
