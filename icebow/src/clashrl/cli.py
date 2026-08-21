@@ -230,6 +230,11 @@ def _cmd_drills(args) -> None:
         pol = _drill_policy_from_checkpoint(args.policy, args.device)
     rows = _report(Config.load(args.config), names=names, reps=args.reps, seed=args.seed,
                    policy=pol, level=args.level, reward_mode=bool(getattr(args, "reward", False)))
+    if getattr(args, "outcomes", False):
+        from .sim.drill_env import outcomes as _outcomes
+        _outcomes(Config.load(args.config), names=names, reps=args.reps, seed=args.seed,
+                  level=args.level)
+        return
     if getattr(args, "reward", False):
         gaps = [r for r in rows if str(r.get("verdict", "")).startswith("UNPRICED")]
         if gaps:
@@ -633,6 +638,10 @@ def main() -> None:
     drl.add_argument("--tier", default=None,
                      help="only this tier: foundational | compound | matchup")
     drl.add_argument("--level", type=int, default=11, help="card level for scripted spawns")
+    drl.add_argument("--outcomes", action="store_true",
+                     help="ACCEPTANCE TEST: per drill, the mean reward of each OUTCOME under the "
+                          "trainer's own exploration. Passing must pay more than failing OR timing "
+                          "out; where it does not, the drill teaches its own opposite.")
     drl.add_argument("--reward", action="store_true",
                      help="REWARD-GAP mode: per drill, the episode reward for doing nothing vs "
                           "for the correct play. Where they are equal the interaction is unpriced "

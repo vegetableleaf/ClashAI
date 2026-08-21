@@ -579,3 +579,79 @@ def make_train_env(cfg, seed: int = 0, level: int = 11, frac=None):
     if frac <= 0.0:
         return SimMatchEnv(cfg, seed=seed)
     return DrillMixEnv(cfg, seed=seed, level=level, frac=frac)
+
+
+def outcomes(cfg, names=None, reps=60, seed=5, level=11):
+    """Per drill: the mean episode reward of each OUTCOME, under the trainer's own exploration.
+
+    The acceptance test for a drill is not "does the right play beat idling" -- that is
+    `--reward`, and a drill can pass it while still paying most for the wrong outcome. It is
+    "does PASSING pay more than anything else", because that is the comparison the optimiser
+    actually makes.
+    """
+    import random as _rnd
+    from . import doctrine as _doc
+    rows = []
+    todo = list(names) if names else sc.names()
+    _rnd.seed(int(seed))
+
+    def _explore(obs, env):
+        """The trainer's DRILL sampling mixture, so the outcome mix is the one training sees."""
+        hand = [c for c in env._hand_ids()
+                if 0 <= c < len(env.specs)
+                and float(env.eng.elixir[0]) >= float(env.specs[c].elixir)]
+        if not hand or _rnd.random() < 0.45:
+            return (0, 0, 0)
+        cid = _rnd.choice(hand)
+        if _rnd.random() < 0.75 and _rnd.random() < 0.6:
+            try:
+                dc = _doc.doctrine_cells(env, cid)
+            except Exception:  # noqa: BLE001
+                dc = None
+            if dc:
+                tot = sum(w for _c, w in dc)
+                r, acc = _rnd.random() * tot, 0.0
+                for c, w in dc:
+                    acc += w
+                    if r <= acc:
+                        return (1, cid, int(c))
+        return (1, cid, _rnd.randrange(env.n_cells))
+
+    print("%-30s %16s %16s %16s   %s"
+          % ("drill", "PASS", "fail", "timeout", "is passing best?"))
+    print("-" * 100)
+    for name in todo:
+        s = sc.get(name)
+        got = {}
+        for k in range(int(reps)):
+            env = DrillEnv(cfg, s, seed=7000 + k, level=level)
+            obs = env.reset()
+            done, tot, info = False, 0.0, {}
+            while not done:
+                obs, r, done, info = env.step(_explore(obs, env))
+                tot += float(r)
+            got.setdefault((info or {}).get("verdict", "?"), []).append(tot)
+        mean = {k: sum(v) / len(v) for k, v in got.items() if v}
+        n = {k: len(v) for k, v in got.items()}
+        p = mean.get("pass")
+        others = [v for k, v in mean.items() if k != "pass"]
+        if p is None:
+            verdict = "NO PASSES -- nothing to learn from"
+        elif others and p <= max(others):
+            best = max(mean, key=mean.get)
+            verdict = "NO -- '%s' pays more (%+.2f vs %+.2f)" % (best, max(others), p)
+        else:
+            verdict = "yes"
+        def _c(k):
+            return ("%+.2f (n=%d)" % (mean[k], n[k])) if k in mean else "-"
+        print("%-30s %16s %16s %16s   %s"
+              % (name, _c("pass"), _c("fail"), _c("timeout"), verdict))
+        rows.append({"name": name, "mean": mean, "n": n, "verdict": verdict})
+    bad = [r for r in rows if not r["verdict"].startswith("yes")]
+    if bad:
+        print("")
+        print("%d drill(s) do NOT pay most for passing -- each needs the reward term underneath it "
+              "corrected, not the drill:" % len(bad))
+        for r in bad:
+            print("   %-30s %s" % (r["name"], r["verdict"]))
+    return rows

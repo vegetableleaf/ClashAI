@@ -363,6 +363,11 @@ class SimMatchEnv:
         # Ground truth from the engine, the live twin approximates via the team tracker.
         self.w_nado_bad = r("nado_bad", -0.3)
         self.w_nado_retarget = r("nado_retarget", 0.4)     # dragged a tower-locked wincon off your tower
+        # HOW LONG THE VORTEX KEEPS CATCHING. A tornado pulls continuously rather than snapping
+        # once, so membership accrues across this window instead of being snapshotted at the cast
+        # -- see _nado_catch, where a cast-time snapshot was measuring the board one agent step
+        # before the pull it was meant to describe.
+        self.nado_pull_window = float(cfg.get("sim", "nado_pull_window", default=1.0))
         # SIEGE WINDOW (2026-08-15, user doctrine): the offensive phase now runs until OVERTIME
         # begins, not until double elixir does. Flipping at 2x (regulation - 60 s) surrendered
         # the siege a full minute early -- exactly the minute where DOUBLE elixir makes a
@@ -1854,10 +1859,39 @@ class SimMatchEnv:
         self._nado_watch.append({
             "t0": self.eng.t, "cx": nx, "cy": ny,
             "pulled": pulled, "targeters": targeters,
-            "pulled_at": [(u.x, u.y) for u in pulled],   # cast positions, for the bad-pull check
+            "pulled_at": [(u.x, u.y) for u in pulled],   # capture positions, for the bad-pull check
             "king_was_asleep": not self.eng.towers[0][2].active,
             "early_done": False,
+            "rad": float(spec.pull_radius),
         })
+
+    def _nado_catch(self, w) -> None:
+        """Add enemies the vortex is catching RIGHT NOW to its watch.
+
+        Membership cannot be a cast-time snapshot. The engine applies the pull on the advance AFTER
+        the decision, so a unit walking toward the centre is measured a step early -- on this
+        drill's own reference line the hog sat at 5.53 tiles when the snapshot was taken and 5.09
+        when the vortex actually applied, against a radius of 5.5. It was recorded as uncaught,
+        `pulled` was empty, and since every credit here iterates `pulled`, the play that passes the
+        drill 100% of the time earned nothing.
+
+        Accruing over the vortex's life also matches what a tornado DOES: it pulls continuously for
+        its duration rather than snapping once, so a unit that walks in late is caught too. Each
+        unit's position and tower lock are recorded AT CAPTURE, which is what the bad-pull and
+        retarget checks measure movement against.
+        """
+        have = {id(u) for u in w["pulled"]}
+        for u in self.eng.units:
+            if (u.team != 1 or u.hp <= 0 or id(u) in have
+                    or tile_dist(u.x, u.y, w["cx"], w["cy"]) > w["rad"]):
+                continue
+            w["pulled"].append(u)
+            w["pulled_at"].append((u.x, u.y))
+            if u.spec.building_only:
+                for tw in self.eng.towers[0]:
+                    if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
+                        w["targeters"].append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
+                        break
 
     def _nado_shaping(self) -> float:
         """Delayed tornado-execution credit, from engine ground truth. At ~2s after the cast:
@@ -1869,6 +1903,23 @@ class SimMatchEnv:
         keep = []
         for w in self._nado_watch:
             age = self.eng.t - w["t0"]
+            if age <= self.nado_pull_window:
+                self._nado_catch(w)                      # the vortex pulls for its DURATION
+            # KING ACTIVATION, CHECKED EVERY TICK. Two reasons it cannot wait for the 3.5s
+            # window below. First, the event is "the attacker is now going for the KING", which is
+            # an identity test on `u.target` -- the old test asked whether the king was AWAKE and
+            # whether anything was NEAR it, and waking is a consequence of the king taking damage,
+            # which happens strictly later. Second, a DRILL ends the instant its success predicate
+            # fires, so the episode was over before the 3.5s window opened and the credit was never
+            # paid at all: measured, a passing episode scored -0.28 while timing out scored +0.24,
+            # and the policy correctly learned to run the clock.
+            kt = self.eng.towers[0][2]
+            if (w["king_was_asleep"] and not self._nado_king_credited
+                    and any(getattr(u, "target", None) is kt
+                            for u in w["pulled"] if u.hp > 0)):
+                credit += self.w_nado_king
+                self._nado_king_credited = True
+                w["king_done"] = True
             if age >= 2.0 and not w["early_done"]:
                 w["early_done"] = True
                 alive_close = [u for u in w["pulled"]
@@ -1881,16 +1932,12 @@ class SimMatchEnv:
                         break                                    # one retarget credit per cast
             if age >= 3.5:
                 dead = sum(1 for u in w["pulled"] if u.hp <= 0)
-                king_hit = (w["king_was_asleep"] and not self._nado_king_credited
-                            and self.eng.towers[0][2].active
-                            and any(tile_dist(u.x, u.y, self.eng.towers[0][2].x,
-                                              self.eng.towers[0][2].y) <= self.eng.king_range + 1.0
-                                    for u in w["pulled"]))
+                # ...the activation itself is credited above, per tick, on `u.target`. All that
+                # is left here is to remember whether it happened, so the bad-pull bill below does
+                # not charge a cast that DID activate the king.
+                king_hit = bool(w.get("king_done"))
                 if dead >= 2:
                     credit += self.w_nado_combo
-                if king_hit:
-                    credit += self.w_nado_king
-                    self._nado_king_credited = True
                 if dead < 2 and not king_hit:
                     # THE BAD PULL: nothing died, no activation -- did the cast leave survivors
                     # CLOSER to our princess towers than where it found them? Doctrine's good
