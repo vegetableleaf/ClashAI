@@ -410,7 +410,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     prior = torch.zeros_like(p_g[i])
                     prior[1] = float(min(1.0, max(0.0, pg)))
                     prior[0] = 1.0 - float(prior[1])
-                    p_g[i] = (1.0 - drill_gate_floor) * p_g[i] + drill_gate_floor * prior
+                    _fs = (rpool.drill_floor(i) if remote else
+                           (pool[i].drill_floor_scale() if hasattr(pool[i], "drill_floor_scale") else 1.0))
+                    gf = min(0.97, drill_gate_floor * _fs)
+                    p_g[i] = (1.0 - gf) * p_g[i] + gf * prior
             lp_g = p_g.clamp_min(1e-12).log()
             g_samp = torch.multinomial(p_g.clamp_min(1e-12), 1).squeeze(1)
             # Card sampling from a MIXTURE: (1-floor)*policy + floor*uniform(playable). The STORED
@@ -467,7 +470,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # so no amount of reward tuning can move it. The stored log-prob is the MIXTURE's,
                 # so the PPO ratio stays exact importance sampling (same argument as the card floor).
                 p_cell_pure = F.log_softmax(ceq_i, dim=0).exp()
-                floor_i = _drill_floor_now() if in_drill[i] else cell_floor
+                # PER-DRILL SCALE on top of the annealed floor: harder scaffolding for a drill
+                # whose successes are not being generated, weaker for one the prior is already
+                # winning (whose wins therefore teach nothing at r ~ 0.0125).
+                _fs = (rpool.drill_floor(i) if remote else
+                       (pool[i].drill_floor_scale() if hasattr(pool[i], "drill_floor_scale") else 1.0))
+                floor_i = min(0.95, _drill_floor_now() * _fs) if in_drill[i] else cell_floor
                 if floor_i > 0.0:
                     cm = cmask.float()
                     p_floor = cm / cm.sum().clamp_min(1.0)

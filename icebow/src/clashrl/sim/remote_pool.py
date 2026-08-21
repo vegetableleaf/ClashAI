@@ -103,6 +103,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             # WHEN the drill's reference line would play. The gate is sampled in the parent and the
             # envs live out here, the same split that made --drill-frac a no-op for two runs.
             "dgate": (env.drill_prior_gate() if hasattr(env, "drill_prior_gate") else None),
+            # PER-DRILL SCAFFOLDING STRENGTH: up where the policy cannot reach a success at all,
+            # down where the prior is winning the drill for it. See DrillEnv.drill_floor_scale.
+            "dfloor": (env.drill_floor_scale() if hasattr(env, "drill_floor_scale") else 1.0),
         }
 
     obs_cache = [e.reset() for e in envs]
@@ -213,6 +216,11 @@ class RemotePool:
 
     def doctrine_card(self, i: int):
         return (self.last[i] or {}).get("dcard") or {}
+
+    def drill_floor(self, i: int):
+        """Multiplier on the drill exploration floors for this env's current drill."""
+        v = (self.last[i] or {}).get("dfloor")
+        return 1.0 if v is None else float(v)
 
     def drill_gate(self, i: int):
         """P(play) the current drill's reference line would use, or None outside a drill."""

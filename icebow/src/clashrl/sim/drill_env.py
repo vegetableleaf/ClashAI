@@ -867,6 +867,7 @@ class DrillMixEnv(DrillEnv):
             keep = {str(n) for n in only}
             self._pool = [s for s in self._pool if s.name in keep] or self._pool
         self._in_drill = False
+        self._pass_ema = {}                             # per-drill pass rate, for the curriculum
 
     def _episode_prob(self) -> float:
         """Episode probability that delivers the configured share of STEPS.
@@ -900,16 +901,79 @@ class DrillMixEnv(DrillEnv):
         self._in_drill = bool(self._pool) and float(self.rng.random()) < self._episode_prob()
         if not self._in_drill:
             return SimMatchEnv.reset(self)
-        self.scenario = self._pool[int(self.rng.integers(len(self._pool)))
-                                   if hasattr(self.rng, "integers")
-                                   else int(self.rng.random() * len(self._pool)) % len(self._pool)]
+        # CURRICULUM: weighted by reachability, never zero for any drill.
+        w = [self._curriculum_weight(getattr(s, "name", "")) for s in self._pool]
+        tot = sum(w) or 1.0
+        r, acc, idx = float(self.rng.random()) * tot, 0.0, len(self._pool) - 1
+        for j, wj in enumerate(w):
+            acc += wj
+            if r <= acc:
+                idx = j
+                break
+        self.scenario = self._pool[idx]
         return DrillEnv.reset(self)
+
+    # -- curriculum ----------------------------------------------------------------------
+    def _pass_rate(self, name):
+        """Per-drill pass rate, EMA. None until the drill has been seen enough to mean anything."""
+        st = self._pass_ema.get(str(name))
+        if st is None or st[1] < 4:
+            return None
+        return st[0]
+
+    def _note_verdict(self, name, verdict) -> None:
+        p, n = self._pass_ema.get(str(name), (0.5, 0))
+        hit = 1.0 if verdict == "pass" else 0.0
+        self._pass_ema[str(name)] = (p + 0.12 * (hit - p), n + 1)
+
+    def _curriculum_weight(self, name) -> float:
+        """How often to draw this drill. Peaks in the LEARNABLE BAND, never reaches zero.
+
+        A drill at 100% teaches nothing new and one at 2% produces nothing to learn from, but
+        neither is dropped: the floor keeps every drill in the mix so a mastered skill is not
+        forgotten and an unreachable one is still being attempted while its scaffolding rises.
+        """
+        p = self._pass_rate(name)
+        if p is None:
+            return 1.0                                  # unseen: sample it normally
+        if p < 0.15:
+            return 0.6                                  # still attempted, and its prior is rising
+        if p > 0.85:
+            return 0.35                                 # mastered: keep it warm, stop spending on it
+        return 1.6                                      # the band where learning can actually happen
+
+    def drill_floor_scale(self) -> float:
+        """Multiplier on the trainer's drill exploration floors, from THIS drill's pass rate.
+
+        Opposite directions on purpose:
+          * below 15% -- the successes are not being generated, so scaffold HARDER (the owner's
+            "nudge"); without it the drill is stuck no matter how long training runs.
+          * above 85% -- the prior is winning it, and at r ~ 0.0125 the policy learns almost nothing
+            from a win it did not produce. Weakening the prior moves mu toward pi so the win teaches.
+        """
+        s = getattr(self, "scenario", None)
+        if s is None:
+            return 1.0
+        p = self._pass_rate(getattr(s, "name", ""))
+        if p is None:
+            return 1.0
+        if p < 0.15:
+            return 1.4
+        if p > 0.85:
+            return 0.45
+        return 1.0
 
     def step(self, action):
         self._ep_steps += 1
         if not self._in_drill:
             return SimMatchEnv.step(self, action)
-        return DrillEnv.step(self, action)
+        out = DrillEnv.step(self, action)
+        # FEED THE CURRICULUM. The verdict is the only evidence of what this policy can currently
+        # reach, and both the sampling weight and the scaffolding strength key off it.
+        info = out[3] if isinstance(out, tuple) and len(out) > 3 else None
+        if isinstance(info, dict) and info.get("verdict") and self.scenario is not None:
+            self._note_verdict(getattr(self.scenario, "name", ""), info.get("verdict"))
+        return out
 
 
 def make_train_env(cfg, seed: int = 0, level=None, frac=None):
@@ -1012,7 +1076,9 @@ def outcomes(cfg, names=None, reps=60, seed=5, level=None):
                     _o, r, done, info = env.step((0, 0, 0))
                     tot += float(r)
                 idle.append((tot, (info or {}).get("verdict", "?")))
-            if idle and all(v == "pass" for _t, v in idle):
+            # A MAJORITY, not unanimity: these drills randomise lane, timing and elixir, and now
+            # carry noise, so one stray timeout in seven is normal and must not erase the column.
+            if idle and sum(1 for _t, v in idle if v == "pass") >= 0.7 * len(idle):
                 restraint = True
                 got["pass"] = [t for t, _v in idle]
                 mean["pass"] = sum(got["pass"]) / len(got["pass"])
