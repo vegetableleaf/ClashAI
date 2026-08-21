@@ -777,6 +777,39 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ⚠⚠⚠ THE RUN IS DEGRADING, AND `best_wr` HID IT (2026-08-21, 10:50)
+
+**`best_wr` is a HIGH-WATER MARK, not a current score.** It only ever ratchets upward, so "flat at
+11.525" does not mean "not improving" — it meant the policy peaked at match 1500 and has been
+getting WORSE ever since. Measured directly, 40 full-difficulty matches per arm, identical
+opponents and the trainer's own greedy rule:
+
+| checkpoint | winrate | plays / step |
+|---|---|---|
+| **untrained net** | **15.0%** (6W-34L) | ~50% |
+| `policy_ppo_drill_best.pt` @ match 1500 | 10.0% (4W-36L) | 10.4% |
+| current @ match 7900 | **0.0%** (0W-40L) | **5.9%** |
+
+The harness reproduces the banked 11.525 for the match-1500 checkpoint, so it is sound. **A policy
+trained for 7,900 matches now loses every match and is 15 points WORSE than random init.**
+
+**The mechanism is the collapsing play rate.** P(play) fell 0.286 → 0.14 and plays/step 10.4% →
+5.9%, while elixir rose 2.45 → 4.25. An untrained gate plays ~50% of steps and wins 15%; in a
+three-minute match a policy that rarely answers anything simply loses. ⚠ **The banking I reported
+all morning as the drills working is the failure, not the progress.**
+
+**Prime suspect: the drill mix teaches WAITING.** A drill is mostly waiting for one right moment,
+so at `drill_frac 0.3` a large share of training states have "wait" as the correct action — and the
+0.85 gate prior makes the sampled action a wait even more often than that. Global passivity is
+exactly what would transfer.
+
+**THE EXPERIMENT THAT SETTLES IT** (and it is the one this whole session set out to answer): train
+`--drill-frac 0.0` against `--drill-frac 0.3`, equal budget, and compare winrate AND plays/step at a
+fixed match count. Use `wr_eval2.py`-style direct measurement, never `best_wr`.
+
+⚠ **Never quote `best_wr` as current performance again.** Six thousand matches of degradation were
+invisible behind it, including in my own reports this morning.
+
 ### ⚠ RESTART REQUIRED: the run started 07:44 has the dead-match-accounting bug (fixed in `9e7d15f`)
 
 `3a3dd73` (self-imitation, ~03:50) inserted `if True:` immediately after the `if is_drill:` block,
