@@ -777,6 +777,35 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ⚠ RESTART REQUIRED: the run started 07:44 has the dead-match-accounting bug (fixed in `9e7d15f`)
+
+`3a3dd73` (self-imitation, ~03:50) inserted `if True:` immediately after the `if is_drill:` block,
+which stole the `else:` belonging to it and made the **entire match-accounting branch dead code**:
+
+```python
+if is_drill: ...
+if True:  ep_from[i] = ...
+else:                                  # never runs
+    wins += ...; losses += ...; win_hist.append(...)
+```
+
+* **Visible symptom:** `0W-0L-0D` on a run with real matches (owner spotted it).
+* **Real damage:** `win_hist` drives the winrate EMA, and the EMA drives **curriculum difficulty**
+  (`d_tgt = max(0.15, wr_ema / full_wr)`), the PFSP ledger and the checkpoint gate. With `win_hist`
+  permanently empty the EMA is 0, so difficulty collapses to its **0.15 floor** — the policy trains
+  against the weakest opponents in the pool while `evaluate()` (independent, still correct) scores
+  it against full-strength ones.
+
+**This fully explains the "very odd results"**: `best_wr` 3.778 at 3000 matches against the previous
+run's 11.333 at 2500, banking up but execution down. That run was not testing the floor anneal; it
+was training on a broken curriculum.
+
+⚠ **The 07:44 run is compromised from its first match.** Restart it on `9e7d15f` or later. The
+earlier run (01:14–07:44) loaded its code *before* `3a3dd73` and is unaffected — its 11.333 is real.
+
+⚠ **Void:** every old-vs-new comparison made from the 07:44 run, including the claim that the floor
+anneal made things worse.
+
 ### PARKED, deliberately: anneal `ppo_drill_gate_floor` too (2026-08-21)
 
 `ppo_drill_cell_floor` now anneals 0.75 → 0.20 (`01c036b`). **`ppo_drill_gate_floor` is still a
