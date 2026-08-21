@@ -137,6 +137,7 @@ def health(ckpt: Path, envs: int = 6, steps: int = 400) -> dict:
         return torch.from_numpy(t[:thr_dim] if t.shape[0] > thr_dim
                                 else np.pad(t, (0, thr_dim - t.shape[0])))
 
+    cellmask = np.asarray(e0.actions.deployable_mask(False), dtype=bool)
     obs = [e.reset() for e in pool]
     p_play, elixir, cell_ent, card_ent, cells = [], [], [], [], []
     with torch.no_grad():
@@ -153,8 +154,16 @@ def health(ckpt: Path, envs: int = 6, steps: int = 400) -> dict:
                 p_play.append(float(pg[i]))
                 elixir.append(float(e.eng.elixir[0]))
                 card_ent.append(_entropy(pc[i]))
+                # MASK TO THE DEPLOYABLE SET, because that is what the policy chooses among and
+                # what training updates. Only 157 of 432 cells are deployable, so an unmasked
+                # softmax measures 275 never-updated logits alongside the real ones and dilutes the
+                # signal ~6x: the same checkpoint reads 6.05 of 6.07 unmasked and 5.038 of 5.056
+                # masked. It also means the MAXIMUM to compare against is ln(157), not ln(432).
                 top = int(np.argmax(pc[i]))
-                pcell = torch.softmax(ceq[i, top], dim=0).numpy()
+                lg = ceq[i, top].numpy().copy()
+                lg[~cellmask] = -1e9
+                pcell = np.exp(lg - lg.max())
+                pcell = pcell / pcell.sum()
                 cell_ent.append(_entropy(pcell))
                 cells.append(int(np.argmax(pcell)))
                 # SAMPLE THE CARD FROM THE CARD HEAD, not hand[0]. Taking the first affordable
@@ -184,7 +193,8 @@ def health(ckpt: Path, envs: int = 6, steps: int = 400) -> dict:
         "p_play_max": float(np.max(p_play)),
         "elixir_mean": float(np.mean(elixir)),
         "elixir_ge6": float(np.mean(np.asarray(elixir) >= 6.0)),
-        "cell_ent": float(np.mean(cell_ent)), "cell_ent_max": float(math.log(e0.n_cells)),
+        "cell_ent": float(np.mean(cell_ent)),
+        "cell_ent_max": float(math.log(max(2, int(cellmask.sum())))),
         "cell_distinct": int(len(set(cells))),
         "card_ent": float(np.mean(card_ent)), "card_ent_max": float(math.log(e0.n_cards)),
     }

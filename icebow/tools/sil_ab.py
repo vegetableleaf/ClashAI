@@ -78,6 +78,9 @@ def measure(ckpt: str, label: str) -> None:
         return n
 
     tr, fr = net(True), net(False)
+    # MASK TO THE DEPLOYABLE SET -- only 157 of 432 cells are choosable, so an unmasked softmax
+    # dilutes the signal ~6x and compares against the wrong maximum (ln 432 instead of ln 157).
+    cmask = np.asarray(e0.actions.deployable_mask(False), dtype=bool)
 
     def ent(p):
         p = np.asarray(p, dtype=np.float64)
@@ -99,7 +102,10 @@ def measure(ckpt: str, label: str) -> None:
                 for n_, sink in ((tr, ents), (fr, fents)):
                     _z, cq, ceq = n_.policy.forward_parts(x, h, nx, el, th)
                     c = int(torch.argmax(cq[0]))
-                    sink.append(ent(torch.softmax(ceq[0, c], dim=0).numpy()))
+                    lg = ceq[0, c].numpy().copy()
+                    lg[~cmask] = -1e9
+                    pp = np.exp(lg - lg.max())
+                    sink.append(ent(pp / pp.sum()))
                 _z, cq, ceq = tr.policy.forward_parts(x, h, nx, el, th)
                 for cid in [c for c in e._hand_ids() if 0 <= c < len(e.specs)][:2]:
                     try:
@@ -115,7 +121,7 @@ def measure(ckpt: str, label: str) -> None:
                 o, _r, d, _i = e.step((0, 0, 0))
                 if d:
                     o = e.reset()
-    mx = math.log(e0.n_cells)
+    mx = math.log(max(2, int(cmask.sum())))
     gap = float(np.mean(fents)) - float(np.mean(ents))
     print("%-9s cell entropy %.4f of %.4f  (fresh %.4f, gap %.4f)   pi(prior cell) %.5f  x uniform %.1f"
           % (label, float(np.mean(ents)), mx, float(np.mean(fents)), gap,
@@ -139,8 +145,9 @@ def main() -> int:
         set_sil("0.0")                                    # never leave the shared config armed
         print("config restored: ppo_sil_coef 0.0")
     print("")
-    print("Reference: the live 4000-match run measured 6.0652 against a fresh net's 6.0684 --")
-    print("a gap of 0.003 nats, i.e. the head had not moved. A bigger gap is a head that learned.")
+    print("Reference, MASKED (only 157 of 432 cells are deployable, so ln(157)=5.0562 is the")
+    print("real ceiling): the live run measured 5.0381 against a fresh net's 5.0562 -- a gap of")
+    print("0.018 nats and a top cell at 1.19x uniform. A bigger gap is a head that learned more.")
     return 0
 
 
