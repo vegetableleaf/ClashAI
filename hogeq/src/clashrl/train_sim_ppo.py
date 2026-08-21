@@ -269,6 +269,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     n_epochs = int(cfg.get("sim", "ppo_epochs", default=4))
     minibatch = int(cfg.get("sim", "ppo_minibatch", default=512))
     clip_eps = float(cfg.get("sim", "ppo_clip", default=0.2))
+    # A PLAY's ratio is a product over gate x card x cell; a WAIT's is the gate alone. One bound
+    # cannot be the same trust region for both -- measured, plays clip 12-25x more often, and since
+    # clipping caps positive-advantage updates while negative ones keep pushing, the gate decays
+    # toward waiting no matter what the reward says. See ppo_clip_play_mult in config.yaml.
+    clip_play_mult = float(cfg.get("sim", "ppo_clip_play_mult", default=1.0))
     lr = float(cfg.get("sim", "ppo_lr", default=0.00025))
     ent_coef = float(cfg.get("sim", "ppo_entropy", default=0.01))
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
@@ -554,6 +559,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
+    _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0}
 
     def snapshot(store=True):
         snap = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
@@ -769,7 +775,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 a_b, r_b, ol_b = adv_f[mb_t], ret_f[mb_t], oldlp_f[mb_t]
                 ratio = (new_lp - ol_b).exp()
                 s1 = ratio * a_b
-                s2 = torch.clamp(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * a_b
+                # PER-ACTION-KIND BOUND: wider for plays, whose ratio carries three log-probs.
+                eps_b = clip_eps * (1.0 + (clip_play_mult - 1.0) * play)
+                s2 = torch.clamp(ratio, 1.0 - eps_b, 1.0 + eps_b) * a_b
                 pl = -torch.min(s1, s2).mean()
                 vl = F.mse_loss(val, r_b)
                 if _warm["left"] > 0:
@@ -806,6 +814,19 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     tot_pl += float(pl.detach()); tot_vl += float(vl.detach())
                     tot_ent += float(ent.mean().detach())
                     tot_clip += float(((ratio.detach() - 1.0).abs() > clip_eps).float().mean()); nb += 1
+                    # CLIP RATE SPLIT BY PLAY vs WAIT. A wait's ratio carries the GATE log-prob
+                    # alone; a play's carries gate + card + cell, and the cell head is 432-way. So a
+                    # play's ratio is far noisier and clips more often -- and clipping is asymmetric
+                    # in effect, capping a positive-advantage update while a negative one keeps
+                    # pushing down. That would bias the gate toward WAITING regardless of reward,
+                    # which is what every run does (P(play) 0.5 -> 0.15) even though the reward
+                    # strongly favours playing (never-play -44.77 vs play-often -7.34 per episode).
+                    _cl = ((ratio.detach() - 1.0).abs() > eps_b.detach()).float()
+                    _pm = play.detach()
+                    _clip_split["play"] += float((_cl * _pm).sum())
+                    _clip_split["play_n"] += float(_pm.sum())
+                    _clip_split["wait"] += float((_cl * (1.0 - _pm)).sum())
+                    _clip_split["wait_n"] += float((1.0 - _pm).sum())
         return tot_pl / nb, tot_vl / nb, tot_ent / nb, tot_clip / nb
 
     # -- main loop: collect a horizon of experience across K envs, then one PPO update -------------
@@ -933,6 +954,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0; ep_n[i] = 0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
+                        if done_n % log_every == 0 and _clip_split["play_n"] > 0                                 and _clip_split["wait_n"] > 0:
+                            print("[train-sim-ppo] clip rate PLAY %.3f vs WAIT %.3f  (a play's "
+                                  "ratio carries gate+card+cell, a wait's only the gate)"
+                                  % (_clip_split["play"] / _clip_split["play_n"],
+                                     _clip_split["wait"] / _clip_split["wait_n"]), flush=True)
+                            _clip_split.update({"play": 0.0, "play_n": 0.0,
+                                                "wait": 0.0, "wait_n": 0.0})
                         if done_n % log_every == 0 and _adv_stats["match"] > 0:
                             print("[train-sim-ppo] adv |mean|: drill %.3f vs match %.3f "
                                   "(drill = %.0f%% of steps) -- a large gap means one population "

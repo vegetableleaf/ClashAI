@@ -269,6 +269,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     n_epochs = int(cfg.get("sim", "ppo_epochs", default=4))
     minibatch = int(cfg.get("sim", "ppo_minibatch", default=512))
     clip_eps = float(cfg.get("sim", "ppo_clip", default=0.2))
+    # A PLAY's ratio is a product over gate x card x cell; a WAIT's is the gate alone. One bound
+    # cannot be the same trust region for both -- measured, plays clip 12-25x more often, and since
+    # clipping caps positive-advantage updates while negative ones keep pushing, the gate decays
+    # toward waiting no matter what the reward says. See ppo_clip_play_mult in config.yaml.
+    clip_play_mult = float(cfg.get("sim", "ppo_clip_play_mult", default=1.0))
     lr = float(cfg.get("sim", "ppo_lr", default=0.00025))
     ent_coef = float(cfg.get("sim", "ppo_entropy", default=0.01))
     vf_coef = float(cfg.get("sim", "ppo_vf_coef", default=0.5))
@@ -554,6 +559,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
+    _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0,
+                   "play_block": 0.0, "wait_block": 0.0, "play_push": 0.0, "wait_push": 0.0,
+                   "play_raw": 0.0, "wait_raw": 0.0,
+                   "gate_z": 0.0, "gate_z_raw": 0.0}
 
     def snapshot(store=True):
         snap = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
@@ -769,7 +778,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 a_b, r_b, ol_b = adv_f[mb_t], ret_f[mb_t], oldlp_f[mb_t]
                 ratio = (new_lp - ol_b).exp()
                 s1 = ratio * a_b
-                s2 = torch.clamp(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * a_b
+                # PER-ACTION-KIND BOUND: wider for plays, whose ratio carries three log-probs.
+                eps_b = clip_eps * (1.0 + (clip_play_mult - 1.0) * play)
+                s2 = torch.clamp(ratio, 1.0 - eps_b, 1.0 + eps_b) * a_b
                 pl = -torch.min(s1, s2).mean()
                 vl = F.mse_loss(val, r_b)
                 if _warm["left"] > 0:
@@ -806,6 +817,54 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     tot_pl += float(pl.detach()); tot_vl += float(vl.detach())
                     tot_ent += float(ent.mean().detach())
                     tot_clip += float(((ratio.detach() - 1.0).abs() > clip_eps).float().mean()); nb += 1
+                    # CLIP SPLIT BY PLAY vs WAIT. A wait's ratio carries the GATE log-prob alone;
+                    # a play's carries gate + card + cell, and the cell head is 432-way, so a play's
+                    # ratio is far noisier and leaves the trust region 12-25x more often (measured).
+                    #
+                    # But the clip RATE alone proves nothing about direction. PPO's clip is
+                    # deliberately TWO-SIDED: it kills the gradient when (A>0 and r>1+eps) OR when
+                    # (A<0 and r<1-eps), so a high clip rate on its own is as likely to block a
+                    # push down as a push up. What decides whether the gate drifts is the NET
+                    # SURVIVING PUSH -- sum of A*r over the steps whose gradient is NOT killed.
+                    # If that is negative for plays while waits keep a free two-sided update, the
+                    # gate is driven toward waiting no matter what the reward says, which is what
+                    # every run does (P(play) 0.535 untrained -> 0.075 after 700 matches).
+                    _cl = ((ratio.detach() - 1.0).abs() > eps_b.detach()).float()
+                    _pm = play.detach()
+                    _clip_split["play"] += float((_cl * _pm).sum())
+                    _clip_split["play_n"] += float(_pm.sum())
+                    _clip_split["wait"] += float((_cl * (1.0 - _pm)).sum())
+                    _clip_split["wait_n"] += float((1.0 - _pm).sum())
+                    _r = ratio.detach()
+                    _e = eps_b.detach()
+                    _blocked = (((a_b > 0) & (_r > 1.0 + _e))
+                                | ((a_b < 0) & (_r < 1.0 - _e))).float()
+                    _push = a_b * _r * (1.0 - _blocked)      # gradient that actually survives
+                    _clip_split["play_block"] += float((_blocked * _pm).sum())
+                    _clip_split["wait_block"] += float((_blocked * (1.0 - _pm)).sum())
+                    _clip_split["play_push"] += float((_push * _pm).sum())
+                    _clip_split["wait_push"] += float((_push * (1.0 - _pm)).sum())
+                    # THE CONTROL. Net surviving push being more negative for plays does NOT by
+                    # itself implicate clipping: it looks identical whether clipping strips plays
+                    # of their positive updates, or the critic simply assigns plays worse
+                    # advantage and clipping is irrelevant. So accumulate the SAME quantity with
+                    # NO blocking applied. If raw ~= surviving, clipping is not doing the damage
+                    # and the bias lives in the advantages themselves.
+                    _raw = a_b * _r
+                    _clip_split["play_raw"] += float((_raw * _pm).sum())
+                    _clip_split["wait_raw"] += float((_raw * (1.0 - _pm)).sum())
+                    # PROJECT ONTO THE GATE LOGIT -- the sign convention matters and summing the
+                    # two pushes gets it WRONG. The update direction is +A*r*grad log pi(a), so a
+                    # wait step with NEGATIVE advantage lowers log pi(wait), which RAISES P(play):
+                    # a negative wait push pushes TOWARD playing, not away from it. Writing
+                    # play_push + wait_push therefore counts that term with the wrong sign.
+                    # With p = P(play): d log pi(play)/dz = (1-p) and d log pi(wait)/dz = -p, so
+                    # each step contributes A*r*(1-p) if it played and A*r*(-p) if it waited.
+                    # Positive total = the gate is being driven toward PLAYING.
+                    _p_play = lp_g[:, 1].detach().exp()
+                    _proj = torch.where(_pm > 0.5, 1.0 - _p_play, -_p_play)
+                    _clip_split["gate_z"] += float((_push * _proj).sum())
+                    _clip_split["gate_z_raw"] += float((_raw * _proj).sum())
         return tot_pl / nb, tot_vl / nb, tot_ent / nb, tot_clip / nb
 
     # -- main loop: collect a horizon of experience across K envs, then one PPO update -------------
@@ -933,6 +992,41 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0; ep_n[i] = 0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
+                        if done_n % log_every == 0 and _clip_split["play_n"] > 0                                 and _clip_split["wait_n"] > 0:
+                            _pn, _wn = _clip_split["play_n"], _clip_split["wait_n"]
+                            print("[train-sim-ppo] clip rate PLAY %.3f vs WAIT %.3f | gradient "
+                                  "KILLED PLAY %.3f vs WAIT %.3f | net surviving push/step "
+                                  "PLAY %+.4f vs WAIT %+.4f"
+                                  % (_clip_split["play"] / _pn,
+                                     _clip_split["wait"] / _wn,
+                                     _clip_split["play_block"] / _pn,
+                                     _clip_split["wait_block"] / _wn,
+                                     _clip_split["play_push"] / _pn,
+                                     _clip_split["wait_push"] / _wn), flush=True)
+                            # THE NUMBER THAT DECIDES THE GATE. The two means above are per-step
+                            # WITHIN each kind, and plays are rare -- so a large positive play push
+                            # and a small negative wait push can still sum to net-negative pressure
+                            # on the gate. Weight each by how often it actually occurs. If this is
+                            # negative the gate drifts toward WAITING no matter how good plays look
+                            # in isolation, and it is self-reinforcing: fewer plays -> smaller
+                            # positive term -> more negative still. That is "decay from start".
+                            _tot = _pn + _wn
+                            _gate_now = _clip_split["gate_z"] / _tot
+                            _gate_raw = _clip_split["gate_z_raw"] / _tot
+                            print("[train-sim-ppo]   GATE LOGIT PRESSURE (projected; + = toward PLAY) clipped %+.5f "
+                                  "vs unclipped %+.5f   [plays are %.1f%% of steps]"
+                                  % (_gate_now, _gate_raw, 100.0 * _pn / _tot), flush=True)
+                            print("[train-sim-ppo]   CONTROL raw push (no clipping) PLAY %+.4f vs "
+                                  "WAIT %+.4f  -- if this matches the surviving push above, the "
+                                  "bias is in the ADVANTAGES, not the clip"
+                                  % (_clip_split["play_raw"] / _pn,
+                                     _clip_split["wait_raw"] / _wn), flush=True)
+                            _clip_split.update({"gate_z": 0.0, "gate_z_raw": 0.0,
+                                "play_raw": 0.0, "wait_raw": 0.0,
+                                "play_block": 0.0, "wait_block": 0.0,
+                                "play_push": 0.0, "wait_push": 0.0,
+                                "play": 0.0, "play_n": 0.0,
+                                                "wait": 0.0, "wait_n": 0.0})
                         if done_n % log_every == 0 and _adv_stats["match"] > 0:
                             print("[train-sim-ppo] adv |mean|: drill %.3f vs match %.3f "
                                   "(drill = %.0f%% of steps) -- a large gap means one population "

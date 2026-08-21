@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-20**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-21**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -1208,6 +1208,98 @@ correct answer, becomes the PASS column.
 * **`--reward` (correct play beats idling) is not the same question as `--outcomes` (passing pays
   most).** The king drill scored +1.10 on the first while paying +0.24 to time out and −0.28 to pass.
 * **A significance-free comparison of outcome means is noise.** Two episodes cannot outvote thirteen.
+
+## 3o. 2026-08-21 afternoon — THE REAL BUG: PPO training makes the policy WORSE THAN UNTRAINED
+
+**Read this before touching drills, curriculum, or reward shaping again.** Everything in SS3n was
+addressing drill CONTENT. The fault is in the OPTIMISER, it predates the drills, and it is large.
+
+### The measurement that matters
+
+Same eval harness, 24 episodes/checkpoint, icebow, 700 matches of `train-sim-ppo`, drills at 0.3:
+
+```
+untrained (fresh net)          reward  -6.78     <- the baseline to beat
+mult=4.0  seeds 41,42          reward -25.46     3.8x WORSE than doing nothing
+mult=1.0  seeds 41,42 (ship)   reward -33.96     5.0x WORSE than doing nothing
+```
+
+Training does not plateau, it does not overfit -- it moves the policy AWAY from its own reward
+signal, hard, from the very first episodes. An untrained net beats every checkpoint we produced.
+
+### It is NOT the drills (paired, equal counts, 600 matches each)
+
+```
+drill_frac = 0.0  (pure matches)   P(play) 0.493 -> 0.225     winrate 24% -> 10%, reward -5.9 -> -9.3
+drill_frac = 0.3  (with drills)    P(play) 0.535 -> 0.174
+```
+
+With drills entirely OFF the run still degrades monotonically in its own training log. Drills make
+it modestly worse; they do not cause it. The 43% drill pass-rate plateau is DOWNSTREAM of this.
+
+### The gate collapse ("decay from start"), and a cheap reproduction
+
+P(play) falls from ~0.50 to ~0.06-0.25 in EVERY run. It is fully expressed in **700 matches
+(~25 min on 8 envs)** -- no more overnight runs to test a hypothesis:
+
+```bash
+python run.py --config <scratch>/cfg.yaml train-sim-ppo --matches 700 --envs 8 --workers 0   --size 432 --drill-frac 0.3 --seed 41 --device cpu --out <scratch>/probe.pt
+```
+
+Corroborated at full scale: the 96-env run reached P(play) 0.177 at 3371 matches. The CELL head is
+learning fine throughout (cell_struct 90.8x untrained, 60 distinct cells) -- the failure is the GATE.
+
+### `ppo_clip_play_mult` (SHIPPED, default 1.0 = OFF)
+
+A play's PPO ratio is a product over gate x card x cell (432-way); a wait's is the 2-way gate alone.
+Measured, plays leave the trust region **12-25x** more often, and their gradient is killed 10x more
+(0.078 vs 0.008). The knob widens the clip bound for PLAY actions only. At 4.0 it cuts the kill
+asymmetry to 3.5x and buys ~8.5 reward and ~0.22 P(play).
+
+**It is a MITIGATION, not a fix, and it is DEFAULT OFF.** It recovers about a quarter of the damage;
+the policy is still 3.8x worse than untrained. Do not spend a night on it believing it solves this.
+The value 4.0 is UNTUNED -- picked because it equalised clip rates. A variance argument says ~1.7.
+A 5-value x 2-seed sweep scoring REWARD is staged and unrun.
+
+### FOUR mechanism claims I made and had to withdraw -- do not re-derive these
+
+1. *"Clipping is asymmetric: it zeroes positive-advantage gradients while negative ones keep
+   pushing."* WRONG -- PPO's clip is deliberately two-sided (kills grad when A>0 and r>1+eps, OR
+   A<0 and r<1-eps). I ignored the mirror branch.
+2. *"Plays carry ~2x the downward push."* WRONG -- one noisy logging window. The next window flipped
+   the sign (-0.11 then +0.70).
+3. *"Clipping amplifies an already-negative gate pressure, 56/44 split."* WRONG -- the metric summed
+   `play_push + wait_push`, which counts wait steps with the WRONG SIGN. The update is
+   `+A*r*grad log pi(a)`, so a wait step with NEGATIVE advantage LOWERS log pi(wait), which RAISES
+   P(play). A negative wait push pushes TOWARD playing.
+4. *"mult=4.0 stops the decay"* (from 0.062 vs 0.419 at seed 21). OVERSTATED -- at seed 61 the fix
+   arm tracked down to 0.117-0.28 as well. It reduces the damage; it does not stop it.
+
+The correct gate projection (now in the code) is `A*r*(1-p)` on play steps and `A*r*(-p)` on wait
+steps. Measured that way the PPO surrogate's net gate pressure is ~0 while P(play) is collapsing --
+i.e. **something outside the PPO term is driving the gate down.** Candidates, uninstrumented:
+the entropy bonus, `_clamp_heads()`, and the exploration floors' effect on the behaviour policy.
+Note `ent=0.07` (drills) / `0.21` (no drills) at 600 matches -- the policy has stopped exploring.
+
+### Diagnostics added to `train_sim_ppo.py` (icebow only; hogeq has the knob, not the prints)
+
+Printed every `log_every` episodes:
+* clip rate split PLAY vs WAIT
+* gradient KILLED rate split (the two-sided-correct version)
+* net surviving push/step, and the **unclipped CONTROL** -- if raw ~= surviving, the bias is in the
+  ADVANTAGES, not the clip. That control is what caught claim #3.
+* GATE LOGIT PRESSURE, projected with the correct sign, clipped vs unclipped
+
+**The gate-pressure metric is UNDER-POWERED as written**: it resets each window, so sd (0.011)
+exceeds the between-arm difference (0.010). Accumulate across a whole run before comparing arms.
+
+### NEXT: find why plain-match PPO moves against its reward
+
+Self-contained, cheap to reproduce, and it blocks everything else. Start with `drill_frac 0.0` so
+the drills are out of the picture. The user does not know when this regressed -- a bisect over the
+sim-PPO history against the "reward vs untrained" test is the direct answer.
+
+---
 
 ## 4. The central problem, and where it stands
 

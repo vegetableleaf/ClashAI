@@ -1458,7 +1458,18 @@ sim:
   ppo_horizon: 128              # env steps collected per env before each update (batch = horizon x envs)
   ppo_epochs: 4                 # optimisation passes over each rollout
   ppo_minibatch: 512            # minibatch size within a rollout
-  ppo_clip: 0.2                 # PPO clip epsilon (the trust region)
+  ppo_clip: 0.2
+  ppo_clip_play_mult: 1.0   # scales the PPO clip bound for PLAY actions only (1.0 = old behaviour).
+                            # A play's importance ratio is a product over gate x card x cell -- the
+                            # cell head is 432-way -- while a wait's is the 2-way gate alone. One
+                            # epsilon is therefore not one trust region: MEASURED on a fresh run,
+                            #     clip rate PLAY 0.30-0.42   WAIT 0.014-0.033   (12-25x)
+                            # and clipping is asymmetric in effect -- it switches off the gradient of
+                            # a POSITIVE-advantage action while a negative one keeps pushing down. So
+                            # plays are punished in full and reinforced only two thirds of the time,
+                            # and the gate decays toward WAIT regardless of reward. Every run in this
+                            # project shows it: P(play) 0.5 -> 0.15, while the reward strongly favours
+                            # playing (never-play -44.77 per episode vs -7.34 for playing often).                 # PPO clip epsilon (the trust region)
   ppo_lr: 0.00025               # PPO learning rate (on-policy tolerates more than the DQN's 5e-5)
   ppo_entropy: 0.02             # entropy bonus (exploration pressure on the gate + CARD categoricals).
                                 # 0.01 -> 0.02 after the round-5 card-head logit explosion (+/-140
