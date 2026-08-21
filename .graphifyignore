@@ -1,0 +1,42 @@
+# Graphify indexing exclusions for ClashBot.
+#
+# Graphify already honours .gitignore, and .gitignore already excludes data/ -- so the secrets
+# under {deck}/data/ are skipped twice over. This file is the belt to that pair of braces: it is
+# what `--no-gitignore` PRIORITISES, so it is the only exclusion that still holds if someone runs
+# with .gitignore disabled.
+#
+# The standing rule this protects: never commit {deck}/data/. That directory holds the Discord
+# webhook (icebow/data/discord_webhook.txt), session recordings, labelled detector datasets and
+# policy checkpoints.
+
+# --- secrets and per-deck working data (NEVER index, NEVER commit) ---
+data/
+**/data/
+*webhook*
+*.token
+*.key
+*.pem
+.env
+.env.*
+
+# --- large regenerable artifacts: nothing to learn from, and they bloat the graph ---
+runs/
+annotation_export*/
+*.mp4
+*.avi
+*.mkv
+*.pt
+*.pth
+*.onnx
+*.zip
+
+# --- graphify's own output, so a rebuild never re-indexes the previous graph ---
+graphify-out/
+raw/
+
+# --- caches ---
+__pycache__/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/

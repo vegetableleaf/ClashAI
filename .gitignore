@@ -47,3 +47,9 @@ _push_worktree/
 
 # Kept on purpose (small + needed): src/**/hp_digits.npz, templates/**/*.png
 data/webcache/
+
+# --- Graphify knowledge-graph output (regenerable; can embed file contents) ---
+# graph.json/graph.html hold extracted code structure and text, so a committed graph is a second
+# copy of the repo that no one reviews. Regenerate with `/graphify .` instead of committing it.
+graphify-out/
+raw/
