@@ -424,12 +424,33 @@ def doctrine_cells(env, card_id: int) -> Optional[List[Tuple[int, float]]]:
     once, here, where nothing can route around it.
     """
     got = _doctrine_cells_rules(env, card_id)
-    if not got:
+    # A DRILL'S OWN REFERENCE CELL, merged BEFORE the no-rule early return below. Nine of the 28
+    # drills never succeed under exploration -- measured, 0 passes in 60 -- so they generate no
+    # positive example and cannot be learned at all, whatever the mix or the entropy schedule does.
+    # Eight of those are DOCTRINE GAPS, where the rule table has nothing to offer either, so the
+    # merge has to happen even when `got` is empty; putting it after the early return would have
+    # skipped exactly the cases that need it.
+    #
+    # Weighted to DOMINATE, because competing evenly with merely-plausible cells is not enough to
+    # make a rare success actually happen. It still occupies only the prior's share of the sampling
+    # MIXTURE, so nothing is forced: the policy must still choose it, and the stored log-prob is the
+    # mixture's, which is what keeps the PPO ratio exact.
+    ref = None
+    try:
+        if hasattr(env, "drill_prior_cells"):
+            ref = env.drill_prior_cells(card_id)
+    except Exception:  # noqa: BLE001 -- a bad reference must never break a rollout
+        ref = None
+    if not got and not ref:
         return got
     keys = env.deck_keys
     base = keys[card_id][:-4] if keys[card_id].endswith("_evo") else keys[card_id]
-    w = dict(got)
+    w = dict(got or {})
     _shape_placement(w, env, base)
+    if ref:
+        boost = 4.0 * (max(w.values()) if w else 1.0)
+        for c_j, _wt in ref:
+            w[c_j] = w.get(c_j, 0.0) + boost
     return list(w.items())
 
 

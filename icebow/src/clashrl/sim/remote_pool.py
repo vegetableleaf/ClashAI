@@ -97,6 +97,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             # this, and without it every drill was recorded as a played-and-lost match -- which
             # feeds the winrate EMA, and through it the curriculum difficulty and the gate.
             "drill": drill, "verdict": verdict,
+            # IS THIS ENV IN A DRILL RIGHT NOW -- needed every step, not just at the end, because
+            # the parent picks the exploration floor per step and the envs live out here.
+            "in_drill": bool(getattr(env, "_in_drill", False)),
         }
 
     obs_cache = [e.reset() for e in envs]

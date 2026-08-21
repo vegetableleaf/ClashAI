@@ -285,6 +285,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     explore_floor = float(cfg.get("sim", "ppo_explore_floor", default=0.0))
     # ...and the same protection for the CELL head, which had none (see choose_sample).
     cell_floor = float(cfg.get("sim", "ppo_cell_explore_floor", default=0.0))
+    # A DRILL GETS ITS OWN FLOOR. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell mass)
+    # nine of the 28 drills produced 0-3 passes in 60 episodes even with their reference cell in
+    # the prior -- too rare to learn from. A drill exists to make a rare state common, so it is
+    # explored differently from a match, where the point is to evaluate the policy's own head.
+    drill_cell_floor = float(cfg.get("sim", "ppo_drill_cell_floor", default=0.75))
     # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md; log 2026-08-14): when a doctrine rule matches the
     # current (card, board), this share of the CELL FLOOR's mass samples from the doctrine
     # distribution instead of uniform -- known-good placements get their outcomes SEEN early, and
@@ -428,7 +433,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # so no amount of reward tuning can move it. The stored log-prob is the MIXTURE's,
                 # so the PPO ratio stays exact importance sampling (same argument as the card floor).
                 p_cell_pure = F.log_softmax(ceq_i, dim=0).exp()
-                if cell_floor > 0.0:
+                floor_i = drill_cell_floor if in_drill[i] else cell_floor
+                if floor_i > 0.0:
                     cm = cmask.float()
                     p_floor = cm / cm.sum().clamp_min(1.0)
                     if doctrine_frac > 0.0:
@@ -444,7 +450,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             s = prior.sum()
                             if s > 0:
                                 p_floor = (1.0 - doctrine_frac) * p_floor + doctrine_frac * (prior / s)
-                    p_cell = (1.0 - cell_floor) * p_cell_pure + cell_floor * p_floor
+                    p_cell = (1.0 - floor_i) * p_cell_pure + floor_i * p_floor
                 else:
                     p_cell = p_cell_pure
                 lp_cell = p_cell.clamp_min(1e-12).log()
@@ -713,10 +719,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     if remote:
         cobs = rpool.reset_all()
         chand = [p["hand"] for p in rpool.last]; cnxt = [p["nxt"] for p in rpool.last]
+        # WHICH ENVS ARE IN A DRILL -- the exploration floor differs, and the envs live in the
+        # workers while the sampling happens here.
+        in_drill = [bool(p.get("in_drill")) for p in rpool.last]
         celx = [p["elx"] for p in rpool.last]; cthr = [p["thr"] for p in rpool.last]
     else:
         cobs = [e.reset() for e in pool]
         chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
+        in_drill = [bool(getattr(e, "_in_drill", False)) for e in pool]
         celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
     ep_r = [0.0] * K
     ep_n = [0] * K            # steps per env this episode, for the drill STEP share
@@ -860,9 +870,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         cobs[i] = nobs
                     if remote:
                         chand[i], cnxt[i] = pay["hand"], pay["nxt"]
+                        in_drill[i] = bool(pay.get("in_drill"))
                         celx[i], cthr[i] = pay["elx"], pay["thr"]
                     else:
                         chand[i], cnxt[i] = env.hand_vec.copy(), env.next_vec.copy()
+                        in_drill[i] = bool(getattr(env, "_in_drill", False))
                         celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
                 roll["rew"].append(np.asarray(rew_row, np.float32))
                 roll["done"].append(np.asarray(done_row, np.float32))

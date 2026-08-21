@@ -161,6 +161,10 @@ def _cmd_train_sim_ppo(args) -> None:
         # and the comparison would be between one run and itself.
         cfg = _KeyOverride(cfg, ("train", "sim_ppo_checkpoint"), str(args.out))
         print(f"[train-sim-ppo] checkpoint -> {args.out}")
+    if getattr(args, "drill_only", None):
+        cfg = _KeyOverride(cfg, ("sim", "drill_only"),
+                           [x.strip() for x in str(args.drill_only).split(",") if x.strip()])
+        print(f"[train-sim-ppo] DRILL-ONLY: {args.drill_only}")
     if getattr(args, "drill_frac", None) is not None:
         # A/B THE DRILL MIX FROM THE COMMAND LINE. The whole point of the mixing ratio is that it
         # gets measured against 0.0 rather than assumed, and an override that needs a config edit
@@ -610,6 +614,9 @@ def main() -> None:
                      help="checkpoint path for THIS run (overrides train.sim_ppo_checkpoint). "
                           "Required when running two arms of an A/B at once, or each finishes by "
                           "overwriting the other.")
+    tsp.add_argument("--drill-only", default=None,
+                     help="train on ONLY these drills (comma list). Diagnostic: separates 'cannot "
+                          "learn a drill' from '28 drills competing for one policy'.")
     tsp.add_argument("--drill-frac", type=float, default=None,
                      help="fraction of episodes that are DRILLS instead of full matches "
                           "(overrides sim.drill_frac; 0 = plain matches, 0.3 = suggested mix). "

@@ -135,6 +135,32 @@ class DrillEnv(SimMatchEnv):
             rest = [s for s in self.cycle if s not in wanted_slots]
             self.cycle = wanted_slots + rest
 
+    def drill_prior_cells(self, card_id: int):
+        """[(cell, weight)] for the REFERENCE play of this card, or None.
+
+        A drill carries the hand-written correct line precisely so the report can prove the
+        scenario is winnable. The same line is what exploration needs: nine of these drills never
+        pass by chance, so without it there is no positive example and nothing to learn from.
+        Offered as a PRIOR (it competes inside the sampling mixture), never forced -- the policy
+        still has to choose it, and the stored log-prob stays the mixture's so PPO is unaffected.
+        """
+        s = getattr(self, "scenario", None)
+        if s is None or not getattr(s, "reference", ()):
+            return None
+        base = str(self.deck_keys[card_id]).replace("_evo", "") if 0 <= card_id < len(self.deck_keys) else ""
+        out = []
+        for step in s.reference:
+            if str(step[0]) != base:
+                continue
+            nx = float(step[1])
+            if getattr(self, "_drill_mirrored", False):
+                nx = 1.0 - nx                      # the line flips with the board, as in scripted_policy
+            try:
+                out.append((int(self.actions.cell_at(nx, float(step[2]))), 1.0))
+            except Exception:  # noqa: BLE001 -- a bad reference must not break the rollout
+                continue
+        return out or None
+
     def reset(self) -> np.ndarray:
         obs = super().reset()
         self.eng.units.clear()                         # a drill starts from ITS board, not a match
@@ -480,6 +506,14 @@ class DrillMixEnv(DrillEnv):
         self._ep_steps = 0
         want = tiers if tiers is not None else (cfg.get("sim", "drill_tiers", default=None) or None)
         self._pool = [s for s in pool if not want or s.tier in set(want)]
+        # DRILL_ONLY: restrict to named scenarios. Exists for the diagnostic that separates "this
+        # policy cannot learn a drill" from "28 drills are competing for one policy" -- a question
+        # the aggregate pass rate cannot answer, because drills that trade off against each other
+        # hold the mean flat while individual ones move a long way.
+        only = cfg.get("sim", "drill_only", default=None) or None
+        if only:
+            keep = {str(n) for n in only}
+            self._pool = [s for s in self._pool if s.name in keep] or self._pool
         self._in_drill = False
 
     def _episode_prob(self) -> float:
@@ -498,6 +532,7 @@ class DrillMixEnv(DrillEnv):
             return 0.0
         ld, lm = max(1.0, self._len_drill), max(1.0, self._len_match)
         return max(0.0, min(0.98, t * lm / (ld * (1.0 - t) + t * lm)))
+
 
     def reset(self):
         # fold the episode that just ended into the length estimates (they drift: drills lengthen
