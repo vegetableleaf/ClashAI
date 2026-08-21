@@ -1184,7 +1184,16 @@ cards:
                                # lane entirely. Without this the sim's bot drops him at the bridge like a
                                # Knight and the policy never trains on the scenario that actually happens.
     range: melee
-    crown_tower_damage: 78     # L11 basis: Miner's signature nerf -- ~40% of his 194 hit vs crown towers
+    # L11 basis: the Miner's signature nerf. 39 = 20% of his 194 hit, per the wiki's balance history
+    # (40% -> 35% on 3/3/2020, -> 30% on 4/8/2020, -> 25% on 4/4/2023, -> 20% on 6/7/2026) and
+    # corroborated on Version History: "Miner: Tower Damage -17%" (25% x 0.83 = 20.75%).
+    # WAS 78 -- the 40% figure from before the 3/3/2020 update, so the sim had him chipping at
+    # DOUBLE the real rate: an ignored Miner took ~997 HP off a princess tower on the drill board
+    # where the truth is about half that, which distorts his threat price, the value of answering
+    # him, and any drill threshold scored on his damage.
+    # NB the wiki's rendered stat table still reads crown_11 = 48 (the pre-6/7/2026 25% value); the
+    # two history pages are the current source, not the table.
+    crown_tower_damage: 39
                                # (wiki-style reduced value; USER VERIFY exact number). Without it the sim
                                # let him chip towers at full damage -> the king-snipe exploit.
     verified: false

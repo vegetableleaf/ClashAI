@@ -303,18 +303,36 @@ register(Scenario(
 
 register(Scenario(
     name="skeletons_kill_the_miner",
-    goal="One elixir answers a Miner on the tower -- the cheapest sufficient answer.",
+    goal="One elixir HALVES a Miner's damage -- mitigation, not negation.",
     tier="foundational",
     hand=("skeletons",),
     elixir=4.0,
     spawns=(("miner", 1, 0.194, 0.76, 0.0),),
-    # SPENT <= 1 IS PART OF SUCCESS. The Miner dies to almost anything; the skill is answering him
-    # with the cheapest thing that works instead of the first thing in hand, which is the tier the
-    # deck kept skipping.
-    success=lambda e, s: (not any(u.team == 1 and u.hp > 0 for u in e.units)
+    # THIS IS A MITIGATION DRILL, NOT A KILL (owner, 2026-08-21). Measured at ladder levels over a
+    # 14 s window with the predicates stripped so the interaction plays out:
+    #
+    #                 tower HP lost
+    #     IGNORED     mean 401 (282-499)
+    #     SKELETONS   mean 217 (188-249)
+    #     => 184 HP saved for ~1 elixir, 46% of the unanswered cost.
+    # (Measured AFTER correcting the Miner's crown_tower_damage, which was stored at the pre-2020
+    # 40% figure and had him chipping at double the real rate -- see cards.yaml.)
+    #
+    # The old predicates asked for the opposite and could not be met. They required the Miner to
+    # DIE -- but he dies either way, so that proves nothing about the play (the same do-nothing
+    # trap log_the_ground_swarm and tesla_pulls_the_wincon already record) -- and they required
+    # under 350 HP lost, which even the perfect one-elixir answer cannot reach. Against a level 11
+    # Miner that was survivable; against the ladder Miner training actually faces, the drill's own
+    # reference line passed 0%.
+    #
+    # 265 sits in the GAP between the two distributions (answered tops out at 249, ignored bottoms
+    # out at 282), so no episode is graded by a coin flip. SPENT <= 1.5 stays: answering with the
+    # cheapest sufficient card is the tier the deck kept skipping, and it is most of the point.
+    success=lambda e, s: (played(s, "skeletons")
                           and float(s.get("spent", 0.0)) <= 1.5
-                          and not princess_hp_lost(e, s, 350.0)),
-    failure=lambda e, s: princess_hp_lost(e, s, 350.0) or spent_more_than(e, s, 3.0),
+                          and not princess_hp_lost(e, s, 265.0)),
+    # Conceding what an IGNORED Miner concedes means the mitigation did not happen.
+    failure=lambda e, s: princess_hp_lost(e, s, 280.0) or spent_more_than(e, s, 3.0),
     time_limit=12.0,
     randomise=("lane", "timing", "elixir"),
     graded_by=("threat_response", "elixir_trade"),
