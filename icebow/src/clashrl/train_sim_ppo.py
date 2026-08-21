@@ -545,6 +545,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     league: deque = deque(maxlen=max(1, sp_league_size))
     _best_snap = {"net": None}
     _prog = {"n": 0}
+    _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
 
     def snapshot(store=True):
         snap = _build_net(cfg, device, n_cards, n_cells, threat_dim, in_ch)
@@ -712,6 +713,20 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         obs_f, hand_f = flat("obs"), flat("hand")
         nxt_f, elx_f, thr_f = flat("nxt"), flat("elx"), flat("thr")
 
+        # ADVANTAGE SPLIT: drill steps vs match steps. Advantages are normalised over the WHOLE
+        # mixed batch, and a drill episode is ~20 steps against a match's ~300, so the two carry
+        # very different return scales. If one population's |advantage| dwarfs the other, the other
+        # is squashed toward zero and stops contributing gradient -- which would look exactly like
+        # a match winrate that never moves while drill numbers do.
+        if roll.get("isdrill"):
+            _d = torch.tensor(flat("isdrill"), dtype=torch.float32, device=device)
+            _a = adv_f.abs()
+            _nd, _nm = float(_d.sum()), float((1.0 - _d).sum())
+            if _nd > 0 and _nm > 0:
+                _adv_stats["drill"] = float((_a * _d).sum() / _nd)
+                _adv_stats["match"] = float((_a * (1.0 - _d)).sum() / _nm)
+                _adv_stats["frac_drill_steps"] = _nd / max(1.0, _nd + _nm)
+
         net.train()
         tot_pl = tot_vl = tot_ent = tot_clip = 0.0
         nb = 0
@@ -829,7 +844,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
-                    "sil": [], "boot": None}
+                    "sil": [], "isdrill": [], "boot": None}
             ep_from = [0] * K                              # first step of each env's current episode
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
@@ -901,6 +916,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         rew_hist.append(ep_r[i])
                         done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0; ep_n[i] = 0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
+                        if done_n % log_every == 0 and _adv_stats["match"] > 0:
+                            print("[train-sim-ppo] adv |mean|: drill %.3f vs match %.3f "
+                                  "(drill = %.0f%% of steps) -- a large gap means one population "
+                                  "is squashing the other"
+                                  % (_adv_stats["drill"], _adv_stats["match"],
+                                     100.0 * _adv_stats["frac_drill_steps"]), flush=True)
                         if done_n % log_every == 0:
                             wr = 100.0 * sum(win_hist) / max(1, len(win_hist))
                             ar = sum(rew_hist) / max(1, len(rew_hist))
@@ -964,6 +985,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["done"].append(np.asarray(done_row, np.float32))
                 roll["trunc"].append(np.asarray(trunc_row, np.float32))
                 roll["sil"].append(np.zeros(K, np.float32))
+                roll["isdrill"].append(np.asarray([1.0 if in_drill[i] else 0.0
+                                                   for i in range(K)], np.float32))
             if not roll["rew"]:
                 break
             if len(win_hist) >= 20:
