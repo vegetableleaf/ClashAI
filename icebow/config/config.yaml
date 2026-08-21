@@ -1423,7 +1423,20 @@ sim:
   # fresh BC -- repopulation phase again, so the high floor applies. Anneal to 0.10 only after
   # policy-stats shows healthy spread AND board-conditioned placement on the new head.
   ppo_cell_explore_floor: 0.15   # LOWERED from 0.25 (2026-08-20 audit). The rollout stores the MIXTURE log-prob, so ratio = pi_new/mu has a ceiling of 1/(1-floor); at 0.25 that is 1.333, ABOVE the 1.2 clip, so every cell with pi > ~2% was clipped before the first gradient step and its positive-advantage gradient deleted -- the cell head could be pushed DOWN but never UP. 0.15 -> ceiling 1.176, back inside the band.
-  ppo_cell_entropy: 0.05        # entropy bonus for the CELL head alone (>= ppo_entropy; 5x here)
+  ppo_cell_entropy: 0.05        # entropy bonus for the CELL head alone at the START of training.
+                                # It is weighted apart from the card head because one coefficient
+                                # cannot hold a 10-way and a 432-way categorical at once:
+                                #   card 0.02 x ln(10)  = 0.046 bonus/step
+                                #   cell 0.05 x ln(432) = 0.303 bonus/step   (6.6x)
+                                # 0.05 was chosen to stop a collapse to 3 cells of 432, and it did
+                                # -- but a FIXED value then held the head at MAXIMUM entropy: after
+                                # 500 matches its distribution was 8.36 of 8.37 max, identical to an
+                                # untrained net, so no placement was ever learned and every drill
+                                # needing a specific cell scored at the random baseline.
+  ppo_cell_entropy_floor: 0.008 # ...and where it anneals TO. Low enough that a real advantage can
+                                # sharpen the head, reached only once there is something worth
+                                # sharpening onto.
+  ppo_cell_entropy_anneal: 3000 # episodes over which it decays, linearly. 0 = constant (old behaviour).
   # DOCTRINE-PRIOR EXPLORATION (DOCTRINE.md -> sim/doctrine.py; user-approved 2026-08-14). When a
   # doctrine rule matches the current (card, board state), this share of the CELL FLOOR's mass is
   # sampled from the doctrine placement distribution instead of uniform: anti-EQ Tesla spot,

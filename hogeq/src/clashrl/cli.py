@@ -245,26 +245,52 @@ def _cmd_drills(args) -> None:
 
 
 def _drill_policy_from_checkpoint(path: str, device: str = None):
-    """Wrap a trained checkpoint as a drill policy (obs, env) -> action, or None if torch is absent."""
+    """Wrap a trained checkpoint as a drill policy (obs, env) -> action, or None if torch is absent.
+
+    GREEDY, and masked exactly the way training masks: a card must be in hand and affordable. An
+    unmasked argmax measures the head's raw preference rather than the policy, and would read as
+    "it plays nonsense" whenever its favourite card is simply not in hand.
+    """
     try:
+        import numpy as _np
         import torch
-        from .policy import load_policy
+        from .model import PolicyNet
     except ImportError as exc:
         print(f"[drills] --policy needs PyTorch ({exc}); running baseline + doctrine only")
         return None
     try:
-        net, dev = load_policy(path, device=device)
-    except Exception as exc:  # noqa: BLE001 -- a bad path should not kill the report
+        ck = torch.load(path, map_location="cpu")
+        dev = torch.device(device or "cpu")
+        net = PolicyNet(int(ck.get("in_ch", 3)), int(ck["n_cards"]), int(ck["n_cells"]),
+                        threat_dim=int(ck.get("threat_dim", 14))).to(dev)
+        net.load_state_dict(ck["model"])
+        net.eval()
+    except Exception as exc:  # noqa: BLE001 -- a bad path must not kill the report
         print(f"[drills] could not load {path}: {exc}")
         return None
 
+    def _t(v):
+        return torch.as_tensor(_np.asarray(v)[None], dtype=torch.float32, device=dev)
+
     def _policy(obs, env):
-        import numpy as _np
         with torch.no_grad():
-            x = torch.as_tensor(_np.asarray(obs)[None], dtype=torch.float32, device=dev)
-            out = net(x)
-        card = int(torch.as_tensor(out[0]).flatten().argmax().item())
-        cell = int(torch.as_tensor(out[1]).flatten().argmax().item()) if len(out) > 1 else 0
+            x = _t(_np.asarray(obs, dtype=_np.float32).transpose(2, 0, 1)) \
+                if _np.asarray(obs).ndim == 3 else _t(obs)
+            cards, cells = net(x, _t(env.hand_vec), _t(env.next_vec),
+                               _t(env.elixir_vec), _t(env.threat_vec))
+            c = cards[0].clone()
+            # SAME MASK AS TRAINING: in hand and affordable. Without it this measures the head's
+            # raw preference, not the policy that would actually be executed.
+            playable = [i for i in env._hand_ids()
+                        if 0 <= i < len(env.specs)
+                        and float(env.eng.elixir[0]) >= float(env.specs[i].elixir)]
+            if not playable:
+                return (0, 0, 0)
+            keep = torch.full_like(c, float("-inf"))
+            for i in playable:
+                keep[i] = c[i]
+            card = int(torch.argmax(keep).item())
+            cell = int(torch.argmax(cells[0]).item())
         return (1, card, cell)
     return _policy
 

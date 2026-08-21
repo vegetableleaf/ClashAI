@@ -184,6 +184,7 @@ class DrillEnv(SimMatchEnv):
 
     def step(self, action):
         pre = float(self.eng.elixir[0])
+        self._drill["steps"] = int(self._drill.get("steps", 0)) + 1
         obs, reward, done, info = super().step(action)
         spent = max(0.0, pre - float(self.eng.elixir[0]))
         self._drill["spent"] = float(self._drill.get("spent", 0.0)) + spent
@@ -212,6 +213,7 @@ class DrillEnv(SimMatchEnv):
                 info["drill"] = self.scenario.name
                 info["verdict"] = v
                 info["elapsed"] = float(self.eng.t) - float(self._drill.get("t0", 0.0))
+                info["ep_steps"] = int(self._drill.get("steps", 0))
                 info["spent"] = float(self._drill.get("spent", 0.0))
         else:
             self.last_verdict = self.last_verdict or "ended"

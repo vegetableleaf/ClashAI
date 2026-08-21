@@ -296,7 +296,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     if doctrine_frac > 0.0:
         print(f"[train-sim-ppo] DOCTRINE prior ON: {doctrine_frac:.0%} of the cell floor samples "
               f"from DOCTRINE.md placements when a rule matches (rollout-only, annealable)")
-    cell_ent_coef = float(cfg.get("sim", "ppo_cell_entropy", default=ent_coef))
+    cell_ent_coef0 = float(cfg.get("sim", "ppo_cell_entropy", default=ent_coef))
+    cell_ent_floor = float(cfg.get("sim", "ppo_cell_entropy_floor", default=cell_ent_coef0))
+    cell_ent_anneal = float(cfg.get("sim", "ppo_cell_entropy_anneal", default=0.0))
+    cell_ent_coef = cell_ent_coef0
     log_every = int(cfg.get("sim", "log_every_matches", default=25))
     save_every = int(cfg.get("sim", "save_every_matches", default=50))
     opt = torch.optim.Adam(net.parameters(), lr=lr, eps=1e-5)
@@ -617,6 +620,18 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 ee[i], et[i] = e.elixir_vec.copy(), e.threat_vec.copy()
         return 100.0 * wins / max(1, played)
 
+
+    def _cell_ent_now() -> float:
+        """Cell-entropy coefficient for the CURRENT point in training.
+
+        Linear from `ppo_cell_entropy` to `ppo_cell_entropy_floor` over `ppo_cell_entropy_anneal`
+        episodes. With anneal 0 this is a constant and the behaviour is exactly what it was.
+        """
+        if cell_ent_anneal <= 0.0:
+            return cell_ent_coef0
+        f = min(1.0, max(0.0, float(_prog.get("n", 0)) / cell_ent_anneal))
+        return cell_ent_coef0 + (cell_ent_floor - cell_ent_coef0) * f
+
     def ppo_update(roll):
         """One PPO update over a finished rollout. roll holds [T] rows of K-sized per-env lists."""
         T = len(roll["rew"])
@@ -677,7 +692,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     _warm["left"] -= 1
                     loss = vf_coef * vl                       # critic-only: no policy shove yet
                 else:
-                    loss = pl + vf_coef * vl - ent_coef * ent.mean() - cell_ent_coef * cell_ent.mean()
+                    # ANNEALED CELL ENTROPY. A fixed coefficient has to choose between the two
+                    # ways this head fails: too low and it collapses to a handful of cells (it did
+                    # -- 3 of 432), too high and it is held at maximum entropy and never learns a
+                    # placement at all (it was -- 8.36 of 8.37 after 500 matches, identical to an
+                    # untrained net). High early, when collapse is the danger and there is nothing
+                    # worth sharpening onto; decaying to a floor once the reward is worth following.
+                    loss = pl + vf_coef * vl - ent_coef * ent.mean() - _cell_ent_now() * cell_ent.mean()
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
@@ -698,6 +719,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
         celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
     ep_r = [0.0] * K
+    ep_n = [0] * K            # steps per env this episode, for the drill STEP share
     running = {"v": True}
     signal.signal(signal.SIGINT, lambda *_a: running.update(v=False))
     if explore_floor > 0.0:
@@ -712,6 +734,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
           f"{matches} matches (cards={n_cards}, cells={n_cells}). Ctrl+C to stop + save.")
     done_n = wins = losses = draws = 0
     drills_done = drill_pass = 0     # drills are counted apart from the match record
+    # ...and their share of STEPS is tracked apart from their share of EPISODES, because those two
+    # differ by an order of magnitude (48% of episodes was 8% of steps) and only the second is what
+    # the optimiser sees. Printing one without the other is how a barely-training mix looked broken.
+    drill_steps = match_steps = 0
     win_hist: deque = deque(maxlen=max(log_every, 50))
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     stats = None
@@ -750,7 +776,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # compute_gae for why bootstrapping 0 there poisons the critic.
                     trunc_row.append(1.0 if (done and info.get("drill") is not None
                                              and not info.get("outcome")) else 0.0)
-                    ep_r[i] += reward
+                    ep_r[i] += reward; ep_n[i] += 1
                     if done:
                         oc = info.get("outcome")
                         if remote:
@@ -773,11 +799,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         if is_drill:
                             drills_done += 1
                             drill_pass += 1 if info.get("verdict") == "pass" else 0
+                            drill_steps += ep_n[i]
                         else:
+                            match_steps += ep_n[i]
                             wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
                             win_hist.append(1 if oc == "win" else 0)
                         rew_hist.append(ep_r[i])
-                        done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0
+                        done_n += 1; _prog["n"] = done_n; ep_r[i] = 0.0; ep_n[i] = 0
                         cobs[i] = nobs if remote else env.reset()   # workers auto-reset
                         if done_n % log_every == 0:
                             wr = 100.0 * sum(win_hist) / max(1, len(win_hist))
@@ -795,7 +823,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             # for one that was not working.
                             ds = (f" | drills {drills_done} "
                                   f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass, "
-                                  f"{100.0 * drills_done / max(1, done_n):.0f}% of eps)"
+                                  f"{100.0 * drills_done / max(1, done_n):.0f}% of eps, "
+                                  f"{100.0 * drill_steps / max(1, drill_steps + match_steps):.0f}% of STEPS)"
                                   if drills_done else "")
                             print(f"[train-sim-ppo] {done_n} episodes: winrate={wr:4.0f}% "
                                   f"avg_rew={ar:+.1f} {mps:.1f} ep/s total {wins}W-{losses}L-{draws}D{xs}{ds}",
