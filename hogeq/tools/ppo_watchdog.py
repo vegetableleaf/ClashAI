@@ -200,6 +200,54 @@ def health(ckpt: Path, envs: int = 6, steps: int = 400) -> dict:
     }
 
 
+def cell_structure(ckpt: Path) -> float:
+    """WITHIN-card cell-logit spread, relative to an untrained net. The sensitive measure.
+
+    ENTROPY IS THE WRONG INSTRUMENT HERE and this replaces it. A distribution over 157 deployable
+    cells barely moves in entropy for a large change in structure: measured on the same checkpoint,
+    the head carried 719x an untrained net's within-card logit spread while its entropy had fallen
+    only 0.018 nats out of 5.056 -- which reads as "indistinguishable from untrained" and is not.
+    That false alarm is the reason this function exists.
+
+    WITHIN-card, not across the whole map: a head can learn a per-CARD bias (this card's logits are
+    all higher) without learning any PLACEMENT at all, and only the spread inside one card's own map
+    is what "where to put it" means.
+    """
+    import torch.nn as nn                                # noqa: F401
+    from clashrl.config import Config
+    from clashrl.model import PolicyNet
+    from clashrl.sim.env import SimMatchEnv
+
+    cfg = Config.load(_ROOT / "config" / "config.yaml")
+    cfg.data.setdefault("action", {})["grid"] = [18, 24]
+    st = torch.load(ckpt, map_location="cpu", weights_only=False)
+    e = SimMatchEnv(cfg, seed=5)
+    o = e.reset()
+    mask = np.asarray(e.actions.deployable_mask(False), dtype=bool)
+    ich = int(st.get("in_ch") or 12)
+    td = int(st.get("threat_dim") or e.threat_dim)
+
+    def spread(trained):
+        n = PolicyNet(ich, e.n_cards, e.n_cells, threat_dim=td)
+        if trained:
+            n.load_state_dict(st["model"])
+        n.eval()
+        with torch.no_grad():
+            x = torch.from_numpy(np.asarray(o)[:, :, :ich]).float().permute(2, 0, 1).unsqueeze(0) / 255.0
+            h = torch.from_numpy(np.asarray(e.hand_vec, np.float32)).unsqueeze(0)
+            nx = torch.from_numpy(np.asarray(e.next_vec, np.float32)).unsqueeze(0)
+            el = torch.from_numpy(np.asarray(e.elixir_vec, np.float32)).unsqueeze(0)
+            t = np.asarray(e.threat_vec, np.float32)
+            t = t[:td] if t.shape[0] > td else np.pad(t, (0, td - t.shape[0]))
+            th = torch.from_numpy(t).unsqueeze(0)
+            _z, _cq, ceq = n.forward_parts(x, h, nx, el, th)
+            lg = ceq[0].numpy()[:, mask]
+        return float(np.mean(np.std(lg, axis=1)))
+
+    base = spread(False)
+    return spread(True) / max(1e-9, base)
+
+
 def verdicts(h: dict, matches: int) -> list:
     """Only conditions that have actually broken a run on this project."""
     out = []
@@ -209,12 +257,16 @@ def verdicts(h: dict, matches: int) -> list:
                    % (h["p_play_mean"], h["p_play_min"]))
     if h["p_play_mean"] < 0.05:
         out.append("GATE COLLAPSED to never-play (mean %.3f)." % h["p_play_mean"])
-    frac = h["cell_ent"] / max(1e-9, h["cell_ent_max"])
-    if matches >= 4000 and frac > 0.995:
-        out.append("CELL HEAD PINNED at maximum entropy (%.2f of %.2f) after %d matches -- "
-                   "indistinguishable from untrained, so no placement is being learned."
-                   % (h["cell_ent"], h["cell_ent_max"], matches))
-    if matches >= 4000 and (frac < 0.25 or h["cell_distinct"] <= 3):
+    # STRUCTURE, NOT ENTROPY. Entropy over 157 cells is far too blunt: a head carrying 719x an
+    # untrained net's within-card logit spread still reads within 0.018 nats of maximum entropy, and
+    # reading that as "untrained" produced a false alarm and a needless restart recommendation.
+    if matches >= 4000 and h.get("cell_struct", 99.0) < 3.0:
+        out.append("CELL HEAD FLAT: within-card logit spread only %.1fx an untrained net after %d "
+                   "matches -- no placement is being learned." % (h.get("cell_struct", 0.0), matches))
+    # The opposite failure: collapse onto a handful of cells (it once sat on 3 of 432, 79% of plays
+    # on one tile). Entropy IS the right instrument for this direction -- a collapse moves it a lot.
+    if matches >= 4000 and (h["cell_ent"] / max(1e-9, h["cell_ent_max"]) < 0.25
+                            or h["cell_distinct"] <= 3):
         out.append("CELL HEAD COLLAPSED (%.2f of %.2f, %d distinct cells)."
                    % (h["cell_ent"], h["cell_ent_max"], h["cell_distinct"]))
     if matches >= 6000 and h["elixir_ge6"] < 0.005:
@@ -246,6 +298,7 @@ def main() -> int:
         now = datetime.now().strftime("%H:%M")
         try:
             h = health(ckpt)
+            h["cell_struct"] = cell_structure(ckpt)
         except Exception as e:                           # noqa: BLE001
             print("[%s] watchdog: health probe failed: %s" % (now, type(e).__name__), flush=True)
             if a.once:
@@ -258,12 +311,13 @@ def main() -> int:
         idle_min = (time.time() - last_change) / 60.0
         n_proc = _running()
 
-        line = ("[%s] matches=%d best_wr=%.3f P(play) mean=%.3f min=%.3f max=%.3f | elixir "
-                "mean=%.2f >=6 %.1f%% | cell_ent %.2f/%.2f distinct=%d | card_ent %.2f/%.2f | "
-                "idle %.0fm procs=%s"
+        line = ("[%s] matches=%d best_wr=%.3f P(play) mean=%.3f min=%.3f max=%.3f | "
+                "elixir mean=%.2f >=6 %.1f%% | cell_struct %.1fx (vs untrained) ent %.2f/%.2f "
+                "distinct=%d | card_ent %.2f/%.2f | idle %.0fm procs=%s"
                 % (now, h["matches"], h["best_wr"], h["p_play_mean"], h["p_play_min"],
-                   h["p_play_max"], h["elixir_mean"], 100 * h["elixir_ge6"], h["cell_ent"],
-                   h["cell_ent_max"], h["cell_distinct"], h["card_ent"], h["card_ent_max"],
+                   h["p_play_max"], h["elixir_mean"], 100 * h["elixir_ge6"],
+                   h.get("cell_struct", 0.0), h["cell_ent"], h["cell_ent_max"],
+                   h["cell_distinct"], h["card_ent"], h["card_ent_max"],
                    idle_min, n_proc))
         try:
             with logf.open("a", encoding="utf-8") as fh:

@@ -1461,8 +1461,19 @@ sim:
                                 # actually taken. The drill's own predicate certified that outcome,
                                 # so there is no critic estimate and no importance weight. 0.05 is a
                                 # sensible first value.
-                                # UNVALIDATED: no controlled comparison has been run. Turn it on
-                                # deliberately, against a baseline, not as a default.
+                                # MEASURED, AND 0.05 IS HARMFUL. A/B at 5000 drill episodes per
+                                # arm, identical seed and drills (tools/sil_ab.py):
+                                #   OFF   drill pass 40%   entropy 0.24   clip 0.15   avg_rew +0.0
+                                #   0.05  drill pass 11%   entropy 0.00   clip 0.00   avg_rew -3.7
+                                # It COLLAPSED the policy -- entropy to exactly zero, clip fraction
+                                # zero, pass rate cut to a quarter. The term pulls toward the taken
+                                # action with nothing opposing it, so at this strength it drives the
+                                # heads to a delta. If you try it at all, try it far smaller (0.005
+                                # -0.01) and WATCH THE ENTROPY: a run whose entropy is heading to
+                                # zero is collapsing, whatever its loss says.
+                                # ALSO MEASURED: neither arm moved the cell head at 5000 drill
+                                # episodes (both at ln(157) exactly), so this budget cannot answer
+                                # whether the term helps placement -- only that 0.05 hurts.
   ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
                                 # floor buys the rare success and then throws its gradient away: the
                                 # stored log-prob is the mixture's, so PPO forms r = pi/mu, and

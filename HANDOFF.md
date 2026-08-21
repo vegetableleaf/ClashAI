@@ -777,11 +777,46 @@ when a drill pays for the wrong thing it names the term responsible.
    ⚠ The depth window was the other suspect and is **not** at fault — measured, the Miner sits at
    depth 0.526 inside the 0.12–0.65 window and the reference line duly collects its credit.
 
+### ⚠⚠ CORRECTION: THE CELL HEAD WAS LEARNING ALL ALONG (2026-08-21, 05:15)
+
+**I raised a false alarm and recommended a restart on the strength of it. Retracted.** Entropy is
+the wrong instrument for this head, and three of my four overnight alerts came from measuring
+badly rather than from anything wrong with the run.
+
+Separating PLACEMENT structure (spread *within* one card's own map) from a per-card bias:
+
+| checkpoint | within-card logit sd | vs untrained |
+|---|---|---|
+| fresh (untrained) | 0.000267 | 1× |
+| A/B, 5000 drill episodes | 0.003846 | 14× |
+| **live run, 6000 matches** | **0.191689** | **719×** |
+
+A head carrying **719× an untrained net's placement structure** still sits within 0.018 nats of
+maximum entropy, because a 0.19 logit spread over 157 cells is still a near-uniform softmax. The
+"cell head is indistinguishable from untrained" alert was an artefact of the metric, full stop.
+
+**What survives:** the importance ratio `r = 0.0125` is measured independently and is real, so the
+drill's advantage genuinely does arrive attenuated and learning is slower than it could be. The
+floor anneal (`01c036b`) is therefore a reasonable OPTIMISATION — but it is not repairing a broken
+thing, and **restarting the run is not urgent.**
+
+**What is now measured and true:**
+* `ppo_sil_coef: 0.05` is HARMFUL — A/B at 5000 drill episodes: pass rate 40% → 11%, entropy 0.24 →
+  0.00, reward +0.0 → −3.7. It collapses the policy. Stays off.
+* The watchdog alerts on **within-card logit spread vs an untrained net**, not entropy. Entropy is
+  kept only for the COLLAPSE direction, which it does detect well.
+
+**The lesson, three times over in one night:** measure the thing the way the trainer sees it, at a
+sample size that can see it. Too small a sample (elixir), the wrong support (unmasked 432 vs
+deployable 157), and the wrong statistic entirely (entropy vs structure) each produced a confident,
+wrong alert.
+
 ### ☀ WHEN YOU WAKE (2026-08-21 morning) — what happened overnight, ranked
 
-1. **RESTART THE icebow RUN.** It launched 01:14 and does not have the floor anneal (`01c036b`),
-   so its cell head will stay flat. It is not wasted — card head and gate are learning (card entropy
-   2.27 → 1.72, best_wr 11.3) — it just is not learning placement.
+1. ~~RESTART THE icebow RUN~~ — **RETRACTED, see the correction above.** The run is healthy and IS
+   learning placement (within-card structure 375-719× an untrained net at 6000-12500 matches).
+   Restarting only picks up the floor anneal, which is an optimisation, not a repair. Your call,
+   not an emergency.
 2. **hogeq drills are clean and ready** (`c8e6059`): 27/27, 0 unwinnable, 0 not-discriminating.
    Pull and the hogeq run is good to go.
 3. **One real finding**: the drill prior was throwing away its own gradient (r = 0.0125, so the
