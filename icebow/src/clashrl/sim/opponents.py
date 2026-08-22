@@ -100,6 +100,26 @@ class ScriptedBot:
         """The 4 cards currently in hand (the rest are cycling)."""
         return [self.specs[i] for i in self.cycle[:4]]
 
+    def _pocket_lane(self, eng, team: int = 1):
+        """Lane x this bot may push TROOPS into past the river, or None.
+
+        Taking one of the defender's princess towers grants deployment territory across the river on
+        that tower's side (the "pocket"). This bot already reaches over with SPELLS -- it aims them
+        at the X-Bow and at the deepest attacker -- but it never walked a troop into a pocket it had
+        earned, so a won lane went unpunished and the policy never had to defend one.
+
+        Returns the lane x of an OPEN pocket (engine coords), preferring one that already has our
+        pressure in it, else None when no defender princess is down.
+        """
+        try:
+            foe = eng.towers[1 - int(team)][:2]                # the DEFENDER's princesses
+        except Exception:
+            return None
+        dead = [t for t in foe if not t.alive]
+        if not dead:
+            return None
+        return float(self.rng.choice(dead).x)
+
     def _play(self, eng, spec, x: float, y: float) -> bool:
         """Deploy + send that card to the back of the cycle. EVERY deploy goes through here, so no
         branch can bypass the cycle. The deck's EVOLUTION slot charges by playing the base card
@@ -272,7 +292,11 @@ class ScriptedBot:
             lane = self.rng.choice(eng.lanes)
         if self.style == "beatdown":
             tank = max(offense, key=lambda s: s.hp)               # heaviest unit BEHIND the king (deep back)
-            self._play(eng, tank, lane, 0.10)
+            pk = self._pocket_lane(eng, team)
+            if pk is not None and float(self.rng.random()) < 0.35:
+                self._play(eng, tank, pk, 0.60)   # tank straight into the pocket, no walk-up needed
+            else:
+                self._play(eng, tank, lane, 0.10)
             if splitting:                                         # split the support into the OTHER lane
                 cheap = [s for s in offense if s is not tank and s.elixir <= 4]
                 if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
@@ -283,7 +307,15 @@ class ScriptedBot:
         else:                                                     # cycle / control: chip at the bridge
             wc = [s for s in offense if s.building_only] or offense
             pick = self.rng.choice(wc)
-            self._play(eng, pick, lane, 0.46)
+            # POCKET PRESSURE: with a princess already down, drop the chip INSIDE the pocket rather
+            # than at the bridge -- past the river on the won side, which is the whole point of
+            # taking a tower. Not every time: a bot that always pockets is as predictable as one
+            # that never does, and the bridge play is still correct when the defence is set.
+            pk = self._pocket_lane(eng, team)
+            if pk is not None and float(self.rng.random()) < 0.55:
+                self._play(eng, pick, pk, 0.62)
+            else:
+                self._play(eng, pick, lane, 0.46)
             if splitting:                                         # two-lane chip so one tornado can't catch all
                 cheap = [s for s in offense if s is not pick and s.elixir <= 3]
                 if cheap and eng.elixir[team] >= min(s.elixir for s in cheap):
@@ -371,6 +403,15 @@ class SelfPlayOpponent:
         # Kept as plain lists here and cached as tensors on first act() (torch is imported lazily).
         self._costs = [float(s.elixir) for s in self.specs]
         self._yourhalf = self.actions.deployable_mask(False)
+        # POCKET, for the OPPONENT. Taking one of OUR princess towers grants team 1 deployment
+        # territory across the river on that side, exactly as it grants us one for taking theirs.
+        # Without this the sim is asymmetric: we could punish a won lane and the opponent could not,
+        # so the policy would learn to defend a board state that never arrives.
+        #
+        # Four variants precomputed, chosen per act() from the LIVE board -- towers die mid-match,
+        # so this cannot be cached once like _yourhalf was.
+        self._half_variants = [self.actions.deployable_mask(False, (bool(c & 2), bool(c & 1)))
+                               for c in range(4)]
         self._mask_cache: dict = {}
         self._gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
         # exposed so the env's matchup doctrine (reads opponent .style / .cards) still works
@@ -478,6 +519,19 @@ class SelfPlayOpponent:
         if not cache:
             cache["cost"] = torch.tensor(self._costs, dtype=torch.float32, device=dev)
             cache["half"] = torch.tensor(self._yourhalf, dtype=torch.bool, device=dev)
+            cache["half_var"] = [torch.tensor(h, dtype=torch.bool, device=dev)
+                                 for h in self._half_variants]
+        # WHICH POCKETS TEAM 1 HAS EARNED: our princesses that are dead. Sides SWAP here -- this
+        # opponent chooses cells in our local frame and mirrors them with (1-x, 1-y) on the way
+        # out, so a pocket on the engine's left is on this frame's right.
+        try:
+            _mine = eng.towers[0][:2]                     # OUR princesses
+            _eng_left = any((not t.alive) and float(t.x) < 0.5 for t in _mine)
+            _eng_right = any((not t.alive) and float(t.x) >= 0.5 for t in _mine)
+            _code = (2 if _eng_right else 0) + (1 if _eng_left else 0)   # swapped, see above
+        except Exception:
+            _code = 0
+        _half = cache["half_var"][_code] if _code else cache["half"]
         # AFFORDABILITY, not just in-hand. Without the cost term the snapshot argmaxes onto a card it
         # cannot pay for, eng.deploy() returns False and the tick is silently wasted -- that made the
         # frozen self far weaker than the agent it is meant to mirror (inflating training winrate).
@@ -501,7 +555,7 @@ class SelfPlayOpponent:
         # folds many illegal cells onto one boundary cell and distorts the placement the policy chose.
         ceq_c = ceq[0, card]                                     # this card's placement map
         if card not in self.anywhere_ids:
-            ceq_c = ceq_c.masked_fill(~cache["half"], _NEG)
+            ceq_c = ceq_c.masked_fill(~_half, _NEG)
         cell = int(ceq_c.argmax())
 
         cell = self.actions.deploy_clamp(card in self.anywhere_ids, cell)
