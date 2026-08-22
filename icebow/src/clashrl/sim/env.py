@@ -1990,6 +1990,27 @@ class SimMatchEnv:
         self._nado_watch = keep
         return credit
 
+    def pocket_state(self, team: int = 0):
+        """(left_open, right_open) -- which POCKETS this team may deploy into.
+
+        Destroying an enemy Princess Tower grants territory across the river on that tower's side
+        ("once you take a tower, you can place troops in the half of the arena that the tower you
+        destroyed was in" -- Clash Royale Wiki). Sides are decided by the tower's own x against the
+        arena mid-line, so this stays correct under the sim's lane mirroring.
+        """
+        foe = self.eng.towers[1 - int(team)][:2]              # THEIR princesses; king never counts
+        # Tower x is NORMALISED 0..1 (princesses sit at 0.194 / 0.806), not tiles. An earlier
+        # version compared against tiles_x/2 = 9.0, so every tower read as "left" and the right
+        # pocket could never open -- caught because 14 of 14 sampled pockets were left-side.
+        mid = 0.5
+        left = any((not t.alive) and float(t.x) < mid for t in foe)
+        right = any((not t.alive) and float(t.x) >= mid for t in foe)
+        return (bool(left), bool(right))
+
+    def deploy_mask(self, anywhere: bool, team: int = 0):
+        """Deployability for the CURRENT board, pocket included."""
+        return self.actions.deployable_mask(bool(anywhere), self.pocket_state(team))
+
     def step(self, action: Action):
         play, card_id, cell = action
         reward = 0.0

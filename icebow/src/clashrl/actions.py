@@ -303,7 +303,7 @@ class ActionSpace:
             out.append(d > clear * clear)
         return out
 
-    def deployable_mask(self, anywhere: bool) -> "list[bool]":
+    def deployable_mask(self, anywhere: bool, pocket=(False, False)) -> "list[bool]":
         """Per-cell deployability over the placement grid: True where a card of this kind can actually
         be placed. ``anywhere`` (rocket / miner) -> every cell; otherwise only YOUR half (rows at/below
         the deploy line) MINUS your own tower footprints (king + both princesses -- placing there is a
@@ -323,10 +323,41 @@ class ActionSpace:
         min_gy = self.min_own_gy                    # board-space river rule (see __init__)
         phx, phy = self.princess_half
 
+        # THE POCKET. Destroying an enemy Princess Tower grants territory across the river on that
+        # tower's side -- "once you take a tower, you can place troops in the half of the arena that
+        # the tower you destroyed was in" (Clash Royale Wiki, Princess Towers). It is a real and
+        # important mechanic: it is what lets a won lane be pressured directly, and the sim did not
+        # model it at all, so every drill and every match was played as if taking a tower changed
+        # nothing about where you may deploy.
+        #
+        # `pocket` is (left_open, right_open) -- whether the enemy princess on that side is dead.
+        # The opened area is the enemy half on that side of the centre line, still excluding the
+        # enemy KING footprint and any unplayable decor.
+        #
+        # NOTE ON PRECISION: the wiki states the rule but not the exact tile boundary, and the
+        # Fandom API blocks automated fetches (402/403), so the vertical extent here is the whole
+        # enemy half on that side rather than a measured cut-off. If that proves too generous,
+        # the bound is this one comparison. Corroborating detail: Royal Recruits needs BOTH enemy
+        # princesses down to deploy in the pocket, which is consistent with the pocket being one
+        # lane-half rather than the full enemy half.
+        pk_l, pk_r = (bool(pocket[0]), bool(pocket[1])) if pocket else (False, False)
+        mid = gw / 2.0
+
         def _ok(c: int) -> bool:
             gy = c // gw
             if gy < min_gy:
-                return False                          # enemy half
+                gx = c % gw
+                open_side = (pk_l and gx < mid) or (pk_r and gx >= mid)
+                if not open_side:
+                    return False                      # enemy half, no pocket on this side
+                if unplayable(gx, gy, gw, gh):
+                    return False
+                nx, ny = self.cell_center(gx, gy)
+                kx, ky = self.king_xy
+                khx, khy = self.king_half
+                if abs(nx - kx) <= khx and abs(ny - ky) <= khy:
+                    return False                      # never onto their KING platform
+                return True
             if unplayable(c % gw, gy, gw, gh):
                 return False                          # ledge / back-row decor / your KING platform
             nx, ny = self.cell_center(c % gw, gy)

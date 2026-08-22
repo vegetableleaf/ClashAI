@@ -128,6 +128,9 @@ def compose_components(pool, rng, n_max=3):
 
 
 _PLAY_OUT = bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
+_FULL_HAND = bool(os.environ.get("CLASHRL_DRILL_FULL_HAND"))
+_CLOCK_JITTER = bool(os.environ.get("CLASHRL_DRILL_CLOCK"))
+_STATE_JITTER = bool(os.environ.get("CLASHRL_DRILL_STATE"))
 
 
 def compound_verdict(env):
@@ -425,7 +428,34 @@ class DrillEnv(SimMatchEnv):
             #
             # The scenarios are checked against this: every reference line is playable from its own
             # declared hand, so the drill's answer is never the thing this rules out.
-            self.cycle = list(wanted_slots)
+            if _FULL_HAND:
+                # FULL HAND FOR TRAINING (sim.drill_full_hand / CLASHRL_DRILL_FULL_HAND).
+                #
+                # Restricting the cycle to the named cards is right for MEASUREMENT -- it is what
+                # makes a failed rep fail for the drill's own reason. But it is wrong for TRAINING,
+                # and measurably so: a real match ALWAYS holds exactly 4 cards, while drills hold
+                # 2.23 on average (gap 1.73 pooled sd). The hand vector is a direct network input,
+                # so the policy learns "given this board AND a 2-card hand, play X" -- an input it
+                # never meets in a match, which is why drill competence does not transfer (a config
+                # with 25% drill pass scored WORSE on the match benchmark than one with 2%).
+                #
+                # So: guarantee the named cards, then fill to a full hand from the rest of the deck.
+                # The drill's success/failure predicates still decide the verdict, and a rep that
+                # passes with a different card is a rep whose lesson actually applies in a match.
+                # RANDOM SLOTS, not "wanted cards first". Putting them at the front makes their
+                # hand POSITION a giveaway: the policy can learn "play slot 0" instead of "play the
+                # Tornado", pass the drill, and carry nothing into a match where the needed card
+                # sits wherever the cycle put it. So the required cards go in RANDOM hand positions
+                # and the remaining slots are filled with other deck cards as noise -- same shape a
+                # real hand has, with no positional shortcut to exploit.
+                rest = [sl for sl in range(self.n_slots) if sl not in set(wanted_slots)]
+                self.rng.shuffle(rest)
+                n_fill = max(0, 4 - len(wanted_slots))
+                hand = list(wanted_slots) + rest[:n_fill]
+                self.rng.shuffle(hand)
+                self.cycle = hand + rest[n_fill:]
+            else:
+                self.cycle = list(wanted_slots)
 
     def drill_prior_gate(self):
         """P(play) the REFERENCE LINE would use right now, or None when it has no opinion.
@@ -509,6 +539,43 @@ class DrillEnv(SimMatchEnv):
         if self.scenario is not None and self.scenario.setup is not None:
             # After the board, so a setup can reach the bodies it just placed by name.
             self.scenario.setup(self)
+        if _STATE_JITTER:
+            # RANDOM MATCH STATE (sim.drill_state_jitter / CLASHRL_DRILL_STATE).
+            #
+            # Every drill otherwise starts from a pristine board: both sides at full towers and a
+            # scripted elixir count. Real interactions happen at every score line -- one tower down,
+            # two down, a princess at 30% -- and the right answer changes with it. A trade that is
+            # correct at 3 towers can be wrong when that tower is the last one standing.
+            #
+            # This also opens the POCKET (see ActionSpace.deployable_mask): destroying an enemy
+            # princess grants deployment territory across the river on that side, which is a real
+            # mechanic the sim did not model. A drill played with a tower already down is the only
+            # place the policy ever sees a board where the pocket exists.
+            for team in (0, 1):
+                for tw in self.eng.towers[team][:2]:          # princesses only, never the king
+                    r = float(self.rng.random())
+                    if r < 0.12:
+                        tw.hp, tw.alive = 0.0, False          # destroyed -> opens a pocket
+                    elif r < 0.45:
+                        tw.hp = float(tw.max_hp) * float(self.rng.uniform(0.25, 0.9))
+            # never leave a side with NO princesses AND a fresh king -- that is a 2-crown board the
+            # match would already have ended from in most drills; keep at least one standing.
+            for team in (0, 1):
+                pr = self.eng.towers[team][:2]
+                if not any(t.alive for t in pr):
+                    keep = pr[int(self.rng.random() > 0.5)]
+                    keep.alive, keep.hp = True, float(keep.max_hp) * 0.35
+            self.eng.elixir[0] = float(self.rng.uniform(1.0, 10.0))
+        if _CLOCK_JITTER:
+            # MATCH-REALISTIC CLOCK (sim.drill_clock_jitter / CLASHRL_DRILL_CLOCK).
+            #
+            # Every drill otherwise runs at t~9s while matches span 0-180s (gap 1.95 pooled sd).
+            # That means nothing is ever drilled under double elixir, in overtime, or with the
+            # clock pressure that changes what the right answer IS -- a trade that is correct at
+            # 30s can be wrong at 170s. The drill's own timing is measured RELATIVE to t0 (set
+            # below) and time_limit is checked as eng.t - t0, so moving the clock does not disturb
+            # any predicate; it only changes the game context the interaction happens in.
+            self.eng.t = float(self.rng.uniform(0.0, 150.0)) if hasattr(self, "rng")                 else float(np.random.uniform(0.0, 150.0))
         self._drill = {
             "t0": float(self.eng.t) - float(getattr(self, "_subgoal_skip", 0.0) or 0.0),
             "lane": getattr(self, "_drill_lane", None),

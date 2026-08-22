@@ -175,6 +175,16 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # masks shared with train_sim: anywhere cards -> all cells, else YOUR half; affordability by cost
     anywhere_ids = set(e0.anywhere_ids)
     yourhalf_mask = torch.tensor(e0.actions.deployable_mask(False), dtype=torch.bool, device=device)
+    # POCKET-AWARE CELL MASKS. Destroying an enemy princess opens deployment across the river on
+    # that side, so the legal cell set is a property of the BOARD, not a constant. Rather than store
+    # a 432-bool mask per step, precompute the four possibilities and store a 2-bit code
+    # (2*left + right) per step -- the update then rebuilds exactly the mask sampling used, which is
+    # what keeps the stored log-probs valid.
+    pocket_masks = torch.stack([
+        torch.tensor(e0.actions.deployable_mask(False, (bool(code & 2), bool(code & 1))),
+                     dtype=torch.bool, device=device)
+        for code in range(4)
+    ])                                                  # [4, n_cells]
     allcells_mask = torch.ones(n_cells, dtype=torch.bool, device=device)
     anywhere_ids_t = torch.tensor(sorted(anywhere_ids), dtype=torch.long, device=device)
     card_costs_t = torch.tensor([float(s.elixir) for s in e0.specs], dtype=torch.float32, device=device)
@@ -387,7 +397,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     def to_vec_t(v):
         return torch.from_numpy(np.asarray(v, np.float32)).to(device)
 
-    def masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=None):
+    def masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=None, pocket_code=None):
         """Apply the SAME masking at sampling and update time (deterministic from stored inputs):
         card = in-hand AND affordable; no playable card -> the PLAY gate is masked (forced wait, so
         the stored log-prob stays consistent); cell = the DEPLOYABLE set of the (sampled) card."""
@@ -408,12 +418,29 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             return cq_m, None, gq_m, playable
         is_any = (card_idx.view(-1, 1) == anywhere_ids_t.view(1, -1)).any(1) if anywhere_ids_t.numel() \
             else torch.zeros_like(card_idx, dtype=torch.bool)
-        cellmask = torch.where(is_any.unsqueeze(1), allcells_mask.unsqueeze(0), yourhalf_mask.unsqueeze(0))
+        if pocket_code is None:
+            half = yourhalf_mask.unsqueeze(0).expand(cq.shape[0], -1)
+        else:
+            half = pocket_masks[pocket_code.clamp(0, 3)]          # per-row, from the stored code
+        cellmask = torch.where(is_any.unsqueeze(1), allcells_mask.unsqueeze(0), half)
         # PER-CARD map: ceq is (B, n_cards, n_cells) now, so pick the row for the card that was
         # actually played. Everything downstream keeps the old (B, n_cells) shape, which is what
         # makes the log-prob gather and the PPO ratio identical to before.
         sel = ceq.gather(1, card_idx.view(-1, 1, 1).expand(-1, 1, ceq.shape[-1])).squeeze(1)
         return cq_m, sel.masked_fill(~cellmask, _NEG), gq_m, playable
+
+    def pocket_now():
+        """2-bit pocket code per env: 2*left_open + right_open, from the LIVE board."""
+        out = []
+        for e in (pool if not remote else []):
+            try:
+                l, r = e.pocket_state(0)
+            except Exception:
+                l, r = False, False
+            out.append((2 if l else 0) + (1 if r else 0))
+        if remote:
+            out = [int(p.get("pocket", 0)) for p in rpool.last]
+        return out
 
     def choose_sample(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Sample (gate, card, cell) from the factored policy for all K envs; return acts, logps, values."""
@@ -421,6 +448,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         obs_t = torch.stack([to_obs_t(o) for o in obs_b])
         hand_t = torch.stack([to_vec_t(h) for h in hand_b])
         elx_t = torch.stack([to_vec_t(e) for e in elx_b])
+        # POCKET per env, as a 2-bit code. Stored in the rollout so the update rebuilds the exact
+        # mask that sampling used -- otherwise the stored log-prob describes a different action set
+        # than the one being re-scored, and the importance ratio silently stops meaning anything.
+        pk_codes = pocket_now()
+        pk_t = torch.tensor(pk_codes, dtype=torch.long, device=device)
         with torch.no_grad():
             cq, ceq, gq, val_m, val_d = net(obs_t, hand_t,
                                             torch.stack([to_vec_t(n) for n in nxt_b]),
@@ -430,7 +462,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 _sel = torch.tensor([1.0 if in_drill[i] else 0.0 for i in range(len(obs_b))],
                                     dtype=val_m.dtype, device=val_m.device)
                 val = torch.where(_sel > 0.5, val_d, val_m)
-            cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
+            cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t, pocket_code=pk_t)
             # GATE SAMPLING, with a DRILL TIMING PRIOR mixed in. Same shape as the card and cell
             # floors below and for the same reason: a head that never samples an action gets no
             # gradient for it. Here the unsampled action is HOLDING -- the gate sits near 50/50
@@ -499,7 +531,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     lparts.append((float(lp_g[i, 0]), 0.0, 0.0))   # wait: gate only
                     continue
                 ci = int(c_samp[i])
-                cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
+                cmask = allcells_mask if ci in anywhere_ids else pocket_masks[pk_codes[i]]
                 ceq_i = ceq[i, ci].masked_fill(~cmask, _NEG)   # PER-CARD map
                 # CELL sampling from the SAME mixture shape as the card head above. Without this the
                 # 432-way cell head had NO anti-collapse protection while the 10-way card head did,
@@ -541,7 +573,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 logps.append(float(lp_g[i, 1] + lp_c_mix[i, ci] + lp_cell[cell]))
                 lparts.append((float(lp_g[i, 1]), float(lp_c_mix[i, ci]),
                                float(lp_cell[cell])))
-        return acts, logps, [float(v) for v in val], lparts
+        return acts, logps, [float(v) for v in val], lparts, pk_codes
 
     def _drill_gate(env):
         """Local-pool twin of RemotePool.drill_gate."""
@@ -807,6 +839,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         # PER-HEAD old log-probs [N,3] = (gate, card, cell). Needed to see WHICH head
         # moves a play out of the trust region -- measured, a play swings +-35-46% while
         # a wait swings +-0.5-2.4% (17-84x), which three comparable heads cannot explain.
+        pk_f = (torch.tensor(flat("pk"), dtype=torch.long, device=device)
+                if roll.get("pk") else torch.zeros(N, dtype=torch.long, device=device))
         oldp_f = (torch.tensor(flat("lparts"), dtype=torch.float32, device=device)
                   if roll.get("lparts") else torch.zeros(N, 3, device=device))
         g_f = torch.tensor([a[0] for a in flat("act")], device=device)
@@ -854,7 +888,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                       val_d, val_m)
                 mb_t = torch.tensor(mb, device=device)
                 g_b, c_b, cell_b = g_f[mb_t], c_f[mb_t], cell_f[mb_t]
-                cq_m, ceq_m, gq_m, _ = masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=c_b)
+                cq_m, ceq_m, gq_m, _ = masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=c_b,
+                                                     pocket_code=pk_f[mb_t])
                 lp_g = F.log_softmax(gq_m, dim=1)
                 lp_c = F.log_softmax(cq_m, dim=1)
                 lp_cell = F.log_softmax(ceq_m, dim=1)
@@ -1204,7 +1239,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
-                    "act": [], "logp": [], "lparts": [], "val": [], "rew": [], "done": [], "trunc": [],
+                    "act": [], "logp": [], "lparts": [], "pk": [], "val": [], "rew": [], "done": [], "trunc": [],
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
@@ -1213,12 +1248,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
-                acts, logps, vals, lparts = choose_sample(cobs, chand, cnxt, celx, cthr)
+                acts, logps, vals, lparts, pkc = choose_sample(cobs, chand, cnxt, celx, cthr)
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
                 roll["lparts"].append(lparts)
+                roll["pk"].append(pkc)
                 rew_row, done_row, trunc_row = [], [], []
                 if remote:
                     step_out = rpool.step_all(acts)
