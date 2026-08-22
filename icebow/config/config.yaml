@@ -1378,7 +1378,7 @@ sim:
                             # units, via the drill_tag filter) plus the overall board outcome, since
                             # acing two interactions while the third takes the tower is not playing
                             # the board well.
-  drill_frac: 0.0
+  drill_frac: 0.3
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)
@@ -1437,7 +1437,7 @@ sim:
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
-  ppo_drill_gate_mask: false  # drill steps do NOT train the play/wait GATE (they still
+  ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
                              # train the card and cell heads). The gate is the head that
                              # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs
                              # 0.92-0.99 without -- while the cell head learns fine. Drills
@@ -1525,7 +1525,7 @@ sim:
   # common is the whole point -- so it gets its own, much higher floors. Both stay MIXTURES: the
   # stored log-prob is the mixture's, so the PPO ratio remains exact importance sampling and the
   # policy still has to choose the action and is still graded on the outcome.
-  ppo_drill_cell_floor: 0.75    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
+  ppo_drill_cell_floor: 0.25    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
   ppo_sil_coef: 0.0             # SELF-IMITATION on drill successes. OFF by default.
@@ -1555,7 +1555,7 @@ sim:
                                 # ALSO MEASURED: neither arm moved the cell head at 5000 drill
                                 # episodes (both at ln(157) exactly), so this budget cannot answer
                                 # whether the term helps placement -- only that 0.05 hurts.
-  ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
+  ppo_drill_cell_floor_end: 0.10    # ...and where the drill cell floor ANNEALS TO. A high FIXED
                                 # floor buys the rare success and then throws its gradient away: the
                                 # stored log-prob is the mixture's, so PPO forms r = pi/mu, and
                                 # MEASURED on the 4000-match checkpoint the sampler put 0.28 on the
@@ -1564,7 +1564,7 @@ sim:
                                 # indistinguishable from an untrained net (6.0652 vs 6.0684 of 6.0684).
                                 # Decaying the floor lets mu approach pi so the successes teach.
   ppo_drill_cell_floor_anneal: 6000  # episodes to decay over. 0 = constant (old behaviour).
-  ppo_drill_gate_floor: 0.85    # WHEN, from the drill's reference line, which records the time each
+  ppo_drill_gate_floor: 0.30    # WHEN, from the drill's reference line, which records the time each
                                 # card is played. The gate was the one head with no prior at all,
                                 # and it is the one the timing drills turn on: bank_to_six,
                                 # hold_the_spell, hold_the_tesla and nado_king_activation are passed

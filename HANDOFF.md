@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-21**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-22**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -1371,6 +1371,77 @@ when this was written. Whichever term is large and negative is the cause.
 Self-contained, cheap to reproduce, and it blocks everything else. Start with `drill_frac 0.0` so
 the drills are out of the picture. The user does not know when this regressed -- a bisect over the
 sim-PPO history against the "reward vs untrained" test is the direct answer.
+
+---
+
+## 3p. 2026-08-22 — THE DRILL EXPLORATION FLOORS WERE THE CAUSE (config shipped)
+
+**Start here before changing anything about drills.** Two days of "the drills break training" had
+one cause: the drill exploration floors were set so high that the trainer overrode the bot's own
+choices 75-85% of the time during drills.
+
+### The one change that fixed it
+
+```
+ppo_drill_gate_floor: 0.85 -> 0.30
+ppo_drill_cell_floor: 0.75 -> 0.25
+ppo_drill_cell_floor_end: 0.20 -> 0.10
+```
+
+Drills stay ON at `drill_frac 0.3` -- unchanged. Measured, 40 fixed opponents per policy, 3 seeds:
+
+```
+                              winrate   crowndiff        (untrained: 2.5%, -2.200)
+floors 0.30/0.25 (SHIPPED)      6.7%     -1.600     <- all 3 seeds beat untrained
+gate mask, floors 0.85/0.75     3.3%     -1.717
+default floors 0.85/0.75        ~0%      -2.233     <- 4 of 5 seeds scored ZERO
+structural drill fix (SF2)      0.0%     -2.25      <- WORSE than untrained
+```
+
+**Why the floors did it.** PPO weights each update by pi_new/mu, how likely the network itself was
+to take the action. With mu 75-85% prior-driven that ratio is ~0.0125 (01c036b measured this and
+did not connect it to the collapse), so drill steps delivered almost no gradient AND the constant
+gap between behaviour and policy destabilised the gate. Both symptoms, one cause.
+
+### The measurement that exposed it
+
+The in-run `drills NN% pass` number is produced WITH the priors mixed into sampling, so it largely
+measures the SCAFFOLDING. Stripping the priors:
+
+```
+scripted (optimal line)  79%    <- the ceiling; randomisation costs only ~5%
+doctrine prior           71%
+THE TRAINED POLICY       12%    <- 16 of 28 drills at 0%
+```
+
+That is why the pass rate never moved off ~43% across every change: it was never measuring the
+network. **Use `run.py drills --policy <ckpt>` for the real number.**
+
+### Drill learning does NOT predict match performance
+
+25% drill pass scored WORSE on the match benchmark than 2% did. Do not optimise the drill pass rate
+as a proxy for match strength -- they came apart cleanly and repeatedly.
+
+### Shipped but NOT yet validated in training (default off / new)
+
+* **THE POCKET** (`d4d5ac2`, `20ab936`) -- taking a princess grants deployment territory across the
+  river on that side, for BOTH sides. 154 -> 254 -> 354 cells. Wired through the trainer via a
+  2-bit code per step so the update rebuilds the mask sampling used. Opponents use it too.
+  Still static-masked (not pocket-aware): play.py, train_rl.py, policy_stats.py, train_bc.py.
+* **Drill realism flags** -- `CLASHRL_DRILL_FULL_HAND` (4-card hand, required cards at RANDOM
+  slots), `CLASHRL_DRILL_CLOCK`, `CLASHRL_DRILL_STATE`. They close every state gap (hand d=1.73
+  -> 0.00, clock d=2.01 -> 0.00) and they made training WORSE at 500 matches (SF2 above). Either
+  realistic drills need longer to pay off, or the state gap was not the mechanism. Unresolved.
+
+### Traps this cost real time to learn
+
+1. `eval_every_matches: 500` runs a **150-match silent benchmark**. It looks exactly like a hang:
+   processes alive, no log output, checkpoint frozen for 10-25 min. I killed healthy runs twice.
+2. `OMP_NUM_THREADS` unset -> every process sizes its thread pool to all 16 cores. With 9 runs that
+   is ~560 threads on 16 cores. Setting it to 2 took throughput from 0.4 to 5.9 ep/s.
+3. The collapse is **bistable** (escape rate ~4/6). n=1 decides nothing -- a single run "exonerated"
+   drills and sent the whole investigation down a two-day detour.
+4. `eng.deploy()` does NOT enforce deployment halves. Masks are the only enforcement, policy-side.
 
 ---
 
