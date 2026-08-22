@@ -954,6 +954,28 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=None, reward_mod
             verdict = "NOT DISCRIMINATING -- baseline matches the best line"
         else:
             verdict = "ok"
+        # THE VERDICT GRADES THE DRILL, NOT THE POLICY. Everything above is decided from the
+        # baseline / scripted / doctrine columns: "ok" means this drill is a VALID TEST -- the
+        # correct line passes it, doing nothing fails it, and the prior can find it. It says
+        # nothing about whether the model can do it, which made rows read "policy 0% ... ok" and
+        # invited exactly the wrong conclusion (owner spotted this, 2026-08-22).
+        #
+        # So when a policy IS supplied, say what happened to it. Judged against the DOCTRINE column
+        # rather than against 100%: doctrine is what a good hand-written prior achieves on the same
+        # board, so it is the fair bar for "the model knows this interaction".
+        if pol is not None and not verdict.startswith(("UNWINNABLE", "NOT DISCRIMINATING")):
+            pp, dd = float(pol["pass_rate"]), float(doc["pass_rate"])
+            if pp <= 0.0:
+                verdict += "  | POLICY FAILS (0%)"
+            elif pp >= dd:
+                verdict += "  | policy OK (%.0f%%)" % (100 * pp)
+            elif pp < 0.5 * max(dd, 1e-9):
+                verdict += "  | POLICY GAP (%.0f%% vs doctrine %.0f%%)" % (100 * pp, 100 * dd)
+            else:
+                # the middle band -- below the prior but not badly. Labelled too, so that EVERY
+                # row carrying a policy says something about it; an unannotated row was the exact
+                # ambiguity this block exists to remove.
+                verdict += "  | policy below doctrine (%.0f%% vs %.0f%%)" % (100 * pp, 100 * dd)
         print("%-30s %7.0f%% %8s %7.0f%% %8s   %s"
               % (name, 100 * b, ("%.0f%%" % (100 * r)) if r is not None else "-", 100 * d,
                  ("%.0f%%" % (100 * pol["pass_rate"])) if pol else "-", verdict))
