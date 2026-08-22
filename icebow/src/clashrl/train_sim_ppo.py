@@ -132,6 +132,16 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     device = torch.device(device) if device else _pick_device(cfg)
 
     value_detach = bool(cfg.get("sim", "ppo_value_detach", default=False))
+    # SEPARATE CRITIC FOR DRILL vs MATCH STEPS (ppo_value_head_split).
+    # One value head must otherwise fit two return distributions -- a drill episode is ~20 steps,
+    # a match ~300 -- and measured it fits neither: value loss is 3-4x worse whenever drills share
+    # the batch (1.35-1.83 with drills vs 0.38-0.56 without, no overlap). A miscalibrated critic
+    # produces the measured -0.43 mean advantage on MATCH steps, which suppresses match plays no
+    # matter what the policy loss wants, and match-only training is healthy (P(play) 0.92-0.99).
+    # Per-population advantage normalisation did NOT fix this (0.141/0.162/0.149 vs baseline
+    # 0.107-0.151), so the coupling is the critic itself, not the advantage scale.
+    value_head_split = bool(cfg.get("sim", "ppo_value_head_split", default=False))
+    drill_gate_mask = bool(cfg.get("sim", "ppo_drill_gate_mask", default=False))
 
     class PPONet(nn.Module):
         """Actor-critic over the SAME PolicyNet trunk/heads the DQN uses (logits, not Q) + a value head."""
@@ -140,7 +150,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             super().__init__()
             self.policy = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim)
             self.gate = nn.Linear(self.policy.embed_dim, 2)    # [wait, play] logits
-            self.value = nn.Linear(self.policy.embed_dim, 1)   # V(s) for GAE
+            self.value = nn.Linear(self.policy.embed_dim, 1)   # V(s) for GAE -- MATCH steps
+            # second critic, used only for drill steps when ppo_value_head_split is on
+            self.value_d = nn.Linear(self.policy.embed_dim, 1)
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
             z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
@@ -154,7 +166,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             # without dragging the trunk, at the cost of a weaker critic (it becomes a linear probe
             # on policy features) -- which is why this is a FLAG, not a default.
             v_in = z.detach() if value_detach else z
-            return cards, cells, self.gate(z), self.value(v_in).squeeze(-1)
+            v_m = self.value(v_in).squeeze(-1)
+            v_d = self.value_d(v_in).squeeze(-1) if value_head_split else v_m
+            return cards, cells, self.gate(z), v_m, v_d
 
     net = PPONet().to(device)
 
@@ -408,8 +422,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         hand_t = torch.stack([to_vec_t(h) for h in hand_b])
         elx_t = torch.stack([to_vec_t(e) for e in elx_b])
         with torch.no_grad():
-            cq, ceq, gq, val = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
-                                   elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
+            cq, ceq, gq, val_m, val_d = net(obs_t, hand_t,
+                                            torch.stack([to_vec_t(n) for n in nxt_b]),
+                                            elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
+            val = val_m
+            if value_head_split:
+                _sel = torch.tensor([1.0 if in_drill[i] else 0.0 for i in range(len(obs_b))],
+                                    dtype=val_m.dtype, device=val_m.device)
+                val = torch.where(_sel > 0.5, val_d, val_m)
             cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
             # GATE SAMPLING, with a DRILL TIMING PRIOR mixed in. Same shape as the card and cell
             # floors below and for the same reason: a head that never samples an action gets no
@@ -537,7 +557,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         hand_t = torch.stack([to_vec_t(h) for h in hand_b])
         elx_t = torch.stack([to_vec_t(e) for e in elx_b])
         with torch.no_grad():
-            cq, ceq, gq, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
+            cq, ceq, gq, _, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                  elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
         acts = []
@@ -575,6 +595,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     league: deque = deque(maxlen=max(1, sp_league_size))
     _best_snap = {"net": None}
     _prog = {"n": 0}
+    adv_norm_split = bool(cfg.get("sim", "ppo_adv_norm_split", default=False))
+    _adv_signed = {"want": True, "drill": 0.0, "match": 0.0, "shift": 0.0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
     _probe = bool(os.environ.get("CLASHRL_GATE_PROBE"))   # heavy diagnostics: 3 extra
     _terms = {"want": _probe, "ppo": 0.0, "entropy": 0.0, "value": 0.0, "n": 0}
@@ -742,7 +764,44 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             return [roll[key][t][i] for t in range(T) for i in range(K)]
         N = T * K
         adv_f = torch.tensor(adv.reshape(-1), device=device)
-        adv_f = (adv_f - adv_f.mean()) / (adv_f.std() + 1e-8)
+        # PER-POPULATION ADVANTAGE NORMALISATION (ppo_adv_norm_split).
+        #
+        # Normalising over the WHOLE mixed batch shares one mean between two populations with
+        # different return scales -- a drill episode is ~20 steps, a match ~300. Subtracting a
+        # common mean therefore SHIFTS one population relative to the other. Measured, the gate
+        # drift splits like this with drills at 30% of steps:
+        #     DRILL steps:  PLAY -0.234   WAIT -0.063
+        #     match steps:  PLAY -0.101   WAIT +0.006
+        # Match steps are pushed away from playing too -- even though match-only training is
+        # perfectly healthy (3 seeds at drill_frac 0.0 hold P(play) 0.92-0.99 while drill_frac 0.3
+        # collapses to 0.11-0.15). Something SHARED is poisoning the match steps, and the shared
+        # thing is this mean.
+        #
+        # Normalising each population against its own mean and std removes the coupling: a drill's
+        # advantage is judged against other drills, a match step against other match steps.
+        # NOTE: built whenever the flag exists, not only for adv_norm_split -- the value-head
+        # routing needs it too, and an earlier version left it None unless adv_norm_split was on,
+        # which would have made ppo_value_head_split silently do nothing.
+        _dsplit = (torch.tensor(flat("isdrill"), dtype=torch.float32, device=device)
+                   if roll.get("isdrill") else None)
+        if adv_norm_split and _dsplit is not None:
+            _out = adv_f.clone()
+            for _sel in (_dsplit > 0.5, _dsplit <= 0.5):
+                if int(_sel.sum()) > 1:
+                    _p = adv_f[_sel]
+                    _out[_sel] = (_p - _p.mean()) / (_p.std() + 1e-8)
+            adv_f = _out
+        else:
+            adv_f = (adv_f - adv_f.mean()) / (adv_f.std() + 1e-8)
+        if roll.get("isdrill") and _adv_signed["want"]:
+            # SIGNED means, pre-normalisation -- the |mean| diagnostic below cannot show a SHIFT,
+            # only a magnitude gap, and a shift is exactly what would move one population.
+            _raw = torch.tensor(adv.reshape(-1), device=device)
+            _dm = torch.tensor(flat("isdrill"), dtype=torch.float32, device=device)
+            if float(_dm.sum()) > 1 and float((1.0 - _dm).sum()) > 1:
+                _adv_signed["drill"] = float(_raw[_dm > 0.5].mean())
+                _adv_signed["match"] = float(_raw[_dm <= 0.5].mean())
+                _adv_signed["shift"] = _adv_signed["drill"] - _adv_signed["match"]
         ret_f = torch.tensor(ret.reshape(-1), device=device)
         oldlp_f = torch.tensor(flat("logp"), dtype=torch.float32, device=device)
         # PER-HEAD old log-probs [N,3] = (gate, card, cell). Needed to see WHICH head
@@ -785,9 +844,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 obs_t = torch.stack([to_obs_t(obs_f[i]) for i in mb])
                 hand_t = torch.stack([to_vec_t(hand_f[i]) for i in mb])
                 elx_t = torch.stack([to_vec_t(elx_f[i]) for i in mb])
-                cq, ceq, gq, val = net(obs_t, hand_t,
-                                       torch.stack([to_vec_t(nxt_f[i]) for i in mb]), elx_t,
-                                       torch.stack([to_vec_t(thr_f[i]) for i in mb]))
+                cq, ceq, gq, val_m, val_d = net(obs_t, hand_t,
+                                                torch.stack([to_vec_t(nxt_f[i]) for i in mb]),
+                                                elx_t,
+                                                torch.stack([to_vec_t(thr_f[i]) for i in mb]))
+                val = val_m
+                if value_head_split and _dsplit is not None:
+                    val = torch.where(_dsplit[torch.tensor(mb, device=device)] > 0.5,
+                                      val_d, val_m)
                 mb_t = torch.tensor(mb, device=device)
                 g_b, c_b, cell_b = g_f[mb_t], c_f[mb_t], cell_f[mb_t]
                 cq_m, ceq_m, gq_m, _ = masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=c_b)
@@ -890,11 +954,60 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                 print("[train-sim-ppo]   GATE drift: PLAY steps %+.5f  WAIT steps %+.5f"
                                       "   (+ = that action becoming MORE likely)"
                                       % (float(_dg.mean()), float(_dgw.mean())), flush=True)
+                                # SPLIT THE DRIFT BY DRILL vs MATCH STEP. The collapse is drill-induced (3 seeds at
+                                # drill_frac 0.0 hold P(play) 0.92-0.99; four runs at 0.3 collapse to 0.11-0.15), but
+                                # that leaves two very different mechanisms:
+                                #   * push is negative on DRILL steps only -> drills directly teach the gate to wait
+                                #   * push is negative on BOTH -> drills corrupt something SHARED (advantage
+                                #     normalisation over the mixed batch, or the critic), poisoning match steps too
+                                # The fix differs completely between those, so measure instead of assuming.
+                                if roll.get("isdrill"):
+                                    _dsel = torch.tensor(flat("isdrill"), dtype=torch.float32,
+                                                         device=device)[mb_t]
+                                    _dg_all = (lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
+                                               - oldp_f[mb_t][:, 0]).detach()
+                                    for _tag, _sel in (("DRILL", _dsel > 0.5), ("match", _dsel <= 0.5)):
+                                        _pl_i = _sel & (_pmm > 0.5)
+                                        _wt_i = _sel & (_pmm <= 0.5)
+                                        if int(_pl_i.sum()) > 4 and int(_wt_i.sum()) > 4:
+                                            print("[train-sim-ppo]     %-5s steps: gate drift on PLAY %+.5f  "
+                                                  "on WAIT %+.5f   (n_play %d, n_wait %d)"
+                                                  % (_tag, float(_dg_all[_pl_i].mean()),
+                                                     float(_dg_all[_wt_i].mean()),
+                                                     int(_pl_i.sum()), int(_wt_i.sum())), flush=True)
                 s1 = ratio * a_b
                 # PER-ACTION-KIND BOUND: wider for plays, whose ratio carries three log-probs.
                 eps_b = clip_eps * (1.0 + (clip_play_mult - 1.0) * play)
                 s2 = torch.clamp(ratio, 1.0 - eps_b, 1.0 + eps_b) * a_b
                 pl = -torch.min(s1, s2).mean()
+                if drill_gate_mask and _dsplit is not None:
+                    # PROTECT THE GATE FROM DRILL STEPS (ppo_drill_gate_mask).
+                    #
+                    # The measured failure is specific: the play/wait GATE collapses (P(play) 0.5 ->
+                    # 0.11-0.15 with drills, 0.92-0.99 without), while the cell head learns fine
+                    # (90.8x untrained, 60 distinct cells). Drill steps push log pi(play) down
+                    # -0.17 to -0.42 EVERY update; match steps do too (-0.09 to -0.14) but only
+                    # while drills share the batch.
+                    #
+                    # Drills are worth keeping -- they teach WHICH card and WHERE, and drill-free
+                    # models play subpar. So keep their gradient for the card and cell heads and
+                    # drop it only for the gate: the gate is trained on match steps, where "should
+                    # I play at all" is a question the critic can actually value, and drills stop
+                    # voting on a decision their artificial boards misprice.
+                    #
+                    # Implemented by rebuilding the surrogate with the gate log-prob detached on
+                    # drill steps, so those steps still shape card/cell but contribute no gradient
+                    # to the gate head.
+                    _dm = _dsplit[mb_t]
+                    _lpg = lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
+                    _lpg_masked = torch.where(_dm > 0.5, _lpg.detach(), _lpg)
+                    _new_lp2 = _lpg_masked + play * (
+                        lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
+                        + lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1))
+                    _ratio2 = (_new_lp2 - ol_b).exp()
+                    _s1 = _ratio2 * a_b
+                    _s2 = torch.clamp(_ratio2, 1.0 - eps_b, 1.0 + eps_b) * a_b
+                    pl = -torch.min(_s1, _s2).mean()
                 if clip_per_head:
                     # PER-HEAD TRUST REGIONS. Clipping the JOINT ratio lets the noisiest head
                     # decide the fate of every head's update. Measured, on play steps:
@@ -1213,6 +1326,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                 "play": 0.0, "play_n": 0.0,
                                                 "wait": 0.0, "wait_n": 0.0})
                         if done_n % log_every == 0 and _adv_stats["match"] > 0:
+                            print("[train-sim-ppo] adv SIGNED mean (pre-norm): drill %+.4f vs "
+                                  "match %+.4f  -> shift %+.4f  (a nonzero shift means one shared "
+                                  "mean is moving one population)"
+                                  % (_adv_signed["drill"], _adv_signed["match"],
+                                     _adv_signed["shift"]), flush=True)
                             print("[train-sim-ppo] adv |mean|: drill %.3f vs match %.3f "
                                   "(drill = %.0f%% of steps) -- a large gap means one population "
                                   "is squashing the other"
@@ -1310,11 +1428,19 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                           f"(winrate ema {_curr['wr_ema']:.0f}%, window {wr_now:.0f}%)")
             with torch.no_grad():                              # bootstrap values for the final states
                 net.eval()
-                _, _, _, bv = net(torch.stack([to_obs_t(o) for o in cobs]),
-                                  torch.stack([to_vec_t(h) for h in chand]),
-                                  torch.stack([to_vec_t(n) for n in cnxt]),
-                                  torch.stack([to_vec_t(e) for e in celx]),
-                                  torch.stack([to_vec_t(t) for t in cthr]))
+                _, _, _, bv_m, bv_d = net(torch.stack([to_obs_t(o) for o in cobs]),
+                                          torch.stack([to_vec_t(h) for h in chand]),
+                                          torch.stack([to_vec_t(n) for n in cnxt]),
+                                          torch.stack([to_vec_t(e) for e in celx]),
+                                          torch.stack([to_vec_t(t) for t in cthr]))
+                # bootstrap from the SAME critic that scored the episode -- routing the rollout and
+                # the update but not the bootstrap would bootstrap a drill's tail off the match
+                # critic, which is the miscalibration this flag exists to remove.
+                bv = bv_m
+                if value_head_split:
+                    _bsel = torch.tensor([1.0 if in_drill[i] else 0.0 for i in range(len(cobs))],
+                                         dtype=bv_m.dtype, device=bv_m.device)
+                    bv = torch.where(_bsel > 0.5, bv_d, bv_m)
             roll["boot"] = bv.cpu().numpy().astype(np.float32)
             roll["val"] = [np.asarray(v, np.float32) for v in roll["val"]]
             stats = ppo_update(roll)

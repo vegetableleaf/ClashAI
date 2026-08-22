@@ -1435,6 +1435,24 @@ sim:
   ppo_clip_per_head: false   # clip EACH head against its OWN ratio instead of the joint one.
                              # Measured on play steps: sd(log r) gate 0.0019 / card 0.0284 /
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
+  ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
+  ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
+  ppo_drill_gate_mask: false  # drill steps do NOT train the play/wait GATE (they still
+                             # train the card and cell heads). The gate is the head that
+                             # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs
+                             # 0.92-0.99 without -- while the cell head learns fine. Drills
+                             # teach WHICH card and WHERE; their artificial boards misprice
+                             # "should I play at all", so they stop voting on that.
+                             # otherwise fit two return distributions (drill ~20 steps,
+                             # match ~300) and fits neither: value loss 1.35-1.83 with
+                             # drills vs 0.38-0.56 without, no overlap. The miscalibration
+                             # gives match steps a -0.43 mean advantage, suppressing match
+                             # plays -- while match-only training is healthy (0.92-0.99).
+                             # One shared mean across two populations with different return
+                             # scales (drill ~20 steps, match ~300) SHIFTS one relative to
+                             # the other. Measured: match steps are pushed away from playing
+                             # (gate drift PLAY -0.10 to -0.14) even though match-only
+                             # training is healthy (P(play) 0.92-0.99 at drill_frac 0.0).
                              # 10-30x the gate's gradient (0.30-1.39 vs 0.03-0.05) and shares
                              # the trunk, so its steps reshape the features the gate reads.
                              # Measured: PPO pushes the gate +0.014 TOWARD play and entropy

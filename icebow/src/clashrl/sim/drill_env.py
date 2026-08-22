@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+import os
 import numpy as np
 
 from .engine import Unit, build_spec
@@ -124,6 +125,9 @@ def compose_components(pool, rng, n_max=3):
             offset = float(rng.uniform(0.6, 3.5))      # overlapping, not sequential
         out.append({"scenario": s, "lane": i % 2, "offset": round(offset, 1), "tag": i})
     return out
+
+
+_PLAY_OUT = bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
 
 
 def compound_verdict(env):
@@ -628,9 +632,23 @@ class DrillEnv(SimMatchEnv):
                  "elixir": float(spent)})
         if not done:
             v = self._verdict()
-            if v is not None:
+            if v is not None and self.last_verdict is None:
                 self.last_verdict = v
-                done = True
+                # PLAY OUT (sim.drill_play_out): record the verdict at its natural moment but let
+                # the episode CONTINUE as an ordinary match instead of ending here.
+                #
+                # Why: a drill averages 18.4s against a match's 180s+, and one critic has to value
+                # both. Measured, that wrecks it -- value loss 1.3-1.8 with drills mixed in vs
+                # 0.38-0.56 with matches alone, and the miscalibrated critic is what precedes the
+                # gate collapsing (P(play) 0.11-0.15 with drills vs 0.92-0.99 without). Giving
+                # drills their own critic recovered only ~30% of that, and shrinking drill_frac did
+                # not help at all -- even 15% of EPISODES still broke it.
+                #
+                # Ending the episode early is what creates the mismatch, so this removes it at the
+                # source rather than compensating downstream: the drill becomes "a match that
+                # started in an interesting position". Episode length, return scale and critic
+                # targets all match automatically, with no special-casing in the trainer.
+                done = bool(done) or not _PLAY_OUT
                 info = dict(info or {})
                 info["drill"] = self.scenario.name
                 info["verdict"] = v

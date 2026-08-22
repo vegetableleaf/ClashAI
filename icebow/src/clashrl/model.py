@@ -21,6 +21,8 @@ Shared conv trunk + adaptive pool keeps it robust to the exact observation size.
 """
 from __future__ import annotations
 
+import os
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -95,10 +97,22 @@ class PolicyNet(nn.Module):
         # front of the bow, ice wizard behind it, skeletons onto the attacker" is four different
         # placements for four cards in ONE state, and the old head could not represent it at any
         # weights. Cost is one extra conv channel per card (10 x 432 outputs) in the same pass.
+        # SINGLE-MAP CELL HEAD (CLASHRL_SINGLE_CELL_MAP=1) -- the pre-206f467 shape.
+        # Every checkpoint this project ever trained to a good winrate has a SINGLE map:
+        #     single map   n=9   best_wr max 33.2  mean 23.7
+        #     per-card     n=5   best_wr max 10.2  mean  7.5
+        # and at matched budget/in_ch it is 17.9% vs 10.2% at 1500 matches. Per-card gives the
+        # head 10x the outputs (10 x 432 = 4320); measured, that head then moves sd(log r) 0.478
+        # per update against the gate's 0.002 -- +-61% swings on a ~0 gradient, i.e. Adam noise on
+        # a head too large for the signal available. This flag restores the old width so the two
+        # can be run head to head; the forward pass broadcasts the one map across cards, so every
+        # caller sees the same (B, n_cards, n_cells) shape either way.
+        self.cell_per_card = not os.environ.get("CLASHRL_SINGLE_CELL_MAP")
+        _cell_out = n_cards if self.cell_per_card else 1
         self.cell_conv = nn.Sequential(
             nn.Conv2d(64 + 32, 48, 1), nn.ReLU(inplace=True),
             nn.Conv2d(48, 24, 1), nn.ReLU(inplace=True),
-            nn.Conv2d(24, n_cards, 1),
+            nn.Conv2d(24, _cell_out, 1),
         )
 
     @staticmethod
@@ -149,10 +163,16 @@ class PolicyNet(nn.Module):
         rather than assuming the old 2-D shape.
         """
         ctx = self.cell_ctx(z)[:, :, None, None].expand(-1, -1, fmap.shape[2], fmap.shape[3])
-        m = self.cell_conv(torch.cat([fmap, ctx], dim=1))         # (B, n_cards, h', w')
+        m = self.cell_conv(torch.cat([fmap, ctx], dim=1))         # (B, out, h', w')
         gw, gh = self.grid_wh
         cells = F.interpolate(m, size=(gh, gw), mode="bilinear", align_corners=False)
-        return cells.flatten(2)                                   # (B, n_cards, gh*gw)
+        cells = cells.flatten(2)                                  # (B, out, gh*gw)
+        if not self.cell_per_card:
+            # one shared map, broadcast across cards so callers are unchanged. expand() is a view,
+            # so the gradient from every card accumulates into the SAME map -- which is the point:
+            # 10x fewer parameters fed by 10x the samples.
+            cells = cells.expand(-1, self.n_cards, -1)
+        return cells                                              # (B, n_cards, gh*gw)
 
     def forward_parts(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
                       elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):
