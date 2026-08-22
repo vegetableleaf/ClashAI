@@ -1237,7 +1237,26 @@ per-head clipping ON           reward -35.35     2.6x worse (NO improvement)
 Training does not plateau, it does not overfit -- it moves the policy AWAY from its own reward
 signal, hard, from the very first episodes. An untrained net beats every checkpoint we produced.
 
-### It is NOT the drills (paired, equal counts, 600 matches each)
+> ## ⚠⚠ THIS SECTION'S CENTRAL CLAIM IS WRONG — THE DRILLS **ARE** THE CAUSE (2026-08-22)
+>
+> Everything below that says "not the drills" came from **a single `drill_frac 0.0` run** that
+> scored P(play) 0.225. Re-run at **three seeds**, HEAD does not collapse without drills at all:
+>
+> ```
+> HEAD, drill_frac 0.0, 3 seeds:  P(play) 0.993  0.922  0.964   ALL HEALTHY (untrained 0.49)
+> HEAD, drill_frac 0.3, 4 runs:   P(play) 0.151  0.107  0.151  0.107   COLLAPSED
+> ```
+>
+> The one run that "proved" drills innocent was one of the ~2-in-6 that collapse by chance — the
+> collapse is **bistable** (measured escape rate 4/6), so n=1 decides nothing. No seed overlap
+> between the two groups. The owner suspected drills from the start and was right.
+>
+> Consequences: (1) there is **no commit regression** — the bisect below measured seed noise, and
+> HEAD is as healthy as the "known-good" `74ac441` in the pure-match regime (0.96-0.99 vs 0.98);
+> (2) `ppo_clip_play_mult` and `ppo_value_detach` were mitigating a **drill-induced** collapse;
+> (3) NEVER call a bistable result from one run again — 3 seeds minimum.
+
+### It is NOT the drills — ⚠ RETRACTED, see the box above (this was n=1)
 
 ```
 drill_frac = 0.0  (pure matches)   P(play) 0.493 -> 0.225     winrate 24% -> 10%, reward -5.9 -> -9.3
