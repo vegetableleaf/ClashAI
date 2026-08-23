@@ -1930,6 +1930,72 @@ icebow repricing measures well in training, port it there as its own change.
 
 ---
 
+## 3v. 2026-08-23 — ⚠⚠⚠ §3p's UNTRAINED BASELINE DOES NOT REPRODUCE. "Training beats untrained" was never established.
+
+**Read this before citing any trained-vs-untrained number in this file.**
+
+§3p is the section that ended the two-day drill-floor investigation, and its conclusion rests on
+one table:
+
+```
+                              winrate   crowndiff        (untrained: 2.5%, -2.200)
+floors 0.30/0.25 (SHIPPED)      6.7%     -1.600     <- "all 3 seeds beat untrained"
+```
+
+**The −2.200 does not reproduce at the commit where it was written.** Measured 2026-08-23, git
+worktrees at five points spanning §3p → HEAD, 3 random inits × 24 fixed-seed matches each, card
+head masked to in-hand-and-affordable:
+
+```
+commit    what landed there                          UNTRAINED crowndiff   crowns taken
+63909f9   SHIP the drill floor fix  (§3p ITSELF)        -1.722 ±0.100          0.236
+20ab936   opponents can use the POCKET                  -1.736 ±0.097          0.139
+5cb295d   spell mask ON                                 -1.667 ±0.083          0.181
+ebeca9d   RESTORE the drill floor fix                   -1.833 ±0.042          0.153
+611ad32   reprice W1                          (HEAD)    -1.708 ±0.087          0.181
+```
+
+**Flat.** Every point lies in [−1.83, −1.67]. §3p's −2.200 is ~4.8 SE outside what its own commit
+produces. Two consequences, and the second is the one that matters:
+
+1. **The environment never shifted.** I had claimed (2026-08-23, earlier the same day) that the
+   baseline drifted −2.200 → −1.75 and that the pocket/spell-mask changes had moved it, so
+   cross-date comparisons were void. **That was wrong** — the pocket did not move it, the spell
+   mask did not move it, nothing did. Comparisons across those commits are fine.
+2. **The "sim rewards learning" result was an artefact of a bad baseline.** Against the untrained
+   value that commit actually yields, §3p's trained −1.600 is a gap of **0.12 against noise of
+   ~0.14**. It is not a result. Every later decision that assumed a working training loop and went
+   looking for reward-shaping problems downstream was standing on it.
+
+### This is the SECOND time an untrained baseline broke a conclusion here
+
+The ledger already records `48bc8e7`: *"CORRECTION: untrained baseline is −13.57, not −6.78"* —
+which had likewise made training look like it was destroying a good policy. Same shape, same
+load-bearing role, four days apart.
+
+### What is actually true, stated plainly
+
+On a fixed opponent set, untrained and every trained checkpoint measured this session are the same
+policy within noise (crowndiff −1.29 … −1.83), and **crowns TAKEN is ~0.18/match everywhere,
+untrained included**. A win needs three crowns or a lead at time. The offence has never existed, so
+the winrate has never been able to leave zero — and no reward-shaping change downstream of that can
+show up in the benchmark.
+
+**Do not run another reward-shaping experiment until a 3-seed A/B shows training beating untrained
+on TODAY's code.** `scratchpad/ab3.sh` is that experiment, written and ready; it needs the machine
+to itself (§3's RAM constraint: three trainers beside the main run means thrashing, not slowness).
+
+### Trap (§8)
+
+**An UNTRAINED baseline is the load-bearing number in every trained-vs-untrained claim, and it is
+the easiest one to get wrong.** It has now been mis-measured twice, and both times a headline
+conclusion rested on it. Measure it (a) in the SAME checkout as the trained policy, (b) over
+several random inits — one untrained network is a single draw from a wide distribution, and (c)
+with the card head masked. It costs no training: a random init's crowndiff is a property of the
+ENVIRONMENT, which is exactly why bisecting it across commits is cheap and worth doing.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -2349,6 +2415,13 @@ configured but **have never run** — BC has not been retrained since the soft-t
   had been paid -- so the post-spend "reserve" read as the full bar. The real caller is
   already debited. Same family as the live-screen and illegal-coordinate traps: the check and
   the system under test were looking at different worlds, and the check was the wrong one.
+* **An UNTRAINED baseline is load-bearing, and it is the easiest number here to get wrong.**
+  Mis-measured TWICE (`48bc8e7`: -13.57 not -6.78; S3v: -1.72 not -2.20), and both times a
+  headline conclusion rested on it. Measure it (a) in the SAME checkout as the trained
+  policy, (b) over several random inits -- one untrained net is a single draw from a wide
+  distribution, (c) with the card head MASKED. It needs no training: a random init's
+  crowndiff is a property of the ENVIRONMENT, which is what makes bisecting it across
+  commits cheap (`scratchpad/baseline_at.py`, run from a git worktree per commit).
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
