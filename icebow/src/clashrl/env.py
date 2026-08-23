@@ -261,8 +261,22 @@ class LiveMatchEnv:
         # about what the spell can touch.
         self.log_half_w = float(cfg.get("env", "log_half_width", default=0.064))
         self.log_roll = float(cfg.get("env", "log_roll_len", default=0.28))
-        self.air_bases = frozenset(b for b in (db.names() if hasattr(db, "names") else [])
-                                   if db.is_flying(b))
+        # ⚠ THIS WAS `db.names() if hasattr(db, "names") else []` AND CardDB HAS NO `names()`.
+        # The hasattr guard therefore yielded [] every single time and `air_bases` was PERMANENTLY
+        # EMPTY -- so `log_hits(..., air=air_bases)` never skipped a flying unit and every Log cast
+        # on Minions / Bats / Balloon / Baby Dragon scored as a HIT in the live reward. The owner
+        # reported this repeatedly ("play log on air troops, which somehow STILL registers a hit");
+        # the guard itself was written correctly, it was iterating nothing. `is_flying` was fine all
+        # along (minions -> True), so only the enumeration was broken.
+        self.air_bases = frozenset(b for b in db.cards if db.is_flying(b))
+        # LOUD, because the failure mode above is silent by construction: an empty set makes the
+        # air rule vanish while every call still succeeds. §3q's rule -- if the line is absent, the
+        # feature is not running.
+        if not self.air_bases:
+            print("[env] ⚠ air_bases is EMPTY -- the Log's air exclusion is INERT. "
+                  "log_hits() will score casts on flying units as hits.")
+        else:
+            print("[env] air_bases: %d flying cards (log rolls under them)" % len(self.air_bases))
         self.fast_reaction_tick = bool(cfg.get("env", "fast_reaction_tick", default=True))
         # How long to wait before judging whether a card left the bar. The tap, the deploy
         # animation and the bar redraw all have to finish first; judging in the same step read a
