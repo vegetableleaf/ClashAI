@@ -2197,6 +2197,45 @@ prints `llm-advisor <model>: N calls, N answered (X%), N failed, mean N ms`. If 
 advisor is barely running, and "I haven't seen much change with it on" has a much duller
 explanation than model quality.
 
+### ⚠⚠ RESOLVED, AND IT MOOTS THE WHOLE DEBATE: THE ADVISOR HAS NEVER ANSWERED IN LIVE PLAY
+
+Owner supplied the line this section asked for, from their last live session:
+
+```
+[train-rl] llm-advisor qwen2.5:latest: 10 calls, 0 answered (0%), 10 failed, mean 565 ms,
+           last error TimeoutError: timed out
+```
+
+**0% answered.** 565 ms mean against `llm_advisor_timeout_s: 0.55` (550 ms) -- every call misses,
+by about 15 ms, and falls back to a RANDOM card.
+
+**Cause: a config drift from a change to a different key.** The budget was sized for a 1.0 s
+act_period; `play.act_period` was lowered 1.0 -> 0.6 on 2026-08-20 with `sim.agent_dt` (S3m), and
+the advisor's budget was never revisited. The comment on the timeout line still SAID "act_period is
+1.0s" until today. A reaction-time change three days earlier silently switched the advisor off, and
+the failure mode is a silent fallback, so nothing announced it.
+
+**Raising the timeout does not fix it.** The bot is blind during the call, so a ~590 ms answer
+inside a 600 ms period leaves nothing for perception or action. Synchronously this model does not
+fit this act_period. Real options: run it ASYNCHRONOUSLY (answer applied on a later decision), a
+~150 ms model (qwen2.5:0.5b -- scores badly), raise act_period back toward 1.0 (gamma / n_step /
+the per-tick reward scale all move with it), or leave it OFF and rely on the counter table, which
+is already the documented FAST PATH and resolves the researched cases in microseconds.
+
+### THIS RE-EXPLAINS BOTH LIVE REPORTS -- neither was the LLM
+
+With 0% answered the advisor produced no card at all, so:
+
+* **"tells the model to hold when the enemy is CLEARLY attacking"** = the CODE's quiet-board rule,
+  `if not needs_answer: ... return (0, 0, 0)` in train_rl. Which is fed by the `y >= 0.42` depth
+  filter -- so the owner's separate instinct that the depth filter was implicated was RIGHT, by a
+  route neither of us had argued.
+* **"plays log on air troops"** = the RANDOM fallback (the counter table only fires when it has a
+  row for the threat), and then the empty-`air_bases` bug scored it as a HIT.
+
+The 16/20 eval score is still valid -- it just describes a component that has never been in the loop.
+**Do not tune the advisor's prompt or model on live observations until answered% is non-zero.**
+
 ### Method note
 
 An on/off A/B in live play was the wrong instrument for this question and I proposed it first: it

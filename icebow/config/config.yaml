@@ -712,7 +712,28 @@ train:
   # `[train-rl] llm-advisor ...` (train_rl.py:1103) after a live session -- it prints calls,
   # answered %, failed and mean ms. If answered% is low the advisor is barely running and no
   # argument about its judgement means anything.
-  llm_advisor_timeout_s: 0.55          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
+  llm_advisor_timeout_s: 0.55
+  # ⚠⚠ THIS BUDGET IS DEAD AND SO IS THE ADVISOR. MEASURED live 2026-08-23:
+  #     llm-advisor qwen2.5:latest: 10 calls, 0 answered (0%), 10 failed, mean 565 ms,
+  #     last error TimeoutError: timed out
+  # 565 ms mean against a 550 ms budget = EVERY call times out and falls back to a RANDOM card.
+  # The comment here used to say "act_period is 1.0s". It is 0.6 (play.act_period, lowered from
+  # 1.0 on 2026-08-20 with sim.agent_dt), so this budget was sized for a decision period that no
+  # longer exists and nothing updated it -- the advisor was silently switched off by a change to
+  # a different key three days earlier.
+  #
+  # RAISING IT DOES NOT FIX THIS. The bot is BLIND during the call, so a ~590 ms answer inside a
+  # 600 ms period leaves nothing for perception or action. Synchronously, this model does not fit
+  # this act_period at all. The real options are: run the advisor ASYNCHRONOUSLY (use its answer on
+  # a later decision), pick a model that answers in ~150 ms (qwen2.5:0.5b does, and scores badly),
+  # raise act_period back toward 1.0 (train.gamma / n_step / the per-tick reward scale all move
+  # with it -- expensive), or leave it OFF and rely on the counter table, which resolves the
+  # researched cases in microseconds and is already the documented FAST PATH.
+  #
+  # ⚠ AND NOTE WHAT THIS MEANS FOR ANY LIVE OBSERVATION OF "THE ADVISOR": with 0% answered it
+  # produced no card at all. A live HOLD is the code's quiet-board rule (train_rl `if not
+  # needs_answer`), and a live junk card is the RANDOM fallback. Neither is the model's judgement,
+  # which scores 16/20 on tools/llm_eval.py.
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
   llm_advisor_max_fails: 5            # consecutive failures before it RESTS. It used to switch OFF for the whole session, so one slow patch made every later exploration step a random card (user report 2026-08-19).
