@@ -1852,6 +1852,84 @@ should be built with rocket→tornado, once.
 
 ---
 
+## 3u. 2026-08-23 — W1 REPRICED: the punish window was open 95% of the time, now 39%
+
+The single change flagged at the end of §3s. `_punish_window` had two clauses and **both** were
+wrong in the same direction — they asked about the wrong instant and the wrong quantity.
+
+### Clause A: the wrong TENSE — it ignored the bow's 3.5 s deploy
+
+`opp < _opp_block_cost` asked whether they were broke **at the instant of casting**. But an X-Bow
+takes 3.5 s to deploy — DOCTRINE.md §1 calls that window the thing "everything about protecting it
+happens in" — and elixir accrues throughout it. The blocker that matters is the one they can afford
+**when the bow starts firing**, not when it lands.
+
+New `_opp_deploy_lead()` = `bow.deploy_time × eng.elixir_rate()`, both read from the engine so they
+track the card data and the elixir phase. It tightens *itself* in double elixir, which is correct:
+the same 3.5 s buys them twice the answer.
+
+```
+clause A, 148 bow-affordable states:   64.9%  ->  14.2%
+```
+
+### Clause B: the wrong QUANTITY — a pre-spend gap with the cost added back
+
+`mine = elixir + spend` then `mine - opp >= punish_elixir_gap (4.0)`. With opponents at a median
+2.07 elixir, that is `0 + 6 - 2 = 4` — **satisfied by merely being able to afford the bow**. The
+threshold and the bow's price were numerically the same event, so it fired on **100% of steps**.
+
+Replaced by `punish_reserve_gap` (1.0), measured **POST-spend**: what is LEFT to defend with after
+paying still has to lead them. That is what the guides actually say — *"only X-Bow at around 10
+elixir and when you have a good defensive hand"* is a statement about the **reserve**, not about the
+bar you are about to empty. At 10 elixir the reserve is 4 against their 2; at exactly 6 it is 0,
+and emptying the bar for a bow is not an elixir advantage.
+
+`punish_elixir_gap` is RETIRED, not repurposed (§8: changing what a key MEANS is not a local
+change). It still loads; nothing reads it.
+
+### The call convention, which was also quietly wrong
+
+`_punish_window(spend, cost)`: `spend` adds back what a post-spend caller was already debited,
+`cost` takes the bow's price off. `_wincon_exec` passes `spend=cost=6` (already billed);
+`_wincon_reach` now passes `spend=0, cost=6` — it runs on a board where **nothing was paid**, and
+was previously passing `spend=6` there, overstating our bar by a full 6 elixir. A test pins the two
+conventions to the same verdict on the same board.
+
+### Result — and the part that matters most
+
+```
+                 before    after      (137 bow-affordable states)
+W1_elixir         95.2%    39.4%
+W2_cycle           0.0%    19.0%   <- the window the guides rank FIRST
+W6_no_big_spell    0.0%     8.0%
+W3_counterpush     0.4%     5.8%
+W4_full_bar        4.1%     4.4%
+W7_late            0.0%     2.9%
+(none)             0.4%    20.4%
+any window        99.6%    79.6%
+```
+
+**Fixing W1 is what made the other seven windows exist.** They were all implemented in §3s and all
+inert, because W1 is tested first and was swallowing every state. The eight now form a real
+discrimination and a fifth of affordable states get no licence at all.
+
+### Trap (added to §8)
+
+**A probe must use the caller's own frame.** The first re-measurement after this fix reported W1 at
+89% — because the probe called `_bow_window(spend=6.0)` on a board where nothing had been paid, so
+the "reserve" read as the full bar. The real caller is already debited. Same family as the
+live-screen and illegal-coordinate traps: the check and the system under test were looking at
+different worlds, and the check was the wrong one.
+
+620 tests + 5 new (`PunishWindowTests`), 1 pre-existing failure
+(`test_budget_caps_and_hysteresis_refills`, `_threat_response`).
+
+**hogeq carries its own copy of the old `_punish_window`** (`hogeq/src/clashrl/sim/env.py:933`) and
+was deliberately NOT changed: different deck, different win condition, different deploy time. If the
+icebow repricing measures well in training, port it there as its own change.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -2266,6 +2344,11 @@ configured but **have never run** — BC has not been retrained since the soft-t
   was `--init`ed from weights trained under the floor and kept dumping elixir (median 2.14) for
   the next 10k matches. When a change taught the policy a habit, removing the change is not
   enough -- measure whether the behaviour actually went with it.
+* **A probe must use the CALLER'S OWN FRAME.** Re-measuring W1 after its repricing read 89%
+  instead of 39%, because the probe called `_bow_window(spend=6.0)` on a board where nothing
+  had been paid -- so the post-spend "reserve" read as the full bar. The real caller is
+  already debited. Same family as the live-screen and illegal-coordinate traps: the check and
+  the system under test were looking at different worlds, and the check was the wrong one.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 

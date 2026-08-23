@@ -269,7 +269,12 @@ class SimMatchEnv:
         # Tower level for the triage waiver in _threat_miss_idle (clashrl.threat_value).
         self._tower_level_for_triage = int(cfg.get("env", "my_tower_level", default=15) or 15)
         self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
+        # RETIRED 2026-08-23: punish_elixir_gap was a PRE-spend gap, and with the bow's cost added
+        # back it made "can I afford the bow" and "am I 4 ahead" the same event -- clause B fired on
+        # 100% of steps. Replaced by punish_reserve_gap, which is POST-spend: what is LEFT to defend
+        # with after paying. Kept readable so an old config still loads, but nothing consults it.
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
+        self.punish_reserve_gap = float(cfg.get("env", "punish_reserve_gap", default=1.0))
         self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
         self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
         # X-BOW LEDGER REPAIR (2026-08-14, user-directed; findings in log). The bow's value is
@@ -721,7 +726,8 @@ class SimMatchEnv:
                 return True
         return False
 
-    def _bow_window(self, spend: float = 0.0) -> Optional[Tuple[str, bool]]:
+    def _bow_window(self, spend: float = 0.0,
+                    cost: Optional[float] = None) -> Optional[Tuple[str, bool]]:
         """Every situation the doctrine licenses an OFFENSIVE X-Bow. Returns (reason, is_punish).
 
         DOCTRINE_RESEARCH.md S3A, sourced from the Fandom page for THIS deck list plus the 3.0 page,
@@ -741,8 +747,14 @@ class SimMatchEnv:
         W7 are standing MATCHUP properties rather than moments -- paying them the punish rate would
         be a global multiplier on the bow wearing a disguise.
         """
+        # `cost` defaults to `spend`, which is the POST-spend case: the caller was already debited
+        # and adding it back then taking it off again nets to "what is on the bar right now". A
+        # PRE-spend caller (_wincon_reach, which runs on a board where nothing was paid) passes
+        # spend=0 and cost=<the bow's price> so the reserve is what WOULD be left.
+        if cost is None:
+            cost = spend
         on = self.bow_windows_on
-        if "W1" in on and self._punish_window(spend=spend):
+        if "W1" in on and self._punish_window(spend=spend, cost=cost):
             return ("W1_elixir", True)
         if "W2" in on and self._opp_cycle_depth(self._opp_block_bases) >= self.bow_cycle_depth:
             return ("W2_cycle", True)
@@ -971,7 +983,7 @@ class SimMatchEnv:
             return 0.0
         # The doctrine's own two modes, reusing the predicates the reward already trusts rather
         # than inventing a third notion of a correct bow (which is how the old guard drifted).
-        if self._bow_window(spend=self._bank_wincon_cost) is not None:
+        if self._bow_window(spend=0.0, cost=self._bank_wincon_cost) is not None:
             self._wc_reached = True                        # OFFENSIVE: any of the eight windows (S3A)
             return self.w_wincon_reach
         committed = [u for u in self.eng.units
@@ -1052,7 +1064,7 @@ class SimMatchEnv:
             return self.w_threat_miss
         return 0.0
 
-    def _punish_window(self, spend: float = 0.0) -> bool:
+    def _punish_window(self, spend: float = 0.0, cost: float = 0.0) -> bool:
         """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
         X-Bow is a 6-elixir bet that is simply BLANKED by any 3-5 elixir tank or mini-tank, so the bar
         is not a flat number: it is whether they can still afford their own CHEAPEST BLOCKER
@@ -1061,13 +1073,44 @@ class SimMatchEnv:
         observe live. ``spend`` is added back for the same pre-spend reason: an X-Bow costs 6, so
         measured POST-spend this needed a 10-elixir lead and fired EXACTLY ZERO times in 162 X-Bow plays.
         """
-        mine = self.eng.elixir[0] + spend
         opp = float(self.eng.elixir[1])
-        # If they can drop a blocker immediately, this is not a punish window even with an elixir lead.
+        # If they can drop a blocker immediately, this is not a punish window even with a lead.
         if self._opp_can_block_now():
             return False
-        return ((opp < self._opp_block_cost)
-                or (mine - opp >= self.punish_elixir_gap))
+        # (A) THEY CANNOT AFFORD A BLOCKER BY THE TIME THE SIEGE MATTERS -- not "right now".
+        # An X-Bow has a 3.5 s deploy (DOCTRINE.md S1: "everything about protecting it happens in
+        # that window"), and elixir accrues throughout it. Testing their bar at the instant of
+        # casting asks the wrong question: the answer they block with is the one they can afford
+        # when the bow starts firing. deploy_time comes from the engine's own spec, so it tracks
+        # the card data and cannot drift from the sim.
+        if opp + self._opp_deploy_lead() < self._opp_block_cost:
+            return True
+        # (B) WHAT IS LEFT AFTER PAYING still leads them. POST-spend on purpose: the guides commit
+        # the bow "at around 10 elixir and when you have a good defensive hand", which is a
+        # statement about the RESERVE, not about the bar you are about to empty. `spend` adds back
+        # what a post-spend caller has already been debited; `cost` takes the bow's price off.
+        reserve = float(self.eng.elixir[0]) + float(spend) - float(cost)
+        return (reserve - opp) >= self.punish_reserve_gap
+
+    def _opp_deploy_lead(self) -> float:
+        """Elixir the opponent gains while our win condition is still deploying.
+
+        The X-Bow's 3.5 s deploy is the single most load-bearing number in its doctrine, and the
+        punish window was ignoring it: `opp < _opp_block_cost` asked whether they were broke at the
+        INSTANT of casting, when what matters is whether they are broke when the bow starts firing.
+        MEASURED 2026-08-23 on 148 bow-affordable states: that clause fired on 64.9% of them, and
+        with this lead applied it fires on 14.2%.
+
+        Rate comes from the engine (it doubles in the last minute of regulation and triples in the
+        last minute of overtime), so the window automatically tightens in double elixir -- which is
+        correct: the same 3.5 s buys them twice the answer.
+        """
+        dep = 0.0
+        for cid in getattr(self, "xbow_ids", ()) or ():
+            dep = max(dep, float(getattr(self.specs[cid], "deploy_time", 0.0) or 0.0))
+        if dep <= 0.0:
+            return 0.0
+        return dep * float(self.eng.elixir_rate())
 
     def _bow_split_punish(self, nx: float) -> bool:
         """The guide's tank-investment punish: a heavy enemy tank committed DEEP in their own

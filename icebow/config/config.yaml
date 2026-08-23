@@ -771,7 +771,18 @@ env:
   # are ahead by this GAP. The absolute term matters on its own -- a 4-elixir lead while they sit on 6
   # still lets them answer, so the gap alone would mis-fire.
   punish_opp_elixir: 4.0
+  # ⚠ RETIRED 2026-08-23 -- READ BEFORE SETTING IT. This was a PRE-spend gap, and _punish_window
+  # added the bow's cost back to our side to undo a post-spend read, so the test became
+  # `elixir + 6 - opp >= 4`. With opponents sitting at a median 2.07 elixir that is satisfied by
+  # merely BEING ABLE TO AFFORD THE BOW: 0 + 6 - 2 = 4. MEASURED: it fired on 100% of steps, so
+  # xbow_punish_mult was the standard rate for every forward bow rather than a selective punish.
+  # Nothing reads this key any more; it is left so an older config still loads.
   punish_elixir_gap: 4.0
+  # Its replacement, and the frame is the point: POST-spend. What is LEFT to defend with after
+  # paying for the bow must still lead them by this much. The guides commit the bow "at around 10
+  # elixir and when you have a good defensive hand" -- a statement about the RESERVE, not about the
+  # bar you are about to empty. MEASURED at 1.0: clause B 19.6% (was 100%), whole window 33.6%.
+  punish_reserve_gap: 1.0
   # A card only BLOCKS a forward X-Bow if it can body one -- the pool splits cleanly on hitpoints:
   # ice_golem 1315 / knight 1766 / elixir_golem 1569 / berserker 896 / ice_wizard 688 can trade with a
   # siege, while spirits 215 / bomber 304 / minions 230 / bats 81 / guards 81 just get shredded. The

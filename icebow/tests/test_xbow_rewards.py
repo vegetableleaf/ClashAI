@@ -177,6 +177,65 @@ class BowWindowTests(unittest.TestCase):
         self.assertAlmostEqual(with_bow, without_bow * env.pump_rocket_bow_frac, delta=0.01)
 
 
+class PunishWindowTests(unittest.TestCase):
+    """W1 after the 2026-08-23 repricing: a DEPLOY LEAD and a POST-SPEND reserve."""
+
+    def test_deploy_lead_is_the_bow_s_own_deploy_time_times_the_live_rate(self):
+        env = _quiet_env(seed=45)
+        dep = max(float(getattr(env.specs[c], "deploy_time", 0.0) or 0.0) for c in env.xbow_ids)
+        self.assertGreater(dep, 0.0, "the bow must carry a deploy_time or the lead is silently 0")
+        self.assertAlmostEqual(env._opp_deploy_lead(), dep * env.eng.elixir_rate(), delta=1e-6)
+
+    def test_deploy_lead_grows_in_double_elixir(self):
+        """The same 3.5 s buys them twice the answer, so the window must tighten by itself."""
+        env = _quiet_env(seed=45)
+        env.eng.t = 0.0
+        single = env._opp_deploy_lead()
+        env.eng.t = env.eng.regulation - 30.0          # last minute of regulation = double
+        self.assertGreater(env._opp_deploy_lead(), single * 1.5)
+
+    def test_clause_A_asks_whether_they_are_broke_AFTER_the_deploy(self):
+        """The old test read their bar at the instant of casting; the bow is not firing yet."""
+        env = _quiet_env(seed=45)
+        env._opp_can_block_now = lambda: False
+        env._opp_block_cost = 4.0
+        lead = env._opp_deploy_lead()
+        # Broke now, but they out-regen the deploy and can afford the blocker when it matters.
+        env.eng.elixir[1] = 4.0 - lead + 0.25
+        env.eng.elixir[0] = 6.0
+        self.assertFalse(env._punish_window(spend=0.0, cost=6.0),
+                         "regenerating into a blocker during the deploy is NOT a punish window")
+        # Broke now AND still broke after the deploy -- the real window.
+        env.eng.elixir[1] = 4.0 - lead - 0.25
+        self.assertTrue(env._punish_window(spend=0.0, cost=6.0))
+
+    def test_clause_B_is_the_RESERVE_not_the_bar_you_are_about_to_empty(self):
+        """The bug this replaced: affording the bow and being 4 ahead were the same event."""
+        env = _quiet_env(seed=45)
+        env._opp_can_block_now = lambda: False
+        env._opp_block_cost = 0.0                     # clause A can never fire -> isolates B
+        env.eng.elixir[1] = 2.0
+        # Exactly affordable: paying leaves 0, which does not lead them. The OLD test passed here.
+        env.eng.elixir[0] = 6.0
+        self.assertFalse(env._punish_window(spend=0.0, cost=6.0),
+                         "emptying the bar for a bow is not an elixir advantage")
+        # A real reserve: the guides' "around 10 elixir" leaves 4 against their 2.
+        env.eng.elixir[0] = 10.0
+        self.assertTrue(env._punish_window(spend=0.0, cost=6.0))
+
+    def test_post_spend_caller_and_pre_spend_caller_agree(self):
+        """_wincon_exec is billed already; _wincon_reach is not. Same board, same verdict."""
+        env = _quiet_env(seed=45)
+        env._opp_can_block_now = lambda: False
+        env._opp_block_cost = 0.0
+        env.eng.elixir[1] = 2.0
+        env.eng.elixir[0] = 10.0
+        pre = env._punish_window(spend=0.0, cost=6.0)      # about to pay
+        env.eng.elixir[0] = 4.0                            # same board, already debited
+        post = env._punish_window(spend=6.0, cost=6.0)
+        self.assertEqual(pre, post, "the two call conventions must describe the same reserve")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
 
