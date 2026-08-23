@@ -42,6 +42,11 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
     # would otherwise ignore any in-memory override -- which is exactly what `--drill-frac` is.
     envs = [make_train_env(cfg, seed=seed0 + i, frac=drill_frac) for i in range(n_envs)]
     state = {"league": [], "weights": [], "sp_prob": 0.0, "difficulty": 1.0}
+    # DECK PFSP across processes. make_opponent reads the per-deck W/N record off `cfg`, and a
+    # worker has its OWN cfg copy that the parent's record never reaches -- so deck exploiters
+    # silently did nothing whenever --workers > 0, which is every real run. The parent aggregates
+    # results (it is the only place that sees every episode) and ships the table down here.
+    cfg._deck_record = {}
     rng = random.Random(seed0 * 7919 + 13)
 
     sp_cache = {}
@@ -83,7 +88,7 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
         e.opponent_provider = provider
 
     def payload(i, env, obs, rew=0.0, done=False, outcome=None, pfsp=None,
-                drill=None, verdict=None):
+                drill=None, verdict=None, deck=None):
         hand = env._hand_ids() if hasattr(env, "_hand_ids") else []
         return {
             "obs": obs, "hand": env.hand_vec.copy(), "nxt": env.next_vec.copy(),
@@ -97,6 +102,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             # this, and without it every drill was recorded as a played-and-lost match -- which
             # feeds the winrate EMA, and through it the curriculum difficulty and the gate.
             "drill": drill, "verdict": verdict,
+            # which META DECK this episode was against, so the parent can aggregate a per-deck
+            # record and weight the pool toward the ones we lose to (sim.deck_pfsp_power)
+            "deck": deck,
             # IS THIS ENV IN A DRILL RIGHT NOW -- needed every step, not just at the end, because
             # the parent picks the exploration floor per step and the envs live out here.
             "in_drill": bool(getattr(env, "_in_drill", False)),
@@ -122,9 +130,10 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
                 for i, e in enumerate(envs):
                     nobs, reward, done, info = e.step(acts[i])
                     outcome = pfsp = None
-                    drill = verdict = None
+                    drill = verdict = deck = None
                     if done:
                         outcome = info.get("outcome")
+                        deck = info.get("deck")          # read BEFORE reset swaps the opponent
                         drill, verdict = info.get("drill"), info.get("verdict")
                         opp = getattr(e, "opponent", None)
                         if isinstance(opp, SelfPlayOpponent):
@@ -133,8 +142,13 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
                                          if sd_ is src), None)
                         nobs = e.reset()
                     obs_cache[i] = nobs
-                    out.append(payload(i, e, nobs, reward, done, outcome, pfsp, drill, verdict))
+                    out.append(payload(i, e, nobs, reward, done, outcome, pfsp, drill, verdict,
+                                       deck))
                 conn.send(out)
+            elif kind == "deckrec":
+                cfg._deck_record = dict(msg[1] or {})
+                conn.send(True)
+                continue
             elif kind == "league":
                 state["league"] = msg[1]
                 state["weights"] = msg[2]
@@ -201,6 +215,18 @@ class RemotePool:
     def set_league(self, sds, weights, sp_prob):
         for c in self.conns:
             c.send(("league", sds, weights, sp_prob))
+        for c in self.conns:
+            c.recv()
+
+    def set_deck_record(self, rec: dict):
+        """Ship the aggregated per-deck W/N table to every worker.
+
+        The parent is the only process that sees every episode, so it owns the record; the workers
+        own make_opponent, which is where the weighting is applied. Without this hop deck PFSP was
+        inert for any run with --workers > 0.
+        """
+        for c in self.conns:
+            c.send(("deckrec", dict(rec or {})))
         for c in self.conns:
             c.recv()
 

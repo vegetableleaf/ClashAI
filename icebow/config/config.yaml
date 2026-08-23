@@ -1425,6 +1425,10 @@ sim:
   selfplay_pfsp: true
   selfplay_pfsp_power: 1.0      # >1 = sharper focus on the hardest snapshots; 1.0 = proportional.
   deck_pfsp_power: 0.0        # DECK EXPLOITERS. >0 samples META DECKS we keep LOSING to more
+  deck_record_ship_every: 50  # matches between shipping the per-deck record to the ROLLOUT
+                              # WORKERS. They hold their own cfg, so without this hop deck
+                              # PFSP does nothing whenever --workers > 0. Each ship blocks
+                              # on a round trip per worker, so it is batched.
                               # often (popularity weight x loss-rate ** this). AlphaStar's
                               # league exploiters exist to find and punish the main agent's
                               # weaknesses; self-play cannot supply that here because a

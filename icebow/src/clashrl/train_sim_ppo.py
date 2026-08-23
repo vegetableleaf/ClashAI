@@ -694,6 +694,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     adv_norm_split = bool(cfg.get("sim", "ppo_adv_norm_split", default=False))
+    deck_pfsp_power = float(cfg.get("sim", "deck_pfsp_power", default=0.0))
+    deck_rec_every = int(cfg.get("sim", "deck_record_ship_every", default=50))
+    _dirty = {"n": 0}
     _adv_signed = {"want": True, "drill": 0.0, "match": 0.0, "shift": 0.0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
     _probe = bool(os.environ.get("CLASHRL_GATE_PROBE"))   # heavy diagnostics: 3 extra
@@ -1345,7 +1348,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         pay = step_out[i]
                         nobs, reward, done = pay["obs"], pay["rew"], pay["done"]
                         info = {"outcome": pay["outcome"], "pfsp": pay["pfsp"],
-                                "drill": pay.get("drill"), "verdict": pay.get("verdict")}
+                                "drill": pay.get("drill"), "verdict": pay.get("verdict"),
+                                # the worker reports which META DECK the episode was against;
+                                # dropping it here made deck PFSP inert in the worker path while
+                                # looking wired end-to-end (the worker sent it, the parent binned
+                                # it, the record stayed empty, nothing was ever shipped back).
+                                "deck": pay.get("deck")}
                         env = None
                     else:
                         env = pool[i]
@@ -1403,6 +1411,30 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                     _rec = cfg._deck_record = {}
                                 w0, n0 = _rec.get(str(_dk), (0, 0))
                                 _rec[str(_dk)] = (w0 + (1 if oc == "win" else 0), n0 + 1)
+                                # WORKERS live in other processes and hold their own cfg, so the
+                                # record has to be shipped to them or deck PFSP is inert for every
+                                # run that uses --workers (i.e. every real run). Batched, because
+                                # the send blocks on a round trip to each worker.
+                                if remote and deck_pfsp_power > 0.0:
+                                    _dirty["n"] += 1
+                                    if _dirty["n"] >= deck_rec_every:
+                                        _dirty["n"] = 0
+                                        try:
+                                            rpool.set_deck_record(_rec)
+                                            if not _dirty.get("said"):
+                                                _dirty["said"] = True
+                                                _hard = sorted(((1.0 - w / max(1, n)), k)
+                                                               for k, (w, n) in _rec.items()
+                                                               if n >= 3)[-3:]
+                                                print("[train-sim-ppo] deck PFSP ON: record shipped "
+                                                      "to %d workers (%d decks seen; hardest so far: "
+                                                      "%s)" % (len(rpool.conns), len(_rec),
+                                                               ", ".join("%s %.0f%% loss" % (k, 100 * l)
+                                                                         for l, k in reversed(_hard))
+                                                               or "none yet"), flush=True)
+                                        except Exception as _ex:
+                                            print("[train-sim-ppo] deck-record ship failed: %s"
+                                                  % type(_ex).__name__, flush=True)
                             win_hist.append(1 if oc == "win" else 0)
                         # NEXT EPISODE'S FIRST ROW, for the self-imitation mask. This must sit
                         # OUTSIDE the drill/match branch -- an earlier version of this line was
