@@ -1195,7 +1195,17 @@ sim:
   # (0.3%) -- the policy spends at ~2.5 elixir, so the bar seldom even reached the floor. 3.0 leaves
   # the 0-3 range free for ordinary cheap defence and commits the climb from there.
   # Set 0 to disable (the original always-affordable mask).
-  wincon_bank_floor: 0      # OFF (2026-08-14): with x_bow suppressed the bank held elixir
+  wincon_bank_floor: 4.5    # RE-ENABLED 2026-08-23 at a CONSERVATIVE floor. It was turned off
+                             # 2026-08-14 for a circular reason -- \"the bank held elixir hostage
+                             # for a wincon the policy would not play\" -- and that premise no
+                             # longer holds: the policy CAN execute the bow (win-condition drills
+                             # 40%, bank_to_six_then_bow 70%) yet plays x_bow on only 4.1% of
+                             # match plays. Skill is there; the incentive to bank for it is not.
+                             # 4.5 chosen by MEASURING this policy's elixir (mean 5.61, median
+                             # 5.29 -- leaner than the 8.03 a random policy shows), so the bank
+                             # binds on ~12%% of steps. The 2026-08-14 failure was 70%% forced
+                             # waits; 3.0 would mask 25%% here, so start gentle and raise only if
+                             # x_bow share moves and nothing else breaks.
                              # hostage for a wincon the policy would not play -> 70% forced
                              # waits + 318 leak fires/40 matches + rocket spam. The x-bow
                              # LEDGER now carries the incentive; freedom beats the straitjacket
