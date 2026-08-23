@@ -133,6 +133,43 @@ CASES = [
          answer="tesla",
          why="triage: a Giant is 73% of a tower if ignored -- this one MUST be answered, and the "
              "building is what pulls and survives"),
+    # ---- THE OWNER'S TWO STANDING REPORTS (2026-08-23) --------------------------------------
+    # "it still tells the model to hold when the enemy is CLEARLY attacking, and to play log on
+    # air troops". Both are reproduced here as CASES rather than argued about, so the answer
+    # separates cleanly: if the advisor fails them with a PERFECT board description, the fault is
+    # the model or the prompt. If it passes here but still misbehaves live, the fault is the board
+    # description reaching it -- the ~31% detector miss rate and the team-"unknown" window that
+    # train_rl documents as "(b) stays deliberately unfixed HERE".
+    dict(id="minions_log_is_wrong",
+         state="Enemy MINIONS have crossed the bridge in the left lane, flying toward your LEFT "
+               "princess tower. Nothing else is on the board.",
+         hand=["the_log", "tesla", "skeletons", "x_bow"], elixir=6,
+         answer="tesla",
+         why="minions FLY. the_log/skeletons/x_bow cannot touch air at all (KB attacks_air=false) "
+             "-- tesla is the only card here that can. The owner's repeated report is that the "
+             "advisor answers the_log to an air push"),
+    dict(id="bats_log_is_wrong",
+         state="Enemy BATS are flying at your RIGHT princess tower. Nothing else is on the board.",
+         hand=["the_log", "ice_wizard", "knight", "rocket"], elixir=5,
+         answer="ice_wizard",
+         why="bats FLY; ice_wizard is the only air-capable card in this hand, and his splash "
+             "clears the whole group. the_log rolls underneath them"),
+    dict(id="fresh_push_do_not_hold",
+         state="The enemy has JUST played a GIANT at the bridge in the left lane and a MUSKETEER "
+               "behind it. Both are on your side of the river and moving toward your LEFT "
+               "princess tower.",
+         hand=["tesla", "the_log", "skeletons", "ice_wizard"], elixir=7,
+         answer="tesla",
+         why="a Giant is 73% of a tower if ignored -- HOLD is the one answer that must not appear "
+             "here. Reproduces the owner's report that the advisor holds while the enemy attacks. "
+             "The live-side counterpart is the team-'unknown' window in train_rl"),
+    dict(id="hog_committed_do_not_hold",
+         state="An enemy HOG RIDER is already past the bridge and running at your RIGHT princess "
+               "tower. Your Tesla is not down. Nothing else is on the board.",
+         hand=["tesla", "rocket", "x_bow", "the_log"], elixir=6,
+         answer="tesla",
+         why="the building is the pull AND it survives; holding lets a Hog connect for real "
+             "damage. Second HOLD-under-attack case, on the deck's most common matchup"),
     dict(id="overtime_chip",
          state="OVERTIME. Both towers even, your X-Bow has not broken through all game. Enemy "
                "board is empty and you are at full elixir.",

@@ -2125,6 +2125,87 @@ exactly that kind of extrapolation.
 
 ---
 
+## 3y. 2026-08-23 — THE ADVISOR REASONS CORRECTLY; THE BOARD IT IS SHOWN DOES NOT
+
+Owner: *"it still tells the model to hold when the enemy is CLEARLY attacking, and to play log on
+air troops (which somehow STILL registers a hit)"* — and asked whether the advisor is worth keeping.
+Three separate findings, and **the advisor's judgement is not the fault in any of them**.
+
+### 1. The Log DID register hits on air — `air_bases` was permanently empty (FIXED)
+
+`env.py` built it as `db.names() if hasattr(db, "names") else []`. **CardDB has no `names()`**, so
+the guard yielded `[]` every run, `air_bases` was an empty frozenset, and
+`log_hits(..., air=air_bases)` never skipped a flying unit. Every live Log cast on Minions / Bats /
+Balloon / Baby Dragon scored as a HIT.
+
+```
+hasattr(db,'names'): False        is_flying('minions'): True      <- data was fine
+air_bases as built:  0 cards      after fix: 21 cards
+minions  before HIT=True -> after HIT=False      skeletons stays HIT=True
+```
+
+`log_hits`'s guard was written correctly; only the ENUMERATION was broken, and it failed the silent
+way. Fixed to iterate `db.cards`, and env now PRINTS the count at startup and shouts when empty.
+**The sim engine was never affected** — checked directly, the Log leaves all four air cards
+untouched and kills skeletons/goblins. Live reward only, which is why it survived so long.
+
+### 2. Given a correct board, the advisor gets BOTH reported cases right
+
+Four cases added to `tools/llm_eval.py` (which uses the REAL `LLMAdvisor` prompt) reproducing the
+reports. All four PASS on `qwen2.5:latest`:
+
+```
+minions_log_is_wrong      -> tesla       (not the_log)
+bats_log_is_wrong         -> ice_wizard  (not the_log)
+fresh_push_do_not_hold    -> tesla       (not HOLD)
+hog_committed_do_not_hold -> tesla       (not HOLD)
+```
+
+16/20 overall, reproducible (temperature 0.0, identical misses on re-run). Its one HOLD-adjacent
+miss runs the OTHER way: `lone_spear_goblins_ignore` -> *tesla* when the answer is *hold*. **It
+over-spends on ignorable threats; it does not hold under real ones.**
+
+So the fault is in what reaches it, and `train_rl` already documents where: **(a)** the detector
+misses a unit in ~31% of passes (fixed via tracker memory); **(b)** a freshly played enemy card is
+team "unknown" for its first seconds — *"precisely the answer window"* — and **(b) is deliberately
+unfixed**. Plus a third, in the same gate: `if y < 0.42 or not b: continue`, a DEPTH filter that
+ignores anything still on their side of the river, so a Giant just dropped at their bridge does not
+count as a threat at all. A push in its first seconds is invisible, the board genuinely looks quiet,
+and HOLD is the correct answer to the question actually asked.
+
+### 3. ⚠ THE MODEL-CHOICE COMMENT IN config.yaml WAS BACKWARDS (corrected)
+
+It read *"gemma3:4b scores better (8/10 vs 6/10)"*. On the 20-case set the ordering **reverses**:
+
+```
+qwen2.5:latest   16/20   p50 3.08s
+gemma3:4b         8/20   p50 1.24s
+```
+
+gemma3:4b fails BOTH live-report cases and answers `the_log` in **7 of its 12 misses** — precisely
+the behaviour the owner reports. Switching on the strength of the old comment would have made live
+play worse. Corrected in place with the numbers and a "re-run the eval before changing this".
+
+### ⚠ OPEN, and it may make the whole question moot
+
+`llm_advisor_timeout_s: 0.55` while the config's own comment claims **0.590s p50** — by its own
+figure more than half of calls miss the budget and fall back to a RANDOM card. (The 3.08s measured
+here was with the GPU at 99% from a PPO run, so it is an upper bound, not the live number.)
+
+**Before arguing about the advisor's judgement, read what it actually did:** `train_rl.py:1103`
+prints `llm-advisor <model>: N calls, N answered (X%), N failed, mean N ms`. If answered% is low the
+advisor is barely running, and "I haven't seen much change with it on" has a much duller
+explanation than model quality.
+
+### Method note
+
+An on/off A/B in live play was the wrong instrument for this question and I proposed it first: it
+confounds advisor reasoning with detector noise, the unknown-team window and the veto logic, and it
+costs hours of the owner's live play. The offline harness isolates the reasoning cleanly in ~90 s.
+Reach for the A/B only once the board description is trusted.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

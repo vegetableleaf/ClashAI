@@ -691,10 +691,27 @@ train:
   training_wheels: true
   offense_leak_guard: 9.5             # (2026-08-20) on a QUIET board at this elixir, a greedy WAIT becomes the pressure play (icebow: X-Bow; hogeq: Hog) -- the punish/outcycle window; leaking is never doctrine               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
   llm_advisor: true
-  llm_advisor_model: qwen2.5:latest   # 0.590s p50 WITH the doctrine prompt. gemma3:4b scores better
-                                      # (8/10 vs 6/10 on tools/llm_eval.py) but that same prompt takes it
-                                      # to 3.020s -- unusable inside a 1.0s act_period. Raising act_period
-                                      # to ~3.5s would buy those two cases at the cost of reaction time.
+  llm_advisor_model: qwen2.5:latest
+  # ⚠ CORRECTED 2026-08-23. This comment used to read "gemma3:4b scores better (8/10 vs 6/10)".
+  # That was the 10-case eval set. On the 20-case set -- which now includes the owner's two
+  # standing live reports as cases -- the ordering REVERSES and not narrowly:
+  #
+  #     qwen2.5:latest   16/20   p50 3.08s
+  #     gemma3:4b         8/20   p50 1.24s
+  #
+  # gemma3:4b fails BOTH live-report cases (fresh_push_do_not_hold -> "the_log",
+  # hog_committed_do_not_hold -> "x_bow") and answers `the_log` in 7 of its 12 misses. That is
+  # exactly the misbehaviour the owner has been reporting, so switching to it on the strength of
+  # the old comment would have made live play worse. Re-run tools/llm_eval.py before changing
+  # this line; both numbers above are reproducible (temperature 0.0, identical misses on re-run).
+  #
+  # ⚠ THE LATENCY NUMBERS AND THE TIMEOUT BELOW DO NOT AGREE. This comment claimed 0.590s p50
+  # while llm_advisor_timeout_s is 0.55 -- i.e. by its own figure more than half of calls miss the
+  # budget and fall back to a RANDOM card. The 3.08s p50 measured 2026-08-23 was taken with the
+  # GPU at 99% from a PPO run, so it is an upper bound, not the live figure. UNRESOLVED: read
+  # `[train-rl] llm-advisor ...` (train_rl.py:1103) after a live session -- it prints calls,
+  # answered %, failed and mean ms. If answered% is low the advisor is barely running and no
+  # argument about its judgement means anything.
   llm_advisor_timeout_s: 0.55          # hard budget; act_period is 1.0s and the bot is BLIND during the call.
                                       # qwen2.5 7B runs 0.590s p50 but tails to 0.823s with the doctrine
                                       # prompt, so 0.8 clipped the tail into needless random fallbacks.
