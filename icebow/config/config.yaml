@@ -977,6 +977,9 @@ env:
 
 # --- Running the trained policy live -------------------------------------
 play:
+  spell_target_mask: false     # LIVE: a spell may only be cast where spell_whiffed() says
+                              # it would hit. Same criterion the live reward verifies casts
+                              # with. OFF by default -- verify with a short live session.
   act_period: 0.6                # LOWERED 1.0 -> 0.6 with sim.agent_dt (2026-08-20) -- see the note there.                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
                                  # trained its reaction timing + per-step reward economics at 1.0s): between
                                  # decisions the model is BLIND, so this bounds its reaction time to a new threat.
@@ -1444,6 +1447,9 @@ sim:
   # Same trunk/heads read as LOGITS + a value head; clipped surrogate + GAE. Everything around the
   # algorithm (eval benchmark, keep-best, PFSP league, adaptive bots, DR, masks) matches train-sim
   # so the curves are directly comparable against the DDQN baseline. Standard PPO defaults below.
+  deck_pfsp_power: 0.0        # DECK EXPLOITERS (training only). >0 samples META DECKS we keep
+                              # LOSING to more often. 0 = uniform popularity, as before.
+  deck_record_ship_every: 50  # matches between shipping the per-deck record to the WORKERS.
   ppo_horizon: 128              # env steps collected per env before each update (batch = horizon x envs)
   ppo_epochs: 4                 # optimisation passes over each rollout
   ppo_minibatch: 512            # minibatch size within a rollout
@@ -1454,8 +1460,7 @@ sim:
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
-  ppo_drill_gate_mask: true # drill steps do NOT train the play/wait GATE (they still
-  ppo_drill_gate_mask: true # drill steps do NOT train the play/wait GATE (they still
+  ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
                              # train the card and cell heads). The gate is the head that
                              # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs
                              # 0.92-0.99 without -- while the cell head learns fine. Drills
@@ -1491,6 +1496,12 @@ sim:
                             # and the gate decays toward WAIT regardless of reward. Every run in this
                             # project shows it: P(play) 0.5 -> 0.15, while the reward strongly favours
                             # playing (never-play -44.77 per episode vs -7.34 for playing often).                 # PPO clip epsilon (the trust region)
+  ppo_spell_target_mask: true  # a SPELL may only be cast where it would actually hit something.
+                             # Uses the env's own _spell_no_target criterion, so it forbids
+                             # exactly what spell_waste would have charged for.
+  ppo_spell_mask_anneal: 25000 # episodes over which that mask DECAYS OFF -- a permanent mask
+                             # caps the model at the judgement in the criterion.
+  ppo_spell_mask_end: 0.0     # ...what it decays TO. 0.0 = fully unmasked at the end.
   ppo_lr: 0.00025               # PPO learning rate (on-policy tolerates more than the DQN's 5e-5)
   ppo_entropy: 0.02             # entropy bonus (exploration pressure on the gate + CARD categoricals).
                                 # 0.01 -> 0.02 after the round-5 card-head logit explosion (+/-140
@@ -1543,7 +1554,7 @@ sim:
   # common is the whole point -- so it gets its own, much higher floors. Both stay MIXTURES: the
   # stored log-prob is the mixture's, so the PPO ratio remains exact importance sampling and the
   # policy still has to choose the action and is still graded on the outcome.
-  ppo_drill_cell_floor: 0.75    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
+  ppo_drill_cell_floor: 0.25    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
   ppo_sil_coef: 0.0             # SELF-IMITATION on drill successes. OFF by default.
@@ -1573,7 +1584,7 @@ sim:
                                 # ALSO MEASURED: neither arm moved the cell head at 5000 drill
                                 # episodes (both at ln(157) exactly), so this budget cannot answer
                                 # whether the term helps placement -- only that 0.05 hurts.
-  ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
+  ppo_drill_cell_floor_end: 0.10    # ...and where the drill cell floor ANNEALS TO. A high FIXED
                                 # floor buys the rare success and then throws its gradient away: the
                                 # stored log-prob is the mixture's, so PPO forms r = pi/mu, and
                                 # MEASURED on the 4000-match checkpoint the sampler put 0.28 on the
@@ -1582,7 +1593,7 @@ sim:
                                 # indistinguishable from an untrained net (6.0652 vs 6.0684 of 6.0684).
                                 # Decaying the floor lets mu approach pi so the successes teach.
   ppo_drill_cell_floor_anneal: 6000  # episodes to decay over. 0 = constant (old behaviour).
-  ppo_drill_gate_floor: 0.85    # WHEN, from the drill's reference line, which records the time each
+  ppo_drill_gate_floor: 0.30    # WHEN, from the drill's reference line, which records the time each
                                 # card is played. The gate was the one head with no prior at all,
                                 # and it is the one the timing drills turn on: bank_to_six,
                                 # hold_the_spell, hold_the_tesla and nado_king_activation are passed
