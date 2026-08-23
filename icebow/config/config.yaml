@@ -594,6 +594,16 @@ rewards:
   # 305), and 22% is genuinely reachable -- but it is the same SHAPE that collapsed two runs, so if
   # plays/match falls off a cliff after a restart, this is the first term to suspect.
   counterfactual: 0.6
+  wincon_reach: 0.5       # ONE-TIME credit the first time the bar reaches a held win
+                          # condition's cost on a QUIET board (no threat worth answering).
+                          # Replaces wincon_bank_floor, which was a MASK and failed twice
+                          # in opposite directions -- forced waits, then elixir dumping to
+                          # stay under the floor. A mask is dodgeable (the policy owns its
+                          # bar); a reward is only forgone. Paying for REACHING, not
+                          # STAYING, means hoarding earns nothing extra, and the no-threat
+                          # guard means holding through a push pays 0 and still costs
+                          # threat_miss_idle -- so defence always beats banking when there
+                          # is something to defend. 0 disables.
   # -- (5) tempo / economy --
   leak_penalty: -0.2       # sitting at elixir capacity with nothing played this step (leaking)
   spell_waste: -0.3
@@ -1195,7 +1205,15 @@ sim:
   # (0.3%) -- the policy spends at ~2.5 elixir, so the bar seldom even reached the floor. 3.0 leaves
   # the 0-3 range free for ordinary cheap defence and commits the climb from there.
   # Set 0 to disable (the original always-affordable mask).
-  wincon_bank_floor: 4.5    # RE-ENABLED 2026-08-23 at a CONSERVATIVE floor. It was turned off
+  wincon_bank_floor: 0      # OFF AGAIN (2026-08-23, second failure, opposite direction).
+                             # At 4.5 the policy learned to DUMP elixir to stay below the floor:
+                             # median elixir 5.29 -> 2.46, x_bow affordable 45%% -> 9%% of steps,
+                             # x_bow share 4.1%% -> 2.8%%. A MASK on cheap cards is avoidable by
+                             # construction -- the policy controls its own bar, so the cheapest
+                             # answer to \"masked at 4.5\" is \"never reach 4.5\". Raising the floor
+                             # only moves the dump target. In 2026-08-14 it failed the mirror way
+                             # (70%% forced waits). Do not re-enable: price the option, do not mask.
+
                              # 2026-08-14 for a circular reason -- \"the bank held elixir hostage
                              # for a wincon the policy would not play\" -- and that premise no
                              # longer holds: the policy CAN execute the bow (win-condition drills

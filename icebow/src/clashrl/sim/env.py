@@ -245,6 +245,26 @@ class SimMatchEnv:
         self._bank_floor = float(cfg.get("sim", "wincon_bank_floor", default=0.0))
         _wc_ids = set(getattr(self, "xbow_ids", ())) | set(getattr(self, "rocket_ids", ()))
         self._bank_wincon_ids = _wc_ids
+        # WINCON REACH BONUS (rewards.wincon_reach). Pays ONCE when the bar first reaches the win
+        # condition's cost while that card is in hand -- and only when no answerable threat is on
+        # the board.
+        #
+        # Why ONCE-ON-REACH rather than a per-step hold bonus: a per-step bonus is farmable by
+        # hoarding, which is exactly the failure to avoid -- wincon in hand, never play anything,
+        # defence collapses. Paying for REACHING the threshold makes idling past it worth nothing,
+        # so there is no gradient toward sitting on a full bar.
+        #
+        # Why a reward and not a mask: wincon_bank_floor was a mask and failed TWICE, in opposite
+        # directions -- 70% forced waits at a low floor (2026-08-14), and elixir dumping to stay
+        # under it at 4.5 (2026-08-23, median 5.29 -> 2.46). A mask on cheap cards is avoidable
+        # because the policy controls its own bar. A reward cannot be dodged by spending; it is
+        # simply forgone.
+        #
+        # The NO-THREAT guard is what protects defence: while an answerable threat is present this
+        # pays nothing, and threat_miss_idle still bills the idle, so holding through a push is
+        # strictly worse than answering it.
+        self.w_wincon_reach = float(cfg.get("rewards", "wincon_reach", default=0.0))
+        self._wc_reached = False
         self._bank_wincon_cost = min((float(self.specs[i].elixir) for i in _wc_ids), default=0.0)
         # Tower level for the triage waiver in _threat_miss_idle (clashrl.threat_value).
         self._tower_level_for_triage = int(cfg.get("env", "my_tower_level", default=15) or 15)
@@ -781,6 +801,48 @@ class SimMatchEnv:
             # behaviour was learned from this penalty, not from head damage.
             return 0.0
         return self.w_threat_miss if intercept else 0.0                  # wrong role dropped as a defence = a misread
+
+    def _wincon_reach(self) -> float:
+        """(new 2026-08-23) ONE-TIME credit for banking the bar to a held win condition's cost.
+
+        Fires once per hand-cycle, the first step on which:
+          * a win condition is in hand,
+          * elixir has reached its cost (so it is genuinely playable now), and
+          * NO answerable threat worth answering is on the board.
+
+        The last condition is the whole safety argument. The obvious failure of any "hold elixir"
+        incentive is hoarding: wincon in hand, play nothing, defence collapses. Here holding through
+        a push pays exactly zero AND still incurs threat_miss_idle, so answering is strictly better
+        than banking whenever there is something to answer. Banking is only ever rewarded on a quiet
+        board, which is when it is correct.
+
+        Resets when the win condition leaves hand, so it cannot be re-collected by hovering at the
+        threshold -- and paying for REACHING rather than STAYING means idling past it earns nothing.
+        """
+        if self.w_wincon_reach <= 0.0 or not self._bank_wincon_ids:
+            return 0.0
+        hand = set(self._hand_ids()) if hasattr(self, "_hand_ids") else set()
+        holding = bool(hand & set(self._bank_wincon_ids))
+        # Evaluated on the PRE-ACTION state (see step): a bow played the instant it became
+        # affordable is exactly the behaviour this credit exists to encourage, and reading the
+        # post-action hand would pay everything EXCEPT that.
+        pre_ok = bool(getattr(self, "_wc_pre", False))
+        if not holding and not pre_ok:
+            self._wc_reached = False                       # new cycle: the credit is available again
+            return 0.0
+        if self._wc_reached or not pre_ok:
+            return 0.0
+        # a threat worth answering suppresses it -- same triage the rest of this file uses
+        tid = self._threat_id_true
+        if tid is not None and len(tid) >= card_threat.IDENTITY_DIM and tid[0] >= 0.5:
+            committed = [u for u in self.eng.units
+                         if u.team == 1 and u.hp > 0 and u.spec.kind != "spell"]
+            if committed and threat_value.bodies_ignore_frac(
+                    self.db, [u.spec.base for u in committed],
+                    tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+                return 0.0
+        self._wc_reached = True
+        return self.w_wincon_reach
 
     def _threat_miss_idle(self) -> float:
         """No play while an ANSWERABLE threat is present (a counter is in hand AND affordable) = a missed
@@ -2104,6 +2166,13 @@ class SimMatchEnv:
         play, card_id, cell = action
         reward = 0.0
         placed_id = -1
+        # PRE-ACTION snapshot for the wincon-reach credit. The reward block runs AFTER the action,
+        # by which point a bow that was just played has left the hand -- so evaluating the credit
+        # there paid a policy that reached 6 and HESITATED, and paid nothing to one that reached 6
+        # and played the bow. Measured: a bow-only policy scored 0.00 reach/match. Rewarding
+        # hesitation over execution is precisely backwards, so the condition is captured here.
+        self._wc_pre = (bool(set(self._hand_ids()) & set(self._bank_wincon_ids))
+                        and float(self.eng.elixir[0]) >= self._bank_wincon_cost)
         if play and 0 <= card_id < self.n_cards and card_id in self._hand_ids():
             spec = self.specs[card_id]
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
@@ -2156,6 +2225,7 @@ class SimMatchEnv:
         # boards + both elixir bars), so committing elixir is neutral and only its consequence scores.
         reward += self.rw_stats.add("elixir_trade", self._trade_reward())
         reward += self.rw_stats.add("nado", self._bonus(self._nado_shaping()))    # delayed tornado-execution credit
+        reward += self.rw_stats.add("wincon_reach", self._wincon_reach())
         reward += self.rw_stats.add("counterfactual", self._cf_shaping())   # did playing beat holding? (zero-mean)
         # X-BOW LEDGER (see __init__): uptime ticks while TOWER-LOCKED, one-shot overcommit
         # credit when a bow dies, and the enemy-cards-seen set the context modifiers read.
