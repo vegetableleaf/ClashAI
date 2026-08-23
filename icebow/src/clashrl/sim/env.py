@@ -1990,6 +1990,56 @@ class SimMatchEnv:
         self._nado_watch = keep
         return credit
 
+    def spell_target_mask(self, card_id: int):
+        """Per-cell mask for a SPELL: True where casting would actually have something to hit.
+
+        A whiffed spell is not a judgement error the policy can be argued out of with a -0.3 penalty
+        -- during exploration it is a RANDOM choice, and this codebase already learned that lesson
+        once (actions.no_king_mask: "A reward cannot stop a random choice; only a mask can", after a
+        rocket landed on the enemy king within minutes of raising epsilon).
+
+        The cost is not the -0.3 either. It is the elixir: a whiffed Rocket is 6 elixir that is then
+        not available for the counter to the next push, so one bad cast turns into a missed defence
+        as well. Owner reports this as the single biggest weakness in live play.
+
+        Criterion is the env's OWN `_spell_no_target`, so this masks exactly what the reward would
+        have charged for -- including its deliberately generous radius, which keeps predictive and
+        near-miss casts legal. Returns None for non-spells (no restriction).
+        """
+        spec = self.specs[int(card_id)]
+        if getattr(spec, "kind", "") != "spell":
+            return None
+        # VECTORISED. The obvious version calls _spell_no_target per cell, which is 13 ms for three
+        # spells -- with 96 envs that is over a second of every step, so it has to be array work.
+        # Cell centres never move, so they are built once and cached.
+        cc = getattr(self, "_cell_xy_cache", None)
+        if cc is None:
+            gw = int(self.actions.gw)
+            pts = [self.actions.cell_center(c % gw, c // gw)
+                   for c in range(int(self.actions.n_cells))]
+            cc = self._cell_xy_cache = (np.asarray([p[0] for p in pts], np.float32),
+                                        np.asarray([p[1] for p in pts], np.float32))
+        cx, cy = cc
+        tx, ty = float(self.eng.tiles_x), float(self.eng.tiles_y)
+        rad = (max(self.spell_waste_radius, spec.pull_radius) if spec.pulls
+               else self.spell_waste_radius)
+        ok = np.zeros(cx.shape[0], dtype=bool)
+        # enemy BODIES -- same tile-space distance the scalar version uses
+        ex = [u.x for u in self.eng.units if u.team == 1 and u.hp > 0]
+        ey = [u.y for u in self.eng.units if u.team == 1 and u.hp > 0]
+        if ex:
+            dx = (cx[:, None] - np.asarray(ex, np.float32)[None, :]) * tx
+            dy = (cy[:, None] - np.asarray(ey, np.float32)[None, :]) * ty
+            ok |= (np.sqrt(dx * dx + dy * dy) <= rad * max(tx, ty) / max(tx, ty)).any(1)                 if False else (np.sqrt((dx / tx * tx) ** 2 + (dy / ty * ty) ** 2) <= rad).any(1)
+        if not spec.pulls:
+            # a live enemy princess is a valid chip target for a DAMAGE spell (never for a pull)
+            for t in self.eng.towers[1][:2]:
+                if t.alive:
+                    dxx = (cx - float(t.x)) * tx
+                    dyy = (cy - float(t.y)) * ty
+                    ok |= np.sqrt(dxx * dxx + dyy * dyy) <= self.spell_aim_radius
+        return ok
+
     def pocket_state(self, team: int = 0):
         """(left_open, right_open) -- which POCKETS this team may deploy into.
 

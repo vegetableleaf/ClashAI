@@ -960,6 +960,10 @@ env:
 
 # --- Running the trained policy live -------------------------------------
 play:
+  spell_target_mask: false     # LIVE: a spell may only be cast where spell_whiffed()
+                              # says it would hit something. Same criterion the live
+                              # reward verifies casts with. Off by default -- verify
+                              # with a short live session before trusting it.
   act_period: 0.6                # LOWERED 1.0 -> 0.6 with sim.agent_dt (2026-08-20) -- see the note there.                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
                                  # trained its reaction timing + per-step reward economics at 1.0s): between
                                  # decisions the model is BLIND, so this bounds its reaction time to a new threat.
@@ -1438,6 +1442,13 @@ sim:
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
   ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
+  ppo_spell_target_mask: false # a SPELL may only be cast where it would actually hit
+                             # something. Uses the env's own _spell_no_target criterion,
+                             # so it forbids exactly what spell_waste would have charged
+                             # for -- and keeps its generous radius, so predictive and
+                             # near-miss casts stay legal. A whiff is a RANDOM choice
+                             # during exploration and -0.3 cannot prevent one; the real
+                             # cost is the elixir that is then missing for the counter.
                              # train the card and cell heads). The gate is the head that
                              # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs
                              # 0.92-0.99 without -- while the cell head learns fine. Drills

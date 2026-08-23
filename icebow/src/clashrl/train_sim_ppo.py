@@ -397,7 +397,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     def to_vec_t(v):
         return torch.from_numpy(np.asarray(v, np.float32)).to(device)
 
-    def masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=None, pocket_code=None):
+    def masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=None, pocket_code=None,
+                      stored_cm=None):
         """Apply the SAME masking at sampling and update time (deterministic from stored inputs):
         card = in-hand AND affordable; no playable card -> the PLAY gate is masked (forced wait, so
         the stored log-prob stays consistent); cell = the DEPLOYABLE set of the (sampled) card."""
@@ -423,11 +424,32 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         else:
             half = pocket_masks[pocket_code.clamp(0, 3)]          # per-row, from the stored code
         cellmask = torch.where(is_any.unsqueeze(1), allcells_mask.unsqueeze(0), half)
+        if stored_cm is not None:
+            # A spell's legal cells depend on where the ENEMY was standing at that instant, which
+            # cannot be recovered from the stored observation. So the mask that sampling actually
+            # applied is stored and replayed here verbatim; rows without one keep the mask computed
+            # above. Without this the update re-scores a play against a different action set than
+            # the one it was drawn from, and the importance ratio stops meaning anything.
+            use = stored_cm.any(1)
+            cellmask = torch.where(use.unsqueeze(1), stored_cm, cellmask)
         # PER-CARD map: ceq is (B, n_cards, n_cells) now, so pick the row for the card that was
         # actually played. Everything downstream keeps the old (B, n_cells) shape, which is what
         # makes the log-prob gather and the PPO ratio identical to before.
         sel = ceq.gather(1, card_idx.view(-1, 1, 1).expand(-1, 1, ceq.shape[-1])).squeeze(1)
         return cq_m, sel.masked_fill(~cellmask, _NEG), gq_m, playable
+
+    spell_mask_on = bool(cfg.get("sim", "ppo_spell_target_mask", default=False))
+    spell_ids = {i for i in range(n_cards)
+                 if getattr(e0.specs[i], "kind", "") == "spell"} if spell_mask_on else set()
+
+    def _spell_cells(env_i, card_id):
+        """Target mask for this env's board, or None when unavailable."""
+        try:
+            if remote:
+                return None                       # workers cannot be queried mid-rollout
+            return pool[env_i].spell_target_mask(int(card_id))
+        except Exception:
+            return None
 
     def pocket_now():
         """2-bit pocket code per env: 2*left_open + right_open, from the LIVE board."""
@@ -524,6 +546,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             lp_c_mix = p_c_mix.clamp_min(1e-12).log()
             c_samp = torch.multinomial(p_c_mix.clamp_min(1e-12), 1).squeeze(1)
             acts, logps, lparts = [], [], []
+            # the cell mask ACTUALLY used per env, stored so the update re-scores under the same
+            # action set -- a mask that differs between sampling and update silently invalidates
+            # every importance ratio (the same discipline the pocket code needed).
+            cellmasks = [None] * len(obs_b)
             for i in range(len(obs_b)):
                 g = int(g_samp[i])
                 if g == 0:
@@ -532,6 +558,22 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     continue
                 ci = int(c_samp[i])
                 cmask = allcells_mask if ci in anywhere_ids else pocket_masks[pk_codes[i]]
+                # SPELL TARGET MASK. A whiffed spell is not a judgement error that a -0.3 penalty
+                # can argue the policy out of -- during exploration it is a RANDOM choice, and this
+                # codebase already learned that once (actions.no_king_mask: "A reward cannot stop a
+                # random choice; only a mask can"). The real cost is the ELIXIR: a whiffed Rocket is
+                # 6 elixir not available for the next counter, so one bad cast becomes a missed
+                # defence too -- reported as the single biggest weakness in live play.
+                #
+                # Computed only when a SPELL is actually the sampled card (~5% of env-steps), since
+                # even vectorised it is 0.23 ms per spell per env.
+                if spell_mask_on and ci in spell_ids:
+                    tm = _spell_cells(i, ci)
+                    if tm is not None:
+                        tmt = torch.as_tensor(tm, dtype=torch.bool, device=cmask.device)
+                        if bool(tmt.any()):
+                            cmask = cmask & tmt          # nothing to hit anywhere -> leave as-is
+                cellmasks[i] = cmask
                 ceq_i = ceq[i, ci].masked_fill(~cmask, _NEG)   # PER-CARD map
                 # CELL sampling from the SAME mixture shape as the card head above. Without this the
                 # 432-way cell head had NO anti-collapse protection while the 10-way card head did,
@@ -573,7 +615,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 logps.append(float(lp_g[i, 1] + lp_c_mix[i, ci] + lp_cell[cell]))
                 lparts.append((float(lp_g[i, 1]), float(lp_c_mix[i, ci]),
                                float(lp_cell[cell])))
-        return acts, logps, [float(v) for v in val], lparts, pk_codes
+        return acts, logps, [float(v) for v in val], lparts, pk_codes, cellmasks
 
     def _drill_gate(env):
         """Local-pool twin of RemotePool.drill_gate."""
@@ -839,6 +881,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         # PER-HEAD old log-probs [N,3] = (gate, card, cell). Needed to see WHICH head
         # moves a play out of the trust region -- measured, a play swings +-35-46% while
         # a wait swings +-0.5-2.4% (17-84x), which three comparable heads cannot explain.
+        def _cm_flat():
+            raw = flat("cm") if roll.get("cm") else None
+            if not raw:
+                return None
+            out = np.zeros((len(raw), n_cells), dtype=bool)
+            any_set = False
+            for i, m in enumerate(raw):
+                if m is not None:
+                    out[i] = m; any_set = True
+            return torch.tensor(out, dtype=torch.bool, device=device) if any_set else None
+        cm_f = _cm_flat()
         pk_f = (torch.tensor(flat("pk"), dtype=torch.long, device=device)
                 if roll.get("pk") else torch.zeros(N, dtype=torch.long, device=device))
         oldp_f = (torch.tensor(flat("lparts"), dtype=torch.float32, device=device)
@@ -889,7 +942,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 mb_t = torch.tensor(mb, device=device)
                 g_b, c_b, cell_b = g_f[mb_t], c_f[mb_t], cell_f[mb_t]
                 cq_m, ceq_m, gq_m, _ = masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=c_b,
-                                                     pocket_code=pk_f[mb_t])
+                                                     pocket_code=pk_f[mb_t],
+                                                     stored_cm=(cm_f[mb_t] if cm_f is not None
+                                                                else None))
                 lp_g = F.log_softmax(gq_m, dim=1)
                 lp_c = F.log_softmax(cq_m, dim=1)
                 lp_cell = F.log_softmax(ceq_m, dim=1)
@@ -1239,7 +1294,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     try:
         while running["v"] and done_n < matches:
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
-                    "act": [], "logp": [], "lparts": [], "pk": [], "val": [], "rew": [], "done": [], "trunc": [],
+                    "act": [], "logp": [], "lparts": [], "pk": [], "cm": [], "val": [], "rew": [], "done": [], "trunc": [],
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
@@ -1248,13 +1303,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
-                acts, logps, vals, lparts, pkc = choose_sample(cobs, chand, cnxt, celx, cthr)
+                acts, logps, vals, lparts, pkc, cms = choose_sample(cobs, chand, cnxt, celx, cthr)
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
                 roll["lparts"].append(lparts)
                 roll["pk"].append(pkc)
+                roll["cm"].append([None if m is None else m.detach().cpu().numpy() for m in cms])
                 rew_row, done_row, trunc_row = [], [], []
                 if remote:
                     step_out = rpool.step_all(acts)

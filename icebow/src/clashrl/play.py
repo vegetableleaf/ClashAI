@@ -21,6 +21,7 @@ from .controller import Controller
 from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
                      xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
                      tesla_pull_cell, log_corridor_cell, nado_king_cell)
+from .reward import spell_whiffed          # live spell target mask (see use site)
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -160,6 +161,14 @@ def play(cfg) -> None:
     _log_half_w = float(cfg.get("env", "log_half_width", default=0.064))   # 2.2 tiles of corridor
     _log_roll = float(cfg.get("env", "log_roll_len", default=0.28))        # 9.6 tiles of travel
     _nado_pull_r = float(cfg.get("env", "nado_pull_radius", default=0.16))  # 5.5-tile vortex
+    # --- live spell target mask (play.spell_target_mask); see the use site for why ---
+    _spell_mask_live = bool(cfg.get("play", "spell_target_mask", default=False))
+    _spell_ids = {i for i, key in enumerate(vision.deck_keys)
+                  if str(key).replace("_evo", "") in ("rocket", "the_log", "tornado")}
+    _spell_waste_tiles = float(cfg.get("env", "spell_waste_tiles", default=4.5))
+    _nado_pull_tiles = float(cfg.get("env", "nado_pull_tiles", default=5.5))
+    _spell_aim_radius = float(cfg.get("env", "spell_aim_radius", default=0.10))
+    _spell_aim_tiles = cfg.get("env", "spell_aim_tiles", default=None)
 
     class _AirSet:
         """Which detected classes FLY, answered from the card KB rather than a hand-kept list --
@@ -510,6 +519,38 @@ def play(cfg) -> None:
         else:
             card_id = int(card_logits.argmax(1).item())
             cmask = allcells_mask if card_id in anywhere_ids else yourhalf_mask   # DEPLOYABLE cells for this card
+            # SPELL TARGET MASK (live). A whiffed spell is the biggest weakness in live play, and
+            # the cost is not the -0.3 spell_waste charges -- it is the ELIXIR, which is then
+            # missing for the counter to the next push, so one bad cast becomes a missed defence
+            # too. The precedent is no_king_mask: a reward cannot stop a choice the policy makes
+            # for reasons the reward never reaches; only a mask can.
+            #
+            # Uses the SAME spell_whiffed() the live reward verifies casts with, over the tracked
+            # enemies, so it forbids exactly what would have been charged as a whiff. If nothing on
+            # the board is hittable the mask is skipped rather than blocking the cast, so the model
+            # can still choose to spend a spell when it judges that right.
+            if _spell_mask_live and card_id in _spell_ids:
+                try:
+                    _tr = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
+                           else _team_tracker.enemy_tracks(time.time()))
+                    _r = (_nado_pull_tiles if card_id in _nado_ids else _spell_waste_tiles)
+                    _ok = np.fromiter(
+                        (not spell_whiffed(*actions.cell_center(c % actions.gw, c // actions.gw),
+                                           _r, _tr,
+                                           tower_anchors=tower_tracker.enemy_a[:2],
+                                           tower_alive=list(tower_tracker.enemy_alive)[:2],
+                                           tower_aim_radius=_spell_aim_radius,
+                                           tower_aim_tiles=_spell_aim_tiles)
+                         for c in range(n_cells)), dtype=bool, count=n_cells)
+                    if _ok.any():
+                        cmask = cmask & torch.tensor(_ok, dtype=torch.bool, device=device)
+                except Exception as _ex:
+                    # never let the mask break a live match -- but say so ONCE, because a mask that
+                    # silently disables itself looks enabled in the config and protects nothing.
+                    if not globals().get("_spell_mask_warned"):
+                        globals()["_spell_mask_warned"] = True
+                        print("[play] spell target mask DISABLED after error: %s: %s"
+                              % (type(_ex).__name__, _ex))
             # PER-CARD map: pick the chosen card's placement map (PolicyNet.cell_conv).
             cell_logits_m = cell_logits[0, card_id].masked_fill(~cmask, float("-inf")).unsqueeze(0)
             # GATE -- MUST MATCH THE TRAINER, and for DDQN it did not. train_rl compares the two gate
