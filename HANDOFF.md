@@ -1996,6 +1996,75 @@ ENVIRONMENT, which is exactly why bisecting it across commits is cheap and worth
 
 ---
 
+## 3w. 2026-08-23 — `--drill-frac 0.0` AND `--workers 0` WERE BOTH SILENTLY IGNORED
+
+Found while running the §3v A/B. **Two falsy-zero bugs compounding**, and between them the
+drills-off arm of every command-line A/B has actually been training *with drills at 0.3*.
+
+### Bug 1 — `--workers 0` silently became 12
+
+```python
+workers = int(workers if workers else cfg.get("sim", "rollout_workers", default=0))
+```
+
+`0` is falsy, so an EXPLICIT `--workers 0` fell through to `sim.rollout_workers` (**12**) and took
+the REMOTE path. The flag's own help says *"0/1 = classic in-process"*; it never did that. Fixed to
+`workers is not None`, with the argparse default changed to `None` so "unspecified" and "explicitly
+zero" stop being the same value.
+
+### Bug 2 — `--drill-frac 0.0` became "no override"
+
+Then, on the remote path it had just been forced onto:
+
+```python
+drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)) or None
+```
+
+`0.0 or None` is `None` — and `None` is `RemotePool`'s sentinel for *"no override, re-read
+config.yaml in the worker"*. So `--drill-frac 0.0` resolved correctly to 0.0 in the parent, became
+`None` crossing the process boundary, and each worker went back to disk and got **0.3**.
+
+The banner printed `drill mix: 0% of episodes are DRILLS` the whole time. **Exactly the class §3q
+was written about: individually-correct pieces failing at the seam, with no exception.** Fixed by
+always passing the resolved float — a number is never a sentinel.
+
+### Measured, before and after
+
+```
+--drill-frac 0.0 --workers 0     BEFORE:  drills 25 (100% of eps, 100% of STEPS), 0W-0L-0D
+                                 AFTER:   (see the verification line in the commit)
+```
+
+### What this invalidates, and what it does not
+
+* **Every `--drill-frac 0.0` arm run from the COMMAND LINE is void** — it trained at 0.3.
+* **Runs that set `sim.drill_frac: 0.0` in config.yaml are FINE.** Both paths read the file, so the
+  bug never bit. §3p's *"3 seeds at drill_frac 0.0 gave 0.993/0.922/0.964 (healthy) -- drills ARE
+  the cause"* is therefore **unverified, not disproved**: the numbers differ far too much from the
+  collapsed 0.11-0.15 to be the same condition, so those runs were probably config edits. **Check
+  before citing it.** The code comments at `train_sim_ppo.py:877` and `:1075` cite the same
+  measurement and inherit the same doubt.
+* **Non-zero overrides were always fine** (`0.02 or None` is `0.02`). Only the zero arm broke.
+
+### It also explains the A/B's other failure
+
+Six runs each launched with `--workers 0` became six runs with **12 workers each = 72 processes** on
+16 cores. The logs filled with `bash: fork: retry: Resource temporarily unavailable` and children
+dying with `0xC000012D`. That is the §3 RAM/oversubscription failure, arriving through a flag that
+was supposed to prevent it.
+
+### Trap (§8)
+
+**`x or DEFAULT` is wrong for any numeric knob whose zero is meaningful.** Both bugs are one
+idiom: `0` and `0.0` are falsy, so "explicitly off" and "unspecified" collapse into each other.
+This repo has `drill_frac`, `workers`, `wincon_bank_floor`, `deck_pfsp_power` and several reward
+weights where **zero is a deliberate setting**, and every one of them is a place this idiom silently
+substitutes a default. Use `is None`. And the tell was visible in the log for two runs: a banner
+that says one thing while the episode counter says another means the override never reached the
+thing it names.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -2422,6 +2491,13 @@ configured but **have never run** — BC has not been retrained since the soft-t
   distribution, (c) with the card head MASKED. It needs no training: a random init's
   crowndiff is a property of the ENVIRONMENT, which is what makes bisecting it across
   commits cheap (`scratchpad/baseline_at.py`, run from a git worktree per commit).
+* **`x or DEFAULT` is wrong for any numeric knob whose ZERO is meaningful.** `0`/`0.0` are
+  falsy, so "explicitly off" and "unspecified" collapse together. It cost two silent
+  no-ops at once (S3w): `--workers 0` became 12, and `--drill-frac 0.0` became "re-read the
+  config" (0.3). This repo has `drill_frac`, `workers`, `wincon_bank_floor`,
+  `deck_pfsp_power` and several reward weights where zero is a deliberate setting. Use
+  `is None`. The tell is in the log: a banner asserting one thing while the counters say
+  another means the override never reached what it names.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 

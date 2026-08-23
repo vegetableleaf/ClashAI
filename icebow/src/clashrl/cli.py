@@ -170,9 +170,15 @@ def _cmd_train_sim_ppo(args) -> None:
         # gets measured against 0.0 rather than assumed, and an override that needs a config edit
         # between the two arms is an override that quietly never gets tested.
         cfg = _DrillFracOverride(cfg, float(args.drill_frac))
-        print(f"[train-sim-ppo] drill mix: {float(args.drill_frac):.0%} of episodes are DRILLS")
+        _t = float(args.drill_frac)
+        # drill_frac is a share of STEPS, not of episodes -- a drill is ~20 steps against a match's
+        # ~272, so 0.3 of steps is ~85% of EPISODES. The old banner said "of episodes" and was
+        # wrong by that whole factor, which is how "drills 86% of eps" read as a bug for a while.
+        _p = 0.0 if _t <= 0 else _t * 272.0 / (20.0 * (1.0 - _t) + _t * 272.0)
+        print(f"[train-sim-ppo] drill mix: {_t:.0%} of STEPS are DRILLS "
+              f"(~{_p:.0%} of episodes)")
     train_sim_ppo(cfg, matches=args.matches, resume=args.resume,
-                  workers=getattr(args, "workers", 0),
+                  workers=getattr(args, "workers", None),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate)
 
@@ -640,7 +646,7 @@ def main() -> None:
     tsp.add_argument("--seed", type=int, default=0, help="RNG seed for the simulator")
     tsp.add_argument("--envs", type=int, default=None,
                      help="parallel (vectorized) match instances (default: sim.envs)")
-    tsp.add_argument("--workers", type=int, default=0,
+    tsp.add_argument("--workers", type=int, default=None,
                      help="rollout WORKER PROCESSES (engine shards; 0/1 = classic in-process). The "
                           "engine is pure Python, so this is how the other 15 cores get used: "
                           "12 workers x 8+ envs measured ~10-20x the single-process throughput")

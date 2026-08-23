@@ -99,7 +99,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     from .sim.opponents import SelfPlayOpponent, make_opponent
 
     K = max(1, int(envs if envs is not None else cfg.get("sim", "envs", default=8)))
-    workers = int(workers if workers else cfg.get("sim", "rollout_workers", default=0))
+    # ⚠ `is not None`, NOT truthiness. `--workers 0` is FALSY, so `workers if workers else ...`
+    # silently replaced an explicit 0 with sim.rollout_workers (12), took the REMOTE path, and made
+    # the documented contract in --workers' own help ("0/1 = classic in-process") a lie. Combined
+    # with the drill_frac bug below it meant every `--drill-frac 0.0` arm actually trained at 0.3.
+    workers = int(workers if workers is not None
+                  else cfg.get("sim", "rollout_workers", default=0))
     remote = workers > 1
     if remote:
         # SUBPROCESS ENGINE SHARDS (2026-08-14): the pure-Python engine is one core per process,
@@ -109,8 +114,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         import torch as _t
         _t.set_num_threads(max(2, 4))
         from .sim.remote_pool import RemotePool
+        # ⚠ ALWAYS PASS THE RESOLVED FLOAT. This read `float(...) or None`, and `0.0 or None` is
+        # None -- which is RemotePool's "no override, re-read config.yaml in the worker" sentinel.
+        # So `--drill-frac 0.0` resolved to 0.0 in the parent, became None on the way out, and each
+        # worker went back to disk and got sim.drill_frac (0.3). The override printed its banner
+        # and changed nothing: the exact "silent no-op at the seam" HANDOFF §3q was written about.
+        # A resolved number is never a sentinel, so the parent's value is now authoritative.
         rpool = RemotePool(K, workers, seed=seed,
-                           drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)) or None)
+                           drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)))
         pool = []                                   # rollout envs live in the workers
         e0 = SimMatchEnv(cfg, seed=seed + 10_000)   # local metadata/mask twin (never stepped)
         print(f"[train-sim-ppo] ROLLOUT WORKERS: {len(rpool.procs)} processes x "
