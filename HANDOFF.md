@@ -1445,6 +1445,68 @@ as a proxy for match strength -- they came apart cleanly and repeatedly.
 
 ---
 
+## 3q. 2026-08-22 evening — THE POCKET (rule, always on) + the spell mask (strategy, anneals off)
+
+### The distinction that matters when adding a mask
+
+* **RULE masks** encode the GAME: no deploying past the river, no unaffordable cards, tile legality,
+  and now THE POCKET. These are unconditional. There is no flag and there should not be one --
+  turning one off does not create learning headroom, it just lets the policy waste actions on moves
+  the game rejects. (I proposed a pocket flag; the owner correctly refused it.)
+* **STRATEGY masks** encode HUMAN JUDGEMENT: no rocketing the king, no whiffed spells. These cap the
+  model at whatever a human thought of, so they get flags AND they anneal off.
+
+### THE POCKET (`d4d5ac2`, `20ab936`) -- unconditional
+
+Destroying a princess grants deployment territory across the river on that side, for BOTH sides.
+154 -> 254 -> 354 legal cells. Wired through the trainer with a 2-bit code stored per step so the
+update rebuilds the mask sampling used. Opponents use it too (neural via mask variants chosen per
+act(); heuristics via `_pocket_lane()` -- they already reached over with SPELLS but never walked a
+troop into a pocket). Measured: enemy troops past the river 13 -> 23 after we lose a princess.
+
+Still NOT pocket-aware (static masks): play.py, train_rl.py, policy_stats.py, train_bc.py.
+
+### Spell target mask (`ff767f0`, `8393859`) -- strategy, so it anneals
+
+`spell_waste` (-0.3) cannot fix whiffs: during exploration a whiff is a RANDOM choice, and this repo
+already learned that in no_king_mask ("A reward cannot stop a random choice; only a mask can"). The
+real cost is the ELIXIR -- a whiffed Rocket is 6 elixir missing for the next counter, so one bad
+cast becomes a missed defence too (owner: the single biggest weakness in live play).
+
+`sim.ppo_spell_target_mask` + `play.spell_target_mask` restrict casts to cells the env's OWN
+`_spell_no_target` / `spell_whiffed` says would hit. Annealed 100% -> 0% over 25k episodes,
+probabilistically, so the cell head keeps getting gradient there and the model can eventually
+develop casts the criterion forbids.
+
+### Deck exploiters (`8393859`, `659224e`) -- default OFF
+
+AlphaStar's league exploiters, adapted: the league here is the 100-DECK META POOL, not self
+snapshots. `sim.deck_pfsp_power` samples decks we LOSE to more often.
+
+**Do NOT raise `selfplay_prob` to Dota-like levels.** I suggested it; it is wrong here and SS1414's
+history already records why -- 0.5 + PFSP^2 drove the benchmark 19.3% -> 1.3% overnight. A frozen
+self can only pilot OUR deck, so self-play trains the MIRROR: 1 matchup of ~100, and icebow is rare
+on ladder. The OpenAI Five analogy breaks on this game's structure.
+
+### ⚠ `--resume` RESTARTS EVERY ANNEAL
+
+`done_n = 0` unconditionally, and `_prog["n"]` drives the drill cell floor, cell entropy, the
+self-play ramp and the spell mask. Resume therefore gives trained weights + fresh early-training
+scaffolding, not "continue where you left off". Prefer a fresh run when the action space changed.
+
+### Three SILENT NO-OPS found today -- check the seams, not the pieces
+
+1. `spell_whiffed` missing from play.py's imports, inside a bare `try/except`: the live mask would
+   have disabled itself every decision while looking enabled in config.
+2. The parent rebuilds worker `info` from four hand-listed keys and dropped `"deck"` -- deck PFSP
+   was inert for every `--workers > 0` run. Worker sent it, parent binned it, no error.
+3. `run.py drills` graded the DRILL, not the policy, so rows read "policy 0% ... ok".
+
+Each was individually-correct pieces failing at the seam, with no exception. Every such feature now
+prints ONCE when it first fires; if the line is absent, it is not running.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

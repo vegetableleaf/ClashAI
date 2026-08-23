@@ -1457,7 +1457,7 @@ sim:
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
   ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
-  ppo_spell_target_mask: false # a SPELL may only be cast where it would actually hit
+  ppo_spell_target_mask: true # a SPELL may only be cast where it would actually hit
   ppo_spell_mask_anneal: 25000 # episodes over which the spell mask DECAYS OFF. A permanent
                              # mask caps the model at the judgement in the criterion -- it
                              # could never learn a cast the criterion forbids (a "whiff" at
