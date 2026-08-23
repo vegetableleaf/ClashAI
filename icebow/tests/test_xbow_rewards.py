@@ -81,8 +81,14 @@ class XbowRewardTests(unittest.TestCase):
         # reading 4.5 (= w_wincon x xbow_punish_mult) instead of the discounted 0.75. The assertions
         # were right; their setup was quietly depending on pool sampling. Part (c) restores it and
         # tests the punish path deliberately.
-        _real_punish = env._punish_window
-        env._punish_window = lambda *a, **k: False
+        # STUB THE LICENCE GATE, NOT ONE OF ITS CLAUSES. Until 2026-08-23 the offensive bow was
+        # licensed by _punish_window alone, so stubbing that isolated (a) and (b). It is now licensed
+        # by _bow_window, which ORs EIGHT windows (DOCTRINE_RESEARCH.md S3A) -- stubbing only the
+        # elixir clause left W4/W6/W7 free to fire and (b) read 3.6 (= w_wincon x xbow_window_mult)
+        # instead of 3.0. The assertions were right; the stub had gone stale against the thing it
+        # was meant to switch off.
+        _real_window = env._bow_window
+        env._bow_window = lambda *a, **k: None
         # (a) first-play bridge bow: fraction of the normal credit while t < 30
         env.eng.t = 5.0
         early = env._wincon_exec(xid, 0.20, 0.53)
@@ -92,7 +98,10 @@ class XbowRewardTests(unittest.TestCase):
         base = env._wincon_exec(xid, 0.20, 0.53)
         self.assertAlmostEqual(base, env.w_wincon, delta=0.01)
         # (c) enemy golem invested deep in THEIR right lane -> OPPOSITE-lane bow is punish-class
-        env._punish_window = _real_punish         # the punish path is what (c) is FOR
+        # (c) isolates the SPLIT-PUNISH branch specifically, which lives past the window gate, so
+        # the gate stays stubbed off -- otherwise W1 would hand back xbow_punish_mult on its own and
+        # this would pass without _bow_split_punish ever being consulted.
+        env._bow_window = lambda *a, **k: None
         env.eng.elixir[1] = 10.0
         assert env.eng.deploy(1, build_spec(env.eng.db, "golem", 11), 0.75, 0.10)
         env.eng.elixir[1] = 10.0                  # restore their bar: NOT an elixir-race window,
@@ -105,6 +114,67 @@ class XbowRewardTests(unittest.TestCase):
         tempered = env._wincon_exec(xid, 0.20, 0.53)
         self.assertAlmostEqual(tempered, env.w_wincon * env.xbow_punish_mult * env.bow_hostile_frac,
                                delta=0.01)
+
+
+class BowWindowTests(unittest.TestCase):
+    """The eight offensive-bow windows (DOCTRINE_RESEARCH.md S3A)."""
+
+    def test_opening_ban_outranks_every_window_except_the_pump(self):
+        """"Never X-Bow the bridge first play" -- unless they pumped, which is the named exception."""
+        env = _quiet_env(seed=45)
+        xid = next(iter(env.xbow_ids))
+        env._defensive = False
+        env.eng.t = 5.0
+        env._bow_window = lambda *a, **k: ("W1_elixir", True)
+        self.assertAlmostEqual(env._wincon_exec(xid, 0.20, 0.53),
+                               env.w_wincon * env.bow_first_frac, delta=0.01,
+                               msg="an elixir window must NOT license an opening bridge bow")
+        env._bow_window = lambda *a, **k: ("W5_pump", True)
+        self.assertAlmostEqual(env._wincon_exec(xid, 0.20, 0.53),
+                               env.w_wincon * env.xbow_punish_mult, delta=0.01,
+                               msg="a pump IS the exception: Theria's 'unless the opponent pumps up first'")
+
+    def test_favourable_window_pays_less_than_a_punish_window(self):
+        env = _quiet_env(seed=45)
+        xid = next(iter(env.xbow_ids))
+        env._defensive = False
+        env.eng.t = 60.0
+        env._bow_window = lambda *a, **k: ("W6_no_big_spell", False)
+        fav = env._wincon_exec(xid, 0.20, 0.53)
+        env._bow_window = lambda *a, **k: ("W1_elixir", True)
+        pun = env._wincon_exec(xid, 0.20, 0.53)
+        self.assertLess(fav, pun, "a standing matchup property must not pay the punish rate")
+        self.assertAlmostEqual(fav, env.w_wincon * env.xbow_window_mult, delta=0.01)
+
+    def test_cycle_depth_counts_from_the_hand(self):
+        """W2: the first FOUR cycle entries are the hand, so an in-hand blocker is depth 0."""
+        env = _quiet_env(seed=45)
+        specs = getattr(env.opponent, "specs", None)
+        cyc = list(getattr(env.opponent, "cycle", None) or ())
+        if not specs or len(cyc) < 6:
+            self.skipTest("opponent does not expose a cycle")
+        base = str(getattr(specs[int(cyc[0])], "base", "") or "")
+        self.assertEqual(env._opp_cycle_depth({base}), 0, "cycle[0] is in hand -> depth 0")
+        deep = str(getattr(specs[int(cyc[5])], "base", "") or "")
+        if deep != base:
+            self.assertEqual(env._opp_cycle_depth({deep}), 2, "cycle[5] is two plays away")
+        self.assertEqual(env._opp_cycle_depth({"__nonexistent__"}), 99,
+                         "a card they do not hold reads as unavailable, not as in hand")
+
+    def test_pump_rocket_defers_to_the_bow_when_the_bow_can_punish(self):
+        """W5: rocketing a pump keeps full credit ONLY while the bow is not in cycle to punish."""
+        env = _quiet_env(seed=45)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "elixir_collector", 11), 0.30, 0.16)
+        pump = next(u for u in env.eng.units if u.spec.base == "elixir_collector")
+        env.eng.elixir[0] = 10.0
+        xid = next(iter(env.xbow_ids))
+        env._hand_ids = lambda: [xid]                       # bow in hand and affordable
+        with_bow = env._pump_rocket(pump.x, pump.y)
+        env._hand_ids = lambda: []                          # bow not in cycle to punish
+        without_bow = env._pump_rocket(pump.x, pump.y)
+        self.assertGreater(without_bow, 0.0, "rocket-on-sight still stands without the bow")
+        self.assertAlmostEqual(with_bow, without_bow * env.pump_rocket_bow_frac, delta=0.01)
 
 
 if __name__ == "__main__":

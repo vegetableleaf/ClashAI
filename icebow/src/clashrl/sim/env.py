@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import copy
 import random
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 
@@ -404,6 +404,29 @@ class SimMatchEnv:
         self.split_lane_counters = set(cfg.get("env", "split_lane_counter_cards",
                                                default=["royal_recruits", "royal_hogs"]))
         self.agent_dt = float(cfg.get("sim", "agent_dt", default=1.0))
+        # ---- OFFENSIVE X-BOW WINDOWS (DOCTRINE_RESEARCH.md S3A) -------------------------------
+        # The offensive bow used to be licensed by ONE test (_punish_window, an elixir race). The
+        # guides for THIS deck list eight, and rank CYCLE first. See _bow_window for the full table.
+        # Each is individually switchable so a training run can attribute an effect to one window.
+        self.bow_windows_on = {str(w).upper() for w in (cfg.get(
+            "env", "bow_windows", default=["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"]) or ())}
+        # Spells that can actually remove or maim a planted X-Bow. Curated, following the
+        # split_lane_counter_cards pattern -- a damage threshold would need a per-level table and
+        # would silently retune whenever card stats are re-imported.
+        self.bow_killer_spells = set(cfg.get("env", "bow_killer_spells",
+                                             default=["rocket", "lightning", "fireball",
+                                                      "poison", "earthquake"]) or ())
+        self.bow_cycle_depth = int(cfg.get("env", "bow_cycle_depth", default=2))
+        self.bow_spell_depth = int(cfg.get("env", "bow_spell_depth", default=2))
+        self.bow_full_bar = float(cfg.get("env", "bow_full_bar_elixir", default=9.0))
+        self.bow_slow_answer_cost = float(cfg.get("env", "bow_slow_answer_cost", default=5.0))
+        self.bow_counterpush_min_hp = float(cfg.get("env", "bow_counterpush_min_hp", default=250.0))
+        # A FAVOURABLE window is not a PUNISH window. W6/W7 are standing matchup properties, so
+        # paying them the full punish multiplier would just be a global multiplier on the bow with
+        # extra steps -- they get a smaller licence.
+        self.xbow_window_mult = float(cfg.get("rewards", "xbow_window_mult", default=1.2))
+        self.pump_rocket_bow_frac = float(cfg.get("rewards", "pump_rocket_bow_frac", default=0.0))
+
         self.sub_dt = float(cfg.get("sim", "sub_dt", default=0.1))
 
         self.eng = SimEngine(cfg, self.db, self.rng)
@@ -606,7 +629,12 @@ class SimMatchEnv:
             if p.kind == "troop" and not p.swarm
             and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)
         }
+        # Their spells that threaten a planted bow (W6/W8). An EMPTY set is itself a standing
+        # licence to commit the bow (W6): nothing they hold can remove it once it is down.
+        self._opp_big_spell_bases = {k[:-4] if k.endswith("_evo") else k
+                                     for k in opp_cards} & self.bow_killer_spells
         self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
+        self._bow_window_hits = {}       # which of the eight licensed each offensive bow
         self._nado_king_credited = False
         self._reset_vectors()
         self._update_vectors()
@@ -645,6 +673,98 @@ class SimMatchEnv:
             if base in self._opp_block_bases and float(getattr(s, "elixir", 99.0)) <= opp_elixir:
                 return True
         return False
+
+    def _opp_cycle_depth(self, bases) -> int:
+        """How many plays until the opponent's nearest card from ``bases`` is back IN HAND.
+
+        0 means it is in hand right now. The sim owns their true deck order, so this is exact --
+        which is the whole point: the deck guide for this list makes cycle the PRIMARY input for
+        whether to commit an offensive bow (*"know where your opponent's counter to the X-Bow is in
+        their cycle... helps with knowing whether to play an X-Bow on offense or not"*), and
+        ``_opp_can_block_now`` could only ever see the current hand.
+
+        99 when they hold no such card at all, so a caller's ">= depth" test reads as "unavailable".
+        """
+        if not bases:
+            return 99
+        cyc = list(getattr(self.opponent, "cycle", None) or ())
+        specs = getattr(self.opponent, "specs", None)
+        if not cyc or not specs:
+            return 99                                    # unknown cycle -> never claims a window
+        for pos, idx in enumerate(cyc):
+            if not (0 <= int(idx) < len(specs)):
+                continue
+            base = str(getattr(specs[int(idx)], "base", "") or "")
+            if base in bases:
+                return max(0, pos - 3)                   # the first FOUR cycle entries ARE the hand
+        return 99
+
+    def _counterpush_ready(self) -> bool:
+        """We just WON a defence and the survivors are still standing (W3).
+
+        The deck page: *"Another method to set up the X-Bow is after a defense, and counterpushing
+        with your leftover defenders."* So: nothing of theirs left alive, and at least one troop of
+        ours with enough HP left to escort a bow.
+        """
+        if any(u.team == 1 and u.hp > 0 and u.spec.kind == "troop" for u in self.eng.units):
+            return False
+        return any(u.team == 0 and u.hp > 0 and u.spec.kind == "troop"
+                   and float(u.hp) >= self.bow_counterpush_min_hp for u in self.eng.units)
+
+    def _defensive_card_in_hand(self) -> bool:
+        """Something other than the bow that can answer a rush (the W4 "good defensive hand")."""
+        for cid in self._hand_ids():
+            if cid in self.xbow_ids:
+                continue
+            s = self.specs[cid]
+            if s.kind in ("troop", "building") and float(s.elixir) <= 4.0:
+                return True
+        return False
+
+    def _bow_window(self, spend: float = 0.0) -> Optional[Tuple[str, bool]]:
+        """Every situation the doctrine licenses an OFFENSIVE X-Bow. Returns (reason, is_punish).
+
+        DOCTRINE_RESEARCH.md S3A, sourced from the Fandom page for THIS deck list plus the 3.0 page,
+        the 2.9 cycle blog and Theria. Until 2026-08-23 only W1 was implemented, and the owner
+        correctly objected that one condition cannot be the whole story.
+
+          W1  elixir advantage / they cannot afford a blocker      PUNISH   (the original test)
+          W2  their bow-counter is OUT OF CYCLE                    PUNISH   <- ranked first by the guides
+          W3  counterpush off a won defence, survivors alive       PUNISH
+          W4  near a full bar AND holding a defensive answer       favourable
+          W5  a fresh Elixir Collector to punish                   PUNISH
+          W6  their deck holds NO spell that can kill a bow        favourable
+          W7  past single elixir AND their only answer is costly   favourable
+          W8  their bow-killing spell is spent / out of cycle      PUNISH
+
+        PUNISH pays ``xbow_punish_mult``; favourable pays the smaller ``xbow_window_mult``. W6 and
+        W7 are standing MATCHUP properties rather than moments -- paying them the punish rate would
+        be a global multiplier on the bow wearing a disguise.
+        """
+        on = self.bow_windows_on
+        if "W1" in on and self._punish_window(spend=spend):
+            return ("W1_elixir", True)
+        if "W2" in on and self._opp_cycle_depth(self._opp_block_bases) >= self.bow_cycle_depth:
+            return ("W2_cycle", True)
+        if "W3" in on and self._counterpush_ready():
+            return ("W3_counterpush", True)
+        if "W5" in on and self._fresh_pump() is not None:
+            return ("W5_pump", True)
+        if ("W8" in on and self._opp_big_spell_bases
+                and self._opp_cycle_depth(self._opp_big_spell_bases) >= self.bow_spell_depth):
+            return ("W8_spell_out", True)
+        if ("W4" in on and (float(self.eng.elixir[0]) + float(spend)) >= self.bow_full_bar
+                and self._defensive_card_in_hand()):
+            return ("W4_full_bar", False)
+        if "W6" in on and not self._opp_big_spell_bases:
+            return ("W6_no_big_spell", False)
+        # W7 is NOT simply "it is past 2x". The source conditions it on their answer being a slow,
+        # costly tank (*"their only reliable tank for your X-Bow is P.E.K.K.A"*); unconditioned it
+        # would license the bow for the whole second half of every match against anyone.
+        if ("W7" in on and float(self.eng.t) >= max(0.0, float(self.eng.regulation) - 60.0)
+                and self._opp_block_cost >= self.bow_slow_answer_cost):
+            return ("W7_late_costly_answer", False)
+        return None
 
     def _bonus(self, credit: float) -> float:
         """Cap the CUMULATIVE correctness shaping per match, SYMMETRICALLY (anti-farm both ways).
@@ -851,8 +971,8 @@ class SimMatchEnv:
             return 0.0
         # The doctrine's own two modes, reusing the predicates the reward already trusts rather
         # than inventing a third notion of a correct bow (which is how the old guard drifted).
-        if self._punish_window(spend=self._bank_wincon_cost):
-            self._wc_reached = True                        # OFFENSIVE: they cannot answer a siege
+        if self._bow_window(spend=self._bank_wincon_cost) is not None:
+            self._wc_reached = True                        # OFFENSIVE: any of the eight windows (S3A)
             return self.w_wincon_reach
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
@@ -1124,8 +1244,20 @@ class SimMatchEnv:
             # doctrine. Without this the clause was unreachable: _defensive is set on sight of a cycle
             # or beatdown deck (most of the meta pool), so MEASURED 145 of 152 X-Bow plays took the
             # defensive branch and only 5 were ever offensive AND in a punish window.
-            if d <= self.xbow_range and self._punish_window(self.specs[card_id].elixir):
-                val = self.w_wincon * self.xbow_punish_mult
+            _win = (self._bow_window(spend=float(self.specs[card_id].elixir))
+                    if d <= self.xbow_range else None)
+            # THE OPENING BAN OUTRANKS THE WINDOWS, with exactly one exception. "Never X-Bow the
+            # bridge first play" is explicit doctrine and both outside guides agree (2.9 blog: do not
+            # play offensively early; Theria: "avoid playing your X-Bow UNLESS THE OPPONENT PUMPS UP
+            # FIRST"). That last clause names the exception, and it is W5 -- a pump is the one thing
+            # that makes an opening bow correct. Without this the windows silently repriced the first
+            # 30 s from bow_first_frac (0.25x) to 1.2x, which test_wincon_context_modifiers caught.
+            if _win is not None and self.eng.t < 30.0 and _win[0] != "W5_pump":
+                _win = None
+            if _win is not None:
+                # PUNISH windows keep the original multiplier; FAVOURABLE ones get a smaller licence.
+                val = self.w_wincon * (self.xbow_punish_mult if _win[1] else self.xbow_window_mult)
+                self._bow_window_hits[_win[0]] = self._bow_window_hits.get(_win[0], 0) + 1
             elif self._defensive:                            # DEFENSIVE phase: centre-band only; forward is wrong now
                 val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
             elif d <= self.xbow_range:                        # OFFENSIVE: forward, in tower range = win condition set
@@ -1189,10 +1321,17 @@ class SimMatchEnv:
         king = self.eng.towers[1][2]
         if king.alive and tile_dist(nx, ny, king.x, king.y) <= R + 0.6:
             return self.w_wincon_mis                         # never wake the king for a pump
+        # W5 (S3A): the deck page says a pump planted in SINGLE elixir is answered with the X-BOW,
+        # not the Rocket. Owner's resolution: rocketing it immediately still applies -- but only when
+        # the bow is not in cycle to punish. So when the bow IS in hand and affordable, the rocket is
+        # taking the bow's job and earns `pump_rocket_bow_frac` of the credit instead of all of it.
+        _bow_can_punish = any(c in self.xbow_ids and float(self.specs[c].elixir)
+                              <= float(self.eng.elixir[0]) + 1e-6 for c in self._hand_ids())
         if pump.age <= self.pump_window:
             both = any(t.alive and tile_dist(nx, ny, t.x, t.y) <= R + 0.3
                        for t in self.eng.towers[1][:2])
-            return self.w_wincon * (self.combo_mult if both else 1.0)
+            val = self.w_wincon * (self.combo_mult if both else 1.0)
+            return val * (self.pump_rocket_bow_frac if _bow_can_punish else 1.0)
         return 0.0
 
     def _rocket_blast(self, nx: float, ny: float):
@@ -1629,7 +1768,7 @@ class SimMatchEnv:
             return 0.0                                   # the tower handles it; spending is fine
         # `spend` is added back because elixir is already deducted here -- the same correction
         # _punish_window documents, or the test needs a 10-elixir lead and never fires.
-        if self._punish_window(spend=float(self.specs[card_id].elixir)):
+        if self._bow_window(spend=float(self.specs[card_id].elixir)) is not None:
             return 0.0                                   # they cannot punish it: the real counterattack
         # DOES AN ANSWER EVEN EXIST? The identity vector can be LIT but ROLELESS -- every role flag
         # zero -- and then card_threat.counters matches nothing, so "no affordable answer" would be

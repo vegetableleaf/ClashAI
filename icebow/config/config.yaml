@@ -557,6 +557,15 @@ rewards:
   # once they have overcommitted and cannot -- the siege starts firing before their answer is affordable.
   # Scales the offensive-X-Bow credit while env.punish_opp_elixir / punish_elixir_gap both hold.
   xbow_punish_mult: 1.5
+  # A FAVOURABLE window is not a PUNISH window. W6/W7 (see env.bow_windows) are standing MATCHUP
+  # properties rather than moments -- if they paid xbow_punish_mult they would just be a global
+  # multiplier on the bow wearing a disguise, so they get this smaller licence instead.
+  xbow_window_mult: 1.2
+  # W5: the deck page answers a pump planted in SINGLE elixir with the X-BOW, not the Rocket. The
+  # rocket-the-pump rule still stands when the bow is NOT in cycle to punish -- so when the bow IS
+  # in hand and affordable, a rocket on that pump is doing the bow's job and earns this fraction.
+  # 0.0 = the bow is the answer outright. Raise toward 1.0 to soften back to the old behaviour.
+  pump_rocket_bow_frac: 0.0
   # -- (4) CYCLE-PLAN correctness -- INACTIVE (deleted everywhere 2026-08-12; knobs kept for history) --
   # The SIM deleted its copy after 110 fires / 0 positives (sim/env._cycle_plan documents why an
   # instantaneous cycle judgement cannot work); the LIVE copy was then measured with the identical
@@ -770,6 +779,32 @@ env:
   # spirit in most decks, which made the punish window require the opponent to be under 1 elixir.
   # Hitpoints are the KB's reference level; opponents play at L13-16, but the ORDERING is unchanged.
   punish_blocker_min_hp: 600
+  # ---- OFFENSIVE X-BOW WINDOWS (DOCTRINE_RESEARCH.md S3A) --------------------------------
+  # The offensive bow used to be licensed by ONE test (the punish window above). The guides for THIS
+  # deck list eight, and rank CYCLE first. Listed here so a run can enable a subset and attribute an
+  # effect to one window -- drop a code to switch that window off.
+  #   W1 elixir advantage / they cannot afford a blocker     PUNISH   (the original test)
+  #   W2 their bow-counter is OUT OF CYCLE                   PUNISH   <- ranked first by the guides
+  #   W3 counterpush off a won defence, survivors alive      PUNISH
+  #   W4 near a full bar AND holding a defensive answer      favourable
+  #   W5 a fresh Elixir Collector to punish                  PUNISH
+  #   W6 their deck holds NO spell that can kill a bow       favourable
+  #   W7 past single elixir AND their only answer is costly  favourable
+  #   W8 their bow-killing spell is spent / out of cycle     PUNISH
+  #
+  # MEASURED 2026-08-23 on 269 bow-affordable states: W1 ALONE already fired on 95.2% of them, and
+  # all eight together reach 99.6%. The windows are therefore NOT the reason the bow goes unplayed
+  # (share 1.06%) -- see the W1 note below, which is the real finding.
+  bow_windows: [W1, W2, W3, W4, W5, W6, W7, W8]
+  # Spells that can actually remove or maim a planted X-Bow (W6/W8). Curated rather than derived
+  # from a damage threshold: a threshold needs a per-level table and would silently retune every
+  # time card stats are re-imported (S8: "changing what a config key MEANS is not a local change").
+  bow_killer_spells: [rocket, lightning, fireball, poison, earthquake]
+  bow_cycle_depth: 2        # W2: plays until their nearest blocker is back in hand before it counts
+  bow_spell_depth: 2        # W8: same, for their bow-killing spell
+  bow_full_bar_elixir: 9.0  # W4: the guides' "only X-Bow at around 10 elixir with a defensive hand"
+  bow_slow_answer_cost: 5.0 # W7: "their only reliable tank for your X-Bow is P.E.K.K.A" -- costly
+  bow_counterpush_min_hp: 250   # W3: a survivor below this cannot escort anything
   value_norm: 10.0               # elixir-value normaliser for the trade term (this many elixir of value/spend per step = 1.0)
   trade_cap: 1.0                 # per-step clip on the (normalised) enemy-value-eliminated part of the trade term
   tower_chip_power: 1.0          # LINEAR chip. Was 2.0 (convex: partial chip worth sub-proportionally

@@ -423,6 +423,38 @@ register(Scenario(
 ))
 
 register(Scenario(
+    name="bow_punishes_the_pump",
+    goal="They planted a pump and the BOW is in hand -- punish with the bow, not the rocket.",
+    tier="foundational",
+    # THE SIBLING OF rocket_the_pump_on_sight, AND THE HAND IS THE WHOLE DIFFERENCE.
+    # DOCTRINE_RESEARCH.md S3A/W5, from the Fandom page for this exact deck: "if they place an
+    # Elixir Collector in Single Elixir, you should punish with an X-Bow, *not* a Rocket."
+    # The owner's resolution of the conflict is that rocketing it on sight still applies -- but only
+    # when the bow is not in cycle to punish. So `rocket_the_pump_on_sight` keeps hand=("rocket",)
+    # and is correct exactly because the bow is absent; this drill puts the bow in hand and inverts
+    # the answer. Neither drill is wrong; they are the two branches of one rule, and training either
+    # one alone turns a conditional into a reflex.
+    hand=("x_bow", "rocket"),
+    elixir=8.0,
+    spawns=(("elixir_collector", 1, 0.30, 0.16, 0.0),),
+    # Scored the same way the commitment punish is: the bow has to actually CHIP. A pump they get to
+    # keep is fine here -- the point is that six elixir spent on their economy is worse than six
+    # elixir spent locking their tower while they are the ones who are broke.
+    success=lambda e, s: played(s, "x_bow") and enemy_tower_hp_lost(e, s, 0.0),
+    failure=lambda e, s: (played(s, "rocket")
+                          or (not played(s, "x_bow")
+                              and (float(e.t) - float(s.get("t0", 0.0))) >= 9.0)),
+    time_limit=24.0,
+    randomise=("lane", "elixir"),
+    graded_by=("wincon_exec", "xbow_lock", "chip_linear"),
+    prereq=("bow_punish_the_commitment",),
+    reference=((("x_bow", 0.72, 0.56, 0.6)),),
+    notes="Pairs with rocket_the_pump_on_sight: same board, opposite verdict, and only the HAND "
+          "tells them apart. Failing by rocketing is scored as a failure on purpose -- that is the "
+          "exact mistake the shipped drill would otherwise teach.",
+))
+
+register(Scenario(
     name="rocket_the_two_for_one",
     goal="Rocket a support that is standing next to their tower -- damage plus a kill.",
     tier="foundational",

@@ -1681,6 +1681,99 @@ on 283 steps"). `cards.py` and `ledger.py` carry the mask; anything ad-hoc must 
 
 ---
 
+## 3s. 2026-08-23 — ALL EIGHT OFFENSIVE BOW WINDOWS SHIPPED, AND THE MEASUREMENT SAYS THEY ARE NOT THE LEVER
+
+Owner asked for every window in DOCTRINE_RESEARCH.md §3A implemented, including W5. Done — and the
+measurement that came with it matters more than the feature.
+
+### Shipped
+
+`env._bow_window(spend) -> (reason, is_punish) | None` ORs all eight, replacing the single
+`_punish_window` test at the three sites that gate an offensive bow (`_wincon_exec`,
+`_xbow_overaggression`'s exemption, `_wincon_reach`). Each window is switchable via
+`env.bow_windows: [W1..W8]` so a run can attribute an effect to one of them.
+
+* **W2 (cycle)** — the one the guides rank first — is new machinery: `_opp_cycle_depth(bases)` reads
+  the opponent's true deck order (first four entries are the hand) and returns plays-until-in-hand.
+  `_opp_can_block_now` only ever saw the current hand.
+* **W3** `_counterpush_ready()`, **W4** `_defensive_card_in_hand()` + `bow_full_bar_elixir`,
+  **W6/W8** via `bow_killer_spells` (curated, not a damage threshold — §8's "changing what a key
+  MEANS is not local"), **W7** conditioned on `_opp_block_cost >= bow_slow_answer_cost` because
+  unconditioned it would license the bow for the whole second half of every match.
+* **PUNISH vs FAVOURABLE.** W6/W7 are standing matchup properties, not moments. They pay
+  `xbow_window_mult` (1.2) rather than `xbow_punish_mult` (1.5) — otherwise they would be a global
+  multiplier on the bow wearing a disguise.
+
+### W5, and why NOTHING had to be removed
+
+Owner's rule: *"rocketing the pump immediately applies if the opponent places a pump and x-bow is not
+in cycle to punish."* `rocket_the_pump_on_sight` already has `hand=("rocket",)` — the bow is absent,
+so the drill was **already** the correct branch and did not need deleting. What was missing was the
+other branch: new drill **`bow_punishes_the_pump`** (`hand=("x_bow","rocket")`, rocketing scored as a
+FAILURE). Discriminates: nothing 0% / scripted 100% / doctrine 88%. `_pump_rocket` now scales by
+`rewards.pump_rocket_bow_frac` (0.0) when the bow is in hand and affordable.
+
+### ⚠⚠ THE MEASUREMENT: THE WINDOWS WERE NEVER THE BOTTLENECK
+
+269 bow-affordable states, m=10000 policy, 12 matches:
+
+```
+any window fires   268   99.6%
+  W1_elixir        256   95.2%   <-- the ORIGINAL single condition, ALONE
+  W4_full_bar       11    4.1%
+  W3_counterpush     1    0.4%
+  (none)             1    0.4%
+```
+
+**W1 alone was already open on 95% of them.** Adding seven windows moved the licence rate 95.2% ->
+99.6%. So the offensive bow was never under-licensed, and the x_bow share of 1.06% is NOT explained
+by the reward refusing to pay. Do not expect this change to move the bow share.
+
+### ⚠⚠⚠ AND W1 ITSELF IS MISPRICED — clause B fires on 100% of steps
+
+```
+_opp_block_cost across 12 decks: min 2.0  median 3.0  max 5.0
+opponent elixir:  median 2.07  mean 2.77
+clause A  opp < block_cost      :  62.0% of steps
+clause B  mine+6 - opp >= 4     : 100.0% of steps   <-- ALWAYS
+veto      _opp_can_block_now    :  16.8% of steps
+```
+
+`_punish_window` adds the bow's cost BACK to our side (to undo a post-spend read), so clause B is
+`elixir + 6 - opp >= 4`. With opponents sitting at a median 2.07, **merely affording the bow
+satisfies it**: 0 + 6 - 2 = 4. The threshold and the bow's cost are numerically the same event.
+
+So `xbow_punish_mult` has been the STANDARD rate for every forward bow, not a selective punish. This
+also explains the history in the code comment: measured post-spend it *"fired EXACTLY ZERO times in
+162 X-Bow plays"*, and adding the spend back overcorrected from 0% to 100%.
+
+**NOT FIXED IN THIS BATCH, deliberately.** `_punish_window` has three callers and the key's meaning
+is load-bearing (§8), so retuning it moves every bow measurement in the ledger at once. The doctrinal
+answer is that what matters is what is LEFT after paying — the guides' *"only X-Bow at around 10
+elixir and when you have a good defensive hand"* is a POST-spend test, i.e. W4's shape, not a
+pre-spend gap. **This is the next single change, and it should be measured alone.**
+
+### The opening ban outranks the windows — one named exception
+
+`test_wincon_context_modifiers` caught the windows silently repricing the first 30 s from
+`bow_first_frac` (0.25x) to 1.2x. "Never X-Bow the bridge first play" is explicit doctrine and both
+outside guides agree — and Theria names the exception: *"avoid playing your X-Bow **unless the
+opponent pumps up first**"*. So the ban outranks every window except **W5**. Two tests cover it.
+
+Also updated: that test stubbed `_punish_window` to isolate the non-punish paths; the licence gate is
+now `_bow_window`, so the stub had gone stale against the thing it was meant to switch off. It stubs
+the gate now, and part (c) keeps it stubbed so `_bow_split_punish` is genuinely consulted.
+
+### CORRECTION to §3A: `_bow_split_punish` is NOT too broad
+
+§3A recorded it as needing a building-targeter exclusion. Re-read: it already returns `not same` for
+ground tanks, i.e. it only ever fires for an OPPOSITE-lane bow, which is precisely the out-tempo case
+row 79 licenses. The Golem-in-the-same-lane bow the guides forbid never fired. No change needed.
+
+620 tests, 1 pre-existing failure (`test_budget_caps_and_hysteresis_refills`, `_threat_response`).
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
