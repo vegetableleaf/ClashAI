@@ -2200,5 +2200,9 @@ class SimMatchEnv:
                 "outcome", self.w_win if outcome == "win" else self.w_loss if outcome == "loss" else 0.0)
             self.rw_stats.matches += 1
         self._update_vectors()
-        info = {"outcome": outcome, "crowns": (my_c, op_c), "defensive": self._defensive}
+        info = {"outcome": outcome, "crowns": (my_c, op_c), "defensive": self._defensive,
+                # which META DECK this match was against, so the trainer can weight the pool toward
+                # the ones we keep losing to (sim.deck_pfsp_power -- the deck-level analogue of
+                # AlphaStar's league exploiters; see make_opponent).
+                "deck": getattr(getattr(self, "opponent", None), "deck_name", None)}
         return self._last_obs, float(reward), done, info

@@ -341,14 +341,39 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
         from .meta_decks import load_meta_decks
         pool = load_meta_decks(cfg, db)
     weights = [max(0.01, float(d.get("weight", 1.0))) for d in pool]
+    # DECK EXPLOITERS (sim.deck_pfsp_power). AlphaStar's league runs exploiter agents whose job is
+    # to find and punish the main agent's weaknesses rather than to win overall, and that diversity
+    # is what forces novel strategy instead of convergence on one comfortable style.
+    #
+    # Self-play cannot supply it HERE: a frozen self can only pilot OUR deck, so it trains the
+    # mirror -- one matchup of ~100, and icebow is rare on ladder. Raising selfplay_prob to Dota-
+    # like levels was tried (0.5 + PFSP power 2.0) and drove the benchmark 19.3% -> 1.3% overnight.
+    #
+    # The league that matters here is the META DECK POOL. So: exploit it. A deck we keep LOSING to
+    # is a weakness in exactly AlphaStar's sense, and it gets sampled more often -- popularity
+    # weight times a loss-rate factor. Decks we already beat keep their popularity weight, so the
+    # distribution stays recognisably ladder-shaped rather than collapsing onto our worst matchup
+    # (which is the failure mode the 0.5/power-2.0 self-play mix demonstrated).
+    _pw = float(cfg.get("sim", "deck_pfsp_power", default=0.0))
+    if _pw > 0.0:
+        _st = getattr(cfg, "_deck_record", None)
+        if _st:
+            for i, d in enumerate(pool):
+                rec = _st.get(str(d.get("name", i)))
+                if rec and rec[1] >= 3:                    # need a few games before trusting it
+                    lossrate = 1.0 - (float(rec[0]) / float(rec[1]))
+                    weights[i] *= (0.25 + lossrate) ** _pw
     deck = rng.choices(pool, weights=weights, k=1)[0]
+    _deck_name = str(deck.get("name", "?"))
     lv = cfg.get("sim", "enemy_levels", default=[13, 14, 15, 16])
     lw = cfg.get("sim", "enemy_level_weights", default=[3, 5, 2, 1])
     levels = [rng.choices(lv, weights=lw, k=1)[0] for _ in deck["cards"]]
     if level is not None:
         levels = [int(level)] * len(deck["cards"])
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
-    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive)
+    _bot = ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive)
+    _bot.deck_name = _deck_name          # so a result can be attributed back to the deck (deck PFSP)
+    return _bot
 
 
 class SelfPlayOpponent:

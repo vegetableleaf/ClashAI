@@ -439,6 +439,30 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         return cq_m, sel.masked_fill(~cellmask, _NEG), gq_m, playable
 
     spell_mask_on = bool(cfg.get("sim", "ppo_spell_target_mask", default=False))
+    spell_mask_anneal = float(cfg.get("sim", "ppo_spell_mask_anneal", default=0.0))
+    spell_mask_end = float(cfg.get("sim", "ppo_spell_mask_end", default=0.0))
+
+    def _spell_mask_now() -> float:
+        """How OFTEN the spell mask is applied at this point in training.
+
+        A PERMANENT mask caps the model at the judgement encoded in the criterion. It can never
+        discover a cast the criterion forbids -- a "whiff" at empty ground that a Hog is about to
+        walk into is a real technique, and _spell_no_target would veto it forever. Owner's point,
+        and it is right: hardcoding what the model may do limits it to what a human thought of.
+
+        So the mask is a TRAINING WHEEL, the same shape as the exploration floors and
+        train.training_wheels: near-total early, when the policy is close to random and a whiffed
+        Rocket is 6 elixir of pure noise, then decaying to `ppo_spell_mask_end` so the model plays
+        unmasked once it has something better than noise to offer. Applied PROBABILISTICALLY rather
+        than switched off at a threshold, so exposure to unmasked casting arrives gradually and the
+        cell head keeps receiving gradient on those cells throughout.
+        """
+        if not spell_mask_on:
+            return 0.0
+        if spell_mask_anneal <= 0.0:
+            return 1.0
+        f = min(1.0, max(0.0, float(_prog.get("n", 0)) / spell_mask_anneal))
+        return 1.0 + (spell_mask_end - 1.0) * f
     spell_ids = {i for i in range(n_cards)
                  if getattr(e0.specs[i], "kind", "") == "spell"} if spell_mask_on else set()
 
@@ -567,7 +591,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 #
                 # Computed only when a SPELL is actually the sampled card (~5% of env-steps), since
                 # even vectorised it is 0.23 ms per spell per env.
-                if spell_mask_on and ci in spell_ids:
+                if ci in spell_ids and random.random() < _spell_mask_now():
                     tm = _spell_cells(i, ci)
                     if tm is not None:
                         tmt = torch.as_tensor(tm, dtype=torch.bool, device=cmask.device)
@@ -1367,6 +1391,18 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         else:
                             match_steps += ep_n[i]
                             wins += oc == "win"; losses += oc == "loss"; draws += oc == "draw"
+                            # PER-DECK RECORD, for the deck-exploiter weighting in make_opponent.
+                            # Kept on the shared cfg object so every local env's next
+                            # make_opponent() call sees it. NOTE: with --workers > 0 the envs live
+                            # in separate processes and this record does NOT reach them, so deck
+                            # PFSP is a LOCAL-ENV feature until the workers ship results back.
+                            _dk = (info or {}).get("deck")
+                            if _dk:
+                                _rec = getattr(cfg, "_deck_record", None)
+                                if _rec is None:
+                                    _rec = cfg._deck_record = {}
+                                w0, n0 = _rec.get(str(_dk), (0, 0))
+                                _rec[str(_dk)] = (w0 + (1 if oc == "win" else 0), n0 + 1)
                             win_hist.append(1 if oc == "win" else 0)
                         # NEXT EPISODE'S FIRST ROW, for the self-imitation mask. This must sit
                         # OUTSIDE the drill/match branch -- an earlier version of this line was
