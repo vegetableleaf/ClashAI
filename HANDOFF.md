@@ -2081,6 +2081,50 @@ thing it names.
 
 ---
 
+## 3x. 2026-08-23 — drill_frac SWEEP: 0.3 IS THE BEST OF FOUR, AND NONE OF THEM BEATS UNTRAINED
+
+The first sweep of this knob where the knob actually worked (see §3w — `--drill-frac 0.0` had been
+silently training at 0.3, so every previous drills-off arm was void). 4 arms × 3 seeds, 350 matches
+each, from scratch, scored on 40 fixed-seed matches per policy with a 3-init untrained reference.
+
+```
+arm          crowndiff             crowns TAKEN      wins/40   x_bow
+UNTRAINED    -1.692 +-0.030          0.158 +-0.036      0.7      0.1%
+frac 0.0     -1.642 +-0.085          0.142 +-0.017      2.7      0.0%   +0.6 SE
+frac 0.02    -1.742 +-0.159          0.100 +-0.029      1.3      0.5%   -0.3 SE
+frac 0.03    -1.700 +-0.014          0.167 +-0.008      2.0      0.3%   -0.2 SE
+frac 0.3     -1.617 +-0.068          0.233 +-0.008      3.0      0.0%   +1.0 SE
+```
+(+- is the spread ACROSS SEEDS; the SE column is versus untrained.)
+
+### Conclusions
+
+1. **The shipped 0.3 is the best of the four.** No config change. Owner asked which value to switch
+   to; the answer is the one already in place.
+2. **LOWERING drill_frac DOES NOT HELP.** 0.02 was the worst arm on every column — worse than
+   untrained on crowndiff and on crowns taken. **This kills the hypothesis I had been carrying**
+   (that 85%-drill episodes were starving match learning). It is not the lever.
+3. **No arm clears untrained on crowndiff.** Best is 0.3 at **+1.0 SE**, which is nothing. At this
+   training scale (350 matches) PPO does not produce a policy the benchmark can distinguish from a
+   random init — consistent with §3v.
+4. **The ONE signal in the table is crowns TAKEN for arm 0.3**: 0.233 ±0.008 vs untrained's
+   0.158 ±0.036, about **+2.0 SE**, and 3.0 wins/40 against untrained's 0.7. Marginal, single
+   experiment, small budget — but it is the first time anything in this project has moved the
+   metric that actually gates the winrate, and it moved in the direction of MORE drills, not fewer.
+
+### What this means for where the fix has to go
+
+drill_frac is settled and it is not the problem. The remaining candidate is the one §3v pointed at:
+**the offence has no reachable positive signal.** In the 8k ledger `take_enemy_tower` — the largest
+carrot the reward can pay — has **zero fires**, because the policy has never taken a tower; while
+the offence-related terms sum NEGATIVE (`xbow_into_push` −4.00 against `wincon_exec` +1.20 for one
+fire each). If that ratio survives a proper sample, attempting offence is expected-value negative
+and gradient descent is correctly learning to stop trying. **Measure that on a real sample before
+changing anything** — those are 1-fire terms and this file already carries two retractions caused by
+exactly that kind of extrapolation.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
