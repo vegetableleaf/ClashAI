@@ -1567,6 +1567,43 @@ a checkpoint trained UNDER the 4.5 floor, i.e. from the weights that had learned
 the floor did not undo the habit in 10k matches. **A config revert does not revert the policy** —
 if the dumping is to be unlearned, the run has to start from weights that never learned it.
 
+### ⚠ CORRECTION (same day): the quiet-board guard CONTRADICTED THE DOCTRINE
+
+Owner caught it: *"x_bow shouldn't only be played when the board is completely quiet. For offensive
+x_bows, if the board is RELATIVELY quiet and the opponent is low on elixir, that's fine. And if
+there's a lot of enemy activity, a defensive x_bow can be placed to set up defense."* Correct, and
+it is already written down -- DOCTRINE.md:41 gives the bow **two** modes and a quiet board is
+NEITHER:
+
+* **OFFENSIVE** -- row 53 gates it on *"opponent spent >=7 elixir away from our bow lane"*, an
+  ELIXIR condition. `_punish_window` is exactly that test, and `_wincon` already pays
+  `xbow_punish_mult` (1.5x) on it.
+* **DEFENSIVE** -- rows 56/63/79, centre band (0.48, 0.55), a second pull building. It requires a
+  PUSH. `_xbow_into_push` already EXEMPTS it ("it IS a pull building").
+
+So both modes were implemented and priced, and the new guard invented a third notion of a correct
+bow that contradicted both -- suppressing the credit in exactly the state (a push) that most calls
+for a defensive bow. Measured at m=10000 over 12 matches, on the 286 steps where the bow was in
+hand and affordable:
+
+```
+old guard : board quiet             47   16.4%
+OFFENSIVE : _punish_window         252   88.1%
+DEFENSIVE : real push present      201   70.3%
+either (doctrine says bow)         266   93.0%
+```
+
+**Fixed:** `_wincon_reach` now keys off those two predicates instead. Re-ran the exact diagnostic:
+**10 arms / 10 paid (100%, was 4/210 = 2%)**, credit 0.33 -> **0.83 per match**. Arms fell 210 -> 10
+because the one-time latch now actually latches rather than being blocked and re-arming every step.
+
+**Lesson, and it is the general one:** when a reward needs to know "is this play correct here", reuse
+the predicate the rest of the file already trusts. Two terms with different ideas of a correct bow
+is a bug that no test catches, because each is internally consistent.
+
+**Not caused by this batch:** `test_budget_caps_and_hysteresis_refills` fails in `_threat_response`
+(`0.0 not greater than 0.0`). Verified pre-existing by stashing. 615/616 otherwise.
+
 ### Drills nearly TRIPLED while the benchmark stayed flat — the §3p decoupling, again
 
 `run.py drills --policy` (priors off, the honest number): **mean 33.7%, 8 of 28 at zero**, against

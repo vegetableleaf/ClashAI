@@ -808,13 +808,30 @@ class SimMatchEnv:
         Fires once per hand-cycle, the first step on which:
           * a win condition is in hand,
           * elixir has reached its cost (so it is genuinely playable now), and
-          * NO answerable threat worth answering is on the board.
+          * the DOCTRINE says a bow is the right play here -- either of its two modes.
 
-        The last condition is the whole safety argument. The obvious failure of any "hold elixir"
-        incentive is hoarding: wincon in hand, play nothing, defence collapses. Here holding through
-        a push pays exactly zero AND still incurs threat_miss_idle, so answering is strictly better
-        than banking whenever there is something to answer. Banking is only ever rewarded on a quiet
-        board, which is when it is correct.
+        ⚠ THE ORIGINAL GUARD HERE WAS "no answerable threat on the board", AND IT WAS WRONG.
+        DOCTRINE.md:41 gives the X-Bow **two** modes, and a quiet board is neither of them:
+
+          OFFENSIVE  their side / behind-bridge / centre-front, locking the princess. Row 53 gates
+                     it on "opponent spent >=7 elixir away from our bow lane" -- an ELIXIR
+                     condition, not a quiet one. `_punish_window` is exactly this test and is
+                     already what `_wincon` pays `xbow_punish_mult` on.
+          DEFENSIVE  centre band (0.48, 0.55), acting as a second pull building -- rows 56/63/79.
+                     This one requires a PUSH. It is the answer TO enemy activity, so the old
+                     guard suppressed the credit in precisely the state that most calls for a bow.
+                     `_xbow_into_push` already exempts it for the same reason ("it IS a pull
+                     building"), so the two terms had contradictory ideas of a correct bow.
+
+        MEASURED at m=10000 over 12 matches, on the 286 steps where the bow was in hand and
+        affordable: old guard admitted 16.4%, offensive window 88.1%, real push 70.3%, either
+        93.0%. In training the old guard paid 4 times out of 210 arms -- 2% -- so the term was
+        inert and x_bow share HALVED (2.08% -> 1.06%) over the 10k matches it was live.
+
+        Hoarding is still not rewarded, and the argument does not rest on the guard: the credit is
+        ONE-TIME per hand-cycle and pays for REACHING the cost, so idling past it earns nothing,
+        while `threat_miss_idle` keeps billing every ignored answerable push at -1.00 a step. A
+        HOARD-always policy was measured at +0.50 reach/match against -17.17 threat_miss_idle.
 
         Resets when the win condition leaves hand, so it cannot be re-collected by hovering at the
         threshold -- and paying for REACHING rather than STAYING means idling past it earns nothing.
@@ -832,17 +849,19 @@ class SimMatchEnv:
             return 0.0
         if self._wc_reached or not pre_ok:
             return 0.0
-        # a threat worth answering suppresses it -- same triage the rest of this file uses
-        tid = self._threat_id_true
-        if tid is not None and len(tid) >= card_threat.IDENTITY_DIM and tid[0] >= 0.5:
-            committed = [u for u in self.eng.units
-                         if u.team == 1 and u.hp > 0 and u.spec.kind != "spell"]
-            if committed and threat_value.bodies_ignore_frac(
-                    self.db, [u.spec.base for u in committed],
-                    tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
-                return 0.0
-        self._wc_reached = True
-        return self.w_wincon_reach
+        # The doctrine's own two modes, reusing the predicates the reward already trusts rather
+        # than inventing a third notion of a correct bow (which is how the old guard drifted).
+        if self._punish_window(spend=self._bank_wincon_cost):
+            self._wc_reached = True                        # OFFENSIVE: they cannot answer a siege
+            return self.w_wincon_reach
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
+        if committed and threat_value.bodies_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+            self._wc_reached = True                        # DEFENSIVE: a bow is a second pull building
+            return self.w_wincon_reach
+        return 0.0                                         # neither mode applies: nothing to bank for
 
     def _threat_miss_idle(self) -> float:
         """No play while an ANSWERABLE threat is present (a counter is in hand AND affordable) = a missed
