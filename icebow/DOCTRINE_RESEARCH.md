@@ -314,6 +314,89 @@ Ordered; first match fires. All damage numbers are **post-Season-84 (2026-06-01)
 
 ---
 
+## 3A. OFFENSIVE X-BOW — THE FULL WINDOW LIST (research 2026-08-23)
+
+**Why this section exists.** The reward gated the offensive bow on ONE condition (`_punish_window`,
+an elixir test) plus `_bow_split_punish` (a back-tank test). Owner: *"offensive x-bow shouldn't be
+gated on a single condition. Surely there's more windows."* Correct — there are at least eight, and
+the single most-stressed one in the guides is **cycle**, which is not implemented at all.
+
+Sources this section: the Fandom deck page for **our exact list** (`Deck:X-Bow_Ice_Wizard_Control`),
+`Deck:3.0_X-Bow_Cycle`, the 2.9 cycle blog, Theria Games. Fetched via `api.php` (page fetches 402).
+
+### The windows (⚙ = already coded, ✗ = not)
+
+| # | Window | Source | State |
+|---|---|---|---|
+| W1 | **Elixir advantage** over them | IW-Control, 2.9 blog | ⚙ `punish_elixir_gap >= 4` |
+| W2 | **Their bow-counter is OUT OF CYCLE** | IW-Control, stressed **twice** | ✗ partial — `_opp_can_block_now()` reads their HAND only, never cycle depth |
+| W3 | **Counterpush after a won defence, with the surviving defenders** | IW-Control: *"Another method to set up the X-Bow is after a defense, and counterpushing with your leftover defenders."* | ✗ |
+| W4 | **Near a FULL BAR (~10) with a good defensive hand** | 3.0 page (*"only X-Bow at around 10 elixir and when you have a good defensive hand"*), 2.9 blog (*"Once you have 10 elixir"*) | ✗ — `_punish_window` tests a GAP, never an absolute |
+| W5 | **They plant an Elixir Collector in single elixir → punish with the BOW, _not_ the Rocket** | IW-Control, explicit | ✗ ⚠ see conflict below |
+| W6 | **They hold no big spell** → *"defend freely after your X-Bow goes down, then counterpush with free units"* | IW-Control | ✗ |
+| W7 | **After single-elixir time**, vs decks whose only bow answer is a slow tank | IW-Control: *"a lot more aggressive with your offensive X-Bow after single Elixir time"* | ✗ |
+| W8 | **Their building-removal spell / big spell has been forced out** | §1 R7, Hunter | ✗ for the bow (coded for the rocket) |
+
+**W2 is the headline.** The IW-Control page makes it the primary decision input, twice:
+*"practice knowing your opponent's cycle, or at least where your opponent's counter to the X-Bow is
+in their cycle. This, again, helps with knowing whether to play an X-Bow on offense or not."*
+It even names the counter classes: **grounded tanks (P.E.K.K.A, Mega Knight), building-targeters
+(Hog Rider, Golem), ranged (Musketeer)**. `_opp_block_cost` already knows their cheapest blocker, so
+the cycle-depth extension is small — the sim owns their true deck order.
+
+### ⚠ CONTESTED — the back-tank punish, which IS coded
+
+`_bow_split_punish` fires an offensive bow when a heavy tank commits deep in their half. The sources
+do **not** agree, and the split is by TANK, not by the fact of a back-tank:
+
+* IW-Control: *"P.E.K.K.A in the back, go for an offensive X-Bow and try to break through"* — **for**.
+* IW-Control, same page: *"you don't want to offensive X-bow into a Golem"* — **against**.
+* Theria: *"If your opponent places a Golem or Giant at the back, don't play X-Bow"* — **against**.
+* 2.9 blog: *"If your opponent is building a push at the back, try not to play offensively"* — **against**.
+
+**Resolution (not yet compiled):** the discriminator is whether the tank ANSWERS a bow. A P.E.K.K.A
+is slow and lane-locked, so a bow the other side out-tempos it; a **Golem/Giant is a building-targeter
+and walks INTO the bow**, which is the counter-class the page names. So `_bow_split_punish`'s current
+"any tank ≥5 elixir, ≥2000 HP, y < 0.25" is too broad — it should exclude building-targeting tanks in
+the SAME lane. Note DOCTRINE.md row 79 (opposite-lane bow vs a Golem behind their king) survives this,
+because opposite-lane is exactly the out-tempo case; it is the SAME-lane bow that the sources forbid.
+
+### ⚠ CONFLICT with a shipped drill — `rocket_the_pump_on_sight`
+
+W5 says the single-elixir answer to a pump is the **X-Bow, not the Rocket** (in the bridge-spam
+matchup). The drill `rocket_the_pump_on_sight` teaches the opposite unconditionally. Not changing the
+drill on one source, but it should not be treated as settled doctrine either. **Needs resolution.**
+
+### Placements — the guides' format is (tiles from RIVER, tiles from PRINCESS TOWER)
+
+> ⚠ **Do NOT transcribe these numbers into the sim.** §8's standing trap: the sim is board-true and
+> two independent sessions have already transcribed a doc's coordinates wrongly. Convert through the
+> engine's own river/bridge/tower anchors. They are recorded here as TILES, which is the safer frame.
+
+**Offensive:**
+* **1 tile from the river, 1 tile from the outermost wall** — the typical IW-Control offensive plant.
+* **Outside variant** (3.0 page): one tile below the bridge, centred one tile to the OUTSIDE of it.
+* **Inside/centre variant**: one tile below the bridge, centred one tile to the INSIDE. *"Melee units
+  can't hit it, and have to walk all the way around the bridge to the center of the arena."*
+* 🔑 **POCKET-RELEVANT:** of the inside variant — *"When you have lost a tower, this placement allows
+  for it to only be hit from 2 sides, instead of 3 or 4 like other offensive placements."* We shipped
+  the pocket (§3q) and nothing yet prefers this cell once a princess is down.
+* ⚠ **1 tile from the bridge → a Mega Knight JUMPS onto the X-Bow** if undistracted.
+
+**Defensive, anti-spell** (all "from river – from Princess Tower"):
+
+| Plant | Beats | Note |
+|---|---|---|
+| **4-2** | Rocket (2.0 radius) | pulls ALL units coming from the bridge — best when they hold Goblin Barrel / Miner |
+| **4-3** | Rocket, **and denies The Log tower value** | *"most of the time better"* — pulls building-chasers farther from the towers |
+| **3-4** | Fireball / Zap / Snowball (2.5) | |
+| **4-4** | Freeze (3.0), and Musketeer snipe | the ONLY plant that beats Freeze |
+| **4-6** | Lightning / Poison / Earthquake (3.5) **and Arrows (4.0)** | |
+| **6-3** | — | the Balloon **chain-pull to the King**, paired with a 4-2 Tesla |
+| — | Tornado (5.5) | no realistic plant avoids it; not worth their Tornado anyway |
+
+All assume the bow is planted **away from the weaker tower**.
+
 ## 4. HUNTER CR — where he diverges from generic guides
 
 1. **Rocket is a defensive/tempo tool, not just a value spell.** He rockets Royal Hogs in his own

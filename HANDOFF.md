@@ -1604,6 +1604,49 @@ is a bug that no test catches, because each is internally consistent.
 **Not caused by this batch:** `test_budget_caps_and_hysteresis_refills` fails in `_threat_response`
 (`0.0 not greater than 0.0`). Verified pre-existing by stashing. 615/616 otherwise.
 
+### FROM-SCRATCH WOULD BE WORSE — measured, and it corrects what I told the owner
+
+The pre-bank checkpoint is gone (overwritten), so the question was whether to restart from zero. I
+had blamed the elixir dumping on bank-trained weights carried in by `--init`. **That was wrong.**
+
+```
+                            elixir median   bow affordable
+UNTRAINED (from scratch)        1.79            0.1% of steps
+m=6000 (best)                   2.29            4.6%
+m=10000 (current)               2.21            3.8%
+```
+
+An untrained gate dumps HARDER -- it plays ~half the time with random cards. The trained checkpoints
+are strictly better on elixir and on bow-affordability, and identical to untrained on the benchmark.
+So there is nothing to gain by discarding the drill progress (33.7% mean). **Keep the checkpoint.**
+
+### OFFENSIVE BOW: it was gated on ONE condition, and the doctrine has EIGHT
+
+Owner: *"offensive x-bow shouldn't be gated on a single condition."* Right. Researched and written up
+in full in `DOCTRINE_RESEARCH.md` §3A (sources: the Fandom page for OUR exact deck, the 3.0 page, the
+2.9 blog, Theria -- all via `api.php`, since page fetches 402). Eight windows; two are coded.
+
+**The headline gap is CYCLE (W2)**, which our deck's own page makes the primary decision input and
+states twice: *"know where your opponent's counter to the X-Bow is in their cycle... helps with
+knowing whether to play an X-Bow on offense or not."* `_opp_can_block_now()` reads their HAND only.
+The sim owns their true deck order, so cycle depth is a small extension of `_opp_block_cost`.
+
+Also uncoded: counterpush-off-a-won-defence with surviving defenders (W3), near-full-bar-with-a-
+defensive-hand (W4, and `_punish_window` tests a GAP not an absolute), pump-punish-with-the-BOW (W5),
+they-hold-no-big-spell (W6), after-single-elixir (W7), their-big-spell-forced-out (W8).
+
+**Two things that need resolving before compiling, both recorded in §3A:**
+1. `_bow_split_punish` is **too broad**. Sources split by TANK, not by back-tank-ness: P.E.K.K.A in
+   the back -> bow (IW-Control), but *"you don't want to offensive X-bow into a Golem"* (same page)
+   and Theria/2.9 both say don't. Discriminator: a building-targeting tank WALKS INTO the bow. Same
+   lane vs a Golem/Giant should be excluded; DOCTRINE row 79's OPPOSITE-lane bow survives.
+2. W5 conflicts with the shipped `rocket_the_pump_on_sight` drill -- the page says answer a
+   single-elixir pump with the BOW, not the Rocket. One source; not changed, not settled either.
+
+**Pocket tie-in nobody has used yet:** the inside/centre offensive plant *"when you have lost a tower
+allows it to only be hit from 2 sides, instead of 3 or 4"*. We shipped the pocket in §3q and no cell
+preference reacts to a lost princess.
+
 ### Drills nearly TRIPLED while the benchmark stayed flat — the §3p decoupling, again
 
 `run.py drills --policy` (priors off, the honest number): **mean 33.7%, 8 of 28 at zero**, against
