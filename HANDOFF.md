@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-22**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-23**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -1507,6 +1507,100 @@ prints ONCE when it first fires; if the line is absent, it is not running.
 
 ---
 
+## 3r. 2026-08-23 — THE WINCON BANK FAILED TWICE, AND ITS REPLACEMENT IS 98% INERT
+
+Three commits and one full eval at 10k matches. **Net result: the x_bow incentive did not work, and
+the match benchmark is still at the untrained line.** Read this before trying a third wincon nudge.
+
+### The bank failed in BOTH directions (`3003d50` on, `b53bb4c` off)
+
+`sim.wincon_bank_floor` masks cards cheaper than a held win condition while the bar climbs to its
+cost. It has now been tried twice and failed in opposite directions:
+
+| | setting | what the policy did |
+|---|---|---|
+| 2026-08-14 | low floor | **70% forced waits** — the mask ate the whole action space |
+| 2026-08-23 | 4.5 | **dumped elixir to stay UNDER the floor**: median 5.29 → 2.46, x_bow affordable 45% → 9% |
+
+**The mechanism is the same both times and it is the reason a mask cannot work here: the policy
+controls its own bar.** A floor that only binds above X elixir is avoidable by never being above X.
+`wincon_bank_floor: 0` and it should stay there — this is not a tuning failure, it is structural.
+
+### `rewards.wincon_reach: 0.5` — the replacement, and why it barely fires
+
+A ONE-TIME credit the first time the bar reaches a held wincon's cost on a board with no answerable
+threat. Chosen over a per-step hold bonus because a per-step bonus is farmable by hoarding — which
+is precisely the failure to avoid (owner flagged this risk before it shipped; it was measured first:
+a HOARD-always policy scores +0.50 reach/match but −17.17 `threat_miss_idle`, net −16.67).
+
+**MEASURED AT 10k MATCHES — it is nearly inert.** Instrumented clause by clause, 6 matches:
+
+```
+steps            1589
+holding           874    x_bow in hand
+pre_ok            371    ... and bar >= 6.0
+armed             210    ... and credit not yet taken this cycle
+paid                4    <-- 2% of arms
+blocked_threat    206    <-- 98%, killed by the no-answerable-threat guard
+```
+
+**The guard is the whole story: the board is essentially never quiet when the policy holds the bow
+with 6+ elixir.** The term as written can only pay in a state this sim almost never produces. Any
+third attempt must either relax that guard or price the EXECUTION rather than the reach.
+
+### The 10k eval — the benchmark did not move, and x_bow went DOWN
+
+Run: started 11:50, `--envs 192 --workers 12 --device cuda`, **`--init policy_ppo_drill_best.pt`**.
+
+```
+                    W-L-D    winrate   crowndiff        x_bow share   elixir median
+UNTRAINED           1-39-0     2.5%    -1.850 +-0.148        -              -
+m=6000 (best)       1-39-0     2.5%    -1.875 +-0.159       2.08%         2.29
+m=10000             1-39-0     2.5%    -1.925 +-0.134       1.06%         2.14
+```
+
+All three are the same policy by the benchmark. **x_bow HALVED (2.08% → 1.06%) over the 10k matches
+the incentive was live** — the opposite of the intended effect. Known-good reference is 36%.
+
+**⚠ The elixir median (2.14) is inherited, not caused by this change.** The run was `--init`ed from
+a checkpoint trained UNDER the 4.5 floor, i.e. from the weights that had learned to dump. Removing
+the floor did not undo the habit in 10k matches. **A config revert does not revert the policy** —
+if the dumping is to be unlearned, the run has to start from weights that never learned it.
+
+### Drills nearly TRIPLED while the benchmark stayed flat — the §3p decoupling, again
+
+`run.py drills --policy` (priors off, the honest number): **mean 33.7%, 8 of 28 at zero**, against
+the §3p baseline of **12% and 16 of 28 at zero**. Real, large drill improvement; **zero** benchmark
+movement. This is the second clean instance of "drill learning does not predict match performance".
+Do not read a rising drill mean as progress on the objective.
+
+The drill that directly tests the behaviour this change was meant to induce:
+`bank_to_six_then_bow` **16%** vs doctrine 100%. It is failing, consistent with the x_bow decline.
+
+Still at 0%: `bow_never_into_the_push`, `hold_the_spell_for_a_target`, `ignore_the_ignorable`,
+`log_rolls_forward_not_backward`, `log_the_ground_swarm`, `nado_king_activation`,
+`rocket_then_tornado`, `skeletons_stop_the_wall_breakers`.
+
+### `threat_miss_idle` is the largest negative term BY DESIGN — stop re-investigating it
+
+Owner asked why it is still the most negative term after 10k matches. Measured: it fires on **0.8%
+of decisions** (13 fires / 1610), at **median 5.29 elixir with a full affordable hand** — never once
+below 2.0. It is the largest term because it is the largest PER FIRE (−1.00, versus `elixir_trade`
+at −0.04/fire over 41 fires), not because it fires often. Two fires outweigh forty small ones.
+
+So it is not a mispricing and not a mask artefact: those are genuine misses, ~2/match, on boards
+where the policy had both the elixir and the counter. `bowler` was 3 of 13.
+
+### Trap added (§8)
+
+**An unmasked card-head sample is not a play distribution.** Sampling the card head without the
+in-hand-AND-affordable mask counts plays `eng.deploy()` would reject — it read 153 plays/match
+against the masked 38.5, and inflated x_bow from 1.06% to 8.61%. This is the SECOND time this
+exact bug produced a wrong number in this project (the first: "tesla played 609 times while dealt
+on 283 steps"). `cards.py` and `ledger.py` carry the mask; anything ad-hoc must copy it.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -1912,6 +2006,15 @@ configured but **have never run** — BC has not been retrained since the soft-t
   **Anchor every sim spot to the engine's own towers/bridges/banks and never transcribe the
   doc's numbers** -- the review workflow caught this; the tests had been written loose enough to
   pass either frame.
+* **An unmasked card-head sample is not a play distribution.** Sampling the card head without
+  the in-hand-AND-affordable mask counts plays `eng.deploy()` would reject: 153 plays/match
+  against the masked 38.5, and x_bow inflated 1.06% -> 8.61%. This bug has now produced a wrong
+  number TWICE (first: "tesla played 609 times while dealt on 283 steps"). `cards.py` and
+  `ledger.py` carry the mask; copy it into anything ad-hoc rather than re-deriving it.
+* **A config revert does not revert the POLICY.** `wincon_bank_floor` went 4.5 -> 0, but the run
+  was `--init`ed from weights trained under the floor and kept dumping elixir (median 2.14) for
+  the next 10k matches. When a change taught the policy a habit, removing the change is not
+  enough -- measure whether the behaviour actually went with it.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
