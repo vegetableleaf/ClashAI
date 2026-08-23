@@ -1403,7 +1403,15 @@ sim:
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)
   curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %
-  eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
+  eval_every_matches: 2000      # RAISED 500 -> 2000 (2026-08-23). MEASURED: one EVAL takes 195 s because
+                                # fair_eval defaults TRUE, so it plays 150 ladder + 150 fair = 300
+                                # matches -- in the PARENT process, which does not use the rollout
+                                # workers, so it runs at ~92 matches/min against training's 600. At
+                                # 500 that was 245 s per cycle for 50 s of training: 80%% of wall
+                                # clock spent benchmarking. At 2000 it is ~304 matches/min effective,
+                                # 2.5x, with both benchmarks and their full 150-match power intact.
+                                # best_wr moved ONCE in 39,500 matches -- the curve does not need
+                                # eight samples per 4,000 matches.
   eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
   eval_envs: 96                  # vectorized eval envs (capped at --envs)
   eval_smooth_window: 5         # print a ROLLING AVERAGE of the last N benchmark points so a plateau vs noise is readable
