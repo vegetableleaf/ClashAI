@@ -354,7 +354,13 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
     # weight times a loss-rate factor. Decks we already beat keep their popularity weight, so the
     # distribution stays recognisably ladder-shaped rather than collapsing onto our worst matchup
     # (which is the failure mode the 0.5/power-2.0 self-play mix demonstrated).
-    _pw = float(cfg.get("sim", "deck_pfsp_power", default=0.0))
+    # TRAINING ONLY, gated on `adaptive` exactly like the adaptive bots are. The eval benchmark
+    # builds its opponents through this same function and never passes adaptive=True, "so eval
+    # curves stay comparable" (see the adaptive docstring). Weighting the EVAL pool toward the decks
+    # we lose to would sink the benchmark for reasons that have nothing to do with the policy and
+    # make every run incomparable with every previous one -- which is exactly the mistake the
+    # adaptive flag exists to prevent.
+    _pw = float(cfg.get("sim", "deck_pfsp_power", default=0.0)) if adaptive else 0.0
     if _pw > 0.0:
         _st = getattr(cfg, "_deck_record", None)
         if _st:
