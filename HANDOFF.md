@@ -71,6 +71,22 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ### Environment gotchas (all cost real time to discover)
 
+* **⚠ GIT BASH `ps` AND `pkill` CANNOT SEE WINDOWS PROCESSES. They fail SILENTLY and report
+  success.** `pkill -f train-sim-ppo` printed nothing and `ps aux | grep -c '[t]rain-sim-ppo'`
+  returned **0** while **90 python processes were still running** — three stacked A/B batches that
+  every previous "cleanup" had left alive. Free RAM was down to **0.5 GB** (the §3 thrashing
+  condition) and a fresh 12-run sweep was crawling at 0.1 ep/s against 78 zombies, which would have
+  been read as "the sweep is slow" rather than "the machine is full".
+  **Use PowerShell for anything to do with process lifecycle:**
+  ```powershell
+  Get-CimInstance Win32_Process -Filter "Name like '%python%'" |
+    Where-Object { $_.CommandLine -like "*train-sim-ppo*" -or $_.CommandLine -like "*multiprocessing.spawn*" }
+  # ... | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+  ```
+  Kill the `multiprocessing.spawn` children too — they outlive the parent. And **verify the kill by
+  re-counting**, because the failure mode here is a clean-looking no-op. NB each `run.py
+  train-sim-ppo` is TWO python processes (launcher + trainer), so 12 launches reads as 24.
+
 * **`yolo.exe` produces NO output under this shell** — even `yolo checks` is silent with exit 0, and
   the process never actually runs. Train the detector through the Python API instead
   (`icebow/_train_board26.py` is the working launcher).
