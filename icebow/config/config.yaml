@@ -888,6 +888,17 @@ env:
   rocket_nado_radius: 0.11             # ...and within this of the TORNADO'S OWN TILE. The user's rule: 'the tornado and rocket need to be cast in the same tile for the combo to work most effectively' -- the pull holds the bundle for a moment only.
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.
   nado_pull_tiles: 5.5                 # the tornado's actual pull radius in TILES. The combo credit requires real enemy bodies inside it worth rewards.rocket_min_worth -- without that gate the credit paid in full for two casts at an empty tile.
+  nado_retarget_min_worth: 2.0         # elixir a SINGLE body must be worth for the tornado RETARGET credit.
+                                       # DELIBERATELY LOWER than rocket_min_worth (4.0, a code default):
+                                       # dragging a tower-locked wincon onto the Tesla is valuable even
+                                       # though most wincons pulled that way are worth less than a rocket,
+                                       # so gating it at 4.0 would delete the credit for the very
+                                       # interaction it exists to reward. nado_CLUMP stays rocket-gated --
+                                       # a clump is only worth paying for when it is worth the rocket it
+                                       # sets up. (2026-08-23: measured a tornado cast paying +0.49 vs
+                                       # +0.03 for executing the WIN CONDITION -- 16x -- which is why the
+                                       # policy spent 46%% of its plays on spells and had no elixir left
+                                       # to defend.)
   tornado_time: 1.2              # seconds from cast to a tornado's effect at the target
   royal_delivery_time: 3.0       # seconds from cast to Royal Delivery's area damage
   spell_tower_aim_radius: 0.12   # target within this of an enemy princess = chip/combo (spell aim + wincon)
@@ -960,10 +971,6 @@ env:
 
 # --- Running the trained policy live -------------------------------------
 play:
-  spell_target_mask: false     # LIVE: a spell may only be cast where spell_whiffed()
-                              # says it would hit something. Same criterion the live
-                              # reward verifies casts with. Off by default -- verify
-                              # with a short live session before trusting it.
   act_period: 0.6                # LOWERED 1.0 -> 0.6 with sim.agent_dt (2026-08-20) -- see the note there.                # seconds between decisions. LOWERED 1.5 -> 1.0 = the sim's agent_dt (the policy
                                  # trained its reaction timing + per-step reward economics at 1.0s): between
                                  # decisions the model is BLIND, so this bounds its reaction time to a new threat.
@@ -1389,7 +1396,7 @@ sim:
   curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %
   eval_every_matches: 500       # run the benchmark this often (matches); 0 disables it
   eval_matches: 150             # greedy matches per benchmark (bigger = less noise: ~+-4pp at 150 vs ~+-10pp at 24)
-  eval_envs: 8                  # vectorized eval envs (capped at --envs)
+  eval_envs: 96                  # vectorized eval envs (capped at --envs)
   eval_smooth_window: 5         # print a ROLLING AVERAGE of the last N benchmark points so a plateau vs noise is readable
   fair_eval: true               # ALSO benchmark vs the meta pool at a FAIR (equal) level -- isolates raw policy strength from the L13-16 handicap
   fair_eval_level: null         # fair-eval enemy card level (null = auto: rounded mean of YOUR deck's card levels)
@@ -1424,21 +1431,6 @@ sim:
   # Snapshots with little history sample at medium priority; a small floor keeps every snapshot in play.
   selfplay_pfsp: true
   selfplay_pfsp_power: 1.0      # >1 = sharper focus on the hardest snapshots; 1.0 = proportional.
-  deck_pfsp_power: 0.0        # DECK EXPLOITERS. >0 samples META DECKS we keep LOSING to more
-  deck_record_ship_every: 50  # matches between shipping the per-deck record to the ROLLOUT
-                              # WORKERS. They hold their own cfg, so without this hop deck
-                              # PFSP does nothing whenever --workers > 0. Each ship blocks
-                              # on a round trip per worker, so it is batched.
-                              # often (popularity weight x loss-rate ** this). AlphaStar's
-                              # league exploiters exist to find and punish the main agent's
-                              # weaknesses; self-play cannot supply that here because a
-                              # frozen self only pilots OUR deck (the mirror, ~1 of 100
-                              # matchups, and icebow is rare on ladder). The deck pool IS
-                              # the league. Start ~0.5; 0 = uniform popularity, as before.
-                              # Decks we already beat keep their popularity weight, so the
-                              # pool stays ladder-shaped instead of collapsing onto the
-                              # worst matchup -- which is how the 0.5/power-2.0 SELF-play
-                              # mix drove the benchmark 19.3%% -> 1.3%% overnight.
                                 # LOWERED 2.0 -> 1.0 (2026-08-13) with the selfplay reintroduction:
                                 # power-2 over-sampling of the hardest selves is the other half of
                                 # the league-drift diagnosis (see selfplay_prob history above).
@@ -1456,22 +1448,8 @@ sim:
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
-  ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
-  ppo_spell_target_mask: true # a SPELL may only be cast where it would actually hit
-  ppo_spell_mask_anneal: 25000 # episodes over which the spell mask DECAYS OFF. A permanent
-                             # mask caps the model at the judgement in the criterion -- it
-                             # could never learn a cast the criterion forbids (a "whiff" at
-                             # ground a Hog is about to walk onto is a real technique). So
-                             # it is a training wheel: near-total while the policy is close
-                             # to random and a whiffed Rocket is 6 elixir of noise, then
-                             # gone. 0 = never decay (permanent mask).
-  ppo_spell_mask_end: 0.0     # ...what it decays TO. 0.0 = fully unmasked at the end.
-                             # something. Uses the env's own _spell_no_target criterion,
-                             # so it forbids exactly what spell_waste would have charged
-                             # for -- and keeps its generous radius, so predictive and
-                             # near-miss casts stay legal. A whiff is a RANDOM choice
-                             # during exploration and -0.3 cannot prevent one; the real
-                             # cost is the elixir that is then missing for the counter.
+  ppo_drill_gate_mask: true # drill steps do NOT train the play/wait GATE (they still
+  ppo_drill_gate_mask: true # drill steps do NOT train the play/wait GATE (they still
                              # train the card and cell heads). The gate is the head that
                              # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs
                              # 0.92-0.99 without -- while the cell head learns fine. Drills
@@ -1559,7 +1537,7 @@ sim:
   # common is the whole point -- so it gets its own, much higher floors. Both stay MIXTURES: the
   # stored log-prob is the mixture's, so the PPO ratio remains exact importance sampling and the
   # policy still has to choose the action and is still graded on the outcome.
-  ppo_drill_cell_floor: 0.25    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
+  ppo_drill_cell_floor: 0.75    # WHERE, at the START of training. At the match floor (0.15 x doctrine_frac 0.6 = 9% of cell
                                 # mass) nine of 28 drills produced 0-3 passes in 60 episodes even
                                 # with their reference cell in the prior -- too rare to learn from.
   ppo_sil_coef: 0.0             # SELF-IMITATION on drill successes. OFF by default.
@@ -1589,7 +1567,7 @@ sim:
                                 # ALSO MEASURED: neither arm moved the cell head at 5000 drill
                                 # episodes (both at ln(157) exactly), so this budget cannot answer
                                 # whether the term helps placement -- only that 0.05 hurts.
-  ppo_drill_cell_floor_end: 0.10    # ...and where the drill cell floor ANNEALS TO. A high FIXED
+  ppo_drill_cell_floor_end: 0.20    # ...and where the drill cell floor ANNEALS TO. A high FIXED
                                 # floor buys the rare success and then throws its gradient away: the
                                 # stored log-prob is the mixture's, so PPO forms r = pi/mu, and
                                 # MEASURED on the 4000-match checkpoint the sampler put 0.28 on the
@@ -1598,7 +1576,7 @@ sim:
                                 # indistinguishable from an untrained net (6.0652 vs 6.0684 of 6.0684).
                                 # Decaying the floor lets mu approach pi so the successes teach.
   ppo_drill_cell_floor_anneal: 6000  # episodes to decay over. 0 = constant (old behaviour).
-  ppo_drill_gate_floor: 0.30    # WHEN, from the drill's reference line, which records the time each
+  ppo_drill_gate_floor: 0.85    # WHEN, from the drill's reference line, which records the time each
                                 # card is played. The gate was the one head with no prior at all,
                                 # and it is the one the timing drills turn on: bank_to_six,
                                 # hold_the_spell, hold_the_tesla and nado_king_activation are passed

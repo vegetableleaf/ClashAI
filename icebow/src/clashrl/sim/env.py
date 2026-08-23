@@ -326,7 +326,10 @@ class SimMatchEnv:
         # CONDITIONAL ROCKET VALUE (see _rocket_value). A rocket is not worth a fixed amount: the
         # same cast is a game-winning tiebreak chip or six elixir thrown at three Skeletons
         # depending entirely on the board and the clock.
-        self.rocket_min_worth = float(cfg.get("env", "rocket_min_worth", default=4.0))   # elixir in the blast to count as VALUE
+        self.rocket_min_worth = float(cfg.get("env", "rocket_min_worth", default=4.0))
+        # RELAXED gate for the tornado RETARGET credit -- see the credit site. A wincon dragged off
+        # your tower is worth paying for even when that one body is worth less than a rocket.
+        self.nado_retarget_min_worth = float(cfg.get("env", "nado_retarget_min_worth", default=2.0))   # elixir in the blast to count as VALUE
         self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))   # tornado-bundled rocket = 2-for-1 class
         self.rocket_nado_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))      # combo timing window
         self.rocket_chip_behind = float(cfg.get("rewards", "rocket_chip_behind", default=1.2))  # losing/level the tiebreak race
@@ -1954,10 +1957,31 @@ class SimMatchEnv:
                 w["early_done"] = True
                 alive_close = [u for u in w["pulled"]
                                if u.hp > 0 and tile_dist(u.x, u.y, w["cx"], w["cy"]) <= 2.2]
-                if len(alive_close) >= 2:
+                # WORTH GATES (2026-08-23). `nado_combo` already required the pulled bodies to be
+                # worth >= rocket_min_worth, added because "without that gate the credit paid in
+                # full for two casts at an empty tile". clump and retarget had no such gate, and
+                # measured it showed: a tornado cast paid +0.49 while executing the WIN CONDITION
+                # paid +0.03 -- 16x -- so the policy cast spells on 46% of its plays and left
+                # itself no elixir for defence (threat_miss_idle became the largest penalty at
+                # -11.00). Unbounded per-cast credits are an income stream, not a skill signal.
+                #
+                # The two gates are DELIBERATELY ASYMMETRIC (owner's call, and it is a game point
+                # rather than a tuning one):
+                #   * CLUMP is rocket-gated. Clumping bodies is only worth paying for when the
+                #     clump is worth a rocket -- that is the play it sets up.
+                #   * RETARGET is gated much lower. Dragging a tower-locked win condition off your
+                #     tower onto the Tesla is valuable even when that single body would never
+                #     justify a rocket: most wincons pulled this way are worth less than one.
+                #     Gating retarget at rocket_min_worth would delete the credit for exactly the
+                #     interaction it exists to reward.
+                def _worth(units):
+                    return sum(float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count)
+                               for u in units)
+                if len(alive_close) >= 2 and _worth(alive_close) >= self.rocket_min_worth:
                     credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
                 for u, tw, d0 in w["targeters"]:
-                    if u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6:
+                    if (u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6
+                            and _worth([u]) >= self.nado_retarget_min_worth):
                         credit += self.w_nado_retarget
                         break                                    # one retarget credit per cast
             if age >= 3.5:
