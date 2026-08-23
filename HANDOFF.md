@@ -1774,6 +1774,84 @@ row 79 licenses. The Golem-in-the-same-lane bow the guides forbid never fired. N
 
 ---
 
+## 3t. 2026-08-23 — DEFENSIVE DOCTRINE AUDIT
+
+Owner asked, after the offensive windows: *"check if there are any defensive segments in the
+doctrine that have not been coded yet."* Audited DOCTRINE.md §0 (fundamentals), §1 (niches),
+§2 (synergies) and §4 (standing placement priors) against `sim/doctrine.py`, `threat_value.py`
+and `sim/env.py`.
+
+### ⚠ FIRST, A CORRECTION I HAD TO MAKE MID-AUDIT
+
+I initially reported the defensive coverage as four cards, reading it off `_bow_defence_cells`
+(knight / skeletons / ice_wizard / tesla). Owner: *"every card in icebow deck can be used for
+defense, not just the four you listed. Doctrine should agree with me and if not, something is
+wrong."* **Correct on both counts, and the doctrine does agree** — DOCTRINE.md §1 gives all eight a
+defensive role (X-Bow "second pull building", Rocket "heavy removal", Tornado "drag units off a
+lock", Log "knockback/charge-reset"), and so does the code:
+
+* **Placement rules exist for all eight** in `_doctrine_cells_rules`: `tesla`, `x_bow`, `knight`,
+  `skeletons`, `ice_wizard`, `tornado`, `the_log`, `rocket`.
+* **All eight are nominated defensively** in `doctrine_cards` (tesla 6.0 for their wincon, knight
+  4.5 vs melee, skeletons 4.0, ice_wizard 3.5, tornado up to 5.0, log 4.5, rocket, bow 4.0).
+
+`_bow_defence_cells` is only the *bow-bodyguard formation* — one context, not the defensive
+inventory. Reading a subsystem's dispatch list as the whole picture was the error.
+
+### CONFIRMED UNCODED (the list is short, because coverage is good)
+
+1. **Log ahead of a locked X-Bow** (§2 synergy — the Log's one offensive-support role).
+   `_bow_defence_cells` returns False for `the_log`, so it falls through to the generic ground-swarm
+   rule, which targets the **deepest** ground unit in OUR half (`max(ground, key=u.y)`, clamped
+   `0.46 <= y <= 0.62`). The defenders walking onto a FORWARD bow stand near the river on THEIR
+   side, so that rule can never propose this cast. Worth 1–2 extra bow shots plus a charge reset.
+
+2. **The Balloon chain-pull to the King** — Tesla 4-2, then a defensive bow 6-3 (new, §3A).
+   Blocked by the SAME two-card sequencing gap as the doctrinal rocket→tornado order: the cell
+   prior scores one placement at a time and cannot say "this card, then that one, in this order".
+   One primitive unblocks both; building either as a special case would be building it twice.
+
+3. **4-2 vs 4-3 plant discrimination.** `_spell_pair_risk` generically covers the anti-spell plant
+   family, but not the CHOICE: 4-2 pulls **all** units coming off the bridge (better when they hold
+   Goblin Barrel / Miner), while 4-3 pulls building-chasers farther from the towers **and** denies
+   The Log tower value. Nothing reads their win condition to pick between them.
+
+### PARTIAL
+
+4. **Evo Knight walk-tank + IW slow** (§2). Kiting PEKKA/MK to centre is coded and is close in
+   spirit, but *placed to WALK ACROSS the push* is not expressible today — and the evo's −60%
+   damage-taken-**while-walking** is exactly what makes it near-free. Needs a path geometry, not a
+   spot.
+
+5. **X-Bow + Tesla double-building** (§2). Both spots exist independently (Tesla centre-pull at
+   (0.48, 0.585); defensive bow band (0.48, 0.55)), and `_bow_defence_cells` will place a Tesla
+   between a standing bow and something attacking it. Missing: the PROACTIVE two-pull formation vs
+   RG/Hog — nothing places the second building *because the first is already down*, only in
+   reaction to a threat already on the bow.
+
+### ALREADY CODED — and DOCTRINE.md's own "implemented in" column is STALE about F4
+
+* **F1/F2/F3** (triage, threats add, outrange) — `threat_value.py`, as documented.
+* **F4** (*"minimise damage, don't prevent it; never spend more than the push cost"*). DOCTRINE.md
+  lists this as **"advisor prompt"**. It is not — `elixir_trade` is literally *(enemy value
+  eliminated − elixir spent)*, normalised and clipped: F4 priced as a reward on every play in the
+  sim, 41 fires in a 12-match ledger. **The doctrine table should be corrected.**
+* **F5's "keep the answer in hand"** — `_holdable` in `doctrine_cards`. The "cheapest card that
+  works" half is priced implicitly by `elixir_trade` rather than by a rule.
+* **§4.1 double-cover** (`_double_cover`, incl. the measured row-15 conflict); **§4.2 anti-spell
+  spacing** (`_spell_pair_risk` — the GENERAL form of the guides' 4-2/3-4/4-4/4-6 table, radii read
+  from the engine's own specs, so that table does not need transcribing and §8 forbids it anyway);
+  **§4.4** IW depth; **§4.5** skeletons cycle corners; **§4.6** nado destinations.
+
+### Ranking, if these get built
+
+(1) is the cheap one — a few lines in `_bow_defence_cells`, fires in a common state, and it is the
+only §2 synergy with no expression anywhere. (3) is small and reads only their known cards. (5) is
+a weight, not new geometry. (4) needs path geometry. (2) waits for the sequencing primitive and
+should be built with rocket→tornado, once.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
