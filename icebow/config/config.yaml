@@ -889,6 +889,12 @@ env:
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.
   nado_pull_tiles: 5.5                 # the tornado's actual pull radius in TILES. The combo credit requires real enemy bodies inside it worth rewards.rocket_min_worth -- without that gate the credit paid in full for two casts at an empty tile.
   nado_retarget_min_worth: 2.0         # elixir a SINGLE body must be worth for the tornado RETARGET credit.
+  nado_clump_medium_worth: 2.5         # a body worth at least this counts as a "MEDIUM". The clump
+                                       # credit needs >=2 mediums, per DOCTRINE.md: "a naked nado on a
+                                       # single tank is wasted" and "Rocket the clumped support if >=2
+                                       # mediums". A total-worth gate does NOT express that -- a 6-elixir
+                                       # tank plus one skeleton sums to 6.33 and would pass a 4.0 bar,
+                                       # which is the exact play the doctrine forbids.
                                        # DELIBERATELY LOWER than rocket_min_worth (4.0, a code default):
                                        # dragging a tower-locked wincon onto the Tesla is valuable even
                                        # though most wincons pulled that way are worth less than a rocket,

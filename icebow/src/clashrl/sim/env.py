@@ -329,7 +329,10 @@ class SimMatchEnv:
         self.rocket_min_worth = float(cfg.get("env", "rocket_min_worth", default=4.0))
         # RELAXED gate for the tornado RETARGET credit -- see the credit site. A wincon dragged off
         # your tower is worth paying for even when that one body is worth less than a rocket.
-        self.nado_retarget_min_worth = float(cfg.get("env", "nado_retarget_min_worth", default=2.0))   # elixir in the blast to count as VALUE
+        self.nado_retarget_min_worth = float(cfg.get("env", "nado_retarget_min_worth", default=2.0))
+        # A body this expensive counts as a "medium" for the clump credit -- DOCTRINE.md requires
+        # ">=2 mediums" before the clumped push is worth rocketing. See the credit site.
+        self.nado_clump_medium_worth = float(cfg.get("env", "nado_clump_medium_worth", default=2.5))   # elixir in the blast to count as VALUE
         self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))   # tornado-bundled rocket = 2-for-1 class
         self.rocket_nado_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))      # combo timing window
         self.rocket_chip_behind = float(cfg.get("rewards", "rocket_chip_behind", default=1.2))  # losing/level the tiebreak race
@@ -1977,7 +1980,19 @@ class SimMatchEnv:
                 def _worth(units):
                     return sum(float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count)
                                for u in units)
-                if len(alive_close) >= 2 and _worth(alive_close) >= self.rocket_min_worth:
+                # DOCTRINE, not a worth sum. DOCTRINE.md on the Tornado: "Cannot damage-kill
+                # anything alone; a naked nado on a single tank is wasted." And on the Golem push:
+                # "Nado at support, NOT the golem ... Rocket the clumped support if >=2 MEDIUMS."
+                #
+                # A total-worth gate does not express that: a 6-elixir tank plus one skeleton is
+                # worth 6.33 and would sail past a 4.0 threshold, which is exactly the play the
+                # doctrine forbids -- one tank and chaff, not a 2-for-1. So count MEDIUM bodies and
+                # require two of them. The clump credit exists to price the rocket it sets up, and
+                # that rocket is only worth firing on multiple real troops.
+                _mediums = [u for u in alive_close
+                            if (float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count))
+                            >= self.nado_clump_medium_worth]
+                if len(_mediums) >= 2:
                     credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
                 for u, tw, d0 in w["targeters"]:
                     if (u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6
