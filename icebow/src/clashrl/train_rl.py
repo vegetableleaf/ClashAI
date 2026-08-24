@@ -327,9 +327,28 @@ def train_rl(cfg, init: str | None = None) -> None:
         print("[train-rl] counter table: %d researched rows" % len(counter_table), flush=True)
     offense_leak_guard = float(cfg.get("train", "offense_leak_guard", default=9.5))
     advisor_plan = bool(cfg.get("train", "llm_advisor_plan", default=False))
+    # ASYNC (2026-08-23). MEASURED live: 10 calls, 0 answered, mean 565 ms against a 550 ms budget
+    # -- the SYNCHRONOUS advisor never once answered, because play.act_period went 1.0 -> 0.6 on
+    # 2026-08-20 and the budget was never revisited. The bot is blind during the call, so no
+    # timeout that fits a 600 ms period also fits a ~590 ms model. Asking in the BACKGROUND costs
+    # the decision loop nothing; the answer simply arrives a decision or two later.
+    advisor_async = bool(cfg.get("train", "llm_advisor_async", default=True))
+    advisor_max_age = float(cfg.get("train", "llm_advisor_max_age_s", default=1.5) or 1.5)
     if bool(cfg.get("train", "llm_advisor", default=False)):
         from .llm_advisor import LLMAdvisor  # noqa: F401  (HOLD imported at module scope below)
-        advisor = LLMAdvisor(cfg)
+        # ⚠ THE BUDGET MUST GROW WITH ASYNC OR NOTHING CHANGES. `llm_advisor_timeout_s` (0.55) is
+        # sized so a SYNCHRONOUS call fits inside act_period while the bot is blind. Off the
+        # critical path that constraint is gone -- and if the HTTP timeout stayed at 0.55 the
+        # background call would keep timing out at 565 ms exactly as it does today, so the whole
+        # exercise would be a no-op. The async budget is bounded by usefulness instead: an answer
+        # older than llm_advisor_max_age_s is discarded on collection anyway.
+        _t_async = float(cfg.get("train", "llm_advisor_async_timeout_s", default=5.0) or 5.0)
+        advisor = LLMAdvisor(cfg, timeout=_t_async if advisor_async else None)
+        if advisor_async:
+            print("[train-rl] advisor mode: ASYNC -- ask in background, spend the answer up to "
+                  "%.1fs later; HTTP budget %.1fs (sync budget %.2fs is bypassed)"
+                  % (advisor_max_age, _t_async,
+                     float(cfg.get("train", "llm_advisor_timeout_s", default=0.55) or 0.55)))
         # A REACHABILITY CHECK, not just a banner. The advisor is meant to fail silently to random
         # during a match, which is right for the live loop and useless at startup: a dead Ollama, a
         # model that was never pulled, or a wrong name would all look identical to "it is working"
@@ -656,7 +675,27 @@ def train_rl(cfg, init: str | None = None) -> None:
                 # that must land FIRST rather than the one that scores best alone (a Knight in
                 # front only makes sense if the Log is coming behind it), which a per-decision
                 # single-card question can never express.
-                if advisor_plan:
+                if advisor_async:
+                    # COLLECT FIRST, THEN ASK. The answer waiting here was computed for a board
+                    # one or two decisions old, so it is a SUGGESTION about a situation that has
+                    # moved -- which is exactly why it falls through to the same `_pick_invalid` /
+                    # `misses_primary` validation below as a synchronous answer, against the
+                    # CURRENT threat group. Age is only the first filter.
+                    _got = advisor.poll_async(max_age_s=advisor_max_age)
+                    if _got:
+                        _cards, _age, _key = _got
+                        pick = _cards[0] if _cards else None
+                        if pick is not None and advisor_log:
+                            print("[train-rl]   explore: ASYNC %s (%.0f ms old%s)"
+                                  % (pick, 1000 * _age,
+                                     "" if _key == tuple(threat_bases) else ", board CHANGED"))
+                    else:
+                        pick = None
+                    # ...and start the next one for the board in front of us. Keyed on the threat
+                    # group so the answer can be recognised as belonging to a different board.
+                    advisor.ask_async(situation, [card_names[i] for i in playable], elixir,
+                                      key=tuple(threat_bases), plan=False)
+                elif advisor_plan:
                     # MULTI-CARD MODE, off by default. The longer answer costs ~150 ms more
                     # (582 -> 735 ms mean) against a 900 ms budget, which pushed the TAIL past the
                     # timeout and made nearly every call fall back to random -- the advisor looked

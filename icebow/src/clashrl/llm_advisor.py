@@ -44,6 +44,7 @@ HARD RULES
 from __future__ import annotations
 
 import json
+import threading
 import time
 
 #: The advisor's way of saying "play nothing". A real answer, not a failure -- callers must be
@@ -99,6 +100,23 @@ class LLMAdvisor:
         self.cooldown_max_s = float(g("train", "llm_advisor_cooldown_max_s", default=300.0) or 300.0)
         self._cooldown_until = 0.0
         self._cooldowns = 0
+        # ---- ASYNC (2026-08-23) -----------------------------------------------------------
+        # MEASURED live: 10 calls, 0 answered, mean 565 ms against a 550 ms budget -- every call
+        # timed out and fell back to a random card. The budget was sized for a 1.0 s act_period;
+        # play.act_period has been 0.6 since 2026-08-20. Synchronously this model cannot fit: the
+        # bot is BLIND during the call, so a ~590 ms answer inside a 600 ms period leaves nothing
+        # for perception. Asking in the background instead costs the decision loop nothing; the
+        # price is that the answer describes a board one or two decisions old, which is why every
+        # answer carries the board it was asked about and callers MUST re-validate it against the
+        # board they are about to act on.
+        self._lock = threading.Lock()
+        self._thread = None            # the in-flight worker, if any
+        self._ready = None             # (cards, asked_at, key) once it lands
+        self._inflight_key = None      # the board key currently being asked about
+        self.async_calls = 0
+        self.async_ready = 0           # answers collected
+        self.async_stale = 0           # answers discarded for age
+        self.async_dropped = 0         # asks skipped because one was already in flight
 
     # -- transport ------------------------------------------------------
     def _connection(self):
@@ -137,6 +155,76 @@ class LLMAdvisor:
         """Single-card form, kept for callers that only take one action."""
         got = self._ask(situation, hand, elixir, plan=False)
         return got[0] if got else None
+
+    # -- ASYNC form -----------------------------------------------------
+    def ask_async(self, situation: str, hand: list, elixir: float, key=None, plan: bool = False):
+        """Start a background ask if none is in flight. Returns immediately, always.
+
+        ONE AT A TIME on purpose. The model serialises requests anyway, so a second concurrent ask
+        would queue behind the first and land even staler; and a per-decision fan-out would build
+        an unbounded backlog the moment the server slowed down. If an ask is already running this
+        records a drop and returns -- the loop is never blocked and never grows a queue.
+
+        `key` is whatever the caller uses to recognise "the same board" (the threat group is the
+        natural choice). It is handed back with the answer so a stale reply can be spotted even
+        when it arrives inside the age budget.
+        """
+        if not hand or self.disabled:
+            return False
+        if self._cooldown_until and time.time() < self._cooldown_until:
+            return False
+        with self._lock:
+            if self._thread is not None and self._thread.is_alive():
+                self.async_dropped += 1
+                return False
+            asked_at = time.time()
+            self._inflight_key = key
+
+            def _work():
+                try:
+                    got = self._ask(situation, list(hand), float(elixir), plan=plan)
+                except Exception:  # noqa: BLE001
+                    got = []
+                with self._lock:
+                    self._ready = (got, asked_at, key)
+
+            self.async_calls += 1
+            self._thread = threading.Thread(target=_work, daemon=True)
+            self._thread.start()
+        return True
+
+    def poll_async(self, max_age_s: float = 1.5):
+        """Collect a finished answer, or None. Consumes it -- an answer is spent once.
+
+        Discards anything older than `max_age_s`: the board moves at act_period (0.6 s), so an
+        answer two or three decisions old describes a push that has since crossed the bridge. The
+        caller still has to re-validate the card against the CURRENT board; age is a cheap first
+        filter, not the safety check.
+
+        Returns (cards, age_s, key).
+        """
+        with self._lock:
+            got = self._ready
+            self._ready = None
+        if not got:
+            return None
+        cards, asked_at, key = got
+        age = time.time() - asked_at
+        if not cards:
+            return None
+        if age > max_age_s:
+            self.async_stale += 1
+            return None
+        self.async_ready += 1
+        return (cards, age, key)
+
+    def async_stats(self) -> str:
+        if not self.async_calls:
+            return "llm-advisor async: no asks"
+        return ("llm-advisor async: %d asked, %d used (%.0f%%), %d stale, %d dropped (busy)"
+                % (self.async_calls, self.async_ready,
+                   100.0 * self.async_ready / self.async_calls,
+                   self.async_stale, self.async_dropped))
 
     def _ask(self, situation: str, hand: list, elixir: float, plan: bool):
         if not hand or self.disabled:
@@ -330,7 +418,8 @@ class LLMAdvisor:
                     " [resting %.0fs after %d consecutive failures]"
                     % (max(0.0, self._cooldown_until - time.time()), self.max_consecutive_fails)
                     if self._cooldown_until > time.time() else ""),
-                   "" if not self.last_error else ", last error %s" % self.last_error))
+                   "" if not self.last_error else ", last error %s" % self.last_error)
+                + ("" if not self.async_calls else " | " + self.async_stats()))
 
     def close(self):
         self._reset()

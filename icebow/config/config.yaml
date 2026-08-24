@@ -713,6 +713,21 @@ train:
   # answered %, failed and mean ms. If answered% is low the advisor is barely running and no
   # argument about its judgement means anything.
   llm_advisor_timeout_s: 0.55
+  # ---- ASYNC ADVISOR (2026-08-23) --------------------------------------------------------
+  # Ask in a BACKGROUND thread and spend the answer a decision or two later, instead of blocking
+  # a 600 ms act_period on a ~590 ms call while the bot is blind. Measured: ask_async returns in
+  # ~2-5 ms, so the loop runs at full speed and the answer is collected when it lands.
+  llm_advisor_async: true
+  # The background call's OWN budget. It is NOT llm_advisor_timeout_s -- leaving that 0.55 here
+  # would keep timing out at ~565 ms exactly as the sync path does, and the change would be a
+  # no-op. Bounded by usefulness, not by act_period: anything older than llm_advisor_max_age_s is
+  # discarded when collected, and one ask runs at a time so a slow server costs drops, not a queue.
+  llm_advisor_async_timeout_s: 5.0
+  # How old an answer may be when it is spent. The board moves at act_period (0.6 s), so ~1.5 s is
+  # two to three decisions -- long enough for a ~590 ms model, short enough that the push has not
+  # crossed the bridge. Age is only the FIRST filter: a collected pick still goes through the same
+  # _pick_invalid / misses_primary validation against the CURRENT threat group as a sync answer.
+  llm_advisor_max_age_s: 1.5
   # ⚠⚠ THIS BUDGET IS DEAD AND SO IS THE ADVISOR. MEASURED live 2026-08-23:
   #     llm-advisor qwen2.5:latest: 10 calls, 0 answered (0%), 10 failed, mean 565 ms,
   #     last error TimeoutError: timed out
