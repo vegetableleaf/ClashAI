@@ -2514,6 +2514,71 @@ Repair, if needed, in order of preference:
 2. tighten guard 1 -- require the ignorable threat to be closer/committed, so fewer boards qualify;
 3. only if both fail, gate the credit on `threat_miss_idle` not having fired in the same match.
 
+## 4d. 2026-08-24 — "THE RUN DEGRADES AFTER A WHILE" IS NOT WHAT THE DATA SHOWS
+
+The owner has reported, across many runs and regardless of the change under test, that a run peaks
+and then slides. Extracted the per-update series from every long log. **The premise does not hold,
+and what replaces it is worse.**
+
+### There is no degradation
+
+```
+quarter-by-quarter TRAINING winrate
+run          Q1     Q2     Q3     Q4     direction
+crown3x     4.3%   7.1%   8.0%   7.4%   rise, -0.6pp late
+dose10      4.0%   8.2%   7.7%   7.3%   rise, -0.9pp late
+lever2      1.8%   4.9%   4.4%   6.4%   rising
+night1      5.7%   7.0%   7.3%   9.2%   rising throughout (longest run, 20,925 eps)
+restraint   0.4%   2.2%   4.7%   4.3%   rising
+```
+
+Three of five rise monotonically and the two that dip do so by under 1pp. **The "peak then slide"
+reading is a SELECTION ARTIFACT** — the maximum of a noisy series is by definition followed by lower
+values, so "peaked at ep20300, then averaged 11%" describes regression to the mean. I produced that
+artifact myself with a peak-detector before catching it; do not report a peak-relative decline.
+
+### ⚠ TRAINING WINRATE CANNOT MEASURE POLICY QUALITY AT ALL — IT IS SERVO-CONTROLLED
+
+`d_tgt = wr_ema / full_wr(35)` MOVES OPPONENT DIFFICULTY to hold winrate near target. A regulated
+variable reports how well the controller tracks, not how strong the policy is. Every "winrate is
+collapsing / recovering" conversation in this project has been reading the controller's error
+signal. **Read the controller's OUTPUT instead.**
+
+### The output says the policy is treading water
+
+```
+curriculum difficulty     Q1     Q2     Q3     Q4    first->last  reversals  range
+crown3x                  0.205  0.249  0.245  0.198   0.25->0.25     65%    0.15-0.33
+dose10                   0.195  0.278  0.223  0.214   0.25->0.18     58%    0.15-0.36
+night1                   0.234  0.225  0.208  0.272   0.25->0.31     71%    0.15-0.39
+```
+
+**Over 20,925 episodes the controller never durably raises difficulty.** Independent agreement from
+the crowndiff trace in §4a: `m=26000 -1.256 -> ep20000 -1.444` — after 20k episodes the policy was
+WORSE than its own starting checkpoint.
+
+**So the question is not "why does it degrade". It is "why does it never improve."**
+
+### Reversal rate confirms the fix-4 diagnosis, and raises its priority
+
+58-71% direction reversals against 50% for a random walk is **anti-persistent** — the controller is
+not drifting, it is actively over-correcting, exactly as predicted by a 0.02 deadband sitting ~3x
+below the ~0.057 noise floor. A constantly-shifting opponent distribution means the policy chases a
+moving target and cannot consolidate. **Fix 4 is no longer a stability nicety; it is a candidate
+cause of the no-improvement finding.**
+
+### MECHANISM CANDIDATE (hypothesis, NOT established) — the policy collapses its own action space
+
+§4.3 already measured it: cell head fresh `row13 41.2%, 62/432 cells` -> at 19k matches
+`row13 84.5%, 28/432 cells`. The entropy series agrees globally (`ent` down 28-57% per run).
+
+Suspect: `ppo_cell_entropy` anneals 0.05 -> **0.008** over `ppo_cell_entropy_anneal: 3000` episodes,
+so **80%+ of a 20k-episode run trains at the floor**, which is the window the collapse was measured
+over. ⚠ NOT established — the crowndiff trace still IMPROVES from ep1675 to ep7650 while at the
+floor, so the correlation is not clean, and the config comment records that a FIXED high value held
+the head at maximum entropy and it never learned. This needs its own A/B (floor 0.008 vs ~0.02, or a
+15k-episode anneal), run AFTER fix 4 so the controller is not also moving.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
