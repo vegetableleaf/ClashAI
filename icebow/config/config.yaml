@@ -733,8 +733,15 @@ rewards:
   # rebalance is not enough on its own and the next candidate is threat_miss_idle's own weight --
   # which should be touched only with a defence measurement in hand, since it is the term that
   # stops the policy ignoring real pushes.
-  take_enemy_tower: 3.0    # CROWN JUMP: destroying a tower is a big discrete reward
-  lose_own_tower: -3.0     # the matching defensive jump when YOUR princess/king falls
+  # REVERTED to 1.0 on 2026-08-24, UNVALIDATED, so the restraint test measures ONE change.
+  # Raised to 3.0 that morning on the strength of a "reward is 91% shaping" figure that turned out
+  # to be a single-match artifact -- ledger.py was reading only the LAST of its 12 envs, and that
+  # match happened to contain no tower capture. On a correct 12-match aggregate the outcome terms
+  # are 28.8% of total magnitude with the raise, and ~14% without it. Still shaping-dominated, but
+  # not the emergency the 9.2% figure implied, and the raise was never evaluated before the run was
+  # stopped. Re-test it on its own after restraint, if at all.
+  take_enemy_tower: 1.0    # CROWN JUMP: destroying a tower is a big discrete reward
+  lose_own_tower: -1.0     # the matching defensive jump when YOUR princess/king falls
   tower_chip_scale: 0.3    # CONVEX chip POOL per tower (with env.tower_chip_power): PARTIAL chip is worth sub-proportionally
                            # little, so the reward JUMPS on the crown (take), not gradually with damage. Total chip << the crown.
   hp_scale: 0.5            # (no longer scales the reward -- tower_hp still reads it; the convex chip proxy replaced its linear return)

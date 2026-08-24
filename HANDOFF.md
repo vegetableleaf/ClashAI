@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-23**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-24**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -2371,6 +2371,96 @@ reward is UNCHANGED. Gate it on a reward hash before ever enabling it.
 
 ---
 
+## 4b. 2026-08-24 — THE TWO P(play) NUMBERS WERE NEVER IN CONFLICT, AND THERE IS NO SPEEDUP TO BUY
+
+### ⚠ CORRECTION TO §4a's WORDING — "the policy plays constantly" is false as written
+
+§4a's premise was that nothing pays for a correct wait, so *"playing is weakly dominant at every
+decision"* and the policy therefore plays constantly. The trainer's own telemetry says the gate
+plays on **~3% of steps**, and has in every run for days:
+
+```
+run                    play% trajectory (first four updates ... last four)
+ppo_run_night1      5.1 2.2 2.9 2.4  ...  3.4 3.3 3.6 3.0
+ppo_run_dose10      5.1 2.0 3.2 2.1  ...  3.3 3.4 3.2 3.3
+ppo_run_lever2      5.1 1.9 2.9 2.3  ...  3.2 3.4 2.9 3.5
+ppo_run_crown3x     5.2 2.0 3.1 2.2  ...  2.9 2.9 2.7 2.9
+ppo_restraint       5.1 2.2 3.0             <- fix 1, indistinguishable from all of them
+```
+
+**The two figures have different denominators, and both are correct:**
+
+* the trainer's `plays are X% of steps` is `play = (g_b == 1)` (train_sim_ppo.py:1001) — the gate
+  action ACTUALLY TAKEN, over ALL steps;
+* `train_sim_ppo.py:434` masks the PLAY logit to `_NEG` whenever `none_play = ~playable.any(1)`,
+  so on any step where nothing is affordable the gate is **FORCED** to wait — and that forced wait
+  is recorded as an ordinary `g_b == 0` and counted in `n_wait`;
+* the watcher's `P(play) 0.569` is conditional on a play being LEGAL.
+
+At the measured ~5-12% affordability, `0.57 x 0.08 ~= 3%`. The two reconcile exactly. The
+defensible claim is **"when the choice is real it plays ~57% of the time"**, which drains the bar
+to ~2 and makes most later steps unaffordable. The elixir evidence fits that and does not fit the
+raw rate: at a genuine 3% play rate the bar would climb to the cap and `leak` would fire constantly,
+and for m=26000 `leak` fires **zero** times.
+
+**Fix 1 survives this correction, and for a specific reason worth keeping:** guard 2 requires a
+counter in hand AND affordable, so `restraint_hold` can only fire on the conditional decision —
+the same denominator the problem lives in. **It cannot pay for a forced wait.** Had the guard been
+written on "a threat is present" alone, this correction would have retired the fix.
+
+### ⚠ UNADDRESSED, and it is in the code as a comment nobody carried forward
+
+`train_sim_ppo.py:1098` records a measured finding that is a bigger effect than anything §4a
+proposes: **`drill_frac 0.0` holds P(play) at 0.92-0.99, and four runs at 0.3 collapse it to
+0.11-0.15.** Every run under discussion uses `drill_frac: 0.3`. The comment poses the mechanism
+question and the current run answers it — on MATCH steps (drills excluded by construction):
+
+```
+gate drift on PLAY -0.41582  on WAIT +0.00574   (n_play 14, n_wait 294)
+gate drift on PLAY -0.08759  on WAIT +0.00598   (n_play  9, n_wait 241)
+```
+
+Push is negative on PLAY and positive on WAIT **on match steps**, which is the comment's own
+"drills corrupt something SHARED (advantage normalisation over the mixed batch, or the critic),
+poisoning match steps too" branch — not the "drills directly teach the gate to wait" branch.
+Related telemetry, same run: `clip rate PLAY 0.536 vs WAIT 0.006`, `gradient KILLED PLAY 0.225 vs
+WAIT 0.004`, and `26.7% of plays ALREADY outside the 1.20 clip before any step`. With n_play ~14
+per diagnostic sample the play branch is estimated from very few samples, which is self-reinforcing:
+fewer plays -> noisier play gradient -> more clipping -> gate drifts off play.
+
+**This is a candidate cause of the run-degrades-after-a-while pattern the owner has reported across
+several runs regardless of what was changed.** It is NOT a reward defect, so fixes 1-3 cannot touch
+it, and it is a different mechanism from fix 4's curriculum oscillation. Queue it as its own
+experiment; do not bundle.
+
+### THROUGHPUT — there is no speedup available, and the slow run was a DUPLICATE
+
+Owner asked for faster test runs. Three levers measured, all flat:
+
+```
+lever                       result
+OMP_NUM_THREADS 1 vs 2      0.70 vs 0.70 ep/s     no effect
+--device cpu vs cuda        0.50 vs 0.50 ep/s     no effect (see caveat)
+more workers                CPU already 96-100%   no headroom
+```
+
+**The actual cause of the slowness was a STALE RUN still alive** — killed with Git-Bash `pkill`,
+which is the §2 trap, already documented from yesterday and repeated anyway. 28 processes, CPU
+pinned, free RAM **0.8 GB**. Killed via PowerShell: RAM recovered to 5.6 GB. **Before diagnosing
+throughput, count the processes.**
+
+⚠ **The device A/B is weaker than it looks.** With `--envs 192` episodes complete in WAVES, so a
+cumulative `ep/s` read at 100 episodes is partly wave timing rather than throughput. Both arms read
+0.50 at ep100; treat that as "no visible difference", not as a clean 1.00x.
+
+**`--device cpu` is still preferred** — same measured throughput, and it frees the GPU entirely,
+which matters because the LLM advisor cannot load qwen2.5 while a trainer holds the card.
+
+⚠ **The CLI help's claim that CPU is 5x faster for this trainer (1.0 vs 0.2 match/s) DID NOT
+REPRODUCE.** It is stale; do not plan around it.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -2809,6 +2899,14 @@ configured but **have never run** — BC has not been retrained since the soft-t
   drill_mean had sd 0.040 against an expected 0.049 and crowndiff 0.231 against 0.354 -- both
   entirely instrument. Three metrics 'oscillating' in the same report, and only one of them
   was the model. Compute the expected sampling sd for the sample size FIRST.
+* **Two rates that disagree by 20x may just have different DENOMINATORS.** The watcher's
+  `P(play) 0.569` and the trainer's `plays are 3% of steps` looked like a flat contradiction and
+  nearly retired a shipped fix. They measure the same policy: the trainer counts the action taken
+  over ALL steps, and `train_sim_ppo.py:434` masks PLAY to `-inf` when nothing is affordable, so
+  forced waits are counted as waits. `0.57 x 0.08 affordability ~= 3%`. **Before believing that two
+  of your own measurements conflict, write down each one's denominator** -- and prefer the one whose
+  implied consequences match a THIRD independent signal (here: `leak` fires zero times, which is
+  impossible at a genuine 3% play rate).
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
