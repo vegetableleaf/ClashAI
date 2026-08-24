@@ -231,6 +231,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         net.gate.load_state_dict(ck["gate"])
         if "value" in ck:
             net.value.load_state_dict(ck["value"])
+        if "value_d" in ck:
+            net.value_d.load_state_dict(ck["value_d"])
+        elif value_head_split:
+            print("[train-sim-ppo]   NOTE: this checkpoint predates the split critic, so the DRILL "
+                  "value head starts fresh; expect its value loss to settle over the first "
+                  "few updates.")
         resumed_best_wr = float(ck.get("best_wr", -1.0))
         print(f"[train-sim-ppo] resumed {ppo_path.name}"
               + (f" (best so far {resumed_best_wr:.0f}%)" if resumed_best_wr >= 0 else ""))
@@ -686,7 +692,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         p = path if path is not None else ppo_path
         p.parent.mkdir(parents=True, exist_ok=True)
         torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
-                    "value": net.value.state_dict(), "algo": "ppo",
+                    "value": net.value.state_dict(),
+                    # THE DRILL CRITIC TOO (2026-08-23). Only `value` was saved, so a --resume
+                    # rebuilt `value_d` from scratch and the drill population trained against a
+                    # RANDOM critic until it refit -- silently undoing ppo_value_head_split, the
+                    # one thing that flag exists to provide. Harmless when the flag is off (value_d
+                    # is unused), so it is written unconditionally and read back only if present.
+                    "value_d": net.value_d.state_dict(), "algo": "ppo",
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
                     "threat_dim": threat_dim, "in_ch": in_ch, "deck": e0.deck_keys, "best_wr": best_wr,
                     "matches": done_n,     # matches played when this file was written (checkpoint inventory)
