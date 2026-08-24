@@ -2245,6 +2245,132 @@ Reach for the A/B only once the board description is trusted.
 
 ---
 
+## 4a. 2026-08-24 — THE REWARD HAD NO BACKGROUND CLASS (fix 1 shipped; 2, 3, 4 queued)
+
+Owner's analysis, verified term by term. Three of his claims were wrong and two were right, and one
+of the right ones turned out to be the unifying cause of three separate symptoms.
+
+### ✗ CORRECTED — the bow is not punished for being blocked, and is not avoided
+
+* **"The model is punished if an offensive X-Bow is blocked."** No such term. `xbow_overcommit`
+  PAYS up to +0.48 for a bow that dies having drawn enemy elixir ("they paid 12 to stop it -> the
+  draw did its job"). The two penalties are `xbow_into_push` (-4.0, a bow planted ON a committed
+  push) and `xbow_overaggression` (-3.0, a forward bow that strips the defence). Neither fires for
+  being blocked.
+* **"It refrains from defensive bows for lack of a niche."** Of the 5 bows it played in 14 matches,
+  **3 were defensive** centre-band and 2 forward. It places them slightly MORE than offensive ones.
+* **"It stops investing elixir into the bow."** No aversion exists. Measured on m=26000: on the 21
+  steps where the gate chose to play AND the bow was affordable, the masked card head assigned the
+  bow **0.266** against a fair share of **0.250** — it picks the bow slightly more than chance.
+  The constraint is that those 21 opportunities are all it gets in 14 matches.
+
+### ✓ CONFIRMED, and stronger than argued — `xbow_overcommit` pays a bow that never threatened
+
+`led["cost"]` is accumulated independently of `led["lock"]`, so the overcommit credit is paid at
+bow death regardless of whether the bow ever locked a tower. The defect is not a missing penalty
+for the bad case; the reward actively **pays** for it. The owner's signature — "an offensive bow
+that spends its whole lifetime without a single lock" — is exactly right and currently unmeasured.
+
+### ✓✓ THE UNIFYING CAUSE — nothing in the reward pays for a correct wait
+
+Of the 19 reward terms, exactly **two** can fire on a step where nothing was played, `leak` and
+`threat_miss_idle`, and **both are penalties**. There is no positive term for restraint anywhere.
+So waiting is worth at best 0 and at worst -1.00 while playing always carries upside: **playing is
+weakly dominant at every decision.**
+
+That single asymmetry explains three symptoms at once:
+
+1. the restraint drills stuck at 0% (`ignore_the_ignorable`, `hold_the_spell_for_a_target`),
+2. the elixir dumping (median 2.0-2.3, bar never climbs),
+3. the x_bow collapse — downstream of (2), since the bow is affordable on **2.5%** of steps and,
+   as measured above, is not avoided when it IS affordable.
+
+Owner's framing, which is the right one: the model has no **background class**, the way a
+segmentation model needs background samples to learn that labelling nothing is sometimes correct.
+
+**This retires the whole 2026-08-23 line of work on the bow.** The eight offensive windows, the W1
+repricing, and all three `wincon_reach` doses were pricing an action the policy could not afford.
+
+### FIX 1 (SHIPPED) — `rewards.restraint_hold`
+
+The mirror of `threat_miss_idle`, built from the same `bodies_ignore_frac` call on the same
+committed group so the two cannot disagree about the board. Three guards:
+
+1. **An ignorable threat must be present** — never a quiet board. Paying for idling on an empty
+   arena is precisely the hoarding failure `wincon_reach: 2.0` produced (leak 24 fires, crowns
+   taken halved).
+2. **A counter must be in hand AND affordable** — restraint is declining an option you had.
+3. **Rate-limited by `threat_miss_period` and capped per match** — one hold is one event, not one
+   per tick, which is the bug that once made `threat_miss_idle` the dominant ledger term.
+
+⚠ **0.25 was measured DECORATIVE before shipping**: 4 fires (+1.00) against `threat_miss_idle`'s 26
+(-26.00) over ten matches — 4% of the penalty's magnitude, which cannot change which action
+dominates. Shipped at **1.0**, equal per fire, with the asymmetry moved into the cap (2.0/match
+here, uncapped there).
+
+### FIX 2 (QUEUED) — gate `xbow_overcommit` on having locked
+
+Require `led["lock"] > 0` before paying overcommit, and add a penalty for an offensive bow whose
+lifetime records zero lock. Conjunction, not a new term.
+
+### FIX 3 (QUEUED) — credit the defensive bow's DPS
+
+`xbow_lock` requires `hasattr(u.target, "king")`, so a defensive bow shooting troops earns no lock
+and no chip; its contribution appears only as diffuse `elixir_trade`. Smallest of the three.
+
+### FIX 4 (QUEUED, after 2+3) — the curriculum controller oscillates on noise
+
+Owner reported heavy oscillation. Decomposed against expected sampling error over 35 watcher ticks:
+
+```
+METRIC        mean     sd      range          sampling sd   VERDICT
+P(play)      0.569   0.142   0.334-0.837      ~0.011        REAL (13x sampling)
+drill_mean   0.289   0.040   0.195-0.363      ~0.049        SAMPLING NOISE
+crowndiff   -1.082   0.231   -1.500--0.500    ~0.354        SAMPLING NOISE
+```
+
+The drill and crowndiff swings are MY instrumentation — their spread is smaller than the sampling
+error at DREPS=3 and 8 episodes. **P(play) genuinely swings 0.33-0.84.**
+
+The driver is the curriculum feedback loop, and it is not a reward problem:
+
+```
+curriculum difficulty:   71% direction reversals   (random walk ~50%)
+raw sensor (winrate):    mean 8.1%, sd 5.0; binomial noise alone at p=0.08 on 50 matches ~3.8pp
+d_tgt = wr_ema / 35   ->  ~0.057 of movement from noise alone
+deadband before moving:  0.02
+```
+
+**The deadband sits ~3x BELOW the noise floor**, so the controller moves almost every update in
+response to nothing. Difficulty zigzags, the opponent distribution shifts, and the optimal play
+rate shifts with it. P(play) reversals are 64% — coupled, as expected.
+
+Fix: widen the winrate window so the sensor is not binomial-dominated, and raise the deadband above
+the noise floor (~0.06, not 0.02). Someone hit this before — the EMA and asymmetric rate limits are
+already there — but the deadband was left under the noise.
+
+⚠ **Fixes 1-3 will NOT fix this.** They change the reward; this is the control loop.
+
+### ALSO FOUND — the warm-start tax is permanent
+
+`--init` loads policy+gate but NOT the critic; `ppo_value_warmup: 60` minibatches is far too little
+(value loss is still moving thousands of episodes in). Measured over the one 20k-episode run:
+
+```
+start (m=26000) -1.256 | ep1675 -1.600 (bottom) | ep3600 -1.489 | ep7650 -1.400 | ep20000 -1.444
+```
+
+Bottom at ~1,700, most of the recovery by ~7,600, and **it never returns to the init**. So every
+reward experiment pays a tax it does not repay, and comparing a mid-run checkpoint against its init
+systematically understates the change being tested. **Compare run-vs-run at matched episode counts
+instead.**
+
+The checkpoint does save `value`/`value_d`, so loading it on `--init` would remove the tax — but a
+saved critic predicts returns under the reward it was trained on, so it is only valid when the
+reward is UNCHANGED. Gate it on a reward hash before ever enabling it.
+
+---
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
@@ -2678,6 +2804,11 @@ configured but **have never run** — BC has not been retrained since the soft-t
   `deck_pfsp_power` and several reward weights where zero is a deliberate setting. Use
   `is None`. The tell is in the log: a banner asserting one thing while the counters say
   another means the override never reached what it names.
+* **Separate a REAL swing from your own sampling error before calling it instability.** Over 35
+  watcher ticks, P(play) had sd 0.142 against a sampling sd of 0.011 (real, 13x), while
+  drill_mean had sd 0.040 against an expected 0.049 and crowndiff 0.231 against 0.354 -- both
+  entirely instrument. Three metrics 'oscillating' in the same report, and only one of them
+  was the model. Compute the expected sampling sd for the sample size FIRST.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 

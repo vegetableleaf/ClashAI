@@ -325,6 +325,23 @@ class SimMatchEnv:
         # Minimum seconds between two threat_miss charges. See _threat_miss_idle: charging every
         # 1-second step made holding elixir strictly worse than dumping it, by 8x.
         self.threat_miss_period = float(cfg.get("env", "threat_miss_period_s", default=4.0))
+        # ---- CORRECT RESTRAINT (2026-08-24) ---------------------------------------------------
+        # MEASURED: of 19 reward terms, exactly TWO can fire on a step where nothing was played --
+        # `leak` and `threat_miss_idle` -- and BOTH are penalties. There is no term anywhere that
+        # pays for a correct wait. So the policy's entire signal about waiting is "sometimes
+        # punished, never rewarded", which makes playing weakly dominant at every decision.
+        #
+        # That one asymmetry explains three separate symptoms at once: the restraint drills stuck
+        # at 0% (ignore_the_ignorable, hold_the_spell_for_a_target), the elixir dumping (median
+        # 2.0-2.3, never banking), and the x_bow collapse downstream of it -- the bow is affordable
+        # on 2.5% of steps and the card head picks it at 0.266 against a 0.250 fair share, so it is
+        # not avoided, it is unaffordable. Owner's framing: the model has no BACKGROUND CLASS, the
+        # way a segmentation model needs background samples to learn that labelling nothing is
+        # sometimes correct.
+        self.w_restraint = float(cfg.get("rewards", "restraint_hold", default=1.0))
+        self.restraint_cap = float(cfg.get("rewards", "restraint_hold_cap", default=2.0))
+        self._restraint_paid = 0.0
+        self._restraint_last = -1e9
         self._threat_miss_last = -1e9
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
@@ -640,6 +657,8 @@ class SimMatchEnv:
                                      for k in opp_cards} & self.bow_killer_spells
         self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
         self._bow_window_hits = {}       # which of the eight licensed each offensive bow
+        self._restraint_paid = 0.0       # per-match cap on the restraint credit
+        self._restraint_last = -1e9
         self._nado_king_credited = False
         self._reset_vectors()
         self._update_vectors()
@@ -1063,6 +1082,65 @@ class SimMatchEnv:
             self._threat_miss_last = self.eng.t
             return self.w_threat_miss
         return 0.0
+
+    def _restraint_hold(self) -> float:
+        """Declined to spend on a threat TRIAGE says is not worth a card. The mirror of
+        `_threat_miss_idle`, and deliberately built from the same parts so the two cannot disagree
+        about what is happening on the board.
+
+        WHY THIS EXISTS. Two of the nineteen reward terms can fire on a step where nothing was
+        played, and both are penalties. Nothing pays for a correct wait, so waiting is worth at
+        best 0 and at worst -1.00 while playing always carries upside -- playing is weakly dominant
+        at every decision. The policy duly plays constantly, never banks, sits at ~2 elixir, and
+        therefore cannot afford a 6-cost win condition (affordable on 2.5% of steps). The restraint
+        drills stuck at 0% and the elixir dumping are the same defect seen from two directions.
+
+        THE THREE GUARDS, each closing a specific way this could be farmed:
+
+          1. A THREAT MUST BE PRESENT AND IGNORABLE. Not a quiet board -- idling through an empty
+             arena is not restraint and paying for it is exactly the hoarding failure that
+             `wincon_reach: 2.0` produced (leak fired 24x, crowns taken halved). This is the strict
+             inverse of `_threat_miss_idle`'s triage waiver, using the same `bodies_ignore_frac`
+             call on the same committed group, so a board is either worth answering or worth
+             ignoring and never both.
+          2. A COUNTER MUST BE IN HAND AND AFFORDABLE. Restraint means declining an option you
+             HAD. Without this the term pays for being unable to act, which is not a decision.
+          3. RATE-LIMITED AND CAPPED. Shares `threat_miss_period` so one hold is one event rather
+             than one per tick -- the identical bug that made `threat_miss_idle` the dominant term
+             in the ledger and taught the gate to always play. Capped per match on top, because
+             unlike the penalty this one has an obvious degenerate maximum.
+
+        EQUAL PER FIRE, ASYMMETRIC IN TOTAL. 0.25 was tried first and measured at 4 fires against
+        threat_miss_idle's 26 over ten matches -- 4% of the penalty's magnitude, far too small to
+        change which action dominates, which is the entire purpose. So the per-fire value matches
+        the penalty (1.0) and the asymmetry lives in the CAP instead: this stops at 2.0/match while
+        threat_miss_idle is uncapped, so ignoring real pushes still scales without limit while
+        restraint cannot be farmed past a bounded credit.
+        """
+        if self.w_restraint <= 0.0 or self._restraint_paid >= self.restraint_cap:
+            return 0.0
+        if self.eng.t - self._restraint_last < self.threat_miss_period:
+            return 0.0
+        tid = self._threat_id_true
+        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
+            return 0.0                                   # no threat at all -> not restraint
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if not committed:
+            return 0.0
+        if threat_value.bodies_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+            return 0.0                                   # worth answering -> threat_miss_idle's job
+        elix = float(self.eng.elixir[0])
+        for cid in self._hand_ids():
+            if (card_threat.counters(self._deck_profiles[cid], tid)
+                    and self.specs[cid].elixir <= elix):
+                self._restraint_last = self.eng.t
+                pay = min(self.w_restraint, self.restraint_cap - self._restraint_paid)
+                self._restraint_paid += pay
+                return pay
+        return 0.0                                       # could not have answered -> not a choice
 
     def _punish_window(self, spend: float = 0.0, cost: float = 0.0) -> bool:
         """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
@@ -2410,6 +2488,9 @@ class SimMatchEnv:
                 self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
             reward += self.rw_stats.add("threat_miss_idle", self._threat_miss_idle())   # (1) ignored an ANSWERABLE threat
+            # ...and the other half of the same decision: correctly declining an IGNORABLE one.
+            # Mutually exclusive with the line above by construction -- they read the same triage.
+            reward += self.rw_stats.add("restraint_hold", self._restraint_hold())
         # opponent acts, then advance the match by agent_dt in sub-ticks
         self.opponent.act(self.eng)
         chip0 = chip1 = 0.0

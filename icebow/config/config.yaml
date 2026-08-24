@@ -525,6 +525,31 @@ rewards:
   # -- (1) THREAT-RESPONSE correctness (YOLO -> KB -> the right counter, placed to intercept) --
   threat_response: 1.0     # played the KB-correct counter to the ASSESSED threat, in its lane on your half
   threat_miss: -1.0        # wrong-role card dropped as a defence, OR ignored an ANSWERABLE threat (a counter was in hand + affordable). Uncapped.
+  # ---- CORRECT RESTRAINT (2026-08-24) -----------------------------------------------------
+  # Pays for declining to spend on a threat TRIAGE says is not worth a card -- the mirror of
+  # threat_miss above. MEASURED: of 19 reward terms only `leak` and `threat_miss_idle` can fire on
+  # a step where nothing was played, and both are penalties. Nothing paid for a correct wait, so
+  # playing was weakly dominant at every decision. That single asymmetry explains the restraint
+  # drills stuck at 0%, the elixir dumping (median 2.0-2.3), and the x_bow collapse downstream of
+  # it -- the bow is affordable on 2.5% of steps while the card head picks it at 0.266 against a
+  # 0.250 fair share, i.e. it is unaffordable, not avoided.
+  #
+  # SMALLER THAN THE PENALTY IT MIRRORS on purpose (0.25 vs 1.00): ignoring a real push loses a
+  # tower, spending 1 elixir on Skeletons costs almost nothing. The asymmetry is reduced, not
+  # inverted. Guards against farming are in _restraint_hold: an IGNORABLE threat must be present
+  # (never a quiet board -- that is the hoarding failure wincon_reach 2.0 produced), a counter must
+  # be in hand AND affordable (restraint means declining an option you had), and it is rate-limited
+  # by threat_miss_period_s plus capped per match.
+  # ⚠ 0.25 WAS DECORATIVE. Measured before shipping, 10 matches on the m=26000 policy:
+  #     restraint_hold     4 fires  = +1.00 total  (0.10/match)
+  #     threat_miss_idle  26 fires  = -26.00       (2.60/match)
+  # i.e. 4% of the penalty's magnitude, which cannot change which action dominates -- and the whole
+  # point of this term is that playing is currently weakly dominant at every decision. Raised to
+  # 1.0 so a correct hold is worth what a missed answer costs, PER FIRE. The asymmetry is preserved
+  # where it belongs instead: this is CAPPED at 2.0/match while threat_miss_idle is uncapped, so
+  # ignoring real pushes still scales without limit and restraint cannot be farmed past the cap.
+  restraint_hold: 1.0
+  restraint_hold_cap: 2.0
   # -- (2) ELIXIR-TRADE correctness (the honest economy: value removed - elixir spent) --
   elixir_trade: 1.0        # x [ (signed potential-based enemy value/mass eliminated, clipped) - elixir spent ] / value_norm. Telescopes -> idling can't farm it.
   # -- (3) WIN-CONDITION execution (the deck's doctrine done right for the current phase) --
@@ -603,7 +628,52 @@ rewards:
   # 305), and 22% is genuinely reachable -- but it is the same SHAPE that collapsed two runs, so if
   # plays/match falls off a cliff after a restart, this is the first term to suspect.
   counterfactual: 0.6
-  wincon_reach: 0.5       # ONE-TIME credit the first time the bar reaches a held win
+  # RAISED 0.5 -> 2.0 on 2026-08-24. THE MEASURED BOTTLENECK IS AFFORDABILITY, NOT INCENTIVE.
+  #     policy            elixir med   bar>=6   BOW AFFORDABLE   bow played
+  #     untrained            1.79       0.0%        0.0%            0.0%
+  #     best m=26000         2.00       4.3%        2.5%            1.3%
+  #     overnight m=20000    2.29       3.1%        2.9%            1.6%
+  # The bow is playable on ~2.5% of steps and gets played at about that rate -- the policy is not
+  # refusing its win condition, it cannot afford it. Which means every bow-side reward change made
+  # on 2026-08-23 (the eight offensive windows, the W1 repricing, xbow_punish_mult) was tuning the
+  # payoff of an action that was almost never available, and none of them moved the share.
+  #
+  # The arithmetic: the gate plays ~55% of ~270 decisions = ~150 attempts a match, against ~90-120
+  # elixir of income. The policy is permanently starved, so the affordable set at 2 elixir is
+  # skeletons (1) and the Log (2), and the bar never climbs to 6. A known-good policy plays the bow
+  # 36% of the time, which is only possible while HOLDING elixir.
+  #
+  # So the lever has to be the bar, not the bow. This credit pays for REACHING the cost with the
+  # bow in hand inside a doctrine window -- i.e. it pays for the skipped cheap plays that got the
+  # bar there. At 0.5 it was worth ~0.8/match against wincon_exec's ~4; at 2.0 it is comparable.
+  #
+  # ⚠ HYPOTHESIS, NOT A FIX. The failure mode is hoarding, and it is guarded twice: the credit is
+  # ONE-TIME per hand-cycle so idling past 6 earns nothing, and threat_miss_idle still bills every
+  # ignored answerable push at -1.00/step (a HOARD-always policy measured +0.50 reach against
+  # -17.17 threat_miss_idle). PREDICTION: elixir median rises above ~2.3, bar>=6 above ~4%, bow
+  # affordability above 2.5%, and bow share follows. If affordability does not move, the lever is
+  # wrong and the gate itself has to be addressed.
+  # 2.0 WAS TOO STRONG -- it taught HOARDING TO THE CAP. Measured at episode 2350, 4 passes x 40:
+  #     policy            crowndiff        crowns TOOK   leak fires
+  #     untrained         -1.619 +-0.090      0.212          -
+  #     init m=26000      -1.294 +-0.028      0.306          0
+  #     trained @2.0      -1.600 +-0.052      0.119         24
+  # 5.2 SE worse than the checkpoint it started from, and BELOW untrained on crowns taken. The
+  # control is what settles the cause: m=26000, evaluated under this same config, fires `leak`
+  # ZERO times while the policy trained under 2.0 fires it 24 times. leak only triggers at elixir
+  # >= 9.99, so the policy learned to bank past 6 all the way to the cap and overflow. The elixir
+  # the credit bought went into leak, not into bow plays -- x_bow FELL to 0.3%.
+  #
+  # NOT a revert to 0.5: that was measurably too weak to move affordability at all (it sat at
+  # 2.5-2.9% for the whole 20k run). The useful range is between "no pull" and "bank to the cap",
+  # so 1.0. NOTE what did NOT change: threat_miss_idle was 8 fires for m=26000 and 9 for the
+  # trained policy, so the credit is not causing missed defences -- the overshoot is the whole harm.
+  #
+  # PREDICTION: bow affordability holds above ~4% (it reached 5.4% at 2.0) while leak stays near
+  # zero. If affordability falls back to ~2.7% then 1.0 is also too weak and the pull has to come
+  # from somewhere other than this credit -- most likely the gate, which attempts ~150 plays a
+  # match against ~100 elixir of income.
+  wincon_reach: 1.0       # ONE-TIME credit the first time the bar reaches a held win
                           # condition's cost on a QUIET board (no threat worth answering).
                           # Replaces wincon_bank_floor, which was a MASK and failed twice
                           # in opposite directions -- forced waits, then elixir dumping to
@@ -638,8 +708,33 @@ rewards:
   xbow_hostile_frac: 0.6   # offensive credit x this once Little Prince / Evo Bomber has been SEEN
   win: 2.0                 # small: the correctness score accumulated over a whole match dominates this
   loss: -2.0
-  take_enemy_tower: 1.0    # CROWN JUMP: destroying a tower is a big discrete reward -- a tower at 1-2 HP still fully works
-  lose_own_tower: -1.0     # the matching defensive jump when YOUR princess/king falls
+  # ---- RAISED 1.0 -> 3.0 (symmetric) on 2026-08-24. THE REWARD IS 91% SHAPING. ----------------
+  # Measured composition over 12 matches (total |reward| 32.64):
+  #     OUTCOME (win/loss + crowns)   3.00   =  9.2%
+  #     SHAPING                      29.64   = 90.8%
+  # and the single largest term is threat_miss_idle at -9.00, i.e. 27.6% of ALL reward magnitude,
+  # which penalises NOT playing while an answerable counter is in hand. A cheap counter almost
+  # always is, so the policy plays skeletons/log constantly to avoid that penalty -- and therefore
+  # never accumulates to 6. The elixir starvation is not a bug in the bow's incentives; it is the
+  # direct consequence of optimising a signal that is 91% shaping.
+  #
+  # Three bow-side attempts failed before this because they all priced an action the policy could
+  # not afford: the eight offensive windows and the W1 repricing (2026-08-23), then wincon_reach at
+  # 0.5 (no effect on affordability across 20k episodes), 2.0 (hoarded to the elixir cap, 5.2 SE
+  # worse than its own start) and 1.0 (affordability fell back to baseline 2.6%).
+  #
+  # SYMMETRIC on purpose. Raising only take_enemy_tower buys reckless offence -- the deck loses
+  # towers faster than it takes them (crowns lost 1.6 vs taken 0.31), so an asymmetric raise would
+  # be a net incentive to trade towers, which this deck loses.
+  #
+  # ⚠ HYPOTHESIS #3 TODAY, and my confidence is moderate. The known weakness: take_enemy_tower
+  # fires rarely (~0.3 crowns/match), so this mostly reshapes the VALUE function via GAE rather
+  # than paying out often. If crowns-taken does not clear the m=26000 baseline of 0.306, the
+  # rebalance is not enough on its own and the next candidate is threat_miss_idle's own weight --
+  # which should be touched only with a defence measurement in hand, since it is the term that
+  # stops the policy ignoring real pushes.
+  take_enemy_tower: 3.0    # CROWN JUMP: destroying a tower is a big discrete reward
+  lose_own_tower: -3.0     # the matching defensive jump when YOUR princess/king falls
   tower_chip_scale: 0.3    # CONVEX chip POOL per tower (with env.tower_chip_power): PARTIAL chip is worth sub-proportionally
                            # little, so the reward JUMPS on the crown (take), not gradually with damage. Total chip << the crown.
   hp_scale: 0.5            # (no longer scales the reward -- tower_hp still reads it; the convex chip proxy replaced its linear return)
