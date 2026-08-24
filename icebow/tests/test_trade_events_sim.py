@@ -137,10 +137,26 @@ class RangedDefenderAttributionTests(unittest.TestCase):
 
 
 class ThreatTimingTests(unittest.TestCase):
-    def _lit_env(self, seed=50):
+    def _lit_env(self, seed=50, cards=1):
+        """`cards` is the SIZE OF THE PUSH, and it is load-bearing for the budget test.
+
+        `a925d88` scaled the threat-response budget by the number of enemy CARDS committed:
+        `budget_ok = credits < max(1, min(threat_credit_budget, n_cards))`. That was a deliberate,
+        measured change -- a flat budget of 2 funded a SECOND credit for a second card thrown at a
+        ONE-card threat, so over-answering out-earned the cheapest sufficient answer (measured on
+        `skeletons_kill_the_miner`: +1.130 for the over-spending episodes against +0.556 for the
+        ones that passed). The cheapest sufficient answer is the tier above every counter rule.
+
+        So a lone Knight now funds exactly ONE credit, and a test that wants to see the CAP has to
+        field a real two-card push -- which is what the change's own comment promised would "fund
+        exactly what it funded before".
+        """
         env = _quiet_env(seed=seed)
         env.eng.elixir[1] = 10.0
         assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.30, 0.58)
+        if cards >= 2:
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, "musketeer", 11), 0.34, 0.58)
         env.step((False, 0, 0))                      # _observe refreshes the true threat vector
         assert env._threat_id_true[0] >= 0.5, "an enemy knight on our half must light the threat"
         return env
@@ -166,7 +182,9 @@ class ThreatTimingTests(unittest.TestCase):
                          "above max depth = too late: the threat is already on our tower")
 
     def test_budget_caps_and_hysteresis_refills(self):
-        env = self._lit_env(seed=51)
+        # TWO cards: the budget is min(threat_credit_budget, n_cards), so a one-card push caps at
+        # ONE credit and the two assertions below could never both hold. See _lit_env's docstring.
+        env = self._lit_env(seed=51, cards=2)
         ci, tid, tx = self._troop_counter(env)
         tid[7] = 0.40
         self.assertGreater(env._threat_response(ci, tx, 0.60), 0.0)
