@@ -1525,6 +1525,31 @@ sim:
                             # units, via the drill_tag filter) plus the overall board outcome, since
                             # acing two interactions while the third takes the tower is not playing
                             # the board well.
+  # ---- DRILL PLAY-OUT (2026-08-23) -------------------------------------------------------
+  # A drill records its verdict at the natural moment and then CONTINUES as an ordinary match,
+  # instead of ending there. This is the root-cause fix for the failure that has ended every long
+  # run: a drill averages 18.4s against a match's 180s+, one critic must value both, and measured
+  # that wrecks it -- value loss 1.3-1.8 mixed against 0.38-0.56 for matches alone, with the
+  # miscalibrated critic preceding the gate collapse (P(play) 0.11-0.15 with drills vs 0.92-0.99
+  # without).
+  #
+  # The two downstream compensations were both tried and both fall short:
+  #   ppo_value_head_split  recovers ~30% (measured again 2026-08-23: ratio 1.51x -> 1.37x)
+  #   shrinking drill_frac  does not help AT ALL -- even 15% of episodes still broke it
+  # Playing the drill out removes the mismatch instead of compensating for it: episode length,
+  # return scale and critic targets all match automatically, with no special-casing in the trainer.
+  #
+  # ⚠ THE CODE READ AN ENV VAR WHILE ITS OWN COMMENT NAMED THIS KEY, so a run that set
+  # sim.drill_play_out got nothing and no warning. Now config-driven, with
+  # CLASHRL_DRILL_PLAY_OUT still overriding for a command-line A/B, and the resolved value is
+  # PRINTED once at startup ("[drill] play-out ON/off ...") -- if that line is absent it is not
+  # running.
+  #
+  # PREDICTION: value loss should sit in the matches-alone band (0.38-0.56) rather than climbing
+  # to 9.80, and the drill/match advantage ratio should stay near 1.0x because there is no longer
+  # a second population. Throughput drops -- a drill episode becomes match-length -- so judge on
+  # EPISODES, not wall clock.
+  drill_play_out: true
   drill_frac: 0.3
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
@@ -1593,6 +1618,31 @@ sim:
   ppo_clip_per_head: false   # clip EACH head against its OWN ratio instead of the joint one.
                              # Measured on play steps: sd(log r) gate 0.0019 / card 0.0284 /
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
+  # ⚠ TURNED ON 2026-08-23, AFTER ppo_value_head_split ALONE WAS MEASURED INSUFFICIENT.
+  # The split critic did half the job and made the other half worse. At matched episode counts
+  # (~8k), split-critic run vs the shared-critic run it replaced:
+  #     adv |mean| ratio    1.51x -> 1.37x   (2.0 sd BELOW the old range 1.40-1.60: real gain)
+  #     signed shift       +0.179 -> +0.347  (5.3 sd ABOVE the old range: real REGRESSION)
+  #     match signed mean  -0.318 -> -0.237  (better on its own)
+  #     drill signed mean  -0.139 -> +0.110  (flipped positive)
+  # With separate critics each population's advantages centre on its OWN critic's error, so the
+  # two means drift APART -- and the shared normalisation then subtracts one pooled mean from
+  # both, pushing match further negative. A negative mean advantage on match steps is literally
+  # "play less" on the episodes we are scored on.
+  #
+  # These two flags are COMPLEMENTS, not alternatives. The note above (that per-population
+  # normalisation "did NOT fix this" on its own) stands and is not contradicted: alone, with a
+  # SHARED critic, it cannot fix a miscalibrated critic. It is the split critic that makes the
+  # normalisation the binding constraint.
+  #
+  # PREDICTION: signed shift should collapse toward 0 (each population centred on its own mean)
+  # while the |adv| ratio holds near or below 1.37x. If the shift stays large, the coupling is
+  # somewhere neither flag touches.
+  # REVERTED 2026-08-23 with ppo_value_head_split, and for the same reason: it treats the symptom.
+  # Note also what its own diagnostic can and cannot show -- `adv |mean|` reads POST-normalisation,
+  # so with this on it reports ~0.66x whatever the underlying coupling does, while the SIGNED mean
+  # is pre-norm and cannot respond to it at all. Two flags that make the instruments less readable
+  # are a bad trade when the root cause is fixable.
   ppo_adv_norm_split: false  # normalise advantages SEPARATELY for drill and match steps.
   # ⚠ TURNED ON 2026-08-23 -- this is THE experiment for the late-run degradation.
   # Every long run peaks and then slides, whatever the reward change. The 38k run's own telemetry
@@ -1615,7 +1665,18 @@ sim:
   # 6x, and the drill/match advantage ratio should stay near 1.0x instead of drifting to 1.73x.
   # If both hold and the run still peaks at ~26k, the critic is exonerated and the cause is
   # elsewhere. Watch those two numbers, not the benchmark -- they moved hours earlier.
-  ppo_value_head_split: true  # SEPARATE critic for drill vs match steps. One head must
+  # REVERTED 2026-08-23, same day it was enabled, in favour of sim.drill_play_out.
+  # It was the right diagnosis of the wrong layer. MEASURED at matched episode counts (~8k),
+  # split critic vs the shared-critic run it replaced:
+  #     adv |mean| ratio   1.51x -> 1.37x   (2.0 sd below the old range: a real but partial gain)
+  #     value loss          3.77 -> 4.14    (no better)
+  # and drill_env.py had already recorded the expected size of that gain: "giving drills their own
+  # critic recovered only ~30%". It did. Both this and ppo_adv_norm_split COMPENSATE DOWNSTREAM for
+  # a length mismatch -- 18.4s drill vs 180s+ match -- that drill_play_out removes at source. With
+  # play-out on the two populations have the same episode length and return scale, so a second
+  # critic has nothing to separate and this flag is a no-op with extra parameters.
+  # TURN IT BACK ON only if play-out is measured and rejected.
+  ppo_value_head_split: false # SEPARATE critic for drill vs match steps. One head must
   ppo_drill_gate_mask: false # drill steps do NOT train the play/wait GATE (they still
                              # train the card and cell heads). The gate is the head that
                              # collapses -- P(play) 0.5 -> 0.11-0.15 with drills vs

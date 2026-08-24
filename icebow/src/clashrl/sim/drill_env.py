@@ -127,7 +127,13 @@ def compose_components(pool, rng, n_max=3):
     return out
 
 
-_PLAY_OUT = bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
+# ENV OVERRIDE ONLY. The real switch is `sim.drill_play_out` in config.yaml -- the use site
+# below has always CALLED it that in its own comment while reading this variable, so a run
+# that set the config key got no play-out and no warning. Env still wins when set, so a
+# command-line A/B needs no config edit; None here means "defer to config".
+_PLAY_OUT_ENV = (bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
+                 if os.environ.get("CLASHRL_DRILL_PLAY_OUT") is not None else None)
+_PLAY_OUT_ANNOUNCED = False
 _FULL_HAND = bool(os.environ.get("CLASHRL_DRILL_FULL_HAND"))
 _CLOCK_JITTER = bool(os.environ.get("CLASHRL_DRILL_CLOCK"))
 _STATE_JITTER = bool(os.environ.get("CLASHRL_DRILL_STATE"))
@@ -634,6 +640,37 @@ class DrillEnv(SimMatchEnv):
         self.eng.elixir[0] = min(10.0, max(float(c["scenario"].elixir) for c in self._components))
         self.eng.elixir[1] = 10.0
 
+    def _play_out(self) -> bool:
+        """Does a drill CONTINUE as an ordinary match once its verdict is recorded?
+
+        `sim.drill_play_out`, with CLASHRL_DRILL_PLAY_OUT overriding it for a command-line A/B.
+
+        This is the root-cause fix for the two-population problem: a drill averages 18.4 s against
+        a match's 180 s+, one critic has to value both, and measured that wrecks it (value loss
+        1.3-1.8 mixed vs 0.38-0.56 matches-alone). Splitting the critic recovers only ~30% and
+        shrinking drill_frac does not help at all, because both compensate downstream for a
+        length mismatch instead of removing it. Playing the drill out makes episode length, return
+        scale and critic targets match automatically.
+
+        Announced ONCE per process: a flag that can silently do nothing is exactly how this one
+        spent its life being read from an env var while its own comment named a config key.
+        """
+        if _PLAY_OUT_ENV is not None:
+            v = _PLAY_OUT_ENV
+        else:
+            try:
+                v = bool(self.cfg.get("sim", "drill_play_out", default=False))
+            except Exception:  # noqa: BLE001
+                v = False
+        global _PLAY_OUT_ANNOUNCED
+        if not _PLAY_OUT_ANNOUNCED:
+            _PLAY_OUT_ANNOUNCED = True
+            print("[drill] play-out %s -- drills %s"
+                  % ("ON" if v else "off",
+                     "continue as ordinary matches after their verdict"
+                     if v else "END at their verdict (episode ~18s vs a match's ~180s)"))
+        return v
+
     def _verdict(self) -> Optional[str]:
         if getattr(self, "_components", None):
             v, _res = compound_verdict(self)
@@ -715,7 +752,7 @@ class DrillEnv(SimMatchEnv):
                 # source rather than compensating downstream: the drill becomes "a match that
                 # started in an interesting position". Episode length, return scale and critic
                 # targets all match automatically, with no special-casing in the trainer.
-                done = bool(done) or not _PLAY_OUT
+                done = bool(done) or not self._play_out()
                 info = dict(info or {})
                 info["drill"] = self.scenario.name
                 info["verdict"] = v
