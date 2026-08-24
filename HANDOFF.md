@@ -2461,6 +2461,59 @@ REPRODUCE.** It is stale; do not plan around it.
 
 ---
 
+## 4c. 2026-08-24 — FIX 1 PAIRED READ AT 650 MATCHES: it changes behaviour, and two of four changes are wrong
+
+First trustworthy read, using the pinned-determinism PAIRED design (same 12 seeds, both arms,
+`torch.set_num_threads(1)` + `PYTHONHASHSEED=0`). Everything measured before this is withdrawn.
+
+```
+                     m=26000      restraint@650      delta
+plays              570 (13.9%)    443 (11.4%)       -2.5pp
+elixir median         2.14           2.86           +0.72
+restraint_hold        0.67/m         1.00/m         +0.33  (sem 0.26 / 0.28)
+threat_miss_idle      2.25/m         4.00/m         +1.75  (sem 0.43 / 0.79)   <-- WRONG WAY
+leak                  0.75/m        10.83/m        +10.08  (sem 0.41 / 5.28)   <-- WRONG WAY
+wincon_exec           1.67/m         2.83/m         +1.16
+take_enemy_tower      0.50/m         0.50/m          0.00
+```
+
+**Intended direction present:** plays down, elixir banked up. That is what fix 1 was for.
+
+**`threat_miss_idle` DOUBLED, and that is the diagnostic one.** `restraint_hold` and
+`threat_miss_idle` are mutually exclusive BY CONSTRUCTION -- same `bodies_ignore_frac` call on the
+same committed group, so a board is either worth answering or worth ignoring, never both. Targeted
+restraint would hold this term flat or lower it. Doubling means the policy is learning **"waiting
+pays"** in general rather than "waiting on IGNORABLE threats pays" -- the over-generalisation the
+three guards exist to prevent.
+
+**`leak` rose 14x**, the same hoarding signature that got `wincon_reach: 2.0` reverted. Weaker
+(sd 18.3, ~1.9 sigma) but pointing the same way.
+
+The magnitude ratio moved **0.30 -> 0.25**: the penalty is outgrowing the credit, so the policy is
+currently NET-LOSING from this behaviour (-4.00 missed threats against +1.00 restraint credit). A
+converged policy would not choose that, which is evidence for the confound below.
+
+⚠ **CONFOUNDED, and the confound is large.** 650 matches is deep in the warm-start critic dip
+(`vl` still climbing 0.717 -> 1.027; §4a measured the bottom at ~1,700 episodes and most recovery
+by ~7,600). §4a's own rule says compare run-vs-run at matched episodes, not a mid-run checkpoint
+against its init.
+
+### DECISION (2026-08-24): RUN TO 4000, PROBE AT 2000 / 3000 / 4000
+
+A single endpoint cannot separate "the dip did it" from "the reward did it"; the TRAJECTORY can, and
+the run is already launched with `--matches 4000` so it costs only probe time.
+
+```
+threat_miss_idle 4.0 -> 3.0 -> 2.3   =>  dip artifact, fix 1 clean, proceed to fixes 2+3
+threat_miss_idle flat or rising      =>  credit teaches blanket inaction; REPAIR before 2+3
+```
+
+Repair, if needed, in order of preference:
+1. dose `restraint_hold` 1.0 -> 0.5 (keeps the term live at ~0.15 of the penalty, still above the
+   0.04 that measured decorative);
+2. tighten guard 1 -- require the ignorable threat to be closer/committed, so fewer boards qualify;
+3. only if both fail, gate the credit on `threat_miss_idle` not having fired in the same match.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
