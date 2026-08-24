@@ -2907,6 +2907,26 @@ configured but **have never run** — BC has not been retrained since the soft-t
   of your own measurements conflict, write down each one's denominator** -- and prefer the one whose
   implied consequences match a THIRD independent signal (here: `leak` fires zero times, which is
   impossible at a genuine 3% play rate).
+* **SIM EVALUATION IS NOT DETERMINISTIC UNLESS YOU PIN `torch.set_num_threads(1)`.** Seeding
+  `torch.manual_seed`, `np.random.seed` AND `SimMatchEnv(seed=...)` is NOT sufficient. Two
+  invocations of the same probe on BYTE-IDENTICAL weights (sha1-verified) produced 1477 vs 1271
+  steps, 190 vs 132 plays, elixir median 2.14 vs 2.71 and `leak` 24 vs 150 fires. The CPU forward
+  pass is float-nondeterministic across thread schedules -- and the box is CPU-SATURATED during any
+  training run, so the schedule genuinely varies -- one flipped `multinomial` draw diverges a
+  300-step match irrecoverably. With `torch.set_num_threads(1)` + `PYTHONHASHSEED=0` two passes
+  reproduce EXACTLY, to every digit.
+  Consequences, all of them load-bearing:
+  (a) **any single-pass ad-hoc probe on ~10 matches measures its own thread scheduling**, which is
+      how the "restraint raised elixir 2.21 -> 2.79" and "leak 45 -> 81" comparisons were produced
+      and then withdrawn;
+  (b) **`leak` is violently heavy-tailed** -- per-match sd 45 against a mean 37 -- so it needs
+      several hundred matches to resolve a small difference and must never be quoted at n<50;
+  (c) `bench.py` (4 passes x 40) and `nightcheck.py` (3 x 30) are STRUCTURALLY SOUND because they
+      average independent passes and report the ACROSS-PASS se, which already absorbs this
+      variance. Prefer them. Copy their multi-pass shape into anything ad-hoc;
+  (d) with threads pinned, **PAIRED comparison becomes available** -- same seeds, two checkpoints,
+      every difference is policy rather than seed luck. That is far more powerful per match than
+      comparing two independent means and is now the preferred design for any A/B here.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
