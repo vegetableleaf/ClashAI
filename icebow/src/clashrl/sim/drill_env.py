@@ -1044,8 +1044,23 @@ class DrillMixEnv(DrillEnv):
         # the gradient -- and split across 28 scenarios, none of them ever had enough signal.
         self.drill_frac = (float(cfg.get("sim", "drill_frac", default=0.0))
                            if frac is None else float(frac))
-        self._len_drill = 20.0        # running mean episode lengths, seeded with measured values
+        # RUNNING MEAN EPISODE LENGTHS, and the SEED MATTERS FOR THE WHOLE EARLY RUN.
+        # _episode_prob solves `target_step_share = p*Ld / (p*Ld + (1-p)*Lm)` for p, so a stale Ld
+        # mis-sets the mix until the running mean catches up -- and with drill_play_out on, 20.0 is
+        # not merely stale, it is wrong by ~25x. MEASURED at 25 episodes with play-out and the old
+        # seed: drills took 81% of STEPS against a configured 30%, because the solver still thought
+        # a drill cost 20 steps while each one now runs a full match. Seeding Ld = Lm under
+        # play-out makes p = target immediately, which is the whole point of the flag: with equal
+        # lengths the episode share and the step share are the same number.
+        _po = False
+        try:
+            _po = (bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
+                   if os.environ.get("CLASHRL_DRILL_PLAY_OUT") is not None
+                   else bool(cfg.get("sim", "drill_play_out", default=False)))
+        except Exception:  # noqa: BLE001
+            _po = False
         self._len_match = 186.0
+        self._len_drill = self._len_match if _po else 20.0
         self._n_drill = self._n_match = 0
         self._ep_steps = 0
         want = tiers if tiers is not None else (cfg.get("sim", "drill_tiers", default=None) or None)
