@@ -328,6 +328,9 @@ class SimMatchEnv:
         # Minimum seconds between two threat_miss charges. See _threat_miss_idle: charging every
         # 1-second step made holding elixir strictly worse than dumping it, by 8x.
         self.threat_miss_period = float(cfg.get("env", "threat_miss_period_s", default=4.0))
+        # FIX 7 (2026-08-25): scale the missed-defence penalty by what the ignored group actually
+        # costs, instead of charging a flat -1.0 for anything above the triage threshold.
+        self.threat_miss_proportional = bool(cfg.get("env", "threat_miss_proportional", default=True))
         # ---- CORRECT RESTRAINT (2026-08-24) ---------------------------------------------------
         # MEASURED: of 19 reward terms, exactly TWO can fire on a step where nothing was played --
         # `leak` and `threat_miss_idle` -- and BOTH are penalties. There is no term anywhere that
@@ -1068,10 +1071,16 @@ class SimMatchEnv:
         # real push and the penalty applies again, unchanged.
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.bodies_ignore_frac(
+        # FIX 7: the SAME number that decides the waiver also decides the PRICE. `bodies_ignore_frac`
+        # is the share of a princess tower this group takes if ignored outright, so it already IS
+        # "how much does ignoring this cost me" -- it was being thresholded and then thrown away.
+        _miss_frac = 1.0
+        if committed:
+            _miss_frac = float(threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
-                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
-            return 0.0
+                tower_level=self._tower_level_for_triage))
+            if _miss_frac < threat_value.IGNORE_FRAC:
+                return 0.0
         # ALREADY ANSWERING IT IS NOT IGNORING IT (2026-08-17). This term asked only "is a counter in
         # hand and affordable", never "is the push already being dealt with" -- so the step after a
         # Knight was dropped to intercept, and every step while he walked into the fight, was charged
@@ -1107,6 +1116,12 @@ class SimMatchEnv:
             if banking and self.specs[cid].elixir < self._bank_wincon_cost:
                 continue                                     # bank-masked -> not actually playable
             self._threat_miss_last = self.eng.t
+            # FIX 7: capped at 1.0 so a two-tower push cannot outweigh the outcome terms it is only
+            # a PROXY for -- this term exists to make the delayed damage learnable, not to replace
+            # it. A group with no committed bodies keeps the old full weight (`_miss_frac` 1.0):
+            # the threat is lit but nothing is past the commit line, so there is nothing to price.
+            if self.threat_miss_proportional:
+                return self.w_threat_miss * min(1.0, _miss_frac)
             return self.w_threat_miss
         return 0.0
 

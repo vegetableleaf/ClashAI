@@ -267,6 +267,50 @@ class SecondaryLaneTests(unittest.TestCase):
         self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.75, 0.30), 0.0)
 
 
+class MissPenaltyScaleTests(unittest.TestCase):
+    """FIX 7: the missed-defence penalty is priced by what the ignored group COSTS.
+
+    It used to be a step function -- free below IGNORE_FRAC, a flat -1.0 above -- so ignoring two
+    trickles (0.107 of a tower) charged exactly what ignoring a golem push (2.074) charged, a 19x
+    difference in real threat priced identically.
+    """
+
+    def _miss(self, bases, seed=41):
+        env = _quiet_env(seed=seed)
+        for i, b in enumerate(bases):
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, b, 11), 0.30 + 0.03 * i, 0.58)
+        env.step((False, 0, 0))
+        env._threat_miss_last = -1e9          # arm the rate limiter
+        env.eng.elixir[0] = 10.0              # a counter must be affordable or the term waives
+        return env._threat_miss_idle()
+
+    def test_a_bigger_threat_costs_more_to_ignore(self):
+        knight = self._miss(["knight"])
+        mini = self._miss(["mini_pekka"])
+        self.assertLess(knight, 0.0, "an answerable knight must still charge")
+        self.assertLess(mini, knight, "a mini pekka must cost MORE to ignore than a knight")
+
+    def test_two_trickles_no_longer_cost_what_a_golem_push_costs(self):
+        """The owner's case, and the reason for the fix."""
+        trickles = self._miss(["spear_goblins", "skeletons"])
+        push = self._miss(["golem", "mega_minion"])
+        self.assertLess(trickles, 0.0, "two trickles together ARE a real threat -- still charge")
+        self.assertGreater(trickles, push / 2.0,
+                           "...but nothing like a golem push: it must cost far less")
+
+    def test_the_penalty_is_capped_at_the_full_weight(self):
+        """This term is a PROXY for delayed tower damage, not a replacement for it. A two-tower
+        push must not out-shout the outcome terms it stands in for."""
+        huge = self._miss(["golem", "mega_minion", "mini_pekka", "mini_pekka"])
+        self.assertGreaterEqual(huge, -1.0 - 1e-9, "must not exceed w_threat_miss")
+
+    def test_a_lone_trickle_is_still_waived_entirely(self):
+        """The IGNORE_FRAC early return is KEPT on purpose: the term is rate-limited, and a 0.004
+        fire would arm the limiter and mask a real push arriving a second later."""
+        self.assertEqual(self._miss(["skeletons"]), 0.0)
+
+
 class ThreatTimingTests(unittest.TestCase):
     def _lit_env(self, seed=50, cards=1):
         """`cards` is the SIZE OF THE PUSH, and it is load-bearing for the budget test.

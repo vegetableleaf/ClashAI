@@ -2884,6 +2884,48 @@ passing.** icebow 635 tests OK.
 ⚠ **THIS INVALIDATES ANY CONTROL ARM TRAINED BEFORE IT** (owner flagged this). `ARM_control2.pt` was
 stopped mid-run and discarded; the adjustment round needs a fresh control on the fix 4+5+6 tree.
 
+## 4h. 2026-08-25 — FIX 7 SHIPPED: the missed-defence penalty was a STEP FUNCTION
+
+Owner's idea, and the measurement is stronger than the framing suggested. `_threat_miss_idle` is not
+flat, it is a step: free below `IGNORE_FRAC` (0.05), a full -1.0 above it. Measured on real boards:
+
+```
+committed group            ignore_frac   BEFORE    AFTER
+one skeletons                    0.004     0.000    0.000   (waived)
+two trickles together            0.107    -1.000   -0.107
+one knight                       0.302    -1.000   -0.302
+one mini pekka                   0.667    -1.000   -0.667
+two mini pekkas                  2.108    -1.000   -1.000   (capped)
+golem + mega minion              2.074    -1.000   -1.000   (capped)
+```
+
+**Ignoring two trickles cost exactly what ignoring a golem push cost -- a 19x difference in real
+threat priced identically.** The quantity that fixes it was already being computed ON THAT LINE:
+`bodies_ignore_frac` IS "how much tower does this cost me", and it was thresholded and then thrown
+away.
+
+### The second benefit is bigger than the fidelity one
+
+`threat_miss_idle` has been the DOMINANT NEGATIVE TERM in this ledger **twice** -- -152.00 over 152
+fires in 323 steps (86% of a hold-policy's entire penalty), and 1595 fires / 100 matches at -16/match
+(3x the next term). **Both times it taught the policy to empty its bar**, which is the failure this
+project has spent a week undoing, and which fix 1 was itself an attempt to counteract. Real fires
+land mostly at 0.3-0.7, so proportional pricing roughly HALVES the term's magnitude **while making
+it more accurate**. Fidelity up and a known failure mode defused in one change.
+
+⚠ **The `IGNORE_FRAC` early return is KEPT, and not because it is harmless.** The term is
+rate-limited by `threat_miss_period` (4 s) and the limiter arms whenever it fires. A 0.004 fire for
+a lone Skeletons costs nothing itself but would ARM THE LIMITER and mask a real push arriving a
+second later. The threshold's real job is to keep trivial threats from consuming the rate limit, and
+that job survives. What it stops doing is pricing a 0.107 board like a 2.074 one -- the cliff at the
+boundary falls from (0 -> -1.00) to (0 -> -0.05).
+
+Capped at 1.0 on purpose: this term is a PROXY that makes delayed tower damage learnable, not a
+replacement for the outcome terms, so a two-tower push must not out-shout what it stands in for.
+
+4 tests added; 2 of the 4 FAIL on the unpatched tree (the two that assert ordering and magnitude).
+icebow 639 tests OK.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
