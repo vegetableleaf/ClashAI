@@ -3211,6 +3211,16 @@ configured but **have never run** — BC has not been retrained since the soft-t
   ⚠ **PAIRING HELPS LESS THAN IT LOOKS.** Both arms sharing a seed gives the same STARTING board,
   but two different policies diverge on the first differing action, so pairing cancels initial
   conditions only -- measured, it tightened the sems by 12-17%, not the large factor expected.
+* **`--matches N` MEANS N EPISODES, NOT N MATCHES -- and so does the checkpoint's `matches` field
+  and the trainer's own "stopped after N match(es)" line.** Three names for the same axis, none of
+  them the axis they name. MEASURED: the control arm launched with `--matches 2850` stopped at
+  **2850 EPISODES / 2172 real matches** (`total 90W-2082L-0D`), and its checkpoint reports
+  `matches=2850`. The only place a REAL match count appears is the `W-L-D` tally.
+  Cost: a control arm sized for 3600 episodes stopped 750 short, and the chained follow-on run was
+  configured against the wrong axis too. **When matching two arms, match on EPISODES and verify with
+  the checkpoint field, never on the CLI number's apparent meaning.** A drill counts as an episode,
+  so the ratio also moves with `drill_frac` -- at 0.3 it was ~0.78 matches per episode here, which is
+  why the two numbers drift apart at a rate that looks plausible instead of obviously wrong.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
