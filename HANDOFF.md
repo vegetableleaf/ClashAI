@@ -2926,6 +2926,33 @@ replacement for the outcome terms, so a two-tower push must not out-shout what i
 4 tests added; 2 of the 4 FAIL on the unpatched tree (the two that assert ordering and magnitude).
 icebow 639 tests OK.
 
+## 4i. 2026-08-25 — ⚠ PENDING: CARD LEVEL UPGRADES (apply before the next PPO run)
+
+Owner reported two real-account upgrades. **NOT YET APPLIED**, deliberately:
+
+```
+config/cards.yaml   {card: tesla, evolved: true, level: 14 -> 15}
+config/cards.yaml   {card: ice_wizard,           level: 12 -> 13}
+```
+
+Card levels scale HP/damage, so they change the SIM. Applying them mid-round would invalidate
+`ARM_control4` and force a re-run of BOTH the control and the fixes-2+3 retry arm (~3 h) instead of
+just the retry arm (~1.5 h). The retry verdict is about reward STRUCTURE (credit gate vs penalty),
+which the level change does not interact with. **Apply the moment that verdict lands, before the PPO
+run**, so the PPO trains at the real account levels. Match the existing comment style in that file,
+e.g. `# upgraded 13 -> 15 on 2026-08-11 (real account level, confirmed)`.
+
+### ⚠ PROCESS FAILURE, RECORDED BECAUSE IT COST FIVE HOURS
+
+`ARM_control4` finished cleanly at 09:45 and **nothing advanced for ~4.8 h, because no waiter was
+armed for it.** A waiter had been armed for every previous arm; this one was launched, a Discord
+update was posted, and the turn ended. No notification existed, so no next stage fired.
+
+This is the exact failure documented in S2 four hours earlier -- *"any unattended launcher should do
+the same, and its waiter should treat 'no telemetry at all' as a FAILURE, not as slowness"* -- in the
+form where there is no waiter at all. **A launch is not complete until its waiter is running.** Treat
+`launch_arm.sh` and `wait_eps.py` as a single operation, never two.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
