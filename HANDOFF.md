@@ -2762,6 +2762,15 @@ x_bow share is ALREADY collapsing."* The dose was deliberately kept small (-0.5)
 reason and it was still enough. **Penalising a bad OUTCOME of an action suppresses the ACTION** --
 the policy cannot tell "play a better bow" from "stop playing bows", and the second is cheaper.
 
+**REVERTED FROM THE TREE 2026-08-25.** A measurably-failing reward change left in place
+contaminates every experiment after it -- fix 4, fix 5 and the entropy A/B all need a clean
+baseline. The patch is preserved in `scratchpad/fix23.py` for the adjustment round. The three
+tests that require the new terms were removed with it; **the corrected
+`test_overcommit_credit_on_bow_death` STAYS**, because its repair is true of the unpatched reward
+too -- the fixture's bow sat at y=0.60, 12.7 tiles from the enemy princess against an 11.7 range,
+so it could never have locked a tower and the test was crediting a bow that was physically
+incapable of threatening anything. Suite green at 625.
+
 If this is retried, the penalty has to be removed and only the CREDIT GATE (2a) kept, so a useless
 bow earns nothing rather than costing something -- or the penalty has to be conditioned on a bow
 that was placed in range, so it cannot be avoided by simply not playing the card.
