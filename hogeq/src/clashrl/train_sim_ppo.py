@@ -98,7 +98,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     from .sim.opponents import SelfPlayOpponent, make_opponent
 
     K = max(1, int(envs if envs is not None else cfg.get("sim", "envs", default=8)))
-    workers = int(workers if workers else cfg.get("sim", "rollout_workers", default=0))
+    # ⚠ `is not None`, NOT truthiness. `--workers 0` is FALSY, so `workers if workers else ...`
+    # silently replaced an explicit 0 with sim.rollout_workers, took the REMOTE path, and made
+    # "in-process, no workers" unreachable from the CLI -- a banner asserting one thing while the
+    # counters said another. Same family as `--drill-frac 0.0`.
+    workers = int(workers if workers is not None
+                  else cfg.get("sim", "rollout_workers", default=0))
     remote = workers > 1
     if remote:
         # SUBPROCESS ENGINE SHARDS (2026-08-14): the pure-Python engine is one core per process,

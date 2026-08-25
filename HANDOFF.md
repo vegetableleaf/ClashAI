@@ -3048,6 +3048,58 @@ trusted to catch a regression in this deck, which is why the ports were ALSO ver
 above rather than on test results alone. Worth its own session -- see the icebow precedent, where
 one long-red test turned out to be STALE rather than broken and was masking the defensive path.
 
+## 4l. 2026-08-25 — CROSS-DECK DIVERGENCE AUDIT (owner asked for both folders 100% current)
+
+Compared every shared module by hash: **58 of 78 identical**, 20 differ, and only
+`sim/drills_{icebow,hogeq}.py` are deck-exclusive. Line-count divergence alone does not separate a
+MISSING BUG FIX from icebow-only diagnostics, so each known ledger fix was checked by signature.
+
+### ⚠ FOUND LIVE IN HOGEQ: the `air_bases` bug — the Log's air exclusion is INERT
+
+```python
+# hogeq, before:
+self.air_bases = frozenset(b for b in (db.names() if hasattr(db, "names") else [])
+                           if db.is_flying(b))
+```
+
+`CardDB` HAS NO `names()`, so the generator iterated an empty list. **MEASURED: 0 cards instead of
+21 flying.** The guard was written correctly and `is_flying` was fine; only the enumeration was
+broken, so every call succeeded while the rule did nothing. **This is the owner's repeatedly-reported
+"the Log still registers a hit on air troops" -- and `the_log` IS in the hogeq deck**, so that deck
+has been scoring Log casts on flying units as hits the entire time. Fixed, with the same loud
+empty-set diagnostic icebow carries.
+
+### ALSO PORTED: falsy-zero `--workers 0`
+
+hogeq still had `workers if workers else ...`, so an explicit `--workers 0` was silently replaced by
+`sim.rollout_workers`, took the REMOTE path, and made "in-process, no workers" unreachable from the
+CLI. Same family as `--drill-frac 0.0` (S8).
+
+### DELIBERATELY *NOT* PORTED, with reasons
+
+```
+critic split + value_d      icebow has `ppo_value_head_split: false` -- TRIED AND REJECTED.
+                            Porting a disabled experiment adds dead code and invites someone to
+                            switch it on without re-reading why it was turned off.
+ASYNC advisor               icebow has `llm_advisor_async: false` -- reverted 2026-08-25 on the
+                            owner's slow-reaction report. Porting it would spread a known regression.
+drill play-out              CANNOT BE MECHANICALLY PORTED. Three of its four anchors do not exist in
+                            hogeq, whose drill-termination logic is structurally different. This is a
+                            REWRITE, not a patch, and hand-adapting a structural change across decks
+                            is exactly how they acquire divergent bugs. ⚠ STILL OPEN -- hogeq keeps
+                            the two-population critic problem (drill ~18.4s vs match ~180s) that
+                            play-out was built to remove.
+fixes 2+3                   x_bow specific; hogeq has no x_bow.
+fix 1                       dropped in icebow; hogeq never had it.
+```
+
+### THE REAL LESSON HERE
+
+`air_bases` was fixed in icebow days ago and the identical bug sat untouched in hogeq the whole
+time, while the owner kept reporting the symptom. **A fix is not done when one deck is green.** The
+audit that found it took minutes; the bug survived weeks. Run this comparison after any shared-module
+fix.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
