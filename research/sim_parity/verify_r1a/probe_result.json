@@ -1,0 +1,228 @@
+{
+ "n_base_keys_probed": 137,
+ "n_probe_titles": 139,
+ "existing_evo_pages": {
+  "Archers/Evolution": {
+   "revid": 437495,
+   "bytes": 28101,
+   "stub": false
+  },
+  "Baby Dragon/Evolution": {
+   "revid": 437336,
+   "bytes": 7987,
+   "stub": false
+  },
+  "Barbarians/Evolution": {
+   "revid": 437363,
+   "bytes": 19726,
+   "stub": false
+  },
+  "Bats/Evolution": {
+   "revid": 437215,
+   "bytes": 16433,
+   "stub": false
+  },
+  "Battle Ram/Evolution": {
+   "revid": 437079,
+   "bytes": 21194,
+   "stub": false
+  },
+  "Bomber/Evolution": {
+   "revid": 436449,
+   "bytes": 22038,
+   "stub": false
+  },
+  "Cannon/Evolution": {
+   "revid": 437252,
+   "bytes": 14114,
+   "stub": false
+  },
+  "Dart Goblin/Evolution": {
+   "revid": 437234,
+   "bytes": 15973,
+   "stub": false
+  },
+  "Electro Dragon/Evolution": {
+   "revid": 437294,
+   "bytes": 15103,
+   "stub": false
+  },
+  "Elite Barbarians/Evolution": {
+   "revid": 436936,
+   "bytes": 14,
+   "stub": true
+  },
+  "Executioner/Evolution": {
+   "revid": 437539,
+   "bytes": 18843,
+   "stub": false
+  },
+  "Firecracker/Evolution": {
+   "revid": 437259,
+   "bytes": 35849,
+   "stub": false
+  },
+  "Furnace/Evolution": {
+   "revid": 437286,
+   "bytes": 10280,
+   "stub": false
+  },
+  "Giant Snowball/Evolution": {
+   "revid": 437371,
+   "bytes": 12355,
+   "stub": false
+  },
+  "Goblin Barrel/Evolution": {
+   "revid": 437372,
+   "bytes": 16174,
+   "stub": false
+  },
+  "Goblin Cage/Evolution": {
+   "revid": 437374,
+   "bytes": 20630,
+   "stub": false
+  },
+  "Goblin Drill/Evolution": {
+   "revid": 437383,
+   "bytes": 17331,
+   "stub": false
+  },
+  "Goblin Giant/Evolution": {
+   "revid": 437292,
+   "bytes": 23860,
+   "stub": false
+  },
+  "Hunter/Evolution": {
+   "revid": 436718,
+   "bytes": 10651,
+   "stub": false
+  },
+  "Ice Spirit/Evolution": {
+   "revid": 437339,
+   "bytes": 13467,
+   "stub": false
+  },
+  "Inferno Dragon/Evolution": {
+   "revid": 437282,
+   "bytes": 14909,
+   "stub": false
+  },
+  "Knight/Evolution": {
+   "revid": 437498,
+   "bytes": 30611,
+   "stub": false
+  },
+  "Lumberjack/Evolution": {
+   "revid": 437284,
+   "bytes": 17061,
+   "stub": false
+  },
+  "Mega Knight/Evolution": {
+   "revid": 437281,
+   "bytes": 21986,
+   "stub": false
+  },
+  "Minion Horde/Evolution": {
+   "revid": 437379,
+   "bytes": 704,
+   "stub": false
+  },
+  "Mortar/Evolution": {
+   "revid": 437361,
+   "bytes": 19111,
+   "stub": false
+  },
+  "Musketeer/Evolution": {
+   "revid": 436483,
+   "bytes": 22833,
+   "stub": false
+  },
+  "P.E.K.K.A./Evolution": {
+   "revid": 437337,
+   "bytes": 28072,
+   "stub": false
+  },
+  "P.E.K.K.A/Evolution": {
+   "revid": 416999,
+   "bytes": 34,
+   "stub": true
+  },
+  "Princess/Evolution": {
+   "revid": 437368,
+   "bytes": 2416,
+   "stub": false
+  },
+  "Royal Ghost/Evolution": {
+   "revid": 437237,
+   "bytes": 12591,
+   "stub": false
+  },
+  "Royal Giant/Evolution": {
+   "revid": 437218,
+   "bytes": 22548,
+   "stub": false
+  },
+  "Royal Hogs/Evolution": {
+   "revid": 437265,
+   "bytes": 9767,
+   "stub": false
+  },
+  "Royal Recruits/Evolution": {
+   "revid": 436465,
+   "bytes": 17309,
+   "stub": false
+  },
+  "Skeleton Army/Evolution": {
+   "revid": 436959,
+   "bytes": 14956,
+   "stub": false
+  },
+  "Skeleton Barrel/Evolution": {
+   "revid": 437248,
+   "bytes": 17390,
+   "stub": false
+  },
+  "Skeletons/Evolution": {
+   "revid": 436451,
+   "bytes": 16756,
+   "stub": false
+  },
+  "Tesla/Evolution": {
+   "revid": 437289,
+   "bytes": 23566,
+   "stub": false
+  },
+  "Valkyrie/Evolution": {
+   "revid": 437367,
+   "bytes": 14439,
+   "stub": false
+  },
+  "Wall Breakers/Evolution": {
+   "revid": 437358,
+   "bytes": 18242,
+   "stub": false
+  },
+  "Witch/Evolution": {
+   "revid": 437350,
+   "bytes": 16116,
+   "stub": false
+  },
+  "Wizard/Evolution": {
+   "revid": 437069,
+   "bytes": 15866,
+   "stub": false
+  },
+  "Zap/Evolution": {
+   "revid": 437306,
+   "bytes": 16541,
+   "stub": false
+  }
+ },
+ "search_derived_evo_titles": [],
+ "probe_missing_count": 96,
+ "master_card_evolution": {
+  "revid": 437535,
+  "bytes": 27567
+ },
+ "failures": []
+}
