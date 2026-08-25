@@ -131,8 +131,19 @@ def compose_components(pool, rng, n_max=3):
 # below has always CALLED it that in its own comment while reading this variable, so a run
 # that set the config key got no play-out and no warning. Env still wins when set, so a
 # command-line A/B needs no config edit; None here means "defer to config".
-_PLAY_OUT_ENV = (bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
-                 if os.environ.get("CLASHRL_DRILL_PLAY_OUT") is not None else None)
+def _env_flag(name):
+    """Parse a boolean ENV VAR properly. `bool(os.environ.get(name))` is True for ANY non-empty
+    string -- INCLUDING "0" and "false" -- so the override could only ever turn a flag ON. This
+    flag exists for command-line A/Bs, so `CLASHRL_DRILL_PLAY_OUT=0` silently produced the
+    TREATMENT arm and any A/B run that way compared the feature against itself. Same family as
+    `--drill-frac 0.0` and `--workers 0`: a falsy value that the code could not express."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return None
+    return raw.strip().lower() not in ("", "0", "false", "no", "off")
+
+
+_PLAY_OUT_ENV = _env_flag("CLASHRL_DRILL_PLAY_OUT")
 _PLAY_OUT_ANNOUNCED = False
 _FULL_HAND = bool(os.environ.get("CLASHRL_DRILL_FULL_HAND"))
 _CLOCK_JITTER = bool(os.environ.get("CLASHRL_DRILL_CLOCK"))
@@ -1054,9 +1065,8 @@ class DrillMixEnv(DrillEnv):
         # lengths the episode share and the step share are the same number.
         _po = False
         try:
-            _po = (bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))
-                   if os.environ.get("CLASHRL_DRILL_PLAY_OUT") is not None
-                   else bool(cfg.get("sim", "drill_play_out", default=False)))
+            _e = _env_flag("CLASHRL_DRILL_PLAY_OUT")
+            _po = _e if _e is not None else bool(cfg.get("sim", "drill_play_out", default=False))
         except Exception:  # noqa: BLE001
             _po = False
         self._len_match = 186.0

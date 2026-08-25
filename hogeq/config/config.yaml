@@ -1407,6 +1407,14 @@ sim:
                             # acing two interactions while the third takes the tower is not playing
                             # the board well.
   drill_frac: 0.0
+  # DRILL PLAY-OUT (ported from icebow 2026-08-25). A drill CONTINUES as an ordinary match once its
+  # verdict is recorded, instead of ending there. Fixes the two-population problem at the source: a
+  # drill averages 18.4s against a match's 180s+, one critic values both, and measured that wrecks it
+  # (value loss 1.3-1.8 mixed vs 0.38-0.56 matches-alone). Splitting the critic recovered ~30% and
+  # shrinking drill_frac did not help at all -- both compensate downstream for a length mismatch
+  # instead of removing it. NB the drill length seed keys off this too (see drill_env), so flipping
+  # it here is sufficient; CLASHRL_DRILL_PLAY_OUT overrides for a command-line A/B.
+  drill_play_out: true
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)

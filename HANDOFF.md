@@ -3083,12 +3083,11 @@ critic split + value_d      icebow has `ppo_value_head_split: false` -- TRIED AN
                             switch it on without re-reading why it was turned off.
 ASYNC advisor               icebow has `llm_advisor_async: false` -- reverted 2026-08-25 on the
                             owner's slow-reaction report. Porting it would spread a known regression.
-drill play-out              CANNOT BE MECHANICALLY PORTED. Three of its four anchors do not exist in
-                            hogeq, whose drill-termination logic is structurally different. This is a
-                            REWRITE, not a patch, and hand-adapting a structural change across decks
-                            is exactly how they acquire divergent bugs. ⚠ STILL OPEN -- hogeq keeps
-                            the two-population critic problem (drill ~18.4s vs match ~180s) that
-                            play-out was built to remove.
+drill play-out              ✅ PORTED 2026-08-25 -- and my "cannot be ported" call above was WRONG.
+                            I had searched for icebow's COMMENT text, which naturally differs
+                            between decks, instead of the CODE sites. The structures are nearly
+                            identical (`if v is not None:` + `done = True` vs the guarded form), and
+                            all four sites ported cleanly. See 4m.
 fixes 2+3                   x_bow specific; hogeq has no x_bow.
 fix 1                       dropped in icebow; hogeq never had it.
 ```
@@ -3099,6 +3098,49 @@ fix 1                       dropped in icebow; hogeq never had it.
 time, while the owner kept reporting the symptom. **A fix is not done when one deck is green.** The
 audit that found it took minutes; the bug survived weeks. Run this comparison after any shared-module
 fix.
+
+## 4m. 2026-08-25 — PLAY-OUT PORTED TO HOGEQ, AND THE VERIFICATION FOUND A LIVE BUG IN ICEBOW
+
+### ⚠ CORRECTION: "cannot be mechanically ported" was wrong
+
+I reported play-out as a rewrite because 3 of 4 anchors were missing. **I had searched for icebow's
+COMMENT text, which differs between decks by nature, rather than the code sites.** The structure is
+nearly identical:
+
+```
+icebow:  if v is not None and self.last_verdict is None:  ... done = bool(done) or not self._play_out()
+hogeq:   if v is not None:                                ... done = True
+```
+
+All four sites ported: `import os` + env globals, `_play_out()`, the verdict site, and the LENGTH
+SEED. **The length seed is not optional** -- `_episode_prob` solves
+`target = p*Ld / (p*Ld + (1-p)*Lm)`, so with play-out ON a 20.0 seed is wrong by ~25x (measured in
+icebow: drills took 81% of STEPS against a configured 30%). Porting sites 1-3 without it would have
+been worse than not porting.
+
+VERIFIED behaviourally on hogeq: `play-out off -> episode ends at step 10` (its verdict);
+`play-out ON -> verdict still at step 10, episode continues to step 501`. Config key
+`sim.drill_play_out: true` added to hogeq.
+
+### ⚠⚠ THE VERIFICATION FOUND A LIVE BUG IN **ICEBOW** — `CLASHRL_DRILL_PLAY_OUT=0` TURNED IT **ON**
+
+```python
+_PLAY_OUT_ENV = bool(os.environ.get("CLASHRL_DRILL_PLAY_OUT"))    # bool("0") is TRUE
+```
+
+**Any non-empty value -- including `"0"` and `"false"` -- evaluated True, so the override could only
+ever ENABLE play-out, never disable it.** That flag exists specifically for command-line A/Bs, which
+means **any A/B run as `CLASHRL_DRILL_PLAY_OUT=0` vs `=1` compared the feature against ITSELF** and
+would have reported "no difference" for a change that is worth 50x the episode length.
+
+Third member of the family, after `--drill-frac 0.0` and `--workers 0`: **a falsy value the code
+could not express.** Now parsed properly (`""`/`0`/`false`/`no`/`off` -> False) in BOTH decks, with
+proof: `icebow =0 -> False, =1 -> True`; `hogeq =0 -> False, =1 -> True`.
+
+**Found only because the port was checked BEHAVIOURALLY rather than by "the patch applied cleanly".**
+The port was correct; the flag it depended on was not.
+
+icebow 639 OK. hogeq 706, 42 pre-existing failures, unchanged.
 
 ## 4. The central problem, and where it stands
 

@@ -22,6 +22,8 @@ from __future__ import annotations
 
 from typing import Optional
 
+import os
+
 import numpy as np
 
 from .engine import Unit, build_spec
@@ -54,6 +56,23 @@ def deploy_unit(eng, team: int, db, base: str, x: float, y: float, level: int = 
 # Cards used purely as DISTRACTORS on a drill board. Chosen to be ordinary, cheap-to-medium threats
 # that a real match is full of and that no drill is ABOUT, so they add board state without turning
 # into a second interaction the grader might confuse for the first.
+# ENV OVERRIDE ONLY. The real switch is `sim.drill_play_out` in config.yaml; env wins when set so
+# a command-line A/B needs no config edit, and None means "defer to config".
+def _env_flag(name):
+    """Parse a boolean ENV VAR properly. `bool(os.environ.get(name))` is True for ANY non-empty
+    string -- INCLUDING "0" and "false" -- so the override could only ever turn a flag ON. This
+    flag exists for command-line A/Bs, so `CLASHRL_DRILL_PLAY_OUT=0` silently produced the
+    TREATMENT arm and any A/B run that way compared the feature against itself. Same family as
+    `--drill-frac 0.0` and `--workers 0`: a falsy value that the code could not express."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return None
+    return raw.strip().lower() not in ("", "0", "false", "no", "off")
+
+
+_PLAY_OUT_ENV = _env_flag("CLASHRL_DRILL_PLAY_OUT")
+_PLAY_OUT_ANNOUNCED = False
+
 _NOISE_CARDS = frozenset((
     "knight", "archers", "spear_goblins", "goblins", "minions", "bomber", "musketeer",
     "barbarians", "mega_minion", "fire_spirit", "ice_spirit", "bats", "skeletons",
@@ -563,6 +582,37 @@ class DrillEnv(SimMatchEnv):
         self.eng.elixir[0] = min(10.0, max(float(c["scenario"].elixir) for c in self._components))
         self.eng.elixir[1] = 10.0
 
+    def _play_out(self) -> bool:
+        """Does a drill CONTINUE as an ordinary match once its verdict is recorded?
+
+        `sim.drill_play_out`, with CLASHRL_DRILL_PLAY_OUT overriding it for a command-line A/B.
+
+        Root-cause fix for the two-population problem: a drill averages 18.4 s against a match's
+        180 s+, one critic has to value both, and measured that wrecks it (value loss 1.3-1.8 mixed
+        vs 0.38-0.56 matches-alone). Splitting the critic recovered only ~30% and shrinking
+        drill_frac did not help at all, because both compensate downstream for a length mismatch
+        instead of removing it. Playing the drill out makes episode length, return scale and critic
+        targets match automatically.
+
+        Announced ONCE per process: a flag that can silently do nothing is how the icebow version
+        spent its life being read from an env var while its own comment named a config key.
+        """
+        if _PLAY_OUT_ENV is not None:
+            v = _PLAY_OUT_ENV
+        else:
+            try:
+                v = bool(self.cfg.get("sim", "drill_play_out", default=False))
+            except Exception:  # noqa: BLE001
+                v = False
+        global _PLAY_OUT_ANNOUNCED
+        if not _PLAY_OUT_ANNOUNCED:
+            _PLAY_OUT_ANNOUNCED = True
+            print("[drill] play-out %s -- drills %s"
+                  % ("ON" if v else "off",
+                     "continue as ordinary matches after their verdict"
+                     if v else "END at their verdict (episode ~18s vs a match's ~180s)"))
+        return v
+
     def _verdict(self) -> Optional[str]:
         if getattr(self, "_components", None):
             v, _res = compound_verdict(self)
@@ -628,9 +678,14 @@ class DrillEnv(SimMatchEnv):
                  "elixir": float(spent)})
         if not done:
             v = self._verdict()
-            if v is not None:
+            # `last_verdict is None` guard: under play-out the episode continues, so this block is
+            # re-entered on later steps and would otherwise re-stamp the verdict every tick.
+            if v is not None and self.last_verdict is None:
                 self.last_verdict = v
-                done = True
+                # PLAY OUT: record the verdict at its natural moment but let the episode CONTINUE
+                # as an ordinary match instead of ending here. Ending early is what creates the
+                # 18s-vs-180s mismatch that miscalibrates the shared critic.
+                done = bool(done) or not self._play_out()
                 info = dict(info or {})
                 info["drill"] = self.scenario.name
                 info["verdict"] = v
@@ -900,8 +955,22 @@ class DrillMixEnv(DrillEnv):
         # the gradient -- and split across 28 scenarios, none of them ever had enough signal.
         self.drill_frac = (float(cfg.get("sim", "drill_frac", default=0.0))
                            if frac is None else float(frac))
-        self._len_drill = 20.0        # running mean episode lengths, seeded with measured values
+        # RUNNING MEAN EPISODE LENGTHS, and the SEED MATTERS FOR THE WHOLE EARLY RUN.
+        # _episode_prob solves `target_step_share = p*Ld / (p*Ld + (1-p)*Lm)` for p, so a stale Ld
+        # mis-sets the mix until the running mean catches up -- and with drill_play_out ON, 20.0 is
+        # not merely stale, it is wrong by ~25x. MEASURED in icebow at 25 episodes with play-out and
+        # the old seed: drills took 81% of STEPS against a configured 30%, because the solver still
+        # thought a drill cost 20 steps while each one now runs a full match. Seeding Ld = Lm under
+        # play-out makes p = target immediately -- with equal lengths the episode share and the step
+        # share are the same number, which is the whole point of the flag.
+        _po = False
+        try:
+            _e = _env_flag("CLASHRL_DRILL_PLAY_OUT")
+            _po = _e if _e is not None else bool(cfg.get("sim", "drill_play_out", default=False))
+        except Exception:  # noqa: BLE001
+            _po = False
         self._len_match = 186.0
+        self._len_drill = self._len_match if _po else 20.0
         self._n_drill = self._n_match = 0
         self._ep_steps = 0
         want = tiers if tiers is not None else (cfg.get("sim", "drill_tiers", default=None) or None)
