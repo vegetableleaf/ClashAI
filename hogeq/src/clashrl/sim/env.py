@@ -310,6 +310,9 @@ class SimMatchEnv:
         # guides (Hunter-lineage doctrine): "never X-Bow the bridge first play", "if they invest
         # a high cost tank at the back, immediately X-Bow opposite lane" (SAME lane vs a Lava
         # Hound), "Little Prince/Evolved Bomber ... wrecks a X-Bow" -> discount when seen.
+        # FIX 6 (2026-08-25): the CHEAP ANSWER IN THE OTHER LANE. Scaled by that lane's own danger
+        # relative to the primary's, so "cheapest sufficient answer" is priced rather than ruled.
+        self.w_threat_2nd = r("threat_response_secondary", 1.0)
         self.w_bow_over = r("xbow_overcommit", 0.08)          # per enemy elixir drawn beyond the bow's 6
         # A FORWARD BOW PLANTED INTO A COMMITTED PUSH. See _xbow_into_push for the measurement that
         # forced this: nothing anywhere priced the bow dying to the push it was dropped on top of,
@@ -347,6 +350,9 @@ class SimMatchEnv:
         # Minimum seconds between two threat_miss charges. See _threat_miss_idle: charging every
         # 1-second step made holding elixir strictly worse than dumping it, by 8x.
         self.threat_miss_period = float(cfg.get("env", "threat_miss_period_s", default=4.0))
+        # FIX 7 (2026-08-25): scale the missed-defence penalty by what the ignored group actually
+        # costs, instead of charging a flat -1.0 for anything above the triage threshold.
+        self.threat_miss_proportional = bool(cfg.get("env", "threat_miss_proportional", default=True))
         self._threat_miss_last = -1e9
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
@@ -707,11 +713,35 @@ class SimMatchEnv:
         return -allowed
 
     def _threat_pos(self):
-        """(x, y) of the deepest enemy troop on YOUR half (the threat to intercept); centre if none."""
+        """(x, y) of the MOST DANGEROUS enemy troop on YOUR half; centre if none.
+
+        ⚠ THIS USED TO RETURN THE DEEPEST UNIT, AND THAT WAS THE BUG (fixed 2026-08-25).
+        `_threat_response` grades the CARD against `_threat_id_true`, which ranks by DANGER, and
+        the PLACEMENT against this lane. While the two disagreed, the reward asked "did you play
+        the right counter to the DANGEROUS threat, in the lane of the DEEPEST one?" -- and MEASURED
+        on a pekka (ignore_cost_frac 1.907) shallow beside a skeletons trickle (0.004) deeper, a
+        counter placed in the pekka's lane earned NOTHING while one placed in the trickle's lane
+        earned full credit. The reward PAID to defend the wrong lane, so training reinforced it.
+
+        The ranking here is character-for-character the one `identity_threat_vector` uses for its
+        primary -- `max(key=(danger, depth))` -- so the two halves of `_threat_response` now
+        describe the SAME unit BY CONSTRUCTION rather than by coincidence. That is the property
+        that matters; a merely "better" heuristic here would leave the same class of bug open.
+
+        DEPTH REMAINS THE TIE-BREAK on purpose: among equally dangerous bodies the deepest is the
+        most urgent, which is the one case the old rule got right.
+        """
         onside = [u for u in self.eng.units if u.team == 1 and u.spec.kind != "spell" and u.y >= 0.5]
         if not onside:
             return 0.5, 0.5
-        u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
+
+        def _danger(unit):
+            try:
+                return float(threat_value.ignore_cost_frac(self.db, unit.spec.base))
+            except Exception:  # noqa: BLE001 -- an unpriced card is not automatically harmless,
+                return 0.0     # but it must not outrank a card the KB actually prices either.
+
+        u = max(onside, key=lambda unit: (_danger(unit), unit.y))
         return float(u.x), float(u.y)
 
     def _leaking_first(self, spend: float = 0.0) -> bool:
@@ -873,10 +903,16 @@ class SimMatchEnv:
         # real push and the penalty applies again, unchanged.
         committed = [u for u in self.eng.units
                      if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if committed and threat_value.bodies_ignore_frac(
+        # FIX 7: the SAME number that decides the waiver also decides the PRICE. `bodies_ignore_frac`
+        # is the share of a princess tower this group takes if ignored outright, so it already IS
+        # "how much does ignoring this cost me" -- it was being thresholded and then thrown away.
+        _miss_frac = 1.0
+        if committed:
+            _miss_frac = float(threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
-                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
-            return 0.0
+                tower_level=self._tower_level_for_triage))
+            if _miss_frac < threat_value.IGNORE_FRAC:
+                return 0.0
         # ALREADY ANSWERING IT IS NOT IGNORING IT (2026-08-17). This term asked only "is a counter in
         # hand and affordable", never "is the push already being dealt with" -- so the step after a
         # Knight was dropped to intercept, and every step while he walked into the fight, was charged
@@ -912,8 +948,67 @@ class SimMatchEnv:
             if banking and self.specs[cid].elixir < self._bank_wincon_cost:
                 continue                                     # bank-masked -> not actually playable
             self._threat_miss_last = self.eng.t
+            # FIX 7: capped at 1.0 so a two-tower push cannot outweigh the outcome terms it is only
+            # a PROXY for -- this term exists to make the delayed damage learnable, not to replace
+            # it. A group with no committed bodies keeps the old full weight (`_miss_frac` 1.0):
+            # the threat is lit but nothing is past the commit line, so there is nothing to price.
+            if self.threat_miss_proportional:
+                return self.w_threat_miss * min(1.0, _miss_frac)
             return self.w_threat_miss
         return 0.0
+
+    def _secondary_lane_response(self, card_id: int, nx: float, ny: float) -> float:
+        """A correct, proportionate answer to a committed threat in a lane OTHER than the primary.
+
+        `_threat_response` judges the card against the PRIMARY identity in the PRIMARY lane, so a
+        Skeletons dropped on the Mini Pekka while a Golem rolls the other side scores exactly zero --
+        measured. The tower damage it prevents is billed only by the delayed outcome terms, which is
+        the credit assignment this critic handles worst.
+
+        Judged on the ANSWERED lane's OWN terms: its own identity vector, its own triage, and its own
+        danger. The payout scales with that lane's `ignore_cost_frac` against the primary's, so a
+        near-equal second threat pays near-full while a trickle pays almost nothing -- the doctrine's
+        "cheapest sufficient answer" as a price rather than a rule.
+        """
+        if self.w_threat_2nd <= 0.0 or ny < 0.5:
+            return 0.0
+        tx, _ = self._threat_pos()
+        if abs(nx - tx) <= self.intercept_lane:
+            return 0.0                                   # primary lane -> _threat_response's job
+        lane = [u for u in self.eng.units
+                if u.team == 1 and u.hp > 0 and u.spec.kind != "spell"
+                and u.y >= 0.5 and abs(u.x - nx) <= self.intercept_lane]
+        if not lane:
+            return 0.0                                   # answering nothing
+        bases = [u.spec.base for u in lane]
+        if threat_value.bodies_ignore_frac(
+                self.db, bases, tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
+            return 0.0                                   # this lane is not worth a card
+        items = [(u.spec.base, card_threat.identity_depth(u.y, self.identity_front))
+                 for u in lane if u.spec.base in self._grade_cards]
+        if not items:
+            return 0.0
+        lid = card_threat.identity_threat_vector(items, self.db, horizon=self.predict_horizon)
+        if lid[0] < 0.5 or not card_threat.counters(self._deck_profiles[card_id], lid):
+            return 0.0                                   # wrong role for THIS lane
+        n_cards = len(threat_value.cards_from_bodies(self.db, bases)) or 1
+        if self._threat_credits >= max(1, min(self.threat_credit_budget, n_cards + 1)):
+            return 0.0                                   # budget spent (shared with the primary)
+
+        def _danger(base):
+            try:
+                return float(threat_value.ignore_cost_frac(self.db, base))
+            except Exception:  # noqa: BLE001
+                return 0.0
+
+        here = max(_danger(b) for b in bases)
+        prim = max([_danger(u.spec.base) for u in self.eng.units
+                    if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y >= 0.5] or [0.0])
+        share = min(1.0, here / prim) if prim > 1e-9 else 0.0
+        if share <= 0.0:
+            return 0.0
+        self._threat_credits += 1
+        return self.w_threat_2nd * share
 
     def _punish_window(self, spend: float = 0.0) -> bool:
         """The opponent has overcommitted and cannot answer a siege before it starts firing. A forward
@@ -2107,6 +2202,11 @@ class SimMatchEnv:
                                delay_s=self.action_latency):   # affordable + placed (lands when the live tap would)
                 placed_id = card_id
                 reward += self.rw_stats.add("threat_response", self._bonus(self._threat_response(card_id, nx, ny)))   # (1) counter to the assessed threat
+                # ...and the OTHER lane. Prioritising the greater threat must not mean ignoring the
+                # lesser one: a Mini Pekka opposite a Golem still needs a cheap answer, and nothing
+                # priced it (measured: +0.000 for the correct Skeletons, while it saved 2266 tower HP).
+                reward += self.rw_stats.add("threat_response_2nd",
+                                            self._bonus(self._secondary_lane_response(card_id, nx, ny)))
                 reward += self.rw_stats.add("wincon_exec", self._bonus(self._wincon_exec(card_id, nx, ny)))           # (3) win-condition executed right
                 if card_id in self.damage_spell_ids:
                     # trade ledger: enemy deaths near this cast within 3 s credit as OUR kill

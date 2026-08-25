@@ -136,6 +136,181 @@ class RangedDefenderAttributionTests(unittest.TestCase):
                            "the bow FOUGHT it (combat stamp), so the kill credits at any range")
 
 
+class ThreatPositionTests(unittest.TestCase):
+    """`_threat_pos` must name the MOST DANGEROUS body, not the deepest one.
+
+    THE BUG (fixed 2026-08-25): `_threat_response` grades the CARD against `_threat_id_true`, which
+    ranks by `ignore_cost_frac`, and the PLACEMENT against `_threat_pos`, which ranked by DEPTH. A
+    counter placed in front of a Pekka earned NOTHING while the same counter dropped in a lone
+    Skeletons' lane earned full credit -- the reward PAID to defend the wrong lane, so training
+    reinforced it and no amount of further training could unlearn it.
+    """
+
+    def _board(self, danger_x, danger_y, trickle_x, trickle_y, seed=7):
+        env = _quiet_env(seed=seed)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), danger_x, danger_y)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), trickle_x, trickle_y)
+        env.step((False, 0, 0))
+        return env
+
+    def test_lane_follows_the_dangerous_body_not_the_deepest(self):
+        """The owner's reported board: a tank shallow, a trickle DEEPER in the other lane."""
+        env = self._board(0.25, 0.55, 0.75, 0.70)
+        tx, _ = env._threat_pos()
+        self.assertLess(abs(tx - 0.25), env.intercept_lane,
+                        "the intercept lane must point at the PEKKA, not the deeper skeletons")
+        self.assertGreater(abs(tx - 0.75), env.intercept_lane,
+                           "the trickle's lane must NOT earn intercept credit")
+
+    def test_identity_and_position_describe_the_SAME_body(self):
+        """The property that was missing. The 2026-08-20 fix corrected the identity half only, and
+        nothing asserted the two halves agreed -- which is why the symptom survived it."""
+        env = self._board(0.25, 0.55, 0.75, 0.70)
+        tid = env._threat_id_true
+        tx, _ = env._threat_pos()
+        self.assertGreaterEqual(tid[1], 0.5, "identity must recognise the tank")
+        self.assertLess(abs(tx - 0.25), env.intercept_lane,
+                        "identity says TANK, so the position must be the tank's")
+
+    def test_depth_still_breaks_a_tie_between_equal_threats(self):
+        """Depth was not wrong, it was only the wrong PRIMARY key. Among equally dangerous bodies
+        the deepest is the most urgent, and that must survive the fix."""
+        env = _quiet_env(seed=9)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.30, 0.55)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.70, 0.68)
+        env.step((False, 0, 0))
+        tx, ty = env._threat_pos()
+        self.assertLess(abs(tx - 0.70), env.intercept_lane,
+                        "equal danger -> the DEEPER knight is the one to intercept")
+
+    def test_a_lone_trickle_is_still_named_when_it_is_all_there_is(self):
+        """Negative control: the danger ranking must not make a board with only cheap bodies read
+        as 'no threat'. Triage decides whether it is worth answering (bodies_ignore_frac); this
+        function's job is only to say WHERE."""
+        env = _quiet_env(seed=11)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), 0.72, 0.66)
+        env.step((False, 0, 0))
+        tx, ty = env._threat_pos()
+        self.assertNotEqual((round(tx, 3), round(ty, 3)), (0.5, 0.5),
+                            "a real body on our half must not report the centre-of-board default")
+        self.assertLess(abs(tx - 0.72), 0.12, "it must name the trickle that IS there")
+
+
+class SecondaryLaneTests(unittest.TestCase):
+    """FIX 6: prioritising the greater threat must not mean IGNORING the lesser one.
+
+    Owner's board: Golem + support one side, Mini Pekka the other. The golem is the bigger threat
+    and fix 5 correctly points the primary lane at it -- but the mini pekka still needs a cheap
+    answer. MEASURED before fix 6: the correct Skeletons scored `threat_response` +0.000 while
+    saving ~2266 tower HP, so the only incentive was the delayed outcome term.
+    """
+
+    def _two_lane(self, second="mini_pekka", seed=21):
+        env = _quiet_env(seed=seed)
+        for name, x, y in (("golem", 0.25, 0.56), ("mega_minion", 0.27, 0.54), (second, 0.75, 0.58)):
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, name, 11), x, y)
+        env.step((False, 0, 0))
+        return env, {c: i for i, c in enumerate(env.deck_keys)}
+
+    def test_cheap_answer_in_the_other_lane_is_paid(self):
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertGreater(env._secondary_lane_response(ix["skeletons"], 0.75, 0.62), 0.5,
+                           "a correct answer to the mini pekka must be worth something")
+
+    def test_primary_lane_is_left_to_threat_response(self):
+        """No double-paying: the primary lane is _threat_response's job, not this term's."""
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.25, 0.62), 0.0)
+
+    def test_a_lane_with_nothing_in_it_pays_nothing(self):
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.50, 0.62), 0.0)
+
+    def test_triage_refuses_a_second_lane_not_worth_a_card(self):
+        """The doctrine's tier above every counter rule. A trickle in the other lane is not a
+        second threat, and paying for answering it would teach exactly the over-answering that
+        `min(threat_credit_budget, n_cards)` was added to stop."""
+        env = _quiet_env(seed=31)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.25, 0.56)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), 0.75, 0.60)
+        env.step((False, 0, 0))
+        ix = {c: i for i, c in enumerate(env.deck_keys)}
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.75, 0.62), 0.0)
+
+    def test_credit_scales_with_the_lane_s_own_danger(self):
+        """A near-equal threat pays near-full; the price IS the doctrine, not a flat bonus."""
+        big, ixb = self._two_lane("mini_pekka")
+        big._threat_credits = 0
+        v_big = big._secondary_lane_response(ixb["skeletons"], 0.75, 0.62)
+        small, ixs = self._two_lane("spear_goblins", seed=23)
+        small._threat_credits = 0
+        v_small = small._secondary_lane_response(ixs["skeletons"], 0.75, 0.62)
+        self.assertGreater(v_big, v_small,
+                           "a mini pekka must be worth more to answer than spear goblins")
+
+    def test_an_offensive_placement_earns_nothing(self):
+        """This is a DEFENSIVE term. A play on the enemy half is graded by wincon_exec."""
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.75, 0.30), 0.0)
+
+
+class MissPenaltyScaleTests(unittest.TestCase):
+    """FIX 7: the missed-defence penalty is priced by what the ignored group COSTS.
+
+    It used to be a step function -- free below IGNORE_FRAC, a flat -1.0 above -- so ignoring two
+    trickles (0.107 of a tower) charged exactly what ignoring a golem push (2.074) charged, a 19x
+    difference in real threat priced identically.
+    """
+
+    def _miss(self, bases, seed=41):
+        env = _quiet_env(seed=seed)
+        for i, b in enumerate(bases):
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, b, 11), 0.30 + 0.03 * i, 0.58)
+        env.step((False, 0, 0))
+        env._threat_miss_last = -1e9          # arm the rate limiter
+        env.eng.elixir[0] = 10.0              # a counter must be affordable or the term waives
+        return env._threat_miss_idle()
+
+    def test_a_bigger_threat_costs_more_to_ignore(self):
+        knight = self._miss(["knight"])
+        mini = self._miss(["mini_pekka"])
+        self.assertLess(knight, 0.0, "an answerable knight must still charge")
+        self.assertLess(mini, knight, "a mini pekka must cost MORE to ignore than a knight")
+
+    def test_two_trickles_no_longer_cost_what_a_golem_push_costs(self):
+        """The owner's case, and the reason for the fix."""
+        trickles = self._miss(["spear_goblins", "skeletons"])
+        push = self._miss(["golem", "mega_minion"])
+        self.assertLess(trickles, 0.0, "two trickles together ARE a real threat -- still charge")
+        self.assertGreater(trickles, push / 2.0,
+                           "...but nothing like a golem push: it must cost far less")
+
+    def test_the_penalty_is_capped_at_the_full_weight(self):
+        """This term is a PROXY for delayed tower damage, not a replacement for it. A two-tower
+        push must not out-shout the outcome terms it stands in for."""
+        huge = self._miss(["golem", "mega_minion", "mini_pekka", "mini_pekka"])
+        self.assertGreaterEqual(huge, -1.0 - 1e-9, "must not exceed w_threat_miss")
+
+    def test_a_lone_trickle_is_still_waived_entirely(self):
+        """The IGNORE_FRAC early return is KEPT on purpose: the term is rate-limited, and a 0.004
+        fire would arm the limiter and mask a real push arriving a second later."""
+        self.assertEqual(self._miss(["skeletons"]), 0.0)
+
+
 class ThreatTimingTests(unittest.TestCase):
     def _lit_env(self, seed=50):
         env = _quiet_env(seed=seed)

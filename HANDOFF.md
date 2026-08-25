@@ -2997,6 +2997,57 @@ the CRITIC'S BASELINE for those states until idling looks worse in advantage ter
 credit existed. Change the SHAPE first: pay once when an ignored threat expires harmlessly, rather
 than per idle tick.
 
+## 4k. 2026-08-25 — FIXES 4, 5, 6, 7 PORTED TO HOGEQ (2+3 and 1 deliberately not)
+
+### What was ported, and what was NOT
+
+```
+fix 4  curriculum deadband 0.02 -> 0.06      PORTED   trainer-level, deck-agnostic
+fix 5  _threat_pos ranks by DANGER           PORTED   hogeq's copy was byte-identical to the bug
+fix 6  secondary-lane response               PORTED   anchor adapted (see below)
+fix 7  proportional miss penalty             PORTED   deck-agnostic
+fix 2+3  x_bow credit gate                   NOT      X-BOW SPECIFIC -- hogeq has no x_bow, and the
+                                                      retry is still under test in icebow
+fix 1  restraint_hold                        NOT      dropped in icebow; hogeq never had it (0 refs)
+```
+
+### Generated, not retyped
+
+The hogeq patches are DERIVED from the icebow patch files by a script, not hand-copied. This repo's
+ledger already records several bugs that lived in one deck only because a "cross-deck" fix was
+applied by hand to one side. Deriving them makes the logic identical by construction; only the
+ANCHORS are adapted.
+
+**One adaptation was needed:** hogeq's `_punish_window(self, spend)` has no `cost` kwarg, and fix 6
+uses that line purely as an INSERTION POINT for the new method. Cosmetic, but the anchor had to
+match or the patch would have failed closed (which it did, until adapted).
+
+**Every anchor and dependency was verified in hogeq BEFORE writing any patch** -- including
+`threat_value.ignore_cost_frac`, which fixes 5 and 6 both need and which hogeq's `env.py` had never
+called (the function exists in its `threat_value.py` with an identical signature; an early check
+that grepped the wrong file said MISSING and was wrong).
+
+### Verified behaviourally on HOGEQ's OWN deck (hog/firecracker/mighty_miner/tesla/log/EQ)
+
+```
+FIX 5  pekka(1.907) shallow vs skeletons(0.004) DEEPER -> _threat_pos x=0.25  (the PEKKA, correct)
+FIX 7  knight -0.302 | mini pekka -0.667 | golem+mega_minion -1.000   (was -1.000 for ALL)
+FIX 6  skeletons in the mini-pekka lane -> +0.949                      (was +0.000)
+```
+
+### Test result, against a MEASURED pre-port baseline
+
+⚠ **hogeq's suite is NOT green and was not green before this.** Measured by stashing the ports and
+re-running: **3 failures + 39 errors = 42, identical before and after** -- which is exactly the
+"hogeq at its 42 baseline" this ledger has been quoting for days. 14 tests ported
+(`ThreatPositionTests`, `SecondaryLaneTests`, `MissPenaltyScaleTests`), **all 14 pass**, suite
+692 -> 706 tests, **zero regressions**.
+
+**That 42-failure baseline is itself an open problem**: a suite with 42 known failures cannot be
+trusted to catch a regression in this deck, which is why the ports were ALSO verified behaviourally
+above rather than on test results alone. Worth its own session -- see the icebow precedent, where
+one long-red test turned out to be STALE rather than broken and was masking the defensive path.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
