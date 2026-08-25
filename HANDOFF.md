@@ -2498,7 +2498,38 @@ converged policy would not choose that, which is evidence for the confound below
 by ~7,600). §4a's own rule says compare run-vs-run at matched episodes, not a mid-run checkpoint
 against its init.
 
-### DECISION (2026-08-24): RUN TO 4000, PROBE AT 2000 / 3000 / 4000
+### ⚠ VERDICT AT 2600 EPISODES: THE EXPERIMENT CANNOT ANSWER THE QUESTION (design flaw)
+
+The @650 alarm WAS the critic dip and reverted in full -- that call was right, and by the
+pre-committed rule fix 1 is cleared of teaching blanket inaction:
+
+```
+                  base(n=30)   @650      @2600(n=30)   paired delta   sigma
+threat_miss_idle    2.87       4.00        2.60          -0.27        0.5
+leak                0.43      10.83        1.20          +0.77        1.2
+restraint_hold      0.63       1.00        0.50          -0.13        0.8
+elixir median       2.14       2.86        2.14           0.00         -
+plays_pct          13.2       11.40       13.0           -0.2          -
+```
+
+**But nothing here is attributable to fix 1**, because the run is warm-started and the comparison
+is against its own init -- see the new S8 trap. A sign test over the ledger says 16 of 21 terms
+moved NEGATIVE (p=0.027), which is a general decline and is exactly what the warm-start tax alone
+produces at this episode count. **Not "fix 1 is neutral" -- the design has no power to say either
+way.**
+
+WITHDRAWN (both were n=12 artefacts): "restraint_hold 0.67 -> 0.33, training made the rewarded
+behaviour less frequent" (0.8 sigma at n=30), and "offence down / defence up, fix 1 suppresses the
+win condition" (a hand-picked five-term partition; the aggregate offence test is 1.9 sigma and
+falls in 18 of 30 matches where chance is 15).
+
+### DECISION (2026-08-24): RUN TO 4000, THEN RUN THE MATCHED CONTROL
+
+The control -- same init, same episodes, `restraint_hold: 0` -- is worth more than the fix-1
+verdict: it is the **matched-episode reference baseline this project has never had**, and every
+future reward experiment needs it. ~2.5 h.
+
+### (superseded) original plan: PROBE AT 2000 / 3000 / 4000
 
 A single endpoint cannot separate "the dip did it" from "the reward did it"; the TRAJECTORY can, and
 the run is already launched with `--matches 4000` so it costs only probe time.
@@ -3046,6 +3077,28 @@ configured but **have never run** — BC has not been retrained since the soft-t
   (d) with threads pinned, **PAIRED comparison becomes available** -- same seeds, two checkpoints,
       every difference is policy rather than seed luck. That is far more powerful per match than
       comparing two independent means and is now the preferred design for any A/B here.
+* **A WARM-STARTED RUN COMPARED AGAINST ITS OWN INIT CANNOT ATTRIBUTE ANYTHING TO THE CHANGE
+  UNDER TEST.** This is written in S4a -- *"compare run-vs-run at matched episode counts instead"* --
+  and was violated the same day it was recorded, which is why it is repeated here as its own trap.
+  The fix-1 test compared `m=26000` against `m=26000 + 2,600 episodes trained WITH fix 1`. Every
+  difference has two candidate causes: the change, or the warm-start tax. And the tax is LARGE and
+  MEASURED: crowndiff -1.256 -> -1.600 at ep1675, still -1.489 at ep3600, i.e. a general decline at
+  ~2,600 episodes is exactly what warm-starting predicts with NO reward change at all. The observed
+  result -- a sign test with 16 of 21 ledger terms negative (p=0.027) -- is indistinguishable from
+  the tax.
+  **The only valid design is a MATCHED CONTROL: same init, same episode count, the knob at zero.**
+  Anything else measures the tax. Budget for two runs whenever a reward change is tested, or do not
+  claim a verdict. THIS PROJECT HAS NEVER HAD A MATCHED-EPISODE REFERENCE RUN, and at least three
+  experiments this week ended ambiguous for that single reason.
+* **N=8-12 MATCHES CANNOT RESOLVE A REWARD-TERM DIFFERENCE HERE, AND IT PRODUCED TWO WRONG
+  DIRECTIONAL CLAIMS IN ONE DAY.** "restraint_hold 0.67 -> 0.33, training made the rewarded
+  behaviour LESS frequent" became **0.63 -> 0.50 (0.8 sigma)** at n=30 -- a gap smaller than its own
+  error bar, reported as a finding. Per-match sd is brutal for the sparse terms (`leak` 3.5 against
+  a mean 1.2). Compute the sem BEFORE quoting a delta, and treat anything under 2 sigma as "no
+  measurement" rather than "a small effect".
+  ⚠ **PAIRING HELPS LESS THAN IT LOOKS.** Both arms sharing a seed gives the same STARTING board,
+  but two different policies diverge on the first differing action, so pairing cancels initial
+  conditions only -- measured, it tightened the sems by 12-17%, not the large factor expected.
 * **Re-run the exact diagnostic after a fix.** Several bugs here produced plausible output while
   silently wrong (`xbow_into_push` was a no-op; duplicate ALIAS keys silently clobbered).
 
