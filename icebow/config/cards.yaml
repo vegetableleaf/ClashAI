@@ -1062,7 +1062,10 @@ cards:
     display: "Royal Hogs"
     win_condition: true
     targets: buildings_only
-    flags: [building_targeting, swarm]
+    # ABREAST, not a 2x2 (owner 2026-08-25): the four hogs enter side by side and fan into separate
+    # lanes. Matters for SPLASH GEOMETRY -- a block fits inside one Log/Arrows radius, four abreast
+    # do not, so modelling them as a block over-values the cheap spell answer.
+    flags: [building_targeting, swarm, line_formation]
     range: melee
     verified: false
 
