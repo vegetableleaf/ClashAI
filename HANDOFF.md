@@ -271,6 +271,30 @@ cd C:\Users\benpe\ClashBot\hogeq
   the conjunction out of the prompt and into `train_rl`'s own gating, where it becomes a hand
   check rather than a comprehension test.
 
+### ⚠ SMART APP CONTROL INTERMITTENTLY BLOCKS `import torch` (2026-08-25)
+
+A launch died instantly with:
+
+```
+OSError: [WinError 4551] An Application Control policy has blocked this file.
+Error loading "...\.venv\Lib\site-packages	orch\lib\shm.dll" or one of its dependencies.
+```
+
+This box has **Smart App Control ENFORCING** (`VerifiedAndReputablePolicyState 1`,
+`CodeIntegrityPolicyEnforcementStatus 2`). SAC decides on REPUTATION, so it is **intermittent**:
+the same interpreter, same venv and same DLL imported fine one minute later, and every probe and
+the whole control arm had already run against it. It is not a corrupted install and not a code
+fault -- do not go looking for one, and do not reinstall torch on the strength of it.
+
+**Cost if unguarded: a silent two-hour hole.** The trainer dies at import, writes a ~1.5 KB log,
+leaves ZERO processes, and any waiter polling for episodes simply sits there until its stall
+timeout -- so the failure looks exactly like "the run is slow".
+
+**Mitigation, now in `scratchpad/launch_fix23.sh`:** prove `import torch` in a THROWAWAY process
+before committing a long run to it, then re-check the log for `WinError 4551` 75 s after launch and
+retry up to 5 times. Any unattended launcher in this project should do the same -- and its waiter
+should treat "no telemetry at all after N minutes" as a FAILURE, not as slowness.
+
 ### The RAM constraint (important)
 31.4 GB total. **Not even ONE full-width PPO run fits beside a board-* detector run** — measured
 2026-08-18 22:36 (see §3): one `--envs 96 --workers 12` PPO holds ~8.4 GB, YOLO needs ~12.9 GB
