@@ -1,0 +1,77 @@
+key: knight_hero
+base_card: knight
+page: "Knight/Hero"
+revid: 437499
+fetched: "2026-08-25"
+release_date: "2025-12-01"   # infobox "December 1 2025"; History "1/12/2025" (D/M/Y) agrees
+
+# Hero body vs base knight (base numbers from ledger/current_db_snapshot.json, used ONLY for deltas)
+body_stat_deltas:
+  summary: "none stated - every table/vardefine stat matches base Knight"
+  hitpoints: "no delta (vardefine hp_11 1766 == snapshot 1766)"
+  damage: "no delta (vardefine dmg_11 202 == snapshot 202)"
+  hit_speed: "no delta (1.2 s both)"
+  speed: "no delta (Medium (60) vs snapshot medium)"
+  deploy_time: "no delta (1 s both)"
+  range: "no delta (Melee: Medium (1.2) vs snapshot 1.2)"
+  note_first_hit_speed: "page lists First Hit Speed 0.5 s; snapshot load_time_s is 0.7 - possibly different metrics, not asserted as a delta (see open_questions)"
+  note_vs_evolution: "Strategy section confirms the hero body LACKS the Evolution's damage reduction ('its 65% damage reduction when not attacking no longer present') - vs BASE Knight this is not a delta"
+
+ability:
+  name: "Triumphant Taunt"
+  elixir_cost: 2          # infobox AbilityCost=2; ability prose; ability attributes table Cost
+  uses: 1                 # History 4/8/2026: "made the ability single use (from 20sec cooldown)"
+  cooldown_s: null        # n/a since single use; was 20 s before 4/8/2026 (History)
+  cast_delay_s: 0.933     # ability attributes table "Cast Time"; prose says "1-second delay" - see conflicts
+
+mechanic_prose: |
+  [Quote template under "Ability: Triumphant Taunt"]
+  "Gains a shield and taunts nearby enemies, forcing them to attack him."
+
+  [Section "Ability: Triumphant Taunt", verbatim]
+  "The Hero Knight has a special ability accessible from whatever side of the screen was put
+  in, just above the player's card slots in battle. After a 1-second delay, the Hero Knight
+  activates his "Triumphant Taunt", taunting every enemy troop and building in a 7.5-tiles
+  range, causing them to attack him. He also gains a shield. Both the shield and the taunt
+  effect last for 5 seconds, unless the former is destroyed, although enemy troops and
+  buildings will still target him afterwards until he is defeated. The Triumphant Taunt
+  ability costs 2 Elixir to activate."
+
+numbers:
+  body_elixir_cost: {value: 3, source: "infobox Cost=3; unit-attributes-table Cost column"}
+  ability_elixir_cost: {value: 2, source: "infobox AbilityCost=2; ability prose last sentence; Triumphant Taunt Attributes table Cost"}
+  combined_elixir_accounting: {value: 5, source: "prose (Strategy): 'the Heroic Knight and his activated Ability count as 5 Elixir'"}
+  taunt_range_tiles: {value: 7.5, source: "Triumphant Taunt Attributes table 'Taunt Range 7.5 tiles'; also ability prose 'in a 7.5-tiles range'"}
+  taunt_range_tiles_history_nerf: {value: 6.5, source: "prose (History 2/3/2026): 'decreased the radius of Triumphant Taunt to 6.5 tiles (from 7.5 tiles)' - table/prose above NOT updated, see conflicts"}
+  cast_time_s: {value: 0.933, source: "Triumphant Taunt Attributes table 'Cast Time'"}
+  cast_delay_prose_s: {value: 1, source: "prose (ability section): 'After a 1-second delay' - conflicts with table 0.933"}
+  ability_duration_s: {value: 5, source: "Triumphant Taunt Attributes table 'Ability Duration'; ability prose 'last for 5 seconds'"}
+  shield_hitpoints_lvl11: {value: 512, source: "vardefine Shild_11 - UNCLEAR whether the two 2026 shield nerfs are baked in, see open_questions"}
+  shield_nerf_pct_2026_01_12: {value: 6, source: "prose (History 12/1/2026): 'decreased the Hero Knight's shield hitpoints by 6%'"}
+  shield_nerf_pct_2026_07_06: {value: 33, source: "prose (History 6/7/2026): 'decreased the Hero Knight's shield hitpoints by 33%'"}
+  taunt_trigger_window_s: {value: 0.1, source: "prose (History 6/4/2026): 'decreased the Taunt Trigger Window to 0.1s (from 0.7s)' - term defined nowhere on the page"}
+  taunt_trigger_window_former_s: {value: 0.7, source: "prose (History 6/4/2026), parenthetical"}
+  former_ability_cooldown_s: {value: 20, source: "prose (History 4/8/2026): 'made the ability single use (from 20sec cooldown)'"}
+  hp_lvl11: {value: 1766, source: "vardefine hp_11"}
+  damage_lvl11: {value: 202, source: "vardefine dmg_11"}
+  hit_speed_s: {value: 1.2, source: "vardefine atk_speed; unit-attributes-table"}
+  first_hit_speed_s: {value: 0.5, source: "unit-attributes-table 'First Hit Speed'"}
+  deploy_time_s: {value: 1, source: "unit-attributes-table 'Deploy Time'"}
+  range_tiles: {value: 1.2, source: "unit-attributes-table 'Melee: Medium (1.2)'"}
+  speed: {value: "Medium (60)", source: "unit-attributes-table 'Speed'"}
+  count: {value: 1, source: "unit-attributes-table 'x1'"}
+  unlock_hero_shards: {value: 200, source: "prose (intro): 'unlocked with 200 [Hero Shard]'"}
+  pre_release_shield_buff_pct: {value: 47.27, source: "prose (Trivia): 'his Shield Hitpoints were increased by 47.27%' (pre-release, when ability cost went 1 -> 2)"}
+  pre_release_ability_cost_former: {value: 1, source: "prose (Trivia): 'Elixir cost was increased to 2 Elixir (from 1 Elixir)'"}
+  evolution_damage_reduction_pct_as_stated_here: {value: 65, source: "prose (Strategy): 'its 65% damage reduction when not attacking' - refers to Knight EVOLUTION, and disagrees with our snapshot's 60% for knight_evo; noted for cross-checking, not a hero stat"}
+
+proposed_ability_kind: taunt_shield
+
+open_questions:
+  - "Current taunt radius: History (2/3/2026) says 6.5 tiles, but the ability prose AND the attributes table still say 7.5. Which is live? -> in-game check"
+  - "Shield HP: is vardefine 512 pre- or post- the -6% (12/1/2026) and -33% (6/7/2026) nerfs? If 512 was release value, current would be ~322 (512*0.94*0.67). -> in-game check"
+  - "What is the 'Taunt Trigger Window' (now 0.1 s, from 0.7 s)? Term is never defined on the page."
+  - "Cast delay: 0.933 s (table) vs 1 s (prose) - which is real?"
+  - "Post-taunt permanence: prose says taunted units 'will still target him afterwards until he is defeated' - does this persist through normal retarget triggers (e.g. tower re-aggro, pulls)? Does it apply to units that entered the radius after activation?"
+  - "Does the taunt grab units entering the radius during the 5 s, or only those in radius at cast?"
+  - "First Hit Speed 0.5 s vs snapshot base load_time_s 0.7 - same metric or different? If same, the hero body has a faster first hit than base."

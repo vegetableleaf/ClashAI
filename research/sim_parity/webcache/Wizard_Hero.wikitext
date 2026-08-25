@@ -1,0 +1,152 @@
+{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=5|AbilityCost=2|Rarity=Rare|Type=Troop|Arena=Spell Valley|ReleaseDate=5 January 2026|image=Hero_Wizard.jpg}}{{Quote|After a decade of demolishing King Towers, Hero Wizard has learned to wield fire for flight! His wings were forged in flame and fortune, but they’re mysteriously cool to the touch.}}
+
+The Hero Wizard is a {{Rarity|Rare}} card that is unlocked by spending 200 hero coins at once. The Hero Wizard takes the appearance of a man who has blonde eyebrows, mustache and goatee, and wears a beige cloak, a team-colored shirt, loincloth and pants, with all of them having a gold outline, a belt with a [[Heroes|Hero Shard]] in the middle, two gold bracelets on his arms, and a pair of brown boots, while donning a pair of fiery golden wings. This card costs 5 {{Icon|I=Elixir}}to put on the arena and an additional 2 {{Icon|I=Elixir}} to activate his ability.
+
+== Ability: Fiery Flight ==
+{{Quote|Launches into the air and throws fearsome fire tornadoes.}}{{Hero Ability|2=Wizard-Heroic}}
+The Hero Wizard has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Hero Wizard activates his fiery flight, which makes him take flight for 5 seconds. While he is flying, not only he will get a 50% movement speed increase (now classified as fast), his fireballs also create 3 tile radius tornadoes, which does its own damage (reduced against crown towers), similar to the [[Valkyrie/Evolution|Evolved Valkyrie]]. The ability costs 2 {{Icon|I=Elixir}} to activate.
+
+== Strategy ==
+*Use your Hero Wizard's ability to pull back win conditions such as [[Golem]], [[Giant]], and [[Elixir Golem]] while also cripple/take out supporting units around these cards, such as [[Night Witch]], [[Lumberjack]], [[Witch]], and [[Musketeer]].
+*To make the most out of his ability, activate it when he is already attacking enemy troops, so that he does not waste any of his precious ability time moving.
+*Hero Wizard’s ability can be used to evade an opposing ground-targeting unit sent to take him out, most commonly [[Mini P.E.K.K.A.|Mini P.E.K.K.A]]. However, it’s recommended to distract that enemy unit (especially if it has a good amount of health left, or if it is a [[Mini P.E.K.K.A./Hero|Hero Mini P.E.K.K.A.]]) to make your Hero Wizard and Crown Tower safe from potential damage.
+*The Hero Wizard's ability can be used to dodge the attacks of troops that cannot attack air troops, such as Mini P.E.K.K.A.
+*Cards that decrease attack speed or cause immobilization are good for negating the value Hero Wizard may offer for your opponent, such as [[Ice Wizard]] or [[Vines]], not to mention that Vines can also drag the Hero Wizard to the ground, negating the flying ability.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Hero Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Splash Radius
+{{Icon|I=Radius}}
+! scope="col" |Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+!Type
+{{Icon|I=Type}}
+!Rarity
+{{Icon|I=Rarity}}
+|-
+|5
+|1.4 sec
+|0.4 sec
+|Medium (60)
+|1 sec
+|5.5
+|1.5
+|600
+|Air & Ground
+|x1
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Tornado Ability Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!Cost
+{{Icon|I=Elixir}}
+! scope="col" |Radius
+{{Icon|I=Radius}}
+! scope="col" |Flight Speed Increase
+{{Icon|I=Speed}}
+!Tornado Duration
+{{Icon|I=Area Damage}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+|-
+|1
+|4
+| +50%
+|2 seconds
+|Air & Ground
+|Air
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 832 }}
+{{#vardefine: dmg_11 | 281 }}
+{{#vardefine: tor_11 | 43 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Tornado Damage<br>{{Icon|I=Area Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:tor_11}} 
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(13-11)) round 0 }}
+|- 
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(15-11)) round 0 }}
+|- 
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+
+* Hero Wizard was added to the game on 5/1/2026 with the [[Version History#Pass Royale and more (5/1/2026)|January 2026 Update]], along with [[Ice Golem/Hero|Hero Ice Golem]]{{Balance|Add}}.
+* On 2/2/2026, a [[Version History#Pass Royale and more (2/2/2026)|Balance Update]], increased tornado pull to 250 (from 200){{Balance|Buff}}.
+* On 23/2/2026, the [[Version History#2026 Q1 Update (23/2/2026)|2026 Quarter 1 Update]], decreased the hero wizards crown tower damage by 64%{{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], made the ability single use (from 20sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Wizard Card Render.png|Current card render.
+File:WizardHeroShard.png|Heroic Wizard Shard.
+</gallery>
+
+==Trivia==
+* The word "''Wizard''" comes from the Middle English "''wys''", meaning wise.
+** In the German, Persian, and Vietnamese language settings of the game, the Wizard's name translates to "Magician". In the Chinese language settings of the game, the Wizard's name translates to "Mage".
+The Wizard is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+
+{{Navigation|Card}}

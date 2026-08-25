@@ -1,0 +1,66 @@
+key: berserker_hero
+base_card: berserker
+page: Berserker/Hero
+revid: 437529
+fetched: "2026-08-25"
+release_date: "2026-08-04"
+# infobox ReleaseDate=4 August 2026 — CONFLICTS with Heroes master page (revid 437509) History:
+# "On 3/8/2026 ... allowed the Berserker and Valkyrie to have a hero form." Recorded in conflicts.md;
+# unresolved (carried over from the R1b sweep). Berserker/Hero itself has NO History section.
+
+body_stat_deltas:
+  all: none stated
+  # Hero Berserker Attributes table (cost 2, hit speed 0.6, first hit 0.2, Fast (90), deploy 1s,
+  # Melee: Short (0.8), ground, x1) and vardefines hp_11=896 / dmg_11=102 match snapshot
+  # cards.berserker exactly (hp 896, damage 102, hit_speed 0.6, range 0.8, speed 1.5 tiles/s, elixir 2).
+
+ability:
+  name: Savage Survival     # on-page: "Savage Survival Attributes" statistics subheader
+  elixir_cost: 3            # infobox AbilityCost=3; Savage Survival Attributes table Cost=3
+  uses: 1                   # Heroes master page (revid 437509) History 4/8/2026: "made every ability single-use"; not stated on subject page
+  cooldown_s: null          # single-use
+  cast_delay_s: null        # not stated -> open_questions
+
+mechanic_prose: |
+  [Berserker/Hero, revid 437529: THE PAGE CONTAINS NO PROSE AT ALL — infobox + stat tables only.
+  No quote, no ability section, no Strategy, no History.]
+  [Heroes master page, revid 437509, section "List of Heroes", verbatim]
+  "Savage Survival -
+  A Bear spirit emerges through her, making her attacks go rapid and preventing her health from
+  going below 1 HP while dealing reduced damage to Crown Towers."
+
+numbers:
+  deploy_cost_elixir: {value: 2, source: "infobox Cost=2; Hero Berserker Attributes table Cost"}
+  ability_cost_elixir: {value: 3, source: "infobox AbilityCost=3; Savage Survival Attributes table Cost"}
+  body_hit_speed_s: {value: 0.6, source: "Hero Berserker Attributes table Hit Speed; vardefine atk_speed=0.6"}
+  body_first_hit_speed_s: {value: 0.2, source: "Hero Berserker Attributes table First Hit Speed"}
+  body_speed: {value: "Fast (90)", source: "Hero Berserker Attributes table Speed"}
+  deploy_time_s: {value: 1, source: "Hero Berserker Attributes table Deploy Time"}
+  body_range_tiles: {value: 0.8, source: "Hero Berserker Attributes table Range 'Melee: Short (0.8)'"}
+  target: {value: "Ground", source: "Hero Berserker Attributes table Target"}
+  count: {value: 1, source: "Hero Berserker Attributes table Count x1"}
+  hp_lvl11: {value: 896, source: "vardefine hp_11"}
+  damage_lvl11: {value: 102, source: "vardefine dmg_11"}
+  bear_damage_lvl11: {value: 167, source: "vardefine bear_dmg_11 (statistics column 'Bear Damage') — role undefined, see open_questions"}
+  ability_hit_speed_s: {value: 0.2, source: "Savage Survival Attributes table Hit Speed '0.2 sec'"}
+  ability_first_hit_speed_s: {value: 0.2, source: "Savage Survival Attributes table First Hit Speed — cell reads bare '0.2', no unit printed; assumed seconds, marked"}
+  ability_speed: {value: "Ultra Fast (135)", source: "Savage Survival Attributes table Speed — implies a movement-speed buff from Fast (90)"}
+  ability_duration_s: {value: 4, source: "Savage Survival Attributes table Duration"}
+  ability_crown_tower_damage_pct: {value: -75, source: "Savage Survival Attributes table Crown Tower Damage '-75%'"}
+  ability_minimum_hitpoints: {value: 1, source: "Savage Survival Attributes table Minimum Hitpoints"}
+
+proposed_ability_kind: buff_self
+# duration-limited self buff: attack interval 0.6->0.2s, movement Fast->Ultra Fast, an HP floor of 1,
+# and a crown-tower damage penalty. No unit is summoned (the 'Bear spirit' is presented as a buff).
+
+open_questions:
+  - "Per-hit damage during the ability: normal 102, or Bear Damage 167? Is 'Bear Damage' a replacement per-hit value, a bonus on top, or a separate bear-spirit strike? Page never defines it. (DPS differs wildly: 102/0.2=510 vs 167/0.2=835.)"
+  - "Does the -75% Crown Tower damage apply only during the ability, and to which damage number?"
+  - "HP floor of 1: does it block ALL sources (spells, towers, death damage) for the full 4s? Can she be killed the instant it ends?"
+  - "Cast delay / activation animation: not stated. Is the buff instant on button press?"
+  - "Movement speed Ultra Fast (135) during ability: table implies it, but no prose on the subject page confirms a move-speed change."
+  - "Is the ability usable while she is being knocked back / stunned?"
+  - "Release date: infobox 4 August 2026 vs Heroes master History 3/8/2026 — unresolved (also in conflicts.md)."
+
+sources_secondary:
+  - {page: Heroes, revid: 437509, used_for: "ability blurb; global 4/8/2026 single-use rule; conflicting 3/8/2026 release date"}

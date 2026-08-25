@@ -1,0 +1,17 @@
+{{Evolved_Card_Infobox|Cost=5|CycleCost=1|Rarity=Common|Type=Troop|Arena=Hog Mountain|ReleaseDate=April 6,2026}}{{Quote|The first strike against each member of Minion Horde Evolution makes it briefly invincible. Some say this mysterious veil is a result of the Dark Elixir running through their veins.}}
+
+== Strategy ==
+
+== History ==
+2026
+
+* On 6/4/2026, Evo Minion Horde was added in the game, along with [[Balloon/Hero|Hero Balloon]]
+* On 4/8/2026, a Balance Update, increased the Evolved Minion Horde's invisible hit speed multiplier to x0.67 (from x0.5)
+
+== Gallery ==
+<gallery>
+File:MinionHordeEvoShard.png|Evolution Shard
+File:Evolved Minion Horde.png|Evolved Minion Horde
+</gallery>
+
+== Trivia ==

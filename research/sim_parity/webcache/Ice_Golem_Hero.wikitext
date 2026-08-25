@@ -1,0 +1,146 @@
+{{Heroic Card Infobox|Cost=2|AbilityCost=2|Rarity=Rare|Type=Troop|Arena=Frozen Peak|ReleaseDate=5 January 2026}}{{Quote|In a chilling return to the Arena, Hero Ice Golem keeps enemies at bay with a brain-freezing blizzard! The only things he has to fear are fireballs and a hot summer's day.}}
+
+The Hero Ice Golem is a {{Rarity|Rare}} card that is unlocked by unlocking 200 {{Icon|I=Hero Shard}} and choosing the Hero Ice Golem. The Heroic Ice Golem takes the appearance of a large creature made out of snow with glowing yellow eyes and golden ice shards on his head, with his hands being also colored golden and his nose and rocks on his spine being in the form of coal. He also dons a team-colored cape, two heavy golden armpads and gauntlets, and a gold headpiece with the [[Heroes|Hero Shard]] in the center. This card costs 2{{Icon|I=Elixir}}to put on the arena and an additional 2 {{Icon|I=Elixir}} to activate his ability.
+
+== Ability: Snowstorm ==
+{{Quote|Conjures a blizzard that damages and slows enemies.}}{{Hero Ability|2=Ice-Golem-Heroic}}
+The Hero Ice Golem has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Hero Ice Golem activates his "Blizzard" ability, which generates a 4-tile aura radius that has 3 pulses, with each one slowing down enemy troops and dealing damage. The Snowstorm ability costs 2 {{Icon|I=Elixir}} to activate.
+
+== Strategy ==
+*Use your Ice Golem to distract enemy troops then pop the ability to freeze any defensive cards once it's at the tower.
+*All 3 blast are enough to kill [[Goblins]].
+*Use the ability on defense, to stall any push.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Hero Ice Golem Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|2
+|2.5 sec
+|1.5 sec
+|Slow (45)
+|1 sec
+|Melee: Medium (1.2)
+|Buildings
+|x1
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Snowstorm Ability Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!Cost
+{{Icon|I=Elixir}}
+! scope="col" |Radius
+{{Icon|I=Radius}}
+! scope="col" |Slowdown
+{{Icon|I=Freeze}}
+!Blasts
+{{Icon|I=Area Damage}}
+!Slowdown Duration
+{{Icon|I=Freeze}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+|-
+|2
+|4
+|30%
+|3
+|2 seconds
+|Air & Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1315 }}
+{{#vardefine: dmg_11 | 84 }}
+{{#vardefine: atk_speed | 2.5 }}
+{{#vardefine: death_11 | 84 }}
+{{#vardefine: bliz_11 | 69 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Blizzard Pulse Damage<br />{{Icon|I=Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(3-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(3-11)) round 0 }} *3}})
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(4-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(4-11)) round 0 }} *3}})
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(5-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(5-11)) round 0 }} *3}})
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(6-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(6-11)) round 0 }} *3}})
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(7-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(7-11)) round 0 }} *3}})
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(8-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(8-11)) round 0 }} *3}})
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(9-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(9-11)) round 0 }} *3}})
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(10-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(10-11)) round 0 }} *3}})
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}} || {{#var:bliz_11}} x3 ({{#expr: {{#var:bliz_11}} *3}})
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(12-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(12-11)) round 0 }} *3}})
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(13-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(13-11)) round 0 }} *3}})
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(14-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(14-11)) round 0 }} *3}})
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(15-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(15-11)) round 0 }} *3}})
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:bliz_11}} * (1.1^(16-11)) round 0 }} x3 ({{#expr: {{#expr: {{#var:bliz_11}} * (1.1^(16-11)) round 0 }} *3}})
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+* Hero Ice Golem was added to the game on 5/1/2026 with the [[Version History#Pass Royale and more (5/1/2026)|January 2026 Update]], along with [[Wizard/Hero|Hero Wizard]]{{Balance|Add}}.
+* On 2/3/2026, a [[Version History#Pass Royale and more (2/3/2026)|Balance Update]], decreased Freeze duration to 1.5sec (from 2sec){{Balance|Nerf}}.
+* On 7/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], the pushback on the Hero Ice Golem was removed entirely{{Balance|Remove}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], the 3rd Blast Effect went from being a freeze effect to a slowdown effect{{Balance|Remove}}, and the blast damage was increased by 82%{{Balance|Buff}}. This also made the ability single use (from 17 sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Ice Golem Card Render.png|Current card render.
+File:IceGolemHeroShard.png|Heroic Ice Golem Shard.
+</gallery>
+
+==Trivia==
+* The word "Golem" occurs once in the Bible in Psalm 139:16, which uses the word "''golmi''", that means "my light form", "raw" material, connoting the unfinished human being. A golem is an animated, anthropomorphic being in Jewish folklore, which is entirely created from inanimate matter, usually clay or mud. The most famous golem narrative involves Judah Loew ben Bezalel, the late 16th-century rabbi of Prague.
+* The Ice Golem is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+*The Ice Golem is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Giant Snowball]], [[Freeze]], [[Ice Wizard]], [[Super Ice Golem]], and [[Wizard Trio]].
+** In the Finnish language setting of the game, the Ice Golem's name translates to "Freezing Golem".
+
+{{Navigation|Card}}

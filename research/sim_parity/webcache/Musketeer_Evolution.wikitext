@@ -1,0 +1,159 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Musketeer</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=4 November 2024}}
+{{Quote|She can hit a Royal Hog from thirty tiles away! Evolved Musketeer snipes targets across the Arena in a straight line ahead of her. She has limited Sniper Ammo with increased damage. She cannot snipe Crown Towers.}}
+
+The Musketeer's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Musketeer, with identical stats to the original. After deployment, she will gain 3 infinite-range attacks that will target the closest troop or building from anywhere in the Arena in front of her, dealing 1.8 times the damage of her normal attacks. The Musketeer takes the appearance of a woman who has purple eyes, coiffed curly hair with a ponytail, eyebrows and lipstick, and wears a royal blue tunic with a purple cloth on it, a purple cape with a [[Card Evolution]] symbol in the center and gloves, a metal helmet with a team-colored feather and a tiny crater on it, a dark brown belt and boots with dark purple straps, while carrying a blunderbuss-styled musket as her weapon with dark gray spheres as her ammunition and a scope on top. The Musketeer's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Musketeer can never target [[:Category:Crown Towers|Crown Towers]] with her sniper snots. This allows her to attack [[:Category:Troop Cards|troops]] and [[:Category:Building Cards|buildings]] behind them, such as an [[Elixir Collector]].
+*The Evolved Musketeer will only expend her sniper shots when she is not in range of her regular attacks. To ensure that she uses them, place her from a distance from her intended target.
+*The full 3 sniper shots can defeat any troop with as many hitpoints as a [[Baby Dragon]]. Two of them are enough to defeat any troop with as many hitpoints as [[Elixir Golem|Elixir Golemites]], while a single sniper snot can eliminate anything with as many hitpoints as Elixir Blobs.
+*The Evolved Musketeer is a hard counter to the [[Wizard/Evolution|Evolved Wizard]]. With her first sniper shot, she will destroy the Evolved Wizard's shield, while her two other shots can defeat him on their own. This can counter him for a +1 [[Elixir]] trade, while she has full hitpoints for a counterattack.
+*Thanks to her high damage per second and long range, the Musketeer can counter many medium or low hitpoints troops effectively, with or without the help of a Crown Tower.
+**The high damage and range makes her a decent choice against other ranged troops, like the [[Executioner]], Electro Wizard, [[Archer Queen]], Inferno Dragon, Witch, [[Bowler]], [[Sparky]], [[Cannon Cart]], [[Mother Witch]], [[Phoenix]], [[Magic Archer]], [[Ice Wizard]], Baby Dragon, Hunter, [[Mega Minion]], [[Flying Machine]], Electro Dragon, and [[Wizard]]. With her sniper shots, she can even avoid a lot of damage that these troops could cause to her.
+**She does well against most air troops when placed at a distance. However, [[Minion Horde]], [[Hunter]], and Mega Minion will take her out quickly when placed on top of her.
+**Against a [[Balloon]], she can prevent all Crown Tower damage with a quick placement close to the bridge. However, this makes her extremely vulnerable to support troops behind the Balloon. Alternatively, the player can expend the sniper shots on the Balloon and have her safe from enemy support troops.
+**She can instantly defeat any unit with the same or less hitpoints than [[Lava Hound|Lava Pups]], making her an excellent choice against the Lava Hound.
+*The Evolved Musketeer’s long range allows her to attack from a distance without engaging the defending troops. The Evolved Musketeer's long range is effective against Crown Towers, as the [[King's Tower]] will be unable to target her if she is attacking a Crown Tower.
+*The Evolved Musketeer can outrange the [[Cannon]] and defeat it without the fear of being counterattacked. However, despite a [[Tesla]] having the same range as the Cannon, the Tesla's property of being invisible while underground forces the Evolved Musketeer to walk into range before attacking the Tesla. However, it may be worthwhile to use a cheap distraction troop like Skeletons to provoke the Tesla into popping up, allowing the Evolved Musketeer to use her range advantage.
+**The [[Bomb Tower]], [[Inferno Tower]], [[X-Bow]], and [[Mortar]] cannot be outranged normally, but they can with the help of her sniper shots. This is important to note whether the player wants to destroy those buildings. Try to place the Evolved Musketeer at slightly further than those buildings' maximum to ensure that she gets to finish them off as quickly as possible afterwards.
+**Against attacking buildings, the Evolved Musketeer will be able to bypass a building placed 4 tiles from the river and 3 tiles from the Crown Tower, and will also be out of range. A 5-2 placement can also be bypassed. Placing the building 1 tile closer to the Crown Tower will ensure that the Evolved Musketeer will not bypass it.
+**Against passive buildings, she will be able to bypass a 5-2 placement, unless she is in the inner side of the Arena.
+*Certain troops are particularly effective against the Evolved Musketeer, due to being able to force her to waste her sniper shots.
+**Swarms like [[Skeletons]], [[Goblins]], and [[Minions]] can waste the sniper shots for a low Elixir cost. Bulkier swarms like [[Barbarians]], Royal Recruits, [[Rascals]], and [[Royal Hogs]] can also work similarly, with fewer casualties, although at a slightly higher Elixir cost.
+**Spawner troops like the [[Witch]] and [[Night Witch]] can force the Evolved Musketeer to waste her sniper shots on their Skeletons and Bats, which will devalue her entirely. However, in the case of the Night Witch, unless she hasn't accumulated a second wave, she will take at least one sniper shot, leaving her somewhat weakened.
+**While her sniper shots are able to OHKO shields, [[Guards]] and [[Royal Recruits]] are effective at wasting the sniper shots. In the case of the Royal Recruits, only one of them will be defeated by the sniper shots, further increasing the chances of another troop surviving.
+**The [[Knight/Evolution|Evolved Knight]] will take 60% less damage from the sniper shots, only losing around half of his hitpoints overall. Make sure that he is not distracted by something else, otherwise he will take the full damage.
+**The [[Royal Ghost]] will be able to get the first hit on the Evolved Musketeer, since he is deployed invisible. He is able to 3HKO the Evolved Musketeer and with the first hit, he will be able to defeat her easily, and still have a lot of hitpoints for a counterpush. Unlike the other options, he will not expend her sniper snots, but he will never take them directly, which will ensure that he will stay alive.
+**The Evolved Musketeer's sniper shots can be deflected by the [[Monk]]'s ability, which will result in her destroying herself by her own sniper shots.
+*The Evolved Musketeer can deal high damage to a Crown Tower despite her slightly below average hitpoints. However, most troops can defeat her if she is on the other side of the [[Arenas|Arena]] unaccompanied, so there is little reason to leave an Evolved Musketeer unattended.
+**Mini-tanks and high damage troops like the [[Knight]], [[Valkyrie]], [[Dark Prince]], [[Royal Ghost]], Executioner, [[Lumberjack]], [[Prince]], or [[Mini P.E.K.K.A.]] will counter her and have plenty of health remaining for a counterpush. The latter is especially effective due to being able to OHKO the Evolved Musketeer.
+**The [[Bandit]], [[Boss Bandit]], [[Mega Knight]], and [[Fisherman]] can utilize their dash and jump attacks to negate the Evolved Musketeer's range advantage and reach her. They will also deal a lot of damage to her at once while not taking back much in return. Alternatively, the Mega Knight can be placed directly on top of her to utilize his spawn damage. Those troops can be used in a counterattack afterwards. The Fisherman can also pull the Musketeer towards him to prevent her from utilizing her range while also slowing her down.
+**Skeletons or Goblins placed to surround her or an [[Ice Spirit]] and [[Electro Spirit]] can prevent her from getting more than 1 shot on the defender's Crown Tower.
+**The [[Electro Wizard]]'s spawn damage can deal decent damage to an Evolved Musketeer, weakening her enough for the Crown Tower to defeat her. The Electro Wizard will also stun the Evolved Musketeer, raising his chances of staying alive for a counterpush.
+**Against the [[Cannoneer]] and [[Dagger Duchess]], the Evolved Musketeer will only hit them twice, as their damage or speed will quickly defeat the Evolved Musketeer. Depending on how heavy the player's [[Battle Decks|deck]] is, they may choose to ignore her or respond with cheaper cards.
+*A [[Fireball]] can defeat the Evolved Musketeer in one hit if the Musketeer is one Level lower than the Fireball or vice versa. Otherwise, she will survive with a slither of health, but it will not be able to land a shot on a Crown Tower alone. A cheap spell like a [[Zap]], Giant Snowball, or [[The Log]] can be used to finish her off if she must be taken out immediately, such as if she's on the opponent's side defending, or if she is supported with a tank. [[Poison]], [[Lightning]], and [[Rocket]] are the 3 spells that can fully destroy an equally leveled Musketeer.
+**With the help of the Crown Tower, a [[Barbarian Barrel]] or [[Royal Delivery]] can stop the Evolved Musketeer for a positive Elixir trade. The spells will weaken the Musketeer while the spawned troop will finish her off.
+**Similarly, a [[Giant Snowball]] will knock her back enough to interrupt her attack, and then slow her down so that she does not connect to the Tower in time. This is enough to stop her for a positive Elixir trade.
+**The Evolved Musketeer can be destroyed entirely within 2 hits from the [[Void]], provided that she is the only troop inside it. This is enough to counter the Evolved Musketeer for a slight positive Elixir trade. The player can deploy Goblins or any other card that spawns at least 4 troops. to save the Musketeer from the spell if timed right.
+**If she is not placed too far away from her targets, a [[Tornado]] can negate the sniper range advantage and force her to attack with her regular attacks. This is quite useful for when she is used against melee units that could struggle to reach her, such as a [[P.E.K.K.A.|P.E.K.K.A]], Mighty Miner, Valkyrie, or [[Giant Skeleton]].
+**Note that the opponent may take advantage of the lack of spells due to being used on the Musketeer, and place another [[Cards|card]] that would thrive due to their absense, such as Barbarians.
+*Unlike the regular Musketeer, the Evolved Musketeer should not be placed to attack the second Crown Tower if one has been already destroyed, as this will completely waste her sniper snots.
+*A very powerful combo is the [[Hog Rider]], the Evolved Musketeer, and the [[Valkyrie]]. The Evolved Musketeer is for protecting the Valkyrie and Hog Rider from air troops. The Valkyrie is for protecting the Evolved Musketeer and Hog Rider from swarms and the Hog Rider is used to tank for the Evolved Musketeer and Valkyrie. This strategy is more effective than the same one without the Musketeer's Evolution, because the Evolved Musketeer can stay away from the Valkyrie and Hog Rider, preventing certain counterplay such as using Lightning to target all three of them.
+**Despite the addition of her sniper shots, a P.E.K.K.A can still hard counter this strategy allowing relatively low damage and being able to start a counterpush for a 5 Elixir advantage.
+**An Evolved Musketeer has a relatively small mass. Because of this, a Hog Rider placed behind her can push her quicker to the Crown Tower, allowing her to connect more easily than if she were to walk normally. However, this will cause her to take more damage and will leave the Hog Rider weak to opposing troops.
+*If an Evolved Musketeer is used against your [[Mighty Miner]], activate his ability. This will allow him to change lanes, saving himself from her sniper shots and leaving him at full health for a counterattack.
+*Because of her great matchup against the Baby Dragon, Phoenix, Mega Minion, [[Inferno Dragon]], and [[Electro Dragon]], she is a good choice in the [[Treasure Hunt|Dragon Hunt]] sub-[[:Category:Modes|mode]] of the Treasure Hunt game mode. She can handle any of the three dragons, Phoenix, and the Mega Minion if the player fails to claim the Elixir Egg, while also being able to deal high enough damage to be used as a back-up to claim the Elixir Egg.
+
+<center>
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Musketeer Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1 sec||0.7 sec||Medium (60)||1 sec||6||1000||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Sniper Ammo<br />{{Icon|I=Troop Count}}
+! scope="col" |Sniper Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Sniper Range<br />{{Icon|I=Range}}
+! scope="col" |Sniper Width<br />{{Icon|I=Radius}}
+! scope="col" |Sniper Projectile Speed<br />{{Icon|I=Speed}}
+|-
+|2||3||1 sec||6-30||2||2650
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 721 }}
+{{#vardefine: dmg_11 | 217 }}
+{{#vardefine: snipe_dmg_11 | 390 }}
+{{#vardefine: snipe_hits | 3 }}
+{{#vardefine: atk_speed | 1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Sniper Damage<br />{{Icon|I=Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(3-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(4-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(5-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:snipe_dmg_11}} x{{#var:snipe_hits}} ({{#expr: {{#var:snipe_dmg_11}} * {{#var:snipe_hits}} }})
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(1-12)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:snipe_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:snipe_hits}} }})
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:snipe_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:snipe_hits}} ({{#expr: ({{#var:snipe_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:snipe_hits}} }})
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Musketeer's Evolution [[Cards|card]] was added to the game on 4/11/2024, in the [[Version History#Pass Royale and more (4/11/2024)|November 2024 Update]].
+*On 14/11/2024, a [[Version History#Balance Changes (14/11/2024)|Balance Update]], increased the Evolved Musketeer's Sniper damage to 180% of her damage (from 150%).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], fixed various bugs with the Evolved Musketeer.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Evolved Musketeer's first attack time interval to 0.7 seconds (from 0.8 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Evolved Musketeer's hitpoints by 0.06%, and her damage by 0.45%.
+
+==Gallery==
+<gallery>
+File:Evolved Musketeer Card Render.png|Current card render.
+File:Evolved Musketeer Preview.gif|Current card preview
+File:MusketeerEvoShard.png|Evolution Shard
+File:Evolved Musketeer 1.png|Evolved Musketeer
+</gallery>
+
+==Trivia ==
+*The [https://en.wikipedia.org/wiki/Musket musket] is a muzzle-loaded long gun that appeared as a smoothbore weapon in the early 16th century, at first as a heavier variant of the [https://en.wikipedia.org/wiki/Arquebus arquebus], capable of penetrating [https://en.wikipedia.org/wiki/Plate_armour plate armour]. By the mid-16th century, this type of musket gradually disappeared as the use of heavy armour declined, but muskets continued as the generic term for smoothbore long guns until the mid-19th century. In turn, this style of musket was retired in the 19th century when [https://en.wikipedia.org/wiki/Rifled_musket rifles] became common, which were more accurate than smoothbore muskets and could inflict more severe injuries.
+** In the Arabic and Persian language settings of the game, the Musketeer's name translates to "Knight" and "Riflewoman" respectively.
+*The Musketeer [[Cards|card]] could be a reference to the fourth Musketeer in the novel "''[https://en.wikipedia.org/wiki/The_Three_Musketeers The Three Musketeers]''", D'Artagnan, who was never considered to be in the group.
+*Unlike her regular counterpart, the Evolved Musketeer has a cape in both her card image and in [[Basics of Battle|battle]].
+*The Musketeer’s Evolution is the subject of an [[Emotes|Emote]].
+*Before the Musketeer's Evolution's release, the Evolved Musketeer's sniper attack time interval was decreased to 1 second (from 1.5 seconds).
+
+{{Navigation|Card}}

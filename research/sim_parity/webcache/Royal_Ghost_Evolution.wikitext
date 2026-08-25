@@ -1,0 +1,122 @@
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Royal Ghost</span>}}
+{{Evolved Card Infobox|CycleCost=2|Rarity=Legendary|Type=Troop|Arena=Spooky Town|ReleaseDate=October 17 2025|Cost=3}}{{Quote|Once he’s visible, Royal Ghost summons two Souldiers to guard his spirit, dealing damage in their summoning. When they’ve rested long enough, they’ll disappear just like their leader. Who doesn’t love a good hauntourage!}}
+The Evolved Royal Ghost is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns a fast, area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. Upon deployment, he will spawn invisible and will only turn visible once he attacks. If he is in his invisible state, he will not be targeted by opposing units but can still be hit by area damage or [[:Category:Spell Cards|spells]]. When he is not fighting any unit for 1.8 seconds, he will become invisible again. The Royal Ghost hovers, meaning he is targeted as a ground unit, but travels similar to air units. The Royal Ghost resembles an undead [[King's Tower|King]] who has glowing purple eyes, pale skin, white beard, moustache and eyebrows, wears a crown with purple jewels, dark gauntlets and chainmail, a team-colored robe and a purple cape with gold linings and shoes, and a dark gray belt, and wields a sword with a purple glow and the [[Card Evolution]] symbol on its handle. The Souldiers resemble ghosts with orchid-colored skin, and are dressed similarly to the Ghost, but wear chainmail, a chestplate, and a helmet with a large team-colored feather, and wield a cracked version of the Royal Ghost's sword. The Royal Ghost's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Royal Ghost’s Souldiers do not despawn naturally. This makes him a great troop to counterpush with, as it could defend against an enemy troop, and have Souldiers left over.
+**This makes him an excellent counter to the [[Barbarian Hut]], as he will spawn Souldiers that will shred each wave of Barbarians.
+*The Evolved Royal Ghost’s Souldiers having spawn damage gives him an extreme total damage when attacking when invisible, exceeding a full [[Poison]] and allowing it to OHKO units like the [[Musketeer]] and [[Wizard]].
+*The [[Valkyrie]] is perhaps the best response to the Evolved Royal Ghost. Her 360° splash radius and good bulk allows her to tank the initial massive hit, then immediately clear the Souldiers and duel favorably with the Royal Ghost.
+*When using a [[Royal Delivery]], [[Electro Wizard]], or [[Mega Knight]], it is recommended to first place a distraction troop like [[Skeletons]] to cause the Evolved Royal Ghost to turn visible, then immediately place them on the Evolved Royal Ghost to wipe off the Souldiers. In the Royal Delivery’s case, first place the Delivery and then the distraction unit due to the Delivery’s lengthy start up
+*If you are low on elixir, it may be best to let the Evolved Royal Ghost get close to the tower, so after the Evolved Royal Ghost finishes defeating whatever unit you use to counter him, he will not turn invisible again.
+*The Evolved Royal Ghost forms a strong synergy with tanks like the [[Giant]], [[Royal Giant]], and [[Golem]]. They help tank for him and his Souldiers. In exchange, the Evolved Royal Ghost can do extreme damage to units placed to counter the tanks like the [[Mini P.E.K.K.A.]] and [[Mighty Miner]] as well as wiping out swarms like the [[Goblins]] and [[Skeleton Army]]. The Royal Giant is notable for being ranged, giving the Evolved Royal Ghost more time to turn invisible again and renew his ability.
+*An extremely deadly push is the [[Skeleton Barrel/Evolution|Evolved Skeleton Barrel]] paired with the Evolved Royal Ghost. The Evolved Royal Ghost can cripple or outright oneshot many counters to the Evolved Skeleton Barrel like the [[Cannon]], [[Bomber]], [[Firecracker]], [[Dart Goblin]], and [[Archers]]. Additionally, due to the Evolved Skeleton Barrel having two waves of skeletons and the Evolved Royal Ghost spawning Souldiers, it puts the opponent into a dilemma on when to use their spell to wipe them out. This push is particularly potent when you know your opponent’s spell and/or building is out of cycle.
+**The [[Valkyrie]] can be very helpful to wipe out the first wave of Skeletons, the Evolved Royal Ghost and his Souldiers. However, you will still need a response for the second wave of Skeletons. [[Valkyrie/Evolution|Her evolved counterpart]] can fully counter this push on her own, as she can pull the Skeleton Barrel back, then wipe out the second wave of Skeletons.
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Card Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Invisibility Time<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.8 sec||0.6 sec||Fast (90)||1 sec||1.8 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+{{StatisticsSubheader|Souldiers Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Invisibility Time<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.8 sec||0.6 sec||Fast (90)||0.2 sec||1.8 sec||Melee: Medium (1.2)||Ground||x2||Ground
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1210 }}
+{{#vardefine: dmg_11 | 261 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: spawn_11 | 81 }}
+{{#vardefine: soul_hp_11 | 81 }}
+{{#vardefine: soul_dmg_11 | 81 }}
+{{#vardefine: soul_atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Souldeiers Spawn Damage<br>{{Icon|I=Damage}}
+! scope="col" |Souldeiers Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Souldiers Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Souldiers Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:spawn_11}} || {{#var:soul_hp_11}} || {{#var:soul_dmg_11}} || {{Dps|{{#var:soul_dmg_11}}|{{#var:soul_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:soul_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:soul_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:soul_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:soul_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Royal Ghost's Evolution [[Cards|card]] was added to the game on 17/10/2025, in a [[Version History#Maintenance Break (17/10/2025)|maintenance break]].
+*On 3/11/25, a balance update decreased the Souldier’s damage by 49%.
+*On 1/12/2025, a Balance Update nerfed the Souldier's melee and spawn damage by 22%.
+2026
+
+* On 2/3/2026, a Balance Update, decreased the Evolved Royal Ghost's invisibility delay to 2 seconds (from 1.8 seconds).
+* On 6/4/2026, a Balance Update, decreased the Souldier Spawn Damage by 60% and the souldier damage by 21%
+
+==Gallery==
+<gallery>
+File:RoyalGhostCardEvolution2.png|Evolved Royal Ghost's card image in some countries.
+File:Evolved Royal Ghost Card Render.png|Current card render.
+File:Evolved Royal Ghost.png|Evolved Royal Ghost
+</gallery>
+
+==Trivia==
+*The Evolved Royal Ghost is the first card evolution to be released in the same season as another card evolution since [[Cannon/Evolution|Evolution Cannon]], which released alongside [[Musketeer/Evolution|Evolution Musketeer]] in November 2024.
+*The Evolved Royal Ghost is the only card to have different card images according to the player's language settings.
+
+{{Navigation|Card}}

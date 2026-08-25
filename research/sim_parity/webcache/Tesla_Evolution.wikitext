@@ -1,0 +1,155 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Tesla</span>}}
+{{Evolved_Card_Infobox|Cost=4|CycleCost=2|Rarity=Common|Arena=Hog Mountain|ReleaseDate=4 March 2024|Type=Building}}
+{{Quote|This Evolution is quite shocking! Bad jokes aside, the evolved Tesla sends out an intermittent Electro Pulse, dealing Damage to any enemies caught in it.}}
+
+The Tesla's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Tesla with identical stats to the original. After surfacing and deployment, the Tesla spawns an expanding electric pulse effect, dealing high damage while stunning all enemies in its radius. The stun lasts 0.5 seconds and covers a 6-tile radius. It appears to be a wooden lattice structure with a violet coil, cone and sphere with golden details placed on top which is surrounded by team-colored supports, a dark violet wire coiled around one of its pillar, and a dark violet wooden trapdoor with golden plates and hinges. The Tesla's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*You can use the Evolved Tesla's shock effect twice with the right timing. As soon as the incoming opponent cards cross the bridge, place the Evolved Tesla so that the Tesla spawn hit will damage the enemy cards, and the Tesla will close and open again. This is a very risky move and requires correct timing. but it can make a big difference in holding off big attacks.
+*For 2 cycles, the Evolved Tesla is extremely defensive. The Evolved Tesla can OHKO any unit with less health than [[Minions]], such as [[Goblins]], [[Spear Goblins]], [[Bats/Evolution|Evolved Bats]], and [[Skeletons]], if they are of the same Level, thus making it very effective against small hordes of low-hitpoint troops.
+**An Evolved Tesla can be a decent backup counter to a [[Graveyard]]. It attacks relatively fast, and has decent hitpoints to survive multiple attacks from the [[Skeletons]], while also being unable to be pulled away by an incoming [[Tornado]]. In a pinch, the death pulse may defeat any surviving Skeletons, further lowering damage dealt to the [[:Category:Crown Towers|Crown Tower]].
+**Unlike the regular Tesla, the Evolved Tesla can be a somewhat reliable counter to heavy swarms like [[Barbarians/Evolution|Evolved Barbarians]], [[Royal Hogs]], and [[Royal Recruits/Evolution|Evolved Royal Recruits]]. This is due to the pulse dealing decent damage while stunning everything inside, thus buying more time for the Crown Towers and Evolved Tesla to get in damage.
+*The [[Cannoneer]] has good defensive synergy with the Evolved Tesla. The pulse in combination with the Evolved Tesla’s fast attack speed can help take out swarm cards the Cannoneer struggles to defend. The Evolved Tesla can also distract high hitpoint units for a long time like the regular Tesla providing the Cannoneer with more time to do damage.
+**Likewise, the [[Dagger Duchess]] has good defensive synergy with the Evolved Tesla as the Tesla can easily deal with swarm troops with its shockwave and pull high hitpoint troops towards the other Dagger Duchess, which is likely to have full daggers.
+*If placed properly and with the help of the Cannoneer, the Evolved Tesla can fully counter a [[Royal Giant]] and [[Royal Giant/Evolution|Evolved Royal Giant]] for a +2 Elixir trade. A similar interaction occurs with the [[Electro Giant]], [[Giant Skeleton]], [[P.E.K.K.A]], and [[Bowler]].
+*When it retreats underground, the Evolved Tesla is invulnerable to any damage-dealing [[:Category:Spell Cards|spell]] except for [[Earthquake]], and cannot be targeted by any troops. However, the retreat is not instant, enabling quick troops like [[Spear Goblins]] to get a hit off before it goes underground. The retreat can also be stopped with a [[Freeze]] spell, enabling the player to attack the Evolved Tesla at leisure. The Evolved Tesla can also be frozen by a Freeze spell while underground, so it won't pop up when enemies are in range while the Freeze is active on it. This allows troops such as the Hog Rider to bypass an Evolved Tesla and head straight for the Crown Tower, as it can't be targeted while hidden underground.
+**Since the Tesla cannot be defeated while underground, its lifetime may discourage the opponent from attacking. Because of this, when it expires, it may incentivize the opponent to attack, so this is a good opportunity to prepare resistance against the post-Tesla response attack.
+*The Evolved Tesla has great synergy with the [[X-Bow]]. Any light swarms like [[Skeleton Army]] used near the X-Bow will be instantly destroyed by the pulse while hindering other distraction troops with its stun. Additionally, the Evolved Tesla will add a considerable amount of DPS against these bulkier troops, taking them down faster so the X-Bow can get more damage on the Crown Towers. However, this combination is very weak against Earthquake.
+**Similarly, the Evolved Tesla also has great synergy with the [[Mortar]]. Like the X-Bow, the Tesla can quickly take out many air and ground swarms meant to counter the Mortar with the pulse, potentially giving more time for the Mortar to attack the Crown Towers. This combination is also 2 less Elixir, giving the player more room to place down more cards.
+**On the contrary, it is also decent against an X-Bow or Mortar. Its decent Elixir cost and hitpoints will allow it to tank a notable amount of attacks, and its high damage and fast hitspeed will let it dish out plenty of hits to the building or any of its support cards. The stun from the pulse, may also cause a retarget from the siege building into the Evolved Tesla if it was placed late.
+*If paired with [[Skeletons]], a [[Golem]] can be fully countered by the Evolved Tesla for a massive +3 Elixir trade. This can also be done with [[Spear Goblins]] or a Dart Goblin for a counter push. Resulting in minor chip damage if ignored.
+*The Evolved Tesla may be substituted for the [[Cannon]] or [[Inferno Tower]] based on the user's building preferences and what [[Card Evolution|Card Evolutions]] are already in the player's deck. The Cannon costs 1 less Elixir, but can't target air troops and has less hitpoints, making it better for decks that already have many air counters. The Inferno Tower can target air, is extremely effective against troops with high hitpoints, and has more hitpoints. However, it costs 1 more Elixir and is vulnerable to swarms, making it better for decks that tend to struggle with large pushes.
+*The Evolved Tesla is very effective at distracting enemy building-targeting troops, such as the Giant and Hog Rider. By placing it in the middle of the player's part of the [[Arenas|Arena]] (3 tiles from the bridge), the troops will target it instead of the Towers if it is not frozen. This placement will also pull regular troops to it.
+**If the player only wants the Evolved Tesla to pull building-targeting troops, they should place it 1 more tile away from the river. The Evolved Tesla will still attack any troops that come close enough to the Crown Towers, but it will not tank any hits for them. Alternatively, the player can place the Tesla 1 tile even deeper to pull the building-targeting troop even deeper, but this will result in support troops being out of range.
+**A Hog Rider or [[Ram Rider]] placed at the edges of the Arena will bypass an Evolved Tesla that is hidden whether it is placed 3 or 4 tiles from the river. An Evolved Tesla placed 2 tiles from the river will pull them to it, but this placement makes it very easy to snipe at the bridge, by using a swarm to force the Evolved Tesla to pop up and tank its shots while a ranged troop damages it down. Another method is to simply push them closer to the Evolved Tesla by deploying a grounded troop where it lands after it jumps across the edge, which will make Evolved Teslas placed 3 or 4 tiles away from the river pull them.
+**Against building-targeting troops which are placed in such a way that they are staggered towards the center of the Arena (e.g. a [[Golem]] placed behind the King's Tower), an Evolved Tesla reactively placed 4 tiles from the defending Crown Tower and 4 tiles away from the river can distract them. This is because the unit will walk closer to the inner side of the bridge (i.e. closer to the center of the Arena), rather than the center or the outside. Although this is somewhat situational, it is more effective at separating a tank from its support units than the above middle placement, as the tank will have to walk slightly farther, and the Tesla will not draw the attention of other grounded troops.
+***This placement also works against the Giant if he is placed directly on the bridge. His sight range is enough to allow him to travel towards the Tesla. However, this placement does not work against the Golem placed similarly, due to its lower sight range.
+**If the player suspects that the opponent has an Earthquake, [[Lightning]], or [[Poison]] in their deck, they can place the Tesla 1 tile from the river. This will avoid the Earthquake hitting both the Crown Tower and the Tesla. However, this placement can be easily attacked by ranged troops, so use this placement if avoiding Crown Tower damage is a higher priority.
+**The [[Lava Hound]]'s low sight range necessitates the Tesla being placed 5 tiles from the river and 1 tile from the Crown Tower in order to distract it. This position does not work against a Lava Hound placed on the furthest edge in the Arena; in this case, the Tesla has to be shifted a tile closer to the Crown Tower in order to distract the Lava Hound.
+***Against a LavaLoon push, it is most recommended to place the Tesla 3 tiles from the river and 2 tiles from the Crown Tower. This position allows it to distract the [[Balloon]] without distracting the Lava Hound. This forces them to separate and make addressing them easier afterwards. This placement also works against a lone Balloon or [[Skeleton Barrel]].
+**If the player wants to pull troops closer to the King's Tower and further from the second Crown Tower after losing their first one, they should place the Tesla beside the King's Tower and 3 tiles from the top of the Arena. This will pull Giants towards in regardless on whether it was placed reactively or proactively. Against the Golem and Lava Hound, it only works if placed reactively. In order to avoid this, the player can place it 4 tiles from the top of the Arena instead, which will work better, as the Tesla will start attacking the Golem during its deploy time.
+*Offensively, in some cases, cards with a high range, like [[Dart Goblin]], [[Princess]], [[Musketeer/Evolution|Evolved Musketeer]], [[Flying Machine]], [[Archers/Evolution|Evolved Archers]], and [[Magic Archer]], can snipe a poorly placed Evolved Tesla from across the river without taking damage from the pulse. This is in part to their range being longer than where the pulse can reach them. Another troop, like an [[Ice Golem]] and [[Goblin Giant]], should be present to keep the Evolved Tesla from going underground while this is going on.
+*The Evolved Tesla is a good response to a Princess placed at the bridge. Its underground mechanic prevents spell responses against it and it may also discourage the opponent from placing the Princess to attack the Crown Tower.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}{{StatisticsSubheader|Evolved Tesla Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.1 sec||0.5 sec||1 sec||25 sec||5.5|| Air & Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Pulse Radius<br />{{Icon|I=Radius}}
+! scope="col" |Pulse Stun Duration<br />{{Icon|I=Freeze}}
+|-
+|2||6||0.5 sec
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1152 }}
+{{#vardefine: dmg_11 | 220 }}
+{{#vardefine: pulse_dmg_11 | 174 }}
+{{#vardefine: life | 25 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Pulse Damage<br />{{Icon|I=Area Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(1-11)) round 0 }} 
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(2-11)) round 0 }} 
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(3-11)) round 0 }} 
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(5-11)) round 0 }} 
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(6-11)) round 0 }} 
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(10-11)) round 0 }} 
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:pulse_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(12-11)) round 0 }} 
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(13-11)) round 0 }} 
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(14-11)) round 0 }} 
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:pulse_dmg_11}} * (1.1^(16-11)) round 0 }} 
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Tesla's Evolution [[Cards|card]] was added to the game on 4/3/2024, in the [[Version History#Pass Royale and more (4/3/2024)|March 2024 Update]].
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], removed the Evolved Tesla's hitpoints boost, but added a pulse after death.
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Evolved Tesla’s pulse damage by 22.9% and decreased its pulse stun duration to 0.5 seconds (from 1 second). The same update also fixed a bug with Evolved Tesla's behavior when it is frozen during deployment and an issue where Evolved Tesla was not sending a pulse at death when it wasn't destroyed by another unit.
+*On 2/7/2024, a [[Version History|Balance Update]], decreased the Evolved Tesla’s damage by 4% and increased its attack time interval to 1.2 seconds (from 1.1 seconds).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Evolved Tesla’s attack time interval to 1.1 seconds (from 1.2 seconds), but removed its death pulse.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Tesla after death.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], made it so that [[Lumberjack/Evolution|Lumberjack Ghost]] is immune to Evolved Tesla's pulse.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], increased the Evolved Tesla's pulse damage by 17%.
+2026
+
+* On 4/5/2026, a Balance Update, decreased the Evolved Tesla's pulse damage by 15%.
+* On 1/6/2026, a Balance Update, decreased the Evolved Tesla's lifetime to 25 seconds (from 30 seconds). It also increased its hitpoints by 3%
+
+==Gallery==
+<gallery>
+File:Evolved Tesla card render.png|Current card render.
+File:Evolved Tesla Preview.gif|Current card preview
+File:TeslaEvoShard.png|Evolution Shard
+File:Evolved Tesla.png|Evolved Tesla
+</gallery>
+
+==Trivia== 
+*The card's name is a reference to Nikola Tesla, a famous scientist known for working with electricity. It is based on one of his inventions, the Tesla coil which wirelessly transmits electricity to the destination; the way tesla coil transmits electricity appears similar to how the Tesla attacks. 
+**In the Spanish, Korean, Chinese, and Vietnamese language settings of the game, the Tesla's name translates to "Tesla Tower", "Thunderbolt Tower", "Tesla Electromagnetic Tower", and "Electric Arc Tower" respectively.
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Tesla is 1 of 3 evolved [[cards]] associated with electricity, with the others being [[Zap/Evolution|Zap]] and [[Electro Dragon/Evolution|Electro Dragon]].
+***Despite both the attacks and pulses being composed of electricity, only the Evolved Tesla’s pulses can stun troops.
+*Among all evolved [[:Category:Building Cards|buildings]] that can attack, the Evolved Tesla is tied with [[Cannon/Evolution|Cannon]] for the shortest range of all buildings, with a range of 5.5 tiles.
+*Like many other Evolutions, the Evolved Tesla plays an unique sound effect when deployed. However, due to a glitch, when deployed by the opponent, the [[Mortar/Evolution|Evolved Mortar]]'s deployment sound is played at the same time.
+*The Tesla is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Cannon]], [[Mortar]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Tesla's Evolution is the subject of an [[Emotes|Emote]].
+
+{{Navigation|Card}}

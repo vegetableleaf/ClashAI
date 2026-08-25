@@ -1,0 +1,94 @@
+key: valkyrie_hero
+base_card: valkyrie
+page: Valkyrie/Hero
+revid: 437412
+fetched: "2026-08-25"
+release_date: "2026-08-03"   # infobox "August 3 2026"; corroborated by Heroes#History "3/8/2026 ... August 2026 Update"
+
+# The Valkyrie/Hero subpage is a stub: it carries the stat tables and vardefines but never
+# names or describes the ability. Name + mechanic prose + single-use rule come from the
+# "Heroes" page, fetched and archived the same day.
+supplementary_sources:
+  - page: Heroes
+    revid: 437509
+    fetched: "2026-08-25"
+    cached: research/sim_parity/webcache/Heroes.wikitext
+
+body_stat_deltas: >-
+  none detected — every comparable body stat on the hero page equals the base-card snapshot
+  (ledger/current_db_snapshot.json 'valkyrie'): hp lvl11 1907=1907, damage lvl11 266=266,
+  hit speed 1.5=1.5, elixir 4=4, deploy time 1=1.0, range 1.2=1.2, splash radius 2=2.0,
+  speed Medium=medium, count 1=1, target Ground=ground. The hero page additionally lists
+  First Hit Speed 0.1 sec, which has no counterpart field in the snapshot (snapshot
+  load_time_s 1.4 is a different measure), so it cannot be diffed against base.
+
+ability:
+  name: Wild Whirlwind        # source: Heroes page (revid 437509) List of Heroes table; NOT stated anywhere on Valkyrie/Hero
+  elixir_cost: 3              # agrees across: Valkyrie/Hero infobox AbilityCost=3, Valkyrie/Hero ability table Cost, Heroes table Ability Cost
+  uses: 1                     # source: Heroes#History, 4/8/2026 Balance Update "made every ability single-use" (applies to all heroes; Valkyrie/Hero's own History section is empty)
+  cooldown_s: null            # not stated on either page; likely moot since abilities are single-use as of 4/8/2026
+  cast_delay_s: null          # not stated on either page
+
+mechanic_prose: |
+  Heroes page (revid 437509), section "List of Heroes", Valkyrie row — the ability description:
+    "'''Wild Whirlwind''' -
+    Spins rapidly, dealing damage and increasing her movement speed while taking less damage."
+
+  Heroes page (revid 437509), section "History":
+    "* {{Balance|Nerf}} On 4/8/2026 the [[Version History#Balance Changes (4/8/2026)|Balance Update]] made every ability single-use"
+
+  Heroes page (revid 437509), section "Summary" (generic hero-ability rules, sim-relevant):
+    "They cost [[Elixir]] to cast, granting the last played Heroic cards their special ability
+    depending on the Hero, and will only stay as long as the selected Hero that you want to use
+    the ability of is alive."
+    "When a Hero activates their ability, but did not start casting it before they are defeated,
+    the Elixir spent on the ability will be refunded once they are defeated."
+
+  Valkyrie/Hero page (revid 437412), infobox {{Quote}} (flavor only — the page has no mechanic prose):
+    "Whirl Power! Hero Valkyrie has gone round and round the Arena, getting whipped into shape
+    and chopping down troops with an axe that wont quit. Now, she's ready for her final test at
+    the gates of Valkhalla."
+
+numbers:
+  # ---- body (Valkyrie/Hero revid 437412, first unit-attributes-table) ----
+  body_cost_elixir:        {value: 4,      source: "attribute table 'Cost'; also infobox Cost=4 and Heroes table Cost — all agree"}
+  body_hit_speed_s:        {value: 1.5,    source: "attribute table 'Hit Speed' = 1.5 sec; also vardefine atk_speed|1.5"}
+  body_first_hit_speed_s:  {value: 0.1,    source: "attribute table 'First Hit Speed' = 0.1 sec"}
+  body_speed:              {value: "Medium (60)", source: "attribute table 'Speed'"}
+  body_deploy_time_s:      {value: 1,      source: "attribute table 'Deploy Time' = 1 sec"}
+  body_range_tiles:        {value: 1.2,    source: "attribute table 'Range' = 'Melee: Medium (1.2)'"}
+  body_splash_radius_tiles: {value: 2,     source: "attribute table 'Splash Radius'"}
+  body_target:             {value: "Ground", source: "attribute table 'Target'"}
+  body_count:              {value: 1,      source: "attribute table 'Count' = x1"}
+  body_hp_lvl11:           {value: 1907,   source: "vardefine hp_11|1907"}
+  body_damage_lvl11:       {value: 266,    source: "vardefine dmg_11|266 (Area Damage)"}
+  level_scaling_factor:    {value: "1.1^(level-11)", source: "statistics-table #expr formulas, levels 3-16, applied to hp_11, dmg_11 and abdmg_11; page itself warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  # ---- ability (Valkyrie/Hero revid 437412, second unit-attributes-table) ----
+  ability_cost_elixir:     {value: 3,      source: "ability table 'Cost'; also infobox AbilityCost=3 and Heroes table Ability Cost 3 — all agree"}
+  ability_hit_speed_s:     {value: 0.25,   source: "ability table 'Hit Speed' = 0.25 sec"}
+  ability_crown_tower_damage_pct: {value: -50, source: "ability table 'Crown Tower Damage' = -50%"}
+  ability_speed:           {value: "Medium (60)", source: "ability table 'Speed' — identical to body speed; CONFLICTS with Heroes-page prose 'increasing her movement speed', see open_questions"}
+  ability_duration_s:      {value: 3.5,    source: "ability table 'Duration' = 3.5 sec"}
+  ability_radius_tiles:    {value: 2.5,    source: "ability table 'Radius'"}
+  ability_damage_reduction_pct: {value: 15, source: "ability table 'Damage reduction' = 15% (column icon: Shield Hitpoints)"}
+  ability_dash_distance_tiles: {value: 5.5, source: "ability table 'Dash Distance' = 5.5 — no prose anywhere mentions a dash"}
+  ability_damage_lvl11:    {value: 97,     source: "vardefine abdmg_11|97; level table column 'Ability Damage'"}
+  # ---- meta (both pages) ----
+  total_elixir_cost:       {value: 7,      source: "Heroes table 'Total Elixir Cost' (4+3)"}
+  ability_uses_per_match:  {value: 1,      source: "Heroes#History 4/8/2026: 'made every ability single-use'"}
+  unlock_cost_shards:      {value: 200,    source: "Valkyrie/Hero prose 'unlocked with 200 hero fragments'; Heroes prose 'requires 200 Hero Shard icon' — same number, different term"}
+
+proposed_ability_kind: buff_self
+# rationale: self-buff for 3.5 s — rapid AoE hits (0.25 s, radius 2.5), 15% damage reduction,
+# claimed move-speed increase. The lone 'Dash Distance 5.5' stat hints at a dash_chain-like
+# component the prose never describes; kept buff_self pending in-game check.
+
+open_questions:
+  - "Move-speed boost: Heroes prose says 'increasing her movement speed' but the ability table lists Speed = Medium (60), identical to her base speed. Does a boost exist, and how big? (in-game check)"
+  - "Dash Distance 5.5: no prose on either page mentions a dash. Does activating Wild Whirlwind trigger a dash (direction? target?), or is 5.5 something else entirely? (in-game check)"
+  - "Damage application: is Ability Damage 97 (lvl 11) dealt as a hit every 0.25 s in the 2.5-tile radius for the full 3.5 s (~14 ticks), and does it replace her normal 266 @ 1.5 s attack during the spin? Not stated. (in-game check)"
+  - "Does the -50% Crown Tower Damage apply only to the ability's spin damage, or to all her damage while the ability is active?"
+  - "Does the 15% damage reduction apply to all damage sources (spells included)?"
+  - "cast_delay_s and interruptibility (can she be stunned/knocked back mid-whirl?) are not stated."
+  - "cooldown_s not stated; presumed irrelevant since the 4/8/2026 balance made every ability single-use — confirm there is truly no re-use path."
+  - "Page quality: Valkyrie/Hero intro contains a stray fragment '** m.' and its History section is empty (the 4/8/2026 single-use change is only on the Heroes page); the stub may lag behind in-game values."

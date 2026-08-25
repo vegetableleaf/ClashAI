@@ -1,0 +1,191 @@
+
+{{Quote|In the Arena full of uncertainty, Hero Mega Minion wants to make sure he can get to the right place in just the nick of time. Learning to shift through the shadows doesn't happen overnight!}}{{Heroic_Card_Infobox|Cost=3|AbilityCost=2|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=February 2, 2026}}
+The Heroic Mega Minion is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It appears as an enlarged [[Minions|Minion]] wearing a set of armor with a mask, chainmail, and a team-colored belt. A Heroic Mega Minion card costs 3 {{Icon|I=Elixir}} to deploy.
+
+== Ability: Wounding Warp ==
+{{Quote|Warps to the lowest-Hitpoint enemy, dealing damage on arrival.}}{{Hero Ability|3=Wounding Warp}}
+The Hero Mega Minion has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. When deployed, a marker will be deployed to the lowest hitpoint target. When that unit dies, the mark will move to the next unit. When the ability is preased, Mega Minion will teleport to that tile, dealing damage. Afterwards the Mega Minion will behave normally, but with -75% on the tower. The Wounding Warp ability costs 2 [[Elixir]] to activate.
+
+== Strategy ==
+*Use the ability to snipe ranged units far away, like [[Wizard]] and [[Musketeer]] to teleport and kill them.
+*When defending, you can use swarms like [[Skeletons]] to take the agro of the aim. Making it so he cant target the unit he wants.
+*Be carefull when you use the ability, as it can be a 2 elixir waist. It could also lead to less crown tower damage overall.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Hero Mega Minion Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|3
+|1.5 sec
+|0.4 sec
+|Medium (60)
+|1 sec
+|Melee: Long (1.6)
+|1000
+|Air & Ground
+|x1
+|Air
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Wounding Warp Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Crown Tower Damage
+{{Icon|I=Tower Damage}}
+! scope="col" |Teleport Range
+{{Icon|I=Dash Range}}
+|-
+|2
+|25%
+|Infinite
+|}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> 
+{{#vardefine: hp_11|837}} {{#vardefine: dmg_11|312}} {{#vardefine: atk_speed|1.5}} {{#vardefine: warpdmg_11|399}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Damage
+{{Icon|I=Damage}}
+! scope="col" |Damage Per Second
+{{Icon|I=DPS}}
+!Warp Damage
+{{Icon|I=Damage}}
+|-
+|3
+|{{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(3-11)) round 0}}
+|-
+|4
+|{{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(4-11)) round 0}}
+|-
+|5
+|{{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(5-11)) round 0}}
+|-
+|6
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:warpdmg_11}}
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:warpdmg_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+
+* Hero Mega Minion was released on 2/2/2026 with the [[Version History#Pass Royale and more (2/2/2026)|Febuary 2026 Update]], alongside [[Goblins/Hero|Hero Goblins]]{{Balance|Add}}.
+* On 2/3/2026, the [[Version History#Pass Royale and more (2/3/2026)|March 2026 Update]] decreased the Wounding Warp's damage by 12%{{Balance|Nerf}}.
+* On 7/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], a first target delay of 1.5s was implemented on the Hero Mega Minion, to where it could no longer instantly spawn to targeted troop when ability is activated{{Balance|Add}}.
+* On 4/5/2026, a [[Version History#Pass Royale and more (4/5/2026)|Balance Update]], decreased the Hero Mega Minion's warp damage by 9%{{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], decreased the Hero Mega Minion's tower multiplier to x0.25 (from x0.5){{Balance|Nerf}}, it's crown tower damage reduction is now permanent{{Balance|Nerf}}, and its warp damage has been increased by 7%{{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:Heroic Mega Minion Card Render.png|Current card render.
+File:MegaMinionHeroShard.png|Heroic Mega Minion Shard.
+File:Ability-Mega_Minion-Hero.png|Ability Icon
+</gallery>
+
+==Trivia==
+*The design of the Mega Minion resembles gargoyles. The gargoyle is a fantasy and horror monster inspired by the gargoyle architectural element. While they were believed in mythology to frighten away evil spirits, the idea of such statues physically coming to life is a more recent notion. They are usually made of magically animated or transformed stone, but have animal or chimera traits and are often guardians of a place such as a cathedral or castle. They can also be depicted as vessels for demonic possession or as a living species resembling statues.
+**In the French and Japanese language settings of the game, the Mega Minion's name translates to "Mega Gargoyle". In the Arabic, Chinese, Malaysian, Thai, and Vietnamese language settings of the game, the Mega Minion's name translates to "Giant Minion", "Armored Undead", "Big Minion", "Armored Drone", and "Super Minion" respectively.
+
+{{Navigation|Card}}

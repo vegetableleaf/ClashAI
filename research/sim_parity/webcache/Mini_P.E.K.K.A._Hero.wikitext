@@ -1,0 +1,151 @@
+{{DISPLAYTITLE:<span class="text-champion">Heroic Mini P.E.K.K.A.</span>}}{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=December 1 2025|AbilityCost=1}}{{Quote|Hero Mini P.E.K.K.A has finally perfected his pancake recipe by speeding up cooking time with each attack! Stacks on stacks on stacks!
+}}
+
+The Heroic Mini P.E.K.K.A. is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 200 hero fragments. It spawns one single-target, ground-targeting, melee, and ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. The Heroic Mini P.E.K.K.A takes the appearance of a robot-looking troop similar to [[Mini P.E.K.K.A.]] who wears gold metallic armor with two pearl white horns, shoulder and arm pads, golden spikes on his arms and a single round glowing eye, along with a team-colored cape and faulds, while wielding both a cracked refined sword with a pearl white base, a golden hilt and a wooden grip and a golden spatula with a small golden spike near the top. A Heroic Mini P.E.K.K.A. card costs 4 {{Icon|I=Elixir}} to deploy, and his ability costs an additional 1 {{Icon|I=Elixir}} to activate. 
+
+==Ability: Breakfast Boost ==
+{{Quote|Eats pancakes to level up. The longer you wait, the more pancakes he cooks!}}{{Hero Ability|2=Mini-P.E.K.K.A.-Heroic}}
+The Heroic Mini P.E.K.K.A. has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Mini P.E.K.K.A. activates his "Breakfast Boost", immediately eats all the pancakes he cooked, granting him extra Levels and healing himself for 30%.
+
+Heroic Mini P.E.K.K.A. can constantly gain progress for his pancake meters. He will need 22 seconds to get one pancake meter filled, but he can also get 10 seconds of progress with every attack. Every filled pancake meter increases the Levels gained when his ability is used by 1, except the last meter grants 2 extra Levels. With no meters, the Heroic Mini P.E.K.K.A. will gain 1 Level, but with a maximum of 3 meters, he can gain 5 Levels. The amount of meters the Heroic Mini P.E.K.K.A. has can be seen in a golden bar above his hitpoint bar.The Breakfast Boost ability costs 1 {{Icon|I=Elixir}} to activate.
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Heroic Mini P.E.K.K.A. and his activated Ability count as 5 Elixir, as the player must play the 4 Elixir Heroic Mini P.E.K.K.A and then spend a further 1 on his Ability.
+*This card would be good in decks with large tanks, as with his ability, he would be able to take out anti-tank cards like [[P.E.K.K.A.|P.E.K.K.A]], [[Mighty Miner]], [[Monk]], and [[Prince]] even better, as well as being good at taking a Tower on its own, while a tank protects him.
+*To counter the Heroic Mini P.E.K.K.A, it is important to stop it before he boosts himself with his Breakfast Boost ability. This includes using the [[Rocket]] to OHKO him. If the player anticipates the enemy Rocket, they can activate his ability causing him to survive the spell, however this result in its healing being completely wasted.
+*Although he defends the same way as the regular Mini P.E.K.K.A, the Heroic Mini P.E.K.K.A offers a better counterattack afterwards after using his ability, granting him more damage on the counterattack and healing 30% of his hitpoints.
+*When using Heroic Mini P.E.K.K.A, pay attention to your opponent's card rotation. The opponent is more likely to have building-targeting troops to be able to hit your Crown Towers, allowing the Heroic Mini P.E.K.K.A to accumulate his ability easily. Try to reserve the Heroic Mini P.E.K.K.A for that card as much as possible.
+*The Heroic Mini P.E.K.K.A has incredible synergy with the [[Royal Chef]]. The Royal Chef's low damage and lack of burst will force the Heroic Mini P.E.K.K.A to attack more times, accumulating more of his ability.
+**Conversely, he is completely ineffective with the [[Cannoneer]] and [[Dagger Duchess]], as the high damage and quick burst will lower the amount of hits the Heroic Mini P.E.K.K.A will dish out, which will result in less ability meters.
+*Depending on what side of the arena this happens, but if the Mini P.E.K.K.A was facing an equal level [[P.E.K.K.A.|P.E.K.K.A]], if the player who played the Mini P.E.K.K.A would have to wait until the P.E.K.K.A strikes, then if all bars are full, then they use the ability right after the first strike from P.E.K.K.A, which will then have a lot more health than the [[P.E.K.K.A.|P.E.K.K.A]] can take out in 2 or less strikes. By that point though, the Mini P.E.K.K.A would have killed her for a +2 elixir trade.
+*Although situational, the player can manipulate the Royal Chef by using the Heroic Mini P.E.K.K.A to grant an additional Level and gain more hitpoints and damage. This can allow him to accumulate the ability more safely and generate more Levels after using it. The player can further manipulate extra Levels by using Mirror on the Heroic Mini P.E.K.K.A, granting a total of 7 extra Levels on the Heroic Mini P.E.K.K.A that way.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|4||1.6 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Breakfast Boost Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Ability Range
+{{Icon|I=Range}}
+! scope="col" |Cast Time
+{{Icon|I=Time}}
+! scope="col" |Heal Percentage
+{{Icon|I=Activation}}
+!Level Increase from Pancake Bar
+{{Icon|I=Boost}}
+|-
+|1
+|Himself
+|0.933 sec
+|30%
+|0 bars filled = +1 level
+
+
+1 bar filled = +1 level/ 2 levels altogether
+
+2 bars filled = +1 level/ 3 levels altogether
+
+3 bars filled = + 2 levels/ 5 levels altogether
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), that will be level 11. Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_base | 1433 }}
+{{#vardefine: dmg_base | 755 }}
+{{#vardefine: atk_speed | 1.6 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_base}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_base}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_base}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_base}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_base}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_base}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_base}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_base}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_base}} || {{#var:dmg_base}} || {{Dps|{{#var:dmg_base}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_base}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_base}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_base}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_base}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_base}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| '''17''' || '''{{#expr: {{#var:hp_base}} * (1.1^(17-11)) round 0 }}''' || '''{{#expr: {{#var:dmg_base}} * (1.1^(17-11)) round 0 }}''' || '''{{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(17-11)) round 0 }}|{{#var:atk_speed}} }}'''
+|-
+| '''18''' || '''{{#expr: {{#var:hp_base}} * (1.1^(18-11)) round 0 }}''' || '''{{#expr: {{#var:dmg_base}} * (1.1^(18-11)) round 0 }}''' || '''{{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(18-11)) round 0 }}|{{#var:atk_speed}} }}'''
+|-
+| '''19''' || '''{{#expr: {{#var:hp_base}} * (1.1^(19-11)) round 0 }}''' || '''{{#expr: {{#var:dmg_base}} * (1.1^(19-11)) round 0 }}''' || '''{{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(19-11)) round 0 }}|{{#var:atk_speed}} }}'''
+|-
+| '''20''' || '''{{#expr: {{#var:hp_base}} * (1.1^(20-11)) round 0 }} || '''{{#expr: {{#var:dmg_base}} * (1.1^(20-11)) round 0 }}''' || '''{{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(20-11)) round 0 }}|{{#var:atk_speed}} }}'''
+|-
+| '''21''' || '''{{#expr: {{#var:hp_base}} * (1.1^(21-11)) round 0 }}''' || '''{{#expr: {{#var:dmg_base}} * (1.1^(21-11)) round 0 }}''' || '''{{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(21-11)) round 0 }}|{{#var:atk_speed}} }}'''
+|}
+There will be rounding mistakes, as we have stats from level 11
+'''Bold: Extra levels added if ability used while card is in  Level 16'''</div></center>
+
+
+==History==
+
+2025
+
+* Card was added in the [[Version History#Pass Royale and more (1/12/2025)|2025 Quarter 4 Update]] with the other 3 original heroes [[Knight/Hero|Knight]], [[Musketeer/Hero|Musketeer]], and [[Giant/Hero|Giant]]{{Balance|Add}}.
+* On 22/12/2025 a [[Version History#Maintenance Break (22/12/2025)|Maintenance Break]], allowed Hero Mini P.E.K.K.A to be a summonable hero. Previously he could only be gotten in [[Pass Royale]]{{Balance|Add}}.
+2026
+* On 12/1/2026, a  [[Version History#Balance Changes (12/1/2026)|Balance Update]], decreased the Hero Mini P.E.K.K.A.'s healing to 30% (from 40%){{Balance|Nerf}}, and decreased the it's Hitpoints by 3%{{Balance|Nerf}}.
+* On 2/2/2026, a [[Version History#Pass Royale and more (2/2/2026)|Balance Update]], increased the Hero Mini P.E.K.K.A.'s cook time to 22 seconds (from 20 seconds){{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:Heroic Mini P.E.K.K.A. Card Render.png|Current Card Render of Heroic Mini P.E.K.K.A
+File:Mini P.E.K.K.A Pancake Boost 2.png|This representing his Pancake Boost ability.
+File:Mini P.E.K.K.A.-Heroic Level up boost 2.png|2nd picture of Pancake Boost, already eaten
+File:Mini P.E.K.K.A.-Heroic Card Image Pancake Boost Uneaten.png|Card Image with Pancake Boost not used yet
+File:Mini P.E.K.K.A.-Heroic Card Image Pancake Boost Eaten.png|Card Image with Pancake Boost used
+File:MiniPEKKAHeroShard.png|Heroic Mini P.E.K.K.A Shard.
+</gallery>
+
+==Trivia==
+*The Mini P.E.K.K.A.'s name derives from the Finnish name for "Peter", which in turn comes from the Greek name "Petros", meaning stone.
+*He is 1 of 3 troops that are “miniature” versions of another troop in Clash of Clans, the others being the Baby Dragon and Electro Dragon. They are a smaller version of P.E.K.K.A., Dragon, and Electro Dragon, respectively.
+*The Heroic Mini P.E.K.K.A. was one of the first [[Heroes]] to be added in the game, alongside the [[Giant/Hero|Giant]], [[Knight/Hero|Knight]], and [[Musketeer/Hero|Musketeer]].
+*Before the Mini P.E.K.K.A. Hero's release, the Breakfast Boost's healing was decreased to 40% (from 50%).
+
+{{Navigation|Card}}

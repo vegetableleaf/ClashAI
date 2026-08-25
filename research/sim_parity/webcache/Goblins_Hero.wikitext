@@ -1,0 +1,267 @@
+{{Heroic_Card_Infobox|Cost=2|AbilityCost=1|Rarity=Common|Type=Troop|Arena=Goblin Stadium|ReleaseDate=February 2,2026}}{{Quote|A single gobble of Goblins is never enough! Hero Goblins are far too clever to go into battle without backup, so the final one to fall drops an unassuming banner that signals the second wave.}}
+The Heroic Knight is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It spawns four very fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with low hitpoints and low damage. The Goblins take the appearance of small, green creatures with pointy ears, green eyes, dark green eyebrows, amber sclerae, and a large peach nose, while carrying daggers and wearing team-colored suspenders and wristbands, along with brown pants and shoes. A Heroic Goblins card costs 2 {{Icon|I=Elixir}} to deploy.
+
+== '''Ability: Banner Brigade''' ==
+{{Quote|The last Goblin standing drops a banner that calls in reinforcements.}}{{Hero Ability|1=Banner Brigade}}
+The Hero Knight has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. The ability will be disabeld until the last goblin is killed. When the last goblin dies, a banner will be deployed that last 5sec. When the ability is pressed during that time, 2 Brigade Goblins will spawn a little behind. Brigade Goblins has the exact stats as the original goblins. The Banner Brigade ability costs 1 [[Elixir]] to activate.
+
+== '''Strategy''' ==
+*The ability can make it more difficult to spell them out, since they just can spawn again.
+*If the banner is at the tower, it can act like a mini [[Goblin Barrel]]. Getting good damage for just 1 elixir.
+*Dont press the ability, if the goblins will just die anyway.
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Heroic Goblins Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|2
+|1.1 sec
+|0.6 sec
+|Very Fast (120)
+|1 sec
+|Melee: Short (0.5)
+|Ground
+|x4
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Banner Brigade Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Brigade Count
+{{Icon|I=Troop Count}}
+! scope="col" |Banner Lifetime
+{{Icon|I=Time}}
+|-
+|1
+|1.1 sec
+|0.6 sec
+|Very Fast (120)
+|1 sec
+|Melee: Short (0.5)
+|Ground
+|x2
+|5 sec
+|}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> 
+{{#vardefine: hp_11|202}} {{#vardefine: dmg_11|125}} {{#vardefine: atk_speed|1.1}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Damage
+{{Icon|I=Damage}}
+! scope="col" |Damage Per Second
+{{Icon|I=DPS}}
+!Brigade Hitpoints
+{{Icon|I=Hitpoint}}
+!Brigade Damage
+{{Icon|I=Damage}}
+!Brigade Damage Per Second
+{{Icon|I=DPS}}
+|-
+|1
+|{{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|2
+|{{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|3
+|{{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|4
+|{{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|5
+|{{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|6
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|7
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|8
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+
+* Hero Goblins was released on 2/2/2026 with the [[Version History#Pass Royale and more (2/2/2026)|febuary 2026 update]], along with [[Mega Minion/Hero|Hero Mega Minion]]{{Balance|Add}}.
+* On 23/2/2026, the [[Version History#2026 Q1 Update (23/2/2026)|2026 Quarter 1 Update]], decreased Banner Brigades spawned units to 3 (from 4){{Balance|Nerf}}, and decreased banner duration to 5 seconds (from 7 seconds){{Balance|Nerf}}.
+* On 7/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], the brigade goblins now spawn a tile back from where the banner is dropped at{{Balance|Neutral}}.
+* On 6/7/2026, a [[Version History#Pass Royale and more (6/7/2026)|Balance Update]], the deploy time for the brigade goblins increased to 1.3 seconds (from 1 second){{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], increased the Hero Goblins' damage by 4%{{Balance|Buff}}, decreased the number of brigade goblins to 2 (from 3){{Balance|Nerf}}, and decreased the deploy time for the brigade goblins to 1 second (from 1.3 seconds){{Balance|Buff}}.
+
+
+==Gallery==
+<gallery>
+File:Heroic Goblin Card Render.png|Current card render.
+File:GoblinsHeroShard.png|Heroic Goblins Shard.
+File:Ability-Goblins-Hero.png|Ability Icon
+</gallery>
+
+== Trivia ==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblins' name translates to "Kobolds". In the Spanish, Arabic, and Vietnamese language setting of the game, the Goblins' name translates to "Duendes", "Ghouls", and "Leprechauns" respectively.
+**The Goblins, [[Spear Goblins]], [[Goblin Cage]], and [[Goblin Hut]] are the only cards associated with Goblins that are unlocked in [[Arenas|Goblin Stadium]].
+*The Goblins are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]]. 
+**In Clash of Clans, they carried a small bag which was designed to steal resources. Despite their origins, the Goblins carry daggers as weapons, rather than bags for loot as they no longer directly steal loot, nor do they prioritise [[Elixir Collector|Elixir Collectors]] over other targets.
+*Pre release, the Banner Brigades spawned units was increased to 4 (from 3).
+
+{{Navigation|Card}}
+
+[[fr:Gobelins]]
+[[de:Kobolde]]
+[[es:Duendes]]
+[[it:Goblin]]
+[[ja:ゴブリン]]
+[[ko:고블린]]
+[[ru:Гоблины]]
+[[zh:哥布林]]
+[[pl:Gobliny]]

@@ -1,0 +1,133 @@
+{{MagicWords}}{{Protection}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Giant Snowball</span>}}
+{{Evolved_Card_Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Spell|Arena=Frozen Peak|ReleaseDate=2 December 2024}}
+{{Quote|A rolling snowball gathers no Troops...unless it's Evolved! Evolved Giant Snowball gathers enemy Troops and rolls forward before breaking, which freeze and slows the Troops down.}}
+
+The Giant Snowball's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It is a Giant Snowball with a slowdown duration 1 sec longer than the original. Once the initial hit is unleashed, the affected troops get pulled into it and the Giant Snowball rolls on the ground for 4.5 tiles similarly to the [[Barbarian Barrel]]. When it finishes its roll, the troops are freed. It is an oversized snowball surrounded with indigo shards, and has a sword on top and a spear on the bottom, along with a hand and a foot sticking out of it. The Giant Snowball's Evolution costs 2 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Troops inside the Snowball cannot be targeted, making this card great to make your cards re-focus. That's specially good with cards such as [[X-Bow]], allowing them to easily re-target onto a [[Crown Tower]].
+*The Snowball aligns the troops it rolls with in a perfect way for them to get a lot of damage dealt by cards such as [[Magic Archer]], [[Bomber/Evolution|Evolved Bomber]], [[Firecracker]], [[Executioner]], [[Wizard]], or [[Bowler]]. 
+*If you misplaced a structure to counter the opponent's Structure-Targeting Troop, you can put the Snowball to the side (left or right) of that troop, getting it closer to the structure once it has stopped rolling, and thus, making the troop focus on it.
+**This advantage can also be used offensively. If the opponent places a card in the middle to counter cards you placed, you can use the Snowball to the side of that troop while they're at the middle to redirect it to the other side and make it stop attacking your troops.
+*The Snowball can have great synergy with [[Sparky]] if used right. The Snowball can get opponent troops closer to a Crown Tower, allowing the Sparky to hit both the troops and the Crown Tower, while also giving the Sparky more time to reload again thanks to the Snowball's slowdown effect.
+*With good placement and the assistance of a [[Tower Princess]] or [[Cannoneer]], the Snowball can fully counter a [[Balloon]] for a 3+ positive elixir trade.
+*The Snowball can be used to get a [[Giant Skeleton]] away from your Crown Tower, that way avoiding the massive death damage his bomb could've dealt to it.
+*If the opponent places an [[Valkyrie/Evolution|Evolved Valkyrie]] close to your tank while on the river, you can use the Snowball to get the Evolved Valkyrie closer to the opponent's Crown Tower, making your tank reach the Crown Tower faster and nullifying the counter the Evolved Valkyrie would've otherwise made.
+*Unlike the regular Snowball, the Evolved Snowball can't counter a [[Princess]] by making her closer to your own [[Crown Tower]].
+*Unlike the regular Snowball, the Evolved Snowball can also stop the charge of heavy troops, such as [[Prince]] or [[Dark Prince]], and the ramp up attack of the [[Mighty Miner]].
+*Since the regular Snowball already has a good synergy with [[Graveyard]], the Evolved Snowball only adds to it, by letting troops the opponent adds to counter Graveyard get sent further from it.
+*The troops inside the Snowball keep their collision while they're rolling inside it, meaning they can push the opponent's troops. This can be very useful in an instance where the opponent deployed a tanky troop behind your card, since you can throw the Snowball at it and push your own card that way. It's specially useful to reach the opponent's Crown Tower.
+*The Snowball can hit both the bush from the [[Suspicious Bush]] and the Goblins inside it for an equal elixir trade. The damage won't be enough to fully counter the Goblins, homever, they're left with only 2 thirds of their HP, making it pretty easy to counter them with assistance of the [[Crown Towers]] or most other cards.
+*If the [[Monk]] reflects an Evolved Snowball, it won't repeat the travel on-air, it will just reflect the part where it's on the ground. This can be useful in some niche situations.
+*The Snowball has a good synergy with the [[Electro Dragon/Evolution|Evolved Electro Dragon]]. Once the troops caught by the Snowball stop rolling, they will all get grouped together, allowing the Evolved Electro Dragon's infinite bolts to constantly hit them until they all get destroyed easily.
+*The Evolved Snowball can be used to protect your [[Goblin Drill]] from getting countered by opponent troops put close to it by rolling them further from it and giving them slowdown for some seconds, allowing the Goblin Drill to deal massive damage to the Crown Tower.
+**This strategy is often less effective with the [[Goblin Drill/Evolution|Evolved Goblin Drill]], as it will move closer to the pushed card as it gets damaged.
+*If you manage to get the [[Lumberjack/Evolution|Evolved Lumberjack]]'s Ghost close to the opponent's Crown Tower, you can use the Evolved Snowball to push away any troops the opponent uses to try to distract the Lumberjack's Ghost, making it so that the Lumberjack's Ghost locks onto the tower and gets some damage assured.
+*The Evolved Snowball can be used along [[Bandit]], [[Boss Bandit]], or [[Golden Knight]] so that enemy troops roll enough tiles to get the Bandit/Boss Bandit/Golden Knight to dash at one of them, dealing extra damage and probably tanking some hits mid-dash.
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+{{StatisticsSubheader|Evolved Giant Snowball Attributes}}
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||2.5||4 sec||-30%||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Rolling Speed<br />{{Icon|I=Speed}}
+|-
+|2||4.5||300
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 179 }}
+{{#vardefine: crown_dmg_11| 54 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(2-11)) round 0 }} 
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div>
+</center>
+==History==
+2024
+*The Giant Snowball's Evolution [[Cards|card]] was added to the game on 2/12/2024, in the [[Version History#Pass Royale and more (2/12/2024)|December 2024 Update]] {{Balance|Add}}.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], fixed various bugs with the Evolved Giant Snowball {{Balance|Neutral}}.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], increased the Evolved Giant Snowball's rolling distance to 4.5 tiles (from 4 tiles) {{Balance|Buff}}.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Evolved Giant Snowball's slow duration to 4 seconds (from 3 seconds) {{Balance|Buff}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Evolved Giant Snowball's rolling speed to 300 (from 200) {{Balance|Buff}}.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the slowdown effect to -30% (from -35%) {{Balance|Nerf}}.
+2026
+
+* On 4/5/2026, a Balance Update, decreased the Evolved Giant Snowball's slow duration to 3 seconds (from 4 seconds)
+* On 1/6/2026, a Balance Update, decreased the Evolved Giant Snowball's [[:Category:Crown Towers|Crown Tower]] damage to 25% of the full damage (from 30%)
+* On 4/8/2026, a Balance Update, decreased the Evolved Giant Snowball's projectile range to 4 tiles (from 4.5 tiles)
+
+== Gallery==
+<gallery>
+File:Evolved Giant Snowball card render.png|Current card render.
+File:Evolved Giant Snowball Preview.gif|Current card preview
+File:GiantSnowballEvoShard.png|Evolution Shard.
+</gallery>
+
+==Trivia== 
+*The Giant Snowball is 1 of 2 evolved [[cards]] associated with ice, with the other being [[Ice Spirit/Evolution|Ice Spirit]].
+** In the German, Spanish, Dutch, and Portuguese language settings of the game, the Giant Snowball's name translates to "Snowball". In the Arabic and Finnish language settings of the game, the Giant Snowball's name translates to "Giant Snow Globe". In the Chinese and Persian language settings of the game, the Giant Snowball's name translates to "Big Snowball". In the French and Norwegian language settings of the game, the Giant Snowball's name translates to "Mega Snowball" and "Huge Snowball" respectively.
+*The Giant Snowball is the only evolved card whose regular card does not have a card render.
+*The Giant Snowball's Evolution is 1 of 3 evolved cards without the diamond evolution symbol anywhere on their card render, the others being [[Bats/Evolution|Bats]] and [[Ice Spirit/Evolution|Ice Spirit]].
+*The Giant Snowball's Evolution is the subject of an [[Emotes|Emote]].
+**It is also 1 of 4 evolved cards whose regular card is not the subject of any Emote, the others being [[Royal Recruits/Evolution|Royal Recruits]], [[Zap/Evolution|Zap]], and [[Battle Ram/Evolution|Battle Ram]].
+
+{{Navigation|Card}}

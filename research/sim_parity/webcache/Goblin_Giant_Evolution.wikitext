@@ -1,0 +1,192 @@
+{{Protection}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Giant</span>}}
+{{MagicWords}}
+
+{{Evolved Card Infobox|Cost=6|Rarity=Epic|Type=Troop|Arena=Jungle Arena|ReleaseDate=1 July 2024|CycleCost=1}}
+{{Quote|The bigger the sack, the bigger the... amount of Goblins spawned! At low health, this Evolution will spawn a stream of Goblins. Take him out quickly!}}
+
+The Goblin Giant's Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Goblin Giant with identical stats to the original. When his hitpoints are lowered below 50%, every 2.2 seconds, the Goblin Giant will passively summon a [[Goblins|Goblin]]. The Goblin Giant resembles a colossal, aquamarine-skinned Goblin with a deep pink nose, purple eyes, sideburns and goatee, wearing a purple aviator hat with a [[Card Evolution]] symbol and pants with gold stitches and golden linings on both of them, along with a purple backpack with ropes tied on the sides and team-colored suspenders, carries a dagger with a purple handle, and has two ropes tied on his arms and white bands tied on his legs. The Goblin Giant's Evolution costs 6 [[Elixir]] and requires 1 cycle to deploy.
+
+== Strategy ==
+*The Evolved Goblin Giant is great on offense from his ability to quickly stack up massive amounts of Goblins at 50% hitpoints while its high hitpoints and Spear Goblins tank for support troops and cripple opposing defenses.
+*The Evolved Goblin Giant should never be ignored as he will easily destroy the [[:Category:Crown Towers|Crown Tower]], regardless of [[:Category:Tower Troop Cards|tower troop]], and even destroy the [[King's Tower|King Tower]] when left alone.
+*The [[Inferno Tower]] is by far the best building counter to an unsupported Evolved Goblin Giant as the ramp-up damage can easily take him down while its high hitpoints by time for the Crown Towers to destroy the Goblins that he spawns, all for a +1 Elixir trade.
+**Be wary if the opponent has any stun in their [[Battle Decks|deck]] from cards like [[Zap]], [[Electro Spirit]], [[Electro Dragon]], Lightning, [[Zappies]], [[Goblinstein]], and [[Electro Wizard]]. These cards will reset the ramp-up, allowing the Evolved Goblin Giant to destroy the Inferno Tower before he goes down.
+*[[Cards]] with high single or multi target damage, such as [[Valkyrie/Evolution|Evolved Valkyrie]], [[Night Witch]], Mega Minion, [[Mighty Miner]], Monk, [[Barbarians]], [[Hunter/Evolution|Evolved Hunter]], [[Three Musketeers]], Prince, [[Mega Knight/Evolution|Evolved Mega Knight]], [[Elite Barbarians]], Phoenix, [[Bowler]], [[Wizard/Evolution|Evolved Wizard]], [[Sparky]], [[Executioner/Evolution|Evolved Executioner]], Inferno Dragon, [[Minion Horde]], [[Skeleton Army]], and [[P.E.K.K.A.|P.E.K.K.A]], are the best troop counters to the Evolved Goblin Giant.
+**The P.E.K.K.A can easily destroy the Evolved Goblin Giant with her very high damage per hit, but can get quickly overwhelmed by the Goblins that are leftover after the Evolved Goblin Giant goes down, likely resulting in her taking some moderate damage for a counterattack.
+**Barbarians can quickly swarm and destroy the Evolved Goblin Giant and the spawn Goblins with ease for a +1 positive Elixir trade, but are very susceptible to high damage dealing spells that may support the Evolved Goblin Giant, like [[Fireball]] or [[Poison]]; they’re a very effective but unreliable counter in some circumstances.
+**The Evolved Valkyrie can easily dispose of the spawned Goblins with her area damage being able to OHKO the Goblins while doing damage to the Evolved Goblin Giant. Additionally, her tornado effect can easily pull the Goblin Giant towards her, preventing him for reaching the Crown Tower despite her moderate DPS, resulting in a slightly damaged Valkyrie for a +2 positive Elixir trade.
+*Unlike the regular [[Goblin Giant]], the Mini P.E.K.K.A is not especially recommended when dealing with an Evolved Goblin Giant as he will be quickly swarmed by the numerous spawned Goblins and the 2 Spear Goblins after he destroys the Evolved Goblin Giant. This will result in a dead Mini P.E.K.K.A and will deal slight damage to a [[Tower Princess]] or [[Dagger Duchess]] and moderate damage to a [[Cannoneer]].
+*Certain [[:Category:Spell Cards|spells]] work particularly well with the Evolved Goblin Giant because of the Spear Goblins in his backpack and ability to rapidly spawn Goblins.
+**The Zap and [[Giant Snowball]] make great synergies with the Evolved Goblin Giant. Their cheaper cost and damage threshold is significant, as using them on defending [[Minions]] or Goblins⁣ allows the Spear Goblins to OHKO the swarms efficiently. They’ll also briefly slow down the enemy’s defense, buying more time for Goblins to spawn and overwhelm the opponent.
+**[[Rage]] does similar damage to the Zap, allowing the Spear Goblins to OHKO the same swarms. The Rage will be able to affect the Goblin Giant, the Goblins' spawn time and his Spear Goblins, allowing the spell to benefit multiple facets of the Evolved Goblin Giant without the risk that comes from using it on frail swarms.
+**Similarly, the Fireball synergizes well with the Evolved Goblin Giant due to the Spear Goblins being able to finish off defenders like [[Musketeer]], Electro Wizard, [[Wizard]], or [[Barbarians/Evolution|Evolved Barbarians]], allowing the Goblin Giant and the spawned Goblins to deal significantly more damage and apply much more pressure onto the opponent.
+**Due to the Evolved Goblin Giant's weakness to buildings, he pairs quite well with the [[Earthquake]]. The Earthquake will destroy buildings for the Goblin Giant to continue pursuing towards the Crown Tower. The Spear Goblins and spawned Goblins can also help finish off troops that can survive a lone Earthquake, such as a [[Dart Goblin]], [[Firecracker]], [[Archers]], [[Bomber]], or [[Princess]].
+**[[Lightning]] can be paired with the Evolved Goblin Giant for the sole purpose of destroying high-damage mini tanks and buildings used against him like an [[Inferno Dragon]], [[Barbarian Hut]], [[Bomb Tower]], Mighty Miner, Inferno Tower, [[Mini P.E.K.K.A.]], Phoenix, Sparky, [[Tesla]], or [[Lumberjack]].
+**[[Freeze]] can be a situational synergy with the Evolved Goblin Giant as its 4 second freeze duration allow the Spear Goblins to attack more of the opposing defenses while also giving extra time for the Goblins to spawn. Single target attackers, such as [[Prince]], [[Phoenix]], Mighty Miner, Inferno Dragon, P.E.K.K.A, [[Monk]], [[Mega Minion]], and Lumberjack will be overwhelmed by the influx of Goblins if not responded to properly.
+*The Evolved Goblin Giant is a reliable counter to [[Graveyard]]. The 2 Spear Goblins will rapidly take out many of the [[Skeletons]] that spawn and with the help of the Dagger Duchess or Tower Princess, it can be mostly countered while applying intense pressure on the opponent with a healthy counterattacking Goblin Giant. However, be on the lookout for anything that’s distracting the Crown Tower; the Goblin Giant by itself can’t efficiently deal with a Graveyard without its help.
+*An expensive but extremely potent offensive combination is the [[P.E.K.K.A.]] paired with the Evolved Goblin Giant. The Evolved Goblin Giant can quickly clear small swarms like Bats and Skeletons, while the P.E.K.K.A. has excellent one-on-one matchups with many single-target damage dealers used to counter the Evolved Goblin Giant like the Prince, [[Mighty Miner]], and Mini P.E.K.K.A.
+**Spell support is crucial to wipe out larger swarms like the Skeleton Army, [[Goblin Gang]], and [[Minion Horde]], that could deal hefty damage to the push. [[Rage]] is especially potent as it helps make the push even more threatening, and makes the Spear Goblins on the Evolved Goblin Giant attack faster.
+**[[Elite Barbarians]] are a cheaper alternative to the P.E.K.K.A. While they are less bulkier and are more susceptible to area damage, they are cheaper and move significantly faster, making them harder to distract. Additionally, they can clear small swarms faster as a pair.
+*The [[Fisherman]] pairs well with the Evolved Goblin Giant to pull away single-target damage dealers used to counter the Goblin Giant like the [[Mini P.E.K.K.A.]], Mighty Miner, and Prince.
+
+<center><div class="table-back" id="unit-statistics">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Goblin Giant Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||1.5 sec||0.8 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Activation<br />{{Icon|I=Activation}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+|-
+|1||50%||2.2 sec
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}} 
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||Melee: Short (0.5)||Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Backpack Spear Goblin Attributes}}
+{| id="unit-attributes-table-tertiary" class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+|-
+|1.7 sec||0.5 sec||5||500||Air & Ground||x2
+|}
+
+{{StatisticsSubheader|Spear Goblin Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||0.5 sec||Very Fast (120)||0.7 sec||5||500||Air & Ground||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, giant_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: giant_hp_11 | 3223 }}
+{{#vardefine: giant_dmg_11 | 176 }}
+{{#vardefine: giant_atk_speed | 1.5 }}
+{{#vardefine: spear_hp_11 | 133 }}
+{{#vardefine: spear_dmg_11 | 81 }}
+{{#vardefine: spear_atk_speed | 1.7 }}
+{{#vardefine: stab_hp_11 | 202 }}
+{{#vardefine: stab_dmg_11 | 120 }}
+{{#vardefine: stab_atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Goblin Giant Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Giant Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Giant Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spear Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Spear Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Spear Goblin Damage per second <br />{{Icon|I=DPS}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:giant_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:giant_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:giant_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:giant_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:giant_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 11 || {{#var:giant_hp_11}} || {{#var:giant_dmg_11}} || {{Dps|{{#var:giant_dmg_11}}|{{#var:giant_atk_speed}} }} || {{#var:spear_hp_11}} || {{#var:spear_dmg_11}} || {{Dps|{{#var:spear_dmg_11}}|{{#var:spear_atk_speed}} }} || {{#var:stab_hp_11}} || {{#var:stab_dmg_11}} || {{Dps|{{#var:stab_dmg_11}}|{{#var:stab_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:giant_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:giant_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:giant_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:giant_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:giant_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:giant_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:giant_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:giant_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:spear_atk_speed}} }} || {{#expr: {{#var:stab_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:stab_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+== History ==
+2024
+*The Goblin Giant's Evolution [[Cards|card]] was added to the game on 1/7/2024, in the [[Version History#Pass Royale and more (1/7/2024)|July 2024 Update]] {{Balance|Add}}.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Goblin Giant after death {{Balance|Add}}.
+2025
+*On 8/1/2025, the [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the [[Spear Goblins]]’ first attack time interval to 0.4 seconds (from 0.3 seconds) {{Balance|Nerf}}.
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that [[Rune Giant]]'s damage boost would no longer affect the Evolved Goblin Giant's [[Spear Goblins]] {{Balance|Neutral}}.
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], increased the Evolved Goblin Giant's spawn speed to 1.8 seconds (from 1.5 seconds) {{Balance|Nerf}}.
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Evolved Goblin Giant's hitpoints by 0.03% {{Balance|Buff}}. It also fixed a bug where Spear Goblins would not spawn after being buffed by [[Royal Chef]] {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Spear Goblins’ first attack time interval to 0.5 seconds (from 0.4 seconds) {{Balance|Nerf}}, and decreased their range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}.
+*On 5/9/2025, a [[Version History#Balance Changes (5/9/2025)|Balance Update]], increased the Evolved Goblin Giant's spawn speed to 2.2 seconds (from 1.8 seconds).
+*On 6/10/2025, a [[Version History#Balance Changes (4/8/2025)|Balance Update]], increased the Backpack Spear Goblins' first attack time interval to 0.5 seconds (from 0.4 seconds), and decreased his range to 5 tiles (from 5.5 tiles).
+2026
+
+* On 1/6/2026, a Balance Update, increased the Goblin Giant's Hitpoints by 3%
+
+== Gallery ==
+<gallery>
+File:Evolved Goblin Giant card render.png|Current card render.
+File:Evolved Goblin Giant Preview.gif|Current card preview
+File:GoblinGiantEvoShard.png|Evolution Shard
+File:Evolved Goblin Giant card 1.png|Evolved Goblin Giant
+</gallery>
+
+== Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Giant's name translates to "Kobold Giant". In the Spanish, Arabic, and Vietnamese language setting of the game, the Goblin Giant's name translates to "Duende Giant", "Giant Ghoul", and "Giant Leprechaun" respectively.
+**The Goblin Giant is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Mortar/Evolution|Mortar]], [[Dart Goblin/Evolution|Dart Goblin]], [[Goblin Cage/Evolution|Goblin Cage]], [[Goblin Barrel/Evolution|Goblin Barrel]], and [[Goblin Drill/Evolution|Goblin Drill]].
+*The Goblin Giant's Evolution is 1 of 2 evolved cards to have an alliterative name, the others being the [[Royal Recruits/Evolution|Royal Recruits]].
+*Even though the card spawns 2 [[Spear Goblins]], the card image and card render display 3 Spear Goblins.
+*The Evolved Goblin Giant is similar to the [https://clashofclans.fandom.com/wiki/Yeti Yeti], a troop from Clash of Clans.
+*When the Evolved Goblin Giant's hitpoints drop to activate his Goblin spawns, the sack on his back will glow purple.
+*The Goblin Giant's Evolution is the subject of an [[Emotes|Emote]].
+
+{{Navigation|Card}}

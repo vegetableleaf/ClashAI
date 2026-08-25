@@ -1,0 +1,158 @@
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Knight</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=7 August 2023}}
+
+{{Quote|Not only has his facial hair got an upgrade, the Knight’s armor has too! Evolved Knight has a special Shield that reduces Damage unless he is attacking.}}
+
+The Knight's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Knight with identical stats to the original. When he isn't attacking, he receives 60% less damage from all sources, staying active until the Evolved Knight deals damage to something. The Knight takes the appearance of a man who has purple eyes, a blond-colored mustache, beard and eyebrows, and wears chain mail and a chestplate, along with a team-colored sash and a belt, purple gloves with a golden stripe on them, and metal shoes with purple plates on them that have a golden knob on top of them, while holding a saber, that now has a golden handle. The chainmail in his head is now purple with a golden stripe on it, and he also has a big, purple shield with the [[Card Evolution]] symbol covering his right shoulder, acting as an armlet. The Knight's Evolution costs 3 {{Icon|I=Elixir}} and requires 2 {{Icon|I=Cycles}} to deploy.
+
+==Strategy==
+*The Evolved Knight can serve the same purposes as a regular Knight, but instead, on defense, it's preferred that the Evolved Knight is placed away from troops so he will receive reduced damage until he reaches the attacking troop, allowing allied [[:Category:Tower Troop Cards|Crown Tower]]s and/or support units to chip the enemy troop more efficiently. Due to that, the Evolved Knight is great for absorbing damage from ranged units like the [[Musketeer]], [[Bomber]], [[Wizard]], [[Flying Machine]], [[Dart Goblin]], [[Inferno Dragon]], and the [[Sparky]].
+**The player should note that the [[Bomber/Evolution|Evolved Bomber]], [[Firecracker/Evolution|Evolved Firecracker]], [[Bowler]], [[Magic Archer]], and the [[Executioner]] may benefit from this strategy, since their extended ranges might hit the Crown Tower and significantly chip its health points, as well as hitting support troops behind the Evolved Knight. As such, it's desired to either put the card on top of them or in a position that doesn't allow the ranged troops to hit the Crown Tower or support units.
+*The Evolved Knight may be ignored under certain situations as doing so will result in just slightly more than half of the [[Tower Princess]]', [[Cannoneer]]'s, and the [[Royal Chef]]'s health points being taken.
+**The same can’t be said for the [[Dagger Duchess]]. Her 8 initial daggers will deal very low damage to him if he’s moving, then causing her to go into cooldown and sporadically shooting at the Evolved Knight. This will cause him to eventually take out the Dagger Duchess entirely.
+*Kiting the Evolved Knight into the other lane with an [[Ice Golem]] is less effective than the regular Knight due to his shield. Instead, it's recommended to place the Ice Golem in a way so that the Knight will keep hitting him, deactivating his damage reduction. Then, the player can use ranged units that deal a decent amount of DPS, like the [[Archers]], Musketeer, Wizard, Dart Goblin, and the [[Electro Wizard]], letting them deplete the Evolved Knight's health points before the damage reduction is active again (since the Ice Golem will keep moving as he doesn't target troops).
+*The Evolved Knight is less effective against ground melee troops, as he will lose his damage reduction once he deals damage to them. However, usually, the first hit of most melee troops will deal reduced damage to him, as they're very likely to damage the Evolved Knight before he damages them. As such, the Evolved Knight is more effective against the [[Prince]], [[Dark Prince]], and the [[Mega Knight]], whose charge damage and jump damage, respectively, will deal way less damage than they should, letting the Evolved Knight defeat them alongside Crown Towers for a positive Elixir trade.
+*Even though he cannot target air troops, the [[Minions]] and the [[Bats]] will take a long time to defeat him, as they can't force the Evolved Knight to deactivate his ability, leaving enough time for support troops to defeat them. As such, it is required to either stall the Evolved Knight with a card like the [[Goblins]] or the [[Skeletons]], or use a different counter altogether, as the opponent is likely to remove the air troops with spells.
+**Conversely, the Minions and the Bats have very good synergy with the Evolved Knight as his shield and cheap cost can be used to apply great pressure to the opponent under certain situations. Additionally, these combinations can be used on defense to mitigate or even stop a large push for a decent cost. If the player opts for the [[Bats/Evolution|Evolved Bats]], the Evolved Knight will allow them to activate their overheal without risking letting them die by troops, and if the opponent doesn't respond with a [[Zap]] fast enough, they are required to spend more Elixir on spells or anti-air troops to take them out.
+*Due to his high health, he can be used to protect lower health troops used on defense from [[Lightning]], such as a Musketeer, [[Goblin Cage]], [[Barbarians]], [[Battle Ram]], [[Mega Minion]], Wizard, [[Flying Machine]], [[Witch]], [[Royal Hogs]], [[Berserker]], [[Hunter]], [[Night Witch]], [[Royal Hogs]], [[Zappies]], Electro Wizard, [[Electro Dragon]], [[Ice Wizard]], [[Phoenix]], [[Magic Archer]], [[Bandit]], [[Fisherman]], Mother Witch, [[Archer Queen]], [[Goblinstein|Goblinstein Doctor]], or a [[Little Prince]]. Due to the damage reflection statistic, the Knight will still have a big portion of his hitpoints saved for a push after the Lightning.
+*If the player is desiring to build a big push with a tank like the [[Giant]] or the [[Golem]], the Evolved Knight can be a choice depending on if he is a good pick for the deck the player is using. This way, he can be deployed in the front, so that he will distract [[Inferno Tower]]s and Inferno Dragons for a considerable amount of time before being down, allowing for the win condition and the support troops to kill them and proceed pressuring the opponent. This is specially useful if the player is able to play a Zap or a Lightning next, which can reset their damage charge and weaken them, if the win condition used is the [[Electro Giant]], which can counter those cards on their own, or if the push is supported with an Electro Wizard or an Electro Dragon, which can repeatedly stun them.
+*The Evolved Knight has a great synergy in particular with [[Goblin Barrel]] [[Battle Decks|decks]]. Not only he is cheap and has a good statline for his cost, his damage reduction stat will make him far tougher than the base Knight, forcing immediate responses, as even if the [[Barbarian Barrel]] or [[The Log]] are used to take the Goblins down, the Evolved Knight will still cause some pressure in the opponent's Crown Tower. This usually results in a neutral or even a negative [[Elixir]] trade for the opponent. This push can be further supported with ranged or fast moving for even more pressure. If the player decides to bring in the [[Goblin Barrel/Evolution|Evolved Goblin Barrel]], then the Evolved Knight can be played on the lane the decoy Goblins are used to trick the opponent into using spells to remove the weaker troop, but it might not work, as the visual effect that reveals which is the fake Barrel usually stops the trick (although the decoy Goblins will still pressure the Crown Tower if the Evolved Knight tanks for them).
+**The Evolved Knight is a somewhat decent counter to a Goblin Barrel if the player has no other counters, because he one-shots Goblins. He should be placed on the side of the player's Crown Tower closest to the edge of the Arena so he can take out the bottommost Goblin (the one the Tower targets last); this allows for more effective damage distribution between the player's units and often results in less damage taken. Afterwards, the Evolved Knight will be available for a counterpush. Nonetheless, the Evolved Knight is not a substitute for another card that can fully stop the Goblin Barrel.
+**Using this strategy, the Evolved Knight can similarly be paired with the [[Graveyard]]. Although this is a more costly synergy at 8 Elixir, this will be less problematic later in the game, as the player could be in an Elixir advantage, or the game has already reached double Elixir time, making the investment less dangerous. Plus, the Evolved Knight's damage reduction will force the opponent to spend a considerable amount of Elixir on him, letting the Skeletons from the Graveyard to deal some damage at the Crown Tower. If the opponent focuses more on the Graveyard, then the Evolved Knight will get valuable Tower damage.
+**Another combo similar to this is with the [[Goblin Drill/Evolution|Evolved Goblin Drill]]. As it can submerge itself two times, it won't be able to tank for the spawned Goblins, leaving them vulnerable. The Evolved Knight will make sure the Goblins spawned stay on the field for longer, as well as the Evolved Goblin Drill itself. It also causes the opponent to use a troop for each attacker, or spend a large amount of Elixir with just one troop to counter them.
+*Placing him on top of a lone Sparky that has crossed the bridge and letting her deal the first hit will cause the Evolved Knight to absorb a good portion of her damage, while he and the Crown Tower defeat her for a +3 Elixir trade, leaving the Evolved Knight healthy for a counterpush.
+*If paired with cheaper troops such as the Archers, Minions, Goblins, Spear Goblins, or the Bats, the Evolved Knight can counter [[Three Musketeers]] for at most a +4 Elixir trade. He must be placed away from the Three Musketeers but at most 6 tiles away from the farthest one, so he is able to distract them and tank their damage while the support troops take them out. While the Evolved Knight may not survive, the support troops will be available for chip damage or a counterpush, specially if the Crown Tower also assists in taking out the Three Musketeers.
+*The Evolved Knight will lose the damage reduction once he starts attacking. Because of this, cards that bring large swarms like the [[Tombstone]], Barbarians, [[Skeleton Army]], Witch, [[Royal Recruits]], and the [[Goblin Gang]] make good counters to him, as they will distract him for longer, taking him longer to generate his block again. One must make sure that spells are out of the opponent's cycle, which are able to shut down all of those, giving the Evolved Knight his block again. Support troops must be addressed as well, since they will take down troops/buildings which would kill the Evolved Knight.
+*The Evolved Knight is a very effective counter against the [[Mortar]] and the [[X-Bow]], since his damage reduction statistic will allow him to tank most shots from them. If the Evolved Knight gets too close to the Mortar's blind spot, other distraction troops must be played until the Mortar's lifetime eventually runs out.
+**On the other hand, the Evolved Knight also works very well with the Mortar and the X-Bow, as his hitpoints, damage reduction statistic and cheap cost will allow him to distract and tank troops that are trying to kill the siege building, while the Crown Tower takes a lot of chip damage over time. The [[Mortar/Evolution|Evolved Mortar]] is further able to benefit from the Evolved Knight, as he will be able to tank most incoming damage for the Goblins spawned from the Evolved Mortar's projectile, allowing them to further assist in dealing damage to the opponent's troops or Crown Tower.
+*[[:Category:Spell Cards|Spells]] should never be used to counter an Evolved Knight, as he costs just 3 Elixir and spells deal little damage to him while moving, unless other troops vulnerable to spells are close to him, letting the defender gain some value.
+*If the Evolved Knight is paired with fast building-targeting units, he can be pushed faster, allowing him to defeat any troops or buildings that try to kill the win condition faster while tanking the hits for them, letting the win condition deal damage to the Crown Tower. This applies to the Battle Ram, [[Hog Rider]], [[Ram Rider]], and the [[Wall Breakers]], with different outcomes coming into play.
+**The Battle Ram needs to charge and can't jump over the river. Once the Battle Ram either dies or connects to the Crown Tower or a building, two Barbarians will assist the Evolved Knight in dealing damage, potentially taking down some support troops. If the opponent decides to use an Inferno Tower to counter a previously placed Battle Ram, the Evolved Knight can be placed behind it so that the Battle Ram tanks for the Evolved Knight, then, once it connects, he will be able to tank for the Barbarians, as they have a spawn timer which allows for the Crown Tower and the Inferno Tower to re-target and damage the Evolved Knight instead leaving the Barbarians unscathed. Swarms can be pretty effective in taking the combo, but the opponent must account for the Barbarians as well as spells. However, an [[Battle Ram/Evolution|Evolved Battle Ram]] will be even deadlier, as not only it takes care of almost all swarm cards (except aerial swarms and the Barbarians spawned from the card) with its pushback damage, but also deals repeated damage to buildings, wrecking any defenses as the Evolved Knight tanks for the Battle Ram, with the spawned [[Barbarians/Evolution|Evolved Barbarians]] and their rage effect dealing extra damage. The best way to counter both combo variations are using an Electro Wizard or an Electro Dragon, as they'll constantly stun the Battle Ram. The defender must be cautious about support troops, and both of those cards deal quite low damage, so they too need to support the resetter card. The Lightning can also be used in an emergency, taking out the Battle Ram and one Barbarian, but leaving the Evolved Knight healthy and another Barbarian free.
+**The Hog Rider is tankier and can't die to small spells, but he can easily be pulled away by buildings. The Evolved Knight ensures the Hog Rider's hitpoints are preserved while taking out any buildings as he deals moderate damage, keeping the push going and threatening Crown Tower chip damage. Swarms are a far more dangerous counter as the Hog Rider can't deal any form of damage to troops, taking out both of them with ease, specially if spells are out of counter for the opponent.
+**Ram Rider + Evolved Knight is the costliest combo at 8 total Elixir. The Ram Rider plays somewhat like the Battle Ram, but she can jump over the river and also can assist with taking out swarms, such as some Skeletons from a Skeleton Army. However, her damage output is quite weak, even with her slowing effect, so she's unreliable when taking out opposing troops. Still, she's able to deal a good amount of damage to the Crown Tower and buildings when the Evolved Knight is tanking for her. The Electro Wizard or the Electro Dragon are good counters to the combo along with some small support, being able to reset the Ram Rider's charge and deal damage to the Evolved Knight.
+**Wall Breakers + Evolved Knight is the cheapest combo, sitting at 5 Elixir. Even though both Wall Breakers are able to connect to a Tower Princess when alone, the Evolved Knight will tank the Crown Tower hits if the opponent decides to counter them with the Zap, [[Giant Snowball]], Barbarian Barrel, or The Log, allowing them to connect either way, or if the Crown Tower used is the Cannoneer or the Dagger Duchess, which counter lone Wall Breakers. Plus, if the opponent tries to use a [[Cannon]] or a [[Tesla]] to retarget the Wall Breakers, the Evolved Knight will allow them to connect to the building, letting him finish it off and keep pressuring the Crown Tower. While the [[Arrows]] can be used to kill the Wall Breakers, the Evolved Knight will still be able to cause pressure, so the best spell to use is the [[Royal Delivery]], which takes out the Wall Breakers and spawns a [[Royal Recruits|Royal Recruit]] to distract the Evolved Knight and deactivate his shield, potentially taking him out. The Skeleton Army is also a great way to counter the combo, but only if the opponent has no spells in their hand. However, if the player decides to use the [[Wall Breakers/Evolution|Evolved Wall Breakers]], the push will be even deadlier, as they'll destroy swarms used to counter the combo, as well as let the Runners still do some chip damage when a spell takes their first form. An Inferno Tower may be a good counter to this, as it allows the Wall Breakers to target it and significantly hurt the Evolved Knight. If put in front of the Crown Tower, the Bowler can also be used to push back the combo, delaying all forms of damage. The defender will be left with a neutral Elixir trade and potentially some damage to the Crown Tower.
+*The Evolved Knight can also be utilized to create quick pressure towards the opponent's Crown Tower. Pairing him with the Archers (specially if they're [[Archers/Evolution|Evolved Archers]]), Musketeer, Wizard, and the Electro Wizard will make defending against him harder. Even if those cards can be removed with a spell, the Evolved Knight might still cause some pressure by himself (and the Musketeer, Wizard, and the Electro Wizard are already able to survive an equally leveled [[Fireball]]).
+*On offense or during a counterpush, the Evolved Knight can be paired with the Evolved Bomber or the Evolved Firecracker to quickly remove swarms, with their long ranges being able to hit the Crown Tower when removing the swarms, then continuing to pressure the opponent. Even if they're taken out by spells (with the Evolved Bomber forcing a negative Elixir trade relative to what is the cost of the spells that can take him down), they will already have let the Evolved Knight to keep heading towards the Crown Tower, forcing another counter. The same can be achieved with the Magic Archer and the Executioner. However, those troops can activate the [[King's Tower]], so they should not be used in decks that include cards weak to a King Tower activation, such as the Graveyard.
+*If spells are out of the opponent's cycle, then the Evolved Knight will be a good troop to tank for the [[Skeletons/Evolution|Evolved Skeletons]], Evolved Bomber, [[Dart Goblin/Evolution|Evolved Dart Goblin]], or the Evolved Firecracker, letting them gain massive value by accumulating the extra Skeletons, splash bounce effects, lingering effects, or the poison effect against troops while the Evolved Knight tanks for them and aids in taking some troops out, then building a counterpush. Splash units can shut down the counterpush, particularly if the Evolved Skeletons are used.
+*When paired with the Cannoneer, the Goblins can fully counter the Evolved Knight, luring him to the center of the player's territory.
+*The Evolved Knight can be paired with the Witch, Night Witch, or the [[Mother Witch]], allowing him to tank for any of them while they accumulate their spawns, which would also aid the Evolved Knight. This combo can be shut down by spells (either against their spawns or against the Witches themselves) or area damage units, but the Evolved Knight and some of the spawns might still survive.
+**With the Witch or the Night Witch, it is wise to play the Evolved Knight in the back and then the other troop at the bridge to avoid being spelled down. Then, The Witch/Night Witch and their spawns will assist the Evolved Knight in a push, with the Witch being better at dealing with swarms and her Skeletons distracting single-targeting units, and the Night Witch aiding in dealing damage to a single unit and her Bats distracting/chipping down air troops for some time.
+**The Mother Witch can get the least value, as she doesn't spawn any troops over time while being vulnerable to a same-level Fireball. However, if the opponent uses [[Spear Goblins]], Skeleton Army, or the Goblin Gang to distract the Evolved Knight, the Mother Witch is able to gain a lot of value, spawning a lot of Cursed Hogs from the defending troops which won't be damaged by the Crown Tower as the Evolved Knight tanks for them. The Zap can also be used so she has an easier time killing Minions and Goblins.
+*Unless the deck archetype permits the use of both of them at once, the player might want to use the [[Valkyrie/Evolution|Evolved Valkyrie]] over the Evolved Knight. While costing one more Elixir and having a slower hit speed, the Evolved Valkyrie has more health, more damage and a whirlwind attack which pulls troops closer to her and deal additional damage, which can be beneficial for combos starring her and an Evolved Bomber or an Evolved Firecracker. She should be picked when the player wants to deal with swarms and win conditions, as well as with specific card combos that benefit from the Evolved Valkyrie, while the Evolved Knight should be favored if the player wants to build defenses and counterpushes with support troops and take out more troops, as well as to allow win conditions to deal damage while taking almost none themselves. The Evolved Valkyrie's ability can also turn against herself, so the Evolved Knight might play better on defense.
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Knight Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|3||1.2 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+!scope="col"|Damage Reduction<br/>{{Icon|I=Shield Hitpoints}}
+|-
+|2||60% 
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1766 }}
+{{#vardefine: dmg_11 | 202 }}
+{{#vardefine: atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div></center>
+
+==History==
+2023
+*The Knight's Evolution [[Cards|card]] was added to the game with the [[Version History#Pass Royale and more (7/8/2023)|August 2023 Update]] on 7/8/2023{{Balance|Add}}.
+*On 24/8/2023, a [[Version History#Maintenance Break (24/8/2023)|maintenance break]] decreased the Evolved Knight's damage reduction shield to 60% (from 80%){{Balance|Nerf}}.
+*On 3/10/2023, a [[Version History#Balance Changes (3/10/2023)|Balance Update]], decreased the Evolved Knight's hitpoints to 120% of the original's (from 130%){{Balance|Nerf}}.
+*On 13/11/2023, a [[Version History#Minor Update (13/11/2023)|Minor Update]] increased the Evolved Knight's attack period to 1.1 seconds (from 0.9 seconds){{Balance|Nerf}}.
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]] increased the Evolved Knight’s attack period to 1.2 seconds (from 1.1 seconds){{Balance|Nerf}} and removed the Evolved Knight’s extra damage{{Balance|Remove}}.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]] decreased the Evolved Knight's hitpoints to 110% of the original's (from 120%){{Balance|Nerf}}.
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]] removed the Evolved Knight's extra hitpoints{{Balance|Remove}}. It also fixed certain issues with damage multipliers on the Evolved Knight{{Balance|Neutral}}.
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]] changed the card description. It used to say, "''Not only has his facial hair got an upgrade, the knight’s armor has too! While moving, an evolved Knight gains a special shield and is stronger in melee combat.''{{Balance|Neutral}}"
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]] added a sound effect to the Evolved Knight after death{{Balance|Neutral}}. It also fixed a bug where the Evolved Knight would occasionally take 100% damage while chasing a troop after attacking{{Balance|Neutral}}.
+2025
+* On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15){{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+Evolved Knight card render.png|Current card render.
+Evolved Knight Preview.gif|Current card preview.
+KnightEvoShard.png|Knight's Evolution Shard.
+Evolved Knight 1.png|Evolved Knight's full body card image render.
+</gallery>
+
+==Trivia==
+*The word ''"Knight"'' comes from the German "''Knecht"'', meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+*Along with [[Barbarians/Evolution|Barbarians]] and the [[Lumberjack/Evolution|Lumberjack]], he is voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+**According to John Mondelli, the Knight has a French accent.
+*While not available as a character, the Knight's sounds, along with Barbarians', [[Wizard]]'s, and the [[Dark Prince]]'s, are featured in the [https://beatstar.fandom.com/wiki/Clash_Royale_Theme Clash Royale Theme] [https://beatstar.fandom.com/wiki/Songs song] in Beatstar.
+*The Knight's Evolution is the subject of a few cosmetics in the game. More specifically:
+**The Knight's Evolution is the subject of an [[Emotes|Emote]].
+**The Knight's Evolution is the subject of a [[Battle Banners|Battle Banner]] frame.
+*The initial balance change for Evolved Knight on the [[Version History#Balance Changes (14/5/2024)|14/5/2024 Balance Update]] was a hitpoints decrease to 110% of the original's and an increase to the damage reduction shield to 70% (from 60%), but the damage reduction shield increase [https://royaleapi.com/blog/season-59-balance-wip was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[ru:Рыцарь/Эволюция]]

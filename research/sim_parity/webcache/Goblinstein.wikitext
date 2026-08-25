@@ -1,0 +1,196 @@
+{{MagicWords}}{{Protection}}
+{{DISPLAYTITLE: <span class="text-champion";">Goblinstein</span>}}
+
+{{Card Infobox|Cost=5|AbilityCost=2|Rarity=Champion|Type=Troop|Arena=Silent Sanctuary|ReleaseDate=7 October 2024}}
+{{Quote|It’s ALIVE! Monster lumbers towards enemy buildings while Doctor waits to spring the trap. At the press of a button, Doctor electrifies the link between himself and Monster, frying nearby enemies!}}
+
+The Goblinstein is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Silent Sanctuary (Arena 18)]]. It spawns a single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and low damage, and a single target, building-targeting, melee, ground troop with high hitpoints and low damage. The Goblinstein’s attacks will stun a targeted unit for 0.5 seconds. Being a Champion card, they will stay out of the player's card cycle, and only return once they are defeated. The Goblinstein's ability has him shoot an electric spark towards an antenna that is typically located on the Monster's head. The Goblinstein Doctor resembles a [[Goblins|Goblin]] with white hair, wearing a silver-rimmed team-colored goggles with glowing orange lens, a satellite dish on his head with a team-colored strap, a white coat, tan gloves, and brown boots, and wields a controller. The Monster is a large, green Goblin with a square head with an antenna on top, with some of its body being darker and red and having gold stitches and bolts on them, and wears team-colored pants. A Goblinstein card costs 5 [[Elixir]] to deploy and his ability costs an additional 2 Elixir to activate.
+
+==Ability: Lightning Link==
+{{Quote|Electrifies the link, damaging any enemies that get near. Shocking!}}
+{{Champion Ability}}
+The Goblinstein has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Goblinstein activates his “Lightning Link”, creating an electric link between him and Monster. It damages by shocking nearby targets every 0.5 seconds up to 2 tiles away. This ability deals reduced damage to the [[:Category:Tower Troop Cards|Crown Tower]]. If the Monster has already been defeated, it will drop an antenna on the ground which is what the Goblinstein's electric link will target when the ability is activated. The Lightning Link ability costs 2 [[Elixir]] to activate. 
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblinstein Card}}
+*For the purposes of determining [[Elixir]] trades, the Goblinstein and his activated Ability count as 7 Elixir, as the player must play the 5 Elixir Goblinstein and then spend a further 2 on his Ability.
+*The Doctor always spawns 1 tile in the opposite direction of the side of the [[Arenas|Arena]] in which the Monster is placed in. This allows for the Doctor and the Monster to be split into both lanes if played in the middle.
+*The Doctor can stun units like the [[Miner]] to get him to retarget to the Monster, saving hp on the tower.
+*Since the Doctor is the specific Champion, killing him would remove the 3 card cycle, and the ability.
+**However, when the Monster is defeated, an antenna is dropped in the Arena, what will be connected if the ability is used. This allows the ability to be used after the Monster is initially defeated.
+*Similarly to cards with area damage, the Lightning Link ability can hit infinite targets, and will hit everything within a 2 tile radius. Thus, fragile swarms like [[Skeleton Army]], [[Minion Horde]], [[Bats/Evolution|Evolved Bats]] and [[Goblin Gang]] will be quickly wiped out if they come within its range. While bulkier swarms such as [[Barbarians/Evolution|Evolved Barbarians]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], [[Three Musketeers]], [[Zappies]] and [[Royal Hogs]] can withstand a few hits before they are completely obliterated.
+*The [[Fisherman]] and [[Tornado]] can be a good way to puling the Monster quickly away, so the ability won't get too much damage on for example, the tower.
+*The Goblinstein can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, he is unable to use his ability. As such, he should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+
+{{StatisticsSubheader|Card Attributes}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1 sec||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Doctor Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.8 sec||0.5 sec||Medium (60)||0.5 sec||5.5||Air & Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Monster Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.5 sec||0.8 sec||Medium (60)||Melee: Medium (1.2)||Buildings||x1||Ground
+|}
+
+{{StatisticsSubheader|Lightning Link Attributes}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|2||4 sec||0.5 sec||Air & Ground||2||0.933 sec||17 sec
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 721 }}
+{{#vardefine: dmg_11 | 92 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: monster_hp_11 | 2393 }}
+{{#vardefine: monster_dmg_11 | 128 }}
+{{#vardefine: monster_atk_speed | 1.5 }}
+{{#vardefine: link_11 | 107 }}
+{{#vardefine: crown_11 | 23 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Doctor Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Doctor Damage<br />{{Icon|I=Damage}}
+! scope="col" |Doctor Damage per Second <br />{{Icon|I=DPS}}
+! scope="col" |Monster Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Monster Damage<br />{{Icon|I=Damage}}
+! scope="col" |Monster Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Lightning Link Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lightning Link Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+|-
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:monster_hp_11}} || {{#var:monster_dmg_11}} || {{Dps|{{#var:monster_dmg_11}}|{{#var:monster_atk_speed}} }} || {{#var:link_11}} || {{#var:crown_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:monster_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:monster_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:monster_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:monster_atk_speed}} }} || {{#expr: {{#var:link_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:monster_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:monster_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:monster_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:monster_atk_speed}} }} || {{#expr: {{#var:link_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:monster_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:monster_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:monster_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:monster_atk_speed}} }} || {{#expr: {{#var:link_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:monster_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:monster_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:monster_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:monster_atk_speed}} }} || {{#expr: {{#var:link_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:monster_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:monster_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:monster_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:monster_atk_speed}} }} || {{#expr: {{#var:link_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 215,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card <br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}} <br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,380,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}} <br>150 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Line 'em Up!<br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit 600 enemies with Lighting Link
+|15,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|-
+|2
+|Hit 1,200 enemies with Lighting Link
+|100 {{Icon|I=Gem}} <br>175 {{Icon|I=XP}}
+|-
+|3
+|Hit 3,000 enemies with Lighting Link
+|25,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Goblinstein [[Cards|card]] was added to the game on 7/10/2024, in the [[Version History#Pass Royale and more (7/10/2024)|October 2024 Update]].
+*On 17/10/2024, a [[Version History#Maintenance Break (17/10/2024)|maintenance break]], decreased the Lightning Link’s duration to 4 seconds (from 5 seconds), its [[:Category:Crown Towers|Crown Tower]] Damage by 36%, and increased its cooldown to 17 seconds (from 15 seconds).
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]], moved the [[Arenas|Arena]] to unlock the Goblinstein from Scrap Yard to Silent Sanctuary.
+*On 14/11/2024, a [[Version History#Balance Changes (14/11/2024)|Balance Update]], decreased the Monster's hitpoints by 6%.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], fixed a bug where Lightning Link would not deal reduced damage to the King Tower.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the Doctor's hitpoints by 19%.
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Monster's hitpoints by 8%.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], decreased the Monster's hitpoints by 4%
+*On 1/9/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], increased the Monster’s hitpoints by 4%.
+2026
+
+* On 4/8/2026, a Balance Update, made it so that the Goblinstein would no longer have a cooldown timer in-between abilities. Instead, his ability will no be single use. The doctor's damage was increased by 47% and the ability DPS was decreased by 12%
+
+==Gallery==
+<gallery>
+File:Goblinstein Card Render.png|Current card render.
+File:Goblinstein Preview.gif|Current card preview
+File:Doctor 1.png|Doctor
+File:Monster 1.png|Monster
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**The Goblinstein is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]],  [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], and of course, Goblins.
+* In the German language settings of the game, the Goblinstein's name translates to "Dr. Frankobold".
+* The card is a reference to the science fiction novel "''[https://en.wikipedia.org/wiki/Frankenstein Frankenstein]''" by [https://en.wikipedia.org/wiki/Mary_Shelley Mary Shelley].
+* Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+** The Goblinstein is 1 of 11 cards associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Wizard Trio]], and [[Sparky]].
+*** The Goblinstein's Lightning Link does not inflict a stun on the enemies despite being an attack involving electricity. However, his regular attack is able to stun.
+*An alternate version of the Goblinstein's card image can be seen in its trailer, resembling the same art but zoomed in on the Doctor's face.
+* Along with the [[Boss Bandit]], the Goblinstein has the most expensive combined [[Elixir]] cost of {{Rarity|Champion}} and ability, costing 7 Elixir.
+* It is 1 of 4 cards that spawns different [[:Category:Troop Cards|troops]] at once, the others being Goblin Gang, [[Rascals]], and Wizard Trio.
+*The Goblinstein and his Monster are the subject of 4 [[Emotes]].
+*The Goblinstein was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*After the September 2025 update, a player can have multiple copies of the same Champion with the current active Champion having a crown symbol. However, the active Monster currently has no indicator. Also, in 2v2, if both players of one team use Goblinstein, there is no indicator about which Monster is associated to which Doctor.
+{{Navigation|Card}}

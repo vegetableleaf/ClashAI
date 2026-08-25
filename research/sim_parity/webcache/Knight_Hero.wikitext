@@ -1,0 +1,130 @@
+{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=December 1 2025|AbilityCost=2}}{{Quote|Imagine a mustache so magnificent it lures enemies to their doom! Hero Knight takes great care to wax his shield and mustache in equal measure, so as to always twist the tide of battle in his favor.}}
+
+The Heroic Knight is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It spawns one single-target, ground-targeting, melee, and ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Heroic Knight takes the appearance of a man who has glowing yellow eyes, a bigger blond-colored mustache, goatee and eyebrows, and wears chainmail, a golden chestplate, a team-colored cape, a belt, platinum arm pads with a golden base, and golden shoes with platinum plates and straps on them, while wielding a large saber as his weapon and carrying a large platinum shield with a golden handle, base, mustache and goatee, along with a [[Heroes|Hero]] Shard in the middle. A Heroic Knight card costs 3 {{Icon|I=Elixir}} to deploy.
+
+==Ability: Triumphant Taunt==
+{{Quote|Gains a shield and taunts nearby enemies, forcing them to attack him.}}{{Hero Ability|2=Knight-Heroic}}
+The Hero Knight has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Hero Knight activates his “Triumphant Taunt”, taunting every enemy [[:Category:Troop Cards|troop]] and [[:Category:Building Cards|building]] in a 7.5-tiles range, causing them to attack him. He also gains a shield. Both the shield and the taunt effect last for 5 seconds, unless the former is destroyed, although enemy troops and buildings will still target him afterwards until he is defeated. The Triumphant Taunt ability costs 2 [[Elixir]] to activate.
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Heroic Knight and his activated Ability count as 5 Elixir, as the player must play the 3 Elixir Heroic Knight and then spend a further 2 on his Ability.
+*This card would be good in [[Goblin Barrel]] decks as with his ability, he will make the tower troop refocus onto himself, letting the Goblins get amazing chip damage on the tower, if left undisturbed by a spell. On the other hand, he can also work well against a Goblin Barrel, pulling the goblins away from the tower with his ability on defense.
+*It would also be good on things that would really need something to tank for it, like [[Graveyard]] and [[Skeleton Army]], preferably with its [[Skeleton Army/Evolution|Evolution]]. This with either would be amazing as with Graveyard, Heroic Knight doesn't have to be timed perfectly to work. You just have to place it during the same time period of a few seconds to make it work and not be a waste. Paired with the Evolved Skeleton Army, the Knight can be anywhere on your opponent's side, and until the General is close to dying, then you can use the ability. To help use it further, try to place the Knight at the front, so that it absorbs the damage regardless of the ability, and after taking the first tower, then use it when the ability range is going to affect both the King and Crown Tower left.
+*Spells are completely ineffective against the Heroic Knight. His shield is able to withstand a Fireball of equal Level while the Knight himself will survive any lone spell, including the Rocket. Even spells with multiple hits like the Poison and Void are ineffective against him, with the former even being unable to take out the shield by itself.
+**The Barbarian Barrel and Royal Delivery are slightly more effective against him, due to spawning troops that will continuously attack the Heroic Knight. However, unless he is distracted by something else, the Barbarian and Royal Recruit will not be able to defeat him.
+*Paired with the [[Mini P.E.K.K.A.]], [[Prince]], or [[Mighty Miner]] you can take down something like a [[P.E.K.K.A.]], as with the ability, the P.E.K.K.A will retarget onto the Knight, while either one of the 3 damage dealers finishes her off.
+*Even without the ability, the Heroic Knight can still defend against many things the regular can, but unlike its [[Knight/Evolution|Evolution]], it can no longer defend better against ranged troops, with its 65% damage reduction when not attacking no longer present.
+*With great timing of the ability, a Heroic Knight can pull away both barrels of an [[Goblin Barrel/Evolution|Evolved Goblin Barrel]] for a slight negative Elixir trade.
+*If you have a big push coming towards an enemy tower, you can help it succeed by dropping a Heroic Knight on the other lane and activating the ability when defending troops are in range. This is especially useful if the enemy is trying to use a building or ranged troop to defend in the center, because the ability will move the defenders' attention to the other lane, allowing your push to break through.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|3||1.2 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Triumphant Taunt Attributes}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Taunt Range<br/>{{Icon|I=Range}}
+!scope="col"|Cast Time<br/>{{Icon|I=Time}}
+!scope="col"|Ability Duration<br/>{{Icon|I=Time}}
+|-
+|2||7.5 tiles||0.933 sec||5 sec
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1766 }}
+{{#vardefine: dmg_11 | 202 }}
+{{#vardefine: atk_speed | 1.2 }}
+{{#vardefine: Shild_11 | 512 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(2-11)) round 0 }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:Shild_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Shild_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div></center>
+
+==History==
+2025 
+
+* On [[Version History#Pass Royale and more (1/12/2025)|1/12/2025]], the Hero Knight was added to the game along with 3 other Heroes:  [[Giant/Hero|Giant]], [[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]], and [[Musketeer/Hero|Musketeer]]{{Balance|Add}}.
+
+2026
+
+* On 12/1/2026, a [[Version History#Balance Changes (12/1/2026)|Balance Update]], decreased the Hero Knight's shield hitpoints by 6%{{Balance|Nerf}}.
+* On 2/3/2026, a [[Version History#Pass Royale and more (2/3/2026)|Balance Update]], decreased the radius of Triumphant Taunt to 6.5 tiles (from 7.5 tiles){{Balance|Nerf}}.
+* On 6/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], decreased the Taunt Trigger Window to 0.1s (from 0.7s){{Balance|Nerf}}.
+* On 6/7/2026, a [[Version History#Pass Royale and more (6/7/2026)|Balance Update]], decreased the Hero Knight's shield hitpoints by 33%{{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], made the ability single use (from 20sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Knight Card Render.png|Current card render.
+File:Heroic Knight Card Render Pose.png|A render of the Heroic Knight using his ability to taunt.
+File:Heroic Knight Card Render Pose2.png|A render of the Heroic Knight just standing.
+File:Heroic Knight Card Render Pose3.png|A render of the Heroic Knight with his shield on.
+File:KnightHeroShard.png|Heroic Knight Shard.
+</gallery>
+
+==Trivia==
+*The word "''Knight''" comes from the German "''Knecht''", meaning "servant or vassal". Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+*The Heroic Knight was one of the first [[Heroes]] to be added in the game, alongside the [[Giant/Hero|Giant]], [[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]], and [[Musketeer/Hero|Musketeer]].
+*Before the Knight Hero’s release, the Triumphant Taunt’s Elixir cost was increased to 2 Elixir (from 1 Elixir), but his Shield Hitpoints were increased by 47.27%.
+
+{{Navigation|Card}}
+
+[[it:Cavaliere/Eroico]]

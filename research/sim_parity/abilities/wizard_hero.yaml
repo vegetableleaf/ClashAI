@@ -1,0 +1,79 @@
+key: wizard_hero
+base_card: wizard
+page: Wizard/Hero
+revid: 437515
+fetched: "2026-08-25"
+release_date: "2026-01-05"   # infobox ReleaseDate="5 January 2026"; History "added ... on 5/1/2026 with the January 2026 Update" (d/m/yyyy)
+
+body_stat_deltas: none stated
+# Hero body attributes table matches the base wizard snapshot row on every shared field:
+#   hp 832 (vardefine hp_11) = base 832; damage 281 (dmg_11) = base 281; hit_speed 1.4 = base 1.4;
+#   range 5.5 = base 5.5; splash radius 1.5 = base 1.5; projectile speed 600 = base 600;
+#   speed Medium (60) = base medium; deploy_time 1 sec = base 1.0; target Air & Ground = base any;
+#   count x1, transport Ground, rarity Rare — all equal.
+# Note: table "First Hit Speed 0.4 sec" has no directly comparable snapshot field
+#   (snapshot load_time_s 1.0 measures something else); not claimed as a delta.
+# While the ability is active the body's speed and transport change — see numbers (flight).
+
+ability:
+  name: Fiery Flight
+  elixir_cost: 2          # infobox AbilityCost=2 AND prose twice ("an additional 2 Elixir", "costs 2 Elixir") — but CONFLICT: on-page Tornado Ability Attributes table says Cost=1, and the Heroes master page table (r1b_heroes.json) also says 1 (5+1=6). Page-primary value recorded; unresolved.
+  uses: 1                 # History 4/8/2026: "made the ability single use (from 20sec cooldown)"
+  cooldown_s: null        # single use since 4/8/2026; was 20 s before (History)
+  cast_delay_s: 1         # prose: "After a 1-second delay, the Hero Wizard activates his fiery flight"
+
+mechanic_prose: |
+  [Ability: Fiery Flight — card quote]
+  "Launches into the air and throws fearsome fire tornadoes."
+
+  [Section "Ability: Fiery Flight"]
+  "The Hero Wizard has a special ability accessible from whatever side of the screen was put in,
+  just above the player's card slots in battle. After a 1-second delay, the Hero Wizard activates
+  his fiery flight, which makes him take flight for 5 seconds. While he is flying, not only he
+  will get a 50% movement speed increase (now classified as fast), his fireballs also create 3
+  tile radius tornadoes, which does its own damage (reduced against crown towers), similar to the
+  Evolved Valkyrie. The ability costs 2 Elixir to activate."
+
+numbers:
+  body_cost_elixir: {value: 5, source: "infobox Cost=5; body attributes table Cost=5"}
+  ability_cost_elixir:
+    value_infobox_and_prose: 2
+    value_ability_attributes_table: 1
+    value_heroes_master_table: 1
+    source: "CONFLICT — infobox AbilityCost=2 + ability prose 'costs 2 Elixir' + intro prose 'an additional 2 Elixir' vs on-page Tornado Ability Attributes table Cost=1 vs Heroes master table 5+1=6 (ledger/r1b_heroes.json, revid 437509)"
+  body_hp_lvl11: {value: 832, source: "vardefine hp_11"}
+  body_damage_lvl11: {value: 281, source: "vardefine dmg_11"}
+  body_hit_speed_s: {value: 1.4, source: "vardefine atk_speed; attributes table 'Hit Speed 1.4 sec'"}
+  body_first_hit_speed_s: {value: 0.4, source: "attributes table 'First Hit Speed 0.4 sec'"}
+  body_speed: {value: "Medium (60)", source: "attributes table Speed"}
+  body_deploy_time_s: {value: 1, source: "attributes table 'Deploy Time 1 sec'"}
+  body_range_tiles: {value: 5.5, source: "attributes table Range"}
+  body_splash_radius_tiles: {value: 1.5, source: "attributes table Splash Radius"}
+  body_projectile_speed: {value: 600, source: "attributes table Projectile Speed"}
+  cast_delay_s: {value: 1, source: "prose: 'After a 1-second delay'"}
+  flight_duration_s: {value: 5, source: "prose ONLY: 'makes him take flight for 5 seconds' — not in any table"}
+  flight_speed_increase_pct: {value: 50, source: "prose '50% movement speed increase (now classified as fast)'; ability attributes table 'Flight Speed Increase +50%' — agree"}
+  tornado_radius_tiles:
+    value_prose: 3
+    value_ability_attributes_table: 4
+    source: "CONFLICT — prose '3 tile radius tornadoes' vs Tornado Ability Attributes table Radius=4"
+  tornado_duration_s: {value: 2, source: "ability attributes table 'Tornado Duration 2 seconds'"}
+  tornado_damage_lvl11: {value: 43, source: "vardefine tor_11; stat table column 'Tornado Damage'"}
+  tornado_target: {value: "Air & Ground", source: "ability attributes table Target"}
+  tornado_transport: {value: "Air", source: "ability attributes table Transport (ambiguous whether this describes the tornado entity or the flying Wizard — see open_questions)"}
+  tornado_pull: {value: 250, source: "History 2/2/2026: 'increased tornado pull to 250 (from 200)' — units unstated; prose never mentions pull"}
+  crown_tower_damage_reduction_pct: {value: 64, source: "History 23/2/2026: 'decreased the hero wizards crown tower damage by 64%'; ability prose says tornado damage is 'reduced against crown towers' without a number"}
+  historical_cooldown_s: {value: 20, source: "History 4/8/2026: 'made the ability single use (from 20sec cooldown)' — no longer live"}
+  level_scaling: {value: "stat * 1.1^(level-11)", source: "stat table #expr formulas (page warns of rounding)"}
+
+proposed_ability_kind: movement_flight
+
+open_questions:
+  - "Ability cost is 2 (infobox + prose twice) or 1 (on-page ability attributes table + Heroes master table)? Two sources on each side. In-game check required."
+  - "Tornado radius 3 (prose) vs 4 (attributes table). In-game check."
+  - "Is tor_11=43 per damage tick or total per tornado? Tornado lasts 2 s; tick rate unstated."
+  - "Does the tornado pull enemies like the Tornado spell (pull stat 250, units unknown), or is 'pull' vestigial? Prose describes damage only."
+  - "While flying, is the Wizard air-transport (untargetable by ground-only attackers)? Strategy prose implies yes (dodges Mini P.E.K.K.A.); the 'Transport: Air' cell sits in the Tornado attributes table, not the body table."
+  - "Does the -64% crown tower damage apply to tornado damage only or also to his normal fireball vs crown towers? History wording is 'the hero wizards crown tower damage'."
+  - "Tornado spawn rule: one tornado per fireball at impact point? Prose says 'his fireballs also create ... tornadoes' — placement/frequency not stated."
+  - "What ends flight early, if anything (Vines 'can drag the Hero Wizard to the ground' per Strategy)? Interaction list unstated."

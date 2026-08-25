@@ -1,0 +1,118 @@
+{{Protection}}{{MagicWords}}{{Stub}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Royal Hogs</span>}}
+
+{{Evolved Card Infobox|Cost=5|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Royal Arena|ReleaseDate=3 November 2025}}
+{{Quote|These guys are hogging the spotlight! Evolved Royal Hogs take flight towards the nearest building and will fall to the ground once they reach their destination or, if attacked, doing damage on landing.}}
+
+The Royal Hogs' Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns four Royal Hogs with stats identical to their originals. They deploy as flying troops rather than on the ground, unable to be attacked by ground-targeting troops. Upon attacking, or getting hurt, the hogs will fall to the ground, dealing low area damage on impact. They appear to be smaller versions of the [[Hog Rider]]'s hog wearing team-colored knight-like helmets with the [[Card Evolution]] symbol on top and have wings. The Royal Hogs' Evolution costs 5 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Play them with a high health tank so that the tank will take most of the damage, while the Royal Hogs fly towards the tower.
+*Try to have a small spell ready for swarms such as [[Skeleton Army]], [[Goblin Gang]], [[Minion Horde]], etc.
+*Good to pair with the [[Wizard]] or [[Ice Wizard]], as they have large spread, moderate damage per second, the Ice Wizard has slowing effect, and they both have reasonably high health. Try to bait one of your opponent's spells first, as if the Hogs get hit by a spell, they will fall and be targeted by ground troops again. Do the same for building, as these cancel out the flying before they reach the [[Princess Towers|Princess Tower]] as well.
+*Watch out for opponents' splash troops, such as [[Firecracker]], Wizard, [[Bomber]], [[Bowler]], [[Executioner]], etc, as these can easily wipe out the hogs. Pair them with another fast, high dps troop, such as [[Prince]], [[Dark Prince]], [[Mini P.E.K.K.A.]], and [[Lumberjack]].
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.2 sec||0.4 sec||Very Fast (120)||1 sec||Melee: Short (0.7)||Buildings||x4||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|-
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 837 }}
+{{#vardefine: dmg_11 | 74 }}
+{{#vardefine: atk_speed | 1.2 }}
+{{#vardefine: land_11 | 115 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Landing Damage<br />{{Icon|I=Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:land_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:land_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+
+* On 3/11/2025, the Evolved Royal Hogs were added into the game
+* On 24/11/2025, the 2025 Q4 Update, the Evolved Royal Hogs have a new deploy sound effect
+
+2026
+
+* On 2/3/2026, a Balance Update, decreased the Evolved Royal Hogs' Landing Damage by 27%.
+* On 4/5/2026, a Balance Update, decreased the Evolved Royal Hogs' Landing Damage by 49%.
+
+==Gallery==
+<gallery>
+File:Evolved Royal Hogs Card Render.png|Current card render.
+File:RoyalHogsEvoShard.png|Evo Shard
+File:Evolved Hog.png|Evolved Royal Hog
+</gallery>
+
+==Trivia==
+*Archaeological evidence suggests that pigs were domesticated from the wild boar in the Near East in the Tigris Basin, being managed in the wild in a way similar to the way they are managed by some modern New Guineans. Remains of pigs have been dated to earlier than 11,400 years ago in Cyprus. Those animals must have been introduced from the mainland, which suggests domestication in the adjacent mainland by then. Pigs were separately domesticated in China beginning 8,000 years ago, and have been one of the most important domesticated animals there ever since.
+**In the French, German, Spanish, Italian, Dutch, Turkish, Arabic, Portuguese, Persian, Indonesian, and Malaysian language settings of the game, the Royal Hogs' name translates to "Royal Pigs". In the Norwegian, Russian, and Chinese language settings of the game, the Royal Hogs' name translates to "Royal Boars". In the Thai and Finnish language settings of the game, the Royal Hogs' name translates to "Royal Wild Boars" and "King's Boars" respectively.
+*The Royal Hogs are the most expensive [[:Category:2-Cycles Evolutions|2-Cycles]] [[Card Evolution|Evolution]], costing 5 [[Elixir]]. They are also the most expensive Evolution to be placed, with a cost of 15 Elixir (excluding Elixir from playing other [[cards]]).
+*Evolved Royal Hogs' ability to fly is a reference to the phrase “When pigs fly”, which means something (almost) never happening.
+*How Evolved Royal Hogs leave a rainbow trail when flying is a reference to the popular internet meme "''Nyan Cat''", which also leave a rainbow trail when flying.
+**Interestingly, the emote also made the reference as well.
+
+{{Navigation|Card}}

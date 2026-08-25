@@ -1,0 +1,242 @@
+{{Quote|Like his rider, Rhino has endured many a battle. Now that he and Hero Dark Prince have found each other, they can break through any tower, or Skeleton, together.}}{{Heroic_Card_Infobox|Cost=4|AbilityCost=3|Rarity=Epic|Type=Troop|Arena=Royal Arena|ReleaseDate=May 04,2026}}
+
+== Ability: Destructive Dismount ==
+{{Quote|Dismount doing damage, attacking on foot while Rhino charges buildings.}}<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Dark Prince Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Splash Radius
+{{Icon|I=Radius}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|4
+|1.4 sec
+|0.6 sec
+|Medium (60)
+|1 sec
+|Melee: Medium (1.2)
+|1.1
+|Ground
+|x1
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Charge Range
+{{Icon|I=Radius}}
+! scope="col" |Splash Radius
+{{Icon|I=Radius}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+|-
+|Very Fast (120)
+|3
+|1.1
+|Ground
+|Ground
+|}
+{{StatisticsSubheader|Rhino Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+!Cost
+{{Icon|I=Elixir}}
+!Hit Speed
+{{Icon|I=Damage Speed}}
+!Range
+{{Icon|I=Range}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Charge Range
+{{Icon|I=Radius}}
+! scope="col" |Spawn Damage Radius
+{{Icon|I=Radius}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+|-
+|3
+|1.6
+|0.8
+|Medium
+|3
+|unknown
+|Buildings
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> {{#vardefine: hp_11|1200}} {{#vardefine: shield_11|256}} {{#vardefine: dmg_11|266}} {{#vardefine: charge_11|532}} {{#vardefine: atk_speed|1.3}} {{#vardefine: rcharge_11|358}} {{#vardefine: rdmg_11|179}} {{#vardefine: rhp_11|1356}} {{#vardefine: spawndmg_11|307}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints
+{{Icon|I=Shield Hitpoints}}
+! scope="col" |Area Damage
+{{Icon|I=Area Damage}}
+! scope="col" |Charge Damage
+{{Icon|I=Boost}}
+! scope="col" |Damage per second
+{{Icon|I=DPS}}
+!Rhino Hitpoints
+{{Icon|I=Hitpoints}}
+!Rhino Damage
+{{Icon|I=Damage}}
+!Rhino Spawn Damage
+{{Icon|I=Damage}}
+!Rhino Charge Damage
+{{Icon|I=Boost}}
+|-
+|6
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:shield_11}}
+|{{#var:dmg_11}}
+|{{#var:charge_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:rhp_11}}
+|{{#var:rdmg_11}}
+|{{#var:spawndmg_11}}
+|{{#var:rcharge_11}}
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:shield_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:charge_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rhp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:rdmg_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:spawndmg_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:rcharge_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+
+* On 4/5/2026, the Hero Dark Prince was added into the game, along with [[Bowler/Hero|Hero Bowler]]
+* On 1/6/2026, a Balance Update, the rhino spawn damage to crown towers was completely removed (307 to 0 at level 11). The rhino's first charge distance increased to 2.5 tiles (from 0 tiles) and the ability deploy time decreased to 1 second (from 2 seconds)

@@ -1,0 +1,135 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Wizard</span>}}
+{{Evolved Card Infobox|Cost=5|CycleCost=1|Rarity=Rare|Type=Troop|Arena=Spell Valley|ReleaseDate=6 May 2024}}
+{{Quote|Is it hot in here or is it just him? Wizard is now outfitted with a fancy fiery shield. Upon breaking, the shield explodes, dealing Damage and pushing nearby enemies back.}}
+
+The Wizard's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Wizard with identical stats to the original. Once deployed, a Fire Shield will appear around the Wizard, preventing him from dying in 1 attack. Once the shield is destroyed, all pushback capable [[:Category:Troop Cards|troops]] within 3 tiles of the Wizard will be pushed back by 3 tiles and take high damage. He takes the appearance of a man who has glowing pink eyes, brown eyebrows, and a goatee, and wears a violet cloak with brass-colored linings and boots, a team-colored shirt, pants and wristbands, and a golden belt chain with the [[Card Evolution]] symbol in the center. The Wizard's Evolution costs 5 [[Elixir]] and requires 1 cycle to deploy.
+
+== Strategy ==
+*The Evolved Wizard is a great defensive troop against [[Battle Decks|decks]] utilizing many swarm cards due to his large amount of splash damage.
+**Additionally, unlike the regular [[Wizard]], the Evolved Wizard’s shield does enough damage to destroy [[Minions]] and [[Goblins]], allowing the user to place him directly in the center of a massive group of these troops to instantly wipe them out.
+*The Evolved Wizard can be situationally ignored depending on the [[:Category:Tower Troop Cards|tower troop]] used by the opponent. If the [[Tower Princess]] is in use, the Evolved Wizard will do about half of the [[:Category:Crown Towers|Crown Tower]] when left alone while the [[Cannoneer]] and [[Dagger Duchess]] will reduce this from slightly less than half to slight chip damage of the Crown Tower respectively.
+*The Evolved Wizard has good synergy with the [[Giant]], [[Lava Hound]], and the [[Golem]]. The Evolved Wizard’s high damage will cripple or even destroy tank killers, such as [[Hunter]], [[Lumberjack]], [[Inferno Dragon]], [[Three Musketeers]], [[Elite Barbarians]], [[Prince]], and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], meant to defend the Giant/Lava Hound/Golem and his heavy splash damage will easily wipe out small and large swarms, such as [[Goblin Gang]], [[Skeleton Army]], Royal Recruits, [[Minion Horde]], [[Bats/Evolution|Evolved Bats]], and [[Barbarians]]. Also, the Giant will be taking hits for the Evolved Wizard, keeping him alive longer to take out more defensive troops.
+*With the help of any tower troop and [[Goblins]] or [[Skeletons]], the Evolved Wizard can fully counter the [[Royal Recruits/Evolution|Evolved Royal Recruits]] for a +1 Elixir trade. Additionally, the Evolved Wizard will survive, setting up for a potential counterattack.
+*Like the regular Wizard, the Evolved Wizard has great synergy when paired with [[Tornado]] and [[Valkyrie/Evolution|Evolved Valkyrie]], The Tornado effect will pull opposing troops into the Wizard's splash radius, allowing him to hit more targets and deal more damage.
+*Like the [[Dark Prince]], [[Royal Recruits]], [[Cannon Cart]], or [[Guards]], the Evolved Wizard cannot be destroyed in one hit by anything due to his shield, making cards like [[Rocket]], [[Lightning]], and [[Fireball]] almost entirely ineffective against him until the shield is destroyed. Although, small [[:Category:Spell Cards|spells]] like [[The Log]], [[Giant Snowball]], and [[Zap]] can destroy his shield. Therefore, small spells or a troop immune to pushback are ideal to safely destroy the shield and take out the Evolved Wizard.
+*The Evolved Wizard is very effective against the [[Lava Hound]]. The Lava Hound itself can be quickly dispatched by his high damage while the Lava Pups are easily destroyed by his splash damage, causing minimal damage to be done to the Crown Tower in most cases.
+*With the help of a Crown Tower, the [[Royal Delivery]] can fully counter the Evolved Wizard for a +2 Elixir trade. The delivery should ideally be deployed on top of the Evolved Wizard, where the [[Royal Recruits|Royal Recruit]] can distract and help take it out after being knocked back by the Fire Shield.
+*If a [[Miner]] is placed on the inside corner of a Tower Princess, you can place the Evolved Wizard to get the Miner to knock himself into the [[King's Tower|King Tower]] from the Fire Shield’s explosion, potentially activating it if set up properly.
+*With the help of a Crown Tower and placed in the center of the user’s side, the Evolved Wizard can fully counter the [[Elite Barbarians]] for a +1 positive Elixir trade. This makes him ideal at countering decks that utilize the Elite Barbarians inside of a larger group of troops, such as [[Elixir Golem]].
+**Conversely, the Evolved Wizard has great synergy with the Elixir Golem as his shield and high damage ranged attacks severely discourage the opponent from placing most units next to the Elixir Golem to take it out; doing so would likely cause their defense to be destroyed by the Evolved Wizard. Instead, they’ll be forced to defend the Evolved Wizard first, giving ample time for the Elixir Golem to deal significant damage to the Crown Tower.
+*The Evolved Wizard may be substituted for other [[Card Evolution|Card Evolutions]] with consistent splash damage, such as the [[Firecracker/Evolution|Evolved Firecracker]] and [[Bomber/Evolution|Evolved Bomber]], based on the user's deck choices and other preferences.
+*If the user is up Elixir, a [[Mega Knight]] can easily prevent a small push that includes the Evolved Wizard. His spawn damage instantly destroys the shield and weakens all troops within the push, allowing for his regular attacks to finish it off.<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}{{StatisticsSubheader|Evolved Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.4 sec||0.4 sec||Medium (60)||1 sec||5.5||1.5||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Shield Damage Splash Radius<br />{{Icon|I=Radius}}
+|-
+|1||3
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 832 }}
+{{#vardefine: shield_11 | 192 }}
+{{#vardefine: dmg_11 | 281 }}
+{{#vardefine: death_11 | 281 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Shield Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:shield_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+
+==History==
+2024
+*The Wizard's Evolution [[Cards|card]] was added to the game on 6/5/2024, in the [[Version History#Pass Royale and more (6/5/2024)|May 2024 Update]].
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Wizard's shield hitpoints by 18%.
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], decreased the Evolved Wizard's shield hitpoints by 20.2%.
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the Evolved Wizard's shield hitpoints by 35.8%, but increased the Evolved Wizard's hitpoints by 4.8%.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Evolved Wizard's shield death pushback to 3 tiles (from 4 tiles).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Wizard after death.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Evolved Wizard's hitpoints by 0.13%, his shield hitpoints by 1.05%, and decreased his shield death damage by 0.43%.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], increased the Evolved Wizard's shield death damage by 22%.
+
+==Gallery==
+<gallery>
+File:Evolved Wizard card render.png|Current card render.
+File:Evolved Wizard Preview.gif|Current card preview
+File:WizardEvoShard.png|Evolution Shard.
+File:Evolved Wizard 1.png|Evolved Wizard
+</gallery>
+
+==Trivia==
+*The word "''Wizard''" comes from the Middle English "''wys''", meaning wise.
+**In the German, Persian, and Vietnamese language settings of the game, the Wizard's name translates to "Magician". In the Chinese language settings of the game, the Wizard's name translates to "Mage". In the Italian language settings of the game, the Wizard's name translates to "Sorcerer".
+*The Wizard’s Evolution somewhat resembles the [[w:c:clashofclans:Super Wizard|Super Wizard]] from Clash of Clans.
+*When deployed, the Evolved Wizard exclaims "''Evo Wizard!''", and occasionally when attacking, he will say “''Magic!''”, “''Fire!''”, “''Fireball!''”, or "''Evo Wizard!''", referencing the Clash of Clans [https://www.youtube.com/watch?v=6BsTLlR40kM Magic commercial].
+**There is a [[Loading Screen Hints|Loading Screen Hint]] that says “''The Wizard can control all elements, except his hair''”. This is also a reference to the same commercial.
+**The Wizard is 1 of 9 evolved troops that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], [[Mega Knight/Evolution|Mega Knight]], and [[Lumberjack/Evolution|Lumberjack]].
+*The Evolved Wizard, [[Ice Wizard]], and [[Electro Wizard]] are responsible for creating the [[Void]], according to the Clash Royale [https://youtube.com/shorts/32qX1fEbxX4?si=KqXAuxOvVZ5QaMFP Void intro video].
+*The Evolved Wizard is featured on the [[Cards|card]] render of the Void.
+*The Wizard’s Evolution is the subject of 4 [[Emotes]].
+*Before the Wizard's Evolution's release, the Evolved Wizard's shield hitpoints were decreased by 15%.
+{{Navigation|Card}}

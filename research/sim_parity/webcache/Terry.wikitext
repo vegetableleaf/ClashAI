@@ -1,0 +1,89 @@
+{{MagicWords}}{{RemovedContent}}{{Protection}}
+
+{{Card Infobox|Cost=4|AbilityCost=1|Rarity=Champion|Type=Troop|ReleaseDate=1 May 2023}}
+{{Quote|Terry and his trusty companion Pim Pim bring their unconventional Hog Riding skills to the Arena!}}
+
+The Terry was a temporary {{Rarity|Champion}} [[Cards|card]], only available in certain Events. It spawned a very fast, single-target, building-targeting, melee, ground troop with high hitpoints and high damage. Being a Champion card, he would stay out of the player's card cycle and would only return once he was defeated. The Terry's ability caused him to jump high into the sky and slam back down onto the field, dealing damage to enemy units in a 360º area around him, and inflicting knockback, similar to the [[Mega Knight]]’s jump damage. A "Terry" card cost 4 [[Elixir]] to deploy and his ability cost an additional 1 Elixir to activate.
+
+==Ability: Hoggy Heights==
+{{Quote|Terry and Pim Pim launch themselves into the air to attack from above!}}
+{{Champion Ability}}
+The "Terry" has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1 second delay, the Terry jumps high, staying in the air for 2 seconds before crashing back down into the arena and dealing high damage and knockback to all troops in a 4-tile radius around his landing spot (similar to the [[Mega Knight]]’s jump and spawn damage). While in the air, he is immune to all forms of damage. The ability goes on a 7 second cooldown after the duration ends. The Hoggy Heights ability costs 1 [[Elixir]] to activate.
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Terry and his activated Ability count as 5 Elixir, as the player must play the 4 Elixir Terry and then spend a further 1 on his Ability.
+*The [[Lumberjack]] pairs quite well with Terry, being able to tank for, distract and demolish defensive [[:Category:Troop Cards|troops]] for a substantial period of time, allowing Terry to head directly to the [[:Category:Tower Troop Cards|Crown Tower]]. Upon the Lumberjack’s defeat, the spilt bottle of Rage would further complement Terry, by boosting his hit speed and wiping out any cheap swarms played by the opponent in opposition.
+**To counter this combination, simply pull the Lumberjack away with a cheap troop (eg. [[Ice Golem]] or [[Knight]]) before finishing off Terry (eg. by placing a building in front of your beleaguered tower).
+**[[Rage]] can also be used as a lower-cost replacement for the Lumberjack. Despite having more control over the location of the spell, this combination is less advisable due to the removed benefits of having an additional pairing threat for the purpose of distracting and providing DPS.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Terry Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.6 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Short (0.8)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Hoggy Heights Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Time}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|1||1 sec||0.766 sec||7 sec
+|}
+
+{{StatisticsSubheader|Card Attributes}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Hoggy Heights Damage<br />{{Icon|I=Area Damage}}
+|-
+|11||2,300||350||{{Dps|350|1.6}}||500
+|-
+|12||2,530||385||{{Dps|385|1.6}}||550
+|-
+|13||2,783||423||{{Dps|423|1.6}}||605
+|-
+|14||3,059||465||{{Dps|465|1.6}}||665
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Terry [[Cards|card]] is released in the Super Champion Battle Event, which started on 1/5/2023.
+*On 9/5/2023, the Terry was removed from the game.
+
+==Trivia==
+*The name "Terry" is a gender-neutral name of Middle English origins, meaning “''power of the tribe''”.
+*The hog that he rides is most likely a "''Phacochoerus africanus''" ([https://en.wikipedia.org/wiki/Common_warthog common warthog]). Common warthogs are smaller than boars but more agile which might explain why Terry can move particularly fast. Warthogs also have tusks, which is like the Hog Rider's hog in Clash Royale.
+*The Terry is inspired by a [[Hog Rider]] in [https://books-of-clash.fandom.com/wiki/Volume_1 Volume 1 of Books of Clash].
+*Along with the [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Mighty Miner]], and the [[Monk]], the Terry has the cheapest ability, costing 1 Elixir.
+**Also along with the Golden Knight and the Mighty Miner, he also has the cheapest combined Elixir cost of {{Rarity|Champion}} and ability, costing 5 Elixir.
+*The Terry is tied with Hog Rider, [[Royal Hogs]], [[Princess]], [[Mother Witch|Cursed Hog]], and [[Santa Hog Rider]] for the longest sight range of all [[:Category:Troop Cards|troops]], with a sight range of 9.5 tiles.
+*The Terry is the only {{Rarity|Champion}} card that only targets [[:Category:Building Cards|buildings]].
+*The Terry is the first {{Rarity|Champion}} card to be temporary.
+*When Terry is deployed, he will occasionally yell "''Hog Riderrrrr!''"
+**The Terry is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], Hog Rider, [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], [[Ram Rider]], [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], Mother Witch, [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], Santa Hog Rider, [[Super Magic Archer]], Golden Knight, Boss Bandit, Archer Queen, and the [[Little Prince]].
+*The Terry is the subject of 2 [[Emotes]].
+
+{{Navigation|Card}}
+
+[[ru:Терри]]
+
+[[Category:Removed Cards]]

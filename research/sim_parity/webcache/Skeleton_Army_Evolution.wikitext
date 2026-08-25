@@ -1,0 +1,141 @@
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Skeleton Army</span>}}
+{{Protection}}{{MagicWords}}
+{{Evolved Card Infobox||Cost=3|CycleCost=2|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=October 6 2025|Rarity=Epic|Type=Troop}}{{Quote|Look alive! General Gerry's Skeletons are devoted to him, becoming invisible and indestructible in his presence. But alas, an army cannot survive without its General and will perish in his absence.}}
+The Skeleton Army's Evolution is an {{Rarity|Epic}} Card that is unlocked with 6 Evolution Shards. It spawns 15 [[Skeletons]] in a scatter formation, with General Gerry at the back. When the Skeletons are defeated, their shadows will spawn. The shadows have unlimited hitpoints, and can't be targeted by troops, buildings and tower troops, but can be affected by spells. When General Gerry is defeated, all the shadows are defeated as well. Gerry appears as a [[Guards|Guard]] with purple eyes, wears a helmet with a golden handle and a team-colored crest on top and a purple cape with gold linings, and carries a spear with an attached purple banner that has a skull printed on it and a wooden shield with the [[Card Evolution]] symbol on it. The Skeleton Army's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+== Strategy ==
+*In order to fully destroy the Evolved Skeleton Army, General Gerry must be defeated first, otherwise they will stay alive and eliminate anything that is attacking them.
+*Destroying General Gerry will only instantly defeat the shadows and not affect any [[Skeletons]] that are still alive. However, any alive Skeletons will be prevented from being converted into shadows after death.
+*General Gerry is stronger than a normal Skeleton. He is able to attack slightly faster and from a longer range compared to a regular Skeleton. Keep this in mind when using him on defense against building-targeting troops.
+*Like [[Guards]], General Gerry has a shield which makes certain spells ineffective against him, however, some spells are still great against him.
+**For a neutral Elixir trade, Arrows will destroy General Gerry's shield and the second wave will defeat him outright. Its large radius also allows it to hit most, if not all of the Evolved Skeleton Army, allowing allied units to break through without being distracted. 
+**Although slower than Arrows, [[Poison]], [[Earthquake]], and [[Vines]] can defeat General Gerry similarly. However, the former is a negative Elixir trade.
+**Despite being a positive Elixir trade, the [[Goblin Curse]] is not able to defeat the General Gerry or his shield in one hit. It requires 3 hits for either, which means that all 6 of its hits must hit him in order to defeat General Gerry. Its smaller radius also means that it may not hit all of the Evolved Skeleton Army and the shadows cannot be cursed, so keep this in mind when using the spell against it.
+**A Stage 3 [[Void]] is unable to destroy General Gerry, as it does not deal enough damage to destroy the shield in one hit. However, it is able to defeat him at Stage 1 or 2, meaning that he should be isolated first before the Void is used on him.
+**If timed right, a [[Barbarian Barrel]] will instantly destroy the shield, and a swing of the [[Barbarians|Barbarian]] will finish off the unshielded General Gerry. Make sure that the shadows do not walk back to him, otherwise the Barbarian will be overwhelmed and defeated quickly.
+**Unlike [[Zap]], the [[Zap/Evolution|Evolved Zap]] attacks twice, which means that its two pulses will defeat General Gerry and the remaining Evolved Skeleton Army. Since both [[cards]] have the same cycle cost, make sure that you save it for when the opponent is evolving their Skeleton Army.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Skeleton Army Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.1 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.5)||Ground||x15||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+|-
+|2
+|}
+
+{{StatisticsSubheader|General Gerry Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+|-
+|1 sec||0.5 sec||Fast (90)||1 sec||Melee: Long (1.6)||Ground||Ground||[[:Category:Troop Cards|Troop]]
+|}
+
+{{StatisticsSubheader|Shadow Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+|-
+|1.1 sec||0.5 sec||Medium (60)||1 sec||Melee: Short (0.5)||Ground||x15||Ground||[[:Category:Troop Cards|Troop]]
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, skel_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: skel_hp_11 | 81 }}
+{{#vardefine: skel_dmg_11 | 81 }}
+{{#vardefine: skel_atk_speed | 1.1 }}
+{{#vardefine: gen_hp_11 | 81 }}
+{{#vardefine: gen_shield_11 | 81 }}
+{{#vardefine: gen_dmg_11 | 81 }}
+{{#vardefine: gen_atk_speed | 1.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Skeleton Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |General Gerry Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |General Gerry Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:skel_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:skel_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:skel_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:skel_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:skel_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 11 || {{#var:skel_hp_11}} || {{#var:skel_dmg_11}} || {{Dps|{{#var:skel_dmg_11}}|{{#var:skel_atk_speed}} }} || {{#var:gen_hp_11}} || {{#var:gen_shield_11}} ||{{#var:gen_dmg_11}} || {{Dps|{{#var:gen_dmg_11}}|{{#var:gen_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:skel_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:skel_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:skel_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:skel_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:skel_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:skel_atk_speed}} }} || {{#expr: {{#var:gen_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:gen_shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:gen_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:gen_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:gen_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+==History==
+2025
+*The Skeleton Army's Evolution [[Cards|card]] was added to the game on 6/10/2025, in the [[Version History#Pass Royale and more (6/10/2025)|October 2025 Update]].
+2026
+*On 12/01/2026, a Balance Update decreased the Shadow Skeletons' speed to 60 (from 90), classifying them as Medium. It also changed the Evolved Skeleton Army's spawn formation by spawning the General closer to the Shadow Skeletons.
+
+==Gallery==
+<gallery>
+File:Skeleton Army Evolution card render.png|Current card render.
+File:SkeletonArmyEvoShard.png|Evolution Shard.
+File:Evolved Skeleton Army 1.png|Evolved Skeleton Army.
+</gallery>
+
+==Trivia ==
+*The Evolved Skeleton Army may be based on the [https://en.wikipedia.org/wiki/Immortals_(Achaemenid_Empire) Immortals], a legion in the Achaemenid Persian Army where their numbers would not decrease with its defeat, due to the casualties being replaced. It could also be inspired by the [[lotr:Dead_Men_of_Dunharrow|Dead Man of Dunharrow]] from The Lord Of The Rings, a ghost skeleton army that could attack but not be hit themselves, with the general representing the [[lotr:King_of_the_Dead|King of the Dead]].
+*The Skeleton Army Evolution summons 15 Skeletons alongside General Gerry (16 skeletons in total), but as revealed in the [[Version History#Balance Changes (1/10/2018)|1/10/2018 balance changes]], one of the Skeletons in the regular Skeleton Army card is already named Gerry, which means that either another Skeleton called Gerry joined the army and became the general or the existing Gerry was promoted and an extra unnamed Skeleton replaced him.
+*Before the Skeleton Army's Evolution's release, the Skeletons' attack time interval was increased to 1.1 seconds (from 1 second).
+*It is possible to trap General Gerry in the back behind the player's King Tower via Hero Musketeer or Hero Bowler's ability. This allows the shadows to advance without almost any risk of them being killed due to Gerry being pretty much unreachable. The only way to kill General Gerry is to use spells against him (which will lead to the player's King Tower being activated) or to wait until the ability's effect expires in order to use spells safely (but by that point too much damage will have been done by the shadows).
+
+{{Navigation|Card}}

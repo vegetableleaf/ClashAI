@@ -1,0 +1,134 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Executioner</span>}}
+{{Evolved Card Infobox|Cost=5|CycleCost=1|Cycles=1|Rarity=Epic|Type=Troop|Arena=Serenity Peak|ReleaseDate=7 April 2025}}
+{{Quote|That's not an axe… This is an axe! Evolved Executioner's axe deals more damage to enemies in close quarters and pushes them back.}}
+
+The Executioner's Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns an Executioner with identical stats to the original. The Executioner launches an axe that travels up to its maximum range, and returns back to him after some time, while piercing through enemies in both ways. If an enemy troop is within 3.5 tiles from the start of the attack, it will be knocked back, while also receiving extra damage. They will also receive the extra damage on the returning phase on the attack. He resembles a shirtless man with glowing pink eyes, wears a purple mask with gold stitches, glove with a golden stripe and boots, a team-colored kilt and pants, a belt, and a pair of straps, carries a double-sided axe with a [[Card Evolution]] symbol and a large golden knob on the bottom, and has an axe-shaped tattoo on his arm, which glows alongside his axe whenever the axe is within 3.5 tiles of range. The Executioner's Evolution costs 5 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*The Executioner only requires 1 cycle to evolve, and costs only 5 [[Elixir]], which means that the player can easily use his evolution multiple times in a single match.
+*The Evolved Executioner can fulfill the role of the [[Bowler]], as he'll push back all troops affected by knockback, with the added bonus of hitting aerial troops as well. This allows him to counter many things that he previously couldn't take on defense, namely the [[Elite Barbarians]], which will be countered for a +1 Elixir trade in exchange for minimal damage dealt to the Executioner. Other troops that can be stalled more efficiently with the push back are the [[Knight]], [[Mini P.E.K.K.A.]], [[Valkyrie]], [[Hog Rider]], [[Mega Minion]], [[Skeleton Dragons]], [[Baby Dragon]], [[Royal Hogs]], [[Battle Healer]], [[Ram Rider]], [[Phoenix]], [[Electro Dragon]], [[Rascals]], [[Golden Knight]], [[Monk]], [[Balloon]], and the [[Lumberjack]].
+*Along with the pushback effect, he also deals extra damage if troops get close to him, allowing the Evolved Executioner to defeat those troops faster. As such, he'll be able to defeat win-conditions like the Hog Rider, Royal Hogs, Ram Rider, and the Balloon, who will be stalled with the pushback effect and rapidly defeated by the extra damage before they deal too much damage to the [[:Category:Tower Troop Cards|Crown Tower]]. The extra damage trait will also allow him to defeat tanky troops, such as the [[Giant]], [[Royal Giant]], [[Elixir Golem]], or the [[Goblin Giant]], though additional support is needed for the [[Golem]] or the [[Lava Hound]], troops that he cannot handle alone, or the [[P.E.K.K.A.]], [[Giant Skeleton]], [[Sparky]], [[Mega Knight]], [[Goblin Machine]], [[Mighty Miner]], or the [[Boss Bandit]], which will take him down quickly.
+*The Evolved Executioner can be used the same manner as a normal Executioner can, being able to easily nullify the [[Barbarians]], [[Royal Recruits]], [[Goblin Gang]], [[Minion Horde]], [[Wall Breakers]], Lava Pups, and [[Elixir Golem]]ites and Blobs. On top of that, he will take both forms of the [[Wall Breakers/Evolution|Evolved Wall Breakers]] without additional support and destroy them quickly, or letting them connect to the Crown Tower if misplaced.
+*His pushback ability will allow him to move the Balloon and the [[Goblin Demolisher]] away from a Crown Tower, stopping their death damage from hitting them. This doesn't work against the Giant Skeleton, as he isn't able to be pushed back by the axe.
+*The [[Tornado]] synergizes even more with the Evolved Executioner, as it will pull all troops in the Axe Smash range, letting them be taken down more quickly when otherwise they would be scattered, possibly also knocking them back if they're able to be. On the contrary, the Tornado is also a decent counter to the Evolved Executioner, bringing him away from the push back and extra damage range.
+*His push back will also constantly reset the [[Battle Ram]], [[Battle Ram/Evolution|Evolved Battle Ram]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], and the Ram Rider's charge, mostly stopping each of them to gain value (as well as the Barbarians/[[Barbarians/Evolution|Evolved Barbarians]] spawned from the former ones).
+*He will also reset the [[Inferno Dragon]]'s ramp up damage if the Evolved Executioner is directly targeting him, since he is vulnerable to knockback and gets just in range of the push back effect. As such, the [[Inferno Tower]] and the Mighty Miner have to be used against him, as the former is a building while the latter is a heavy unit and thus cannot be pushed back by him, but one must be cautious about other ramp up damage resetters.
+*The Evolved Executioner's axe has a longer range than his own range, which allows him to hit support troops behind tanky units with ease, regardless of the push back and extra damage traits, or hit Crown Towers on offense. However, this can turn against him, as a [[Fisherman]] can pull him so that his axe can activate the [[King's Tower]], or an [[Ice Spirit]] freezing him enough for a Tornado to pull him into the range of the King's Tower.
+*[[Rage]] will not work with the Evolved Executioner, as he will throw his axe slower to compensate for a reduction of the time his axe stays in air. Therefore, this is a waste of 2 Elixir that could be used to better support him.
+*The Monk can use his Pensive Protection to stall an Evolved Executioner, as a deflected axe will deal extra damage and push back the Executioner. However, that is a negative Elixir trade, and his slow movement speed will allow the Executioner to defeat him anyways.
+*Since he only deals extra damage and push backs close units, ranged troops with moderate hitpoints such as the [[Musketeer]], [[Wizard]], [[Electro Wizard]], [[Cannon Cart]], and the [[Archer Queen]] will easily defeat him. The [[Witch]] is also useful because the Evolved Executioner will be distracted by her spawned [[Skeletons]] over time, though this doesn't happen with the [[Night Witch]], as she is a melee troop.
+*Another way of taking him down is using [[Fireball]], [[Rocket]], [[Lightning]], or [[Poison]], which are spells that can bring him to very low health (or outright defeat him), nullifying his value, and even hitting other units or an enemy Crown Tower in the mean time, though he can be used to bait those spells for other units weak to them.
+*Tanky melee units such as the P.E.K.K.A., Giant Skeleton, and the Mega Knight can also withstand a decent number of his extra damage hits, though they shouldn't be supported with fragile units unless placed away from them, as the Executioner will easily take those down. Also, the Boss Bandit can be affected by his push back.
+*If needed, an [[Ice Golem]] can be used to tank for another unit (specially melee or frail air units), distracting the Executioner for long enough so that the other unit will take him down without worrying about his push back and extra damage for a while.
+*When positioned properly, [[Bats]] will stall and damage him enough so that the Evolved Executioner is defeated by them and an allied Crown Tower for a +3 Elixir trade.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Executioner Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Axe Time<br/>{{Icon|I=Time}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Projectile Range<br/>{{Icon|I=Radius}}
+!scope="col"|Projectile Width<br/>{{Icon|I=Radius}}
+!scope="col"|Projectile Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|5||0.9 sec||0.5 sec||1.5 sec||Medium (60)||1 sec||4.5||7.5||2||550||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+!scope="col"|Axe Smash Range<br/>{{Icon|I=Range}}
+|-
+|1||2.5
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1280 }}
+{{#vardefine: dmg_11 | 168 }}
+{{#vardefine: close_11 | 294 }}
+{{#vardefine: dmg_hits | 2 }}
+{{#vardefine: atk_speed | 2.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br />{{Icon|I=Level}}
+!scope="col"|Hitpoints<br />{{Icon|I=Hitpoint}}
+!scope="col"|Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage per second<br />{{Icon|I=DPS}}
+!scope="col"|Axe Smash Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Axe Smash Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }} || {{#var:close_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:close_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:close_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:close_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:close_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr:{{Dps|{{#expr: {{#var:close_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} 
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Executioner's Evolution [[Cards|card]] was added to the game on 7/4/2025, in the [[Version History#Pass Royale and more (7/4/2025)|April 2025 Update]].
+*On 1/12/2025, a Balance Update, decreased the Evolved Executioner’s Close Quarters Damage by 9%
+2026
+
+* On 2/3/2026, a Balance Update, increased the Evolved Executioners damage by 7%, and decreased push back to 1 tile (from 1.5 tiles).
+* On 6/7/2026, a Balance Update, decreased the Evolved Executioner’s Close Quarters Damage by 10% and decreased its Close Quarters Range to 2.5 tiles (from 3.5 tiles)
+* On 4/8/2026, a Balance Update, decreased the Evolved Executioner's projectile range to 7 tiles (from 7.5 tiles)
+
+==Gallery==
+<gallery>
+File:Evolved Executioner card render.png|Current card render.
+File:Evolved Executioner Preview.gif|Current card preview
+File:ExecutionerEvoShard.png|Executioner's Evolution Shard.
+File:Evolved Executioner 1.png|Evolved Executioner 1
+File:Evolved Executioner 2.png|Evolved Executioner 2
+</gallery>
+
+==Trivia==
+*In the Korean and Arabic language settings of the game, the Executioner's name translates to "Axeman". In the Chinese and Thai language settings of the game, the Executioner's name translates to "Throwing Axe Butcher" and "Hangman" respectively.
+*When the Evolved Executioner's axe is within Axe Smash range, the axe tattoo on his arm will light up.
+*Upon deployment, the Evolved Executioner exclaims "''Time to slice and dice!''”, “''New axe!''”, or “''I love when they scream!''”. When attacking, he may say, "''Spinning!''", "''My axe is laughing''", or "''Spin into your doom!''".
+**The Executioner is 1 of 9 evolved [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Mega Knight/Evolution|Mega Knight]], and [[Lumberjack/Evolution|Lumberjack]].
+***Also, the Executioner is 1 of 6 evolved troops whose regular troop do not speak distinct words when on the field, the others being Bomber, Goblin Brawler, Witch, Hunter, and Mega Knight.
+*The Executioner's Evolution is the subject of 2 [[Emotes]].
+*Before the Executioner's Evolution's release, the Evolved Executioner's Axe push back distance was decreased to 1.5 tiles (from 2 tiles) and the Axe Smash damage was decreased by 13%.
+
+{{Navigation|Card}}

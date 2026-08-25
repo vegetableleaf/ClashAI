@@ -1,0 +1,164 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Battle Ram</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=1 April 2024}}{{Quote|These Evolved Barbarians upgraded their hardware! Evolved Battle Ram deals damage and pushes enemies back during its charge. Once it connects to a building, it won't stop charging!}}
+The Battle Ram's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Battle Ram with identical stats to the original. Once it starts charging, it deals damage to any troop on its way to its target and inflicts knockback. Once it reaches a building, it will bounce back and repeatedly deal damage to its target until it dies. Once destroyed, it will break and reveal 2 [[Barbarians/Evolution|Evolved Barbarians]] underneath. It appears to be a battering ram consisting of a large, thick, heavy log with an attached metal ram head at the front that has purple eyes, horn tips and spikes on its neck, along with a metal chain at the back, carried by two Barbarians underneath. The Battle Ram's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Battle Ram is incredibly powerful on offense, easily taking out a [[:Category:Crown Towers|Crown Tower]] if left ignored no matter what [[:Category:Tower Troop Cards|tower troop]] is used.
+*Unlike the regular [[Battle Ram]], the Evolved Battle Ram should never be countered with any light ground swarms, such as [[Skeleton Army]] and [[Goblin Gang]]. If these swarms are placed in front or to the upper sides of the Evolved Battle Ram, it will deal damage to these swarms, instantly destroying them.
+**Similarly, spawner [[:Category:Building Cards|buildings]] like the [[Tombstone]] and [[Goblin Hut]] should be avoided, as the Evolved Battle Ram will OHKO the swarms and easily destroy the building, with only the death spawn being able to continue defending against it.
+*Similar to the [[Fireball]]'s pushback, the Evolved Battle Ram's pushback will activate for all pushback capable units, such as [[Hog Rider]], [[Ram Rider]], [[Executioner]], [[Valkyrie]], and [[Knight]] and will not affect troops that are immune to it like the [[Giant]], P.E.K.K.A, [[Golem]], [[Skeleton King]], [[Goblin Machine]], Mighty Miner, or [[Prince]].
+*Since the Evolved Battle Ram cannot hit air troops, cards like [[Minion Horde]], [[Mega Minion]], [[Phoenix]], [[Electro Dragon/Evolution|Evolved Electro Dragon]], and [[Bats/Evolution|Evolved Bats]] can be good counters to it when paired with the Crown Tower; heavily reducing the damage it deals to the Crown Towers for a positive Elixir trade and setting up for a potential counterattack.
+*Like the regular Battle Ram, any card that has a stun or pushback can reset the Evolved Battle Ram’s charge, making cards like [[Zap]], [[The Log|Log]], Snowball, [[Ice Spirit]], and [[Electro Spirit]] great as cheap support cards for other cards, such as [[Mini P.E.K.K.A.]] or Lumberjack, to deal the majority of the damage without being knocked back by the charge.
+*For 1 more Elixir, the [[Bowler]] is the best one card counter to the Evolved Battle Ram due to his high hitpoints, good damage, and constant pushback being able to prevent it from getting much value while also serving as a counterattack. It’s recommended to place the Bowler far away from the Evolved Battle Ram to take advantage of the Bowler’s range and prevent the Bowler from being knocked back from the charge during his 1-second deploy time. After the defense, the Bowler will be fairly healthy and can be used for a counterattack, if possible.
+*The [[Ice Wizard]]'s constant slow effect will make the Evolved Battle Ram take longer to charge up and reduce its speed once it does charge up, making him a good assist card in defense against it.
+*For a +2 Elixir trade and with the [[Cannoneer]]'s assistance, the Evolved Battle Ram can be fully countered by an [[Ice Spirit/Evolution|Evolved Ice Spirit]] and [[Skeletons]]. The Evolved Ice Spirit should be deployed as soon as the Evolved Battle Ram crosses the bridge away from its front to prevent the Evolved Ice Spirit from being destroyed. Once it breaks open, Skeletons should be deployed near the upper middle of the player’s side to kite and destroy the Evolved Barbarians that spawn from it.
+**Alternatively, the player can use a [[Giant Snowball]] and [[Skeletons/Evolution|Evolved Skeletons]] to fully counter the Evolved Battle Ram for a +1 Elixir trade. The Giant Snowball will cancel the charge as the Evolved Skeletons take it down, potentially creating a threatening counterattack based on what tower troop the opponent is using.
+*In specific situations, the Evolved Battle Ram can be used to push many troops away from the Crown Tower and onto a distraction card, such as [[Goblins]] or [[Guards]]. This is especially helpful against cards with high damage like [[Lumberjack]], [[Mini P.E.K.K.A.]], [[Sparky]], [[Mighty Miner]], [[Three Musketeers]], [[Elite Barbarians]], [[P.E.K.K.A.]], [[Hunter]], or [[Little Prince]] because the distraction card will keep it occupied for a long time, reducing the damage dealt to the Crown Tower and giving the player a very threatening counterattack.
+*The Evolved Battle Ram has great synergy with the [[Earthquake]]. The Earthquake will destroy or significantly weaken defensive troops and buildings; allowing the Evolved Battle Ram and Evolved Barbarians underneath to more easily connect to the Crown Tower for a 7 Elixir commitment.
+*The Evolved Battle Ram synergizes very well with the [[P.E.K.K.A.|P.E.K.K.A]] as her high health can take hits for the Evolved Battle Ram while her high damage can easily eliminate any tank killer or building the opponent may place to defend them. Additionally, the Evolved Battle Ram's charge damage will decimate swarm cards that can destroy the P.E.K.K.A for a positive Elixir trade. The Evolved Battle Ram will also push the P.E.K.K.A forwards if placed correctly, applying extra pressure to the opponent and making it easier for the P.E.K.K.A to reach defending buildings, such as the [[Inferno Tower]], [[Bomb Tower]], and [[Tesla/Evolution|Evolved Tesla]].
+**Conversely, the P.E.K.K.A is a pretty good counter to the Evolved Battle Ram. Her damage with the help of the Crown Tower will destroy the Evolved Battle Ram and she can OHKO the spawned Evolved Barbarians, while also being immune to its knockback, giving the player deadly counterpush potential with a very healthy P.E.K.K.A. Although, the initial interaction is a -3 Elixir trade, so the P.E.K.K.A should only be used when the player can afford a counterattack.
+*Due to its high damage and [[Barbarians/Evolution|Evolved Barbarians]], the Evolved Battle Ram is very strong as a distraction for an offensive [[X-Bow]]. The charge will knockback anything the opponent uses to defend the X-Bow, Clearing the path to the X-Bow. Notably, its high damage will take a sizable chunk of hitpoints out of the X-Bow and any defensive buildings each connection. However, if the Ram is destroyed, the Barbarians will not distract the X-Bow, so it will lock onto the Crown Tower if no other distraction units are present. In this case, it's highly recommended to use something cheap, such as a [[Fire Spirit]], [[Ice Spirit]], or Skeletons to distract the X-Bow for that short time.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Battle Ram Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||Medium (60)||1 sec||Melee: Short (0.5)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+!Self Pushback
+{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||3.5
+|2||Buildings||Ground
+|}
+
+{{StatisticsSubheader|Evolved Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Boost Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+|-
+|1.3 sec||Medium (60)||1 sec||Melee: Short (0.7)||Ground||x2||Ground||3 sec||+30%
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: ram_hp_11 | 967 }}
+{{#vardefine: ram_dmg_11 | 286 }}
+{{#vardefine: charge_11 | 573 }}
+{{#vardefine: push_11 | 212 }}
+{{#vardefine: hp_11 | 737 }}
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: atk_speed | 1.3 }}
+{{#vardefine: rage | 0.97 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Evolved Battle Ram Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Evolved Battle Ram Damage<br />{{Icon|I=Damage}}
+! scope="col" |Evolved Battle Ram Charge Damage<br />{{Icon|I=Boost}}
+! scope="col" |Evolved Battle Ram Charge Pushback Damage<br />{{Icon|I=Damage}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|Boosted Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:ram_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 4 || {{#expr: {{#var:ram_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 5 || {{#expr: {{#var:ram_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 6 || {{#expr: {{#var:ram_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 7 || {{#expr: {{#var:ram_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 8 || {{#expr: {{#var:ram_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 9 || {{#expr: {{#var:ram_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 10 || {{#expr: {{#var:ram_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 11 || {{#var:ram_hp_11}} || {{#var:ram_dmg_11}} || {{#var:charge_11}} || {{#var:push_11}} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}|| {{Dps|{{#var:dmg_11}}|{{#var:rage}} }}
+|-
+| 12 || {{#expr: {{#var:ram_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 13 || {{#expr: {{#var:ram_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 14 || {{#expr: {{#var:ram_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 15 || {{#expr: {{#var:ram_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 16 || {{#expr: {{#var:ram_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:push_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:rage}} }}
+|-
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+==Gallery==
+<gallery>
+File:Evolved Battle Ram card render.png|Current card render.
+File:Evolved Battle Ram Preview.gif|Current card preview
+File:BattleRamEvoShard.png|Evolution Shard.
+File:Evolved Battle Ram 1.png|Evolved Battle Ram
+</gallery>
+
+==History==
+2024
+*The Battle Ram's Evolution card was added to the game on 1/4/2024, in the [[Version History#Pass Royale and more (1/4/2024)|April 2024 Update]].
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the [[Barbarians/Evolution|Evolved Barbarians]]' attack speed boost to 3 seconds (from 2 seconds), decreased the Evolved Barbarians' hitpoints to 110% of the originals' (from 125%), and removed the Evolved Battle Ram's ability to push back large [[:Category:Troop Cards|troops]].
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], fixed a bug where the Evolved Battle Ram would deal no damage to large troops.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Barbarians after death.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Evolved Battle Ram's hitpoints by 0.1% and its charge damage by 0.17%. It also fixed a bug where Evolved Barbarians would not spawn after being buffed by [[Royal Chef]].
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the Rage's speed boost to 30% (from 35%).
+
+==Trivia==
+*A [https://en.wikipedia.org/wiki/Battering_ram battering ram] is a siege engine that originated in ancient times and was designed to break open the masonry walls of fortifications or splinter their wooden gates. In its simplest form, a battering ram is just a large, heavy log carried by several people and propelled with force against an obstacle; the ram would be sufficient to damage the target if the log were massive enough and/or it were moved quickly enough. The earliest depiction of a possible battering ram is from the tomb of the 11th Dynasty noble Khety, where a pair of soldiers advance towards a fortress under the protection of a mobile roofed structure, carrying a long pole that may represent a simple battering ram.
+**In the German, Norwegian, Turkish, Indonesian and Finnish language settings of the game, the Battle Ram's name translates to "Battering Ram". In the Japanese, Chinese, Persian, Malaysian, Thai, and Vietnamese language settings of the game, the Battle Ram's name translates to "Siege Barbarian", "Barbarian Battering Ram", "Battle Tower", "Crasher", "Fight Bumper", and "Castle Breaking Weapon" respectively.
+**The head of the Evolved Battle Ram resembles that of the [https://clashofclans.fandom.com/wiki/Wall_Wrecker Level 3 Wall Wrecker] from Clash of Clans.
+*The Battle Ram’s Evolution is 1 of 2 evolved [[:Category:Troop Cards|troops]] with a charge, the other being [[Royal Recruits/Evolution|Royal Recruits]].
+*The Battle Ram's Evolution is the only evolved [[Cards|card]] that can spawn another evolved card, that being [[Barbarians/Evolution|Evolved Barbarians]].
+*The Battle Ram's Evolution is the subject of an [[Emotes|Emote]].
+**It is also 1 of 4 evolved card whose regular card is not the subject of any Emote, the others being Royal Recruits, [[Zap/Evolution|Zap]], and [[Giant Snowball/Evolution|Giant Snowball]].
+
+{{Navigation|Card}}

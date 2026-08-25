@@ -1,0 +1,853 @@
+{{Protection}}
+<div class="major-text">
+'''Throughout the course of time, Supercell has introduced updates to Clash Royale that fix bugs, balance battles, introduce new [[Cards]] and create new game mechanics.'''
+</div>
+
+== August (8) 2026 ==
+
+=== [[Pass Royale]] and more (3/8/2026) ===
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}}2 New [[Heroes]]: [[Berserker]] and [[Valkyrie]] 
+* {{Balance|Add|Evo}}1 New [[Card Evolution|Evolution]]: [[Elite Barbarians]]
+* {{Balance|Temp}}Level Boosts: [[Berserker]], [[Valkyrie]], [[Elite Barbarians]], and [[Rune Giant]]
+
+=== Balance Changes (4/8/2026) ===
+
+* {{Balance|Nerf}}[[Ice Spirit]], [[Electro Spirit]], [[Fire Spirit]], and [[Heal Spirit]]: Hitpoints -6%
+* {{Balance|Nerf|Hero}} Champions and [[Heroes]] (minus [[Boss Bandit]]): Will no longer have multi-use abilities. Instead, they will be single use
+* {{Balance|Buff}}[[Little Prince]]:
+** {{Balance|Buff}}Little Prince will now maintain his charged-up Hit Speed for up to 0.3 seconds while moving
+** {{Balance|Buff}}Guardian Melee Damage +7%
+* {{Balance|Neutral}}[[Goblinstein]]:
+** {{Balance|Buff}}Doctor Damage +47%
+** {{Balance|Nerf}}Ability DPS -12%
+* {{Balance|Buff}}[[Mighty Miner]]: Base Damage +8%
+* {{Balance|Neutral|Evo}}[[Witch/Evolution|Evo Witch]]:
+** {{Balance|Buff}}Heal per Skeleton +189%
+** {{Balance|Buff}}Max HP +40%
+** {{Balance|Buff}}Overheal Ratio +40%
+** {{Balance|Nerf}}She can now only be healed by the first 4 Skeletons
+* {{Balance|Neutral}}[[Battle Healer]]:
+** {{Balance|Buff}}Damage +81%
+** {{Balance|Nerf}}Hit Speed increased to 2s (from 1.5s)
+** {{Balance|Buff}}DPS +35%
+** {{Balance|Nerf}}Heal per Second -25%
+** {{Balance|Nerf}}Heal Radius -25%
+** {{Balance|Nerf}}Heal Area -44%
+** {{Balance|Remove}}No longer heals herself. She will also not be able to heal other Battle Healers
+* {{Balance|Neutral}}[[Void]]:
+** {{Balance|Nerf}}Elixir Cost increased to 5 (from 3)
+** {{Balance|Nerf}}Hit Speed increased to 1.2s (from 1s)
+** {{Balance|Buff}}1 Target Damage +105%
+** {{Balance|Buff}}2-4 Target Damage +83%
+** {{Balance|Buff}}5+ Target Damage +101%
+** {{Balance|Buff}}1 Target Tower Damage +102%
+** {{Balance|Buff}}2-4 Target Tower Damage +104%
+** {{Balance|Buff}}5+ Target Tower Damage +106%
+* {{Balance|Buff}}[[Goblin Curse]]: A Slowdown Effect is now being added into the spell
+* {{Balance|Neutral}}[[Goblin Machine]]:
+** {{Balance|Nerf}}Rocket Hit Speed increased to 5s (from 3.5s)
+** {{Balance|Buff}}Rocket Speed +40%
+** {{Balance|Buff}}Melee Damage +9%
+** {{Balance|Buff}}Hitpoints +5%
+* {{Balance|Buff}}[[Rune Giant]]:
+** {{Balance|Buff}}Hitpoints +6%
+** {{Balance|Buff}}Enchantment Cast Time Delay Removed
+** {{Balance|Buff}}No longer enchants suicide troops (such as Wall Breakers, Spirits, etc.)
+* {{Balance|Nerf}}[[Ronin]]: First Hit Time increased to 0.4s (from 0.3s)
+* {{Balance|Neutral}}[[X-Bow]]:
+** {{Balance|Nerf}}Hit Speed increased to 0.4s (from 0.3s)
+** {{Balance|Buff}}Damage +35%
+** {{Balance|Buff}}Projectile Speed +14%
+* {{Balance|Buff}}[[Mortar]]: Hit Speed decreased to 4.7s (from 5s)
+** {{Balance|Neutral|Evo}}[[Mortar/Evolution|Evo Mortar]]: Hit Speed increased to 4.7s (from 4s)
+* {{Balance|Buff}}[[Barbarians]]: Hitpoints +4%
+* {{Balance|Neutral|Evo}}[[Barbarians/Evolution|Evo Barbarians]]: 
+** {{Balance|Remove}}Bonus HP has been removed. They will now have the same HP as their base counterparts
+** {{Balance|Buff}}Ability Duration increases to 5s (from 3s)
+* {{Balance|Buff}}[[Goblins]]: Damage +4%
+* {{Balance|Neutral|Hero}}[[Goblins/Hero|Hero Goblins]]:
+** {{Balance|Buff}}Ability Deploy Time decreases to 1s (from 1.3s)
+** {{Balance|Nerf}}Number of Brigade Goblins decreases to 2 (from 3)
+* {{Balance|Neutral|Hero}}[[Ice Golem/Hero|Hero Ice Golem]]:
+** {{Balance|Nerf}}The 3rd Blast Effect went from being a freeze effect to a slowdown effect
+** {{Balance|Buff}}3rd Blast Damage +82%
+* {{Balance|Neutral|Hero}}[[Mega Minion/Hero|Hero Mega Minion]]:
+** {{Balance|Nerf}}Tower Multiplier decreases to 0.25x (from 0.5x)
+** {{Balance|Nerf}}Damage Reduction on Towers is now permanent (from 5s)
+** {{Balance|Buff}}Warp Damage +7%
+* {{Balance|Neutral|Evo}}[[Mega Knight/Evolution|Evo Mega Knight]]:
+** {{Balance|Nerf}}Knocks back troops every 2 hits (from every hit)
+** {{Balance|Buff}}Knockback against large troops increases to 4 tiles (from 2.5 tiles)
+* {{Balance|Nerf|Evo}}[[Archers/Evolution|Evo Archers]]: Power Shot Damage -17%
+* {{Balance|Nerf|Evo}}[[Goblin Barrel/Evolution|Evo Goblin Barrel]]: Decoy Damage -26%
+* {{Balance|Nerf|Evo}}[[Goblin Cage/Evolution|Evo Goblin Cage]]:
+** {{Balance|Nerf}}Increases to 2 cycles (from 1)
+** {{Balance|Buff}}Trapped DPS +9%
+** {{Balance|Buff}}Ability Cooldown decreases to 0.3s (from 0.5s)
+* {{Balance|Nerf|Evo}}[[Valkyrie/Evolution|Evo Valkyrie]]: Tornado Damage -50%
+* {{Balance|Nerf}}[[Bowler]]: Projectile Range decreases to 7 tiles (from 7.5 tiles)
+* {{Balance|Nerf}}[[Executioner]]: Projectile Range decreases to 7 tiles (from 7.5 tiles)
+* {{Balance|Nerf}}[[Wall Breakers|Wall Breakers:]] Death Damage -20%
+* {{Balance|Nerf|Evo}}[[Giant Snowball/Evolution|Evo Giant Snowball]]: Projectile Range decreases to 4 tiles (from 4.5 tiles)
+* {{Balance|Add|Hero}}[[Tombstone/Hero|Hero Tombstone]]:
+** {{Balance|Buff}}Tomb Queen Damage +32%
+** {{Balance|Buff}}Sight Range increases to 7 tiles (from 5.5 tiles)
+** {{Balance|Buff}}Hitpoints +4%
+* {{Balance|Buff|Evo}}[[Princess/Evolution|Evo Princess]]:
+** {{Balance|Buff}}Slows down troops every 2 attacks (from every 3 attacks)
+** {{Balance|Nerf}}Slowdown duration decreases to 5.5s (from 7s)
+* {{Balance|Buff|Evo}}[[Minion Horde/Evolution|Evo Minion Horde]]: Invisible Hit Speed increases to 0.67x (from 0.5x)
+* {{Balance|Buff}}[[Spear Goblins]]: Hit Speed decreases to 1.6s (from 1.7s)
+* {{Balance|Buff}}[[Suspicious Bush]]: Hitpoints +11%
+* {{Balance|Remove}}[[Goblin Drill]]: Damage to Crown Towers removed
+* {{Balance|Nerf}}[[Magic Archer]]: Damage -6%
+* {{Balance|Nerf}}[[Royal Delivery]]: Landing Damage -12%
+* {{Balance|Nerf}}[[Zappies]]: Hit Speed increased to 2.2s (from 2.1s)
+* {{Balance|Buff}}[[Furnace]]: Spawn Speed decreased to 5s (from 7s)
+* {{Balance|Buff}}[[Goblin Giant]]: Backpack Hit Speed decreases to 1.6s (from 1.7s)
+
+'''Merge Tactics'''
+*{{Balance|Buff}}[[Goblin Queen]]: Quest Objectvive decreased to 2/8/20 (from 3/10/25)
+*{{Balance|Nerf}}[[Grand Warden]]: Quest Objective increased to 3/10 (from 2/8)
+*{{Balance|Nerf}}[[Royale King]]: Quest Objective increased to 2/3 (from 1/2)
+*{{Balance|Nerf}}[[Spirit Empress/Merge Tactics|Spirit Empress]]: Quest Objective increased to 20/60 (from 15/50)
+*{{Balance|Buff}}[[Tomb Queen]]: Quest Objective decreased to 15/50 (from 20/60)
+
+==July (7) 2026==
+
+=== Merge Tactics Seasonal Update (13/7/2026) ===
+
+* [[Ronin/Merge Tactics|Ronin]] added. [[Modifiers#Ruler Modifiers|Ruler Modifier]]: Double Edge.
+* {{Balance|Neutral}} [[Goblin Queen]] returns as the secondary ruler.
+* {{Balance|Add}} New [[:Category:Troop Cards|troops]]:
+** {{Balance|Add}} [[:Category:3-Golden Elixir Cards|3-Golden Elixir]]: [[Electro Giant/Merge Tactics|Electro Giant]] ({{Trait|Electric}})
+** {{Balance|Add}} [[:Category:4-Golden Elixir Cards|4-Golden Elixir]]: [[Electro Wizard/Merge Tactics|Electro Wizard]] ({{Trait|Electric}})
+**{{Balance|Add}} {{Trait|Electric}}: After 6 seconds, lightning strikes all enemies once and stunned troops 3x
+
+=== [[Pass Royale]] and more (6/7/2026) ===
+'''Honor & Exile (Season 85)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Sage Echo Monk Tower Skin. Other Tower Skins (Ancient Japan, Hog Mountain, Ronin Temple) will be available in the game.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: Ronin Chill Tea. Many other Emotes will be available. These are: Boss Bandit No, Goblin Nope, Ronin Epic Walk, Ronin Hats Up, Ronin Jobs Done, Ronin Kill List and Ronin Slashing
+* {{Balance|Add}} [[Arenas|Arena]]: Ancient Japan Arena
+* {{Balance|Add}} [[Battle Banners|Banner]] Item: Memories of Life Past! Around 14 other Banner items will be available.
+* {{Balance|Temp}} [[C.H.A.O.S.]] mode is back. New cards added, few old modifies changed, and some cards rotated every week. 
+
+'''Card Modifiers'''
+
+* {{Balance|Add}} 1 New [[Cards]]: [[Ronin]]
+* {{Balance|Temp}} Level Boosts: [[Mega Knight]], [[P.E.K.K.A.]], [[Boss Bandit]] and [[Prince]]
+
+'''Balance Changes'''
+
+* {{Balance|Nerf|Evo}} [[Executioner/Evolution|Evo Executioner]]:
+**{{Balance|Nerf}} Close Quarters range decreased to 2.5 tiles (from 3.5)
+**{{Balance|Nerf}} Close Quarters damage -10%
+*{{Balance|Nerf|Hero}} [[Magic Archer/Hero|Hero Magic Archer]]:
+**{{Balance|Nerf}} Ability range decreased to 13.5 tiles (from 15.5)
+**{{Balance|Nerf}} Teleport Distance decreased to 3.5 tiles (from 5)
+**{{Balance|Nerf}} Decoy hitpoints -57%
+*{{Balance|Nerf|Hero}} [[Balloon/Hero|Hero Balloon]]:
+**{{Balance|Nerf}} Skeletrooper Landing damage -20%
+**{{Balance|Nerf}} Skeletroper hitspeed increased to 1.1sec (from 0.9)
+*{{Balance|Nerf|Hero}} [[Knight/Hero|Hero Knight]]: Shield Hitpoints -33%
+*{{Balance|Add|Hero}} [[Goblins/Hero|Hero Goblins]]: Ability Deploy time increased to 1.3sec (from 1)
+*{{Balance|Nerf}}[[Miner]]: Tower Damage -17%
+*{{Balance|Neutral|Hero}} [[Tombstone/Hero|Hero Tombstone]]:
+**{{Balance|Buff}} Tomb Queen +20%
+**{{Balance|Remove}} Removed Tomb Queen spawn (not death)
+**{{Balance|Buff}} Abiliy cost decreased to 5 (from 6)
+*{{Balance|Buff}} [[Ram Rider]]: Hitpoints +4%
+*{{Balance|Buff}} [[Baby Dragon]]: Damage +4%
+*{{Balance|Buff}} [[P.E.K.K.A.]]: Damage +3%
+*{{Balance|Buff}} [[Electro Giant]]: Hitpoints +3%
+
+===Merge Tactics Balance Changes (2/7/2026)===
+*{{Balance|Buff}}[[Echo Sage]]: Quest Objective decreased to 1/3/7 (from 2/6/18)
+*{{Balance|Buff}}[[Grand Warden]]: First shield AOE increased to 3 tiles (from 1 tile)
+*{{Balance|Buff}}[[Tomb Queen]]:
+**{{Balance|Buff}}Tomb Queen hp +50%
+**{{Balance|Nerf}}Tomb Queen hit speed increased to 0.6 (from 0.5)
+*{{Balance|Buff}} [[Firecracker/Merge Tactics|Firecracker]]: Attack damage increased by 25%
+*{{Balance|Buff}} [[Magic Archer/Merge Tactics|Magic Archer]]: Attack damge increased by 14%
+*{{Balance|Neutral}} [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]]:
+**{{Balance|Nerf}} Hitpoints decreased by 50%
+**{{Balance|Nerf}} Damage decreased by 20%
+**{{Balance|Buff}} Attack speed decreased to 1.25 (from 1.42)
+*{{Balance|Buff}} [[Baby Dragon/Merge Tactics]]: Hitpoints increased by 12.5%
+*{{Balance|Nerf}} [[Golden Knight/Merge Tactics|Golden Knight]]:
+**{{Balance|Nerf}} Hitpoints decreased by 17%
+**{{Balance|Nerf}} Attack speed decreased to 1.25sec (from 1sec)
+*{{Balance|Buff}} [[Boss Bandit/Merge Tactics|Boss Bandit]]:
+**{{Balance|Buff}}Hitpoints increased by 33%
+**{{Balance|Buff}}Hitpoints Growth increased to 1.6 (from 1.4)
+*{{Balance|Neutral}}{{Trait|Forest}}:
+**{{Balance|Add}} Allies also gain bonus Hit Speed.
+**{{Balance|Nerf}} 2 Forest decreased to 15% (from 30%)
+**{{Balance|Nerf}} 4 Forest decreased to 30% (from 50%)
+**{{Balance|Nerf}} 6 Forest decreased to 60% (from 100%)
+*{{Balance|Add}}Fisherman's Hook equipment: Added a 3sec slowdown
+*{{Balance|Nerf}}Maiden's Shield equipment: Durability decreased to 5 (from 6)
+*{{Balance|Neutral}}Valkyrie's Axe equipment:
+**{{Balance|Buff}}Radius increased to 2 (from 1)
+**{{Balance|Nerf}}Durability decreased to 3 (from 10)
+**{{Balance|Buff}}Splash Damage +50%
+*{{Balance|Neutral}} Quest orb rewards are changed. The Rewards are now:
+**Quest 1 orb:
+***6 Elixir
+***Equipment: Maiden's Shield, Prince's Lance, Fisherman's Hook, Valkyrie's Axe, Assassin Blade, Juggernaut Armor, Ranger Crossbow or Superstar Ring
+**Quest 2 orb:
+***12 Elixir
+***2-star: [[Giant/Merge Tactics|Giant]], [[Royal Giant/Merge Tactics|Royal Giant]], [[Goblin Cage/Merge Tactics|Goblin Cage]], [[Baby Dragon/Merge Tactics|Baby Dragon]] or [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]]
+**Quest 3 orb:
+***24 Elixir
+***3-star: [[Golden Knight/Merge Tactics|Golden Knight]], [[Archer Queen/Merge Tactics|Archer Queen]], [[Skeleton King/Merge Tactics|Skeleton King]], [[Boss Bandit/Merge Tactics|Boss Bandit]], [[Electro Giant/Merge Tactics|Electro Giant]], [[Electro Wizard/Merge Tactics|Electro Wizard]], [[P.E.K.K.A./Merge Tactics|P.E.K.K.A]], [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]], [[Monk/Merge Tactics|Monk]] or [[Mega Knight/Merge Tactics|Mega Knight]]
+
+==June (6) 2026==
+
+=== [[Pass Royale]] and more (1/6/2026) ===
+'''Stone Cold (Season 84)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Frozen Lair Tower Skin. Other Tower Skins (Snow Fortress) will be available in the game.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: Princess Evolution Nail File. Many other Emotes will be available. These are: Goblin Referee Red, Goblin Referee Yellow, Hog Rider Flex, Knight Slide, Princess Evolution Finger Heart, Princess Evolution Snoring, Hero Tombstone Floss Dance, Hero Tombstone Funeral, Hero Tombstone High Strike and Hero Tombstone Surprise
+* {{Balance|Add}} [[Arenas|Arena]]: 10th Birthday Arena
+* {{Balance|Add}} [[Battle Banners|Banner]] Item: Ice Power! Around 18 other Banner items will be available.
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}} 1 New [[Heroes]]: [[Tombstone/Hero|Tombstone]]
+* {{Balance|Add|Evo}} 1 New [[Card Evolution|Evolution]]: [[Princess/Evolution|Princess]]
+* {{Balance|Temp}} Level Boosts: [[Princess]], [[Tombstone]], [[Goblin Gang]] and [[Goblin Barrel]]
+
+'''Balance Changes'''
+
+* {{Balance|Nerf}} [[:Category:Spell Cards|Spells]] (except [[Void]] & [[Goblin Curse]]): [[:Category:Tower Troop Cards|Crown Tower]] Damage decreased by 7-19%
+*{{Balance|Nerf|Hero}} [[Bowler/Hero|Hero Bowler]]: Ability Duration decreased to 7.3sec (from 9.0)
+*{{Balance|Neutral|Hero}} [[Dark Prince/Hero|Hero Dark Prince]]:
+**{{Balance|Remove}} Rhino Spawn Damage to towers removed
+**{{Balance|Add}} First Charche Distance added
+**{{Balance|Buff}} Ability deploy time decreased to 1sec (from 2)
+*{{Balance|Nerf|Hero}} [[Balloon/Hero|Hero Balloon]]: Skeletrooper Landing damage -14%
+*{{Balance|Neutral|Evo}} [[Mega Knight/Evolution|Evo Mega Knight]]: Knockback against heavy troops reduced to 2.5 tiles (from 4)
+*{{Balance|Nerf|Evo}} [[Inferno Dragon/Evolution|Evo Infrerno Dragon]]: Ability Duration decreased to 7sec (from 9sec)
+*{{Balance|Nerf|Evo}} [[Mortar/Evolution|Evo Mortar]]: Goblin deploytime increased to 0.5sec (from 0.2)
+*{{Balance|Nerf|Evo}} [[Lumberjack/Evolution|Evo Lumberjack]]: Ghost tower damage -50%
+*{{Balance|Nerf}} [[Furnace]]: Range decreased to 5.5 tiles (from 6)
+*{{Balance|Nerf}} [[Rascals]]: Boy hitpoints -6%
+*{{Balance|Neutral}} [[Tesla]]:
+**{{Balance|Buff}} Hitpoints increased by 3%
+**{{Balance|Nerf}} Lifetime decreased to 25sec (from 30sec)
+*{{Balance|Nerf}} [[Graveyard]]: Skeleton count decreased to 12 (from 13)
+*{{Balance|Buff|Evo}} [[Dart Goblin/Evolution|Evo Dart Goblin]]:
+**{{Balance|Buff}} Stage 1 damage +25%
+**{{Balance|Buff}} Stage 2 damage +11%
+*{{Balance|Buff}} [[Goblin Giant]]: Hitpoints +3%
+*{{Balance|Buff}} [[Electro Dragon]]: Hitpoints +5%
+*{{Balance|Buff}} [[Rune Giant]]: Damage +28%
+
+'''Merge Tactics Balance Changes'''
+*{{Balance|Nerf}} [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A]]: Hitpoints decreased by 43%
+*{{Balance|Nerf}} {{Trait|Boss}}: damage and hp bonus decreased to 25/50/100/200% (from 50/100/200/400%)
+*{{Balance|Buff}} [[Battle Machine]]: Quest task decreased to 1/5/15 (from 2/8/20)
+*{{Balance|Buff}} [[Grand Warden]]: Quest task decreased to 2/8/20 (from 3/10/25)
+*{{Balance|Buff}} [[Royale King]]: Quest task 1+2 decreased to 1/2 (from 2/3)
+*{{Balance|Buff}} [[Tomb Queen]]: Quest task decreased to 3/20/60 (from 10/25/80)
+
+==May (5) 2026==
+
+===2026 Q2 Update (26/5/2026)===
+
+'''Experience removed & King level'''
+*{{Balance|Remove}} [[Experience]] is being removed.
+*{{Balance|Neutral}}Unlock will be at the [[Arenas|trophy road]]:
+**[[Clans|Clan]] unlock at arena 1 (from level 1)
+**Deck Slots unlock at arena 1 (from level 2)
+**Clan Donation unlock at arena 2 (from level 3)
+**[[Pass Royale]] unlock at arena 2 (from level 7)
+**[[Clan Wars]] unlock at arena 3 (from level 10)
+**Clan Trading unlock at arena 3 (from level 16)
+**[[Card Mastery]] unlock at arena 4 (from level 14)
+**[[Star Points]] unlock at arena 5 (from level 9)
+*{{Balance|Neutral}}[[King's Tower|King level]] updrage is being changed from level to having a centain amount of card at a certain card level.
+
+'''King's Journey removed & collection level'''
+*{{Balance|Remove}} The kings journey is being removed
+**{{Balance|Neutral}} All unclaimed rewards will be autocollected
+*{{Balance|Add}} [[Collection Level]] is a new way to earn rewards
+*Uprade cards, and unlock [[heroes]] and [[Card Evolution|evolutions]], to progress through the collection levels to earn reward
+*The collection level=levels of every card you own & +5 for every evo and hero form you own.
+*{{Balance|Add}} When the update comes out, you will get rewards depending on where you will be
+
+'''Mastery changes'''
+*{{Balance|Buff}} All [[Card Mastery|mastery]] task will be much easier to complete
+**Because of this, some numbers in this wiki will be higher than what you actually need
+*{{Balance|Neutral}} All rewards are changed to only gold (giving 4.000, 6.000 and 15.000 respectfully)
+
+'''Seasonal Arena'''
+*{{Balance|Add}} After 14,000 trophies, you unlock seasonal arenas
+*The first arena is normal. Unlock 500 trophies to get to arena two
+*Arena two will have the 8 cards you played the most banned. Get a badge afer getting 500 trophies.
+*{{Balance|Buff}} All cards in arena 2 are bosted to level 15
+
+'''Victory Run'''
+*{{Balance|Add}} Victory run is a event on the home screen.
+*Win games to climb up and get rewards
+*You have 3 lives (4 with pass royale). Loss all your lives, and you can spend 10 gems, or fall down.
+*There will be checkpoints. But the distance will be further, the higher you are.
+
+'''Princess Gambit'''
+*{{Balance|Add}} Princess Gambit is a new game mode comming to the game
+*It has a total of 40 cards (6 Spells, 4 Win Conditions, 4 Heavy Cards, 2 Buildings and 24 Support Cards).
+*There is no decks. You just get the 40 cards in your hand at random
+*The start of the match will show the active evolutions and heroes. Evolutions has 0 cycles
+*There is no king tower, and its all in Sudden Death
+
+'''Other Changes'''
+*{{Balance|Add}} if you stop playing for a while, the daily rewards will be better
+*{{Balance|Add}} You can now spectate Global Tournaments
+*{{Balance|Add}} You can now favourite [[Battle Banners]]. This is the same as emotes, as they will appear at the top.
+*{{Balance|Add}} You can now skip tiers in [[Pass Royale|pass royale]]. 10gems per crown
+*{{Balance|Add}} If you buy Pass Royale multiple times in a row, you may gain a bonus reward
+**Do note that this is in testing, and not necessarily be available for all players.
+*{{Balance|Add}} Mini Pass is being added to the game. Its like pass royale, but cheaper, shorter and less rewards. Free to play can still get some rewards.
+**Do note that this is in testing, and not necessarily be available for all players.
+*{{Balance|Neutral}} Other minor bug fixes and improvements
+
+'''Merge Tactics Seasonal Update'''
+* {{Balance|Add}} [[Tomb Queen]] added. [[Modifiers#Ruler Modifiers|Ruler Modifier]]: Regal Revival.
+* {{Balance|Neutral}} [[Echo Sage]] returns as the secondary ruler.
+* {{Balance|Add}} Ruler quest are added. Every ruler has a quest with 3 milestones: they are
+** [[Royale King]]: Lose 2/3/4 rounds in one game
+** [[Spirit Empress/Merge Tactics|Spirit Empress]]: Merge 3/15/50 troops in one game
+** [[Goblin Queen]]: Get 3/10/25 Goblins from {{Trait|Goblin}} Trait or Goblin Queen's passive ability
+** [[Elixir Loong]]: Win 2/3/5 rounds in a row
+** [[Battle Machine]]: Buildings destroy 2/8/20 troops in one game
+** [[Echo Sage]]: Knock out 2/6/18 troops in one game
+** [[Dagger Duchess/Merge Tactics|Dagger Duchess]]: Win 1/2/4 rounds in less than 8s
+** [[Grand Warden]]: Shields affect 3/10/25 troops in one game
+** [[Tomb Queen]]: Tombstone summons 10/25/80 troops in one game
+*{{Balance|Add}} Completing these task unlocks orbs, depending what milestone you complete. The rewards are:
+**Quest 1 orb:
+***5 Elixir
+***1-star: [[Giant/Merge Tactics|Giant]], [[Royal Giant/Merge Tactics|Royal Giant]], [[Goblin Cage/Merge Tactics|Goblin Cage]], [[Baby Dragon/Merge Tactics|Baby Dragon]] or [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]]
+***Equipment: Maiden's Shield, Prince's Lance, Fisherman's Hook or Valkyrie's Axe
+**Quest 2 orb:
+***10 Elixir
+***2-star: [[P.E.K.K.A./Merge Tactics|P.E.K.K.A]], [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]], [[Monk/Merge Tactics|Monk]] or [[Mega Knight/Merge Tactics|Mega Knight]]
+***Equipment: Assassin Blade, Juggernaut Armor, Ranger Crossbow or Superstar Ring
+**Quest 3 orb:
+***20 Elixir
+***3-star: [[P.E.K.K.A./Merge Tactics|P.E.K.K.A]], [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]], [[Monk/Merge Tactics|Monk]] or [[Mega Knight/Merge Tactics|Mega Knight]]
+***Equipment: Clan Horn, Forest Flute, Goblin Lute, Noble Trumpet, Undead Drum
+* {{Balance|Add}} New [[:Category:Troop Cards|troops]] and Traits:
+** {{Balance|Add}} [[:Category:2-Golden Elixir Cards|2-Golden Elixir]]: [[Firecracker/Merge Tactics|Firecracker]] ({{Trait|Forest}})
+** {{Balance|Add}} [[:Category:3-Golden Elixir Cards|3-Golden Elixir]]: [[Magic Archer/Merge Tactics|Magic Archer]] ({{Trait|Forest}})
+** {{Balance|Add}} [[:Category:4-Golden Elixir Cards|4-Golden Elixir]]: [[Goblin Cage/Merge Tactics|Goblin Cage]] ({{Trait|Goblin}})
+** {{Balance|Add}} [[:Category:5-Golden Elixir Cards|5-Golden Elixir]]: [[Boss Bandit/Merge Tactics|Boss Bandit]] ({{Trait|Forest}})
+** {{Balance|Add}} {{Trait|Forest}}: Lowest HP% Forest gains invisibility and bonus Hit Speed for 2.5s every few seconds
+** {{Balance|Add}} {{Trait|Boss}}: Orb Exclusive: Bosses gain bonus damage and HP
+** {{Balance|Add}} [[Bomber/Merge Tactics|Bomber]] ({{Trait|Undead}}), [[Spear Goblins/Merge Tactics|Spear Goblins]] ({{Trait|Goblin}}) and [[Mega Knight/Merge Tactics|Mega Knight]] ({{Trait|Boss}}) comes back
+
+* Troop & Trait changes:
+** {{Balance|Nerf}} [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]], [[P.E.K.K.A./Merge Tactics|P.E.K.K.A.]], [[Monk/Merge Tactics|Monk]], [[Giant/Merge Tactics|Giant]], [[Baby Dragon/Merge Tactics|Baby Dragon]], [[Royal Giant/Merge Tactics|Royal Giant]] and [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]] can now only be unlocked in orbs
+** {{Balance|Add}} [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]] now cooks pancakes the level up a random ally
+**{{Balance|Add}}  [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]] now absorbs 10/20/40/80% of surrounding allies' HP and damage, while dealing damage in a 2-hex radius
+** {{Balance|Add}} [[Skeleton King/Merge Tactics|Skeleton King]] now curses enemies on hit, that when killed within 2 sec, get turned into a skeleton
+** {{Balance|Neutral}} {{Trait|Clan}} is changed to: Clans gain bonus HP and the strongest gains bonus hit speed. Clan also gets a 6 bonus
+** {{Balance|Neutral}} {{Trait|Noble}} is changed to: Nobles gain bonus and take less damage. Noble also gets the 6 bonus without the Ultimate Origin modifier
+** {{Balance|Add}}{{Trait|Goblin}} now gain 6 bonus: Gain a 2, 3, and 4-Elixir Goblin each round. Clan also gets a 6 bonus
+** {{Balance|Neutral}} {{Trait|Undead}} is changed to: Each ally defeated increases all Undeads’ HP and damage for the rest of the game. Undead also gets the 6 bonus without the Ultimate Origin modifier
+* {{Balance|Nerf}} All troops now only have 1 [[:Category:Cards by Trait|trait]]. Those being: {{Trait|Clan}}, {{Trait|Noble}}, {{Trait|Goblin}}, {{Trait|Undead}}, {{Trait|Forest}} or {{Trait|Boss}}.
+
+* {{Balance|Add}}New Modifiers:
+** Last Survivor: Combat Start: More tiles become gradually covered with poison, dealing DOT to troops on these tiles (Bronze II).
+** Orb Galore: Start with 1 Orb. Every time a player is eliminated, all other players gain 1 Orb. (Bronze III).
+** Abyss Tile: Combat Start: Troop that steps on this tile is instantly destroyed and the tile disappears (Bronze III).
+** Cursed Tile: Combat Start: Tiled troop loses HP over time and explodes on KO, dealing AoE damage based on its max HP (Silver I).
+** Mine Tile: Combat Start: Mine Tile explodes after 5s, dealing AoE damage to nearby trooops (Silver I).
+** Goblin's Treasure: Combat Start: Goblin's Treasure appears on both sides. Destroy the enemy's to gain a Loot Orb! (Silver II).
+** Wormhole Tile: Combat Start: Tiled troop teleports to the enemy's Wormhole Tile (Silver II).
+** One Life to Live: Gain +2 Elixir per round. Troops retain their HP between rounds and will disappear once defeated (Silver III).
+** Invisible Tile: Combat Start: Tiled Troops become invisible for 5s (Silver III).
+** Long Live the King: Protect the King Dummy! If it's defeated you lose the round (Gold I).
+** Equalization: All troops cost 3 Elixir (Gold II).
+** Battle Royale: Deploy Phase: More tiles will become poisonous from round to round, dealing DOT to troops on these tiles (Gold III).
+* {{Balance|Add}} You can now spectate players after being knocked out.
+
+'''Merge tactics Balance Changes'''
+*{{Balance|Buff}}[[Dagger Duchess/Merge Tactics|Dagger Duchess]]: Now also gives 20% bonus Damage
+* {{Balance|Nerf}}[[Echo Sage]]: Echo HP Growth per Star Level decreased to 1.2 (from 1.4)
+* {{Balance|Buff}}[[Goblin Queen]]: Hitpoints increased to 12 (from 10)
+* {{Balance|Buff}}[[Grand Warden]]: Shield now last infinite (from 8sec)
+* {{Balance|Nerf}}[[Royale King]]: Hitpoints decreased to 10 (from 12)
+* {{Balance|Neutral}}[[Baby Dragon/Merge Tactics|Baby Dragon]]
+**{{Balance|Buff}}Hitpoint increased by 14%
+**{{Balance|Nerf}}Attack Speed decreased to 1.67sec (from 2.0sec)
+*{{Balance|Nerf}}[[Giant/Merge Tactics|Giant]]: Elixir increased to 4 (from 3)
+*{{Balance|Neutral}}[[Witch/Merge Tactics|Witch]]:
+**{{Balance|Nerf}}Skeleton has 100hp and 80 dmg at level 11 (from 20% of witch hp and dmg)
+**{{Balance|Buff}}Spawn speed decreased to 5sec (from 6sec)
+*{{Balance|Neutral}}[[Dart Goblin/Merge Tactics|Dart Goblin]]:
+**{{Balance|Nerf}}Elixir increased to 3 (from 2)
+**{{Balance|Buff}}Hitpoints increased by 29%
+**{{Balance|Buff}}Damage increased by 25%
+*{{Balance|Neutral}}[[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]]:
+**{{Balance|Nerf}}Elixir increased to 3 (from 2)
+**{{Balance|Buff}}Hitpoints increased by 40%
+*{{Balance|Neutral}}[[Prince/Merge Tactics|Prince]]:
+**{{Balance|Buff}}Elixir decreased to 3 (from 4)
+**{{Balance|Nerf}}Hitpoints decreased by 18%
+**{{Balance|Nerf}}Damage decreased by 20%
+*{{Balance|Neutral}}[[Skeleton Dragons/Merge Tactics|Skeleton Dragon]]:
+**{{Balance|Nerf}}Elixir increased to 4 (from 2)
+**{{Balance|Buff}}Hitpoint increased by 60%
+**{{Balance|Buff}}Attack Speed decreased to 1sec (from 1.4 sec)
+*{{Balance|Neutral}}[[Wizard/Merge Tactics|Wizard]]:
+**{{Balance|Nerf}}Elixir increased to 4 (from 2)
+**{{Balance|Buff}}Hitpoint increased by 100%
+**{{Balance|Buff}}Damage increased by 50%
+
+=== [[Pass Royale]] and more (4/5/2026) ===
+'''Siege & Swish (Season 83)'''
+
+* {{Balance|Add}}New [[King's Tower|Tower Skin]]: Dark Prince Tower Skin.
+* {{Balance|Add}}New Exclusive [[Emotes|Emote]]: Hero Dark Prince Rhino Flirt. Many other Emotes will be available. These are: Hero Bowler Awkward, Hero Bowler Creepy, Hero Bowler Dance, Hero Bowler Handsome, Hero Bowler Nope, Hero Dark Prince Buddies, Hero Dark Prince Charge and Hero Dark Prince Immune
+* {{Balance|Add}}[[Arenas|Arena]]: 10th Birthday Arena
+* {{Balance|Add}}[[Battle Banners|Banner]] Item: Raging Rhino! Around 20 other Banner items will be available.
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}}2 New [[Heroes]]: [[Dark Prince/Hero|Dark Prince]] and [[Bowler/Hero|Bowler]]
+* {{Balance|Temp}}Level Boosts: [[Dark Prince]], [[Bowler]], [[Miner]] and [[Tornado]]
+
+'''Balance Changes'''
+* {{Balance|Nerf|Hero}}[[Barbarian Barrel/Hero|Hero Barbarian Barrel]]: Reroll range decreased to 3 tiles (from 4)'
+*{{Balance|Nerf}}[[Dark Prince]]: Hit speed increased to 1.4sec (from 1.3)
+*{{Balance|Nerf}}[[Spirit Empress]]:
+**{{Balance|Nerf}}Ground Hit speed increased to 1.2sec (from 1.1)
+**{{Balance|Nerf}}Ground Hitpoint -3%
+**{{Balance|Nerf}}Air Hitpoints -5%
+*{{Balance|Nerf|Evo}}[[Tesla/Evolution|Evo Tesla]]: Pulse damage -15%
+*{{Balance|Nerf|Evo}}[[Royal Hogs/Evolution|Evo Royal Hogs]]: Landing damage -49%
+*{{Balance|Nerf|Evo}}[[Goblin Drill/Evolution|Evo Goblin Drill]]: Goblins on second submerge decreased to 1 (from 2)
+*{{Balance|Neutral}}[[Electro Giant]]:
+**{{Balance|Buff}}Hit speed decreased to 1.8sec (from 2.1)
+**{{Balance|Buff}}First Hit Time decreased to 1sec (from 1.5)
+**{{Balance|Nerf}}Reflected Tower Damage -24%
+*{{Balance|Neutral}}[[Giant Skeleton]]:
+**{{Balance|Buff}}Death Damage +29%
+**{{Balance|Remove}}Bonus Death Crown dammage removed
+**{{Balance|Nerf}}Hitpoint -7%
+**{{Balance|Neutral}}Collision Radius decreased to 0.75 tiles (from 1)
+*{{Balance|Nerf|Hero}}[[Mega Minion/Hero|Hero Mega Minion]]: Ability Damage -9%
+* {{Balance|Nerf}}[[Skeleton Dragons]]: Damage -6%
+*{{Balance|Remove|Evo}}[[Giant Snowball/Evolution|Evo Giant Snowball]]: Bonus slowdown duration removed
+
+==April (4) 2026==
+
+=== Merge Tactics Seasonal Update (13/4/2026) ===
+* {{Balance|Add}} [[Grand Warden]] added. [[Modifiers#Ruler Modifiers|Ruler Modifier]]: Shield Sponsor.
+* {{Balance|Neutral}} [[Elixir Loong]] returns as the secondary ruler.
+* {{Balance|Add}} New [[:Category:Troop Cards|troops]]:
+** {{Balance|Add}} [[:Category:3-Golden Elixir Cards|3-Golden Elixir]]: [[Executioner/Merge Tactics|Executioner]] ({{Trait|Ace}} and {{Trait|Hinder}}) and [[Royal Ghost/Merge Tactics|Royal Ghost]] ({{Trait|Undead}} and {{Trait|Assassin}})
+** {{Balance|Add}} [[:Category:4-Golden Elixir Cards|4-Golden Elixir]]: [[Bandit/Merge Tactics|Bandit]] ({{Trait|Ace}} and {{Trait|Assassin}}) and [[Princess/Merge Tactics|Princess]] ({{Trait|Noble}} and {{Trait|Hinder}}
+* {{Balance|Add}} Trait changes:
+** {{Balance|Add}} {{Trait|Ace}} now has a 4 bonus: Captain gains +100% damage and heals 50% of damage dealt
+** {{Balance|Add}} {{Trait|Assassin}} now has a 4 bonus: +60% Hit Speed for 3s upon enemy's defeat
+** {{Balance|Add}} {{Trait|Hinder}} now has a 4 bonus: -60% Hit Speed, -60% Movement Speed
+** {{Balance|Add}} {{Trait|Noble}} now has a 6 bonus (with Ultimate Origin modifier): -60% damage taken, +150% damage
+** {{Balance|Add}} {{Trait|Undead}} now has a 6 bonus (with Ultimate Origin modifier): Curses 6 enemies, max HP cut by -80%
+* {{Balance|Add}} New Modifiers:
+** Rage Shield: Tiled troop and surrounding allies gain +50% bonus Hit and Movement Speed for 8s (Bronze III).
+** Slowdown Shield: Tiled troop slows surrounding enemies' Hit and Movement Speed by -35% for 8s (Silver II).
+** Star Shield: Tiled troop and surrounding allies level up (Gold II).
+** Lava Shield: Tiled troop deals DOT to surrounding enemies for 8s (-10% max HP/second) (Diamond).
+** Winners Gonna Win: Winning grants +2 Elixir (Bronze II).
+** 3-Star Fantasy: 3-Star troops gain +100% HP and +50% damage (Silver I).
+** Trait Gift: Round End: Each active Trait grants +1 Elixir (Silver II).
+** We are the Champions: 5-Elixir troops gain +50% HP and +30% damage (Gold I).
+* {{Balance|Buff}} Elixir per round increased to 5 (from 4).
+** {{Balance|Buff}} [[Elixir Loong]] Elixir per round increased to 6 (from 5).
+
+=== Balance Changes (7/4/2026) ===
+*{{Balance|Nerf|Hero}} [[Magic Archer/Hero|Hero Magic Archer]]: Ability cost increased to 2 (from 1)
+*{{Balance|Add|Hero}} [[Mega Minion/Hero|Hero Mega Minion]]: Initial cooldown off 1.5sec added
+*{{Balance|Add|Hero}} [[Goblins/Hero|Hero Goblins]]: Ability spawn 1 tile back
+*{{Balance|Remove|Hero}} [[Ice Golem/Hero|Hero Ice Golem]]: Ability pushback removed
+*{{Balance|Nerf|Hero}} [[Knight/Hero|Hero Knight]]: Taunt window decreased to 0.1sec (from 0.7sec)
+*{{Balance|Nerf|Evo}} [[Skeleton Barrel/Evolution|Evo Skeleton Barrel]]: Death Damage -13%
+*{{Balance|Nerf|Evo}} [[Wall Breakers/Evolution|Evo Wall Breakers]]: Death damage to troops -26%
+*{{Balance|Nerf|Evo}} [[Royal Ghost/Evolution|Evo Royal Ghost]]:
+**{{Balance|Nerf}} Souldier spawn damage -60%
+**{{Balance|Nerf}} Souldier damage -21%
+*{{Balance|Nerf}} [[Suspicious Bush]]: Bush range increased to melee long (from melee short)
+*{{Balance|Nerf}} [[Cannon]]: Damage -5%
+*{{Balance|Neutral}} [[Spear Goblins]]: Spawn further apart
+*{{Balance|Neutral}}[[Skeleton Dragons]]:
+**{{Balance|Buff}}Splash radius increased to 1.5 tiles (from 0.80)
+**{{Balance|Nerf}}Hit Speed increased to 2.0 (from 1.9)
+*{{Balance|Remove}} [[Rune Giant]]: Bonus Damage no longer applies to [[Magic Archer/Hero|Hero Magic Archer's]] Triple Shot
+*{{Balance|Nerf}} [[Goblin Hut]]: Spawn speed decreased to 2.2sec (from 2.1)
+*{{Balance|Remove}} [[Fisherman]]: Hook slowdown removed
+*{{Balance|Buff}} [[Firecracker]]: Projectile Speed increased to 500 (from 400)
+
+=== [[Pass Royale]] and more (6/4/2026) ===
+'''Balloon Festival (Season 82)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: War Balloons (Pass Royale). Other Tower Skins (Funny Balloons, Summer Vibes) will be available in the game.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: Hero Balloon Mind Blown. Many other Emotes will be available. These are: Hero Balloon Pop, Hero Balloon Scary, Bunny Silhouette, King Begging, Evo Minion Horde Cough, Evo Minion Horde Head Dance, Evo Minion Horde Trio and Easter Egg
+* {{Balance|Add}} [[Arenas|Arena]]: 10th Birthday Arena
+* {{Balance|Add}} [[Battle Banners|Banner]] Item: Balloon Battle Around 8 other Banner items will be available.
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}} 1 New [[Heroes|Hero]]: [[Balloon/Hero|Balloon]]
+* {{Balance|Add|Evo}} 1 New [[Card Evolution|Evolution]]: [[Minion Horde/Evolution|Minion Horde]]
+* {{Balance|Temp}} Level Boosts: [[Balloon]], [[Minion Horde]], [[Freeze]] and [[Baby Dragon]]
+
+===Merge Tactics Balance Changes (2/4/2026)===
+*{{Balance|Neutral}} [[Giant Skeleton/Merge Tactics|Giant Skeleton]]:
+**{{Balance|Nerf}} Bomb AOE Damage decreased by 33%
+**{{Balance|Buff}} Stun Duration changed to 1/2/3/5sec
+*{{Balance|Buff}} [[P.E.K.K.A./Merge Tactics|P.E.K.K.A]]: Hitpoints increased by 14%
+*{{Balance|Neutral}} [[Dart Goblin/Merge Tactics|Dart Goblin]]:
+**{{Balance|Nerf}} Attack range decreased to 4 tiles (from 5)
+**{{Balance|Buff}} Attack damge increased by 14%
+
+==March (3) 2026==
+
+===2026 Mid-March Update (16/3/2026)===
+'''Hero Unlock and Slots'''
+*{{Balance|Buff}} Random [[heroes]] are removed. Instead you chose any hero to unlock with 200 hero coins
+*The limit is 200 hero coins. then it will convert 1:1 into gems
+*{{Balance|Neutral}}The special slots are changed to 1evo-1hero-1wild (from 2evo-2hero)
+*Wild slot can have either 1 evo or 1 hero
+**If a card has both a evo and hero form, then you can choose what form to use
+
+'''5-star lucky drop, Bug fixes and QOL changes'''
+*{{Balance|Neutral}}5-star lucky drops now has more wildcards, but less chance
+*{{Balance|Neutral}}Social tab: friends sorted by Ranked score first
+*{{Balance|Neutral}}Social tab: clan icon opens clan info tab
+*{{Balance|Neutral}}Social tab: highlight for unclaimed rewards
+*{{Balance|Neutral}}Social tab: fixed redirection after Clan Wars battles
+*{{Balance|Neutral}}[[Pass Royale]]: item labels for clarity
+*{{Balance|Neutral}}Pass Royale: item details for choice rewards
+*{{Balance|Neutral}}Pass Royale: rewards dependent on choices labelled with "*"
+*{{Balance|Neutral}}Fix: [[Barbarian Barrel/Hero|Hero Barbarian Barrel]] (no longer gets stuck behind towers)
+*{{Balance|Neutral}}Fix: [[Arrows]] stats page (wave damage)
+*{{Balance|Neutral}}Fix: [[Executioner/Evolution|Executioner Evolution]] (more damage to match normal [[Executioner]])
+*{{Balance|Neutral}}Fix: [[Musketeer/Evolution|Musketeer Evolution]] (no longer snipes towers)
+*{{Balance|Nerf}} Chaos: Common [[Goblin Demolisher]] (death damage radius nerfed)
+*{{Balance|Buff}} Chaos: Epic [[X-Bow]] (now hits max range targets)
+*{{Balance|Nerf}} Merge Tactics:Resolved an issue where [[Skeleton Dragons/Merge Tactics|Skeleton Dragon]] could summon a duplicate copy of itself with full HP
+*{{Balance|Nerf}} Merge Tactics: Fixed a bug causing [[Witch/Merge Tactics|Witch]]-summoned skeletons to spawn with excessive HP and damage
+*{{Balance|Nerf}} Merge Tactics: [[Inferno Tower/Merge Tactics|Inferno Tower]] (retargets reset damage)
+*{{Balance|Neutral}} Merge Tactics: [[X-Bow/Merge Tactics|X-Bow]] (attack fixed)
+*{{Balance|Neutral}} Merge Tactics: Jump Tile (stays after round 1)
+*{{Balance|Neutral}} QOL: can now copy/paste 4-card decks
+*{{Balance|Neutral}} QOL: see friend progress in Ranked steps
+
+'''Merge Tactics Balance Changes'''
+*{{Balance|Buff}} [[Goblin Queen]]: Goblin Drop Rate is increased to 33% (from 25%)
+*{{Balance|Buff}} [[Battle Machine]]: Building Ht Speed Growth is increased to 1.2 (from 1.0)
+*{{Balance|Buff}} [[Dagger Duchess/Merge Tactics|Dagger Duchess]]: Dagger Bonus Hit Speed increased to 180% (from 150%)
+*{{Balance|Nerf}} [[Baby Dragon/Merge Tactics|Baby Dragon]]:
+**{{Balance|Nerf}} Damage decreased by 23%
+**{{Balance|Nerf}} Attack Range decreased to 2 tiles (from 3)
+*{{Balance|Buff}} [[Archer Queen/Merge Tactics|Archer Queen]]:
+**{{Balance|Buff}} Hits to Activate ability is 20-50% easier
+**{{Balance|Buff}} Hit Speed is decreased to 1.42 sec (from 1.67)
+*{{Trait|Dragon}}:
+**{{Balance|Nerf}} Damage Reduction reduced to 33% (from 50%)
+**{{Balance|Nerf}} Bonus damage reduced to 33% (from 50%)
+*{{Balance|Buff}} {{Trait|Warrior}}:
+**{{Balance|Buff}} Activation Time is decreased to 4sec (from 8 sec)
+**{{Balance|Buff}} Bonus Damage increased by 33%
+**{{Balance|Buff}} Bonus Hit Speed increased by 33%
+
+=== [[Pass Royale]] and more (2/3/2026) ===
+'''10th Anniversary (Season 81)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: 10th Birthday (Pass Royale). Other Tower Skins (Just Joust) will be available in the game.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: Hero Barbarian Barrel Popup. Many other Emotes will be available. These are: Hero Barbarian Barrel Launch, Hero Barbarian Barrel Self Love, Goblin Cheater, King Silly Walk, Hero Magic Archer Crown Grab, Hero Magic Archer Face Palm, Hero Magic Archer Rainbow Bow and Skeleton Shield Bang
+* {{Balance|Add}} [[Arenas|Arena]]: 10th Birthday Arena
+* {{Balance|Add}} [[Battle Banners|Banner]] Item: Royale 10 Year's Celebration! Around 22 other Banner items will be available.
+* {{Balance|Temp}} [[Lucky Chests#Seasonal Lucky Chest|Seasonal Lucky Chest]]: [[:File:Anniversary Lucky Chest.png|Anniversary Lucky Chest]].
+* {{Balance|Temp}} New gamemode: [[C.H.A.O.S.]]
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}} 2 New [[Heroes]]: [[Barbarian Barrel/Hero|Barbarian Barrel]] and [[Magic Archer/Hero|Magic Archer]]
+* {{Balance|Temp}} Level Boosts: [[Barbarian Barrel]], [[Knight]], [[Battle Ram]] and [[Magic Archer]]
+
+'''Balance Changes'''
+*{{Balance|Nerf}} [[Royal Ghost]]: Invisibility Delay increased to 2sec (from 1.8sec)
+*{{Balance|Nerf|Evo}} [[Royal Hogs/Evolution|Evolved Royal Hogs]]: Landing damage -27%
+*{{Balance|Nerf}} [[Vines]]: Deploy Time increased to 0.9 sec (from 0.4sec)
+*{{Balance|Nerf|Hero}} [[Ice Golem/Hero|Hero Ice Golem]]: Freeze duration decreased to 1.5sec (from 2sec)
+*{{Balance|Nerf}} [[Royal Giant]]: Hit Speed increased to 1.8 sec (from 1.7sec)
+*{{Balance|Neutral}}[[Dart Goblin]]: Sigh Range decreased to 7 tiles (from 7.5)
+*{{Balance|Buff}}[[Phoenix]]:
+**{{Balance|Buff}}Egg Hitpoints +32%
+**{{Balance|Buff}}Egg lifetime decreased to 3.8sec (from 4.3sec)
+*{{Balance|Buff}}[[Bats]]: Hit speed decreased to 1.2sec (from 1.3sec)
+*{{Balance|Neutral}}[[Barbarians]]:
+**{{Balance|Buff}}HP +3%
+**{{Balance|Nerf}}Hit speed increased to 1.4sec (from 1.3)
+*{{Balance|Nerf|Evo}}[[Executioner/Evolution|Evolved Executioner]]: Pushback decreased to 1 tile (from 1.5)
+*{{Balance|Buff}}[[Executioner]]: Damage +7%
+*{{Balance|Nerf|Evo}}[[Electro Dragon/Evolution|Evolved Electro Dragon]]: Chain Damage -50%
+*{{Balance|Buff}}[[Electro Dragon]]: Hitpoints +5%
+*{{Balance|Neutral}}[[Spirit Empress]]:
+**{{Balance|Buff}}Ground speed is increased to fast (from medium)
+**{{Balance|Nerf}}Ground hitpoints -7%
+**{{Balance|Nerf}}Air Hitpoints -1%
+*{{Balance|Nerf|Hero}}[[Knight/Hero|Hero Knight]]: Ability Radius decreased to 6.5 tiles (from 7.5)
+*{{Balance|Nerf|Hero}}[[Mega Minion/Hero|Hero Mega Minion]]: Ability Damage -12%
+*{{Balance|Nerf|Hero}}[[Magic Archer/Hero|Hero Magic Archer]]:
+**{{Balance|Nerf}}Decoy Hitpoints -9%
+**{{Balance|Nerf}}Ability cooldown increased to 25sec (from 20sec)
+
+==February (2) 2026==
+
+=== 2026 Q1 Update (23/2/2026) ===
+
+'''Progression'''
+
+* The Crystals system has felt punishing for many players, and to improve this, duplicates of Max Level cards will be reduced:
+** {{Balance|Buff}}If you have fewer than 60 Max Level cards, you will not receive duplicates of Max Level cards.
+** {{Balance|Buff}}If you have more than 60 Max Level cards, the drop weight of Max Level cards will be reduced by 90%.
+
+'''Trophy Road & Ranked'''
+
+* {{Balance|Buff}}The [[Heroes|Hero]] unlock slot will now be available at [[Arena]] 5, bringing this feature closer to the start of your journey.
+*{{Balance|Add}}4 New [[Arenas]]:
+** [[:File:Magic Academy Arena.png|Magic Academy]] (12,000 )
+** [[:File:Ultimate Clash Arena.png|Ultimate Clash Pit]] (12,500 )
+** [[:File:Little Prince's Tavern Arena.png|Little Prince's Tavern]] (13,000 )
+** [[:File:Spirit Square Arena.png|Spirit Square]] (13,500 )
+
+'''Socail Tab'''
+*{{Balance|Add}}The clan Tab is being rebranded into the Social Tab.
+**You can still acces clanchat and clanwar with buttons at the top
+*Here you have a list of clanmates and friend.
+*Add Friend button, where you can send a link or QR code
+*Quickplay button, to get a quick battle. You can send a link or QR code
+
+'''Album Event'''
+*{{Balance|Add}}Album Event is a new kind of live event.
+*The goal is to collect snippets during the season, to unlock scenes.
+*Have a full scene to unlock a reward, where you get a bigger reward when all scenes are complete.
+*Each snipit has 4 rarities: Commen, Rare, Epic Legendary
+*Some scenes need more commens, while the later scenes need more epic and legendary snipits.
+*Duplicats will fill a meter. The higher the rarity, the more duplicates.
+*Fill the meter to get a unique snippet, that you have not unlocked
+
+'''Global Tournament'''
+*{{Balance|Add}}Global Tournaments are back
+*You can now find it in the event switcher
+*The rewards are changed, and the bonus reward for 500 gems is gone
+*No dadge for reaching 15 wins, with another badge for top 1,000 players
+
+''' Other changes'''
+
+* {{Balance|Remove}}[[Lucky Chests#Hero_Box|Hero Boxes]] are removed from the lists of unlocks of the [[Arena#Trophy_Road|Trophy Road]] and the Battle Rewards popup.
+*{{Balance|Nerf|Hero}} [[Wizard/Hero|Hero Wizard]]: Tower damage -64%
+* {{Balance|Nerf|Hero}} [[Goblins/Hero|Hero Goblins]]:
+**{{Balance|Nerf}} Spawned units decreased to 3 (from 4)
+**{{Balance|Nerf}} Banner duration decreased to 5sec (from 7sec)
+
+'''Merge Tactics'''
+*{{Balance|Add}}[[Dagger Duchess/Merge Tactics|Dagger Duchess]] added. [[Modifiers#Ruler Modifiers|Ruler Modifier]]: Dagger Donation.
+*{{Balance|Neutral}}[[Spirit Empress/Merge Tactics|Spirit Empress]] returns as the secondary ruler.
+*{{Balance|Neutral}} New [[:Category:Troop Cards|troops]]: 
+**{{Balance|Add}}[[:Category:3-Golden Elixir Cards|3-Golden Elixir]]: [[Giant/Merge Tactics|Giant]] ({{Trait|Titan}} and {{Trait|Superstar}}), [[Goblin Demolisher/Merge Tactics|goblin Demolisher]] ({{Trait|Goblin}} and {{Trait|Warrior}}).
+** {{Balance|Add}}[[Archers/Merge Tactics|Archers]], [[Baby Dragon/Merge Tactics|Baby Dragon]], [[Giant Skeleton/Merge Tactics|Giant Skeleton]] and [[Knight/Merge Tactics|Knight]] comes back
+** {{Balance|Remove}}[[Bandit/Merge Tactics|Bandit]], [[Electro Giant/Merge Tactics|Electro Giant]], [[Executioner/Merge Tactics|Executioner]], [[Mega Knight/Merge Tactics|Mega Knight]], [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A]], [[Princess/Merge Tactics|Princess]], [[Royal Ghost/Merge Tactics|Royal Ghost]] and [[Spear Goblins/Merge Tactics|Spear Goblin]] have been removed.
+*{{Balance|Neutral}}Traits are changed:
+**{{Balance|Remove}}{{Trait|Blaster}}, {{Trait|Brawler}}, {{Trait|Brutalist}}, {{Trait|P.E.K.K.A.}}, and {{Trait|Ranger}} have been removed.
+**{{Balance|Add}}{{Trait|Dragon}}, {{trait|Hinder}}, {{Trait|Marksman}}, {{Trait|Tank}} and {{Trait|Warrior}} added.
+**{{Balance|Neutral}}Giant is now renamed to {{Trait|Titan}}
+*{{Balance|Add}}New Modifiers:
+**Equipment: Valkyrie's Axe: Equipped troop deals AoE attack damage until Axe breaks (5 hits) (Bronze III).
+**Equipment: Fisherman's Hook: Equipped troop pulls in farthest enemy in 4 tiles until Hook breaks (1 hit) (Silver II).
+**Equipment: Prince's Lance: Equipped troop knocks enemy back 2 tiles until Lance breaks (3 hits) (Gold I).
+**Equipment: Maiden's Shield: Equipped troop is immune to damage until Shield breaks (hit 5x) (Gold III).
+*Miscellaneous changes:
+**{{Balance|Neutral}}Season Length now run 6-7 weeks (from 4 weeks)
+**{{Balance|Add}}You can now play with friends. 2 people can still earn rewards, while 3-4 people is friendly battle
+**{{Balance|Add}}The troops collection level is now visible on its hp-bar
+**{{Balance|Add}}Benched troops now display there stars/merge level
+**{{Balance|Add}}An indicater to show when the [[Echo Sage]] ability is ready
+**{{Balance|Neutral}}Ruler Cards earned beyound the cap now gives [[Magic Items#Crystal|Crystals]] (1 card=480 crystals)
+**{{Balance|Add}}[[Magic Items#Card Boost Potion|Card Boosts]] now apply to Merge Tactics
+**{{Balance|Add}}Crown rush now counts Merge Tactics battles.
+
+''Merge tactics Balance Changes'''
+*{{Balance|Neutral}} [[Goblin Queen]]:
+**{{Balance|Add}} Now counts as a goblin herself
+**{{Balance|Nerf}} Goblin Drop Rate reduced to 25% (from 33%)
+*{{Balance|Nerf}} [[Echo Sage]]: Echo Level-Up HP groth decreased to 150% (from 170%)
+*{{Balance|Neutral}} [[Dart Goblin/Merge Tactics|Dart Goblin]]:
+**{{Balance|Buff}} Elixer Cost decreased to 2 (from 3)
+**{{Balance|Nerf}} Hitpoints decreased by 57%
+*{{Balance|Neutral}} [[Royal Giant/Merge Tactics|Royal Giant]]
+**{{Balance|Nerf}} Elixer Cost increased to 3 (from 2)
+**{{Balance|Buff}} Hitpoints increased by 11%
+**{{Balance|Buff}} Damage icreased by 25%
+**{{Balance|Nerf}} Hitspeed increased to 2sec (from 1.66sec)
+*{{Balance|Neutral}} [[P.E.K.K.A./Merge Tactics|P.E.K.K.A]]:
+**{{Balance|Nerf}} Elixir Cost increased to 4 (from 3)
+**{{Balance|Buff}} Hitpoint increased by 17%
+**{{Balance|Buff}} Damage increased by 6%
+**{{Balance|Buff}} Ability can how hit multiple units in a row
+*{{Balance|Neutral}} [[Prince/Merge Tactics|Prince]]:
+**{{Balance|Nerf}} Elixir Cost increased to 4 (from 3)
+**{{Balance|Buff}} Hitpoints increased by 37%
+**{{Balance|Nerf}} Hit Speed increased to 1.66 sec (from 1.42 sec)
+*{{Balance|Neutral}} [[Archer Queen/Merge Tactics|Archer Queen]]:
+**{{Balance|Buff}} Ability can now has multi-trigger
+**{{Balance|Buff}} Damage increased by 11%
+**{{Balance|Nerf}} Hit speed is increased to 1.66 sec (from 1.25sec)
+*{{Balance|Neutral}}{{Trait|Ace}}:
+**{{Balance|Nerf}} Now only gives a damage bonus
+**{{Balance|Buff}} 4/4 Damage Bonus increased to 100 (from 70)
+*{{Balance|Neutral}}{{Trait|Clan}}: Now gives a HP bonus (instead of healing and hit speed)
+*{{Balance|Neutral}}{{Trait|Titan}}: Now gives individual bonus
+**[[Giant/Merge Tactics|Giant]] makes surrounding troops take less damage
+**[[Royal Giant/Merge Tactics|Royal Giant]] makes Surrounding troops deal bonus damage
+*{{Balance|Neutral}}{{Trait|Fire}}: Now gives individual bonus
+**[[Wizard/Merge Tactics|Wizard]] deals stacking bonus damage per attack, up to 6×
+**[[Baby Dragon/Merge Tactics|Baby Dragon]] gives Surrounding troops bonus hit speed and movement speed
+*{{Balance|Nerf}}{{Trait|Noble}}: Adjacent placement is required for it to activate
+*{{Balance|Buff}}{{Trait|Superstar}}:
+**{{Balance|Buff}}1/3 Fill rate increased to 50% (from 33%)
+**{{Balance|Buff}}2/3 Fill rate increased to 100% (from 67%)
+
+=== [[Pass Royale]] and more (2/2/2026) ===
+'''Midnight Mischief (Season 80)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Love Temple (Pass Royale). Other Tower Skins (Gothic Love) will be available in the game.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: goblin hero peek. Many other Emotes will be available. These are: Hero Goblin Head Crush, Hero Goblin Knife, Hero Goblin Troll Face, Hero Mega Minion Gargoyle, Hero Mega Minion Ovation, Hero Mega Minion Scary and Hero Mega Minion What
+* {{Balance|Add}} [[Arenas|Arena]]: Love Temple Arena.
+* {{Balance|Add}} [[Battle Banners|Banner]] Item: Gothic Valentine. Around 10 other Banner items will be available.
+* {{Balance|Temp}}[[Lucky Chests#Seasonal Lucky Chest|Seasonal Lucky Chest]]: [[:File:Valentines Lucky Chest.png|Valentines Lucky Chest]].
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}} 2 New [[Heroes]]: [[Goblins/Hero|Goblins]] and [[Mega Minion/Hero|Mega Minion]]
+* {{Balance|Temp}}Level Boosts:
+**2 Feb-16 Feb: [[Goblins]] and [[Princess]]
+**16 Feb-2 Mar: [[Mega Minion]] and [[Zap]]
+
+'''Merge Tactics Seasonal Update'''
+*{{Balance|Neutral}}[[Spirit Empress/Merge Tactics|Spirit Empress]] returns.
+*{{Balance|Add}} New Modifiers:
+**Merge Bonus: Merging grants 1-Star base troop. (Silver I).
+**Star Advantage: Higher-Star troops deal more damage to and take less damage from lower-Star troops. (Silver III)
+**Domination: 3 and 4-Star troop gain bonus HP and damage. (Gold II)
+*{{Balance|Neutral}} Building modifiers will now provide a 3-star building in round 5 (instead of a 2-star at round 3)
+*{{Balance|Neutral}}Tile modifiers now place two tiles (instead of one)
+*{{Balance|Add}} Players who finish in the top 1,000 will get a bagde with the exact position. Updating when getting a higher rank.
+
+'''Balance Changes'''
+
+* {{Balance|Nerf|Hero}}[[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A]]: Cook Time increased from 20s to 22s
+* {{Balance|Nerf|Evo}}[[Witch/Evolution|Witch]]: Heal per Skeleton decreased by 11%
+* {{Balance|Nerf}} [[Giant]] (also effects Heroic Giant): Hitpoints decreased by 3%
+* {{Balance|Nerf}} [[Graveyard]]: Improved spawn pattern and increased spawn radius from 2.9 to 3.3 tiles
+* {{Balance|Nerf}} [[Minions]]: Hit Speed increased by 9%
+* {{Balance|Nerf}} [[Three Musketeers]]: Hit Speed increased by 8%
+* {{Balance|Buff}} [[Wizard/Hero|Hero Wizard]]: Tornado Pull Strength increased by 25%
+* {{Balance|Buff}} [[Goblin Drill/Evolution|Evo Goblin Drill]]: Number of Goblins on second submerge increased to 2 (from 1)
+* {{Balance|Buff}} [[P.E.K.K.A./Evolution|Evo P.E.K.K.A]]: Heal per Kill from all forms increased by 5%
+* {{Balance|Neutral}} [[Musketeer/Hero|Hero Musketeer]]:
+** {{Balance|Buff}} Deploy time increased to 2 seconds (from 1 second)
+** {{Balance|Nerf}} Turret Range decreased by 36%
+
+==== Bug Fixes 🐛 ====
+
+* {{Balance|Nerf}} [[Balloon]]: Hitpoints decreased by 1%
+* {{Balance|Buff}} [[Barbarian Barrel]]: Damage increased by 2%<div style="float: right; margin: 15px; max-width: 40%;">__TOC__</div>
+
+==January (1) 2026==
+
+=== Balance Changes (12/1/2026) ===
+*{{Balance|Nerf|Evo}}[[Skeleton Barrel/Evolution|Skeleton Barrel]]: Death damage decreased by 8%.
+*{{Balance|Nerf|Hero}}[[Musketeer/Hero|Musketeer]]: Turret deploy time increased to 2 seconds (from 1 second).
+*{{Balance|Nerf|Hero}}[[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]]: Damage healed decreased to 30% (from 40%).
+*{{Balance|Nerf|Hero}}[[Knight/Hero|Knight]]: Shield hitpoints decreased by 6%.
+*{{Balance||Evo}}[[Skeleton Army/Evolution|Skeleton Army]]:
+**{{Balance|Nerf}}Shadow Skeleton speed decreased to Medium (from Fast).
+**{{Balance|Neutral}}General spawns 1 tile higher.
+*{{Balance|Nerf}}[[Golden Knight]]: Ability cooldown increased to 12 seconds (from 8 seconds)
+*{{Balance|Nerf}}[[Dart Goblin]] (affects Evolved Dart Goblin): Damaged decreased by 8%.
+*{{Balance|Nerf}}[[Mini P.E.K.K.A.]] (affects Heroic Mini P.E.K.K.A.): Hitpoints decreased by 3%.
+*{{Balance|Neutral}}[[Boss Bandit]]:
+**{{Balance|Buff}}HIt speed increased by 9%.
+**{{Balance|Nerf}}Normal and dash damage decreased by 9%.
+*{{Balance|Buff}}[[Furnace]] (affects Evolved Furnace): Hit speed increased by 6%.
+*{{Balance|Buff}}[[Ram Rider]]: Ram hit speed increased by 6%.
+*{{Balance|Buff}}[[Giant Skeleton]]: Hit speed increased by 8%.
+*{{Balance|Buff}}[[Little Prince]]: Damage increased by 5%.
+*{{Balance|Neutral}}[[Graveyard]]:
+**{{Balance|Neutral}}Spawn Pattern changed from being random to [https://cdns3.royaleapi.com/cdn-cgi/image/w=1080,h=1440,format=auto/static/img/blog/2026-01-season-79/balance/v1-0572bc60/s79-balance-anno-05-72-2.jpg fixed and defined].
+**{{Balance|Buff}}Skeleton Count increased to 14 (from 13).
+
+=== [[Pass Royale]] and more (5/1/2026) ===
+'''Fire and Ice (Season 79)'''
+
+* {{Balance|Add}}New [[King's Tower|Tower Skin]]: Ice and Fire (Pass Royale). Other Tower Skins (Elemental Duality, Hero Pantheon) will be available in the game.
+* {{Balance|Add}}New Exclusive [[Emotes|Emote]]: Hero Wizard Fire. Many other Emotes will be available. These are: Firecracker Success, Goblin Pocket Watch, Hero Ice Golem Blizzard, Hero Ice Golem Rise, Hero Ice Golem Vanish, King Thumbs Down, Hero Wizard It’s Fine, Hero Wizard Magic Tricka and Hero Wizard Pyromaniac
+* {{Balance|Add}}[[Arenas|Arena]]: Fire and Ice Arena.
+* {{Balance|Add}}[[Battle Banners|Banner]] Item: Fire and Ice. Around 16 other Banner items will be available.
+*{{Balance|Temp}} [[Lucky Chests#Seasonal Lucky Chest|Seasonal Lucky Chest]]: [[:File:Frostfire Lucky Chest.png|Frostfire Lucky Chest]].
+
+'''Card Modifiers'''
+
+* {{Balance|Add|Hero}} 2 New [[Heroes]]: [[Wizard/Hero|Wizard]] and [[Ice Golem/Hero|Ice Golem]]
+* {{Balance|Temp}} Level Boosts: [[Wizard]], [[Tornado]], [[Ice Golem]] and [[Skeletons]]
+
+'''Merge Tactics Seasonal Update'''
+*{{Balance|Add}}[[Echo Sage]] added. [[Modifiers#Ruler Modifiers|Ruler Modifier]]: Striking Clone.
+*{{Balance|Add}} New Modifiers:
+**Damage Tile: Troops placed on this tile enter combat at 50% HP and deal bonus damage. (Bronze III).
+**Clone Tile: Troops placed on this tile will be cloned. The duplicate has 70% of the original's HP. (Silver II)
+**Immune Tile: The troop on this tile is indestructible for the first 5 seconds of combat. (Gold I)
+**Jump Tile: Troops placed here jump into enemy territory at battle start. (Gold III)
+*{{Balance|Neutral}} Building modifiers will now provide a 2-star building in round 3 (instead of a 1-star at round 1)
+
+===Merge Tactics Balance Changes (2/1/2026)===
+*{{Balance|Nerf}}{{Trait|Clan}}: Hit Speed buff duration now expires after 5sec (from infinite)
+*{{Balance|Buff}}{{Trait|Assassin}}:
+**{{Balance|Buff}} Crit chance and damage for 2/4 increased to 30% (from 25%)
+**{{Balance|Buff}} Crit chance and damage for 4/4 increased to 60% (from 45%)
+*{{Balance|Buff}}{{Trait|P.E.K.K.A}}:
+**{{Balance|Buff}}Heal is increased to 60% (from 30%)
+**{{Balance|Buff}}Bonus Damage increased to 40% (from 30%)
+*{{Balance|Buff}}[[Bandit/Merge Tactics|Bandit]]:
+**{{Balance|Buff}}Hitpoints increased by 12,5%
+**{{Balance|Buff}}Damage increased by 12,5%
+*{{Balance|Buff}}[[Witch/Merge Tactics|Witch]]:
+**{{Balance|Buff}}Hitpoints increased by 20%
+**{{Balance|Buff}}Damage increased by 25%
+*{{Balance|Buff}}[[Golden Knight/Merge Tactics|Golden Knight]]: Hit speed is reduced to 1.0 (from 1.25)
+
+== Past Update History ==
+{{:Version History/2025}}
+{{:Version History/2024}}
+{{:Version History/2023}}
+{{:Version History/2022}}
+{{:Version History/2021}}
+{{:Version History/2020}}
+{{:Version History/2019}}
+{{:Version History/2018}}
+{{:Version History/2017}}
+{{:Version History/2016}}
+
+[[fr:Historique des versions]]
+[[de:Spiel-Updates]]
+
+[[Category:Community]]

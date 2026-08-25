@@ -1,0 +1,164 @@
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Archers</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=6 November 2023}}
+
+{{Quote|These Archers have been specifically trained by Archer Queen herself as her personal sharpshooters. They deal more Damage to far away enemies with Power Shot!}}
+
+The Archers' Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 2 Archers with a range 1 tile further than the originals. If there are units between 4 and 6 tiles of the Evolved Archers, they will shoot their Power Shot, which deals 25% bonus damage. The Archers take the appearance of women who have purple eyes, deep pink eyebrows and short hair with a ponytail, and wear golden bands on their arms, team-colored capes with a golden lining in the bottommost part of them, purple gloves, tunics and leggings, and a dark brown belt with a buckle, along with a bag and a quiver around their waists and on their backs respectively, while wielding a recurve bow with purple stabilizers and a golden handle, having arrows with purple fletchings and a dark purple point as their ammunition. The Archers' Evolution costs 3 {{Icon|I=Elixir}} and requires 2 {{Icon|I=Cycles}} to deploy.
+
+==Strategy==
+*For just 3 Elixir, the Evolved Archers have very high DPS with their Power Shot, good health, and can attack air, making them great for [[Battle Decks|decks]] struggling against air troops and tanks.
+*To take advantage of the Power Shot, it is optimal to place the Evolved Archers approximately 5-6 tiles away from the opponent's [[:Category:Troop Cards|troops]]. This will maximize the amount of time opposing troops are in the range of the Power Shot, allowing for positive Elixir trades and two Evolved Archers that can be used for a counterpush.
+*Another way to take advantage of the Power Shot is to pair the Evolved Archers with a mini-tank, such as the [[Knight]], [[Golden Knight]], [[Prince]], [[Mighty Miner]], [[Monk]], [[Skeleton King]], [[Goblin Machine]], [[Dark Prince]], [[Mini P.E.K.K.A.]], [[Lumberjack]], or the [[Valkyrie]], to hold the opposing troops in place. This will prevent them from walking out of the Power Shot range.
+**The Evolved Archers + mini-tank combo can be used for a quick and small push. While most mini-tanks will cause the cost to be hefty, the opponent's Elixir investment will usually be equal or more than that of the small push, in order to handle both it and the Evolved Archers, since they threaten to take the [[:Category:Tower Troop Cards|Crown Tower]] or heavily damage it if they remain unattended.
+*The [[Knight/Evolution|Evolved Knight]] is one of the best pairs for the Evolved Archers, as not only he costs 3 Elixir, but also the damage reduction statistic means he will tank ranged or aerial troops' hits, allowing the Evolved Archers to finish them off with their Power Shot and extended range, setting up a counterpush with the Evolved Knight being fairly healthy. Generally, both of them will be in the player's hand at the same time, as they're versatile, cost 3 Elixir, and require 2 Cycles to deploy.
+**This is specially true if the opponent uses ranged/aerial cards that can gain good value from defending or after defending, such as the [[Musketeer]], [[Wizard]], [[Electro Wizard]], [[Three Musketeers]], [[Electro Dragon]], [[Mega Minion]], [[Executioner]], [[Baby Dragon]], [[Inferno Dragon]], [[Witch]], [[Hunter]], [[Minion Horde]], and the [[Archer Queen]].
+*Since the Evolved Archers will remain supported for most of the time they're in the arena, as well as even further away from their support unit, [[:Category:Spell Cards|spells]] are a must when trying to remove them from the field.
+**Due to the Evolved Archers having the same hitpoints as the regular Archers, they can be destroyed by the [[Arrows]] or the [[Royal Delivery]] for an equal Elixir trade. The Royal Delivery also spawns a [[Royal Recruits|Royal Recruit]], which can be used for counterpush or to defend against additional units placed to defend the Evolved Archers.
+**When placed properly and if they're unsupported, the [[Barbarian Barrel]] and [[The Log]] can fully counter the Evolved Archers for a +1 Elixir trade.
+**The duo can be destroyed entirely within 2 hits from the [[Void]], provided that they are the only troops inside it. This is enough to counter the Archers for a neutral Elixir trade or force the opponent to spend more Elixir to save their Archers, resulting in an overcommitment.
+*The [[Cannoneer]] can OHKO them and the [[Dagger Duchess]] can quickly defeat them, which allows heavier decks to ignore the Evolved Archers under certain circumstances. This cannot be applied to the [[Tower Princess]] and the [[Royal Chef]], which will take a notably high amount of chip damage.
+*The Evolved Archers have great offensive synergy with the [[Miner]]. The Miner will tank hits from the Crown Tower, allowing the Evolved Archers to hit it from the bridge without getting hit themselves. Even if the Miner is defeated, the Evolved Archers will still be attacking the Crown Tower, doing immense damage to it and applying pressure to the opponent.
+*The Evolved Archers have incredible synergy with the [[X-Bow]] when placed correctly. Because the X-Bow has a hard time taking out large tanks due to its low damage, the Evolved Archers, when placed far away from the X-Bow, can greatly assist in taking out tanks, such as the [[Goblin Giant]], [[Giant Skeleton]], and the [[Golem]], so the X-Bow can easily connect the opposing Crown Tower. This is especially helpful against the [[Royal Giant]], [[Cannon Cart]], and the [[Bowler]], as they are hard counters to the X-Bow. The Evolved Archers must be played away from the X-Bow, otherwise, they can't take advantage of their Power Shot nearly as much, while giving enemy troops a chance to attack them, as well as the opponent to get a lot of value from using a [[Fireball]] or a [[Rocket]] on them.
+**This strategy will similarly work with the [[Mortar]], sometimes being even more efficient due to the Mortar's damage per projectile being higher and the total Elixir cost of the combo being 2 less Elixir, not giving the opponent nearly as much spell value. If the player decides to use the [[Mortar/Evolution|Evolved Mortar]], then the Evolved Archers will help the spawned [[Goblins]] in chipping down opposing units distracting the Evolved Mortar.
+**The reason Evolved Archers play so well in siege decks are because of their cheap cost when attempting to remove opposing troops to take away the siege building, as well as staying at a long distance from them due to their Power Shot range, which is the main play of siege decks: not passing from the bridge or not getting too close to the Crown Tower.
+**Although not being a building, the Royal Giant can also be paired with the Evolved Archers. While he tanks for them and deals damage to the Crown Tower, the Evolved Archers will deal a lot of damage to all units that try to kill him, letting him shoot at the Crown Tower more before dying. This is specially useful with the [[Royal Giant/Evolution|Evolved Royal Giant]], since his recoil will take out weaker swarms and make the process of killing him with lighter units harder, letting the Evolved Archers focus on more dangerous defensive troops.
+**On the other hand, the Evolved Archers themselves will be good counters to the Mortar and the X-Bow, allowing them to snipe the siege building from afar, letting them not get distracted or damaged by support troops that may come to defend the building. If the player wants the Archers to be healthy for a counterpush, mini-tanks such as the Knight, Valkyrie, and the [[Ice Golem]] can be used to soak the siege building's damage, leaving them with enough health for a counterpush.
+*The Evolved Archers gain a range boost, which allows them to have the same range as a Musketeer. This can be used to build positive Elixir trades, specially when both of them are alone, even if it results in one or both of them dying. If supported with a properly placed and timed mini-tank, they can safely attack the Three Musketeers and cause good Elixir trades when the player wants to save their spells (or if they're out of cycle). This extra range can also aid them in reaching other ranged troops, such as the [[Dart Goblin]], Musketeer, [[Flying Machine]], and the [[Magic Archer]].
+**This extra range is extremely beneficial against buildings, allowing them to reach placements farther away from the river, as well as to outrange the [[Cannon]] and a distracted [[Tesla]]. Since those buildings are used in a lot of decks to counter a lot of individual troops or pushes, sniping them from afar is a great choice, allowing a lot of cards to keep pressuring the Crown Tower and not waste their potential on the building. As such, the Evolved Archers play a great synergy with fast-moving building targeting troops like the [[Battle Ram]], [[Hog Rider]], [[Royal Hogs]], [[Ram Rider]], and the [[Wall Breakers]] (the [[Balloon]] is also commonly distracted by a Cannon or a Tesla, despite moving slowly). If the building is efficient against removing tanks, like the [[Inferno Tower]], the Evolved Archers can match up with the [[Giant]], Mortar, Royal Giant, Balloon, Golem, or the X-Bow to swiftly remove the building. It should be noted that the Evolved Archers alone can be used against an unsupported Inferno Tower to counter it for a +2 Elixir trade at the cost of one Evolved Archer, without needing to distract it with other troops, allowing the building-targeting tank to easily pass by.
+**The Evolved Archers can be a viable substitute to the Musketeer, as their individual Power Shot damage deal nearly the same damage as the Musketeer's projectiles, and with both of them attacking, almost double of the damage is achieved.
+*When placed in the center, the Evolved Archers can defeat a Hog Rider for a +1 Elixir trade, while severely crippling a [[Ram Rider]]'s hitpoints. If the opposing unit is the Hog Rider, this can be quickly invalidated if the opponent preemptively uses a [[Fireball]] in the center (which is a common move to attempt to take out a building that would have distracted the Hog Rider otherwise), although allowing the player to place more defensive units to counter the Hog Rider.
+*Putting them at the back (and slightly causing them to split pathways) will allow the Evolved Archers to deal significant damage to slow-moving tanks, or even kill them. This can be applied to the [[P.E.K.K.A.]], Giant Skeleton, Goblin Giant, Golem, Bowler, [[Electro Giant]], [[Rune Giant]], [[Lava Hound]], and the [[Elixir Golem]]. If supported with the right troop, they can more reliably kill these units for positive Elixir trades, and also counter an even wider arrange of cards, like the [[Mega Knight]], Cannon Cart, and the [[Sparky]], with the former also potentially causing a [[King's Tower]] activation if the defensive troops are placed in the right time at the right place.
+*The Evolved Archers are great with cards centered around split lane pressuring, since they can aid in killing opposing troops from both lanes, taking out buildings, and applying even more pressure. The [[Royal Recruits]], Royal Hogs, and the [[Elite Barbarians]] are cards that can be good with the Evolved Archers due to their ability to attack in both lanes.
+**Conversely, if supported with a mini tank (or a building in the case of the Royal Hogs), the Evolved Archers can also be good in removing those cards from the field, as they'll quickly chip down the split Royal Recruits or Elite Barbarians while the mini tank soaks up damage for them. This results in a neutral or even a positive Elixir trade.
+*The Evolved Archers have great synergy with the [[Tornado]]. If opposing troops come too close to the Evolved Archers for them to use their Power Shot, the player can use a Tornado to pull them away, allowing them to activate their Power Shot attacks again. This is especially useful for fast-moving troops and if the player plays a distraction unit such as the [[Skeletons]], [[Goblins]], or the [[Guards]] to keep them away from the Evolved Archers.
+**On the other hand, the player can also use the Tornado to negate the Power Shot advantage. However, this is a large Elixir investment for such a move, so this should be done only if the Tornado can gain additional value.
+*The Evolved Archers are great at assisting in reducing the effectiveness of push as a last resort by placing the Evolved Archers behind the Crown Tower to activate their Power Shot. Additionally, they can be used to make a formidable counter push - even by themselves - dealing a large amount of chip damage if ignored. For example, combining the Evolved Archers with the Arrows, [[Giant Snowball]], and/or the [[Rage]] can heavily reduce the damage dealt by the [[Balloon]] + [[Lava Hound]] combo for a +5 or +6 Elixir trade, maintaining the player's own Elixir for a potentially devastating counterpush.
+*The Evolved Archers are a particularly good counter to the Electro Dragon when distracted, as they'll stay away from the lightning chain attack range while quickly taking it out. This is even more valuable if it's an [[Electro Dragon/Evolution|Evolved Electro Dragon]] because its lightning chains are infinite.
+**Similarly, the Evolved Archers can stay out of range of an Electro Giant's Zap Pack, since their extended ranges will allow them to be further away from his damage reflection range. However, a Tornado is usually paired with him, so a building or a high damage unit can still be the best choice against him.
+**The Goblin Machine's Rockets cannot reach the Evolved Archers when they're at maximum range as well, so it will similarly be vulnerable to a mini tank supporting the Evolved Archers.
+*The Evolved Archers can synergise well with the [[Battle Ram/Evolution|Evolved Battle Ram]] and the [[Wall Breakers/Evolution|Evolved Wall Breakers]], since they'll snipe buildings that distract them from afar and deal significant damage to all troops that could be placed to counter them. Their Power Shot damage potential is even more useful once the defending troops have been crippled by the the Evolved Battle Ram's pushback damage or the Evolved Wall Breakers' death damage.
+*Depending on the deck archetype, the player's choices, and card synergies, the Evolved Archers can be substituted by the Evolved Knight, [[Musketeer/Evolution|Evolved Musketeer]], Evolved Mortar, [[Dart Goblin/Evolution|Evolved Dart Goblin]], [[Tesla/Evolution|Evolved Tesla]], and the [[Firecracker/Evolution|Evolved Firecracker]].
+**While the Evolved Knight, Evolved Mortar, and the Evolved Tesla don't play the same as Evolved Archers and fulfill different roles, they are very popular picks in siege decks, which frequently contains the [[Archers]]. The Evolved Tesla and the Evolved Archers are a better pick than the Evolved Knight in X-Bow decks, while the Evolved Knight and the Evolved Mortar fare better in Mortar decks.
+**Although she deals around half the damage of the two Evolved Archers and costs one more Elixir, the Evolved Musketeer's ability allows her to snipe any building and troop from afar, being able to kill up to a Baby Dragon with her three sniper shots and up to an Elixir Blob with a singular sniper shot, which means she's able to gain immense value when placed at the far back of the arena. Plus, her higher hitpoints allow her to be on the field for longer, specially if protected by a mini-tank, as she is very versatile and a great defensive troop. The Evolved Musketeer should be picked if the player desires to remove defensive buildings/troops from far away more quickly, as well as have a healthier troop for counterpushes.
+**The Evolved Dart Goblin is weaker and deals less damage than the Evolved Archers, but he's able to gain immense value on defense with his poison darts, especially if he stays alive for long enough to stack up the poison, being able to remove swarms, tanks and other support troops if left alive for long enough and if distraction troops also come into play. Due to that, he usually is addressed with the Arrows and The Log, allowing him to bait out those spells for other cards weak to them. The Evolved Archers are superior in counterpush potential, and can also more reliably deal with pushes due to not dying to The Log of the same-level.
+**The Evolved Firecracker has the same hitpoints and cost as an Evolved Archer, and while she deals more damage, her damage per second equals to an Evolved Archer's own due to her slower hit speed. However, the Evolved Firecracker can defeat pushes more reliably, being able to take out swarms with her shrapnels and their sparks and slow down tanks and mini-tanks with her recoil and spark reduction speed. The Evolved Archers should be favored when cards weak to a King Tower activation are used, such as the [[Graveyard]], or when aiming for high single target damage and dealing with bulkier air troops, such as the Balloon and the Lava Hound.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Archer Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Projectile Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|3||0.9 sec||0.5 sec||Medium (60)||1 sec||6||600||Air & Ground||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+!scope="col"|Power Shot Range<br/>{{Icon|I=Range}}
+|-
+|2||4-6
+|}
+
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 304 }}
+{{#vardefine: dmg_11 | 112 }}
+{{#vardefine: Pow dmg_11 | 140 }}
+{{#vardefine: atk_speed | 0.9 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Power Shot Damage<br/>{{Icon|I=Boost}}
+!scope="col"|Damage Per Second<br/>{{Icon|I=DPS}}
+!scope="col"|Power Shot Damage Per Second<br/>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{#var:Pow dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}} || {{Dps|{{#var:Pow dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Pow dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:Pow dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div></center>
+
+==History==
+2023
+*The Archers' Evolution [[Cards|card]] was added to the game with the [[Version History#Pass Royale and more (6/11/2023)|November 2023 Update]] on 6/11/2023 {{Balance|Add}}.
+*On 13/12/2023, the [[Version History#Tower Troop Update (13/12/2023)|Tower Troop Update]] decreased the Evolved Archers' Power Shot damage to 170% of their damage (from 200%) {{Balance|Nerf}}. The update also changed their description. Before, it used to read: ''These Archers have been specifically trained by Archer Queen herself as her personal sharpshooters. They deal double Damage to far away enemies with Power Shot! {{Balance|Neutral}}''.
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]] decreased the Evolved Archers' range to 6 tiles (from 6.5 tiles) {{Balance|Nerf}} and decreased their minimum Power Shot range to 4.5 tiles (from 5 tiles) {{Balance|Buff}}.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]] increased the Evolved Archers' Power Shot damage to 200% of their damage (from 170%) {{Balance|Buff}}, but removed their hitpoints boost {{Balance|Remove}}.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]] added a sound effect to the Evolved Archers after death {{Balance|Add}}.
+2025
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Evolved Archers' damage by 5% {{Balance|Buff}}, decreased their minimum Power Shot range to 4 tiles (from 4.5 tiles) {{Balance|Buff}} and decreased the Power Shot damage to 150% (from 200%) {{Balance|Nerf}}.
+2026
+*On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Change]], decreased the power shot damage to 125% (from 150%){{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:Evolved Archers card render.png|Current card render.
+File:Evolved Archers Preview.gif|Current card preview.
+File:ArchersEvoShard.png|Archers' Evolution Shard.
+File:Evolved Archers 1.png|Evolved Archers' full body card image render.
+</gallery>
+
+==Trivia== 
+*The word "''Archer''" comes from the Latin "''arcus"'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms. 
+**The bow that Evolved Archers use in [[Basics of Battle|battle]] is a recurve bow.
+*Even though the [[Cards|card]] spawns 2 Evolved Archers, the card render displays only 1 Evolved Archer.
+*Their description is a reference to the [https://clashofclans.fandom.com/wiki/Archer_Puppet Archer Puppet] equipment in Clash of Clans, a piece of equipment that allows the Archer Queen to summon some Archers when activated. However, unlike the Archer Puppet, the Evolved Archers do not spawn invisible.
+*It's unknown why the Evolved Archer has a small pouch on her belt, though it's most likely there to store supplies such as bowstrings and water.
+*Despite wearing a quiver filled with arrows, the Evolved Archer doesn't take the arrows out of her quiver when performing an attack.
+*The Archers' Evolution is the subject of 2 [[Emotes]].
+*Supercell once stated that the Evolved Archers' names are Vienna and Grace, which is a reference to Ilkka Paananen's two daughters.
+
+{{Navigation|Card}}

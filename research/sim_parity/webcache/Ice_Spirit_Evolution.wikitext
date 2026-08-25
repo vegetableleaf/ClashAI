@@ -1,0 +1,139 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Ice Spirit</span>}}
+{{Evolved Card Infobox|Cost=1|CycleCost=2|Rarity=Common|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 December 2023}}
+{{Quote|Stay frosty when the Ice Spirit is about! Literally. It now infuses a target with an Ice Blast spell, which deals freezing Area Damage over time.}}
+
+The Ice Spirit's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns an Ice Spirit with a splash radius 0.5 tiles larger than the original. When 3 seconds have passed after it hits an enemy, it will deal the same stun and damage to the enemy for 1.1 seconds. It resembles a small snowball with indigo eyes and a mouth, along with its hands, legs, teeth and crystals on its head being in the form of ice. The Ice Spirit's Evolution costs 1 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Ice Spirit is very effective against [[Inferno Dragon]], [[Mighty Miner]], [[Prince]], [[Dark Prince]], [[Ram Rider]], [[Battle Ram]], [[Mega Knight]], and [[Sparky]], due to the Ice Blast constantly interrupting their attacks and preventing them from charging.
+*The Evolved Ice Spirit has great synergy with the [[Hog Rider]] and the [[Ram Rider]] as he can cripple and consistently stun defensive [[:Category:Building Cards|buildings]] such as the [[Inferno Tower]], and support units to allow the Hog Rider to get extra hits.
+*The Evolved Ice Spirit can be ignored under certain situations with the [[Tower Princess]], dealing slight chip damage. However, it is notably higher than other [[:Category:1-Elixir Cards|1-Elixir]] [[cards]], so it should not be ignored if the Tower Princess is at low hitpoints. If the [[Cannoneer]] or [[Dagger Duchess]] are in use, the Evolved Ice Spirit will not connect, allowing the user to always ignore it.
+**Since the Evolved Ice Spirit has sufficient hitpoints to reach an opposing Tower Princess, [[Goblins]], Spear Goblins, Archers, [[Goblin Gang]], [[Minions]], [[Minion Horde]], Skeleton Army, [[Bats/Evolution|Evolved Bats]], and [[Skeletons/Evolution|Evolved Skeletons]] can reach the [[:Category:Crown Towers|Crown Tower]] unscathed while the Evolved Ice Spirit tanks and continuously freezes the Tower Princess.
+*Since the Evolved Ice Spirit has identical hitpoints to the regular [[Ice Spirit]], it can still be fully countered by [[The Log]] and [[Barbarian Barrel]] despite the slight negative [[Elixir]] trade.
+*The best way to fully counter the Evolved Ice Spirit is to deploy another 1-Elixir [[:Category:Troop Cards|troop]], such as [[Fire Spirit]], directly on top of him to soak his damage. This causes the opponent to prevent the user from getting any value out of its Ice Blast ability. The [[Skeletons]] are especially effective as they'll be destroyed immediately by the initial jump, preventing the Ice Blast from moving towards other supporting troops. [[Bats]] and Goblins can work in a similar way, albeit for a slight negative Elixir trade.
+*While a large negative Elixir trade, the stun effect from the Ice Blast has no effect on the [[Goblin Cage]], making it a good response for it when used in larger pushes.
+*Do not place troops next to ones that have been already hit by the Evolved Ice Spirit, to avoid them taking unnecessary damage from the Ice Blast.
+*The Evolved Ice Spirit has enough hitpoints to take a shot from most medium-sized units. The [[Musketeer]], [[Executioner]], [[Baby Dragon]], [[Witch]], [[Archer Queen]], Firecracker, Bomber, Dart Goblin, Minions, [[Goblin Demolisher]], [[Electro Wizard]], [[Princess]], [[Ice Wizard]], [[Miner]], [[Electro Dragon]], [[Magic Archer]], [[Zappies]], [[Phoenix]], [[Bandit]], and [[Fisherman]], all take more than 1 hit to eliminate the Evolved Ice Spirit, giving it ample time to freeze them. Unlike the regular Ice Spirit, some of these may even be fully countered with the help of the Crown Tower due to the Ice Blast.
+*A full Ice Blast eliminates a [[Princess]], [[Dart Goblin]], [[Rascals|Rascal Girls]], Minions, and all the Spirit cards up to 1 Level higher and a [[Firecracker]], [[Bomber]], and [[Archers]] of the same Level. It also eliminate [[Spear Goblins]] and Goblins, while the initial hit from the Evolved Ice Spirit is enough to take out Skeletons and Bats.
+*The Evolved Ice Spirit has decent synergy with [[Goblin Drill]] as he can tank a couple shots from the Tower Princess while stalling any unit meant to defend the Goblin Drill.
+*If placed properly, the Evolved Ice Spirit can fully counter lone swarms, such as the Minion Horde, [[Skeleton Army]], [[Goblin Gang]], Guards, and Minions, for a large positive Elixir trade.
+*The Evolved Ice Spirit has great synergy with the [[Inferno Tower]], as he can constantly stun the Inferno Tower's target until it is defeated while preventing support troops behind the target from reaching the Inferno Tower. 
+**On the contrary, the Evolved Ice Spirit is especially dangerous to your Inferno Tower as he can prevent the ramp-up damage from reaching the max damage stage for a long period of time. Consider using a cheap unit, such as [[Skeletons]], Goblins, Bats, or [[Fire Spirit]], to distract the Evolved Ice Spirit.
+*The Evolved Ice Spirit does not deal enough damage to take out the [[Guards]]' shields but it does deal enough damage to finish off the Guards' shields after all two Ice Blasts. Knowing this, you can combine the Evolved Ice Spirit with any other Spirit card to counter the Guards for a slight positive Elixir trade, however this can require precise timing.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Ice Spirit Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Freeze Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Transport<br />{{Icon|I=Transport}} 
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||Very Fast (120)||1 sec||2.5||2||Air & Ground||1.1 sec||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 215}}
+{{#vardefine: dmg_11 | 110 }}
+{{#vardefine: Blast_11 | 110 }}
+
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Area Damage}}
+! scope="col" |Ice Blast Damage<br />{{Icon|I=Area Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(2-11)) round 0 }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|| {{#expr: {{#var:Blast_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{#var:Blast_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Blast_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2023
+*The Ice Spirit's Evolution [[Cards|card]] was added to the game on 4/12/2023, in the [[Version History#Pass Royale and more (4/12/2023)|December 2023 Update.]]
+*On 13/12/2023, the [[Version History#Tower Troop Update (13/12/2023)|Tower Troop Update]], decreased the cycles required to 2 (from 3).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], increased the Evolved Ice Spirit's area radius to 2 tiles (from 1.5 tiles).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Ice Spirit after death.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], added a 48% damage boost to the Evolved Ice Spirit, but removed the third Ice Blast.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], removed the Evolved Ice Spirit's damage boost.
+*On 8/7/2025, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Evolved Ice Spirit's freeze duration to 1.1 seconds (from 1.2 seconds).
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Evolved Ice Spirit's hitpoints by 6%
+
+==Gallery==
+<gallery>
+File:Evolved Ice Spirit card render.png|Current card render.
+File:Evolved Ice Spirit Preview.gif|Current card preview
+File:IceSpiritEvoShard.png|Evolution Shard.
+File:Evo Ice Spirit1.png|Evolved Ice Spirit
+</gallery>
+
+==Trivia== 
+*The Ice Spirit's Evolution is tied with the [[Skeletons/Evolution|Skeletons]] for the cheapest [[Card Evolution|Evolution]] to be placed, costing 3 [[Elixir]] (excluding Elixir from using other [[cards]]).
+*The Ice Spirit's Evolution is 1 of 3 evolved [[:Category:Troop Cards|troops]] to die as part of its attack, the other being the [[Wall Breakers/Evolution|Wall Breakers]], and Runners.
+*In the French, Italian, Portuguese, Malaysian, and Finnish language settings of the game, the Ice Spirit's name translates to "Spirit of Ice". In the Persian language settings of the game, the Ice Spirit's name translates to "Ice Soul".
+*The Ice Spirit's Evolution is 1 of 5 cards that has had its Cycles required changed, the others being [[Bomber/Evolution|Bomber]], Skeletons, [[Lumberjack/Evolution|Lumberjack]], and [[Baby Dragon/Evolution|Baby Dragon]].
+*The Ice Spirit’s gender is confirmed to be male, as in the balance changes in the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]] it states, "''We want to provide more distinct use for the Ice Spirit compared to his counterparts the Electro Spirit.''"
+*The Ice Spirit's Evolution is 1 of 3 evolved cards without the diamond evolution symbol anywhere on their card render, the others being [[Bats/Evolution|Bats]] and Giant Snowball.
+*In [[Touchdown]], if an Ice Spirit jumps into the enemy end zone as it attacks, it does not count as a point. This is because a jumping spirit no longer counts as a troop; it becomes similar to a projectile.
+*The Ice Spirit's Evolution is the subject of 2 [[Emotes]].
+*The Ice Spirit is the only spirit - among [[Fire Spirit]], [[Electro Spirit]] and [[Heal Spirit]] - to have an evolution.
+
+{{Navigation|Card}}

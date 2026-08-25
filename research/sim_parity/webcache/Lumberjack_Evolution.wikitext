@@ -1,0 +1,153 @@
+{{Protection}}
+{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Lumberjack</span>}}
+{{Evolved Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Serenity Peak|ReleaseDate=3 February 2025|CycleCost=2}}
+{{Quote|When Evolved Lumberjack is destroyed, his invisible Ghost seeks vengeance as long as it's in a pool of Lumberjack's Rage. Who you gonna call?}}
+
+The Lumberjack's Evolution is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Lumberjack with identical stats to the original. When the Lumberjack dies, his ghost will spawn. The ghost has unlimited health, and can't be targeted by troops, buildings and towers, but can be affected by spells, and will disappear after a short time outside of the initial [[Rage|Rage Spell]]. The Lumberjack resembles a ginger-haired [[Barbarians/Evolution|Barbarian]] with a beard, purple eyes, and a scarlet nose, wearing a brown belt, purple ushanka with the [[Card Evolution]] symbol in the center and kilt with gold linings, and team-colored wristbands and sandals, wielding an axe with a purple-tipped blade, a darker handle, and a golden knob on the bottom, and carries a Rage Spell on his shoulder. His ghost appears identical to him, but has pale skin and tongue, white hair, beard, mustache and eyebrows, and his axe's blade is cyan. The Lumberjack's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+== Strategy ==
+
+*The Evolved Lumberjack's Ghost lasts for roughly 5.5 seconds, the same duration as his Rage Spell, which is enough time to deal significant damage to targets if not addressed.
+**The ghost's mechanic cannot be extended by extra Rage Spells - he will only keep his invincibility in his own Rage's radius and during its duration.
+*He has a good synergy with win conditions while attacking, as the ghost will take out a lot of squishy troops and deal significant damage to mini-tanks before killing your win condition.
+*The Evolved Lumberjack is extremely versatile on defense: add [[Skeletons]], [[Goblins]], [[Guards]], or an [[Ice Spirit]] and they can defend many cards, including things such as [[Mega Knight]], [[Giant Skeleton]], or even a [[P.E.K.K.A.|P.E.K.K.A]], assuming if there is a Rage Spell involved.
+*Be careful when pulling an Evolved Lumberjack to your King Tower for an activation, as he will deal significant damage if the Ghost is not pulled after the initial Rage Spell is deployed.
+*Defending the Evolved Lumberjack mainly involves either luring the ghost out of the Rage radius or slowing it down so that the Rage time gets wasted. 
+**Examples involve a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] or [[Prince]], whereby first destroying the regular Lumberjack, due to their speed and moderate/high hitpoints, they will kite the Evolved Lumberjack, thus forcing him to leave the radius of the rage, which are good counters.
+**Another method involves the [[Freeze|Freeze Spell]]. By Freezing the Ghost, it will outlast the rage duration, which will nullify the effect of the ghost. This works even better if you have other troops frozen as well and drop swarms for an easy defense.
+**A very good method for counter pushing involves kiting the ghost into the middle, so it is far from a Crown Tower to avoid damage, then playing a fast win-condition such as [[Hog Rider]], [[Dart Goblin]], [[Firecracker]], or [[Wall Breakers]] to kite the ghost away, not only killing the ghost, but also pressuring the opponent.
+*If the ghost of the Evolved Lumberjack ever locks on, log the ghost then play a distraction. While the ghost doesn't take damage, it is still prone to knockback, slowing effects, and stuns. This includes [[The Log]], [[Fireball]], [[Rocket]], and the [[Giant Snowball/Evolution|Evolved Giant Snowball]], the slowdown of the Ice Wizard and the [[Ice Golem]]'s death damage, as well as the [[Poison]] and [[Earthquake]], and the [[Firecracker/Evolution|Evolved Firecracker]], and the stun effect of the [[Zap]] and [[Lightning]].
+*Interestingly, while it can't be targeted by a troop, it is still classed as a troop, so it can still act as a lightning rod for cards like [[Electro Dragon]], [[Mega Minion]], [[Archer Queen]], [[Phoenix]], [[Witch]], [[Night Witch]], [[Wizard]], [[Ice Wizard]], [[Electro Wizard]], [[Fisherman]], [[Goblin Cage]], [[Bandit]], [[Battle Ram]], [[Musketeer]], or [[Hunter]], which helps with defending many troops, dealing a lot of extra damage.
+*Despite its limited lifetime, it is still a fantastic option at dealing with moderate sized pushes, as the initial Rage adds some bonus Damage which can kill some swarms that would distract the Ghost, allowing it to focus on more important targets like support units.
+*Defending with the Evolved Lumberjack is also possible, but instead of kiting like with the normal one, it is better to play the Evolved Lumberjack Directly on top, so that the ghost can make short work of the troops.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Lumberjack Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||0.8 sec||0.4 sec||Very Fast (120)||1 sec||Melee: Short (0.7)||Ground||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+{{StatisticsSubheader|Rage Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||5.5 sec||+30%||Friendly Troops & Buildings
+|}
+{{StatisticsSubheader|Ghost Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}} 
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|0.8 sec||0.4 sec||Very Fast (120)||Melee: Short (0.7)||Ground||x1||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1282 }}
+{{#vardefine: dmg_11 | 256 }}
+{{#vardefine: atk_speed | 0.8 }}
+{{#vardefine: rage_dmg_11 | 179 }}
+{{#vardefine: rage_crown_11 | 54 }}
+{{#vardefine: ghost_dmg_11 | 256 }}
+{{#vardefine: ghost_atk_speed | 0.8 }}
+{{#vardefine: ghost_crown_11 | 128 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Lumberjack Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lumberjack Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Rage Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Rage Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |Ghost Damage<br />{{Icon|I=Damage}}
+! scope="col" |Ghost Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Ghost Crown Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |Ghost Crown Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(9-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(10-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:rage_dmg_11}} || {{#var:rage_crown_11}} || {{#var:ghost_dmg_11}} || {{Dps|{{#var:ghost_dmg_11}}|{{#var:ghost_atk_speed}} }} || {{#var:ghost_crown_11}} || {{Dps|{{#var:ghost_crown_11}}|{{#var:ghost_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(12-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(13-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(14-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(15-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:ghost_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:ghost_atk_speed}} }} || {{#expr: {{#var:ghost_crown_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:ghost_crown_11}} * (1.1^(16-11)) round 0 }}|{{#var:ghost_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+== History ==
+2025
+* The Lumberjack's Evolution [[Cards|card]] was added to the game on 3/2/2025, in the [[Version History#Pass Royale and more (3/2/2025)|February 2025 Update]].
+* On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]] made it so that Lumberjack Ghost is immune to [[Earthquake]], [[Void]], [[Poison]], [[Tornado]], [[Goblin Curse]], [[Firecracker/Evolution|Evolved Firecracker]]'s sparks, and [[Tesla/Evolution|Evolved Tesla]]'s pulse. It also fixed an issue with an enemy Evolved Lumberjack's sound effects.
+* On 11/2/2025, a [[Version History#Maintenance Break (11/2/2025)|maintenance break]] made it so that Lumberjack Ghost's lifetime is no longer affected by [[Rage]].
+* On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]] decreased the Rage's duration after leaving the radius to 1 second (from 2 seconds).
+* On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] allowed the [[Executioner]] and [[Ram Rider]] to be affected by Rage.
+* On 1/4/2025, a [[Version History#Maintenance Break (1/4/2025)|maintenance break]] fixed a bug where [[Electro Wizard]] could nullify Lumberjack's Evolution's death effects. It also fixed a bug where Lumberjack Ghost would deal incorrect damage.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]] increased the cycles required to 2 (from 1), but also increased the Lumberjack Ghost's damage by 33%. The Rage's damage was also decreased by 23%.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Rage's damage by 21%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the Rage's speed boost to 30% (from 35%).
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Ghost's Tower Damage by 50%
+
+==Gallery==
+<gallery>
+File:Evolved Lumberjack card render.png|Current card render.
+File:Evolved Lumberjack Preview.gif|Current card preview
+File:LumberjackEvoShard.png|Evo Shard
+File:Evolved Lumberjack1.png|Evolved Lumberjack.
+File:Evolved Lumberjack alone.png|Evolved Lumberjack alone.
+File:Evolved Lumberjack Ghost.png|Evolved Lumberjack Ghost 1.
+File:Evolved Lumberjack Ghost2.png|Evolved Lumberjack Ghost 2.
+</gallery>
+
+==Trivia==
+*In the Turkish, Korean, and Vietnamese language settings of the game, the Lumberjack's name translates to "Woodcutter". In the Chinese and Finnish language settings of the game, the Lumberjack's name translates to "Crazy Woodcutter" and "Logman" respectively.
+*The Lumberjack's Evolution is 1 of 5 [[cards]] that has had its [[Card Evolution|Cycles]] required changed, the others being [[Bomber/Evolution|Bomber]], [[Skeletons/Evolution|Skeletons]], [[Ice Spirit/Evolution|Ice Spirit]], and [[Baby Dragon/Evolution|Baby Dragon]].
+*In the card's description, the "''Who you gonna call?''" line combined with him turning into a ghost upon death is a reference to Ghostbusters.
+*When attacking, the Lumberjack will say "''Chop chop!''" or “''Timber!''”. He also laughs when deployed and when the Lumberjack Ghost surges.
+**Along with the [[Knight/Evolution|Knight]] and [[Barbarians/Evolution|Barbarians]], he is voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+**The Lumberjack is 1 of 9 evolved [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being Bomber, [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], and [[Mega Knight/Evolution|Mega Knight]].
+*Before the Lumberjack Evolution's release, the Lumberjack Ghost's damage was decreased by 33%.
+{{Navigation|Card}}

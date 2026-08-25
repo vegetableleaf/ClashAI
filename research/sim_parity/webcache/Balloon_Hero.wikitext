@@ -1,0 +1,261 @@
+{{Heroic_Card_Infobox|Cost=5|AbilityCost=2|Rarity=Epic|Type=Troop|Arena=Royal Arena|ReleaseDate=April 6,2026}}
+{{Quote|These skyward skellies were never satisfied while six feet under! Aeri and her skeleton crew are known for their semi-well-crafted wings which allow them to dive-bomb without breaking any bones.}}
+The Heroic Balloon is a {{Rarity|Epic}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It spawns a single-target, [[:Category:Building Cards|building]]-targeting, melee, air [[:Category:Troop Cards|troop]] with high hitpoints and very high damage. When defeated, it drops a bomb which explodes after 3 seconds, dealing moderate damage. It is a hot air balloon with a team-colored envelope and a wooden basket with sacks held together by patches and ropes, and is piloted by a [[Bomber]]. A Heroic Balloon card costs 5 {{Icon|I=Elixir}} to deploy.
+
+== Ability: Coffin Cadets ==
+{{Quote|A Skeletrooper soars to the nearest enemy on the ground, dealing landing damage.}}{{Hero Ability|2=Coffin Cadets}}
+The Hero Knight has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. Once pressed, a skeletropper will fly towards the closest ground unit within 6 tiles, deling spawn damage. The skeletropper will the attack, dealing less damage to the crown tower. The Coffin Cadets ability costs 2 [[Elixir]] to activate.
+
+==Strategy==
+*The ability can be used to kill units like [[Musketeer]] and [[Wizard]], or buildings.
+*When defending, put troops like [[Skeletons]] closer, so that they can take the agro of the ability.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Balloon Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|5
+|2 sec
+|0.2 sec
+|Medium (60)
+|1 sec
+|Melee: Short (0.1)
+|Buildings
+|x1
+|Air
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Epic}}
+|}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+!Range
+{{Icon|I=Range}}
+! scope="col" |Skeletrooper Range
+{{Icon|I=Range}}
+!Crown Tower Damage
+{{Icon|I=Damage}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+|-
+|2
+|1.1 sec
+|Very Fast (120)
+|6.5
+|Melee: Short
+| -90%
+|Ground
+|x1
+|Ground
+|}
+{{StatisticsSubheader|Bomb Attributes}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! scope="col" |Death Damage Splash Radius
+{{Icon|I=Radius}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+|-
+|3
+|3 sec
+|Air & Ground
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually typing it in every time. ================================================================--> {{#vardefine: hp_11|1679}} {{#vardefine: dmg_11|640}} {{#vardefine: atk_speed|2.0}} {{#vardefine: death_11|240}} {{#vardefine: skelhp_11|473}} {{#vardefine: skeldmg_11|204}}{{#vardefine: skelatk_speed|1.1}}  {{#vardefine: landdmg_11|263}}{{#vardefine: crownlanddmg_11|27}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Damage
+{{Icon|I=Damage}}
+! scope="col" |Damage per second
+{{Icon|I=DPS}}
+! scope="col" |Death Damage
+{{Icon|I=Death Damage}}
+!Skeletrooper Hitpoints
+{{Icon|I=Hitpoint}}
+!Skeletrooper Damage
+{{Icon|I=Damage}}
+! scope="col" |Skeletropper Damage per second
+{{Icon|I=DPS}}
+!Landing Damage
+{{Icon|I=Damage}}
+!Landing Crown Tower Damage
+{{Icon|I=Tower Damage}}
+|-
+|6
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:death_11}}
+|{{#var:skelhp_11}}
+|{{#var:skeldmg_11}}
+|{{Dps|{{#var:skeldmg_11}}|{{#var:skelatk_speed}}}}
+|{{#var:landdmg_11}}
+|{{#var:crownlanddmg_11}}
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:skelhp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:skeldmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:skeldmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:skelatk_speed}}}}
+|{{#expr: {{#var:landdmg_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:crownlanddmg_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+* On 6/4/2026, with the [[Version History#Pass Royale and more (6/4/2026)|April 2026 Update]], the Hero Balloon was added in the game, along with [[Minion Horde/Evolution|Evo Minion Horde]]{{Balance|Add}}.
+* On 1/6/2026, a [[Version History#Pass Royale and more (1/6/2026)|Balance Update]], decreased the Skeletrooper's Landing Damage by 14%{{Balance|Nerf}}.
+* On 6/7/2026, a [[Version History#Pass Royale and more (6/7/2026)|Balance Update]], decreased the Skeletrooper's Attack Damage by 20%{{Balance|Nerf}} and increased his hit speed to 1.1 seconds (from 0.9 seconds){{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], made the ability single use (from 12sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Balloon Card Render.png|Current card render.
+File:BalloonHeroShard.png|Heroic Balloon Shard.
+</gallery>
+
+==Trivia==
+*The first use of hot air balloons in warfare was in 1849, where the Austrian imperial forces besieging Venice attempted to float some 200 paper hot air balloons each carrying an 11–14 kg bomb that was to be dropped from the balloon with a time fuse over the besieged city. Before that, Balloons were used in wars exclusive for reconnaissance purposes, the first instance being in the Battle of Fleurus in 1794, used by the French against the Austrians.
+**In the Italian, Finnish, and Vietnamese language settings of the game, the Balloon's name translates to "Hot Air Balloon". In the Spanish, Japanese, Korean, and Chinese language settings of the game, the Balloon's name translates to "Bombastic Balloon", "Air Balloon", "Skull Airship", and "Balloon Soldier" respectively.
+
+{{Navigation|Card}}

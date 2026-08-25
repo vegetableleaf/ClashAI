@@ -1,0 +1,80 @@
+key: musketeer_hero
+base_card: musketeer
+page: Musketeer/Hero
+revid: 437512
+fetched: "2026-08-25"
+release_date: "2025-12-01"   # infobox ReleaseDate="December 1 2025"; History "December 2025 Update on 1/12/2025" (page uses d/m/yyyy)
+
+body_stat_deltas: none stated
+# Hero body attributes table matches the base musketeer snapshot row on every shared field:
+#   hp 721 (vardefine musk_hp_11) = base 721; damage 217 (musk_dmg_11) = base 217;
+#   hit_speed 1 (musk_atk_speed + table) = base 1.0; range 6 = base 6.0;
+#   speed Medium (60) = base medium; deploy_time 1 sec = base 1.0; target Air & Ground = base any;
+#   count x1, transport Ground, rarity Rare — all equal.
+# Note: table "First Hit Speed 0.5 sec" has no directly comparable single snapshot field
+#   (snapshot has load_time_s 0.2 + deploy_delay_s 0.3); not claimed as a delta.
+# Note: body deploy time was 2 sec until the 2/2/2026 balance change ("Hero Musketeer deploy
+#   time to 1 (from 2)" — History); current value equals base.
+
+ability:
+  name: Trusty Turret
+  elixir_cost: 3          # infobox AbilityCost=3; ability prose "costs 3 Elixir"; turret attr table Cost=3 — all agree
+  uses: 1                 # History 4/8/2026: "made the ability single use (from 22sec cooldown)"
+  cooldown_s: null        # single use since 4/8/2026; was 22 s before (History)
+  cast_delay_s: 1         # prose: "After a 1-second delay, the Hero Musketeer activates her 'Trusty Turret'"
+
+mechanic_prose: |
+  [Ability: Trusty Turret — card quote]
+  "Spawns a short-range auto-turret in front of the Musketeer."
+
+  [Section "Ability: Trusty Turret"]
+  "The Hero Musketeer has a special ability accessible from whatever side of the screen was put
+  in, just above the player's card slots in battle. After a 1-second delay, the Hero Musketeer
+  activates her "Trusty Turret", placing a turret 3 tiles forward of the Musketeer, which is used
+  either as a distraction for regular troops, and as a building to attract win conditions. This
+  turret has a lifetime of 10 seconds, meaning that this is meant to be used reactively as it's
+  not meant to last that long, unless the building is destroyed before the Decay kills it. The
+  Trusty Turret ability costs 3 Elixir to activate."
+
+  [Section "Strategy", elixir accounting]
+  "For the purposes of determining Elixir trades, the Heroic Musketeer and her activated Ability
+  count as 7 Elixir, as the player must play the 4 Elixir Heroic Musketeer and then spend a
+  further 3 on her Ability."
+
+numbers:
+  body_cost_elixir: {value: 4, source: "infobox Cost=4; body attributes table Cost=4"}
+  ability_cost_elixir: {value: 3, source: "infobox AbilityCost=3; ability prose; Trusty Turret attributes table Cost=3"}
+  combined_cost_elixir: {value: 7, source: "prose (Strategy): 'count as 7 Elixir'"}
+  body_hp_lvl11: {value: 721, source: "vardefine musk_hp_11"}
+  body_damage_lvl11: {value: 217, source: "vardefine musk_dmg_11"}
+  body_hit_speed_s: {value: 1, source: "vardefine musk_atk_speed; attributes table 'Hit Speed 1 sec'"}
+  body_first_hit_speed_s: {value: 0.5, source: "attributes table 'First Hit Speed 0.5 sec'"}
+  body_speed: {value: "Medium (60)", source: "attributes table Speed"}
+  body_deploy_time_s: {value: 1, source: "attributes table 'Deploy Time 1 sec'; History 2/2/2026 'Hero Musketeer deploy time to 1 (from 2)'"}
+  body_range_tiles: {value: 6, source: "attributes table Range"}
+  cast_delay_s: {value: 1, source: "prose: 'After a 1-second delay'"}
+  turret_offset_tiles: {value: 3, source: "prose: 'placing a turret 3 tiles forward of the Musketeer'"}
+  turret_lifetime_s: {value: 10, source: "vardefine tur_life=10; turret attributes table 'Turret Lifetime 10 seconds'; prose 'lifetime of 10 seconds' — all agree"}
+  turret_range_tiles: {value: 4.0, source: "turret attributes table 'Turret Range 4.0'; corroborated by History 2/2/2026 'decreased turret range to 4.0 (from 5.5)'"}
+  turret_target: {value: "Air & Ground", source: "turret attributes table 'Turret Target'"}
+  turret_deploy_time_s:
+    value_attributes_table: 1
+    value_history: 2
+    source: "CONFLICT — turret attributes table 'Deploy Time 1 second' vs History 12/1/2026 'increased turret deploy time to 2 seconds (from 1 second)' with no later recorded revert"
+  turret_hp_lvl11: {value: 1536, source: "vardefine tur_hp_11 (level-11 table row erroneously renders musk_hp_11=721 in the Turret Hitpoints column — template bug, see open_questions)"}
+  turret_damage_lvl11: {value: 140, source: "vardefine tur_dmg_11"}
+  turret_hit_speed_s: {value: 0.5, source: "vardefine tur_atk_speed"}
+  turret_spawn_damage_lvl11: {value: 204, source: "vardefine tur_spawn_11; stat table column 'Turret Spawn Damage' (Heroes master table calls it 'landing damage')"}
+  turret_decay_hp_per_s_lvl11: {value: 153.6, source: "derived on-page: stat table column 'Turret Hitpoints lost per second' = tur_hp_11/tur_life = 1536/10; prose confirms 'before the Decay kills it'"}
+  historical_cooldown_s: {value: 22, source: "History 4/8/2026: 'made the ability single use (from 22sec cooldown)' — no longer live"}
+  level_scaling: {value: "stat * 1.1^(level-11)", source: "stat table #expr formulas (page warns of rounding)"}
+
+proposed_ability_kind: summon
+
+open_questions:
+  - "Turret deploy time: attributes table says 1 s but History 12/1/2026 says nerfed to 2 s (from 1) and no revert is recorded. Which is live? In-game check."
+  - "Turret HP: vardefine tur_hp_11=1536, but the level-11 row of the stat table renders the Turret Hitpoints cell from musk_hp_11 (721) — wiki template bug. Confirm live turret HP (~1536 at lvl 11) in-game."
+  - "Turret spawn/landing damage 204 has no stated radius or falloff — null, needs in-game check."
+  - "Turret attack profile unstated: single-target? projectile? Only range 4.0, target Air & Ground, hit speed 0.5 are given."
+  - "Placement rule when <3 tiles of space in front (river/arena edge/facing direction) is unstated."
+  - "Does turret decay linearly (table implies tur_hp/10 per second) or is decay only cosmetic bookkeeping? Prose confirms decay exists but not its curve."

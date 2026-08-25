@@ -1,0 +1,192 @@
+{{Protection}}{{MagicWords}}
+{{Heroic_Card_Infobox|Cost=5|AbilityCost=2|Rarity=Epic|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=May 04, 2026}}
+{{Quote|This globetrotter and his boulder needed new records to break. After baseball broke the bleachers and football flattened all the Goblins, they found their way onto the court. From there, it was nothing but net!}}The Heroic Bowler is a '''[[:Category:Epic Cards|Epic]]''' [[Cards|card]] that is unlocked by using 200 Hero Coins on the card. It spawns a slow medium-ranged, ground-targeting troop that has high hitpoints and deals high area damage. Like his [[Bowler|normal counterpart]], he throws a projectile with a large area of effect that travels its maximum range, dealing knockback and piercing through enemies. He takes the appearance of a massive, indigo-skinned humanoid creature with glowing yellow eyes, wearing a white headband with golden outlines, athletic shorts with a leather belt with a [[Heroes|Hero Shard]] in the middle, a plaster on his left arm with team-colored outlines, and golden-and-white sneakers, and carries a boulder that appears as a basketball and has glowing yellow eyes. A Heroic Bowler card costs 5 {{Icon|I=Elixir}} to deploy, and a further 2 {{Icon|I=Elixir}} to activate his ability.
+
+== Ability: Stone Swish ==
+{{Quote|Plants his feet and throws boulders with increased range.}}{{Hero Ability|2=Stone Swish}}
+The Hero Bowler has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After 2.5sec of the ability pressed, the bowler will change the attack to a long-ranged mortar attack for 7.3sec. Getting a total of 3 shots during that duration.
+
+==Strategy==
+*The ability can be used to snipe builinds, making way cards like [[Electro Giant]].
+*The ability can be used like a 3 shot [[Mortar]], dealing good damage at the tower.
+*Fast and Veary Fast units like [[Berserker]] and [[Ice Spirit]] can avoid all 3 shots if placed right.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Hero Bowler Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Projectile Range
+{{Icon|I=Radius}}
+! scope="col" |Projectile Width
+{{Icon|I=Radius}}
+! scope="col" |Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|5
+|2.5 sec
+|0.5 sec
+|Slow (45)
+|1 sec
+|4
+|7
+|3.6
+|170
+|Ground
+|1x
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Stone Swish Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Cast Time
+{{Icon|I=Time}}
+! scope="col" |Duration
+{{Icon|I=Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+|-
+|2
+|1.9 sec
+|2.5 sec
+|7.3 sec
+|11.5
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> {{#vardefine: hp_11|2081}} {{#vardefine: dmg_11|289}} {{#vardefine: atk_speed|2.5}} {{#vardefine: abdmg_11|508}} {{#vardefine: ctdmg_11|254}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage
+{{Icon|I=Area Damage}}
+! scope="col" |Damage per second
+{{Icon|I=DPS}}
+!Ability Damage
+{{Icon|I=Damage}}
+!Ability Crown Tower Damage
+{{Icon|I=Tower Damage}}
+|-
+|6
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:abdmg_11}}
+|{{#var:ctdmg_11}}
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:abdmg_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:ctdmg_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+* On 4/5/2026, with the [[Version History#Pass Royale and more (4/5/2026)|May 2026 Update]] the Hero Bowler was added into the game, along with [[Dark Prince/Hero|Hero Dark Prince]]{{Balance|Add}}.
+* On 1/6/2026, a [[Version History#Pass Royale and more (1/6/2026)|Balance Update]], decreased his ability duration to 7.3 seconds (from 9 seconds){{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], decreased the Hero Bowler's projectile range to 7 tiles (from 7.5 tiles){{Balance|Nerf}}. This also made the ability single use (from 22sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Bowler Card Render.png|Current card render.
+File:BowlerHeroShard.png|Heroic Bowler Shard.
+</gallery>
+
+==Trivia==
+
+{{Navigation|Card}}

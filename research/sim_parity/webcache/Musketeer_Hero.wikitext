@@ -1,0 +1,150 @@
+{{DISPLAYTITLE:<span class="text-champion">Heroic Musketeer</span>}}{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=December 1 2025|AbilityCost=3}}
+{{Quote|Hero Musketeer has a new best friend: the boom building! This scrappy guy shoots fast and hard, making her boomstick suuuuuper jealous.}}
+The Musketeer is a {{Rarity|Rare}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns one single-target, air-targeting, long-ranged, and ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Heroic Musketeer takes the appearance of a woman who has golden glowing eyes, coiffed curly hair and eyebrows, and wears a gold breastplate, chainmail, a team-colored cape, a beige helmet with a gold handle in a similar style helmet as one of the [[Three Musketeers]] helmets, a belt, beige shoulder pads with gold handles as their base, brown gloves and boots with golden soles and chains, while carrying a beige blunderbuss-styled musket with a golden trigger and muzzle as her weapon with dark gray spheres as her ammunition. She also wields a turret with a large gold handle and base supported by a metal handle in-between and a long, gold and black striped tube, while having the same hat as the Musketeer. A Heroic Musketeer card costs 4 {{Icon|I=Elixir}} to deploy and her ability costs an additional 3 {{Icon|I=Elixir}} to activate.
+
+==Ability: Trusty Turret==
+{{Quote|Spawns a short-range auto-turret in front of the Musketeer.}}{{Hero Ability|2=Musketeer-Heroic}}
+The Hero Musketeer has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Hero Musketeer activates her “Trusty Turret”, placing a turret 3 tiles forward of the Musketeer, which is used either as a distraction for regular troops, and as a building to attract win conditions. This turret has a lifetime of 10 seconds, meaning that this is meant to be used reactively as it's not meant to last that long, unless the building is destroyed before the Decay kills it. The Trusty Turret ability costs 3 {{Icon|I=Elixir}} to activate.
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Heroic Musketeer and her activated Ability count as 7 Elixir, as the player must play the 4 Elixir Heroic Musketeer and then spend a further 3 on her Ability.
+*Do not use the ability against an enemy [[Electro Giant]]. Not only does it worsen the Elixir cost against him, but it will also lure him towards the Turret, which will cause the Heroic Musketeer to take damage and eventually destroy herself through his Zap Pack. It is better to use her at a range, as either she will defeat him without taking damage, or will force the opponent to pull her within his Zap Pack range by using a [[Tornado]] or a [[Fisherman]].
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Heroic Musketeer Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|4
+|1 sec
+|0.5 sec
+|Medium (60)
+|1 sec
+|6
+|Air & Ground
+|x1
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Trusty Turret Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Turret Range
+{{Icon|I=Range}}
+! scope="col" |Turret Target
+{{Icon|I=Targets}}
+! scope="col" |Turret Lifetime
+{{Icon|I=Time}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+|-
+|3
+|4.0
+|Air & Ground
+|10 seconds
+|1 second
+|}
+{{StatisticsSubheader|Card Statistcis}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, musk_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: musk_hp_11 | 721 }}
+{{#vardefine: musk_dmg_11 | 217 }}
+{{#vardefine: musk_atk_speed | 1 }}
+{{#vardefine: tur_hp_11 | 1536 }}
+{{#vardefine: tur_life | 10 }}
+{{#vardefine: tur_dmg_11 | 140 }}
+{{#vardefine: tur_spawn_11 | 204 }}
+{{#vardefine: tur_atk_speed | 0.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Turret Hitpoints <br>{{Icon|I=Hitpoint}}
+! scope="col" |Turret Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Turret Damage<br>{{Icon|I=Damage}}
+! scope="col" |Turret Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Turret Spawn Damage<br>{{Icon|I=Damage}}
+|-
+| 3 || {{#expr: {{#var:musk_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(3-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:musk_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(4-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:musk_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(5-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:musk_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(6-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:musk_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(7-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:musk_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(8-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:musk_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(9-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:musk_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(10-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:musk_hp_11}} || {{#var:musk_dmg_11}} || {{Dps|{{#var:musk_dmg_11}}|{{#var:musk_atk_speed}} }} || {{#var:musk_hp_11}} || {{#expr: {{#var:tur_hp_11}} / {{#var:tur_life}} round 1 }} || {{#var:tur_dmg_11}} || {{Dps|{{#var:tur_dmg_11}}|{{#var:tur_atk_speed}} }} || {{#var:tur_spawn_11}}
+|-
+| 12 || {{#expr: {{#var:musk_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(12-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:musk_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(13-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:musk_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(14-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:musk_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(15-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:musk_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:musk_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:musk_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:musk_atk_speed}} }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:tur_hp_11}} * (1.1^(16-11)) / {{#var:tur_life}} round 1 }} || {{#expr: {{#var:tur_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:tur_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:tur_atk_speed}} }} || {{#expr: {{#var:tur_spawn_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2025
+*The Hero Musketeer [[Cards|card]] was added to the game with the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] on 1/12/2025{{Balance|Add}}.
+2026
+* On 12/1/2026, a [[Version History#Balance Changes (12/1/2026)|Balance Update]], increased turret deploy time to 2 seconds (from 1 second){{Balance|Nerf}}.
+* on 2/2/2026, a [[Version History#Pass Royale and more (2/2/2026)|Balance Update]], decreased turret range to 4.0 (from 5.5){{Balance|Nerf}}, and Hero Musketeer deploy time to 1 (from 2){{Balance|Buff}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], made the ability single use (from 22sec cooldown){{Balance|Remove}}.
+
+== Gallery ==
+<gallery>
+File:Heroic Musketeer Card Render.png|Current Card render of Heroic Musketeer.
+File:MusketeerHeroShard.png|Heroic Musketeer Shard.
+File:Heroic Musketeer 3D Render.png|The 3D Render of the Heroic Musketeer.
+File:Musketeer Heroic 3D-Render Charge.png|The 3D render of the Hero Musketeer charging to the front lines while the Turret plays defence.
+File:Heroic Musketeer Card Render Charge2.png|The 3D render of the Hero Musketeer charging to the front lines while the Turret plays defence. This time, she's holding the Musket in a cradle like form.
+File:Heroic Musketeer Turret.png|Heroic Turret
+</gallery>
+
+== Trivia ==
+* The Heroic Musketeer was one of the first [[Heroes]] to be added in the game, alongside the [[Giant/Hero|Giant]], [[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]], and [[Knight/Hero|Knight]].
+{{Navigation|Card}}

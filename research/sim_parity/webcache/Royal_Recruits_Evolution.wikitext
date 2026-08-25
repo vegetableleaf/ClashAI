@@ -1,0 +1,150 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Royal Recruits</span>}}
+{{Evolved Card Infobox|Cost=7|CycleCost=1|Rarity=Common|Type=Troop|Arena=Royal Arena|ReleaseDate=4 September 2023}}
+{{Quote|Royal Recruits have been taking lessons from Prince. Once their shields have been broken, they will begin an epic charge!}}
+
+The Royal Recruits' Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 6 Royal Recruits with identical stats to the originals. After their shield is destroyed, they gain the ability to charge towards their target after traveling 2 tiles, dealing 2x damage if they hit the target whilst charging. They appear as men with large, round noses, wear wooden buckets with team-colored feathers, which cover their faces, metal gloves, an armor, a chainmail, a purple shirt, cape, pants and sandals, and a team-colored band on their right arm and belt with purple linings and a [[Card Evolution]] symbol in the center, and wield spears and wooden shields. The Royal Recruits' Evolution costs 7 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*The Evolved Royal Recruits are a powerful defensive [[Cards|card]] because of how they are deployed, allowing good defensive [[:Category:Troop Cards|troops]] to come from both lanes.
+*The Evolved Royal Recruits should never be ignored as they will destroy both [[:Category:Crown Towers|Crown Towers]] when left alone. This goes for any [[:Category:Tower Troop Cards|tower troop]].
+*The Evolved Royal Recruits are best used when on defense because they can easily defend both lanes, and apply a threatening counterpush when their shields are knocked off.
+*Despite their horizontal formation, they can be split in slightly different ways by shifting the central tile of their deployment pattern to the left or right. This can cause 4 Evolved Royal Recruits to go in one lane and 2 in the other lane as opposed to the usual even formation. This makes them a good choice for split lane pushes.
+*Unlike other cards, the Evolved Royal Recruits cannot be placed in the opponent's territory if one Crown Tower has been destroyed. Instead, they need both Crown Towers to be destroyed to be placed in the opponent's territory.
+*The Evolved Royal Recruits have great synergy with the [[Royal Hogs]] as the Royal Hogs will entice a strong spell, such as [[Fireball]], from the opponent, knocking off their shields and causing them to charge. The Evolved Royal Recruits can tank for the Royal Hogs after the Fireball, allowing them to get damage on the Crown Tower.
+*The best way to counter the Evolved Royal Recruits is to use a card that deals area damage, such as an [[Executioner]], [[Wizard]], [[Skeleton King]], [[Sparky]], [[Bomber]], Valkyrie, [[Ice Wizard]], [[Baby Dragon]], Mega Knight, [[Magic Archer]], [[Princess]], Firecracker [[Royal Ghost]], [[Goblin Demolisher]], Dark Prince, [[Witch]], or Bowler, and a tank, such as an [[Prince]], [[Ice Golem]], [[Monk]], Valkyrie, [[Miner]], [[Golden Knight]], or [[Knight]], in between your Crown Towers. This will make the Evolved Royal Recruits group up and make it easier to hit each Evolved Royal Recruit. Other cards, such as a combination of [[Bomb Tower]] and [[Valkyrie]], can achieve the same feat.
+*[[:Category:Spell Cards|Spells]] are very situational counters to the Evolved Royal Recruits as their shields will absorb the spell's damage without harming the unit itself. Once the shields are knocked off, then a strong spell like Fireball, can be used to take them out as they charge.
+*[[Arrows]] have a great synergy with the Evolved Royal Recruits as the Arrows will easily take out any fragile swarm, such as [[Skeleton Army]], [[Bats]], and [[Goblin Gang]], or ranged unit, such as [[Firecracker]], [[Princess]], Bomber, [[Archers]], [[Spear Goblins]], and [[Dart Goblin]], your opponent might place to counter them.
+*Because of their horizontal formation, they can be used defensively even against splash units. This is especially useful against the [[Mega Knight]] or the [[Dark Prince]], as their formation minimizes the number of Royal Recruits that are hit by a single attack from the Mega Knight or Dark Prince.
+*Due to their shields absorbing the damage, the Evolved Royal Recruits are very strong at taking the Giant Bomb from a [[Giant Skeleton]]. Additionally, they will begin charging, putting the opponent in a difficult situation.
+*Since they cannot attack air troops, they can be weakened by splitting air swarms, like the [[Bats]], [[Minion Horde]], and [[Skeleton Dragons]]. However, note that this will allow them to charge due to their shields being destroyed, so only try this if the air swarms are supported with a ground distraction.
+*The Evolved Royal Recruits have a slightly longer range than other melee troops, thus allowing them to safely attack distracted lower-range non-splash and splash cards alike, such as the [[Skeletons/Evolution|Evolved Skeletons]] and Valkyrie, without taking damage in return.
+*Despite their charging, a lone [[Bowler]] can easily stop 1 lane of Evolved Royal Recruits when aligned with them. If he is placed in the center of the player's territory and combined with another card like an Ice Golem, he is able to fully stop both lanes.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+
+{{StatisticsSubheader|Evolved Royal Recruit Attributes}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}} 
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.3 sec||0.5 sec||Medium (60)||1 sec||Melee: Long (1.6)|| Ground||x6||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+|-
+|1||2.5 
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 547 }}
+{{#vardefine: Shield_11 | 240 }}
+{{#vardefine: dmg_11 | 133 }}
+{{#vardefine: Charge_11 | 266 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+! scope="col" |Charge Damage<br />{{Icon|I=Boost}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:Shield_11}} || {{#var:dmg_11}} || {{#var:Charge_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Charge_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div>
+</center>
+
+==History==
+2023
+*The Royal Recruits' Evolution [[Cards|card]] was added to the game on 4/9/2023, in the [[Version History#Pass Royale and more (4/9/2023)|September 2023 Update]].
+*On 13/11/2023, a [[Version History#Minor Update (13/11/2023)|Minor Update]], decreased the Evolved Royal Recruits' damage to 106% of the original's (from 112%).
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], decreased the Evolved Royal Recruits' charge damage by 8%.
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], removed the Evolved Royal Recruits’ damage boost.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Royal Recruits’ hitpoints by 3%, but removed their hitpoints boost.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Royal Recruits after death.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the Evolved Royal Recruits' charge damage by 3% and increased the distance required for charging to 2 tiles (from 1.5 tiles).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Evolved Royal Recruits' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]], increased the distance required for charging to 2.5 tiles (from 2 tiles).
+
+==Gallery==
+<gallery>
+File:Evolved Royal Recruits card render.png|Current card render.
+File:Evolved Royal Recruits Preview.gif|Current card preview
+File:RoyalRecruitsEvoShard.png|Evolution Shard.
+File:Evolved Royal Recruit.png|Evolved Royal Recruit
+</gallery>
+
+==Trivia==
+*The Royal Recruits' Evolution is tied with the [[P.E.K.K.A./Evolution|P.E.K.K.A]] and [[Mega Knight/Evolution|Mega Knight]] for the most expensive [[Card Evolution|Evolution]] to be placed, costing 14 [[Elixir]] (excluding Elixir from using other [[cards]]).
+*In the Turkish, Japanese, Korean, Chinese, Persian, Indonesian, Thai, Finnish, and Vietnamese language settings of the game, the Royal Recruits' name translates to "Guards", "Apprentice Bodyguards", "Royal Trainees", "Royal Guards", "Royal Soldiers", "Royal Army", "Royal Conscripts", "The King's Warriors", and "Royal Rookies" respectively.
+*The Royal Recruits' Evolution is 1 of 2 evolved cards to have an alliterative name, the other being [[Goblin Giant/Evolution|Goblin Giant]].
+*The Royal Recruits' Evolution is 1 of 2 evolved troops with a charge, the other being [[Battle Ram/Evolution|Battle Ram]].
+**The Royal Recruits' charge shares the same sound effects as the [[Prince]]'s and [[Raging Prince]]'s.
+*The Royal Recruits' Evolution is the only evolved card that cannot be placed in the opponent's territory if only one [[:Category:Crown Towers|Crown Tower]] has been destroyed.
+*Even though the card spawns 6 Royal Recruits, the card render displays only 1 Royal Recruit.
+*The deploy sound of the Evolved Royal Recruits is identical to the one spawned by the [[Royal Delivery]].
+*The Royal Recruits' Evolution is tied with the [[P.E.K.K.A./Evolution|P.E.K.K.A.]] and the [[Mega Knight/Evolution|Mega Knight]] for the most expensive [[:Category:1-Cycles Evolutions|1-Cycle]] [[Card Evolution|Evolution]], costing 7 [[Elixir]]. They are also the most expensive Evolution overall.
+*The Royal Recruits' Evolution is the subject of an [[Emotes|Emote]].
+**It is also 1 of 4 evolved cards whose regular card is not the subject of any Emote, the others being [[Zap/Evolution|Zap]], [[Giant Snowball/Evolution|Giant Snowball]], and Battle Ram.
+*The Royal Recruits' Evolution was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+*The Royal Recruits' Evolution has had balance changes that were planned for it but were not added to the game. More specifically:
+**The initial balance change for Evolved Royal Recruits on the [[Version History#Balance%20Changes%20(3/1/2024)|3/1/2024 balance changes]] was a removal of their damage boost, but it changed to a 6% charge damage decrease [https://royaleapi.com/blog/season-55-balance-wip last minute].
+**The initial balance change for Evolved Royal Recruits on the [[Version History#Balance Changes (8/1/2025)|8/1/2025 balance changes]] was a 4% damage increase, a 1% charge damage increase, and a charge range increase to 2 tiles (from 1.5 tiles), but the charge damage increase was changed to a 3% decrease, and the damage increase [https://royaleapi.com/blog/season-67-balance-wip-january-2025 was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[ru:Королевские рекруты/Эволюция]]

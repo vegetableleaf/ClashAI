@@ -1,0 +1,531 @@
+{
+ "meta": {
+  "fetched": "2026-08-25",
+  "method": "category members (Troop/Building/Spell/Champion Cards, 196 unique titles) x subpage existence probes, crossed against master page Card Evolution (revid 437535); every extracted page archived to webcache/",
+  "master_page": {
+   "title": "Card Evolution",
+   "revid": 437535,
+   "redirects": {
+    "Evolution": 424247,
+    "Evolutions": 436135
+   }
+  },
+  "probe_results": {
+   "Berserker/Evolution": "absent (expected)",
+   "Giant/Evolution": "absent (expected)",
+   "Arrows/Evolution": "absent (expected)",
+   "Elite Barbarians/Evolution": "live (expected; stub subpage, release documented on master page)"
+  },
+  "date_format_note": "wiki uses DD/MM/YYYY; anchored by 19/6/2023 Card Evolution Update and Minion Horde infobox 'April 6,2026' == 6/4/2026",
+  "cycles_source": "master table (42/42), cross-checked vs subpage infobox CycleCost (41/42 present, 0 mismatches; Elite Barbarians stub lacks one)"
+ },
+ "live_count": 42,
+ "kb_comparison": {
+  "kb_count": 42,
+  "live_count": 42,
+  "additions_live_not_in_kb": [],
+  "removals_in_kb_not_live": []
+ },
+ "conflicts": [
+  "Hunter/Evolution release date: master History prose '3/2/2025' vs its own linked anchor 'March 2025 Update (3/3/2025)' and subpage '3 March 2025' (revid 436718)",
+  "Berserker evolution: official CR API forward-declares it; wiki page absent (mandatory probe)",
+  "Giant evolution: official CR API forward-declares it; wiki page absent (mandatory probe)",
+  "Elite Barbarians evolution: official CR API lags it; wiki documents live since 3/8/2026 (master revid 437535), subpage is a stub"
+ ],
+ "evolutions": [
+  {
+   "key": "barbarians_evo",
+   "page": "Barbarians/Evolution",
+   "revid": 437363,
+   "fetched": "2026-08-25",
+   "release_date": "2023-06-19",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "firecracker_evo",
+   "page": "Firecracker/Evolution",
+   "revid": 437259,
+   "fetched": "2026-08-25",
+   "release_date": "2023-06-19",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "royal_giant_evo",
+   "page": "Royal Giant/Evolution",
+   "revid": 437218,
+   "fetched": "2026-08-25",
+   "release_date": "2023-06-19",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "skeletons_evo",
+   "page": "Skeletons/Evolution",
+   "revid": 436451,
+   "fetched": "2026-08-25",
+   "release_date": "2023-06-19",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "mortar_evo",
+   "page": "Mortar/Evolution",
+   "revid": 437361,
+   "fetched": "2026-08-25",
+   "release_date": "2023-07-03",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "knight_evo",
+   "page": "Knight/Evolution",
+   "revid": 437498,
+   "fetched": "2026-08-25",
+   "release_date": "2023-08-07",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "royal_recruits_evo",
+   "page": "Royal Recruits/Evolution",
+   "revid": 436465,
+   "fetched": "2026-08-25",
+   "release_date": "2023-09-04",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "bats_evo",
+   "page": "Bats/Evolution",
+   "revid": 437215,
+   "fetched": "2026-08-25",
+   "release_date": "2023-10-02",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "archers_evo",
+   "page": "Archers/Evolution",
+   "revid": 437495,
+   "fetched": "2026-08-25",
+   "release_date": "2023-11-06",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "ice_spirit_evo",
+   "page": "Ice Spirit/Evolution",
+   "revid": 437339,
+   "fetched": "2026-08-25",
+   "release_date": "2023-12-04",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "valkyrie_evo",
+   "page": "Valkyrie/Evolution",
+   "revid": 437367,
+   "fetched": "2026-08-25",
+   "release_date": "2024-01-01",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "bomber_evo",
+   "page": "Bomber/Evolution",
+   "revid": 436449,
+   "fetched": "2026-08-25",
+   "release_date": "2024-02-05",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "wall_breakers_evo",
+   "page": "Wall Breakers/Evolution",
+   "revid": 437358,
+   "fetched": "2026-08-25",
+   "release_date": "2024-02-14",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "tesla_evo",
+   "page": "Tesla/Evolution",
+   "revid": 437289,
+   "fetched": "2026-08-25",
+   "release_date": "2024-03-04",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "zap_evo",
+   "page": "Zap/Evolution",
+   "revid": 437306,
+   "fetched": "2026-08-25",
+   "release_date": "2024-03-11",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "battle_ram_evo",
+   "page": "Battle Ram/Evolution",
+   "revid": 437079,
+   "fetched": "2026-08-25",
+   "release_date": "2024-04-01",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "wizard_evo",
+   "page": "Wizard/Evolution",
+   "revid": 437069,
+   "fetched": "2026-08-25",
+   "release_date": "2024-05-06",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "goblin_barrel_evo",
+   "page": "Goblin Barrel/Evolution",
+   "revid": 437372,
+   "fetched": "2026-08-25",
+   "release_date": "2024-06-03",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "goblin_giant_evo",
+   "page": "Goblin Giant/Evolution",
+   "revid": 437292,
+   "fetched": "2026-08-25",
+   "release_date": "2024-07-01",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "goblin_drill_evo",
+   "page": "Goblin Drill/Evolution",
+   "revid": 437383,
+   "fetched": "2026-08-25",
+   "release_date": "2024-07-15",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "goblin_cage_evo",
+   "page": "Goblin Cage/Evolution",
+   "revid": 437374,
+   "fetched": "2026-08-25",
+   "release_date": "2024-08-05",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "pekka_evo",
+   "page": "P.E.K.K.A./Evolution",
+   "revid": 437337,
+   "fetched": "2026-08-25",
+   "release_date": "2024-09-02",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "mega_knight_evo",
+   "page": "Mega Knight/Evolution",
+   "revid": 437281,
+   "fetched": "2026-08-25",
+   "release_date": "2024-09-14",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "electro_dragon_evo",
+   "page": "Electro Dragon/Evolution",
+   "revid": 437294,
+   "fetched": "2026-08-25",
+   "release_date": "2024-10-07",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "musketeer_evo",
+   "page": "Musketeer/Evolution",
+   "revid": 436483,
+   "fetched": "2026-08-25",
+   "release_date": "2024-11-04",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "cannon_evo",
+   "page": "Cannon/Evolution",
+   "revid": 437252,
+   "fetched": "2026-08-25",
+   "release_date": "2024-11-15",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "giant_snowball_evo",
+   "page": "Giant Snowball/Evolution",
+   "revid": 437371,
+   "fetched": "2026-08-25",
+   "release_date": "2024-12-02",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "dart_goblin_evo",
+   "page": "Dart Goblin/Evolution",
+   "revid": 437234,
+   "fetched": "2026-08-25",
+   "release_date": "2025-01-06",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "lumberjack_evo",
+   "page": "Lumberjack/Evolution",
+   "revid": 437284,
+   "fetched": "2026-08-25",
+   "release_date": "2025-02-03",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "hunter_evo",
+   "page": "Hunter/Evolution",
+   "revid": 436718,
+   "fetched": "2026-08-25",
+   "release_date": "2025-03-03",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": "WIKI-INTERNAL CONFLICT: master History prose says 3/2/2025 but its own Version-History anchor says 3/3/2025 ('March 2025 Update') and the subpage says 3 March 2025; recorded 2025-03-03, conflict left on record"
+  },
+  {
+   "key": "executioner_evo",
+   "page": "Executioner/Evolution",
+   "revid": 437539,
+   "fetched": "2026-08-25",
+   "release_date": "2025-04-07",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "witch_evo",
+   "page": "Witch/Evolution",
+   "revid": 437350,
+   "fetched": "2026-08-25",
+   "release_date": "2025-05-05",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "inferno_dragon_evo",
+   "page": "Inferno Dragon/Evolution",
+   "revid": 437282,
+   "fetched": "2026-08-25",
+   "release_date": "2025-06-02",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "page": "Skeleton Barrel/Evolution",
+   "revid": 437248,
+   "fetched": "2026-08-25",
+   "release_date": "2025-07-07",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "furnace_evo",
+   "page": "Furnace/Evolution",
+   "revid": 437286,
+   "fetched": "2026-08-25",
+   "release_date": "2025-08-04",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "baby_dragon_evo",
+   "page": "Baby Dragon/Evolution",
+   "revid": 437336,
+   "fetched": "2026-08-25",
+   "release_date": "2025-09-01",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "skeleton_army_evo",
+   "page": "Skeleton Army/Evolution",
+   "revid": 436959,
+   "fetched": "2026-08-25",
+   "release_date": "2025-10-06",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "royal_ghost_evo",
+   "page": "Royal Ghost/Evolution",
+   "revid": 437237,
+   "fetched": "2026-08-25",
+   "release_date": "2025-10-17",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "royal_hogs_evo",
+   "page": "Royal Hogs/Evolution",
+   "revid": 437265,
+   "fetched": "2026-08-25",
+   "release_date": "2025-11-03",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": null
+  },
+  {
+   "key": "minion_horde_evo",
+   "page": "Minion Horde/Evolution",
+   "revid": 437379,
+   "fetched": "2026-08-25",
+   "release_date": "2026-04-06",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": "released alongside Hero Balloon per subpage trivia; infobox 'April 6,2026' confirms 6/4/2026 is DD/MM"
+  },
+  {
+   "key": "princess_evo",
+   "page": "Princess/Evolution",
+   "revid": 437368,
+   "fetched": "2026-08-25",
+   "release_date": "2026-06-01",
+   "evo_cycles": 2,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) + subpage",
+   "notes": "subpage infobox says only 'June 2026' (Season 84, alongside Heroic Tombstone); precise 1/6/2026 from master History"
+  },
+  {
+   "key": "elite_barbarians_evo",
+   "page": "Elite Barbarians/Evolution",
+   "revid": 436936,
+   "fetched": "2026-08-25",
+   "release_date": "2026-08-03",
+   "evo_cycles": 1,
+   "status": "live",
+   "release_doc": "Card Evolution#History (revid 437535) only",
+   "notes": "subpage is a stub ('Coming soon...', 13 bytes) with no infobox; release + Cycles=1 documented on master page Card Evolution revid 437535 History ('On 3/8/2026 the August 2026 Update allowed the Elite Barbarians to evolve'); official CR API lags this evo (measured 2026-08-25)"
+  }
+ ],
+ "negative_probes": [
+  {
+   "key": "berserker_evo",
+   "page": "Berserker/Evolution",
+   "revid": null,
+   "fetched": "2026-08-25",
+   "release_date": null,
+   "evo_cycles": null,
+   "status": "absent",
+   "notes": "mandatory negative probe: page missing on wiki as expected; CONFLICT: official CR API forward-declares a Berserker evo (measured 2026-08-25) -- wiki says it does not exist; not resolved here"
+  },
+  {
+   "key": "giant_evo",
+   "page": "Giant/Evolution",
+   "revid": null,
+   "fetched": "2026-08-25",
+   "release_date": null,
+   "evo_cycles": null,
+   "status": "absent",
+   "notes": "mandatory negative probe: page missing on wiki as expected; CONFLICT: official CR API forward-declares a Giant evo (measured 2026-08-25) -- wiki says it does not exist; not resolved here"
+  },
+  {
+   "key": "arrows_evo",
+   "page": "Arrows/Evolution",
+   "revid": null,
+   "fetched": "2026-08-25",
+   "release_date": null,
+   "evo_cycles": null,
+   "status": "absent",
+   "notes": "mandatory negative probe: page missing on wiki as expected"
+  }
+ ]
+}

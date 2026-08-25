@@ -1,0 +1,6 @@
+﻿<includeonly><!--
+--><div style="float: right;"><!--
+-->[[File:Ability-{{{2|{{PAGENAME}}}}}.png|{{{1|64}}}px|link=]]<!--
+--></div><!--
+--></includeonly>
+<noinclude>{{Documentation}}[[Category:Image templates]]</noinclude>

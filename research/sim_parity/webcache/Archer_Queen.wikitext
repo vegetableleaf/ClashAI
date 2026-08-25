@@ -1,0 +1,265 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+{{DISPLAYTITLE: <span class="text-champion";">Archer Queen</span>}}
+
+{{Card Infobox|Cost=5|AbilityCost=1|Rarity=Champion|Type=Troop|Arena=Royal Crypt|ReleaseDate=27 October 2021}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|She is fast, deadly and hard to catch. Beware of her crossbow bolts and try not to blink - you might miss her!}}
+
+The Archer Queen is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Crypt (Arena 17)]]. It spawns a single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Archer Queen's ability makes her invisible, like the [[Royal Ghost]] and increases her attack speed significantly for a short time. She appears as an [[Archers|Archer]], except she is taller, wears a crown, team-colored wrist cuffs and a loincloth, an olive-colored tunic and cape, has purple hair and eyebrows, carries a bigger quiver, and wields a crossbow with arrows that have golden points as their ammunition, while still being barefoot. An Archer Queen card costs 5 [[Elixir]] to deploy, and her ability costs an additional 1 Elixir to activate.
+
+==Ability: Cloaking Cape==
+{{Quote|Activates stealth mode and shoots her arrows faster!}}
+{{Champion Ability}}
+The Archer Queen has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Archer Queen activates her “Cloaking Cape”, becoming invisible (untargetable by enemy [[:Category:Troop Cards|troops]]), having a 80% increase in attack speed, and a massive decrease in movement speed for the entire 3.5-second duration of the ability. The ability goes on a 17-second cooldown after the duration ends. The Cloaking Cape ability costs 1 [[Elixir]] to activate.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Archer Queen Card}}
+*For the purposes of determining [[Elixir]] trades, the Archer Queen and her activated Ability count as 6 Elixir, as the player must play the 5 Elixir Archer Queen and then spend a further 1 on her Ability.
+*The Archer Queen does high damage even without her ability, so a response is always needed to prevent too much damage on your [[:Category:Crown Towers|Tower]]. Due to her high DPS and ranged capabilities, she is a very good response to any single unit.
+*When the Archer Queen is invisible, you can place a mini-tank like a [[Knight]], [[Valkyrie]], [[Golden Knight]], Battle Healer, or [[Prince]] to distract a Crown Tower. This comes in more clutch when the Archer Queen survives with a sliver of health.
+**Even with just a sliver of health, the Archer Queen can be deadly with her ability, so it is recommended to remove her from the [[Arenas|Arena]] with a spell such as [[Zap]], Log, or Giant Snowball.
+**This can backfire against area-damage [[:Category:Troop Cards|troops]], as she is still vulnerable to area-damage attacks that could hit a troop in front of her.
+**Do not activate the ability against the [[Dagger Duchess]], as it will allow her to charge her daggers once again, which will unleash on the Archer Queen anyway. However, this is less risky to do when there is something else assisting the Archer Queen, in this case, the Dagger Duchess will be distracted by that troop, preventing the Dagger Duchess for charging her daggers again.
+*An Archer Queen deals exactly 7 shots for the full duration of her ability, assuming no shots are wasted. This is enough to safely defeat any troop with as much hitpoints as an [[Elixir Golem]] or a [[Sparky]] while under the ability.
+**When her ability is active, you can use [[Giant Snowball]] or [[The Log]] to knock her, wasting a few seconds worth of heavy damaging shots. Stun effects like Zap and [[Freeze]] also work in a similar way.
+**The shots fired from the Archer Queen during the ability is not enough to destroy an entire [[Skeleton Army]], leaving some Skeletons still alive, sufficient to counter the Archer Queen. Consider using a spell to clear away swarms like the Skeleton Army.
+**Similarly, even though she can 3HKO each [[Barbarians|Barbarian]], she cannot handle all 5 of them together, making Barbarians a great counter against her.
+*Defensively, the Archer Queen can wreck small to medium size pushes, and with a building such as [[Tesla]] or [[Cannon]], she can even defend a large [[Golem]], Giant, or [[Lava Hound]] push.
+**Thanks to her range, she can be a decent choice against dual lane pushes like those with [[Royal Hogs]]. She deals high enough damage to defeat them quickly and counterattack afterwards with her ability available to be used again.
+*If you do not have enough Elixir to put down another unit and help the Archer Queen defend, consider using her ability instead. The extra damage per second and compensate for the lack of another unit, and as it is rechargeable, it can be used on a counterpush.
+*In certain situation, the ability can be used to divert troops towards the other lane. For example; against a [[Giant]]-[[Lumberjack]] dual lane push, the player can use a [[P.E.K.K.A.|P.E.K.K.A]] to counter the Giant, and place the Archer Queen at the center of the Arena to pull the Lumberjack, then activate the ability so that the Lumberjack is lured towards the P.E.K.K.A. This allows the P.E.K.K.A to stop both troops and leaves a full health Archer Queen for a counterpush.
+*With her ability, the Archer Queen can completely bypass the Tesla and go straight to the Tower if she is alone, as the Tesla will not reveal itself against invisible targets.
+*The Archer Queen will be OHKOed by a [[Lightning]] of equal Level. Although it is a slight negative Elixir trade alone, the player can hit up to 2 other units or [[:Category:Building Cards|buildings]] to make up for the cost. Additionally, since it is a spell, the player can reliably hit the Archer Queen even while her ability is active. Furthermore, compared to other units that can be defeated by Lightning, she has higher hitpoints, meaning that the spell is less likely to be blocked.
+**A [[Rocket]] can also defeat the Archer Queen, but much like Lightning, it is a negative Elixir. Wait for another target to appear with the Archer Queen, or wait for the Archer Queen to use her ability first, to neutralise the exchange.
+**She can be fully countered by a [[Poison]] and [[The Log]] for a slight negative Elixir trade and an equal Elixir trade if the ability is activated. However, she will survive any combination of Poison with other [[:Category:2-Elixir Cards|2-Elixir]] spells.
+**A Fireball along with any 2-Elixir spell is not enough to defeat an Archer Queen. In this situation, [[Arrows]], [[Zap/Evolution|Evolved Zap]], or [[Royal Delivery]] will have to be paired with the Fireball to defeat the Archer Queen.
+**If the Archer Queen does not have her ability available, a [[Barbarian Barrel]] can stop the Archer Queen for a +4 Elixir trade. Place it so that the Barbarian Barrel hits the Archer Queen and the Barbarian pops out behind her and distracts her. The Barbarian and the Crown Tower combined will be able to defeat the Archer Queen. A lone Royal Delivery can work in a similar way. However, these spells should only be used after the Archer Queen has used her ability, otherwise she will easily defeat the Barbarian and [[Royal Recruits|Royal Recruit]] spawned by the spell.
+**Note that the opponent may take advantage of the lack of spells due to being used on the Archer Queen, and place another card that would thrive due to their absence, such as an [[Electro Dragon]], Witch, [[Night Witch]], [[Bandit]], [[Fisherman]], Wizard, [[Mega Minion]], [[Hunter]], [[Berserker]], or [[Battle Ram]].
+*The Archer Queen, combined with her ability, is excellent at stopping almost any single unit when placed 5 tiles from the defending Crown Tower and 3 from the river. The ability should be used when the unit is roughly 1 second from hitting the Archer Queen. 
+**In order not to waste any shots from before she activates her ability, it is best to time the ability activation a bit after she starts attacking. This will allow her to deal more damage to the enemy than if she activated her ability immediately.
+**Using the ability on an Archer Queen 3.5-5 tiles away from your Tower is not a good a idea for defending a [[Mega Knight]]. The Mega Knight will immediately initiate the jump and jump on to something else other than the Archer Queen, which can be your Tower. The same can be applied to the Bandit and her dash.
+***If additional distraction is needed, or if the ability seems unnecessary, it may be worth using an additional cheap unit such as [[Skeletons]], Goblins, Guards, Knight, or an [[Ice Golem]].
+**This is not recommended against the [[Giant Skeleton]] due to the high risk of his bomb exploding next to the Crown Tower.
+**Do not use her ability when combating an [[X-Bow]] or a [[Mortar]] which is targeting her, unless you have a distraction or if it is a very desperate case. It will target the next closest thing, which can be your Tower.
+*An Archer Queen can use her ability to hit the Goblins from a [[Goblin Barrel]] while she is invisible. Her boosted attack speed and range will defeat the Goblins quickly enough for no damage.
+*Once a Tower has been taken, an Archer Queen in the center of the enemy's territory combined with an immediate Cloaking Cape is capable of dishing out massive damage on the remaining Crown Tower. This can be easily countered with high-damage units such as [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Prince, Monk, [[Sparky]], [[Elite Barbarians]], Mighty Miner, P.E.K.K.A, or [[Lumberjack]], negating a large amount of damage, as the ability takes a fair amount of time to activate.
+*The Archer Queen can destroy [[Goblins]] and [[Spear Goblins]] when they are equally levelled. It is advised to use [[Guards]] or [[Skeleton Army]] instead of [[Goblin Gang]] if you want to counter her. However, weaker swarms like Skeletons and Bats still work if assisted with the Tower.
+*Beware of using the Archer Queen's ability when alongside other troops. It can potentially waste some of her shots while your supporting troops kill any enemies, and she will also be slowed down afterwards, effectively making the ability a waste of 1 Elixir.
+*Stunning troops like [[Electro Wizard]], Electro Dragon, and [[Zappies]] are good counters to the Archer Queen, as they will prevent her from using her ability.
+*You can also use her ability to her disadvantage by placing a reactive [[Electro Giant]] near her, as she will take major damage. 
+**A [[Monk]] with the Pensive Protection ability active works in a similar way, causing the Archer Queen to use her ability to her disadvantage, as the shots will be reflected back to her and heavily damage, if not defeat her completely. However, an Archer Queen can still counter a Monk if she activates her ability after the Monk's finishes.
+*The [[Prince]] and [[Dark Prince]] can counter a lone proactive Archer Queen, assuming that their charge effects hit her.
+**It is a situational idea to use [[Zap]] or The Log on the Prince or Dark Prince so their charges get reset, defeating them, albeit leaving you at a great Elixir deficit.
+*The [[Furnace]] can counter an Archer Queen for a +1 Elixir trade. The Archer Queen does not deal enough damage to OHKO the spawned Fire Spirits, and this will allow them to accumulate damage on her.
+*For a positive Elixir trade, the [[Mighty Miner]] can fully counter an offensive Archer Queen due to his high health and damage, even if the ability is activated.
+*The Archer Queen pairs well with the [[Battle Healer]]. The Battle Healer will keep her alive for longer with her healing, while the Archer Queen attacks air troops that can threaten the Battle Healer. However, this can still be defeated by a large tank like the P.E.K.K.A.
+*She can be quite effective at supporting a Lava Hound. Most of the Lava Hound's weaknesses are air troops which the Archer Queen can handle them easily thanks to her high damage and range. Despite this, she can easily be distracted with a ground troop that will ignore the Lava Hound, unless she uses her ability.
+*In Archer Queen versus Archer Queen duels, it is most recommended to activate the ability after the opposing Archer Queen uses it first. This will allow yours to survive the fight while defeating the opposing one in the process.
+*Depending on what the player wants in their [[Battle Decks|deck]], they can substitute the Archer Queen with other similar cards.
+**A direct comparison to the Archer Queen is the [[Little Prince]]. He costs 2 less Elixir than the Archer Queen, has higher range, and his ability will spawn the Guardienne, a mini tank that could help with additional defense. However, the Archer Queen has higher damage and hitpoints, and her ability is cheaper.
+**In decks where different {{Rarity|Champion}} cards are being used, the [[Musketeer]] and Electro Wizard can be used in place of the Archer Queen. Both of them cost 1 less Elixir, and deal similar damage to the Archer Queen, with the former having a higher range, while the latter can stun enemies and target two enemies at a time. However, both have lesser hitpoints than the Archer Queen, leaving them weak to spells like Poison.
+**For other ranged troops that have the same Elixir cost, the [[Wizard]], [[Witch]], Electro Dragon, [[Cannon Cart]], [[Bowler]], and [[Executioner]] can substitute the Archer Queen if their deck is weak to swarms. However, they are less effective against singular troops, and the former three are also weak to spells.
+*The Archer Queen can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, she is unable to use his ability. As such, she should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Archer Queen Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.2 sec||0.3 sec||Medium (60)||1 sec||5||800||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Cloaking Cape Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|1||Slow (45)||3.5 sec||+180%||0.933 sec||17 sec
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1000 }}
+{{#vardefine: dmg_11 | 225 }}
+{{#vardefine: atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Damage per second (with Cloaking Cape)<br />{{Icon|I=DPS}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}|| {{Dps|{{#var:dmg_11}}*1.80|{{#var:atk_speed}}}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}*1.80|{{#var:atk_speed}}}}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}*1.80|{{#var:atk_speed}}}}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}*1.80|{{#var:atk_speed}}}}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}*1.80|{{#var:atk_speed}}}}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}*1.80|{{#var:atk_speed}}}}
+|-
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type 
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward 
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]] 
+|1
+|Deal a total of 300,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card<br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 900,000 Damage to enemy Troops or buildings 
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,500,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Arena Destroyer <br> [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 560 enemy Troops or buildings
+|15,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,600 enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,800 enemy Troops or buildings
+|25,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2021
+*The Archer Queen [[Cards|card]] was added to the game on 27/10/2021, in the [[Version History#Champions Update (27/10/2021)|Champions Update]].
+*On 1/11/2021, an [[Version History#Optional%20Update%20(1/11/2021)|Optional Update]], fixed some Archer Queen invisibility issues.
+*On 4/11/2021, a [[Version History#Maintenance Break (4/11/2021)|maintenance break]], increased the Cloaking Cape's cooldown time to 15 seconds (from 11 seconds) and decreased its duration to 3 seconds (from 3.5 seconds).
+*On 15/11/2021, a [[Version History#Minor%20Update%20(15/11/2021)|Minor Update]], allowed the [[Mega Knight]] to deal damage to an Archer Queen if she begins cloaking during his jump.
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], made it so that Cloaking Cape would decrease her speed to 45 (now classified as Slow) when active.
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased the Cloaking Cape's attack speed buff to 180% (from 200%).
+*On 8/4/2022, a [[Version History#Maintenance%20Break%20(8/4/2022)|maintenance break]], fixed an issue where an invisible Archer Queen was not receiving splash damage.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Archer Queen from [[Training Camp]] to Royal Crypt. This also made it so that players at any King Level could unlock the Archer Queen, as opposed to only Level 14.
+2023
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]], increased the Archer Queen's first attack time interval to 0.3 seconds (from 0.1 seconds).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Cloaking Cape's duration to 3.5 seconds (from 3 seconds).
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Cloaking Cape's cool down time to 17 seconds (from 15 seconds).
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15).
+
+==Gallery==
+<gallery>
+File:Archer Queen card render.png|Current card render.
+File:Archer Queen Preview.gif|Current card preview
+File:Archer Queen.png|Archer Queen 1
+File:Archer Queen 2.png|Archer Queen 2
+File:Archer Queen 3.png|Archer Queen 3
+File:Archer Queen 4.png|Archer Queen 4
+</gallery>
+
+==Sound Effects==
+{|class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:AQ Deployment.wav]]
+|Deployment
+|Plays when the Archer Queen is deployed.
+|"Ha ha!"
+|-
+|[[File:AQ Fire 1.wav]]<br>[[File:AQ Fire 2.wav]]
+|Attack
+|Plays when the Archer Queen attacks something.
+|Archer Queen grunts
+|-
+|[[File:AQ Hit.wav]]
+|Hit
+|Plays when the Archer Queen hits her target.
+|
+|-
+|[[File:AQ Ability.wav]]
+|Ability
+|Plays when the Archer Queen activates her ability.
+|"Sneaky!"
+|-
+|[[File:AQ Defeated.wav]]
+|Defeat
+|Plays when the Archer Queen is defeated.
+|"But I'm the queen!"
+|}
+
+
+==Trivia== 
+*The word "''Archer''" comes from the Latin "''arcus"'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms.
+**According to Clash of Clans, the bow that the Archer Queen use in [[Basics of Battle|battle]] is a modified [[X-Bow]].
+**The Archer Queen is 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Arrows]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Magic Archer]], [[Super Magic Archer]], [[Super Archers]], and the [[Little Prince]].
+*The Archer Queen is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], Archers, [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], and [[Lava Hound]].
+**She is the only troop that first existed as a Hero in Clash of Clans.
+**The Archer Queen's [https://clashofclans.fandom.com/wiki/Invisibility_Vial Invisibility Vial] [https://clashofclans.fandom.com/wiki/Hero_Equipment equipment] in Clash of Clans functions similarly to the Cloaking Cape in Clash Royale. Unlike the Invisibility Vial, the Cloaking Cape increases the Archer Queen's attack speed instead of her damage.
+*The Archer Queen is 1 of 20 cards associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], Tower Princess, [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], Princess, [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], and the Little Prince.
+*The Archer Queen is one of the first {{Rarity|Champion}} cards to be added to the game, alongside the Golden Knight and the Skeleton King.
+*Along with the Golden Knight, [[Boss Bandit]], [[Mighty Miner]], [[Monk]], and the [[Terry]], the Archer Queen has the cheapest ability, costing 1 Elixir.
+*The Archer Queen is 1 of 3 troops that can turn invisible and not distract other enemies, the others being [[Suspicious Bush]] and Royal Ghost.
+*The Archer Queen is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], Wizard, Hog Rider, P.E.K.K.A., Dark Prince, Bowler, [[Ram Rider]], [[Electro Wizard]], Princess, [[Ice Wizard]], Magic Archer, [[Mother Witch]], [[Lumberjack]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], Super Magic Archer, Golden Knight, Boss Bandit, Little Prince, and the Terry.
+*The Archer Queen is 1 of 3 troops that has been featured in the [[Treasure Hunt|Capture the Troop]] sub-[[:Category:Modes|mode]] of the Treasure Hunt game mode, the others being [[Sparky]] and [[Fisherman]].
+**In the Capture the Troop mode, it is possible for a player to have two {{Rarity|Champion}} cards on the field at a time. Activating the ability will activate it for both the Archer Queen and the other {{Rarity|Champion}} card.
+*The Archer Queen is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being Minions, [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], X-Bow, Golden Knight, Skeleton King, Mighty Miner, Little Prince, and the Monk.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, [[Rocket]], [[Earthquake]], [[Lightning]], [[Poison]], [[Goblin Drill]], [[Miner]], Golden Knight, Skeleton King, Mighty Miner, and the Monk.
+*The Archer Queen is featured in non-Clash games. More specifically: 
+**The Archer Queen, along with the Goblins, Barbarians, Giant, Valkyrie, Hog Rider, Wizard, Witch, and P.E.K.K.A, were featured as a non-playable opponent in [https://www.chess.com/ Chess]. Also along with the Goblins and Golem, she was also featured as a character skin for the Queen in Chess.
+**The Archer Queen is featured as [https://brawlstars.fandom.com/wiki/Penny?file=Penny_Skin-Archer_Queen.png a character skin for Penny] in Brawl Stars.
+**The Archer Queen, along with the P.E.K.K.A, are featured as a Hero in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*On 28 April 2022, according to a [https://twitter.com/ClashRoyale/status/1519647700085575683 tweet] by the Clash Royale official Twitter, the number of Archer Queen's ability activation was 177,904,462.
+*The Archer Queen is the subject of certain cosmetics in the game. More specifically:
+**The Archer Queen is the subject of 3 [[Emotes]].
+**The Archer Queen is the subject of a [[King's Tower|Tower Skin]].
+*A cloned Archer Queen does not fall from the sky when deployed.
+*The Archer Queen was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+
+{{Navigation|Card}}
+
+[[fr:Reine des Archers]]
+[[de:Bogenschützen-Königin]]
+[[es:Reina Arquera]]
+[[it:Regina degli arcieri]]
+[[ru:Королева лучниц]]
+[[zh:弓箭女皇]]

@@ -1,0 +1,79 @@
+key: giant_hero
+base_card: giant
+page: "Giant/Hero"
+revid: 437510
+fetched: "2026-08-25"
+release_date: "2025-12-01"   # infobox "December 1 2025"; History "1/12/2025" (D/M/Y) agrees
+
+# Hero body vs base giant (base numbers from ledger/current_db_snapshot.json, used ONLY for deltas)
+body_stat_deltas:
+  summary: "none stated in tables - every table/vardefine stat matches base Giant; History claims a -3% HP nerf the vardefine does not show"
+  hitpoints: "vardefine hp_11 3968 == snapshot 3968, BUT History (2/2/2026) says hero HP reduced 3% (would be ~3849) - vardefine may be stale, see conflicts/open_questions"
+  damage: "no delta (vardefine dmg_11 253 == snapshot 253)"
+  hit_speed: "no delta (1.5 s both)"
+  speed: "no delta (Slow (45) vs snapshot slow)"
+  deploy_time: "no delta (1 s both)"
+  range: "no delta (Melee: Medium (1.2) vs snapshot 1.2)"
+  targets: "no delta (Buildings, matches snapshot buildings_only)"
+  note_first_hit_speed: "page lists First Hit Speed 0.5 s; snapshot load_time_s is 1.0 - possibly different metrics, not asserted as a delta (see open_questions)"
+
+ability:
+  name: "Heroic Hurl"
+  elixir_cost: 2          # infobox AbilityCost=2; intro + ability prose; Heroic Hurl Attributes table Cost
+  uses: 1                 # History 4/8/2026: "made the ability single use (from 14sec cooldown)"
+  cooldown_s: null        # n/a since single use; was 14 s before 4/8/2026 (History)
+  cast_delay_s: 0.933     # Heroic Hurl Attributes table "Cast Time"; prose says "1-second delay" - see conflicts
+
+mechanic_prose: |
+  [Quote template under "Ability: Heroic Hurl"]
+  "Throws the highest-hitpoint enemy troop in reach across the Arena"
+
+  [Section "Ability: Heroic Hurl", verbatim]
+  "The Hero Giant has a special ability accessible from whatever side of the screen was put
+  in, just above the player's card slots in battle. After a 1-second delay and when a unit
+  gets in range, the Hero Giant activates his "Heroic Hurl", grabbing the highest HP enemy
+  troop within 2 tiles around him and throws them horizontally, also dealing damage to them
+  when they land. While on the air, these troops are untargetable by ground-targeting troops
+  and the Earthquake, but can still take damage from other spells. Air troops can be affected
+  by the ability, but will take no damage when they land. The Heroic Hurl ability costs 2
+  Elixir to activate."
+
+numbers:
+  body_elixir_cost: {value: 5, source: "infobox Cost=5; unit-attributes-table Cost column; intro prose"}
+  ability_elixir_cost: {value: 2, source: "infobox AbilityCost=2; intro prose 'an additional 2'; ability prose; Heroic Hurl Attributes table Cost"}
+  combined_elixir_accounting: {value: 7, source: "prose (Strategy): 'the Heroic Giant and his activated Ability count as 7 Elixir'"}
+  grab_range_tiles: {value: 2, source: "prose (ability section): 'within 2 tiles around him' - PROSE ONLY, not in any table"}
+  throwback_range: {value: 9, source: "Heroic Hurl Attributes table 'Throwback Range' - UNITLESS in table, presumably tiles; see open_questions"}
+  cast_time_s: {value: 0.933, source: "Heroic Hurl Attributes table 'Cast Time'"}
+  cast_delay_prose_s: {value: 1, source: "prose (ability section): 'After a 1-second delay' - conflicts with table 0.933"}
+  units_affected: {value: 1, source: "Heroic Hurl Attributes table 'Units Affected'"}
+  ability_target: {value: "Air & Ground", source: "Heroic Hurl Attributes table 'Ability Target'"}
+  unit_stun_duration_s: {value: 2, source: "Heroic Hurl Attributes table 'Unit Stun Duration 2 secs' - TABLE ONLY, prose never mentions a stun; see open_questions"}
+  impact_damage_lvl11: {value: 135, source: "vardefine imp_dmg_11 ('Impact Damage' column of level table); prose: 'dealing damage to them when they land'"}
+  landing_damage_vs_air: {value: 0, source: "prose (ability section): 'Air troops can be affected by the ability, but will take no damage when they land'"}
+  hp_lvl11: {value: 3968, source: "vardefine hp_11 - see conflicts re: History -3% nerf"}
+  damage_lvl11: {value: 253, source: "vardefine dmg_11"}
+  hit_speed_s: {value: 1.5, source: "vardefine atk_speed; unit-attributes-table"}
+  first_hit_speed_s: {value: 0.5, source: "unit-attributes-table 'First Hit Speed'"}
+  deploy_time_s: {value: 1, source: "unit-attributes-table 'Deploy Time'"}
+  range_tiles: {value: 1.2, source: "unit-attributes-table 'Melee: Medium (1.2)'"}
+  speed: {value: "Slow (45)", source: "unit-attributes-table 'Speed'"}
+  count: {value: 1, source: "unit-attributes-table 'x1'"}
+  unlock_hero_fragments: {value: 200, source: "prose (intro): 'unlocked with 200 hero fragments'"}
+  hp_nerf_pct_2026_02_02: {value: 3, source: "prose (History 2/2/2026): 'reduced hero giants hitpoints by 3%'"}
+  former_ability_cooldown_s: {value: 14, source: "prose (History 4/8/2026): 'made the ability single use (from 14sec cooldown)'"}
+  # NOT recorded as hero numbers: Trivia "Hitpoints were increased by 11%, and his Damage was increased by 4%"
+  # is prefixed "Before the Giant's card release" - legacy base-Giant trivia copied onto this subpage.
+
+proposed_ability_kind: throw_displace
+
+open_questions:
+  - "Hero body HP: vardefine says 3968 (== base Giant), History (2/2/2026) says -3% (~3849). Which is live? -> in-game check"
+  - "Throwback Range 9: units not stated (tiles?). Measured from the Giant or from the victim's position? Thrown 'horizontally' - always toward the other lane / straight across? -> in-game check"
+  - "Stun 2 s (table only): does it apply on landing, or is it the untargetable flight time? Prose never mentions a stun. Are air troops stunned too (they take no landing damage)?"
+  - "Activation gating: prose says the hurl happens 'after a 1-second delay and when a unit gets in range' - if no troop is within 2 tiles at activation, is the Elixir consumed? Does the ability wait/arm until a unit enters range, and for how long?"
+  - "Cast delay: 0.933 s (table) vs 1 s (prose) - which is real?"
+  - "'Highest HP': current HP or max HP? Ties broken how?"
+  - "Can Champions / other Heroes be grabbed? Buildings explicitly are not affected (Strategy: 'the ability will do nothing against them')."
+  - "During flight, only ground-targeting troops and Earthquake lose targeting; can towers and air-targeting troops still hit the victim?"
+  - "First Hit Speed 0.5 s vs snapshot base load_time_s 1.0 - same metric or different? If same, hero first hit is much faster than base."

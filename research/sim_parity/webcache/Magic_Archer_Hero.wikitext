@@ -1,0 +1,178 @@
+{{Heroic_Card_Infobox|Cost=4|AbilityCost=2|Rarity=Legendary|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=March 2,2026}}
+{{Quote|With every pinecone a target and every branch a new vantage point, Hero Magic Archer was favored to be Forest Gang's first Hero. Being Boss Bandit's right hand comes with a few perks!}}
+The Heroic Magic Archer is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It spawns an area damage, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Magic Archer launches an attack that travels up to its maximum range, while piercing through enemies. He takes the appearance of a man with gray hair with white stripes, glowing turquoise eyes, bushy black eyebrows, and a French-fork beard, wears a dark green tunic, a team-colored cape, a brown belt with a triangular copper rune and fingerless gloves, and dark brown pants and boots, and wields a glowing team-colored bow. A Heroic Magic Archer card costs 3 {{Icon|I=Elixir}} to deploy.
+
+== Ability: Triple Threat ==
+{{Quote|Summons a decoy while darting back and fires a triple shot on his next attack.}}{{Hero Ability|2=Triple Threat}}
+The Hero Knight has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. When activated, the Magic Archer will teleport back, while leaving a decoy in his place. The next attack now shots 3 arrows that travel longer, but with less damage. The Triple Threat ability costs 2 [[Elixir]] to activate.
+
+== Strategy ==
+*The ability can be used to avoid damage from spells like [[Fireball]] or units like [[Mini P.E.K.K.A.]], thanks to the pull back and decoy.
+*The arrows can deal good chip damage to towers
+
+<center> <div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Heroic Magic Archer Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Projectile Range
+{{Icon|I=Radius}}
+! scope="col" |Projectile Width
+{{Icon|I=Radius}}
+! scope="col" |Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|4
+|1.1 sec
+|0.7 sec
+|Medium (60)
+|1 sec
+|7
+|11
+|0.5
+|1000
+|Air & Ground
+|x1
+|Ground
+|[[:Category:Troop Cards|Troop]]
+|{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Triple Threat Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Teleport Range
+{{Icon|I=Dash Range}}
+! scope="col" |Decoy Duration
+{{Icon|I=Time}}
+! scope="col" |Projectile Range
+{{Icon|I=Radius}}
+! scope="col" |Projectile Width
+{{Icon|I=Radius}}
+! scope="col" |Projectile Speed
+{{Icon|I=Speed}}
+|-
+|2
+|3.5 Tiles
+|7 sec
+|13.5
+|0.5
+|1000
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> {{#vardefine: hp_11|529}} {{#vardefine: dmg_11|135}} {{#vardefine: atk_speed|1.1}} {{#vardefine: decoy_hp_11|271}} {{#vardefine: triple_dmg_11|48}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage
+{{Icon|I=Area Damage}}
+! scope="col" |Damage per second
+{{Icon|I=DPS}}
+!Decoy Hitpoints
+{{Icon|I=Hitpoint}}
+!Triple Shot Damage
+{{Icon|I=Boost}}
+|-
+|9
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(9-11)) round 0}} x3
+|-
+|10
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(10-11)) round 0}} x3
+|-
+|11
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:decoy_hp_11}}
+|{{#var:triple_dmg_11}} x3
+|-
+|12
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(12-11)) round 0}} x3
+|-
+|13
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(13-11)) round 0}} x3
+|-
+|14
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(14-11)) round 0}} x3
+|-
+|15
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(15-11)) round 0}} x3
+|-
+|16
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:decoy_hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:triple_dmg_11}} * (1.1^(16-11)) round 0}} x3
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+2026
+* On 2/3/2026, with the [[Version History#Pass Royale and more (2/3/2026)|March 2026 update]], Hero Magic Archer Was added to the game along with [[Barbarian Barrel/Hero|Hero Barbarian Barrel]]{{Balance|Add}}.
+* On 7/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], increased the Hero Magic Archer's ability cost to 2 elixir (from 1 elixir){{Balance|Nerf}}.
+* On 6/7/2026, a [[Version History#Pass Royale and more (6/7/2026)|Balance Update]], decreased the Hero Magic Archer's ability range to 13.5 tiles (from 15.4 tiles){{Balance|Nerf}}, decreased his teleportation distance to 3.5 tiles (from 5 tiles){{Balance|Nerf}}, and decreased the decoy hitpoints by 57%{{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], decreased the Hero Magic Archer's damage by 6%{{Balance|Nerf}}. This also made the ability single use (from 25sec cooldown){{Balance|Remove}}.
+
+==Gallery==
+<gallery>
+File:Heroic Magic Archer Card Render.png|Current card render.
+File:MagicArcherHeroShard.png|Heroic Magic Archer Shard.
+</gallery>
+
+==Trivia==
+*The word "''Archer''" comes from the Latin "''arcus"'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms.
+** The bow that Magic Archer uses in [[Basics of Battle|battle]] is a magical recurve bow.
+** In the Persian language setting of the game, the Magic Archer's name translates to "Magic Shooter".
+*Before release the Hero Magic Archer's Decoy hitpoints got reduced by 9%, while increasing the cooldown of Triple Threat to 25 seconds (from 20 seconds).
+
+{{Navigation|Card}}

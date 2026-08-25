@@ -1,0 +1,138 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Valkyrie</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Bone Pit|ReleaseDate=1 January 2024}}
+{{Quote|If you thought her battle cry was scary...wait until you see her new axe! Evolved Valkyrie draws all enemies towards her with each swing.}}
+
+The Valkyrie's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Valkyrie, with identical stats to the original. Every time she attacks, a Tornado will appear for half a second, pulling all units towards her, and dealing damage within a 5.5 tile radius around her. She takes an appearance as a woman who bears orange hair and eyebrows, have purple eyes and two piercings in her right ear, wears a purple suit, loincloth, wristcuffs and bands on her legs, brown straps with spikes on them and a [[Card Evolution]] symbol in the middle, and a team-colored waistcloth, wields a purple-tipped double-sided axe with a large, silver-plated golden knob on the bottom, and attacks with a powerful whirl of her axe along with a tornado effect. The Valkyrie's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy. 
+
+==Strategy==
+*The Evolved Valkyrie is best utilized as a defensive wall due to her high health, high damage, and massive pull effect whenever she attacks.
+*The Evolved Valkyrie should never be ignored if the [[Tower Princess]] is used as leaving her alone while on full health can take away a large majority of the Crown Tower's health. Dealing more than the regular Valkyrie due to the Tornado's repeated chip damage and increased health.
+*However, if the [[Cannoneer]] or [[Dagger Duchess]] are used, their higher DPS will cause the Evolved Valkyrie to deal less damage. Thus making it somewhat situational to ignore her.
+*Like the regular Valkyrie, the Evolved Valkyrie is very effective against all types of grounds swarms, such as [[Skeleton Army]], [[Barbarians]], [[Royal Hogs]], and [[Royal Recruits]], due to her large splash damage and radius.
+*The Evolved Valkyrie can be substituted for the [[Knight/Evolution|Evolved Knight]] and [[Barbarians/Evolution|Evolved Barbarians]] depending the type of [[Battle Decks|deck]] the player is using.
+*The Evolved Valkyrie has great synergy with the [[Bomber/Evolution|Evolved Bomber]] and [[Firecracker/Evolution|Evolved Firecracker]] as the Evolved Valkyrie can pull opposing [[:Category:Troop Cards|troops]] into her. Allowing the Evolved Bomber and Firecracker to hit more troops at once. A similar strategy works with [[Tornado]].
+*The Evolved Valkyrie is very effective against slow, building-targeting troops, such as [[Giant]], [[Elixir Golem]], and [[Golem]], due to the Tornado effect constantly pulling them to her. Making it very difficult for them to reach the [[:Category:Tower Troop Cards|Crown Towers]].
+*High-damage air cards, such as [[Minions]], [[Bats]], [[Mega Minion]], [[Inferno Dragon]], or [[Phoenix]], are optimal when countering the Evolved Valkyrie as her attacks can't hit air and their high DPS can dispose of her high hitpoints quickly, but be careful not to put a ground troop near them or else Valkyrie's Tornado will damage them.
+*The Evolved Valkyrie is very good when used as a combo with cards, such as [[Executioner]], [[Goblin Demolisher]], [[Sparky]], [[Bomber]], [[Hunter]], [[Firecracker]], and [[Wizard]], because the Tornado effect pulls enemies to their splash damage radius. The [[Ice Wizard]] is especially effective as he will further slow opposing troops down, making them less likely to escape from the Evolved Valkyrie's Tornado radius.
+*Despite her regular attack being incapable of attacking air, the Tornado's ticks of damage can chip air troops. This chip is especially effective against Bats as they'll only take one tick to kill.
+*You can activate your King Tower with enemy troops like [[Magic Archer]] and [[Bowler]] with the Evolved Valkyrie alone by using its Tornado effect to pull these troops in. A similar strategy is with [[Tornado]] and the Evolved Valkyrie to pull opposing large tanks to your King Tower, such as Golem.
+*If placed behind a [[Hog Rider]], the Evolved Valkyrie can fully stop him due to the Tornado effect constantly pulling him back until he's defeated.
+*When placed properly, the Evolved Valkyrie can fully counter the [[Royal Giant/Evolution|Evolved Royal Giant]] and [[Goblin Giant]] for a +2 positive Elixir trade due to the Tornado constantly pulling them back into the Valkyrie.
+*The Evolved Valkyrie has decent synergy with the [[Goblin Drill]] as she can pull opposing troops that are defending the Goblin Drill into her. Potentially allowing the Goblins to get more damage on the Crown Tower.
+**Conversely, the Evolved Valkyrie is a great counter to the Goblin Drill as her splash damage disposes of the Goblins very easily while her high health allows her to take any damage the Goblin Drill may do to her. Leaving her at nearly full health for a potential counter push.
+*Using [[Skeletons]] or [[Goblins]] and an [[Ice Golem]], the user can activate their King Tower against an opposing Evolved Valkyrie on the inside of the bridge. The Ice Golem must be played 3 tiles below the river to kite her into the other lane. Then, Skeletons should be played 4 tiles above the King Tower and near one of the Crown Towers to kite it back, causing the Tornado to hit the King Tower and activate it.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}{{StatisticsSubheader|Evolved Valkyrie Attributes}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.5 sec||0.1 sec||Medium (60)||1 sec||Melee: Medium (1.2)||2||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|2||5.5||0.5 sec||Air & Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1907 }}
+{{#vardefine: dmg_11 | 266 }}
+{{#vardefine: atk_speed | 1.5 }}
+{{#vardefine: tor_11 | 84 }}
+{{#vardefine: tor_crown_11 | 37 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Tornado Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Tornado Crown Tower Damage<br />{{Icon|I = Tower Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:tor_11}} || {{#var:tor_crown_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:tor_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:tor_crown_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Valkyrie's Evolution [[Cards|card]] was added to the game on 1/1/2024, in the [[Version History#Pass Royale and more (1/1/2024)|January 2024 Update]].
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], added a 15% hitpoint boost to the Evolved Valkyrie.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Valkyrie’s Tornado damage by 11%, and decreased her hitpoints to 110% of the original's (from 115%).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Valkyrie after death.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Evolved Valkyrie's hitpoints by 0.09% and her damage by 0.45%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] removed the Evolved Valkyrie's hitpoints boost.
+*On 1/12/2025, a Balance Update decreased the Evolved Valkyrie's tornado radius by half a tile, from 5.5 down to 5.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Evolved Valkyrie's tornado damage by 50%
+
+==Gallery==
+<gallery>
+File:Evolved Valkyrie card render.png|Current card render.
+File:Evolved Valkyrie Preview.gif|Current card preview
+File:ValkyrieEvoShard.png|Evolution Shard.
+File:Evolved Valkyrie 1.png|Evolved Valkyrie
+</gallery>
+
+==Trivia==
+*In Norse mythology, Valkyries collect spirits of the dead to take to [https://en.wikipedia.org/wiki/Valhalla Valhalla], one of the Norse afterlives. Most depictions show them riding on horseback, however, in Clash Royale, they do not ride horses and instead travel on foot.
+*The Valkyrie's Evolution resembles the [https://clashofclans.fandom.com/wiki/Super_Valkyrie Super Valkyrie] from Clash of Clans.
+*The Valkyrie was the first {{Rarity|Rare}} [[Cards|card]] to receive a [[Card Evolution]].
+*When attacking, the Valkyrie sings opera, which is a reference to the opera called [https://en.wikipedia.org/wiki/Die_Walk%C3%BCre Die Walküre (The Valkyrie)] by [https://en.wikipedia.org/wiki/Richard_Wagner Richard Wagner].
+*The Valkyrie's Evolution is the subject of 3 [[Emotes]].
+
+{{Navigation|Card}}

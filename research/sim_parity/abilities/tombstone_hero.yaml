@@ -1,0 +1,83 @@
+key: tombstone_hero
+base_card: tombstone
+page: Tombstone/Hero
+revid: 437388
+fetched: "2026-08-25"
+release_date: "2026-06-01"   # infobox ReleaseDate=1 June 2026; History "On 1/6/2026, the Hero Tombstone was added"
+
+body_stat_deltas:
+  building: none stated
+  # Tombstone Attributes table (cost 3, spawn speed 4s, deploy 1s, lifetime 30s) and vardefine
+  # tomb_hp_11=529 all match snapshot cards.tombstone exactly (hp 529, lifetime 30, spawn_interval_s 4.0).
+  skeletons: none stated
+  # Skeleton Attributes table (hit speed 1.1, first hit 0.5, Fast (90), Melee: Short (0.5), ground/ground)
+  # matches snapshot spawn_unit_stats (hit_speed 1.1, speed 1.5 tiles/s, range 0.5).
+  # NOTE: snapshot is internally inconsistent for base tombstone (spawn_interval_s: 4.0 vs spawns.interval: 3.5);
+  # the hero page says 4 sec. Snapshot cleanup item, not a wiki delta.
+
+ability:
+  name: Regal Revive
+  # NAME IS NOT ON THIS PAGE. Tombstone/Hero (revid 437388) has no ability section at all.
+  # Name + one-line blurb come from the "Heroes" master page, revid 437509, "List of Heroes" table.
+  elixir_cost: 5          # infobox AbilityCost=5; History 6/7/2026 "decreased the ability cost to 5 elixir (from 6)"; Strategy: 3+5=8 total
+  uses: 1                 # Heroes master page (revid 437509) History 4/8/2026: "made every ability single-use"
+  cooldown_s: null        # single-use since 4/8/2026
+  cast_delay_s: null      # not stated anywhere -> open_questions
+
+mechanic_prose: |
+  [Tombstone/Hero, revid 437388: THE PAGE CONTAINS NO ABILITY PROSE — no "Ability:" section, no quote template.]
+  [Heroes master page, revid 437509, section "List of Heroes", verbatim]
+  "Regal Revive -
+  Tomb Queen rises from the earth, targeting buildings."
+  [Tombstone/Hero, section "Strategy", verbatim]
+  "For the purposes of determining Elixir trades, the Heroic Tombstone and its activated Ability
+  count as 8 Elixir, as the player must play the 3 Elixir Heroic Tombstone and then spend a
+  further 5 on his Ability."
+  "Do not place a Heroic Tombstone in a position where you would never place a regular Tombstone.
+  This is because it can easily reveal to the opponent that the ability will be used,
+  incentivizing them to destroy it before the ability can be used."
+
+numbers:
+  deploy_cost_elixir: {value: 3, source: "infobox Cost=3; Tombstone Attributes table Cost"}
+  ability_cost_elixir: {value: 5, source: "infobox AbilityCost=5; History 6/7/2026 (from 6); Strategy sentence"}
+  total_elixir_with_ability: {value: 8, source: "Strategy — 'count as 8 Elixir'"}
+  spawn_speed_s: {value: 4, source: "Tombstone Attributes table Spawn Speed"}
+  deploy_time_s: {value: 1, source: "Tombstone Attributes table Deploy Time"}
+  lifetime_s: {value: 30, source: "Tombstone Attributes table Lifetime; vardefine life=30"}
+  tombstone_hp_lvl11: {value: 529, source: "vardefine tomb_hp_11"}
+  tombstone_hp_loss_per_s_lvl11: {value: 17.6, source: "DERIVED by the page's own table formula tomb_hp/life = 529/30 (column 'Hitpoints lost per second'); not an independent number"}
+  skeleton_hp_lvl11: {value: 81, source: "vardefine hp_11"}
+  skeleton_damage_lvl11: {value: 81, source: "vardefine dmg_11"}
+  skeleton_hit_speed_s: {value: 1.1, source: "Skeleton Attributes table; vardefine atk_speed=1.1"}
+  skeleton_first_hit_speed_s: {value: 0.5, source: "Skeleton Attributes table First Hit Speed"}
+  skeleton_speed: {value: "Fast (90)", source: "Skeleton Attributes table Speed"}
+  skeleton_range_tiles: {value: 0.5, source: "Skeleton Attributes table Range 'Melee: Short (0.5)'"}
+  queen_hp_lvl11: {value: 4224, source: "vardefine queen_hp_11 (statistics column 'Queen Hitpoints')"}
+  queen_damage_lvl11: {value: 422, source: "vardefine queen_dmg_11 (statistics column 'Queen Damage')"}
+  queen_sight_range_tiles: {value: 7, source: "prose — History 4/8/2026 'increased her sight range to 7 tiles (from 5.5 tiles)'"}
+  balance_queen_hp_buff_pct_2026_07_06: {value: 20, source: "prose — History 6/7/2026 'increased the Tomb Queen's Hitpoints by 20%'"}
+  balance_queen_dmg_buff_pct_2026_08_04: {value: 32, source: "prose — History 4/8/2026 'increased the Tomb Queen's Damage by 32%'"}
+  balance_queen_hp_buff_pct_2026_08_04: {value: 4, source: "prose — History 4/8/2026 'increased her hitpoints by 4%'"}
+  queen_hit_speed_s: {value: null, source: "not stated — no Queen attributes table exists"}
+  queen_speed: {value: null, source: "not stated"}
+  queen_range_tiles: {value: null, source: "not stated"}
+  queen_lifetime_s: {value: null, source: "not stated"}
+
+proposed_ability_kind: summon
+# a building spends 5 elixir to bring a big troop (Tomb Queen) out of the ground; nearest taxonomy
+# bucket is summon (transform_transition unclear — see open_questions on whether the building is consumed).
+
+open_questions:
+  - "Cast delay / rise animation time for the Tomb Queen: not stated anywhere."
+  - "Is the Tombstone building consumed/replaced when the Queen rises? Does remaining lifetime matter?"
+  - "Queen combat profile is almost entirely missing: hit speed, movement speed, attack range, melee vs ranged, splash? Only HP 4224 / damage 422 (L11) and sight 7 exist."
+  - "'Targeting buildings' (Heroes blurb): buildings-only like Hog Rider, or building-preference? Does she fight troops that block her?"
+  - "Does the Queen deal full damage to Crown Towers (no reduction is stated)?"
+  - "History 6/7/2026 says 'her continuous skeleton spawn was removed entirely' — 'her' = the Queen. Confirm the Queen no longer spawns skeletons, and that the building still spawns 2 per 4s wave."
+  - "Does the hero Tombstone still death-spawn skeletons like the base card (snapshot: 4 on death)? The page never mentions death spawn."
+  - "Queen lifetime: permanent until killed, or does she decay/expire?"
+  - "Can the ability be used at any point in the 30s building lifetime, incl. while the tomb is under attack?"
+  - "Snapshot cleanup: base tombstone spawn_interval_s 4.0 vs spawns.interval 3.5 disagree inside current_db_snapshot.json."
+
+sources_secondary:
+  - {page: Heroes, revid: 437509, used_for: "ability name 'Regal Revive' + blurb; global 4/8/2026 single-use rule"}

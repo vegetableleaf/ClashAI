@@ -1,0 +1,131 @@
+{{Protection}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Electro Dragon</span>}}
+{{MagicWords}}
+
+{{Evolved Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Spooky Town|ReleaseDate=7 October 2024|CycleCost=1}}{{Quote|Can't stop, won't stop! Evolved Electro Dragon's attack will chain between targets infinitely and can hit the same target more than once.}}
+
+The Electro Dragon's Evolution is a {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns an Electro Dragon with identical stats to the original. The Evolved Electro Dragon launches an attack that hits its target, which will arc and strike up to 2 other targets within 4 tiles of each other. It will stun affected troops for 0.5 seconds. After the first 3 targets are hit, this attack will continue bouncing infinitely between all troops until only one remains alive. The attack will deal 33% less damage, travel 80% slower, and no longer stun the affected troops. The Electro Dragon is a small blue dragon with purple eyes, tongue and spikes on its back, deep pink spots and wings, team-colored underbelly, and a small gold armor on its head. The Electro Dragon Evolution costs 5 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*The Evolved Electro Dragon's infinitely chaining bolts are incredibly powerful against large pushes. Anything within 4 tiles of another troop will be constantly damaged by the lightning. This will stack as the Evolved Electro Dragon continues attacking, shredding units with hitpoints and taking out swarms with ease.
+**Single units, such as a lone [[Giant]], [[Lava Hound]], [[P.E.K.K.A]], [[Giant Skeleton]], [[Mega Knight]], or [[Golem]], will not be affected by the chain lightning since there's nothing to chain onto. This keeps its firepower identical to the regular [[Electro Dragon]] and significantly less threatening.
+**The Evolved Electro Dragon’s infinitely chaining attack is extremely effective at destroying a [[Witch]] or [[Night Witch]], along their [[Skeletons]] and [[Bats]]. It will also repeatedly chain off the spawned troops and deal damage to them, delaying additional spawns with the stun until they’re inevitably defeated.
+*Letting the Evolved Electro Dragon connect to the [[:Category:Crown Towers|Crown Tower]] can give some long term benefits to the player during the match.
+**When the Evolved Electro Dragon is about to attack the Crown Tower, deploy a troop 1 tile behind and 2 tiles to the side of it. This troop should preferably be alone and cheap, like an [[Ice Spirit]] or [[Electro Spirit]]. After deploying it, the troop will capture the lightning’s attention and hit it before chaining over to the [[King's Tower|King Tower,]] activating it for the rest of the match.
+**Ignoring the Evolved Electro Dragon is no different from the regular Electro Dragon as long as other units aren’t near the Crown Tower. Players can take advantage of this by conserving their Elixir in turn for moderate chip damage under the [[Tower Princess]] and [[Dagger Duchess]] and minor chip damage under the [[Cannoneer]].
+*Like the regular Electro Dragon, [[Lightning]] and [[Rocket]] can fully counter the Evolved Electro Dragon for a slight negative Elixir trade.
+*Using small swarms as distractions, like [[Goblins]] and [[Minions]], are mostly ineffective against the Evolved Electro Dragon. His lightning will continue to attack the groups after the initial 3 bolts, killing them quickly and essentially wasting the user’s Elixir.
+**Conversely, mini tanks, including [[Knight]], [[Valkyrie]], [[Golden Knight]], [[Bowler]], [[Battle Healer]], [[Monk]], [[Prince]], [[Dark Prince]], [[Ice Golem]], Mighty Miner, [[Cannon Cart]], [[Skeleton King]], and [[Prince]], work as effective distractions for the Evolved Electro Dragon. Their high hitpoints and lack of count absorb the bolts and keep them from chaining, giving ample time for the Crown Towers to take him out for a positive Elixir trade.
+*Long ranged high DPS troops, like [[Musketeer]], [[Flying Machine]], [[Archers/Evolution|Evolved Archers]], [[Electro Wizard]], [[Archer Queen]], [[Firecracker]], and [[Wizard]], are the best counters to the Evolved Electro Dragon. Their high DPS and long range allows them take advantage of the Evolved Electro Dragon’s slower movement speed to easily whittle down its hitpoints from afar for a positive Elixir trade.
+**Never deploy your counter to the Evolved Electro Dragon next to the Crown Tower. If it’s within the chain range, the lightning will bounce off the Crown Tower and hit the troop again. In this case, the Evolved Electro Dragon would’ve hit the Crown Tower twice and damaged your counter.
+*He is a fantastic counter against [[Elixir Golem]]. Once the Elixir Golem himself is destroyed, he will split into the Golemites, which will be repeatedly damaged by the chaining lightning and be swiftly defeated. Furthermore, they will split into Blobs, which, just like the Golemites, will be ravaged by the chaining lightning. A similar principle applies to the [[Lava Hound]] and Golem.
+*The Evolved Electro Dragon is somewhat fragile for its Elixir cost, so it’s best to use him in tandem with other units to get the most value out of him. 
+**For example, deploying him behind a Giant Skeleton, P.E.K.K.A, or [[Golem]] allows his bolts to more easily interrupt potential counters, such as [[Inferno Tower]], [[Inferno Dragon]], [[Mighty Miner]], [[Minion Horde]], and [[Skeleton Army]]. The Golem, P.E.K.K.A, or [[Giant Skeleton]] will then continue to take attacks from the Crown Tower and defending units, keeping the Evolved Electro Dragon alive to interrupt the opponent’s defenses.
+*The Evolved Electro Dragon is a great counter to the [[Skeleton Barrel]]. His attacks, with the Crown Tower’s assistance, are capable of taking out the Barrel itself while the chaining bolts will wipe out all the spawned Skeletons. If done early enough, this will fully negate the Skeleton Barrel and give the user a chance to counterattack.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2.3 sec||0.8 sec||0.5 sec||Medium (60)||1 sec||3.5||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|1
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1451 }}
+{{#vardefine: dmg_11 | 267 }}
+{{#vardefine: dmg_hits | 3 }}
+{{#vardefine: late_dmg_11 | 64 }}
+{{#vardefine: atk_speed | 2.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Damage after 5 chains<br />{{Icon|I=Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:late_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:late_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==Gallery==
+<gallery>
+File:Evolved Electro Dragon card render.png|Current card render.
+File:Evolved Electro Dragon Preview.gif|Current card preview
+File:ElectroDragonEvoShard.png|Evolution Shard.
+File:Evolved Electro Dragon 1.png|Evolved Electro Dragon
+</gallery>
+
+==History==
+2024
+*The Electro Dragon's Evolution [[Cards|card]] was added to the game on 7/10/2024, in the [[Version History#Pass Royale and more (7/10/2024)|October 2024 Update]].
+*On 17/10/2024, a [[Version History#Maintenance Break (17/10/2024)|maintenance break]], fixed a bug where Evolved Electro Dragon did not chain into invisible [[:Category:Troop Cards|troops]].
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Electro Dragon after death. It also fixed various bugs with the Evolved Electro Dragon.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the Evolved Electro Dragon's damage after the first 3 chains by 33%.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Evolved Electro Dragon's hitpoints by 0.1%. It also made it so that Evolved Electro Dragon's boost from a [[Rune Giant]] would apply every third attack instead of every third hit in each attack.
+2026
+
+* On 2/3/2026, a Balance Update, increased the Evolved Electro Dragon's hitpoints by 5%, and also decreased it's chain damage by 50%.
+* On 1/6/2026, a Balance Update, increased the Evolved Electro Dragon's hitpoints by 5%.
+
+==Trivia== 
+*The Electro Dragon resemble [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures]. being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire. However, the Electro Dragon breathes lightning bolts instead.
+*The word "Electro" come from the Greek word "''ἤλεκτρον''" (elektron), meaning amber, referring to its electrostatic capabilities. Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Electro Dragon is 1 of 3 evolved [[cards]] associated with electricity, with the others being [[Zap/Evolution|Zap]] and [[Tesla/Evolution|Tesla]].
+***In the Spanish, Italian, Russian, Arabic, Portuguese, and Thai language settings of the game, the Electro Dragon's name translates to "Electric Dragon". In the Chinese and Finnish language settings of the game, the Electro Dragon's name translates to "Thunder Dragon" and "Lightning Dragon" respectively.
+*The headwear the Evolved Electro Dragon has shows a resemblance to the Level 6 Electro Dragon from Clash of Clans.
+*The Electro Dragon is 1 of 2 evolved [[:Category:Troop Cards|troops]] that can deal damage to multiple units with one attack without an area damage radius, the other being [[Hunter/Evolution|Hunter]].
+*The Electro Dragon’s Evolution is the subject of an [[Emotes|Emote]].
+*Before the Electro Dragon Evolution's release, the Evolved Electro Dragon's projectile speed of the chain attack after 3 targets was decreased to 400 (from 500), and it was made so that the chain attack would no longer stun enemies after 3 targets.
+
+{{Navigation|Card}}

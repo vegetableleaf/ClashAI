@@ -1,0 +1,165 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Wall Breakers</span>}}
+{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Epic|Type=Troop|Arena=Spooky Town|ReleaseDate=14 February 2024}}
+{{Quote|Who let Wall Breakers into the gunpowder stores? They’ve run off with more explosives! It’s double trouble with this Evolution as they continue their attack on foot if their barrel is destroyed!}}
+
+The Wall Breakers' Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 2 Wall Breakers with identical stats to the originals. When defeated, they will explode, dealing high damage (but less against [[:Category:Crown Towers|Crown Towers]]) and will spawn a Runner each, which is an area-damage, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with low hitpoints and moderate damage. They drop their dynamite at their target when attacking, destroying themselves on impact. They resemble [[Skeletons/Evolution|Skeletons]] donning purple bandanas and gloves with golden cuffs, along with a team-colored belt with the [[Card Evolution]] symbol in the center, have purple eyes and a nose, ride larger, purple-spiked explosive barrels, and carry sticks of dynamite in their hands. The Wall Breakers' Evolution costs 2 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*For just 2 Elixir, the Evolved Wall Breakers deal incredibly high damage to the [[:Category:Crown Towers|Crown Towers]] and apply immense pressure, making them good for distracting the opponent from building up or defending a push.
+*The Evolved Wall Breakers have incredible synergy with the [[Miner]] as it will take the Crown Tower's attacks, allowing for the Evolved Wall Breakers to easily connect.
+*The Evolved Wall Breakers can be situationally ignored if they’re attacking a significantly higher health Crown Tower than the other.
+*Due to the Evolved Wall Breakers being in pairs, the player can split them into separate lanes by deploying them in the middle of the [[Arenas|Arena]]. This is an effective way to divide their attacks, as fully countering this attack with only 2 Elixir is nearly impossible.
+*Unlike the regular [[Wall Breakers]], the [[Cannoneer]] isn't recommended nearly as much to deal the Evolved Wall Breakers. If left alone, both Runners and one of the Evolved Wall Breakers' death damage will connect to the Cannoneer.
+*At the expense of most of her daggers, the [[Dagger Duchess]] can mostly counter the Evolved Wall Breakers by herself, causing only 1 Runner to connect to the Crown Tower.
+*Single damage [[:Category:Spell Cards|spells]], like the [[Fireball]], [[Rocket]], [[Zap]], [[The Log]] and [[Giant Snowball]] are mostly ineffective at dealing with the Evolved Wall Breakers as their Barrel will act as a shield, shifting them into their Runner form.
+**Although, if the player has the [[Zap/Evolution|Evolved Zap]] or [[Arrows]], they can fully counter the Evolved Wall Breakers for a neutral Elixir trade. The Zap must be played 2 tiles in front of where the Evolved Wall Breakers are to ensure they’re hit by all three zaps.
+*Due to the Barrel's death damage, the Evolved Wall Breakers can be used to defend against medium hp units and swarms, such as [[Minion Horde]] and [[Barbarians]] for a positive Elixir trade when placed directly on top.
+*The [[Rascals]] can be fully countered by the Evolved Wall Breakers with the help of the Cannoneer as the Evolved Wall Breakers will take out the Rascal Girls and do damage to the Rascal Boy while the Cannoneer finishes him off.
+*Due to their significantly higher damage, it's heavily recommended to not deploy any units next to a [[:Category:Building Cards|building]] that the Evolved Wall Breakers are going toward. Doing so will result in them being instantly destroyed, like [[Minions]], [[Mother Witch]], [[Dart Goblin]], [[Bomber]], or [[Magic Archer]], or taking a large amount of unnecessary damage.
+*Buildings, such as [[Cannon]] or [[Goblin Cage]], placed directly on top are the best counters to the Evolved Wall Breakers, albeit for a negative Elixir trade.
+* If placed quickly, [[Arrows]] are a somewhat effective counter to the Evolved Wall Breakers as the spell with the help of the [[Tower Princess]] can fully counter them. However, Arrows used too late will result in a Runner connecting to the Crown Tower. 
+**Conversely, Arrows can be used to clear certain cards the opponent uses to defend the Evolved Wall Breakers, such as [[Skeleton Army]] and [[Goblins]], allowing the Evolved Wall Breakers to connect instead of the Runners.
+*The [[Skeleton Barrel]] has decent synergy with the Evolved Wall Breakers as the Skeleton Barrel can act as spell bait and a tank for your Evolved Wall Breakers, making it easier for them to deal their full damage to the Crown Tower.
+*The [[Royal Recruits/Evolution|Evolved Royal Recruits]] have great synergy with split Evolved Wall Breakers as the Recruits take hits for both of the Evolved Wall Breakers while applying equally high pressure to the opponent on both sides. Creating a deadly attack.
+*The Evolved Wall Breaker’s death damage is not quite enough to kill Goblins. Knowing this, you can fully counter the Evolved Wall Breakers with [[Giant Snowball]] and Goblins, though it should only be used as a last resort.
+**However, placing Goblins before one of the Barrels explodes will result in them being destroyed as they cannot take the death damage twice, allowing a Runner to connect.
+*Similar to the [[Battle Ram]], fatal damage caused by piercing splash cards like [[The Log]], [[Executioner]], [[Barbarian Barrel]], [[Firecracker/Evolution|Evolved Firecracker]], [[Bomber/Evolution|Evolved Bomber]], and [[Bowler]] will also deal damage to the Runners, making them somewhat effective at dealing with them. However, make sure to place the latter at a distance to prevent death damage being dealt to it.
+*For a negative Elixir trade, a properly timed and placed [[Valkyrie]] can fully counter the Evolved Wall Breakers. She will also counter push, potentially forcing your opponent to respond, making up for the initial Elixir trade.
+*The [[Ice Golem]] has great synergy with the Evolved Wall Breakers as he can tank the Crown Tower and deplete the Dagger Duchess' daggers for a cheap cost. This might cause the Evolved Wall Breakers to connect to the Crown Tower if the opponent does not use a building to defend. Additionally, the Evolved Wall Breakers will push the Ice Golem to the Crown Tower, resulting in some minor chip damage.
+*Combining the Evolved Wall Breakers with [[Rage]] makes them difficult to react to at the bridge and can result in both connecting to the tower if the opponent lacks area damage counters or buildings, but their damage won't be boosted, as Rage only increases attack speed and the Wall Breakers' damage is instant.
+*When using [[Clone]] on the Evolved Wall Breakers, it is most recommended to use it on the Evolved Wall Breakers themselves instead of the Runners. Even if the Clone produces regular Wall Breakers, they deal more damage than Runners do while also have the same 1 hitpoint, and both lack other attributes to justify using the Clone.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Wall Breaker Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||Very Fast (120)||1 sec||Melee: Short (0.5)||1.5||[[:Category:Building Cards|Buildings]]||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+
+{{StatisticsSubheader|Runner Attributes}}
+{|class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}} 
+|-
+|Very Fast (120)||1 sec||Melee: Short (0.5)||1.5||[[:Category:Building Cards|Buildings]]||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 330 }}
+{{#vardefine: dmg_11 | 391 }}
+{{#vardefine: death_11 | 291 }}
+{{#vardefine: crown_11 | 193 }}
+{{#vardefine: run_hp_11 | 164 }}
+{{#vardefine: run_dmg_11 | 196 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Crown Tower Death Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |Runner Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Runner Area Damage<br />{{Icon|I=Area Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{#var:death_11}} || {{#var:crown_11}} || {{#var:run_hp_11}} || {{#var:run_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:run_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:run_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024 
+*The Wall Breakers' Evolution [[Cards|card]] was added to the game on 14/2/2024.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]] decreased Runner's damage by 50%, increased the Runner's movement speed to 120 (from 90), now classified as Very Fast, and removed the Evolved Wall Breaker's damage boost.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]] added a sound effect to the Evolved Wall Breakers after death.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]] increased the Evolved Wall Breakers' death damage by 50%, but made it so that the Evolved Wall Breakers' death damage would deal 66% of its full damage to [[:Category:Crown Towers|Crown Towers]].
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] decreased the Evolved Wall Breakers' hitpoints by 0.3%, and their damage by 0.25%.
+*On 1/4/2025, a [[Version History#Maintenance Break (1/4/2025)|maintenance break]] fixed a bug where [[Electro Wizard]] could nullify Wall Breakers' Evolutions' death effects.
+*On 6/10/2025, increased Troop death damage by 11%.
+*On 3/11/2025,  a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the Evolved Wall Breakers’ death damage by 10% and it decreased the runner’s death damage by 7%.
+2026
+
+* On 6/4/2026, a Balance Update, decreased the Evolved Wall Breakers' damage to troops by 26%
+* On 4/8/2026, a Balance Update, decreased the Evolved Wall Breakers’ death damage by 20%
+
+==Gallery==
+<gallery>
+File:Evolved Wall Breakers card render.png|Current card render.
+File:Chinese Evolved Wall Breakers card render.png|Wall Breakers’ card render in the Chinese version of the game.
+File:Evolved Wall Breakers Preview.gif|Current card preview
+File:WallBreakersEvoShard.png|Evolution Shard.
+File:Evolved Wall Breakers 1.png|Evolved Wall Breakers 1
+File:Evolved Wall Breakers 2.png|Evolved Wall Breakers 2
+File:Evolved Wall Breakers 3.png|Evolved Wall Breakers 3
+</gallery>
+
+==Trivia== 
+*The Wall Breakers were the first {{Rarity|Epic}} [[Cards|card]] to receive a [[Card Evolution]].
+*The Evolved Wall Breakers' design, locomotion (rolling on a large, explosive barrel), and the fact that the barrel deals death damage, are all based on the Super Wall Breaker from Clash of Clans.
+*The Wall Breakers are 1 of 6 evolved [[cards]] associated with [[Skeletons]], with the others being [[Bomber/Evolution|Bomber]], [[Skeleton Barrel/Evolution|Skeleton Barrel]], [[Witch/Evolution|Witch]], [[Skeleton Army/Evolution|Skeleton Army]], and of course, [[Skeletons/Evolution|Skeletons]].
+*The Wall Breakers and Runners are 2 of 4 evolved [[:Category:Troop Cards|troops]] to die as part of its attack, the others being the [[Ice Spirit/Evolution|Ice Spirit]] and Skeleton Barrel.
+**When the Evolved Wall Breakers are defeated before they connect to a [[:Category:Building Cards|building]], the Runners will play the Wall Breakers' battle cry.
+*The Wall Breakers and Runners are 2 of 5 evolved troops which can defeat themselves in one attack, the others being Skeletons, [[Firecracker/Evolution|Firecracker]], and [[Goblin Barrel/Evolution|Decoy Goblins]].
+**Unlike the others, the Evolved Wall Breakers and Runners cannot target other Evolved Wall Breakers or Runners respectively.
+**The Wall Breakers and Runners are 2 of 3 evolved troops with more damage than hitpoints, with the other being Decoy Goblins.
+*In the French, Korean, Arabic, Chinese, Malaysian, Thai, and Vietnamese language settings of the game, the Wall Breakers' name translates to "Sappers", "Skeleton Assault", "Wall Destroyers", "Siege Bombers", "Fortress Breakers", "Wall Bombers", and "Siege Soldiers" respectively.
+*The dynamite used by the Evolved Wall Breakers is the same held by the [[Goblin Demolisher]].
+*Unlike other evolved troops, the Runners do not disintegrate into [https://clashofclans.fandom.com/wiki/Resource_Buildings#Dark_Elixir Dark Elixir] when defeated. Instead, they disintegrate into [[Elixir]]. This trait is shared with the Decoy Goblins.
+*The Wall Breakers' Evolution is the subject of 2 [[Emotes]].
+*Before the Wall Breakers' Evolution card was released, the Evolved Wall Breaker's death damage was decreased by 50%, the Runners' damage was increased by 100%, and the Runners' speed was decreased to 90 (from 120), now classified as Fast.
+
+{{Navigation|Card}}

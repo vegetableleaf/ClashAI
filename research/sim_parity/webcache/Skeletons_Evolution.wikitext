@@ -1,0 +1,148 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Skeletons</span>}}
+{{Evolved Card Infobox|Cost=1|CycleCost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=19 June 2023}}
+{{Quote|When there's no room in Spooky Town, the dead will walk the Arena! This Evolution is a never-ending horde with each Skeleton summoning another with every attack!}}
+
+The Skeletons' Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 3 Skeletons, with identical stats to the originals, in a triangle formation. Every time they attack, an additional Evolved Skeleton will spawn, for a maximum total of 8 Skeletons. They resemble small undead creatures with a skull that lacks a lower jaw, have purple eyes and a nose and a scar on their left eye, wield short purple swords, and wear a purple ushanka and a belt around their chests. The Skeletons' Evolution costs 1 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Even though they require 2 cycles to evolve, due to their 1 Elixir cost, you can at least get Evolved Skeletons twice a match. It is recommended that you think about your placement and use of the Evolved Skeletons. Using them as a defense against cards like [[Giant]], [[Royal Giant]], [[Elixir Golem]], and other tanks is when they should be used as they will be getting immense value when left alone.
+**If you're desperate to defend something, cycle spam your cheapest cards to obtain their Evolution quicker.
+*Their ability makes them very effective against a [[P.E.K.K.A.|P.E.K.K.A]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Boss Bandit]], Prince, [[Mighty Miner]], [[Giant Skeleton]], or any other slow or single-target troop for that matter, as the Skeletons will overwhelm the seven with the spawns, causing infinite stalling of them. This will grant a massive positive Elixir trade of up to 3, 4, 5 and 6, although the player needs to have already played the Skeletons 2 times and this counter is vulnerable to a quick weak [[:Category:Spell Cards|spell]], such as [[Zap]], Giant Snowball, and [[The Log]].
+*Alone, the Skeletons will not connect to the [[Tower Princess]], and even with support, it is very unlikely and even if they do, they will be addressed. The Evolved Skeletons, very much like regular Skeletons, are meant for defense.
+**However, if the opponent is using [[Cannoneer]] or all 8 of them have spawned, the Evolved Skeletons will connect to any [[:Category:Tower Troop Cards|Crown Tower]]. Defense is necessary in this case as they will be the deciding factor between a win and a loss.
+*Their respawning mechanic makes them much more viable on defense as these will act like a perpetual [[Tombstone]], infinitely stalling most units unless addressed with a weak spell or facing a 360° splash unit like a jumping [[Mega Knight]], a charging [[Dark Prince]], or a [[Valkyrie]].
+*To allow them to accumulate, they should be placed on top of ranged troops like the Musketeer, to negate their range advantage. If the ranged troop also has area damage, they should be placed in such a way that the Skeletons surround the ranged troop, to prevent them from dying immediately.
+*If placed early enough, they can fully stop a centered [[Goblin Barrel]]. Placed under the bottom Goblin, two Evolved Skeletons will attack the bottom Goblin, allowing them to multiply, which will reach the top Goblins. The top Goblins will be distracted by the Skeletons that appear from the multiplication, preventing them from dealing damage to the Crown Tower. Beware of spells such as [[Zap]] and [[Giant Snowball]] that may accompany the Goblin Barrel.
+*Evolved Skeletons can fully counter a [[Bandit]]. Before the Bandit is about to dash, place the Evolved Skeletons on the third tile vertically from the [[King's Tower]] and the third tile horizontally from the Crown Tower. After she dashes and kills one of the Evolved Skeletons, the others will attack her and multiply themselves, fully defeating her. This works better than placing them directly on top of the Bandit, as she will be further away from ranged support troops. A similar strategy also works against the [[Prince]].
+*The Evolved Skeletons have great synergy with other swarms as your opponent might use their spells on them instead of the Evolved Skeletons, leaving you with a 1 Elixir high pressure card on defense and offense. Alternatively, they can bait those spells for those other units to wreck havoc, which works just as well, as every spell is a negative Elixir trade against them.
+*They pair well with [[Royal Hogs]]. They can both be split, forcing the opponent to use their spells on only one of the two lanes, allowing the Evolved Skeletons on the other lane to multiple with less resistance.
+*It is a good idea to use cards with stun effects like the [[Ice Spirit]], [[Electro Dragon]], [[Goblinstein]], Zap, Electro Spirit, [[Zappies]], [[Electro Wizard]], and [[Freeze]] alongside the Evolved Skeletons. This will give them a larger chance of them to attack and accumulate for a threatening push or for a forced response from the opponent.
+*Evolved Skeletons have very high DPS/Cost ratio. A strategy is to place an [[Ice Golem]] to distract a troop, and Skeletons behind the attacking troop to severely cripple them, if not, destroy them.
+*Ice Golem itself is a situationally good counter to the Evolved Skeletons as its death damage is nearly guaranteed to wipe out most if not all Skeletons that surround it.
+*Try to avoid using them against a [[Mother Witch]]. She will keep destroying each Evolved Skeleton, spawning Cursed Hogs from them which will allow for more Skeletons to attack them and spawn. Eventually, the Cursed Hogs will have accumulated enough to pass through and generate damage to the Crown Towers. If ignored, this will go no perpetually until the King Tower is destroyed.
+*Despite attacking an [[Electro Giant]], Evolved Skeletons will not spawn once they die, causing them to deal very minimal damage.
+*Since they only cost 1 Elixir, they can shuffle the player's [[Battle Decks|deck]] quickly and add a significant damage boost to an attack. Better yet, since they are also easily defeated by many cards and the Tower Princess when unmultiplied, not many players are willing to play cards to only take out the Evolved Skeletons alone, given that their 1 Elixir cost will almost always result in a negative Elixir trade for them. They are very good to be split behind the King Tower as this will shuffle the player's deck and greatly discourages the opponent from immediately attacking either lane as if they do connect to their attack, it will be very likely that it will be stopped.
+*The [[Electro Spirit]] is the best counter to the Evolved Skeletons as its 1 Elixir cost and ability to chain onto all the Skeletons, even when multiplied allows it to easily stop them. However, the player can mitigate this by spliting the Evolved Skeletons, preventing the Electro Spirit from hitting all of them.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatisticsSubheader|Evolved Skeletons Attributes}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||1.1 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.5)||Ground||x3||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Max Count<br />{{Icon|I=Count}}
+|-
+|2||8
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2023
+*The Skeletons' Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]].
+*On 30/6/2023, a [[Version History#Maintenance Break (30/6/2023)|maintenance break]], increased the maximum number of Evolved Skeletons to 8 (from 6).
+*On 8/8/2023, a [[Version History#Balance%20Changes%20(8/8/2023)|Balance Update]], decreased the cycles required to 2 (from 3) and decreased the maximum number of Evolved Skeletons to 6 (from 8).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the maximum number of Evolved Skeletons to 8 (from 6).
+*On 13/11/2023, a [[Version History#Minor%20Update%20(13/11/2023)|Minor Update]], decreased the Evolved Skeletons’ first attack time interval to 0.4 seconds (from 0.5 seconds).
+2024
+*On 18/3/2024, the [[Version History#Lucky Drops Update (18/3/2024)|Lucky Drops Update]], made it so that Evolved Skeletons would multiply after attacking instead of simultaneously.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Skeletons’ first attack time interval to 0.5 seconds (from 0.4 seconds).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Skeletons after death.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the number of Evolved Skeletons spawned to 3 (from 4).
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Evolved Skeletons.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Evolved Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+
+==Gallery==
+<gallery>
+File:Evolved Skeletons card render.png|Current card render.
+File:Chinese Evolved Skeletons card render.png|Skeletons’ card render in the Chinese version of the game.
+File:Evolved Skeletons Preview.gif|Current card preview
+File:SkeletonsEvoShard.png|Evolution Shard.
+File:Evolved Skeleton.png|Evolved Skeleton
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Skeletons are 1 of 6 evolved [[cards]] associated with [[Skeletons]], with the others being [[Bomber/Evolution|Bomber]], [[Skeleton Barrel/Evolution|Skeleton Barrel]], [[Witch/Evolution|Witch]], [[Wall Breakers/Evolution|Wall Breakers]], and [[Skeleton Army/Evolution|Skeleton Army]].
+*The beginning of the Skeletons' Evolution description, "When there's no room in Spooky Town, the dead will walk the Arena!", references the famous quote, "When there's no more room in Hell, the dead will walk the Earth." from Dawn of the Dead.
+*The Skeletons' Evolution is tied with the [[Ice Spirit/Evolution|Ice Spirit]] for the cheapest [[Card Evolution|Evolution]] to be placed, costing 3 [[Elixir]] (excluding Elixir from using other cards).
+*The Skeletons' Evolution was one of the first Evolutions to be added in the game, alongside the [[Barbarians/Evolution|Barbarians]], [[Royal Giant/Evolution|Royal Giant]], and [[Firecracker/Evolution|Firecracker]]. It is also one of the first evolved [[:Category:Troop Cards|troops]] to be featured in a [[Loading Screens|Loading Screen]], alongside the Barbarians, Royal Giant, and Firecracker.
+*The Skeletons' Evolution is 1 of 5 [[cards]] that has had its Cycles required changed, the others being [[Bomber/Evolution|Bomber]], Ice Spirit, [[Lumberjack/Evolution|Lumberjack]], and [[Baby Dragon/Evolution|Baby Dragon]].
+*Even though the card spawns 3 Skeletons, the card render displays only 1 Skeleton.
+*The Skeletons' Evolution are 1 of 5 evolved troops which can defeat themselves in one attack, the others being Firecracker, [[Wall Breakers/Evolution|Wall Breakers]], Runners, and [[Goblin Barrel/Evolution|Decoy Goblins]].
+*The Skeletons' Evolution are the only evolved swarm card whose members spawn all at the exact same time.
+*In the Korean language settings of the game, the Skeletons' name translates to "Skeleton Soldiers".
+*The Skeletons' Evolution is the subject of an [[Emotes|Emote]].
+*Before the Skeletons' Evolution's release, the cycles required was increased to 3 (from 2), and the maximum number of Evolved Skeletons was decreased to 6 (from 8).
+
+{{Navigation|Card}}
+
+[[de:Skelette/Evolution]]
+[[ru:Скелеты/Эволюция]]

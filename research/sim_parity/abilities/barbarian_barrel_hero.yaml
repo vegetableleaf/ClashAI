@@ -1,0 +1,83 @@
+# Extracted 2026-08-25 via api.php parse (wikitext|revid); raw page archived at
+# research/sim_parity/webcache/Barbarian_Barrel_Hero.wikitext
+key: barbarian_barrel_hero
+base_card: barbarian_barrel
+page: Barbarian Barrel/Hero
+revid: 437523
+fetched: "2026-08-25"
+release_date: "2026-03-02"   # infobox ReleaseDate="2 March 2026"; History: "On 2/3/2026 ... was added"
+
+body_stat_deltas:
+  summary: "small positive deltas vs ledger base barbarian_barrel; the spawned barbarian's HP is the notable one (+6.9%)"
+  detail:
+    elixir:                    {hero: 2,   base: 2,   delta: 0}              # infobox Cost=2 / attributes table
+    barrel_range_tiles:        {hero: 4.5, base: 4.5, delta: 0}              # Barbarian Barrel Attributes Range vs ledger range_tiles
+    barrel_area_damage_lvl11:  {hero: 232, base: 230, delta: "+2 (+0.9%)"}   # vardefine spawn_11 vs ledger spawn_damage
+    barbarian_hitpoints_lvl11: {hero: 716, base: 670, delta: "+46 (+6.9%)"}  # vardefine hp_11 vs ledger hitpoints
+    barbarian_damage_lvl11:    {hero: 192, base: 191, delta: "+1 (+0.5%)"}   # vardefine dmg_11 vs ledger damage
+    barbarian_hit_speed_s:     {hero: "1.3 (table) / 1.4 (vardefine)", base: 1.3, delta: "0 or +0.1 -- page-internal conflict, see open_questions"}
+    barbarian_range_tiles:     {hero: 0.5, base: 0.5, delta: 0}              # 'Melee: Short (0.5)' vs ledger spawn_unit_stats.range_tiles
+  caveat: >
+    History (4/8/2026) documents only a +4% barbarian hitpoint buff, but
+    716/670 = 1.069 (+6.9%) vs the ledger base; 670*1.04 = 697, not 716
+    (and 716/1.04 = 688.5). The page's number and the documented buff do not
+    reconcile against the ledger base -- unclear which base value the wiki
+    editor buffed. Recorded as-is; ledger used only for the delta.
+    Width 2.6 has no ledger counterpart to compare; ledger roll_tiles 5.0
+    has no hero-page counterpart.
+
+ability:
+  name: Rowdy Reroll
+  elixir_cost: 1        # infobox AbilityCost=1; Rowdy Reroll Attributes table Cost; prose "costs 1 Elixir to activate"
+  uses: null            # not stated
+  cooldown_s: null      # not stated
+  cast_delay_s: null    # not stated
+
+mechanic_prose: |
+  [Card flavor Quote, top of page]
+  "They see him rollin', they hatin'! No one clears the path like Hero Barbarian
+  Barrel, who willingly gave up his rock music career for the resilience of a
+  second roll."
+
+  [Section: Ability: Rowdy Reroll -- Quote]
+  "Barrels down the lane a second time for maximum impact."
+
+  [Section: Ability: Rowdy Reroll -- body text, verbatim incl. typos]
+  "The Hero Knight has a special ability accessible from whatever side of the screen
+  was put in, just above the player's card slots in battle. When activatet, the
+  Barbarian Barrel will roll for a second time, while healling the barbarian for 50%
+  of the damage. The Rowdy Reroll ability costs 1 Elixir to activate."
+
+numbers:
+  deploy_cost_elixir:        {value: 2,   source: infobox, field: "Cost=2 (also Barbarian Barrel Attributes Cost + prose 'costs 2 Elixir to deploy')"}
+  ability_cost_elixir:       {value: 1,   source: infobox, field: "AbilityCost=1 (also Rowdy Reroll Attributes Cost + prose)"}
+  unlock_cost_hero_shards:   {value: 200, source: prose,   field: "intro: 'unlocked with 200 Hero Shard'"}
+  barrel_range_tiles:        {value: 4.5, source: attributes_table, field: "Barbarian Barrel Attributes, Range"}
+  barrel_width_tiles:        {value: 2.6, source: attributes_table, field: "Barbarian Barrel Attributes, Width"}
+  barrel_area_damage_lvl11:  {value: 232, source: vardefine, field: "spawn_11 (level table column 'Barbarian Barrel Area Damage')"}
+  barbarian_hitpoints_lvl11: {value: 716, source: vardefine, field: "hp_11"}
+  barbarian_damage_lvl11:    {value: 192, source: vardefine, field: "dmg_11"}
+  barbarian_hit_speed_s:     {value: "1.3 OR 1.4 -- page-internal CONFLICT", source: attributes_table, field: "Barbarian Attributes table says '1.3 sec'; vardefine atk_speed|1.4 feeds the DPS column of the level table"}
+  barbarian_first_hit_speed_s: {value: 0.4, source: attributes_table, field: "Barbarian Attributes, First Hit Speed '0.4 sec'"}
+  barbarian_speed:           {value: "Medium (60)", source: attributes_table, field: "Barbarian Attributes, Speed"}
+  barbarian_deploy_time_s:   {value: 0.5, source: attributes_table, field: "Barbarian Attributes, Deploy Time '0.5 sec'"}
+  barbarian_range_tiles:     {value: 0.5, source: attributes_table, field: "Barbarian Attributes, Range 'Melee: Short (0.5)'"}
+  reroll_range_tiles:        {value: 3,   source: attributes_table, field: "Rowdy Reroll Attributes, Range 3; History 4/5/2026 'decreased the reroll range to 3 tiles (from 4 tiles)'"}
+  reroll_width_tiles:        {value: 2.6, source: attributes_table, field: "Rowdy Reroll Attributes, Width"}
+  damage_healed_pct:         {value: 50,  source: attributes_table, field: "Rowdy Reroll Attributes, 'Damage Healed 50%'; prose 'healling the barbarian for 50% of the damage'"}
+  rerolldmg_lvl11:           {value: 116, source: vardefine, field: "rerolldmg_11 -- MEANING CONFLICTED: variable name says reroll damage, but the level-table column it feeds is headed 'Crown Tower Damage'. Note 116 = exactly 50% of spawn_11 (232)."}
+  deploy_restriction:        {value: "own side only", source: prose, field: "intro: 'It can only be deployed on the player's own side.'"}
+  level_scaling:             {value: "stat_11 * 1.1^(level-11), rounded; level table shown for 6-16", source: attributes_table, field: "level-table #expr formulas; page warns about rounding from level-11 anchors"}
+  balance_history:           {value: "4/5/2026 reroll range 4->3; 4/8/2026 barbarian HP +4%", source: prose, field: "History bullets"}
+
+proposed_ability_kind: dash_chain   # the barrel makes a second damaging roll (line dash, 3 tiles long, 2.6 wide) plus a 50% self-heal; 'movement_flight'+'buff_self' are runners-up -- flag for owner
+
+open_questions:
+  - "CONFLICT: barbarian hit speed -- Barbarian Attributes table says 1.3 s, vardefine atk_speed=1.4 (drives the DPS column). Which is live? (Ledger base barrel-barbarian is 1.3; the 5-elixir Barbarians card is 1.4.)"
+  - "CONFLICT: rerolldmg_11=116 -- is it the reroll's roll damage (per variable name) or crown-tower damage (per column header)? 116 is exactly 50% of the 232 barrel damage, consistent with either reading."
+  - "'Healing the barbarian for 50% of the damage' -- 50% of damage the barbarian has TAKEN so far, or 50% of the damage the reroll DEALS?"
+  - "Reroll direction/aim: 'barrels down the lane a second time' -- fixed continuation down the same lane from the barbarian's current position, or player-aimed? Starting point unstated."
+  - "Is the ability only available while the spawned barbarian is alive, and does he re-enter the barrel (invulnerable during the roll)? Does he re-emerge at the end of the 3-tile roll?"
+  - "Use count / cooldown not stated -- one reroll per deployment?"
+  - "Barbarian HP 716 does not reconcile with ledger base 670 plus the documented +4% buff (would give 697); which base was buffed?"
+  - "Prose reliability flag: ability section calls the card 'The Hero Knight' -- copy-paste editing from the Knight page."

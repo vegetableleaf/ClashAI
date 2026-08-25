@@ -1,0 +1,215 @@
+{{MagicWords}}{{Card Infobox|Cost=5|AbilityCost=1|Rarity=Champion|Type=Troop|Arena=Silent Sanctuary|ReleaseDate=26 October 2022}}
+{{DISPLAYTITLE: <span class="text-champion";">Monk</span>}}
+{{SubpageNavBox|MergeTactics=yes}}{{Quote|Monk has spent many isolated years perfecting a new style of combat. He fires off a 3-hit combo, with the last blow dealing extra Damage and pushing enemies back!}}
+
+The Monk is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Silent Sanctuary (Arena 18)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Monk uses a 3-hit combo: the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback, even if the targeted troop is normally immune to knockback. Monk's ability reflects projectiles back to their source, as well as granting himself a large damage reduction for a short time. He appears similar to the [[Hog Rider]], except that he is tan, and his mohawk, beard and eyebrows are white, he has a long horseshoe mustache, and wears a mala on his wrists, a cincture, and a team-colored kilt. A Monk card costs 5 [[Elixir]] to deploy and his ability costs an additional 1 Elixir to activate.
+
+==Ability: Pensive Protection==
+{{Quote|Takes less Damage while deflecting projectiles back at the opponent!}}
+{{Champion Ability}}
+The Monk has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the Monk activates his “Pensive Protection”, reducing all incoming damage he takes by 65% and reflect all incoming projectile-based ranged attacks back to the said offender. [[:Category:Spell Cards|Spells]] are always reflected to the closest opposing [[:Category:Tower Troop Cards|Crown Tower]]. He cannot protect nearby allies from melee attacks, non-projectile ranged attacks and non-projectile spells. The Monk is impervious to all forms of knockback and the [[Tornado]]'s pull during Pensive Protection's duration. The ability goes on a 17-second cooldown after the duration ends. The Pensive Protection ability costs 1 [[Elixir]] to activate. 
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Monk Card}}
+*For the purposes of determining [[Elixir]] trades, the Monk and his activated Ability count as 6 Elixir, as the player must play the 5 Elixir Monk and then spend a further 1 on his Ability.
+*The third hit in his combo (much like [[The Log]]) can knock back all ground [[:Category:Troop Cards|troops]]. This is most effective against slow troops, troops with low damage outputs and the [[Mighty Miner]] especially, who takes lots of time to ramp up his damage, and will end up being reset every third hit on top of dealing triple the damage.
+**Note that killing a troop does not reset the combo. This means that if he defeats 2 troops with a non-combo attack, the next attack will be a combo attack. For example; against the [[Rascals]], after killing a Rascal Girl with 2 regular attacks, the third attack will be used either on the second Rascal Girl, fully defeating her immediately, or on the Rascal Boy, dealing heavy damage to him and knocking him back.
+*Reactive play against [[:Category:Spell Cards|spells]] is high-risk high-reward. If you want to defend against a [[Rocket]] with the Monk, it’s not that easy to pull off; there is a very small time window for you to deploy him and activate his ability. The better move is to use him proactively.
+**One could place him in as a "shield" for [[cards]] that can usually be weakened via spells. Being paired with cheap ranged units like the [[Firecracker]] is a sweet pairing as he denies every weak spell except for  [[Freeze]], [[Zap]], [[Earthquake]], [[Tornado]], and [[Royal Delivery]]. Moderate-health units such as [[Electro Wizard]], [[Zappies]], Magic Archer, [[Skeleton Dragons|Skeleton, Dragons]], [[Mother Witch]], [[Ice Wizard]], or [[Musketeer]] will be protected except against [[Lightning]] and [[Poison]]. Also, having the Monk being around an [[Elixir Collector]], [[Sparky]], [[Executioner]], or your [[:Category:Crown Towers|Crown Tower]] can deny an incoming [[Rocket]] and its uninteractive "Rocket Cycle" strategy. Being near a Crown Tower during the duration of his ability will send an opposing [[Goblin Barrel]] back to the opponent's closest Crown Tower and turn said spell against them.
+***If you are against a Monk and fragile ranged units are deployed near him, Poison can still counter them.
+***Although he can reflect [[Arrows]], he will not fully reflect the spell unless he is in or within 2 tiles of the exact center of the casting area for the spell; if this isn't the case, some arrows may still kill some of the troops he is nearby.
+***Regardless, the Monk's extremely high hit-points and damage reduction still make him amazing at buying time for any glass cannon.
+*When The Log or [[Barbarian Barrel]] are reflected by his ability, they're converted to fight for you, retain their full range and can even go further back than normal. In the case of the Barbarian Barrel, a friendly [[Barbarians|Barbarian]] will spawn to assist. However, note that anything placed in front of the Monk will not be saved from the reflection.
+**Against a Monk, the player can lure the Monk towards the center, and if he activates the ability, they can use The Log, Magic Archer, or Firecracker to activate their King Tower.
+*An [[X-Bow]], even when played defensively, can be forced to absorb much damage from his ability, on top of rendering most of its synergies powerless against him.
+**The [[Mortar]] can also be fully defended by a Monk when played properly, as most of the shots will either be reflected back to it or be absorbed by his high hitpoints.
+*All reflected projectiles that can splash or don't seek after a target do 25% of their normal damage to Crown Towers. For example, if a [[Sparky]] shot is reflected and splashes the tower, the Tower will take 25% damage but the Sparky will take full damage.
+*His ability makes him an outstanding hard-counter to almost every ranged unit and certain ranged attacks. Certain troops have varying effects.
+**The Monk can activate his ability against the [[Archer Queen]], to counteract her ability. The increased attack speed is used against her, which will result in her quick demise.
+**If the Mother Witch were to be defeated by the Monk's ability, she ends up turning herself into a friendly Cursed Hog.
+**The [[Hunter]]'s shot at point-blank will be fully reflected back at him by Pensive Protection, Instantly killing him regardless of level. However, if he is placed at a distance, he will not take any damage from the reflected projectiles because the projectiles de-spawn after a couple tiles
+**The Firecracker's projectiles deal no damage to the Monk as he reflects them. This is because the projectiles themselves are split into two phases. The initial projectile and the shrapnel that explodes out of it afterward.
+**The [[Fisherman]]'s hook is fully stifled until the ability ends, forcing him to repeatedly charge his hook.
+**The [[Ram Rider]]'s snare gets reflected back and slows her. Coupled with his combo knockback, the Monk can be a very sufficient counter to her. However, the Monk must be played before the Ram Rider covers half the distance to your Crown Tower.
+**The [[Ice Wizard]] will be slowed down by his own attack, as well as any unit next to him will be slowed down.
+**For a slight negative Elixir trade, the Monk and his ability can be used to force a [[Cannon Cart]] into its building phase, making it easier to address with troops that can outrange it or ensuring that it will no longer be a threat.
+**Even though the [[Royal Giant]] cannot target the Monk, his projectiles can still be reflected back, provided that the Monk is placed close to the path of the projectile. The Royal Giant will take major damage from his own attacks this way.
+**Projectiles with piercing capabilities from the [[Bowler]], [[Executioner]], Firecracker, [[Bomber/Evolution|Evolved Bomber]], and [[Magic Archer]] are reflected back at them for full damage and can damage the opposing Crown Towers if their positioning is used against them. In the case of the Bowler, the knockback will be used against his fellow troops.
+***But keep in mind that these reflected projectiles can be used to activate the [[King's Tower|King Tower]]. This can be a great way to activate your King Tower against the Monk, however this is risky, and is likely to result in the troop being killed in the process.
+***If you can predict a Magic Archer at the bridge, activating the Monk's ability will cause the Magic Archer to deal damage to his own Crown Tower through the reflected projectiles. This technique also works similarly against the Firecracker.
+***When the Executioner's axe hits the Monk under Pensive Protection, it is immediately returned to him and will cause him to throw it faster and therefore, take lots of damage or otherwise die because of it.
+*The Monk can deflect arrows from Crown Towers. However, Crown Tower projectiles being deflected back have their damage reduced to only 25%. Because of this, against Crown Towers, his ability should only be used in conjunction with other troops that would deal damage to the Crown Tower.
+*There are still cards whose attacks cannot be deflected by Monk and can counter him due to their nature as tank killers.
+**Both the [[Inferno Dragon]] and [[Inferno Tower]] can counter a Monk for positive or neutral trade, as neither their beams count as projectiles. Even if a good chunk damage are reduced, it is only temporarily. Once the Monk gets out of its ability, both units are going to be dealing 100% of their full potential damage. Thus, using the ability against them is near-useless.
+**Cards such as [[Tesla]], Zappies, Electro Dragon and Electro Wizard will not take reflected damage, since their attacks are instant and not counted as projectiles.
+**Obviously, the Monk gets folded to [[Mini P.E.K.K.A.]], [[Prince]], [[P.E.K.K.A.]], [[Elite Barbarians]], [[Mega Knight/Evolution|Evolved Mega Knight]], and other cards with strong melee attacks. Do what you must.
+**Unlike other air troops, [[Bats]] and the [[Phoenix]] do not attack with projectiles. Since the Monk cannot attack air troops, they will be able to defeat him unharmed.
+**Spirit cards cannot be reflected by the Monk, despite being projectiles when attacking. This is especially useful with the [[Heal Spirit]], as it will assist other cards at defending against the Monk.
+*If a Monk is [[Clone|cloned]], the clone will actually start walking with its ability activated.
+*Any projectile the Monk reflects with Pensive Protection will have the same damage as the initial source of the projectile, and will not scale up nor down to the Monk's level.
+*The Monk can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, he is unable to use his ability. As such, he should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+*When placed at the bridge, if there is a [[Sparky]] behind the [[King's Tower|King Tower]], then the Monk can make it past the bridge in time so he can reflect a Sparky shot onto the tower dealing massive damage, giving you a counter push, and killing the Sparky fully. However, depending on the level of the Sparky, there is a chance that the Sparky does not die, and could possibly destroy the Monk.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Monk Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||0.8 sec||0.2 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Pensive Protection Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Invulnerability Duration<br />{{Icon|I=Time}}
+! scope="col" |Damage Reduced<br />{{Icon|I=Shield Hitpoints}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|1||4 sec||-65%||0.933 sec||17 sec
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2214 }}
+{{#vardefine: dmg_11 | 140 }}
+{{#vardefine: atk_speed | 0.8 }}
+{{#vardefine: combo_11 | 422 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second <br />{{Icon|I=DPS}}
+! scope="col" |Combo Damage<br />{{Icon|I=Damage}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:combo_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:combo_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:combo_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:combo_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:combo_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:combo_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 215,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card <br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}} <br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,080,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}} <br>150 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Keep Your Distance <br/ > [[File:Keep Your Distance.png|50x50px]]
+|1
+|Knock back enemy Troops a total of 250 times
+|15,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|-
+|2
+|Knock back enemy Troops a total of 760 times
+|100 {{Icon|I=Gem}} <br>175 {{Icon|I=XP}}
+|-
+|3
+|Knock back enemy Troops a total of 1,250 times
+|25,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Monk [[Cards|card]] was added to the game on 26/10/2022, in the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]].
+*On 2/11/2022, a [[Version History#Maintenance%20Break%20(2/11/2022)|maintenance break]], increased the Pensive Protection's cooldown time to 17 seconds (from 15 seconds).
+*On 7/12/2022, a [[Version History#Balance%20Changes%20(7/12/2022)|Balance Update]], increased the Monk's cost to 5 [[Elixir]] (from 4 Elixir).
+*On 12/12/2022, the [[Version History#Clashmas%20Update%20(12/12/2022)|Clashmas Update]], made it so that the [[Heal Spirit]]'s projectile can no longer be deflected by the Monk.
+2023
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]], decreased the Monk's attack time interval to 0.8 seconds (from 0.9 seconds).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], increased the Monk's hitpoints by 7.5%.
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], increased the Monk's combo damage by 0.47%. It also fixed certain issues with damage multipliers on the Monk.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], fixed various issues related to Pensive Protection.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], increased the Monk's hitpoints by 3%, and decreased the Pensive Protection's damage reduction boost to 65% (from 80%).
+*On 24/11/2025, a Balance Update made Monk no longer immune to the knockback effects of Evolved Mega Knight and another Monk. He is also no longer immune to [[Fireball]] and [[Giant Snowball]]'s knockbacks if those spells hit the Monk on the corner of their Area of Effect.
+*On 12/12/2025, a Balance Update made Monk immune to any knockback.
+
+== Gallery ==
+<gallery>
+File:Monk card render.png|Current card render.
+File:Monk Preview.gif|Current card preview
+File:Monk.png|Monk 1
+File:Monk2.png|Monk 2
+File:Monk3.png|Monk 3
+File:Monk4.png|Monk 4
+</gallery>
+
+== Trivia ==
+*The word "''Monk''" comes from the Greek "''μόνος''" (''mónos''), meaning alone. Monks are men who are members of a religious order and lives in a monastery. A monk usually lives his life in prayer and contemplation. The concept is ancient and can be seen in many religions and in philosophy across numerous cultures.
+**In the Arabic, Chinese, Indonesian, and Thai language settings of the game, the Monk's name translates to "Hermit", "Furious Monk", "Ascetic", and "Priest" respectively.
+*Along with the [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Mighty Miner]], and the [[Terry]], the Monk has the cheapest ability, costing 1 Elixir.
+*The Monk is 1 of 23 [[:Category:Troop Cards|troops]] that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeletons]], [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Ram Rider]], [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], and [[Santa Hog Rider]].
+**The Monk in the Troop Rush game mode would appear visually larger, had a 2 Elixir ability, and the ability would also apply the damage reduction to any allied troops in a 4-tile radius around him. He had 3,800 hitpoints (instead of 2,000), an attack speed of 1.2 seconds (instead of 0.8 seconds), a first attack speed of 0.4 seconds (instead of 0.2 seconds), and a Slow speed (instead of Medium).
+*The Monk is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], Fire Spirit, [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], [[Bomb Tower]], [[Goblin Hut]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], Wall Breakers, [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], and [[Fisherman]].
+**The Monk, the Royal Recruits, the Three Musketeers, and the Elixir Collector are the only cards whose Elixir cost was increased.
+*The Monk resembles an elderly [[Hog Rider]] character in the Clash Royale [https://youtu.be/dGTkDpq-2vk?si=HkXPzbmNYKSF3XVF Hog Rider's Journey Home animation]. It is also suggested that he may be related to the Hog Rider and Ram Rider, due to his appearance in the Fresh Cut, Story Time, and Spa Day [[Battle Banners|decorations]].
+*The Monk's sprites in-game appear to only have four fingers on both of his hands while his card render normally have five.
+*Strangely, if both players had a Monk and used their abilities at the same time when a projectile [[:Category:Spell Cards|spell]] is in-play, the time it goes back to the Monk who reflected it first will cause it to get fully absorbed.
+*The Monk is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include [[Royal Giant]], [[Giant]], P.E.K.K.A, [[Giant Skeleton]], [[Rune Giant]], [[Goblin Giant]], [[Golem]], Bowler, [[Electro Wizard]], [[Inferno Dragon]], Sparky, [[Lava Hound]], [[Night Witch]], and [[Super Lava Hound]].
+*The Monk is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, [[Tesla]], Goblin Hut, [[Tombstone]], Bomb Tower, [[Inferno Tower]], Barbarian Hut, Furnace, Elixir Collector, [[Freeze]], [[Clone]], [[X-Bow]], Golden Knight, Skeleton King, Archer Queen, Mighty Miner, and the Little Prince.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, [[Rocket]], [[Earthquake]], [[Lightning]], [[Poison]], [[Goblin Drill]], [[Miner]], Golden Knight, Skeleton King, Archer Queen, and the Mighty Miner.
+*The Monk is the subject of certain cosmetics in the game. More specifically:
+**The Monk is the subject of 3 [[Emotes]].
+**The Monk is the subject of a [[King's Tower|Tower Skin]].
+*If a Monk activates Pensive Protection in the corner of the [[Arenas|Arena]], then an opposing [[The Log]] or [[Barbarian Barrel]] will be deflected out of the Arena's bounds. However, in the case of the Barbarian Barrel, the [[Barbarians|Barbarian]] will spawn inside the Arena.
+**Thanks to the Monk, it is possible for a Barbarian Barrel to deal damage to [[:Category:Crown Towers|Crown Towers]] by itself. Unlike other spells, it will not deal reduced damage.
+*By using Mirror on a Clone and using it on a Monk, it is actually possible to get a Level 16 Monk.
+**A cloned Monk does not fall from the sky when deployed.
+*It is possible for a Monk to deflect a pancake from a [[Royal Chef]] with his ability if the Monk is beside the troop targeted by the Royal Chef. The pancake will be deflected back to the opposing [[King's Tower]], raising its Level by 1.
+*It is possible for a Monk to deflect an enhancement from a Rune Giant with his ability if the Monk is beside the troop targeted by the Rune Giant. The enhancement will be deflected back to the Rune Giant, enhancing herself.
+*The Monk has had balance changes that were planned for it but were not added to the game. More specifically:
+**The initial balance change for Monk on the [[Version History#Balance%20Changes%20(5/3/2024)|5/3/2024 balance changes]] was a 10% hitpoints increase, but it was lowered to 8% [https://royaleapi.com/blog/season-57-balance-wip last minute].
+**The initial balance change for Monk on the [[Version History#Balance Changes (8/7/2025)|8/7/2025 balance changes]] was a Pensive Protection's damage reduction boost to 70% (from 80%), but it was lowered to 65% [https://royaleapi.com/blog/season-73-balance-wip-july-2025 last minute].
+
+{{Navigation|Card}}
+
+[[de:Mönch]]
+[[es:Monje]]
+[[it:Monaco]]
+[[ru:Монах]]

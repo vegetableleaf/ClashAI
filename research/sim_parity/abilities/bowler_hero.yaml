@@ -1,0 +1,76 @@
+key: bowler_hero
+base_card: bowler
+page: Bowler/Hero
+revid: 437528
+fetched: "2026-08-25"
+release_date: "2026-05-04"   # infobox ReleaseDate=May 04, 2026; History "On 4/5/2026 ... the Hero Bowler was added"
+
+body_stat_deltas:
+  # vs research/sim_parity/ledger/current_db_snapshot.json cards.bowler
+  projectile_range_tiles: {base: 7.5, hero: 7, delta: -0.5}
+  # source: "Hero Bowler Attributes" table (Projectile Range = 7) + History 4/8/2026:
+  # "decreased the Hero Bowler's projectile range to 7 tiles (from 7.5 tiles)" — a hero-specific nerf.
+  # NOTE: snapshot base value 7.5 predates August; if base Bowler was also changed the delta may be 0 — flagged in open_questions.
+  everything_else: none stated
+  # hp 2081, damage 289, hit_speed 2.5, first_hit 0.5, speed Slow (45), deploy 1s, range 4,
+  # projectile width 3.6, projectile speed 170 all match the snapshot's base bowler exactly.
+
+ability:
+  name: Stone Swish
+  elixir_cost: 2          # infobox AbilityCost=2; "Stone Swish Attributes" table Cost=2
+  uses: 1                 # History 4/8/2026: "This also made the ability single use (from 22sec cooldown)"
+  cooldown_s: null        # removed 4/8/2026; was 22 s before that patch
+  cast_delay_s: 2.5       # "Stone Swish Attributes" table "Cast Time" = 2.5 sec; prose "After 2.5sec of the ability pressed"
+
+mechanic_prose: |
+  [section "Ability: Stone Swish", quote template]
+  "Plants his feet and throws boulders with increased range."
+  [section "Ability: Stone Swish", body text, verbatim incl. typos]
+  "The Hero Bowler has a special ability accessible from whatever side of the screen was put in,
+  just above the player's card slots in battle. After 2.5sec of the ability pressed, the bowler
+  will change the attack to a long-ranged mortar attack for 7.3sec. Getting a total of 3 shots
+  during that duration."
+  [section "Strategy", verbatim incl. typos]
+  "The ability can be used to snipe builinds, making way cards like Electro Giant."
+  "The ability can be used like a 3 shot Mortar, dealing good damage at the tower."
+  "Fast and Veary Fast units like Berserker and Ice Spirit can avoid all 3 shots if placed right."
+
+numbers:
+  deploy_cost_elixir: {value: 5, source: "infobox Cost=5; Hero Bowler Attributes table Cost; prose 'costs 5 Elixir to deploy'"}
+  ability_cost_elixir: {value: 2, source: "infobox AbilityCost=2; Stone Swish Attributes table Cost"}
+  body_hit_speed_s: {value: 2.5, source: "Hero Bowler Attributes table Hit Speed; vardefine atk_speed=2.5"}
+  body_first_hit_speed_s: {value: 0.5, source: "Hero Bowler Attributes table First Hit Speed"}
+  body_speed: {value: "Slow (45)", source: "Hero Bowler Attributes table Speed"}
+  deploy_time_s: {value: 1, source: "Hero Bowler Attributes table Deploy Time"}
+  body_range_tiles: {value: 4, source: "Hero Bowler Attributes table Range"}
+  body_projectile_range_tiles: {value: 7, source: "Hero Bowler Attributes table Projectile Range; History 4/8/2026 nerf from 7.5"}
+  body_projectile_width_tiles: {value: 3.6, source: "Hero Bowler Attributes table Projectile Width"}
+  body_projectile_speed: {value: 170, source: "Hero Bowler Attributes table Projectile Speed"}
+  target: {value: "Ground", source: "Hero Bowler Attributes table Target"}
+  count: {value: 1, source: "Hero Bowler Attributes table Count 1x"}
+  hp_lvl11: {value: 2081, source: "vardefine hp_11"}
+  damage_lvl11: {value: 289, source: "vardefine dmg_11"}
+  ability_damage_lvl11: {value: 508, source: "vardefine abdmg_11 (statistics table column 'Ability Damage')"}
+  ability_crown_tower_damage_lvl11: {value: 254, source: "vardefine ctdmg_11 (column 'Ability Crown Tower Damage')"}
+  ability_hit_speed_s: {value: 1.9, source: "Stone Swish Attributes table Hit Speed"}
+  ability_cast_time_s: {value: 2.5, source: "Stone Swish Attributes table Cast Time; prose"}
+  ability_duration_s: {value: 7.3, source: "Stone Swish Attributes table Duration; History 1/6/2026 'decreased his ability duration to 7.3 seconds (from 9 seconds)'"}
+  ability_range_tiles: {value: 11.5, source: "Stone Swish Attributes table Range"}
+  ability_shots_total: {value: 3, source: "prose — 'Getting a total of 3 shots during that duration.' (see conflicts: table math disagrees)"}
+  former_cooldown_s: {value: 22, source: "History 4/8/2026 — '(from 22sec cooldown)'; removed, ability now single use"}
+  ability_splash_radius_tiles: {value: null, source: "not stated anywhere on page"}
+
+proposed_ability_kind: buff_self
+# temporary self stance-change: body swaps its attack for a long-range 'mortar' attack for a fixed
+# duration; no new unit is summoned. Closest bucket is buff_self (attack-mode buff with duration).
+
+open_questions:
+  - "Shot count: prose says 3 total, but table hit speed 1.9s over a 7.3s duration allows 4+ shots. Count shots in-game."
+  - "Splash radius / area size of the ability's mortar shot is never stated (is it the 3.6-wide rolling boulder or an explosion?). Do NOT assume; measure."
+  - "Does the ability shot keep the normal boulder's knockback and pierce-through?"
+  - "Is the Bowler rooted ('plants his feet') and unable to move during the 7.3s? During the 2.5s cast?"
+  - "Can the normal attack fire during the 2.5s cast time, and can the cast be interrupted (e.g. by death)?"
+  - "Is there a Mortar-style minimum range for the ability attack? Not stated."
+  - "During the ability, does he target buildings only or any ground unit? Strategy implies building-sniping but never states a rule."
+  - "Ability range 11.5: measured from the Bowler's position? Does he re-acquire targets at that range immediately?"
+  - "Base-card check: snapshot says base bowler projectile range 7.5; confirm the 4/8/2026 nerf hit only the hero (else body delta is 0)."

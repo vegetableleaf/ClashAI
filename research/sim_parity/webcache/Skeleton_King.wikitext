@@ -1,0 +1,211 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-champion";">Skeleton King</span>}}
+
+{{Card Infobox|Cost=4|AbilityCost=2|Rarity=Champion|Type=Troop|Arena=Executioner's Kitchen|ReleaseDate=27 October 2021}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|The King of the undead himself. He sometimes feels lonely (could be due to his non flattering features) and will summon friends to join him in the battle even after death. Tough guys have feelings too!}}
+
+The Skeleton King is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Executioner's Kitchen (Arena 16)]]. It spawns an area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Skeleton King's ability spawns [[Skeletons]] in a radius around him. While the Skeleton King is on the field, any troops which die will be turned into “souls” which are collected by him. The number of souls that the Skeleton King collects determines the number of Skeletons that the ability will spawn. The Skeleton King appears as a massive Skeleton wearing a menacingly large dark chestplate and gauntlets, a gray chain mail, a crown with team-colored jewels, a team-colored belt and cape, and brown sandals, and carries a giant club. A Skeleton King card costs 4 [[Elixir]] to deploy, and his ability costs an additional 2 Elixir to activate.
+
+==Ability: Soul Summoning==
+{{Quote|Collect souls of the fallen and bring them back from the dead!}}
+{{Champion Ability}}
+The Skeleton King has a special ability, accessible from the rightmost side of the screen just above the player's card slots in [[Basics of Battle|battle]]. After a 1-second delay, the Skeleton King activates his “Soul Summoning”, stopping in place momentarily before summoning a varied amount of [[Skeletons]] in a 4-tile radius around himself. The Skeletons spawn 1 at a time at random positions in the circle every 0.25 seconds. The number of Skeletons spawned is based on how many [[:Category:Troop Cards|troops]] die (either from the player or the opponent) while he is deployed. It continues, even if the Skeleton King dies.
+
+When a troop is vanquished while the Skeleton King is in the [[Arenas|Arena]], the Skeleton King gains a “soul”, which spawns an additional Skeleton when his ability is used. With no souls, the Skeleton King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16 Skeletons. The amount of souls the Skeleton King has can be seen in a blue bar above his hitpoint bar. The ability goes on a 20 second cooldown after the duration ends. The Soul Summoning ability costs 2 [[Elixir]] to activate.
+
+The Skeletons he summons have a bluish tint and behave identically to [[Clone|cloned]] Skeletons, which means you can't clone them further with said [[Cards|card]], and they only have 1 hitpoint. Cloned troops do not count as souls to him when they are defeated, and neither do the Skeletons summoned from the ability.
+
+It is also important to note that cards that make “sub-troops” (e.g., [[Elixir Golem]], [[Golem]], [[Lava Hound]], and [[Battle Ram]]) do not count as a soul to it, but only the final forms of the troop, with [[Goblin Giant]] as an exception. [[:Category:Building Cards|Buildings]] also do not count as souls when vanquished, making [[Cannon Cart]] the only troop that cannot count as a soul. “Kamikaze cards” such as Spirits, [[Wall Breakers]], and the [[Goblin Demolisher]] however do count as souls when they defeat themselves.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Skeleton King Card}}
+*For the purposes of determining [[Elixir]] trades, the Skeleton King and his activated Ability count as 6 Elixir, as the player must play the 4 Elixir Skeleton King and then spend a further 2 Elixir on his Ability.
+*Since friendly [[:Category:Troop Cards|troops]] will count as a soul to him, you can place a swarm such as a [[Skeleton Army]] while he is around and punish whenever the army gets countered with a small [[:Category:Spell Cards|spell]]. This works well in swarm-heavy [[Battle Decks|decks]].
+*To counter, simply place a small spell to defeat the Skeletons, and place a ranged or air troop to counter the Skeleton King. A decently tough splash card such as [[Valkyrie]], [[Sparky]], and Bowler can also be used.
+*A good way of countering the Skeleton King's activated ability is by using a combination of a cheap splash and single-target unit, such as a [[Firecracker]], [[Princess]], [[Ice Wizard]], or [[Bomber]] combined with a [[Knight]], [[Berserker]], [[Fisherman]], [[Bandit]], [[Miner]], or [[Mega Minion]]. Any combination of units up to 6 Elixir or less will achieve this for a neutral or positive trade.
+*He has a suspiciously large hitbox, and can bodyblock the [[Hog Rider]] more easily than other tanks.
+*He also has a suspiciously high mass, and he can even push large troops such as a [[Giant]], [[Electro Giant]], or [[Golem]]. You can even use this to your advantage by using him with ranged win conditions like the [[Royal Giant]] to push him away from buildings.
+*He and his [[Skeletons]] are weak to air troops. Beware of anti-air spells and support troops that may be paired with the Skeleton King.
+*The Skeleton King is an excellent defensive [[Cards|card]], owing to his splash damage, good HP, and ability to get stronger when opposing units fall. Place him behind other friendly units on defense (preferably a swarm), then cast Soul Summoning once those units are defeated to summon a second defensive layer out of nowhere. This is especially strong if the enemy's units lock on to the Skeleton King, as he will naturally tank for his summoned Skeletons and any other defending units the player has down.
+*The [[Bowler]] or Valkyrie is an excellent counter to the Skeleton King, as their relatively high health allow them to tank the Skeleton King as his attack damage is rather low. Their large splash damage radius takes out the spawning Skeletons while damaging the Skeleton King and is a positive Elixir trade either way.
+*The [[Mother Witch]] can take out his Skeletons easily, distracting him with a flow of Cursed Hogs, allowing you to gather Elixir for a better counter card. Beware, the Mother Witch will also make them a cloned Cursed Hog with 1 Hitpoint.
+*The Skeleton King pairs really well with the [[Graveyard]], as after the opponent defeats the Graveyard, you can summon another "graveyard" by activating his ability for 2 Elixir.
+**The Skeleton King can tank for the Graveyard, allow the Skeletons to quickly deal massive damage to the [[:Category:Tower Troop Cards|Crown Tower.]]
+**The Graveyard could also be tanking for the Skeleton King, the Skeletons will be eliminated faster, and the Skeleton King will summon more Skeletons and tank for them.
+**On the contrary, Skeleton King is also great against the Graveyard, as he can summon a full flock of 16 Skeletons as a threatening counter push.
+*The Skeleton King can fully counter a [[P.E.K.K.A.]], [[Prince]], [[Elite Barbarians]], [[Mighty Miner]], [[Giant Skeleton]], [[Boss Bandit]], or [[Mini P.E.K.K.A.]] with the ability active, as the Skeletons will constantly distract the slow-hitting troops and be chipped down by your Crown Tower with the Skeleton King, regardless of soul amount.
+*The Skeleton King can also fully counter a [[Mega Knight]] up to 1 Level higher if the Skeleton King is placed near the center so both Towers can chip the Mega Knight. The Skeleton King has high enough health to tank the jump attack from the Mega Knight, and his regular attacks.
+*Do not use the ability, unless you have something tanking for the leftover Skeletons from the ability in the lane they are going to go in, otherwise it is a waste of 2 Elixir.
+*The Skeleton King can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, he is unable to use his ability. As such, he should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Skeleton King Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.6 sec||0.3 sec||Medium (60)||1 sec||Melee: Medium (1.2)||1.3||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Soul Summoning Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Skeleton Count<br />{{Icon|I=Count}}
+! scope="col" |Skeleton Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|2||6-16||1||0.933 sec||20 sec
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.5 sec||Fast (90)||Melee: Short (0.5)||Ground||Ground
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2298 }}
+{{#vardefine: dmg_11 | 204 }}
+{{#vardefine: atk_speed | 1.6 }}
+{{#vardefine: skel_dmg_11 | 81 }}
+{{#vardefine: skel_atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Skeleton King Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton King Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton King Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:skel_dmg_11}} || {{Dps|{{#var:skel_dmg_11}}|{{#var:skel_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} ||  {{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type 
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 215,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card <br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}} <br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,080,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}} <br>150 {{Icon|I=XP}}
+|-
+| rowspan="3" |Spawner <br/ > [[File:Spawner.png|50x50px]]
+|1
+|Spawn a total of 1450 Troops
+|15,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 4,200 Troops
+|100 {{Icon|I=Gem}} <br>175 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 7,350 Troops
+|25,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2021 
+*The Skeleton King [[Cards|card]] was added to the game on 27/10/2021, in the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]].
+*On 4/11/2021, a [[Version History#Maintenance%20Break%20(4/11/2021)|maintenance break]], increased his damage by 14%, area radius to 1.3 tiles (from 1 tile), and gave him knockback immunity.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where [[Clone|cloning]] Skeleton King during the Soul Summoning animation would cancel it. It also fixed a stats rounding issue with the Skeleton King's summoned [[Skeletons]].
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], decreased the Skeletons spawned by Soul Summoning to 18 (from 20).
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the Skeletons spawned by Soul Summoning to 16 (from 18).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Skeleton King from [[Training Camp]] to Executioner's Kitchen. This also made it so that players at any [[Experience|King Level]] could unlock the Skeleton King, as opposed to only Level 14. There was also an unannounced change to the Skeleton King, a decrease to his collision radius to 1 tile (from 1.2 tiles).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Skeleton King's hitpoints by 0.08% and his damage by 0.48%.
+2025
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+*On 24/10/25,  a [[Version History#Maintenance Break (4/11/2021)|maintenance break]], decreased Soul Summoning’s skeleton spawn radius to 3.5 tiles (from 4 tiles).
+
+==Gallery==
+<gallery>
+File:Skeleton King card render.png|Current card render.
+File:Chinese Skeleton King card render.png|Skeleton King’s card render in the Chinese version of the game.
+File:Skeleton King Preview.gif|Current card preview
+File:Skeleton King 2.png|Skeleton King 1
+File:Skeleton King 1.png|Skeleton King 2
+File:Skeleton Kings Ability.png|Skeleton King using his ability.
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**In the Korean, Arabic, and Vietnamese language settings of the game, the Skeleton King's name translates to "Skull King", "King of Skeletons", and "White Bone King" respectively.
+**The Skeleton King is 1 of 15 [[cards]] associated with Skeletons, with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], and of course, Skeletons.
+*The Skeleton King is 1 of 20 cards associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Archer Queen]], and the [[Little Prince]].
+*When the Skeleton King spawns and activates his abilities, he laughs.
+*The Skeleton King is one of the first {{Rarity|Champion}} cards to be added to the game, alongside the Golden Knight and the Archer Queen.
+*He gets more bluish the more souls he collects.
+*The Skeleton King is the only {{Rarity|Champion}} card not to be organic.
+*In his card image, his top tooth is missing on the left side, but in his card render, his top tooth is missing on the right side. This is because the image used in his card image is flipped 180°.
+*The Skeleton King has the same walking sound as the Giant Skeleton.
+*He shares a name with one of [https://clashofclans.fandom.com/wiki/Hero_Skins?file=Skeleton_King_info.png Barbarian King's skins] from Clash of Clans. They both summon troops for their ability, but the Skeleton King summons Skeletons instead of [[Barbarians]], doesn't have fixed summoning amounts and additionally does not have additional effects tied to it.
+*The Skeleton King is 1 of 2 troops that have been featured with an [[Buff#Initial Spawn|Initial Spawn]] [[buff]], the other being [[Mother Witch]].
+*The Skeleton King is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], Tombstone, Bomb Tower, [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], Golden Knight, Archer Queen, [[Mighty Miner]], Little Prince, and the Monk.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, [[Rocket]], [[Earthquake]], [[Lightning]], [[Poison]], [[Goblin Drill]], Miner, Golden Knight, Archer Queen, Mighty Miner, and the Monk.
+*On 28 April 2022, according to a [https://twitter.com/ClashRoyale/status/1519647700085575683 tweet] by the Clash Royale official Twitter, the number of Skeleton King's ability activations was 134,193,784.
+*The Skeleton King is the subject of certain cosmetics in the game. More specifically:
+**The Skeleton King is the subject of 2 [[Emotes]].
+**The Skeleton King is the subject of a [[King's Tower|Tower Skin]].
+*By using Mirror on a Clone and using it on a Skeleton King, it is actually possible to get a Level 16 Skeleton King.
+**A cloned Skeleton King does not fall from the sky when deployed.
+*On 3/1/2024, the Skeleton King was supposed to receive an attack time interval decrease to 1.5 seconds (from 1.6 seconds), but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[fr:Roi squelette]]
+[[de:Skelettkönig]]
+[[es:Rey Esqueleto]]
+[[it:Re degli scheletri]]
+[[ru:Король скелетов]]
+[[zh:骷髅帝王]]

@@ -1,0 +1,147 @@
+{{MagicWords}}{{Protection}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Drill</span>}}
+{{Evolved_Card_Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Building|Arena=Serenity Peak|ReleaseDate=15 July 2024}}
+{{Quote|Let’s play Whack-A-Drill!! When deployed near enemy Crown Towers, Goblin Drill submerges and reappears around the tower as it takes damage, spawning Goblins each time.}}
+
+The Goblin Drill Evolution is an [[:Category:Epic Cards|Epic]] [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Goblin Drill with identical stats to the original. Once its hitpoints reach 66% and 33% respectively, the Goblin Drill will resurface nearby, leaving a [[Goblins|Goblin]] behind each time it's destroyed. If the Goblin Drill is not deployed next to the [[:Category:Crown Towers|Crown Towers]], it will resurface in the same spot. If the Goblin Drill is deployed next to the Crown Towers, it will resurface 90 degrees around a Crown Tower. It appears as a building with purple spikes that have golden frames as their base, a wooden hull, a [[Card Evolution]]-shaped golden hatch, a purple Goblin emblem on the side, a team-colored stripe in the center, and a purple metal drill on its top. The Goblin Drill Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Goblin Drill is a very powerful offensive tool, being able to reach the Crown Tower and spawn a significant number of Goblins to quickly chip away at it, especially with the assistance of a tank like the [[Knight]], [[Valkyrie]], [[Monk]], [[Battle Healer]], [[Golden Knight]], [[Prince]], or [[Skeleton King]].
+* Unless the [[Tower Princess]] is in use, the Evolved Goblin Drill should never be ignored. The [[Cannoneer]] attacks fast enough to destroy all the spawned Goblins just before he goes down, leaving him on a sliver of hitpoints, while the [[Dagger Duchess]] will quickly go into dagger cooldown and get completely destroyed. However, the Tower Princess will steadily destroy each Goblin, leaving her at about half of her original hitpoints.
+*Despite the Evolved Goblin Drill being a [[:Category:Building Cards|building]], [[Earthquake]] is an ineffective counter. This is due to the spawned Goblins taking little to no damage from the Earthquake as the drill itself will take most of the ticks for them.
+**If the user wants to use the Earthquake despite the weaknesses, using a small spell in tandem, such as [[The Log]] or [[Arrows]], is highly recommended to take out many of the Goblins before damage can be done to the Crown Tower.
+*Cards with high area damage, such as the [[Bowler]], [[Bomber]], [[Executioner]], [[Firecracker]], and [[Wizard]], are great counters to the Evolved Goblin Drill. These cards can OHKO the Goblin Drill itself and all Goblins within the drill at once, causing little damage to be dealt to the Crown Tower with each resurface.
+** The Bowler is the best of these counters as when deployed properly, the lingering attack of the ball will usually destroy both the drill and the Goblins at the same time without any damage being dealt to the Crown Tower. Also, the Bowler will be very healthy afterwards, providing a threatening counterattack.
+*Unlike the regular [[Goblin Drill]], the [[Skeleton Army]] is not a reliable counter to the Evolved Goblin Drill. Each resurface will reinstate the spawn damage, which is enough to OHKO a Skeleton. Over time, the Goblins and repeated spawn damage will destroy enough Skeletons to where a few Goblins will stab the Crown Tower from the lack of defensive troops.
+*Strangely enough, with the assistance of the Cannoneer or Dagger Duchess, the Evolved Goblin Drill deployed right on top of a [[P.E.K.K.A.]] can fully counter her for a +3 positive Elixir trade.
+*While it may have high hitpoints, its multiple resurfaces make it an ineffective tank for building-targeting troops like the [[Giant]] as it will cause the Crown Towers to retarget onto the building-targeting troop. However, the Evolved Goblin Drill’s high damage can put distress on the opponent to deal with its Goblins before the building-targeting troop. Forcing the opponent to commit all their Elixir to preventing damage from the Evolved Goblin Drill instead of the building-targeting troop.
+*Since it deals knockback after resurfacing all 3 times, it can stop the [[Battle Ram/Evolution|Evolved Battle Ram]] and the [[Ram Rider]]'s charge, absorb their damage and defeat either unit with the Crown Tower’s assistance for an even or +1 positive Elixir trade respectively.
+*An interesting, yet highly effective strategy involving the Evolved Goblin Drill is using the [[Tornado]] to pull defending troops, such as the [[Valkyrie]], [[Mighty Miner]], [[Prince]], [[Lumberjack]], and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], from the Goblin Drill and assist in clearing defending swarms, like [[Goblin Gang]], right before its first death spawn of 2 Goblins. This can almost always guarantee some Crown Tower damage if done correctly while delaying the opposing troops from defending the 2 other drills.
+*The Goblin Drill will only resurface when it reaches its health thresholds, but can end up in the second threshold while bypassing the first one. This can happen in scenarios where an attack drops it below 33% when it was at higher than 66%, such as when being hit by [[Lightning]].
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Goblin Drill Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||3 sec||1 sec||10 sec||[[:Category:Building Cards|Building]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Activation<br />{{Icon|I=Activation}}
+|-
+|2||33% and 66%
+|}
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||Melee: Short (0.5)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: drill_hp_11 | 1313 }}
+{{#vardefine: life | 10 }}
+{{#vardefine: spawn_11 | 84 }}
+{{#vardefine: spawn_crown_11 | 26 }}
+{{#vardefine: hp_11 | 202 }}
+{{#vardefine: dmg_11 | 120 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Goblin Drill Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Drill Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Goblin Drill Spawn Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Goblin Drill Spawn Tower Damage<br />{{Icon|I=Tower Damage}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:drill_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(6-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(6-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:drill_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(7-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:drill_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(8-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:drill_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:drill_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:spawn_11}} || {{#var:spawn_crown_11}} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:drill_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:drill_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:drill_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:drill_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:drill_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:drill_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }}|| {{#expr: {{#var:spawn_crown_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+==History==
+2024
+*The Goblin Drill's Evolution [[Cards|card]] was added to the game on 15/7/2024.
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the second submerges’s spawned [[Goblins]] to 0 (from 1).
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], fixed a bug where the Evolved Goblin Drill would spawn Goblins while underground and a bug where it would sometimes push other [[:Category:Troop Cards|troops]] when going underground.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], removed the damage and pushback from the first and second submerges, added a deploy time for spawned Goblins after submerge, and increased the second submerges’s spawned Goblins to 1 (from 0).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Goblin Drill's hitpoints by 0.07% and its damage by 1.2%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]], increased the Evolved Goblin Drill’s first spawn time to 1 seconds (from 0.8 seconds).
+*On 3/11/2025, a Balance Update, increased the first submerge's spawned Goblins to 2 (from 1)
+2026
+
+* On 2/2/2026, a Balance Update, increased the second submerges’s spawned [[Goblins]] to 2 (from 1).
+* On 4/5/2026, a Balance Update, decreased the second submerge's spawned Goblins to 1 (from 2)
+* On 4/8/2026, a Balance Update, the Evolved Goblin Drill's spawn damage to towers has been removed entirely (from 30% of the full spawn damage)
+
+==Gallery==
+<gallery>
+File:Evolved Goblin Drill card render.png|Current card render.
+File:Evolved Goblin Drill Preview.gif|Current card preview.
+File:GoblinDrillEvoShard.png|Evolution Shard
+File:Drill Evo 1.png|Evolved Goblin Drill
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include duendes, kobolds, leprechauns, and ghouls.
+**In the German and Dutch language setting of the game, the Goblin Drill's name translates to "Kobold Drill". In the Spanish, Turkish, Arabic, Vietnamese language settings of the game, the Goblin Drill's name translates to "Duende Digger", "Mole", "Ghoul Digger", and "Leprechaun Drill" respectively
+**The Goblin Drill is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Mortar/Evolution|Mortar]], [[Dart Goblin/Evolution|Dart Goblin]], [[Goblin Cage/Evolution|Goblin Cage]], [[Goblin Giant/Evolution|Goblin Giant]], and [[Goblin Barrel/Evolution|Goblin Barrel]].
+*The Goblin Drill's stats are the highest or lowest among all [[:Category:Building Cards|buildings]]. More specifically:
+**The Goblin Drill has the shortest lifetime of all buildings, with a lifetime of 10 seconds.
+**The Goblin Drill loses the most hitpoints per second of all buildings, with 237 hitpoints per second at Level 15.
+**Among all buildings that can spawn troops, the Goblin Drill has the highest spawn speed of all buildings, with an spawn speed of 3 seconds.
+*The Goblin Drill is the only building that can be deployed on the opponent's territory.
+*The Goblin Drill is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is unavailable in [[Global Spell|The Floor is Healing Challenge]], much like other building cards, as well as the [[Cannon Cart]].
+**It is 1 of 3 cards that is unavailable in Boost Fields, the others being [[Goblin Barrel]] and [[Miner]].
+**It is 1 of 3 cards that is unavailable in Timeless Towers, the others being [[Rocket]] and Miner.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being [[Royal Recruits]], Rocket, [[Earthquake]], [[Lightning]], [[Poison]], Miner, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], and the [[Monk]].
+*The Goblin Drill's Evolution is the subject of an [[Emotes|Emote]].
+*Before the Goblin Drill’s Evolution's release, the Evolved Goblin Drill’s Goblins spawned upon submerge was decreased to 1 (from 2).
+
+{{Navigation|Card}}

@@ -1,0 +1,211 @@
+{{DISPLAYTITLE: <span class="text-champion";">Golden Knight</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|AbilityCost=1|Rarity=Champion|Type=Troop|Arena=Executioner's Kitchen|ReleaseDate=27 October 2021}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|A warrior with luxurious hair and outstanding flexibility. Demonstrates his aerobics skills on demand.}}
+
+The Golden Knight is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Executioner's Kitchen (Arena 16)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Golden Knight's ability increases his movement speed when no enemies are nearby, and causes him to dash onto enemies in sequence, similar to the [[Electro Spirit]]'s attack. He resembles a man who has blue eyes, golden hair and eyebrows, is outfitted in gilded breastplate, gauntlets, chainmail and a team-colored belt, and wields an impressively large sword. A Golden Knight card costs 4 [[Elixir]] to deploy, and his ability costs an additional 1 Elixir to activate.
+
+==Ability: Dashing Dash==
+{{Quote|Dashes towards his enemies and chain attacks everything in his path!}}
+{{Champion Ability}}
+The Golden Knight has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1 second delay, the Golden Knight activates his "Dashing Dash", gaining a movement speed boost if he is not within 5.5 tiles of an enemy unit. Once a unit is in range, he dashes to it quickly, then dashes towards the closest enemy unit within a 5.5-tile radius (even if the previous unit was not destroyed). His dashes have invulnerability and deal increased damage, like the [[Bandit]]. He cannot dash into the same troop per ability use. He will stop dashing after dashing 10 times, if no other valid targets are within range, or if the last target hit is a [[:Category:Crown Towers|Crown Tower]]. It is important to note that his movement speed boost cannot be reset or cancelled by [[The Log]], [[Zap]], [[Freeze]] or other things that will normally stop a charge. The ability goes on an 12 second cooldown after the duration ends. The Dashing Dash ability costs 1 [[Elixir]] to activate.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Golden Knight Card}}
+*For the purposes of determining [[Elixir]] trades, the Golden Knight and his activated Ability count as 5 Elixir, as the player must play the 4 Elixir Golden Knight and then spend a further 1 on his Ability.
+*Unlike the [[Electro Spirit]], the Golden Knight cannot be forced to activate the [[King's Tower|King Tower]] while using the ability.
+*The Golden Knight's ability can be used to counter swarms for a positive Elixir trade, though it is not always recommended because of the ability's cooldown.
+**The number of dashes from the Golden Knight during the ability is not enough to destroy an entire [[Skeleton Army]], leaving some Skeletons still alive, sufficient to counter the Golden Knight. Consider using a [[:Category:Spell Cards|spell]] to clear away swarms like the Skeleton Army.
+*Pull the Golden Knight into the middle with a cheap unit such as a [[Ice Golem]] so that it will allow both [[:Category:Crown Towers|Crown Towers]] to defend the Golden Knight.
+*Placing down cheap one Elixir [[cards]] such as [[Skeletons]], [[Ice Spirit]], or [[Electro Spirit]] on the side or middle of the [[Arenas|Arena]] can be used to predict and cancel out the Golden Knight's Dashing Dash ability. Make sure that they are at most 5 tiles away from the river, to prevent the Golden Knight from connecting to the Crown Tower with his dash.
+**When using [[:Category:Building Cards|buildings]] to pull the Golden Knight, they should be placed 3 tiles from the river and 2 tiles from the Crown Tower. This will ensure that the Golden Knight will not dash towards the Crown Tower and will stay distracted by the building.
+*The Golden Knight is unique in the fact that he can dash onto multiple targets, like a [[Knight]] and Crown Tower, and still attack the original target. Because of this, it can be hard to defend against. For example, if a [[Valkyrie]], Mini P.E.K.K.A, Lumberjack, Royal Ghost, Bandit, or a Prince is approaching a Tower, the defender will use a Knight to avoid all damage, but if a Golden Knight is approaching and the defender places a Knight close to the Tower, he will dash onto the Tower, making the defensive play less valuable.
+*If the player has a unit on the board that they do not want the enemy Golden Knight to reach, they must play more ground units as far away from it as possible to entice the Golden Knight to charge into the more expendable units instead.
+*The Golden Knight pairs well with other fast [[:Category:Troop Cards|troops]] like the [[Hog Rider]], [[Battle Ram]], [[Elite Barbarians]], [[Boss Bandit]] (in [[2v2]]), Mini P.E.K.K.A, [[Lumberjack]], Prince, and [[Bandit]]. All these troops are weak to swarm, which are covered by Golden Knight's dash, while they are able to connect to more potent targets. However, none of the troops can attack air troops like the [[Minion Horde]], [[Mega Minion]], [[Phoenix]], and the Inferno Dragon, so pack some troops like the Wizard, Musketeer, [[Firecracker]], [[Hunter]], [[Executioner]], and [[Electro Wizard]], or spells like [[Arrows]], [[Lightning]], and [[Rocket]] against them.
+*Due to his low damage output, a mini tank such as [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Battle Healer]], Valkyrie, [[Cannon Cart]], Dark Prince, [[Bowler]], [[Monk]], [[Mighty Miner]], or [[Prince]] can easily take him out.
+*The Golden Knight cannot attack air troops, so [[Minions]] or [[Bats]] paired with any ground distraction can easily counter him for at worst a neutral Elixir trade.
+*Once the Golden Knight uses his ability, he will not target any units behind him unless they are in his range. In other words, Dashing Dash only chains to the troops that the Golden Knight can see. Because of this, surrounding him with swarms like [[Guards]] is an effective way to neutralize his dash, allowing those swarms to defeat him.
+*When dashing, he is immune to all forms of damage like the Bandit. This immunity can be extended by having him dash multiple times. There are many implications where the damage immunity is useful.
+**With great timing, the Golden Knight and his ability can absorb one hit from a [[Sparky]]. If necessary, his high hitpoints will allow him to survive a second attack. Together with any [[:Category:Tower Troop Cards|tower troop]], he can stop her for a positive Elixir trade.
+**Similarly, he can absorb the Bandit's dash and the Prince's and Dark Prince's charges. In the case of the Prince and [[Dark Prince]], his dash will also deal damage to them, fully destroying the shield of the latter, while also weakening the former.
+**If the Golden Knight dashes while being targeted by an [[Inferno Tower]] or [[Inferno Dragon]], their ramp up damage will reset, allowing him to distract them for an extended period of time. This makes him an effective distraction for both, although the Golden Knight will still get incinerated.
+**The Golden Knight will still be able to finish his dash, even if a [[Fisherman]] pulls him. As such, it might not be a good idea to use the Fisherman against the Golden Knight.
+**Although the [[Mega Knight]] can stop a Golden Knight, he should not be placed directly on top of him, as his spawn damage will be completely wasted, and it also gives the Golden Knight enough time to deal damage to him.
+*The Golden Knight's dash is able to cross the river. Knowing this, he can be effective at taking out ranged troops that are placed near it. His dash damage is enough to OHKO equivalently levelled [[Wall Breakers]] and [[Bomber|Bombers]], and it will take down troops like the [[Musketeer]], Electro Wizard, [[Goblinstein]], Little Prince, [[Ice Wizard]], and [[Wizard]] to half health, only requiring two more regular attacks to completely defeat them.
+*The Golden Knight's dash can be paired with spells in order to fully eliminate certain units. With [[The Log]], he can eliminate anything up to a [[Mother Witch]], [[Magic Archer]], and [[Zappies]], with [[Arrows]], he can eliminate anything up to a [[Little Prince]], and with [[Fireball]], he can eliminate anything up to an [[Archer Queen]]. Consider using these combinations when you want to allow him to continue towards the Crown Tower without being distracted by those troops.
+*When using the ability, the Golden Knight's momentum increases significantly. This can allow him to push friendly troops closer to their target. This is especially useful with the [[Giant Skeleton]], as it could mean that the Giant Skeleton would arrive to his target earlier, for his bomb to explode against a more valuable target.
+**The [[Electro Giant]] works in a similar way, as when dashing, the Golden Knight has the ability to push the Electro Giant towards faster than if it was walking alone. The Golden Knight then can also dash on to buildings or range troops used to defend against the Electro Giant.
+*The Golden Knight also has great synergy with [[Tornado]]. Tornado can be used to group enemy troops together for the Golden Knight to dash onto everything and might even damage the opponent's Tower.
+*A Golden Knight can use his ability to hit the [[Goblins]] from a [[Goblin Barrel]]. He dashes fast enough that he can defeat the Goblins for no damage.
+*Depending on what the player wants in their [[Battle Decks|deck]], they can substitute the Golden Knight with other similar cards.
+**In decks where different {{Rarity|Champion}} cards are being used, the Bandit can be used in place of the Golden Knight. She costs 2 less Elixir, and deals more damage. However, she has less hitpoints than the Golden Knight, leaving her weak to spells like Lightning, and her dash can only hit one target.
+**If the player wants their fast attacking troop to have splash damage as well, they can use the [[Royal Ghost]], [[Baby Dragon]], or Dark Prince in place of the Golden Knight. Both have a lower Elixir cost and higher damage, with the first being able to turn invisible, the second being an air troop, thus having less counters, and the third having a shield for more spell resistance. However, the Golden Knight has significantly higher hitpoints, and a faster attack speed.
+**For other melee troops that have the similar hitpoints, the Knight, Prince, and Valkyrie can substitute the Golden Knight if their tanking capabilities are higher in demand. However, they are notably less mobile, with the former two also being weak to swarms.
+*The Golden Knight can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, he is unable to use his ability. As such, he should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Golden Knight Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||0.9 sec||0.2 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Dashing Dash Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Maximum Dash Distance<br />{{Icon|I=Dash Range}}
+! scope="col" |Maximum Dashes<br />{{Icon|I=Dash Range}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|1||Very Fast (120)||5.5||10||0.766 sec||12 sec
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1799 }}
+{{#vardefine: dmg_11 | 161 }}
+{{#vardefine: atk_speed | 0.9 }}
+{{#vardefine: dash_11 | 335 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Dashing Dash Damage<br />{{Icon|I=Boost}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:dash_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:dash_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:dash_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:dash_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:dash_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:dash_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer[[File:Damage Dealer.png|center|thumb|50x50px]]
+|1
+|Deal a total of 215,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card<br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,080,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3 " |CHARGE!!! <br> [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 350 Troops or buildings with the Charge ability
+|15,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 1,000 Troops or buildings with the Charge ability
+|100 {{Icon|I=Gem}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 1,750 Troops or buildings with the Charge ability
+|25,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+
+==History==
+2021
+*The Golden Knight [[Cards|card]] was added to the game on 27/10/2021, in the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]].
+*On 1/11/2021, an [[Version History#Optional%20Update%20(1/11/2021)|Optional Update]], fixed Dashing Dash so that it does not end if the Golden Knight's target dies before the dash connects with it.
+2022
+*On 3/2/2022, a [[Version History#Balance Changes (3/2/2022)|Balance Update]], decreased the Dashing Dash's maximum dash range to 5 tiles (from 6 tiles) and increased its cooldown time to 11 seconds (from 8 seconds).
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue with Golden Knight not dashing properly while targeting a moving unit.
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], increased the Dashing Dash's maximum dash range to 6 tiles (from 5 tiles) but made it so that the dash would end if a [[:Category:Crown Towers|Crown Tower]] is hit.
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the Golden Knight's hitpoints by 10%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Golden Knight from [[Training Camp]] to Executioner's Kitchen. This also made it so that players at any [[Experience|King Level]] could unlock the Golden Knight, as opposed to only Level 14. It also fixed an issue where Golden Knight dashed to an empty space with no target.
+2023
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], decreased the Dashing Dash's maximum dash range to 5.5 tiles (from 6 tiles).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 13/11/2023, a [[Version History#Minor%20Update%20(13/11/2023)|Minor Update]], fixed a bug where Golden Knight could not hit targets across the river with Dashing Dash.
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Dashing Dash's damage by 8%.
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Dashing Dash’s cooldown to 8 seconds (from 11 seconds).
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Golden Knight's hitpoints by 0.05% and increased his damage by 0.625%.
+2025
+
+* On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], allowed a dashing Golden Knight to be affected by [[Royal Chef]].
+* On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], allowed Dashing Dash to move Golden Knight backwards.
+* On 3/11/2025, a Balance Update, decreased Dashing Dash Delay to 0.05 seconds (from 0.2 seconds).
+2026
+
+* On 12/1/2026, a Balance Update, decreased the cooldown of Dashing Dash to 12 seconds (from 8 seconds).
+
+== Gallery==
+<gallery>
+File:Golden Knight card render.png|Current card render.
+File:Golden Knight Preview.gif|Current card preview
+File:Golden Knight.png|Golden Knight
+File:GoldenKnightConcept.jpeg|Concept design
+</gallery>
+
+==Trivia==
+*The word ''"Knight"'' comes from the German "''Knecht"'', meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+**In the Vietnamese language settings of the game, the Golden Knight's name translates to "Golden Armored Knight".
+**The Golden Knight is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Golden Knight is one of the first {{Rarity|Champion}} [[cards]] to be added to the game, alongside the Skeleton King and the Archer Queen.
+*Along with the [[Boss Bandit]], Archer Queen, [[Mighty Miner]], [[Monk]], and the [[Terry]], the Golden Knight has the cheapest ability, costing 1 Elixir.
+**Also along with the Mighty Miner and the Terry, he also has the cheapest combined Elixir cost of {{Rarity|Champion}} and ability, costing 5 Elixir.
+*When deployed, he says "''Oh hi!''". He sings "''Golden Knight!''" if Dashing Dash is activated while there are no enemies in its range, as well as making a laugh. He also lets out a wail when he dies.
+**The Golden Knight is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], Dark Prince, [[Bowler]], [[Ram Rider]], [[Electro Wizard]], [[Princess]], [[Ice Wizard]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], Boss Bandit, Archer Queen, Little Prince, and the Terry.
+*When the Golden Knight is defeated, his golden sword falls to the ground. The other units that drop items upon death are the Knight, [[Rascals|Rascal Boy]], Mega Minion, Dark Prince, [[Executioner]], Mega Knight, [[Sparky]], Fisherman, Super Knight, and the Little Prince.
+*The Golden Knight is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], Skeleton King, Archer Queen, Mighty Miner, Little Prince, and the Monk.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, [[Rocket]], [[Earthquake]], [[Lightning]], [[Poison]], [[Goblin Drill]], Miner, Skeleton King, Archer Queen, Mighty Miner, and the Monk.
+*On 28 April 2022, according to a [https://twitter.com/ClashRoyale/status/1519647700085575683 tweet] by the Clash Royale official Twitter, the number of Golden Knight's ability activations was 121,809,540.
+*The Golden Knight is the subject of certain cosmetics in the game. More specifically:
+**The Golden Knight is the subject of a few [[Emotes]].
+**The Golden Knight is the subject of a [[King's Tower|Tower Skin]].
+**The Golden Knight is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Golden Knight is one of the first troops to be the subject of a Battle Banner item, along with the Mini P.E.K.K.A, [[Dart Goblin]], P.E.K.K.A, Prince, [[Giant Skeleton]], Mega Knight, and [[Super Witch]].
+*By using Mirror on a Clone and using it on a Golden Knight, it is actually possible to get a Level 16 Golden Knight.
+**A cloned Golden Knight does not fall from the sky when deployed.
+*The initial balance change for Golden Knight on the [[Version History#Balance%20Changes%20(5/3/2024)|5/3/2024 balance changes]] was a Dashing Dash cooldown decrease to 7 seconds (from 11 seconds), but it was raised to 8 seconds [https://royaleapi.com/blog/season-57-balance-wip last minute].
+
+{{Navigation|Card}}
+
+[[fr:Chevalier D'or]]
+[[de:Goldener Ritter]]
+[[es:Caballero Dorado]]
+[[it:Cavaliere d'oro]]
+[[ru:Золотой рыцарь]]
+[[zh:黄金圣骑]]

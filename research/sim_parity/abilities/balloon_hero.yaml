@@ -1,0 +1,93 @@
+key: balloon_hero
+base_card: balloon
+page: Balloon/Hero
+revid: 437524
+fetched: "2026-08-25"
+release_date: "2026-04-06"   # infobox ReleaseDate "April 6,2026"; Heroes master History 6/4/2026
+
+body_stat_deltas:
+  # hero page level-11 vardefines vs ledger/current_db_snapshot.json balloon (verified: true)
+  hitpoints: none stated        # 1679 (vardefine hp_11) == base 1679
+  damage: none stated           # 640 (vardefine dmg_11) == base 640
+  hit_speed: none stated        # 2 sec (attr table + vardefine atk_speed 2.0) == base 2.0
+  death_damage: none stated     # 240 (vardefine death_11) == base 240.0
+  death_bomb_delay: none stated # bomb Deploy Time 3 sec == base death_delay_s 3.0
+  death_bomb_radius: none stated # Death Damage Splash Radius 3 == base death_radius_tiles 3.0
+  speed: none stated            # Medium (60) == base medium
+  deploy_time: none stated      # 1 sec == base 1.0
+  range: none stated            # Melee: Short (0.1) == base range_tiles 0.1
+  targets: none stated          # Buildings == base buildings_only
+  first_hit_speed: "0.2 sec on hero page; snapshot has no first-hit-speed field (load_time_s 1.8 is a different field) -- not comparable"
+  count_rarity: none stated     # x1, Epic both
+
+ability:
+  name: Coffin Cadets    # section heading + {{Hero Ability|2=Coffin Cadets}}; NOTE Heroes master table calls it "Coffin Cadet" (singular) -- see conflicts
+  elixir_cost: 2         # infobox AbilityCost=2; ability attributes table Cost=2; prose "costs 2 Elixir to activate"
+  uses: 1                # History 4/8/2026: "made the ability single use (from 12sec cooldown)"
+  cooldown_s: null       # removed 4/8/2026 (was 12 sec)
+  cast_delay_s: null     # not stated anywhere on the page
+
+mechanic_prose: |
+  [section "Ability: Coffin Cadets", quote template]
+  "A Skeletrooper soars to the nearest enemy on the ground, dealing landing damage."
+
+  [section "Ability: Coffin Cadets", body paragraph, verbatim incl. the page's own typos --
+   note it misnames the card "Hero Knight" (boilerplate copy error) and misspells
+   "skeletropper"/"deling"]
+  "The Hero Knight has a special ability accessible from whatever side of the screen was put
+  in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. Once
+  pressed, a skeletropper will fly towards the closest ground unit within 6 tiles, deling
+  spawn damage. The skeletropper will the attack, dealing less damage to the crown tower.
+  The Coffin Cadets ability costs 2 [[Elixir]] to activate."
+
+  [section "Strategy", verbatim]
+  "The ability can be used to kill units like [[Musketeer]] and [[Wizard]], or buildings."
+  "When defending, put troops like [[Skeletons]] closer, so that they can take the agro of
+  the ability."
+
+  [intro prose on the body's death bomb, verbatim]
+  "When defeated, it drops a bomb which explodes after 3 seconds, dealing moderate damage."
+
+numbers:
+  deploy_cost_elixir: {value: 5, source: "infobox Cost=5; 'Balloon Attributes' table Cost column; prose 'costs 5 Elixir to deploy'"}
+  ability_cost_elixir: {value: 2, source: "infobox AbilityCost=2; ability attributes table Cost column; prose 'costs 2 Elixir to activate'"}
+  unlock_hero_shards: {value: 200, source: "prose: 'unlocked with 200 {{Icon|I=Hero Shard}}'"}
+  body_hit_speed_s: {value: 2, source: "'Balloon Attributes' table 'Hit Speed'; vardefine atk_speed|2.0"}
+  body_first_hit_speed_s: {value: 0.2, source: "'Balloon Attributes' table 'First Hit Speed'"}
+  body_speed: {value: "Medium (60)", source: "'Balloon Attributes' table 'Speed'"}
+  body_deploy_time_s: {value: 1, source: "'Balloon Attributes' table 'Deploy Time'"}
+  body_range_tiles: {value: 0.1, source: "'Balloon Attributes' table 'Range' = Melee: Short (0.1)"}
+  body_hp_lvl11: {value: 1679, source: "vardefine hp_11|1679"}
+  body_damage_lvl11: {value: 640, source: "vardefine dmg_11|640"}
+  death_damage_lvl11: {value: 240, source: "vardefine death_11|240"}
+  death_bomb_splash_radius_tiles: {value: 3, source: "'Bomb Attributes' table 'Death Damage Splash Radius'"}
+  death_bomb_fuse_s: {value: 3, source: "'Bomb Attributes' table 'Deploy Time' = 3 sec; intro prose 'explodes after 3 seconds'"}
+  death_bomb_targets: {value: "Air & Ground", source: "'Bomb Attributes' table 'Target'"}
+  ability_soar_range_tiles: {value: 6.5, source: "ability attributes table 'Range' = 6.5 -- CONFLICTS with prose 'within 6 tiles' (see conflicts); table preferred per extraction rules"}
+  ability_soar_range_tiles_prose: {value: 6, source: "prose: 'a skeletropper will fly towards the closest ground unit within 6 tiles' -- source: prose, conflicting value"}
+  skeletrooper_hit_speed_s: {value: 1.1, source: "ability attributes table 'Hit Speed'; vardefine skelatk_speed|1.1; History 6/7/2026 raised from 0.9"}
+  skeletrooper_speed: {value: "Very Fast (120)", source: "ability attributes table 'Speed'"}
+  skeletrooper_attack_range: {value: "Melee: Short", source: "ability attributes table 'Skeletrooper Range' (no numeric given)"}
+  skeletrooper_crown_tower_damage_pct: {value: -90, source: "ability attributes table 'Crown Tower Damage' = -90%"}
+  skeletrooper_targets: {value: "Ground", source: "ability attributes table 'Target'"}
+  skeletrooper_count: {value: 1, source: "ability attributes table 'Count' = x1"}
+  skeletrooper_hp_lvl11: {value: 473, source: "vardefine skelhp_11|473"}
+  skeletrooper_damage_lvl11: {value: 204, source: "vardefine skeldmg_11|204; History 6/7/2026 'decreased the Skeletrooper's Attack Damage by 20%'"}
+  landing_damage_lvl11: {value: 263, source: "vardefine landdmg_11|263; History 1/6/2026 'decreased the Skeletrooper's Landing Damage by 14%'"}
+  landing_crown_tower_damage_lvl11: {value: 27, source: "vardefine crownlanddmg_11|27 (~10% of landing damage, consistent with -90% crown tower modifier)"}
+  history_single_use: {value: "single use, was 12 s cooldown", source: "History 4/8/2026"}
+  history_skel_hit_speed_change_s: {value: "0.9 -> 1.1", source: "History 6/7/2026 Balance Update"}
+
+proposed_ability_kind: summon
+# rationale: spawns a new autonomous ground troop (Skeletrooper) with spawn/landing AoE-style
+# damage that then fights on. Closest to summon; landing damage is the spawn-damage rider.
+
+open_questions:
+  - Skeletrooper target selection -- "closest ground unit" per prose, but Strategy says it can hit "or buildings"; does it soar to the nearest ground ENEMY (troop or building) or troops only?
+  - What happens if no ground enemy is within the soar range when the button is pressed -- ability refunded, wasted, or skeletrooper drops in place?
+  - Where does the Skeletrooper launch from -- the Balloon's position? Is the 6.5-tile range measured from the Balloon?
+  - Landing damage area -- is it splash, and with what radius? No radius is given anywhere (null, never estimate).
+  - "Cast delay between button press and landing: not stated (null)."
+  - Soar range 6 (prose) vs 6.5 (table) -- which is live? In-game check.
+  - 'Ability name: "Coffin Cadets" (subpage) vs "Coffin Cadet" (Heroes master table) -- cosmetic, but which is the in-game string?'
+  - Is the -90% crown tower modifier on the Skeletrooper's regular attacks in addition to the separate landing crown-tower value (27)? Table layout implies yes but never says.

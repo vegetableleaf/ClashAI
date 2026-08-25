@@ -1,0 +1,571 @@
+{
+ "fetched": "2026-08-25",
+ "pages": {
+  "Archers/Evolution": {
+   "revid": 437495,
+   "cycles": 2,
+   "release_date_raw": "6 November 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=6 November 2023}}",
+    "*The Archers' Evolution [[Cards|card]] was added to the game with the [[Version History#Pass Royale and more (6/11/2023)|November 2023 Update]] on 6/11/2023 {{Balance|Add}}."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 28101,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Archers_Evolution.wikitext"
+  },
+  "Baby Dragon/Evolution": {
+   "revid": 437336,
+   "cycles": null,
+   "release_date_raw": "1 September 2025",
+   "release_lines": [
+    "{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=1 September 2025}}",
+    "*On 1/9/2025, the Baby Dragon Evolution was added to the game on 1/9/2025, in the September 2025 Update."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 7987,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Baby_Dragon_Evolution.wikitext"
+  },
+  "Barbarians/Evolution": {
+   "revid": 437363,
+   "cycles": null,
+   "release_date_raw": "19 June 2023",
+   "release_lines": [
+    "{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=5|CycleCost=1|Rarity=Common|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=19 June 2023}}",
+    "*The Barbarians's Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]].",
+    "*Before the Barbarians' Evolution's release, the Evolved Barbarians' boost was decreased to 50% (from 150%)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 19726,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Barbarians_Evolution.wikitext"
+  },
+  "Bats/Evolution": {
+   "revid": 437215,
+   "cycles": null,
+   "release_date_raw": "2 October 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Troop|Arena=Builder's Workshop|ReleaseDate=2 October 2023}}",
+    "*The Bats' Evolution [[Cards|card]] was added to the game on 2/10/2023, in the [[Version History#Pass Royale and more (2/10/2023)|October 2023 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 16433,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Bats_Evolution.wikitext"
+  },
+  "Battle Ram/Evolution": {
+   "revid": 437079,
+   "cycles": null,
+   "release_date_raw": "1 April 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=1 April 2024}}{{Quote|These Evolved Barbarians upgraded their hardware! Evolved Battle Ram deals damage and pushes enemies back during its charge. Once it connects to a building, it won't stop charging!}}",
+    "*The Battle Ram's Evolution card was added to the game on 1/4/2024, in the [[Version History#Pass Royale and more (1/4/2024)|April 2024 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 21194,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Battle_Ram_Evolution.wikitext"
+  },
+  "Bomber/Evolution": {
+   "revid": 436449,
+   "cycles": null,
+   "release_date_raw": "5 February 2024",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=5 February 2024}}",
+    "*The Bomber's Evolution [[Cards|card]] was added to the game on 5/2/2024, in the [[Version History#Pass Royale and more (5/2/2024)|February 2024 Update]].",
+    "*Before the Bomber's Evolution's release, the Evolved Bomber's hitpoints boost was removed."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 22038,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Bomber_Evolution.wikitext"
+  },
+  "Dart Goblin/Evolution": {
+   "revid": 437234,
+   "cycles": null,
+   "release_date_raw": "6 January 2025",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=3|CycleCost=2|Rarity=Rare|Arena=Jungle Arena|Type=Troop|ReleaseDate=6 January 2025}}",
+    "*The Dart Goblin's Evolution card was added to the game on 6/1/2025, in the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 15973,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Dart_Goblin_Evolution.wikitext"
+  },
+  "Electro Dragon/Evolution": {
+   "revid": 437294,
+   "cycles": null,
+   "release_date_raw": "7 October 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Spooky Town|ReleaseDate=7 October 2024|CycleCost=1}}{{Quote|Can't stop, won't stop! Evolved Electro Dragon's attack will chain between targets infinitely and can hit the same target more than once.}}",
+    "*The Electro Dragon's Evolution [[Cards|card]] was added to the game on 7/10/2024, in the [[Version History#Pass Royale and more (7/10/2024)|October 2024 Update]].",
+    "*Before the Electro Dragon Evolution's release, the Evolved Electro Dragon's projectile speed of the chain attack after 3 targets was decreased to 400 (from 500), and it was made so that the chain attack would no longer stun enemies after 3 targets."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 15103,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Electro_Dragon_Evolution.wikitext"
+  },
+  "Elite Barbarians/Evolution": {
+   "revid": 436936,
+   "cycles": null,
+   "release_date_raw": null,
+   "release_lines": [],
+   "unreleased_flag": false,
+   "wikitext_len": 14,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Elite_Barbarians_Evolution.wikitext"
+  },
+  "Executioner/Evolution": {
+   "revid": 437539,
+   "cycles": 1,
+   "release_date_raw": "7 April 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=5|CycleCost=1|Cycles=1|Rarity=Epic|Type=Troop|Arena=Serenity Peak|ReleaseDate=7 April 2025}}",
+    "*The Executioner's Evolution [[Cards|card]] was added to the game on 7/4/2025, in the [[Version History#Pass Royale and more (7/4/2025)|April 2025 Update]].",
+    "*Before the Executioner's Evolution's release, the Evolved Executioner's Axe push back distance was decreased to 1.5 tiles (from 2 tiles) and the Axe Smash damage was decreased by 13%."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 18843,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Executioner_Evolution.wikitext"
+  },
+  "Firecracker/Evolution": {
+   "revid": 437259,
+   "cycles": null,
+   "release_date_raw": "19 June 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Spooky Town|ReleaseDate=19 June 2023}}",
+    "*The Firecracker's Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 35849,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Firecracker_Evolution.wikitext"
+  },
+  "Furnace/Evolution": {
+   "revid": 437286,
+   "cycles": null,
+   "release_date_raw": "4 August 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Hog Mountain|ReleaseDate=4 August 2025}}",
+    "*The Furnace Evolution [[Cards|card]] was added to the game on 4/8/2025, in the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]]"
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 10280,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Furnace_Evolution.wikitext"
+  },
+  "Goblin Giant/Evolution": {
+   "revid": 437292,
+   "cycles": null,
+   "release_date_raw": "1 July 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=6|Rarity=Epic|Type=Troop|Arena=Jungle Arena|ReleaseDate=1 July 2024|CycleCost=1}}",
+    "*The Goblin Giant's Evolution [[Cards|card]] was added to the game on 1/7/2024, in the [[Version History#Pass Royale and more (1/7/2024)|July 2024 Update]] {{Balance|Add}}."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 23860,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Giant_Evolution.wikitext"
+  },
+  "Hunter/Evolution": {
+   "revid": 436718,
+   "cycles": null,
+   "release_date_raw": "3 March 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=Hog Mountain|ReleaseDate=3 March 2025}}",
+    "*The Hunter's Evolution was available on 24/2/2025, before its release date, as an unintended glitch, in the [[Lumberjack/Evolution|Evo Lumberjack]] Draft Event. Supercell fixed this glitch with a maintenance break.",
+    "*The Hunter's Evolution [[Cards|card]] was added to the game on 3/3/2025, in the [[Version History#Pass Royale and more (3/3/2025)|March 2025 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 10651,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Hunter_Evolution.wikitext"
+  },
+  "Ice Spirit/Evolution": {
+   "revid": 437339,
+   "cycles": null,
+   "release_date_raw": "4 December 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=1|CycleCost=2|Rarity=Common|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 December 2023}}",
+    "*The Ice Spirit's Evolution [[Cards|card]] was added to the game on 4/12/2023, in the [[Version History#Pass Royale and more (4/12/2023)|December 2023 Update.]]"
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 13467,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Ice_Spirit_Evolution.wikitext"
+  },
+  "Inferno Dragon/Evolution": {
+   "revid": 437282,
+   "cycles": 2,
+   "release_date_raw": "2 June 2025",
+   "release_lines": [
+    "{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Cycles=2|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=2 June 2025}}",
+    "*The Inferno Dragon's Evolution [[Cards|card]] was added on 2/6/2025, in the [[Version History#Pass Royale and more (2/6/2025)|June 2025 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 14909,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Inferno_Dragon_Evolution.wikitext"
+  },
+  "Knight/Evolution": {
+   "revid": 437498,
+   "cycles": null,
+   "release_date_raw": "7 August 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=7 August 2023}}",
+    "*The Knight's Evolution [[Cards|card]] was added to the game with the [[Version History#Pass Royale and more (7/8/2023)|August 2023 Update]] on 7/8/2023{{Balance|Add}}."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 30611,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Knight_Evolution.wikitext"
+  },
+  "Lumberjack/Evolution": {
+   "revid": 437284,
+   "cycles": null,
+   "release_date_raw": "3 February 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Serenity Peak|ReleaseDate=3 February 2025|CycleCost=2}}",
+    "* The Lumberjack's Evolution [[Cards|card]] was added to the game on 3/2/2025, in the [[Version History#Pass Royale and more (3/2/2025)|February 2025 Update]].",
+    "*Before the Lumberjack Evolution's release, the Lumberjack Ghost's damage was decreased by 33%."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 17061,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Lumberjack_Evolution.wikitext"
+  },
+  "Mega Knight/Evolution": {
+   "revid": 437281,
+   "cycles": null,
+   "release_date_raw": "14 September 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=7|CycleCost=1|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=14 September 2024}}",
+    "*The Mega Knight’s Evolution was made available on 30/8/2024, before its release date, as an unintended glitch. Supercell fixed this glitch with a maintenance break.",
+    "*The Mega Knight's Evolution [[Cards|card]] was added to the game on 14/9/2024."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 21986,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Mega_Knight_Evolution.wikitext"
+  },
+  "Minion Horde/Evolution": {
+   "revid": 437379,
+   "cycles": null,
+   "release_date_raw": "6/4/2026",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=5|CycleCost=1|Rarity=Common|Type=Troop|Arena=Hog Mountain|ReleaseDate=April 6,2026}}{{Quote|The first strike against each member of Minion Horde Evolution makes it briefly invincible. Some say this mysterious veil is a result of the Dark Elixir running through their veins.}}",
+    "* On 6/4/2026, Evo Minion Horde was added in the game, along with [[Balloon/Hero|Hero Balloon]]"
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 704,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Minion_Horde_Evolution.wikitext"
+  },
+  "Musketeer/Evolution": {
+   "revid": 436483,
+   "cycles": null,
+   "release_date_raw": "4 November 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=4 November 2024}}",
+    "*The Musketeer's Evolution [[Cards|card]] was added to the game on 4/11/2024, in the [[Version History#Pass Royale and more (4/11/2024)|November 2024 Update]].",
+    "*Before the Musketeer's Evolution's release, the Evolved Musketeer's sniper attack time interval was decreased to 1 second (from 1.5 seconds)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 22833,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Musketeer_Evolution.wikitext"
+  },
+  "P.E.K.K.A./Evolution": {
+   "revid": 437337,
+   "cycles": null,
+   "release_date_raw": "2 September 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|CycleCost=1|Cost=7|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=2 September 2024}}{{Quote|Floats like a butterfly, stings like a bee. Evolved P.E.K.K.A has a giant soul-sucking sword that restores health after slaying her enemies.}}",
+    "*The P.E.K.K.A's Evolution was made available on 30/8/2024, before its release date, as an unintended glitch. Supercell fixed this glitch with a maintenance break.",
+    "*The P.E.K.K.A's Evolution [[Cards|card]] was added to the game on 2/9/2024, in the [[Version History#Pass Royale and more (2/9/2024)|September 2024 Update]].",
+    "*The acronym for P.E.K.K.A doesn't officially stand for anything in particular originally. Supercell held a Facebook contest on 22 August 2012 to see who could come up with the best written-out name for P.E.K.K.A as judged by the number of likes the comment received. The name \"''Perfectly Enraged Knight Killer of Assassins''\" was the winner. The person who submitted the acronym was called Víctor in the [https://www.facebook.com/ClashofClans/photos/478339952190333 Facebook announcement].",
+    "*Before the P.E.K.K.A's Evolution card was released, the Evolved P.E.K.K.A's healing per KO was increased to 12.5% (from 10%)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 28072,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/P.E.K.K.A._Evolution.wikitext"
+  },
+  "Princess/Evolution": {
+   "revid": 437368,
+   "cycles": null,
+   "release_date_raw": null,
+   "release_lines": [
+    "|ReleaseDate=June 2026}}",
+    "* In June 2026, the Evolved Princess was added alongside the Heroic Tombstone during Season 84 of Clash Royale."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 2416,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Princess_Evolution.wikitext"
+  },
+  "Royal Ghost/Evolution": {
+   "revid": 437237,
+   "cycles": null,
+   "release_date_raw": "October 17 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|CycleCost=2|Rarity=Legendary|Type=Troop|Arena=Spooky Town|ReleaseDate=October 17 2025|Cost=3}}{{Quote|Once he’s visible, Royal Ghost summons two Souldiers to guard his spirit, dealing damage in their summoning. When they’ve rested long enough, they’ll disappear just like their leader. Who doesn’t love a good hauntourage!}}",
+    "*The Royal Ghost's Evolution [[Cards|card]] was added to the game on 17/10/2025, in a [[Version History#Maintenance Break (17/10/2025)|maintenance break]].",
+    "*The Evolved Royal Ghost is the first card evolution to be released in the same season as another card evolution since [[Cannon/Evolution|Evolution Cannon]], which released alongside [[Musketeer/Evolution|Evolution Musketeer]] in November 2024."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 12591,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Royal_Ghost_Evolution.wikitext"
+  },
+  "Royal Giant/Evolution": {
+   "revid": 437218,
+   "cycles": null,
+   "release_date_raw": "19 June 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=6|CycleCost=1|Rarity=Common|Type=Troop|Arena=Royal Arena|ReleaseDate=19 June 2023}}",
+    "*The Royal Giant's Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]].",
+    "*Before the Royal Giant's Evolution's release, the Evolved Royal Giant's pushback range was decreased to 1 tile (from 1.5 tiles)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 22548,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Royal_Giant_Evolution.wikitext"
+  },
+  "Royal Hogs/Evolution": {
+   "revid": 437265,
+   "cycles": null,
+   "release_date_raw": "3 November 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=5|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Royal Arena|ReleaseDate=3 November 2025}}",
+    "* On 3/11/2025, the Evolved Royal Hogs were added into the game"
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 9767,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Royal_Hogs_Evolution.wikitext"
+  },
+  "Royal Recruits/Evolution": {
+   "revid": 436465,
+   "cycles": null,
+   "release_date_raw": "4 September 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=7|CycleCost=1|Rarity=Common|Type=Troop|Arena=Royal Arena|ReleaseDate=4 September 2023}}",
+    "*The Royal Recruits' Evolution [[Cards|card]] was added to the game on 4/9/2023, in the [[Version History#Pass Royale and more (4/9/2023)|September 2023 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 17309,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Royal_Recruits_Evolution.wikitext"
+  },
+  "Skeleton Army/Evolution": {
+   "revid": 436959,
+   "cycles": null,
+   "release_date_raw": "October 6 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox||Cost=3|CycleCost=2|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=October 6 2025|Rarity=Epic|Type=Troop}}{{Quote|Look alive! General Gerry's Skeletons are devoted to him, becoming invisible and indestructible in his presence. But alas, an army cannot survive without its General and will perish in his absence.}}",
+    "*The Skeleton Army's Evolution [[Cards|card]] was added to the game on 6/10/2025, in the [[Version History#Pass Royale and more (6/10/2025)|October 2025 Update]].",
+    "*Before the Skeleton Army's Evolution's release, the Skeletons' attack time interval was increased to 1.1 seconds (from 1 second)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 14956,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Skeleton_Army_Evolution.wikitext"
+  },
+  "Skeleton Barrel/Evolution": {
+   "revid": 437248,
+   "cycles": 2,
+   "release_date_raw": "7 July 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=3|CycleCost=2|Cycles=2|Rarity=Common|Type=Troop|Arena=Jungle Arena|ReleaseDate=7 July 2025}}",
+    "*The Skeleton Barrel's Evolution [[Cards|card]] was added to the game on 7/7/2025, in the [[Version History#Pass Royale and more (7/7/2025)|July 2025 Update]] {{Balance|Add}}."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 17390,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Skeleton_Barrel_Evolution.wikitext"
+  },
+  "Skeletons/Evolution": {
+   "revid": 436451,
+   "cycles": null,
+   "release_date_raw": "19 June 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=1|CycleCost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=19 June 2023}}",
+    "*The Skeletons' Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]].",
+    "*Before the Skeletons' Evolution's release, the cycles required was increased to 3 (from 2), and the maximum number of Evolved Skeletons was decreased to 6 (from 8)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 16756,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Skeletons_Evolution.wikitext"
+  },
+  "Valkyrie/Evolution": {
+   "revid": 437367,
+   "cycles": null,
+   "release_date_raw": "1 January 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Bone Pit|ReleaseDate=1 January 2024}}",
+    "*The Valkyrie's Evolution [[Cards|card]] was added to the game on 1/1/2024, in the [[Version History#Pass Royale and more (1/1/2024)|January 2024 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 14439,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Valkyrie_Evolution.wikitext"
+  },
+  "Wall Breakers/Evolution": {
+   "revid": 437358,
+   "cycles": null,
+   "release_date_raw": "14 February 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Epic|Type=Troop|Arena=Spooky Town|ReleaseDate=14 February 2024}}",
+    "*The Wall Breakers' Evolution [[Cards|card]] was added to the game on 14/2/2024.",
+    "*Before the Wall Breakers' Evolution card was released, the Evolved Wall Breaker's death damage was decreased by 50%, the Runners' damage was increased by 100%, and the Runners' speed was decreased to 90 (from 120), now classified as Fast."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 18242,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Wall_Breakers_Evolution.wikitext"
+  },
+  "Witch/Evolution": {
+   "revid": 437350,
+   "cycles": 1,
+   "release_date_raw": "5 May 2025",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=5|CycleCost=1|Cycles=1|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=5 May 2025}}",
+    "*The Witch's Evolution [[Cards|card]] was added to the game on 5/5/2025, in the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] {{Balance|Add}}.",
+    "*Before the Witch's Evolution's release, the Evolved Witch's healing per Skeleton defeated was decreased by 33%, and her overheal hitpoints were decreased to 125% (from 130%)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 16116,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Witch_Evolution.wikitext"
+  },
+  "Wizard/Evolution": {
+   "revid": 437069,
+   "cycles": null,
+   "release_date_raw": "6 May 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=5|CycleCost=1|Rarity=Rare|Type=Troop|Arena=Spell Valley|ReleaseDate=6 May 2024}}",
+    "*The Wizard's Evolution [[Cards|card]] was added to the game on 6/5/2024, in the [[Version History#Pass Royale and more (6/5/2024)|May 2024 Update]].",
+    "*Before the Wizard's Evolution's release, the Evolved Wizard's shield hitpoints were decreased by 15%."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 15866,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Wizard_Evolution.wikitext"
+  },
+  "Cannon/Evolution": {
+   "revid": 437252,
+   "cycles": null,
+   "release_date_raw": "15/11/2024",
+   "release_lines": [
+    "*The Cannon's Evolution [[Cards|card]] was added to the game on 15/11/2024.",
+    "*Before the Cannon Evolution's release, it was made it so that the Evolved Cannon's barrage damage would only deal 25% of its full damage to [[:Category:Crown Towers|Crown Towers]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 14114,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Cannon_Evolution.wikitext"
+  },
+  "Goblin Cage/Evolution": {
+   "revid": 437374,
+   "cycles": null,
+   "release_date_raw": "5 August 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Building|Arena=Goblin Stadium|ReleaseDate=5 August 2024}}",
+    "*Unlike the regular Goblin Cage, it is not a good idea to waste it on kamikaze troops like the [[Wall Breakers]], as it will remove any chances of utilizing the pull mechanic, and the Goblin Brawler isn’t much stronger than a regular one to be worth releasing prematurely.",
+    "*The Goblin Cage Evolution [[Cards|card]] was added to the game on 5/8/2024, in the [[Version History#Pass Royale and more (5/8/2024)|August 2024 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 20630,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Cage_Evolution.wikitext"
+  },
+  "Goblin Drill/Evolution": {
+   "revid": 437383,
+   "cycles": null,
+   "release_date_raw": "15 July 2024",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Building|Arena=Serenity Peak|ReleaseDate=15 July 2024}}",
+    "*The Goblin Drill's Evolution [[Cards|card]] was added to the game on 15/7/2024.",
+    "*Before the Goblin Drill’s Evolution's release, the Evolved Goblin Drill’s Goblins spawned upon submerge was decreased to 1 (from 2)."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 17331,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Drill_Evolution.wikitext"
+  },
+  "Mortar/Evolution": {
+   "revid": 437361,
+   "cycles": null,
+   "release_date_raw": "3 July 2023",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Common|Type=Building|Arena=Builder's Workshop|ReleaseDate=3 July 2023}}",
+    "*The Mortar's Evolution [[Cards|card]] was added to the game on 3/7/2023, in the [[Version History#Pass Royale and more (3/7/2023)|July 2023 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 19111,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Mortar_Evolution.wikitext"
+  },
+  "Tesla/Evolution": {
+   "revid": 437289,
+   "cycles": null,
+   "release_date_raw": "4 March 2024",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=4|CycleCost=2|Rarity=Common|Arena=Hog Mountain|ReleaseDate=4 March 2024|Type=Building}}",
+    "*The Tesla's Evolution [[Cards|card]] was added to the game on 4/3/2024, in the [[Version History#Pass Royale and more (4/3/2024)|March 2024 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 23566,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Tesla_Evolution.wikitext"
+  },
+  "Giant Snowball/Evolution": {
+   "revid": 437371,
+   "cycles": null,
+   "release_date_raw": "2 December 2024",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Spell|Arena=Frozen Peak|ReleaseDate=2 December 2024}}",
+    "*The Giant Snowball's Evolution [[Cards|card]] was added to the game on 2/12/2024, in the [[Version History#Pass Royale and more (2/12/2024)|December 2024 Update]] {{Balance|Add}}."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 12355,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Giant_Snowball_Evolution.wikitext"
+  },
+  "Goblin Barrel/Evolution": {
+   "revid": 437372,
+   "cycles": null,
+   "release_date_raw": "June 3 2024",
+   "release_lines": [
+    "{{Evolved_Card_Infobox|Cost=3|Rarity=Epic|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=June 3 2024|CycleCost=2|Type=Spell}}",
+    "*The Goblin Barrel’s Evolution [[Cards|card]] was added to the game on 3/6/2024, in the [[Version History#Pass Royale and more (3/6/2024)|June 2024 Update]]."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 16174,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Barrel_Evolution.wikitext"
+  },
+  "Zap/Evolution": {
+   "revid": 437306,
+   "cycles": null,
+   "release_date_raw": "11 March 2024",
+   "release_lines": [
+    "{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Spell|Arena=Builder's Workshop|ReleaseDate=11 March 2024}}",
+    "*The Zap's Evolution [[Cards|card]] was added to the game on 11/3/2024."
+   ],
+   "unreleased_flag": false,
+   "wikitext_len": 16541,
+   "cache_file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Zap_Evolution.wikitext"
+  }
+ },
+ "master_cycles": {
+  "Barbarians": 1,
+  "Royal Giant": 1,
+  "Firecracker": 2,
+  "Skeletons": 2,
+  "Mortar": 2,
+  "Knight": 2,
+  "Royal Recruits": 1,
+  "Bats": 2,
+  "Archers": 2,
+  "Ice Spirit": 2,
+  "Valkyrie": 2,
+  "Bomber": 2,
+  "Wall Breakers": 2,
+  "Tesla": 2,
+  "Zap": 2,
+  "Battle Ram": 2,
+  "Wizard": 1,
+  "Goblin Barrel": 2,
+  "Goblin Giant": 1,
+  "Goblin Drill": 2,
+  "Goblin Cage": 2,
+  "P.E.K.K.A.": 1,
+  "Mega Knight": 1,
+  "Electro Dragon": 1,
+  "Musketeer": 2,
+  "Cannon": 2,
+  "Giant Snowball": 2,
+  "Dart Goblin": 2,
+  "Lumberjack": 2,
+  "Hunter": 2,
+  "Executioner": 1,
+  "Witch": 1,
+  "Inferno Dragon": 2,
+  "Skeleton Barrel": 2,
+  "Furnace": 2,
+  "Baby Dragon": 2,
+  "Skeleton Army": 2,
+  "Royal Ghost": 2,
+  "Royal Hogs": 2,
+  "Minion Horde": 1,
+  "Princess": 2,
+  "Elite Barbarians": 1
+ },
+ "failures": []
+}

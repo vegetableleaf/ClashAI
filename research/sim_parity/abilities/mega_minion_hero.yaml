@@ -1,0 +1,77 @@
+# Extracted 2026-08-25 via api.php parse (wikitext|revid); raw page archived at
+# research/sim_parity/webcache/Mega_Minion_Hero.wikitext
+key: mega_minion_hero
+base_card: mega_minion
+page: Mega Minion/Hero
+revid: 437518
+fetched: "2026-08-25"
+release_date: "2026-02-02"   # infobox ReleaseDate="February 2, 2026"; History: "released on 2/2/2026"
+
+body_stat_deltas:
+  summary: "none stated -- hero body is stat-identical to ledger base mega_minion on every comparable field"
+  detail:
+    elixir:            {hero: 3,    base: 3,    delta: 0}   # infobox Cost=3 / attributes table
+    count:             {hero: 1,    base: 1,    delta: 0}   # attributes table "x1"
+    hitpoints_lvl11:   {hero: 837,  base: 837,  delta: 0}   # vardefine hp_11
+    damage_lvl11:      {hero: 312,  base: 312,  delta: 0}   # vardefine dmg_11
+    hit_speed_s:       {hero: 1.5,  base: 1.5,  delta: 0}   # attributes table + vardefine atk_speed
+    range_tiles:       {hero: 1.6,  base: 1.6,  delta: 0}   # "Melee: Long (1.6)"
+    projectile_speed:  {hero: 1000, base: 1000, delta: 0}   # attributes table
+    deploy_time_s:     {hero: 1.0,  base: 1.0,  delta: 0}
+    targets:           {hero: "Air & Ground", base: "any",    delta: none}
+    transport:         {hero: "Air",          base: "air",    delta: none}
+    speed:             {hero: "Medium (60)",  base: "medium", delta: none}
+
+ability:
+  name: Wounding Warp
+  elixir_cost: 2        # infobox AbilityCost=2; Wounding Warp Attributes table Cost; prose "costs 2 Elixir to activate"
+  uses: null            # not stated
+  cooldown_s: null      # not stated
+  cast_delay_s: null    # not stated as a cast delay; see post_warp_first_target_delay_s in numbers (1.5 s, added 7/4/2026)
+
+mechanic_prose: |
+  [Card flavor Quote, top of page]
+  "In the Arena full of uncertainty, Hero Mega Minion wants to make sure he can get
+  to the right place in just the nick of time. Learning to shift through the shadows
+  doesn't happen overnight!"
+
+  [Section: Ability: Wounding Warp -- Quote]
+  "Warps to the lowest-Hitpoint enemy, dealing damage on arrival."
+
+  [Section: Ability: Wounding Warp -- body text, verbatim incl. typos]
+  "The Hero Mega Minion has a special ability accessible from whatever side of the
+  screen was put in, just above the player's card slots in battle. When deployed, a
+  marker will be deployed to the lowest hitpoint target. When that unit dies, the
+  mark will move to the next unit. When the ability is preased, Mega Minion will
+  teleport to that tile, dealing damage. Afterwards the Mega Minion will behave
+  normally, but with -75% on the tower. The Wounding Warp ability costs 2 Elixir
+  to activate."
+
+numbers:
+  deploy_cost_elixir:      {value: 3,    source: infobox, field: "Cost=3 (also attributes table + prose 'costs 3 Elixir to deploy')"}
+  ability_cost_elixir:     {value: 2,    source: infobox, field: "AbilityCost=2 (also Wounding Warp Attributes Cost + prose)"}
+  unlock_cost_hero_shards: {value: 200,  source: prose,   field: "intro: 'unlocked with 200 Hero Shard'"}
+  hitpoints_lvl11:         {value: 837,  source: vardefine, field: "hp_11"}
+  damage_lvl11:            {value: 312,  source: vardefine, field: "dmg_11"}
+  warp_damage_lvl11:       {value: 399,  source: vardefine, field: "warpdmg_11 (level table column 'Warp Damage')"}
+  body_hit_speed_s:        {value: 1.5,  source: attributes_table, field: "Hit Speed '1.5 sec' (= vardefine atk_speed|1.5)"}
+  body_first_hit_speed_s:  {value: 0.4,  source: attributes_table, field: "First Hit Speed '0.4 sec'"}
+  body_speed:              {value: "Medium (60)", source: attributes_table, field: "Speed"}
+  body_deploy_time_s:      {value: 1.0,  source: attributes_table, field: "Deploy Time '1 sec'"}
+  body_range_tiles:        {value: 1.6,  source: attributes_table, field: "Range 'Melee: Long (1.6)'"}
+  body_projectile_speed:   {value: 1000, source: attributes_table, field: "Projectile Speed"}
+  crown_tower_damage_pct:  {value: 25,   source: attributes_table, field: "Wounding Warp Attributes 'Crown Tower Damage 25%'; prose '-75% on the tower'; History 4/8/2026 'tower multiplier to x0.25 (from x0.5)'"}
+  teleport_range:          {value: "Infinite", source: attributes_table, field: "Wounding Warp Attributes 'Teleport Range: Infinite'"}
+  post_warp_first_target_delay_s: {value: 1.5, source: prose, field: "History 7/4/2026: 'a first target delay of 1.5s was implemented ... could no longer instantly spawn to targeted troop when ability is activated'"}
+  warp_damage_balance_trail: {value: "-12% (2/3/2026), -9% (4/5/2026), +7% (4/8/2026) => 399 current", source: prose, field: "History bullets"}
+  level_scaling:           {value: "stat_11 * 1.1^(level-11), rounded; level table shown for 3-16", source: attributes_table, field: "level-table #expr formulas; page warns about rounding from level-11 anchors"}
+
+proposed_ability_kind: dash_chain   # targeted blink/teleport to a marked enemy with damage on arrival; closest existing bucket, though it is a teleport rather than a dash -- flag for owner if a 'teleport' kind is ever added
+
+open_questions:
+  - "Does the 25% crown-tower multiplier apply from deployment, or only AFTER the ability is used? Prose says 'Afterwards ... -75% on the tower'; History 4/8/2026 says the 'crown tower damage reduction is now permanent' (implying it was previously time-limited). Pre-warp state unstated."
+  - "Can Wounding Warp be used multiple times per deployment if elixir allows? No use count or cooldown stated."
+  - "Marker targeting: 'lowest hitpoint target' -- current HP or max HP? Enemy troops only, or also buildings / crown towers?"
+  - "Is the warp damage single-target on the marked unit or area damage at the arrival tile? ('dealing damage on arrival' is ambiguous.)"
+  - "Interaction of the 1.5 s post-warp first-target delay with the body's 0.4 s First Hit Speed; does the delay also apply on normal deployment?"
+  - "What happens if the ability is pressed when no markable enemy exists (empty board)?"

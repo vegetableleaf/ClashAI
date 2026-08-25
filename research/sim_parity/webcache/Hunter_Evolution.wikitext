@@ -1,0 +1,114 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Hunter</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=Hog Mountain|ReleaseDate=3 March 2025}}
+
+{{Quote|Be very, very quiet. Evolved Hunter throws a net that stuns the closest troop. If that troop is flying, it'll ground them.}}
+
+The Hunter Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Hunter with identical stats to the original. The Evolved Hunter will throw a net at the closest unit every 5 seconds. The net will freeze the troop in place and render it unable to move or attack, and allow ground units to hit the trapped unit for 3 seconds. He appears as a man who wears a team-colored coonskin cap with purple hair, a golden stripe and a [[Card Evolution]] symbol in the middle, a brown cloth, gloves, belt, pants and boots, an indigo shirt, and team-colored wristlets, is armed with a double-barreled shotgun, wield nets with purple points, and has fuzzy black eyebrows and mustache covering his eyes and mouth respectively. The Hunter's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+== Strategy==
+*Combining him with [[Skeletons/Evolution|Evolved Skeletons]], [[Skeleton Army]], [[Bats]], [[Goblin Gang]], or [[Minion Horde]] can fully counter a LavaLoon combo, commonly known as the [[Lava Hound]] and [[Balloon]] combo push, for a massive positive Elixir trade.
+*If there is only 1 unit against Hunter, then that unit will be stun-locked forever, as the duration and hit speed of the net is the same as the cooldown.
+*The Evolved Hunter performs slightly worse against [[Graveyard]] than his [[Hunter|regular counterpart]] due to his net animation. The net itself won't make a difference against the Skeletons, but the net animation makes it so that his attack animation is slightly delayed, allowing for some more Skeleton hits on your [[Crown Tower]].
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.2 sec||0.7 sec||Medium (60)||1 sec||4||6.5||550||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Net Duration<br />{{Icon|I=Time}}
+! scope="col" |Net Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Net Range<br />{{Icon|I=Range}}
+|-
+|2||3 sec||5 sec||4
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 885 }}
+{{#vardefine: dmg_11 | 84 }}
+{{#vardefine: dmg_hits | 10 }}
+{{#vardefine: atk_speed | 2.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I = Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I = DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Hunter's Evolution was available on 24/2/2025, before its release date, as an unintended glitch, in the [[Lumberjack/Evolution|Evo Lumberjack]] Draft Event. Supercell fixed this glitch with a maintenance break.
+*The Hunter's Evolution [[Cards|card]] was added to the game on 3/3/2025, in the [[Version History#Pass Royale and more (3/3/2025)|March 2025 Update]].
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Evolved Hunter's hitpoints by 0.11%. It also fixed a few bugs where the Evolved Hunter would not net other [[:Category:Troop Cards|troops]] or air troops not getting grounded by Evolved Hunter’s net.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Evolved Hunter's first attack time interval to 0.7 seconds (from 0.8 seconds), decreased the Evolved Hunter's net duration to 3 seconds (from 4 seconds), and increased its cooldown to 5 seconds (from 4 seconds).
+*On 28/11/25, the Hunter Evo was given out for free on Black Friday.
+
+==Gallery==
+<gallery>
+File:Evolved Hunter card render.png|Current card render.
+File:Evolved Hunter Preview.gif|Current card preview
+File:HunterEvoShard.png|Evolution Shard.
+File:Evolved Hunter 1.png|Evolved Hunter
+File:Evo Hunter Net.png|His net
+</gallery>
+
+==Trivia==
+*The Hunter is 1 of 2 evolved [[:Category:Troop Cards|troops]] that can deal damage to multiple units with one attack without an area damage radius, the other being [[Electro Dragon/Evolution|Electro Dragon]].
+*If the Evolved Hunter performed his attack right before dying while being cursed by the [[Mother Witch]], it is possible for the Cursed Hog to spawn right inside these bullets, destroying it immediately.
+*In the [[Cards|card]]'s description, the "''Be very, very quiet''" line is from [https://en.wikipedia.org/wiki/Elmer_Fudd Elmer Fudd]'s signature line, saying "''Be very, very quiet. I'm hunting rabbits.''".
+*Upon deployment, the Evolved Hunter exclaims “''Got ya in my sights!''”, “''Into the net you go!''”, or "''Sky’s closed!''", and when netting enemy troops, he may say “''Trap like a rat!''”, "''You're mine!''", or "''Gotcha!''".
+**The Hunter is 1 of 9 evolved troops that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Executioner/Evolution|Executioner]], [[Mega Knight/Evolution|Mega Knight]], and [[Lumberjack/Evolution|Lumberjack]].
+***Also, the Hunter is 1 of 6 evolved troops whose regular troop do not speak any distinct words when on the field, the others being Bomber, Goblin Brawler, Witch, Executioner, and Mega Knight.
+*The Hunter is the subject of certain cosmetics in the game. More specifically:
+**The Hunter is the subject of an [[Emotes|Emote]].
+{{Navigation|Card}}

@@ -1,0 +1,89 @@
+key: magic_archer_hero
+base_card: magic_archer
+page: Magic Archer/Hero
+revid: 437520
+fetched: "2026-08-25"
+release_date: "2026-03-02"   # infobox ReleaseDate "March 2,2026"; Heroes master History 2/3/2026
+
+body_stat_deltas:
+  # hero page level-11 vardefines vs ledger/current_db_snapshot.json magic_archer (verified: false)
+  hitpoints: none stated          # 529 (vardefine hp_11) == base 529
+  damage: "+2 vs snapshot (hero 135 vardefine dmg_11 vs base 133) -- SUSPECT: base row unverified AND page History records a 6% hero damage nerf on 4/8/2026 whose application to dmg_11 cannot be confirmed from the page"
+  hit_speed: none stated          # 1.1 sec both (attr table + vardefine atk_speed vs base 1.1)
+  speed: none stated              # Medium (60) vs base medium
+  range: none stated              # 7 vs base 7.0
+  projectile_range: none stated   # 11 vs base 11.0
+  projectile_width: none stated   # 0.5 vs base 0.5
+  projectile_speed: none stated   # 1000 vs base 1000
+  deploy_time: none stated        # 1 sec vs base 1.0
+  first_hit_speed: "0.7 sec on hero page; snapshot has no first-hit-speed field (load_time_s 0.6, deploy_delay_s 0.4 are different fields) -- not comparable"
+  targets: none stated            # Air & Ground both
+  count_rarity: none stated       # x1, Legendary both (but see conflicts: intro prose says Common)
+
+ability:
+  name: Triple Threat
+  elixir_cost: 2        # infobox AbilityCost=2; Triple Threat Attributes table Cost=2; prose "costs 2 Elixir to activate"; History 7/4/2026 raised 1 -> 2
+  uses: 1               # History 4/8/2026: "This also made the ability single use (from 25sec cooldown)"
+  cooldown_s: null      # removed 4/8/2026 (was 25 sec; pre-release 20 -> 25 per Trivia)
+  cast_delay_s: null    # not stated anywhere on the page
+
+mechanic_prose: |
+  [section "Ability: Triple Threat", quote template]
+  "Summons a decoy while darting back and fires a triple shot on his next attack."
+
+  [section "Ability: Triple Threat", body paragraph, verbatim incl. the page's own typos --
+   note it misnames the card "Hero Knight" (boilerplate copy error)]
+  "The Hero Knight has a special ability accessible from whatever side of the screen was put
+  in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. When
+  activated, the Magic Archer will teleport back, while leaving a decoy in his place. The
+  next attack now shots 3 arrows that travel longer, but with less damage. The Triple Threat
+  ability costs 2 [[Elixir]] to activate."
+
+  [section "Strategy", verbatim]
+  "The ability can be used to avoid damage from spells like [[Fireball]] or units like
+  [[Mini P.E.K.K.A.]], thanks to the pull back and decoy."
+  "The arrows can deal good chip damage to towers"
+
+numbers:
+  deploy_cost_elixir: {value: 4, source: "infobox Cost=4 and 'Heroic Magic Archer Attributes' table Cost column (intro prose contradicts with 3 -- see conflicts)"}
+  ability_cost_elixir: {value: 2, source: "infobox AbilityCost=2; 'Triple Threat Attributes' table Cost column; prose sentence 'The Triple Threat ability costs 2 Elixir to activate.'"}
+  unlock_hero_shards: {value: 200, source: "prose: 'unlocked with 200 {{Icon|I=Hero Shard}}'"}
+  body_hit_speed_s: {value: 1.1, source: "attributes table 'Hit Speed'; vardefine atk_speed|1.1"}
+  body_first_hit_speed_s: {value: 0.7, source: "attributes table 'First Hit Speed'"}
+  body_speed: {value: "Medium (60)", source: "attributes table 'Speed'"}
+  body_deploy_time_s: {value: 1, source: "attributes table 'Deploy Time'"}
+  body_range_tiles: {value: 7, source: "attributes table 'Range'"}
+  body_projectile_range_tiles: {value: 11, source: "attributes table 'Projectile Range'"}
+  body_projectile_width_tiles: {value: 0.5, source: "attributes table 'Projectile Width'"}
+  body_projectile_speed: {value: 1000, source: "attributes table 'Projectile Speed'"}
+  body_hp_lvl11: {value: 529, source: "vardefine hp_11|529"}
+  body_area_damage_lvl11: {value: 135, source: "vardefine dmg_11|135"}
+  ability_teleport_range_tiles: {value: 3.5, source: "'Triple Threat Attributes' table 'Teleport Range' = 3.5 Tiles; History 6/7/2026 decreased from 5"}
+  decoy_duration_s: {value: 7, source: "'Triple Threat Attributes' table 'Decoy Duration'"}
+  ability_projectile_range_tiles: {value: 13.5, source: "'Triple Threat Attributes' table 'Projectile Range'; History 6/7/2026 decreased from 15.4"}
+  ability_projectile_width_tiles: {value: 0.5, source: "'Triple Threat Attributes' table 'Projectile Width'"}
+  ability_projectile_speed: {value: 1000, source: "'Triple Threat Attributes' table 'Projectile Speed'"}
+  decoy_hp_lvl11: {value: 271, source: "vardefine decoy_hp_11|271; History 6/7/2026 'decreased the decoy hitpoints by 57%'"}
+  triple_shot_damage_per_arrow_lvl11: {value: 48, source: "vardefine triple_dmg_11|48; statistics table renders it as '<n> x3'"}
+  triple_shot_arrow_count: {value: 3, source: "prose 'shots 3 arrows' + statistics table 'x3' suffix"}
+  history_ability_cost_change: {value: "1 -> 2 elixir", source: "History 7/4/2026 Balance Update"}
+  history_ability_range_change: {value: "15.4 -> 13.5 tiles", source: "History 6/7/2026 Balance Update"}
+  history_teleport_change: {value: "5 -> 3.5 tiles", source: "History 6/7/2026 Balance Update"}
+  history_damage_nerf_pct: {value: 6, source: "History 4/8/2026: 'decreased the Hero Magic Archer's damage by 6%'"}
+  history_single_use: {value: "single use, was 25 s cooldown", source: "History 4/8/2026"}
+  prerelease_cooldown_change_s: {value: "20 -> 25", source: "Trivia: 'increasing the cooldown of Triple Threat to 25 seconds (from 20 seconds)' (pre-release, superseded by single-use)"}
+
+proposed_ability_kind: taunt_shield
+# rationale: the sim-load-bearing effect is a new targetable decoy entity that soaks aggro
+# (taunt_shield), composed with a 3.5-tile backward blink (movement) and a one-shot
+# next-attack buff (buff_self). Composite -- decoy chosen as primary.
+
+open_questions:
+  - Does the decoy attack, or is it inert? Page never says.
+  - Does the decoy actively taunt (force retarget) or only soak targeting of units already locked on?
+  - Teleport direction "back" -- toward own king tower, or along his current facing? Not defined.
+  - Do the 3 triple-shot arrows pierce through enemies like the normal attack? What is their spread pattern (parallel / fan)?
+  - Is the triple shot consumed if the next attack is against the decoy'd original target vs any target? (i.e. buff persists until next attack fires, however long?)
+  - "Cast delay of the ability: not stated (null)."
+  - Is dmg_11=135 pre- or post- the 4/8/2026 6% damage nerf? Base snapshot says 133; wiki base page and in-game check needed to settle the body damage delta.
+  - Prose says triple-shot arrows "travel longer, but with less damage" -- less than the normal 135 per arrow (48 each), confirmed by vardefine, but is total 144 > 135 intended? worth an in-game sanity check.

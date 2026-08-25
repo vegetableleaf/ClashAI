@@ -1,0 +1,85 @@
+key: mini_pekka_hero
+base_card: mini_pekka
+page: "Mini P.E.K.K.A./Hero"
+revid: 437522
+fetched: "2026-08-25"
+release_date: "2025-12-01"   # infobox "December 1 2025"; History: added in the "2025 Quarter 4 Update" alongside the other 3 original heroes (sibling pages date it 1/12/2025 D/M/Y)
+
+# Hero body vs base mini_pekka (base numbers from ledger/current_db_snapshot.json, used ONLY for deltas)
+body_stat_deltas:
+  summary: "none stated in tables - every table/vardefine stat matches base Mini P.E.K.K.A.; History claims a -3% HP nerf the vardefine does not show"
+  hitpoints: "vardefine hp_base 1433 == snapshot 1433, BUT History (12/1/2026) says hero HP decreased 3% (would be ~1390) - vardefine may be stale, see conflicts/open_questions"
+  damage: "no delta (vardefine dmg_base 755 == snapshot 755)"
+  hit_speed: "no delta (1.6 s both)"
+  speed: "no delta (Fast (90) vs snapshot fast)"
+  deploy_time: "no delta (1 s both)"
+  range: "no delta (Melee: Short (0.8) vs snapshot 0.8)"
+  note_first_hit_speed: "page lists First Hit Speed 0.5 s; snapshot load_time_s is 1.1 - possibly different metrics, not asserted as a delta (see open_questions)"
+
+ability:
+  name: "Breakfast Boost"
+  elixir_cost: 1          # infobox AbilityCost=1; intro + ability prose; Breakfast Boost Attributes table Cost
+  uses: null              # NOT STATED anywhere on the page. Knight and Giant were made single-use on 4/8/2026; this page's History has no such entry. See open_questions.
+  cooldown_s: null        # not stated
+  cast_delay_s: 0.933     # Breakfast Boost Attributes table "Cast Time"; prose says "1-second delay" - see conflicts
+
+mechanic_prose: |
+  [Quote template under "Ability: Breakfast Boost"]
+  "Eats pancakes to level up. The longer you wait, the more pancakes he cooks!"
+
+  [Section "Ability: Breakfast Boost", verbatim]
+  "The Heroic Mini P.E.K.K.A. has a special ability accessible from whatever side of the
+  screen was put in, just above the player's card slots in battle. After a 1-second delay,
+  the Mini P.E.K.K.A. activates his "Breakfast Boost", immediately eats all the pancakes he
+  cooked, granting him extra Levels and healing himself for 30%.
+
+  Heroic Mini P.E.K.K.A. can constantly gain progress for his pancake meters. He will need
+  22 seconds to get one pancake meter filled, but he can also get 10 seconds of progress
+  with every attack. Every filled pancake meter increases the Levels gained when his ability
+  is used by 1, except the last meter grants 2 extra Levels. With no meters, the Heroic Mini
+  P.E.K.K.A. will gain 1 Level, but with a maximum of 3 meters, he can gain 5 Levels. The
+  amount of meters the Heroic Mini P.E.K.K.A. has can be seen in a golden bar above his
+  hitpoint bar.The Breakfast Boost ability costs 1 Elixir to activate."
+
+numbers:
+  body_elixir_cost: {value: 4, source: "infobox Cost=4; unit-attributes-table Cost column; intro prose"}
+  ability_elixir_cost: {value: 1, source: "infobox AbilityCost=1; intro prose 'an additional 1'; ability prose; Breakfast Boost Attributes table Cost"}
+  combined_elixir_accounting: {value: 5, source: "prose (Strategy): 'the Heroic Mini P.E.K.K.A. and his activated Ability count as 5 Elixir'"}
+  heal_pct: {value: 30, source: "Breakfast Boost Attributes table 'Heal Percentage 30%'; ability prose 'healing himself for 30%'; Strategy 'healing 30% of his hitpoints'"}
+  heal_pct_former: {value: 40, source: "prose (History 12/1/2026): 'decreased the Hero Mini P.E.K.K.A.'s healing to 30% (from 40%)'"}
+  heal_pct_pre_release: {value: 50, source: "prose (Trivia): 'the Breakfast Boost's healing was decreased to 40% (from 50%)' before release"}
+  cast_time_s: {value: 0.933, source: "Breakfast Boost Attributes table 'Cast Time'"}
+  cast_delay_prose_s: {value: 1, source: "prose (ability section): 'After a 1-second delay' - conflicts with table 0.933"}
+  ability_range: {value: "Himself", source: "Breakfast Boost Attributes table 'Ability Range'"}
+  meter_fill_time_s: {value: 22, source: "prose (ability section): 'He will need 22 seconds to get one pancake meter filled'; History 2/2/2026 confirms 'increased ... cook time to 22 seconds (from 20 seconds)'"}
+  meter_fill_time_former_s: {value: 20, source: "prose (History 2/2/2026), parenthetical"}
+  attack_progress_s: {value: 10, source: "prose (ability section): '10 seconds of progress with every attack'"}
+  max_meters: {value: 3, source: "prose (ability section): 'a maximum of 3 meters'"}
+  levels_gained_0_meters: {value: 1, source: "table 'Level Increase from Pancake Bar': '0 bars filled = +1 level'; prose 'With no meters ... will gain 1 Level'"}
+  levels_gained_1_meter_total: {value: 2, source: "table: '1 bar filled = +1 level/ 2 levels altogether'"}
+  levels_gained_2_meters_total: {value: 3, source: "table: '2 bars filled = +1 level/ 3 levels altogether'"}
+  levels_gained_3_meters_total: {value: 5, source: "table: '3 bars filled = + 2 levels/ 5 levels altogether'; prose 'except the last meter grants 2 extra Levels ... he can gain 5 Levels'"}
+  mirror_chef_max_extra_levels: {value: 7, source: "prose (Strategy): 'granting a total of 7 extra Levels on the Heroic Mini P.E.K.K.A that way' (Royal Chef +1, Mirror +1, ability +5)"}
+  hp_lvl11: {value: 1433, source: "vardefine hp_base - see conflicts re: History -3% nerf"}
+  damage_lvl11: {value: 755, source: "vardefine dmg_base"}
+  hit_speed_s: {value: 1.6, source: "vardefine atk_speed; unit-attributes-table"}
+  first_hit_speed_s: {value: 0.5, source: "unit-attributes-table 'First Hit Speed'"}
+  deploy_time_s: {value: 1, source: "unit-attributes-table 'Deploy Time'"}
+  range_tiles: {value: 0.8, source: "unit-attributes-table 'Melee: Short (0.8)'"}
+  speed: {value: "Fast (90)", source: "unit-attributes-table 'Speed'"}
+  count: {value: 1, source: "unit-attributes-table 'x1'"}
+  unlock_hero_fragments: {value: 200, source: "prose (intro): 'unlocked with 200 hero fragments'"}
+  hp_nerf_pct_2026_01_12: {value: 3, source: "prose (History 12/1/2026): 'decreased the it's Hitpoints by 3%'"}
+  level_table_extension: {value: "levels 17-21 shown in bold", source: "level table footnote: 'Bold: Extra levels added if ability used while card is in Level 16' - implies per-level scaling is the standard x1.1 wiki formula"}
+
+proposed_ability_kind: transform_levelup
+
+open_questions:
+  - "Uses / cooldown: NOT STATED anywhere on the page. Knight and Giant heroes were made single-use on 4/8/2026 (from 20 s / 14 s cooldowns); this page has no such History entry. Is Breakfast Boost single-use, on cooldown, or repeatable? -> in-game check"
+  - "Hero body HP: vardefine says 1433 (== base Mini P.E.K.K.A.), History (12/1/2026) says -3% (~1390). Which is live? -> in-game check"
+  - "Heal 30% - of MAX hitpoints or missing hitpoints? Strategy's 'healing 30% of his hitpoints' suggests max. Is the heal computed before or after the new Levels raise max HP? -> in-game check"
+  - "Cast delay: 0.933 s (table) vs 1 s (prose) - which is real?"
+  - "Meter accrual: are passive time (22 s/meter) and per-attack progress (10 s/attack) additive on one clock? Does partial-meter progress count for anything at cast, or only full meters?"
+  - "Do gained Levels scale HP and damage by the standard x1.1 per level (bold rows 17-21 of the level table imply yes)? Do the extra Levels persist for the body's remaining lifetime?"
+  - "Is there a hard level cap (table stops at 21 = 16+5, but Strategy describes +7 total via Royal Chef + Mirror)?"
+  - "First Hit Speed 0.5 s vs snapshot base load_time_s 1.1 - same metric or different? If same, hero first hit is much faster than base."

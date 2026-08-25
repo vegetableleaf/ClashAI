@@ -1,0 +1,95 @@
+key: dark_prince_hero
+base_card: dark_prince
+page: Dark Prince/Hero
+revid: 437359
+fetched: "2026-08-25"
+release_date: "2026-05-04"   # infobox ReleaseDate "May 04,2026"; Heroes master History 4/5/2026
+
+body_stat_deltas:
+  # hero page level-11 vardefines vs ledger/current_db_snapshot.json dark_prince (verified: true)
+  hitpoints: none stated       # 1200 (vardefine hp_11) == base 1200
+  shield_hp: none stated       # 256 (vardefine shield_11) == base 256.0
+  damage: none stated          # 266 (vardefine dmg_11) == base 266
+  charge_damage: none stated   # 532 (vardefine charge_11) == base 532.0
+  hit_speed: "CONFLICT ON PAGE: attributes table says 1.4 sec but vardefine atk_speed|1.3; base snapshot is 1.3 -- if the vardefine is right the delta is none, if the table is right the hero is 0.1 s slower. Recorded in conflicts."
+  charge_range: none stated    # Charge Attributes table 3 == base charge_range 3.0 (but see History 2.5-tile 'first charge distance' -- conflicts)
+  splash_radius: none stated   # attributes table 1.1 == base splash_radius 1.1
+  charge_splash_radius: "POSSIBLE DELTA: hero page 'Charge Attributes' Splash Radius = 1.1, base snapshot charge_splash_radius_tiles = 2.2 -- units/scales between wiki table and snapshot field are not established, so this is flagged, not asserted"
+  range: none stated           # Melee: Medium (1.2) == base range_tiles 1.2
+  speed: none stated           # Medium (60) == base speed_tiles 1.0 (medium)
+  deploy_time: none stated     # 1 sec == base 1.0
+  first_hit_speed: "0.6 sec on hero page; snapshot has no first-hit-speed field (load_time_s 0.9 is a different field) -- not comparable"
+  targets: none stated         # Ground both
+  count_rarity: none stated    # x1, Epic both
+
+ability:
+  name: Destructive Dismount
+  elixir_cost: 3        # infobox AbilityCost=3; 'Rhino Attributes' table Cost column = 3
+  uses: null            # NOT STATED on this page. The other two hero pages were made single-use on 4/8/2026; this page's History is silent -> in-game check
+  cooldown_s: null      # not stated
+  cast_delay_s: 1.0     # source: prose (History 1/6/2026): "the ability deploy time decreased to 1 second (from 2 seconds)"
+
+mechanic_prose: |
+  [section "Ability: Destructive Dismount", quote template -- this page has NO body
+  paragraph for the ability, only the quote]
+  "Dismount doing damage, attacking on foot while Rhino charges buildings."
+
+  [top-of-page card quote, verbatim]
+  "Like his rider, Rhino has endured many a battle. Now that he and Hero Dark Prince have
+  found each other, they can break through any tower, or Skeleton, together."
+
+  [section "History", 1/6/2026 entry, verbatim -- carries three live numbers]
+  "On 1/6/2026, a Balance Update, the rhino spawn damage to crown towers was completely
+  removed (307 to 0 at level 11). The rhino's first charge distance increased to 2.5 tiles
+  (from 0 tiles) and the ability deploy time decreased to 1 second (from 2 seconds)"
+
+numbers:
+  deploy_cost_elixir: {value: 4, source: "infobox Cost=4; 'Dark Prince Attributes' table Cost column"}
+  ability_cost_elixir: {value: 3, source: "infobox AbilityCost=3; 'Rhino Attributes' table Cost column"}
+  body_hit_speed_s_table: {value: 1.4, source: "'Dark Prince Attributes' table 'Hit Speed' -- CONFLICTS with vardefine atk_speed|1.3"}
+  body_hit_speed_s_vardefine: {value: 1.3, source: "vardefine atk_speed|1.3 (drives the DPS column) -- conflicting value"}
+  body_first_hit_speed_s: {value: 0.6, source: "'Dark Prince Attributes' table 'First Hit Speed'"}
+  body_speed: {value: "Medium (60)", source: "'Dark Prince Attributes' table 'Speed'"}
+  body_deploy_time_s: {value: 1, source: "'Dark Prince Attributes' table 'Deploy Time'"}
+  body_range_tiles: {value: 1.2, source: "'Dark Prince Attributes' table 'Range' = Melee: Medium (1.2)"}
+  body_splash_radius_tiles: {value: 1.1, source: "'Dark Prince Attributes' table 'Splash Radius'"}
+  body_hp_lvl11: {value: 1200, source: "vardefine hp_11|1200"}
+  body_shield_hp_lvl11: {value: 256, source: "vardefine shield_11|256"}
+  body_area_damage_lvl11: {value: 266, source: "vardefine dmg_11|266"}
+  body_charge_damage_lvl11: {value: 532, source: "vardefine charge_11|532"}
+  charge_speed: {value: "Very Fast (120)", source: "'Charge Attributes' table 'Speed'"}
+  charge_range_tiles: {value: 3, source: "'Charge Attributes' table 'Charge Range'"}
+  charge_splash_radius_tiles: {value: 1.1, source: "'Charge Attributes' table 'Splash Radius'"}
+  rhino_hit_speed_s: {value: 1.6, source: "'Rhino Attributes' table 'Hit Speed'"}
+  rhino_range_tiles: {value: 0.8, source: "'Rhino Attributes' table 'Range'"}
+  rhino_speed: {value: "Medium", source: "'Rhino Attributes' table 'Speed' (no numeric given)"}
+  rhino_charge_range_tiles: {value: 3, source: "'Rhino Attributes' table 'Charge Range' -- tension with History's 'first charge distance ... 2.5 tiles', see conflicts"}
+  rhino_first_charge_distance_tiles: {value: 2.5, source: "prose (History 1/6/2026): 'The rhino's first charge distance increased to 2.5 tiles (from 0 tiles)'"}
+  rhino_spawn_damage_radius: {value: null, source: "'Rhino Attributes' table 'Spawn Damage Radius' literally says 'unknown' -- null, never estimate"}
+  rhino_targets: {value: "Buildings", source: "'Rhino Attributes' table 'Target'"}
+  rhino_hp_lvl11: {value: 1356, source: "vardefine rhp_11|1356"}
+  rhino_damage_lvl11: {value: 179, source: "vardefine rdmg_11|179"}
+  rhino_charge_damage_lvl11: {value: 358, source: "vardefine rcharge_11|358"}
+  rhino_spawn_damage_lvl11: {value: 307, source: "vardefine spawndmg_11|307; statistics table 'Rhino Spawn Damage' column"}
+  rhino_spawn_damage_vs_crown_towers: {value: 0, source: "prose (History 1/6/2026): 'the rhino spawn damage to crown towers was completely removed (307 to 0 at level 11)'"}
+  ability_deploy_time_s: {value: 1, source: "prose (History 1/6/2026): 'the ability deploy time decreased to 1 second (from 2 seconds)'"}
+
+proposed_ability_kind: summon
+# rationale: the ability spawns a new autonomous building-targeting charger (Rhino) with
+# spawn damage, while the body keeps fighting with apparently unchanged stats (page gives
+# only one body stat-set). Composite transform+summon; summon chosen as primary since the
+# Rhino is the new sim entity. If the dismount turns out to alter the body's own stats,
+# reclassify toward transform_levelup.
+
+open_questions:
+  - Ability uses/cooldown -- page says NOTHING. Magic Archer and Balloon heroes were both made single-use on 4/8/2026; was Dark Prince included? In-game check.
+  - Body hit speed 1.4 (table) vs 1.3 (vardefine, == base) -- which is live?
+  - Do the mounted and dismounted Dark Prince share the single stat table shown, or does dismounting change his hit speed/damage/speed? Page gives one body table only.
+  - Does the on-foot Dark Prince keep the shield (shield_11 applies before or after dismount, or both)?
+  - '"Dismount doing damage" -- is the dismount AoE the Rhino spawn damage (307, radius unknown) or a separate body effect? Page never separates them.'
+  - Rhino spawn damage radius -- table literally says "unknown" -> null.
+  - Rhino "Charge Range 3" (table) vs "first charge distance ... 2.5 tiles" (History) -- same quantity out of date, or two different mechanics (windup distance vs detection range)?
+  - Rhino lifetime -- does it persist until killed, or despawn? Not stated.
+  - Rhino crown-tower modifier on normal/charge attacks (only the SPAWN damage vs crowns is documented as removed) -- unknown.
+  - Charge Attributes table (body) -- does the dismounted Dark Prince retain his charge with these numbers, or is this the mounted state's charge? Ambiguous.
+  - Hero charge splash 1.1 vs base snapshot charge_splash_radius_tiles 2.2 -- possible body delta or unit mismatch; needs base-page cross-check or in-game measure.

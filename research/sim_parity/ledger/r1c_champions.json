@@ -1,0 +1,195 @@
+{
+ "meta": {
+  "task": "r1c champions -- roster + current lifecycle rules",
+  "fetched": "2026-08-25",
+  "generated_by": "r1c subagent (Category:Champion Cards walk + Cards/Heroes/Version History)",
+  "category_walk": {
+   "Category:Champion Cards": [
+    "Archer Queen",
+    "Boss Bandit",
+    "Goblinstein",
+    "Golden Knight",
+    "Little Prince",
+    "Mighty Miner",
+    "Monk",
+    "Skeleton King",
+    "Terry",
+    "Category:Champions with 1-Elixir Abilities",
+    "Category:Champions with 2-Elixir Abilities",
+    "Category:Champions with 3-Elixir Abilities"
+   ],
+   "subcategory_members": {
+    "1-Elixir": [
+     "Archer Queen",
+     "Boss Bandit",
+     "Golden Knight",
+     "Mighty Miner",
+     "Monk",
+     "Terry"
+    ],
+    "2-Elixir": [
+     "Goblinstein",
+     "Skeleton King"
+    ],
+    "3-Elixir": [
+     "Little Prince"
+    ]
+   },
+   "verdict": "KB's 8 champions confirmed; NO 2026 additions (2026 card releases are Heroes and Evolutions, not Champions); Terry = removed 2023 event card"
+  },
+  "rarity_master_page_note": "Champion, Champions, Champion (rarity), Champion (card rarity), Rarity, Rarities all MISSING on the wiki -- the rarity master text is the 'Champion Cards' section of the Cards page (revid 437053)",
+  "webcache": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/ -- Archer_Queen 436755, Boss_Bandit 437146, Goblinstein 437348, Golden_Knight 437147, Little_Prince 437347, Mighty_Miner 437349, Monk 437140, Skeleton_King 436753, Terry 425163, Cards 437053, Heroes 437509, Version_History 437451, Version_History_2025 436887, Template_Champion_Ability 405070"
+ },
+ "rows": [
+  {
+   "key": "archer_queen",
+   "page": "Archer Queen",
+   "revid": 436755,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2021-10-27",
+   "evo_cycles": null,
+   "notes": "Confirmed in Category:Champion Cards. Cost 5, ability Cloaking Cape +1 elixir, Arena 17 (Royal Crypt). Infobox ReleaseDate=27 October 2021 (Champions Update 27/10/2021). Page history ends 24/11/2025 -- no rework entry on the card page; page still quotes a 17s ability cooldown (pre single-use change)."
+  },
+  {
+   "key": "boss_bandit",
+   "page": "Boss Bandit",
+   "revid": 437146,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2025-04-07",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 6, ability +1 elixir, Arena 17. Infobox ReleaseDate=7 April 2025. EXPLICITLY EXEMPT from the 4/8/2026 single-use ability change: 'Champions and Heroes (minus Boss Bandit): Will no longer have multi-use abilities' (Version History revid 437451) -- her ability remains multi-use."
+  },
+  {
+   "key": "goblinstein",
+   "page": "Goblinstein",
+   "revid": 437348,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2024-10-07",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 5, ability +2 elixir, Arena 18 (Silent Sanctuary). Infobox ReleaseDate=7 October 2024. STALE TEXT ON PAGE: 'Being a Champion card, they will stay out of the player's card cycle, and only return once they are defeated' and 'killing him would remove the 3 card cycle' -- contradicts the 29/9/2025 Champion Rework; only champion page still describing the hand-lock. Doctor is the champion proper; Monster is a separate spawned body."
+  },
+  {
+   "key": "golden_knight",
+   "page": "Golden Knight",
+   "revid": 437147,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2021-10-27",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 4, ability +1 elixir, Arena 16 (Executioner's Kitchen). Infobox ReleaseDate=27 October 2021 (Champions Update)."
+  },
+  {
+   "key": "little_prince",
+   "page": "Little Prince",
+   "revid": 437347,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2023-11-06",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 3, ability +3 elixir, Arena 18. Infobox ReleaseDate=6 November 2023. Buffed 4/8/2026 (charged hit speed kept 0.3s while moving; Guardian melee +7%)."
+  },
+  {
+   "key": "mighty_miner",
+   "page": "Mighty Miner",
+   "revid": 437349,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2022-03-30",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 4, ability +1 elixir, Arena 17. Infobox ReleaseDate=30 March 2022. Base damage +8% on 4/8/2026."
+  },
+  {
+   "key": "monk",
+   "page": "Monk",
+   "revid": 437140,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2022-10-26",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 5, ability +1 elixir, Arena 18. Infobox ReleaseDate=26 October 2022 (2022 Quarter 3 Update)."
+  },
+  {
+   "key": "skeleton_king",
+   "page": "Skeleton King",
+   "revid": 436753,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": "2021-10-27",
+   "evo_cycles": null,
+   "notes": "Confirmed. Cost 4, ability Soul Summoning +2 elixir, Arena 16. Infobox ReleaseDate=27 October 2021 (Champions Update). Rework interaction: 'Skeleton King's soul bar resets during ability transference' (2025 Q3 rework, Version History/2025 revid 436887). Page still quotes a 20s ability cooldown (pre single-use change)."
+  },
+  {
+   "key": "terry",
+   "page": "Terry",
+   "revid": 425163,
+   "status": "absent",
+   "fetched": "2026-08-25",
+   "release_date": "2023-05-01",
+   "evo_cycles": null,
+   "notes": "NOT a 2026 addition and NOT in the KB -- correctly so. Temporary event-only champion: released in the Super Champion Battle Event 1/5/2023, 'On 9/5/2023, the Terry was removed from the game.' Page carries {{RemovedContent}} and Category:Removed Cards. Appears in the Category:Champion Cards walk; exclude from live roster."
+  },
+  {
+   "key": "_lifecycle_rules",
+   "page": "multiple (see sources)",
+   "revid": null,
+   "status": "live",
+   "fetched": "2026-08-25",
+   "release_date": null,
+   "evo_cycles": null,
+   "sources": {
+    "Cards": {
+     "revid": 437053,
+     "note": "current Champion-rarity master text; no dedicated rarity page exists -- Champion / Champions / Champion (rarity) / Champion (card rarity) / Rarity / Rarities all MISSING; the master text is the 'Champion Cards' section of the Cards page"
+    },
+    "Heroes": {
+     "revid": 437509,
+     "note": "slot + refund rules"
+    },
+    "Version History": {
+     "revid": 437451,
+     "note": "root page carries all 2026 entries incl. Balance Changes (4/8/2026) single-use ability change"
+    },
+    "Version History/2025": {
+     "revid": 436887,
+     "note": "2025 Quarter 3 Update (29/9/2025) 'Champion Rework' -- the hand-lock removal. NOTE: task framing said 2026 rework (owner-confirmed); wiki dates it 29/9/2025"
+    }
+   },
+   "quotes": {
+    "rework_hand_lock_removed": "Champions will not bring 3-card cycle anymore: they come back to the player's cycle like any other card. [Version History/2025 revid 436887, '2025 Quarter 3 Update (29/9/2025)', Champion Rework]",
+    "rework_ability_owner": "Only the most recent placed Champion has the ability. / The Champion that possesses the ability has a crown icon. / Cooldowns are reset when the ability is transferred between Champions. / Skeleton King's soul bar resets during ability transference. [same section]",
+    "rework_mirror": "Mirror now works on Champions. [same section]",
+    "rework_deck_limit_2025": "There can still be only one Champion per deck. [same section -- SUPERSEDED by later hero-slot changes, see deck_slots finding e]",
+    "cards_master_current": "All Champion cards are troops, and when they are deployed, an ability icon will appear at the right-hand side of the player's screen. At any time, the player can tap the icon in order to activate their Champion's unique ability. Activating an ability costs a certain amount of Elixir. The abilities adhere to the server's 1 second deployment delay. After the ability's duration concludes, the abilities will go on a cooldown, which prevents them from being used for some time. The cooldown will instantly reset if the player's Champion dies, or if a new Champion gets placed (as in the same Champion card or through a Mirror). [Cards revid 437053]",
+    "cards_master_button": "The most recent Champion card placed will be able to use its ability. [Cards revid 437053]",
+    "cards_master_deck": "Up to 2 Champion cards can be present in a deck at any time. [Cards revid 437053]",
+    "cards_master_clone": "Cloned Champion troops cannot use abilities. Activating an ability while a cloned Champion is on the arena will only trigger it for the original troop. [Cards revid 437053]",
+    "single_use_2026": "Champions and Heroes (minus Boss Bandit): Will no longer have multi-use abilities. Instead, they will be single use [Version History revid 437451, Balance Changes (4/8/2026)]",
+    "heroes_refund": "When a Hero activates their ability, but did not start casting it before they are defeated, the Elixir spent on the ability will be refunded once they are defeated. [Heroes revid 437509 -- written for Heroes; champion pages carry no refund text]",
+    "heroes_slots": "Only two Heroes can be in a deck at a time, and only in the Hero and Wild slots. Those slots are also shared with Champion card, which means that the player can have 1 Hero and 1 Champion at the same time. [Heroes revid 437509]",
+    "heroes_slot_unlock": "The Champion slot is unlocked at Arena 5, while the Wild slot is unlocked at Arena 10. [Heroes revid 437509]",
+    "midmarch_slots": "The special slots are changed to 1evo-1hero-1wild (from 2evo-2hero) / Wild slot can have either 1 evo or 1 hero [Version History revid 437451, 2026 Mid-March Update (16/3/2026)]"
+   },
+   "findings": {
+    "a_same_champion_coexist": "IMPLIED COEXIST, NOT EXPLICIT. The rework speaks of the ability being 'transferred between Champions' and the Cards page of the cooldown resetting 'if a new Champion gets placed (as in the same Champion card or through a Mirror)' -- both presuppose two bodies alive at once, and no source says the second deploy replaces or kills the first. Needs owner in-game confirmation.",
+    "b_which_body_gets_button": "The MOST RECENTLY PLACED champion body owns the single ability button; it is marked with a crown icon. Older bodies stay on the field without ability access.",
+    "c_uses_cooldowns_per_body": "Cooldown resets when the ability transfers to a new body (new placement) and when the owning champion dies. Since 4/8/2026 abilities are SINGLE USE per possession for all champions except Boss Bandit (multi-use retained). Whether a newly placed second body refreshes the spent use is undocumented.",
+    "d_elixir_refund": "Documented verbatim only for Heroes: elixir refunded if the body is defeated after buying the ability but before the cast starts. Heroes' ability gimmick is stated to be 'shared with Champion cards' (Heroes revid 437509), so it presumably applies to champions, but no champion-specific refund text exists post-rework.",
+    "e_deck_slots": "Champions and Heroes share the two special slots: Champion/Hero slot (Arena 5) + Wild slot (Arena 10; holds 1 evo OR 1 hero/champion). Max two champion-rarity/hero cards per deck in any mix; 'Up to 2 Champion cards can be present in a deck at any time' (Cards). The rework-era 'only one Champion per deck' (29/9/2025) is superseded by the Heroes launch (1/12/2025) and the 2026 Mid-March slot format."
+   },
+   "notes": "See quotes/findings/sources keys in this row inside r1c_champions.json; summary duplicated in the structured-output notes field."
+  }
+ ],
+ "conflicts": [
+  "REWORK DATE: task framing says the champion lifecycle rework is a 2026 change (owner-confirmed), but the wiki documents the 'Champion Rework' in the 2025 Quarter 3 Update dated 29/9/2025 (Version History/2025 revid 436887). Sources conflict -- not resolved here.",
+  "OWNER IN-GAME CHECK (a): two bodies of the SAME champion coexisting is implied by 'Cooldowns are reset when the ability is transferred between Champions' and 'a new Champion gets placed (as in the same Champion card or through a Mirror)', but no source states outright that the first body survives the second deploy. Verify: deploy champion #1, cycle back, deploy #1 again -- does body 1 remain alive and fighting?",
+  "OWNER IN-GAME CHECK (c): 4/8/2026 made abilities single-use (except Boss Bandit). Undocumented whether 'single use' is per body-deployment (a fresh body = a fresh use) or per match, and how it composes with 'cooldown resets on new placement'. Verify with a cheap champion: use ability, redeploy the same champion, is the button live again?",
+  "OWNER IN-GAME CHECK (d): elixir-refund-on-death-before-cast is documented only on the Heroes page (revid 437509). Confirm it applies to champions (buy ability, kill body during the 1s deploy delay).",
+  "STALE PAGE TEXT: Goblinstein (revid 437348) still says 'Being a Champion card, they will stay out of the player's card cycle, and only return once they are defeated' and 'killing him would remove the 3 card cycle' -- contradicts the 29/9/2025 rework; treat as stale per owner instruction.",
+  "STALE PAGE TEXT: Cards page trivia (revid 437053) says 'Even though a deck can only have 1 Champion Card at a time...' which contradicts its own current rule text 'Up to 2 Champion cards can be present in a deck at any time' on the same page revision.",
+  "LAGGING PAGES: every champion card page still quotes fixed ability cooldowns (Archer Queen 17s revid 436755, Skeleton King 20s revid 436753, etc.) and the Cards master section still describes cooldown mechanics, none updated for the 4/8/2026 single-use change (Version History revid 437451). Which numbers still matter in the single-use regime is unclear.",
+  "OWNER IN-GAME CHECK (Skeleton King): souls -- does a non-possessing (older) body keep accruing souls, and does only the crowned body's bar feed the ability? Wiki only says the soul bar resets on transference."
+ ]
+}

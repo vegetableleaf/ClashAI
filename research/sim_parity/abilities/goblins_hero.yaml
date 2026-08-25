@@ -1,0 +1,79 @@
+# Extracted 2026-08-25 via api.php parse (wikitext|revid); raw page archived at
+# research/sim_parity/webcache/Goblins_Hero.wikitext
+key: goblins_hero
+base_card: goblins
+page: Goblins/Hero
+revid: 437513
+fetched: "2026-08-25"
+release_date: "2026-02-02"   # infobox ReleaseDate="February 2,2026"; History: "released on 2/2/2026"
+
+body_stat_deltas:
+  summary: "none stated -- hero body is stat-identical to ledger base goblins on every comparable field"
+  detail:
+    elixir:           {hero: 2,    base: 2,    delta: 0}   # infobox Cost=2 / attributes table
+    count:            {hero: 4,    base: 4,    delta: 0}   # attributes table "x4"; intro "spawns four"
+    hitpoints_lvl11:  {hero: 202,  base: 202,  delta: 0}   # vardefine hp_11
+    damage_lvl11:     {hero: 125,  base: 125,  delta: 0}   # vardefine dmg_11
+    hit_speed_s:      {hero: 1.1,  base: 1.1,  delta: 0}   # attributes table + vardefine atk_speed
+    range_tiles:      {hero: 0.5,  base: 0.5,  delta: 0}   # "Melee: Short (0.5)"
+    deploy_time_s:    {hero: 1.0,  base: 1.0,  delta: 0}   # attributes table "1 sec"
+  caveat: >
+    History (4/8/2026) says the Hero Goblins' damage was increased by 4%, yet the
+    hero's dmg_11=125 equals the ledger base-goblins damage (125). Either the base
+    card shares the buff (the ledger snapshot postdates 4/8) or the editor applied
+    it to the shared vardefine; delta vs the current snapshot is zero either way.
+    125/1.04 = 120.2, so the pre-buff value was presumably ~120.
+
+ability:
+  name: Banner Brigade
+  elixir_cost: 1        # infobox AbilityCost=1; Banner Brigade Attributes table Cost; prose "costs 1 Elixir to activate"
+  uses: null            # not stated; banner appears once (when the last goblin dies) and lasts 5 s
+  cooldown_s: null      # not stated
+  cast_delay_s: null    # not stated; brigade goblins have their own 1 s Deploy Time (see numbers)
+
+mechanic_prose: |
+  [Card flavor Quote, top of page]
+  "A single gobble of Goblins is never enough! Hero Goblins are far too clever to go
+  into battle without backup, so the final one to fall drops an unassuming banner
+  that signals the second wave."
+
+  [Section: Ability: Banner Brigade -- Quote]
+  "The last Goblin standing drops a banner that calls in reinforcements."
+
+  [Section: Ability: Banner Brigade -- body text, verbatim incl. typos]
+  "The Hero Knight has a special ability accessible from whatever side of the screen
+  was put in, just above the player's card slots in battle. The ability will be
+  disabeld until the last goblin is killed. When the last goblin dies, a banner will
+  be deployed that last 5sec. When the ability is pressed during that time, 2 Brigade
+  Goblins will spawn a little behind. Brigade Goblins has the exact stats as the
+  original goblins. The Banner Brigade ability costs 1 Elixir to activate."
+
+numbers:
+  deploy_cost_elixir:        {value: 2,   source: infobox, field: "Cost=2 (also attributes table + prose 'costs 2 Elixir to deploy')"}
+  ability_cost_elixir:       {value: 1,   source: infobox, field: "AbilityCost=1 (also Banner Brigade Attributes Cost + prose)"}
+  unlock_cost_hero_shards:   {value: 200, source: prose,   field: "intro: 'unlocked with 200 Hero Shard'"}
+  body_count:                {value: 4,   source: attributes_table, field: "Heroic Goblins Attributes, Count 'x4'"}
+  body_hit_speed_s:          {value: 1.1, source: attributes_table, field: "Hit Speed '1.1 sec' (= vardefine atk_speed|1.1)"}
+  body_first_hit_speed_s:    {value: 0.6, source: attributes_table, field: "First Hit Speed '0.6 sec'"}
+  body_speed:                {value: "Very Fast (120)", source: attributes_table, field: "Speed"}
+  body_deploy_time_s:        {value: 1.0, source: attributes_table, field: "Deploy Time '1 sec'"}
+  body_range_tiles:          {value: 0.5, source: attributes_table, field: "Range 'Melee: Short (0.5)'"}
+  hitpoints_lvl11:           {value: 202, source: vardefine, field: "hp_11"}
+  damage_lvl11:              {value: 125, source: vardefine, field: "dmg_11"}
+  brigade_count:             {value: 2,   source: attributes_table, field: "Banner Brigade Attributes, Brigade Count 'x2'; prose '2 Brigade Goblins'; History 4/8/2026 'decreased ... to 2 (from 3)'"}
+  banner_lifetime_s:         {value: 5,   source: attributes_table, field: "Banner Brigade Attributes, Banner Lifetime '5 sec'; prose 'last 5sec'; History 23/2/2026 'decreased banner duration to 5 seconds (from 7 seconds)'"}
+  brigade_deploy_time_s:     {value: 1.0, source: attributes_table, field: "Banner Brigade Attributes, Deploy Time '1 sec'; History 4/8/2026 'decreased ... to 1 second (from 1.3 seconds)'"}
+  brigade_stats:             {value: "identical to body goblins", source: prose, field: "ability text 'Brigade Goblins has the exact stats as the original goblins'; level table reuses hp_11/dmg_11 for Brigade columns"}
+  brigade_spawn_offset_tiles: {value: 1, source: prose, field: "History 7/4/2026: 'the brigade goblins now spawn a tile back from where the banner is dropped at'; ability text says only 'a little behind'"}
+  level_scaling:             {value: "stat_11 * 1.1^(level-11), rounded; level table shown for 1-16", source: attributes_table, field: "level-table #expr formulas; page warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  balance_history_brigade_count: {value: "pre-release 3->4; 23/2/2026 4->3; 4/8/2026 3->2", source: prose, field: "History bullets + Trivia 'Pre release, the Banner Brigades spawned units was increased to 4 (from 3)'"}
+
+proposed_ability_kind: summon
+
+open_questions:
+  - "Use count: is Banner Brigade limited to one activation per banner / per deployment? Page never states a limit (banner window implies at most one, but not stated)."
+  - "Does the banner drop on ANY death of the last goblin (spell kill, tower kill), or are there exclusions?"
+  - "Exact spawn placement: 'a tile back from where the banner is dropped' -- exactly 1.0 tile toward own side? Formation of the 2 goblins?"
+  - "Can a brigade goblin be 'the last goblin standing' and drop a second banner (chaining)? Prose is silent."
+  - "Cast delay between button press and brigade spawn is not stated (only the 1 s brigade Deploy Time is)."
+  - "Prose reliability flag: the page twice calls the card 'The Heroic Knight' / 'The Hero Knight' -- copy-paste editing from the Knight page; treat prose with care."

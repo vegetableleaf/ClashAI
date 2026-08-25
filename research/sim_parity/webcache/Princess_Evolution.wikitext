@@ -1,0 +1,34 @@
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Princess</span>}}
+{{Protection}}{{MagicWords}}{{Evolved Card Infobox
+|Cost=3
+|CycleCost=2
+|Rarity=Legendary
+|Type=Troop
+|Arena=Electro Valley
+|ReleaseDate=June 2026}}
+
+{{Quote|There’s nothing like the frozen tundra of the deep North to awaken the Evolution within a worthy royal.}}
+
+The Princess's Evolution is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns an evolved [[Princess]] with area-damage, air-targeting, very long-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and moderate damage. She resembles a woman with purple eyes, long black hair with a gray stripe and eyebrows, wearing a blue robe with team-colored sleeves and a woolen base, a cape with a [[Card Evolution]] symbol on the front, an ice crown with a golden circlet, a purple belt with a crown symbol, gloves and leggings, and dark brown boots, and wields a bow with a team-colored handle, dark purple stabilizers with golden edges and woolen details, and arrows with team-colored fletchings and icy points. The Princess's Evolution costs 3 [[Elixir]] to deploy.
+
+== Ability ==
+Once the Evolved Princess spawns, her first shot will slow down enemies within a 3-tile radius (by 30%, just like the [[Ice Wizard]]) for 7 seconds. After this first shot, she will fire two normal shots, and the third one will slow them down. Additionally, when the Evolved Princess dies, she leaves behind a 3-tile area-damaging slowdown zone that also lasts 7 seconds.
+
+== Strategy ==
+*The Evolved Princess is quite effective on defense thanks to her ability to slow down groups of troops, especially against "Beatdown" decks.
+*But the Evolved Princess can also be played offensively with a win condition that will slow down troublesome troops.
+*Since the Evolved Princess is fragile, try to protect her with a mini-tank ([[Knight]], [[Berserker]], [[Valkyrie]], [[Mini P.E.K.K.A.]], etc). 
+
+== History ==
+
+=== 2026 ===
+
+* In June 2026, the Evolved Princess was added alongside the Heroic Tombstone during Season 84 of Clash Royale.
+* On 4/8/2026, a Balance Update, decreased the number of slow attacks to every 2 hits (from every 3 hits) and decreased the slowdown duration to 5.5 seconds (from 7 seconds)
+
+== Gallery ==
+<gallery>
+File:PrincessEvoShard.png|Evolution Shard
+File:Evolved Princess 1.png|Evolved Princess
+</gallery>
+{{Navigation|Card}}

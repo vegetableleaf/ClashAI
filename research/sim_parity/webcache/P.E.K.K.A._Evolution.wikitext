@@ -1,0 +1,174 @@
+{{MagicWords}}{{Protection}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved P.E.K.K.A</span>}}
+{{Evolved Card Infobox|CycleCost=1|Cost=7|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=2 September 2024}}{{Quote|Floats like a butterfly, stings like a bee. Evolved P.E.K.K.A has a giant soul-sucking sword that restores health after slaying her enemies.}}
+
+The P.E.K.K.A's Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a P.E.K.K.A with identical stats to the original. Once the Evolved P.E.K.K.A takes out a [[:Category:Troop Cards|troop]] or [[:Category:Building Cards|building]], a butterfly will spawn around her sword, healing 3.5%-15% of her original hitpoints, the magnitude of the heal being determined by the defeated unit's hitpoints. This healing can overheal, allowing her to achieve 50% more hitpoints at its maximum capacity. She appears as a robot-looking troop larger than the [[Mini P.E.K.K.A.]] clothed in heavy dark gray armor with gold linings, dark-colored stabilizers and two large magenta spikes on her shoulders, wears team-colored straps with the [[Card Evolution]] symbol in the center, has magenta eyes and horns, and wields a large, magenta-glowing metal sword with a golden handle. The P.E.K.K.A's Evolution costs 7 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*The Evolved P.E.K.K.A's massive damage, healing, and very high hitpoints makes her an incredibly powerful wall on both offense and defense. She is more than capable of shutting down massive ground pushes for a positive Elixir trade, with the trade off of taking heavy damage. Fortunately, she'll heal by destroying troops in the push, keeping her healthy enough to counterattack.
+*Compared to the regular [[P.E.K.K.A.|P.E.K.K.A]], it isn't recommended to use small to medium ground swarms like [[Goblin Gang]] and [[Guards]] to defend against the Evolved P.E.K.K.A. Doing so allows the Evolved P.E.K.K.A to heal back a portion of her health. This will likely leave her healthy enough to attack the [[:Category:Crown Towers|Crown Tower]], dealing massive damage, if not take out an entire tower.
+*The Evolved P.E.K.K.A should never be ignored in any situation with any [[:Category:Tower Troop Cards|tower]] troop. Doing so will not just take down a Crown Tower, but also nearly take out the [[King's Tower]].
+*Along with the regular P.E.K.K.A, the Evolved P.E.K.K.A is one of the only single-card hard counters to the [[Mega Knight/Evolution|Evolved Mega Knight]]. Her very high DPS can quickly deplete his hitpoints while her own high hitpoints can easily tank the pushback-jump combo, keeping her healthier for longer. She'll likely deal the finishing blow to him, healing her slightly and providing extra pressure for a neutral Elixir trade.
+*In spite of her healing ability, the [[Skeletons/Evolution|Evolved Skeletons]] and [[Skeleton Army]] can still counter her thanks to their ability to multiply, along with their sheer number and DPS respectively. They can overwhelm her for long enough until she is defeated. Keep in mind that her healing ability allows her to last a bit longer than a normal P.E.K.K.A, giving the opponent more time to eliminate the Skeletons with a spell like [[Zap]] or [[Giant Snowball]].
+*Unlike [[Bats/Evolution|Evolved Bats]], which recover hitpoints every attack, the Evolved P.E.K.K.A only recovers HP if she defeats a unit. This means that even if the P.E.K.K.A dealt significant damage to a unit, if she doesn't deal the finishing blow; for example, if a [[Dart Goblin]], [[Minions]], [[Spear Goblins]], [[Bats]], Skeletons, Guards, [[Goblins]], or [[Archers]] finished off a [[Mega Knight]], [[Giant Skeleton]], [[Elixir Golem]], [[Golem]], or a [[Giant]], the P.E.K.K.A was fighting, she won't regain hitpoints.
+**Because of this, when defending against her, it may be a good idea to keep the Evolved P.E.K.K.A busy using a troop with high DPS and high hitpoints, such as a [[Mighty Miner]], [[Monk]], [[Prince]], [[Goblin Machine]], or [[Boss Bandit]]. This will prevent her from healing while the cheap ground swarm finishes her off.
+*Although being unable to fully counter the Evolved P.E.K.K.A, high DPS cards that can survive at least one hit from her are decently effective stalling options. Due to her slow attack rate, Guards or [[Royal Recruits]], for instance, can always survive a P.E.K.K.A hit as long as they maintain their shields; [[Elite Barbarians]], while not nearly as cost effective, can deal significant damage to the Evolved P.E.K.K.A while keeping her occupied.
+*Since the Evolved P.E.K.K.A can't attack air troops, high DPS air troops such as [[Minion Horde]], [[Phoenix]], Mega Minion, and [[Inferno Dragon]] are very effective counters to her. However, supporting cards like [[Arrows]]/[[Zap/Evolution|Evolved Zap]] and [[Wizard]]/Musketeer/[[Electro Wizard]] respectively, can neutralize these counters, so deploy them carefully.
+**Although situational, the Evolved P.E.K.K.A can be used as a distraction for enemy air troops, as her hitpoints are high enough to tank many shots from units such as [[Baby Dragon]], [[Electro Dragon]], [[Skeleton Dragons]], or [[Flying Machine]].
+*Long ranged troops, such as [[Musketeer]], [[Dart Goblin]], Flying Machine, [[Magic Archer]], [[Princess]], or [[Archers/Evolution|Evolved Archers]] can work in tandem with a mini tank, like [[Ice Golem]], [[Valkyrie]], or [[Knight]], to fully counter her for a potential positive Elixir trade or counterattack. Their long range prevents the Evolved P.E.K.K.A from healing while the tank kites or distracts her.
+*The Evolved P.E.K.K.A is easily one of the best counters to the [[Goblin Giant/Evolution|Evolved Goblin Giant]]. Her massive damage per hit allows her to quickly destroy the Goblin Giant himself while the spawned [[Goblins]] and [[Spear Goblins]] will recover her health significantly, creating a high pressure counterattack.
+*The Evolved P.E.K.K.A can defeat [[Barbarians]] up to 3 Levels higher in just 1 hit. This is useful to keep in mind if Barbarians are the opponent's only counter to her.
+*Spells are extremely important on Evolved P.E.K.K.A. [[Battle Decks|decks]], as they can temporarily replace area damage troops if they were currently out of rotation.
+**[[Poison]] is very effective as its long duration can prevent large swarms from attacking her, while also giving you an advantage against hard counters like the [[Witch]]. This can easily assure at least a single connection at most of the times, due to the fact of this strategy being relatively cheap and unpredictable.
+**The [[Tornado]] pairs well with the Evolved P.E.K.K.A since the Tornado can pull ranged units that the Evolved P.E.K.K.A usually has a tough time getting to, allowing the Evolved P.E.K.K.A to finish them off, and can also destroy some swarms. A notable example of this is against Witch since the Tornado damage allows the Evolved P.E.K.K.A to OHKO her while also defeating the Skeletons she spawns.
+**[[Rage]] complements a Evolved P.E.K.K.A counterpush fairly well, as long as there are already sufficient support troops on the [[Arenas|Arena]]. Raging a lone Evolved P.E.K.K.A will often still be a waste of Elixir as her weaknesses to swarms and kiting are not mitigated.
+*The Evolved P.E.K.K.A.'s high damage and hitpoints makes her very effective against multiple ground offensive responses consisting of multiple cards that cover different roles.
+**A Evolved P.E.K.K.A can be quite helpful against a Double Prince push. While she would be overwhelmed alone, she can be combined with cheap distraction troops like [[Bats]] and stop such a push while keeping some of the Evolved P.E.K.K.A's hitpoints for a counterattack.
+***Pairing the Double Prince push with the Evolved P.E.K.K.A is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster, but cards that output a large damage, such as [[Rocket]] or Minion Horde, can deal with it.
+***A similar strategy is to combine Mega Knight & Evolved P.E.K.K.A. in a push, as they also counter each other’s weaknesses. While it can be more threatening, it is extremely expensive at 14 Elixir, often requiring that 1 of them be used on defense beforehand, which can whittle down their hitpoints. It is also even weaker to air units. You also shouldn't put two of them in the same deck for they are very expensive and you are left vulnerable to a punishment for your lack of Elixir. Instead, consider a [[Mini P.E.K.K.A.]], [[Mega Minion]], Mighty Miner, or a [[Prince]], as it is obviously cheaper.
+**She is also quite good against the [[Hog Rider]], [[Valkyrie]], and Musketeer combo. The Evolved P.E.K.K.A. has enough to OHKO the Musketeer and will take little damage from the Valkyrie while she deals with the Hog Rider. This will prevent most of the damage for a +5 Elixir trade.
+***If the Hog Rider is placed alone, a Evolved P.E.K.K.A. can stop him entirely when placed in front to bodyblock him. Although that is a negative Elixir trade, she will have full hitpoints for a counterattack. A similar tactic works against the [[Ram Rider]].
+*Spell cards and distraction units are the most effective methods of countering a Evolved P.E.K.K.A push. An [[Ice Golem]] is especially effective as he will kite the Evolved P.E.K.K.A away from her support troops for a cheap Elixir cost, rendering her helpless against enemy troops. Once the Evolved P.E.K.K.A has dealt with the Ice Golem, she will not have much, if any support behind her, also being easily taken care of.
+*More costly building chasers can substitute the Ice Golem's role, and set up for a large push during the kite. The [[Goblin Giant]] is particularly effective as his faster move speed will prevent the Evolved P.E.K.K.A from attacking him during the kite, and the Spear Goblins in his pouch will damage down the Evolved P.E.K.K.A. However, this strategy can allow the Evolved P.E.K.K.A to reap much more defensive value after the kite and open up the opportunity for a powerful split push by the opponent. Air troops complement the kite very well, as they will chip away at her health without being obstructed by the kiting unit.
+*[[:Category:Building Cards|Buildings]] can be good follow up defenders if the opponent lacks an instant damage spell to take care of them, as the Evolved P.E.K.K.A will not be able to reach them quickly.
+**An [[Inferno Tower]] can stop her on its own and still have most of its hitpoints for a follow-up attack. However, it is weak to cards with a stun effect like the Electro Wizard, [[Goblinstein]], [[Electro Dragon]], Zappies, [[Lightning]], Zap, [[Electro Spirit]], Electro Giant, or [[Ice Spirit]].
+**A [[Tombstone]] will constantly spawn Skeletons which can distract the Evolved P.E.K.K.A. for a long time. Even if the Evolved P.E.K.K.A. destroys the Tombstone, the death Skeletons will distract her even further. However, the Skeletons can easily be destroyed with spells, with some of them also being effective against the Tombstone itself.
+*The [[Fisherman]] also works well with the Evolved P.E.K.K.A as he can pull in ranged troops that the Evolved P.E.K.K.A would usually have trouble reaching and also deal a bit of extra damage. However, this is still weak to swarms or air units so also bring a spell or a splash unit to further support this push.
+**While a Fisherman is weak to an opposing Evolved P.E.K.K.A., he can still be quite useful from separating her from your offensive tank, allowing the tank to deal damage to the Crown Tower. Try to combine the Fisherman with distraction units in order to fully counter the Evolved P.E.K.K.A.
+*Even though her hitpoints are higher, it is recommended to have a distraction unit like [[Skeletons]], [[Goblins]], [[Barbarians]], or Guards in front of her when defending against a heavy hitter like a Prince, Mighty Miner, [[Hunter]], Sparky, or a Mini P.E.K.K.A. This will allow her to save more of her hitpoints for a counterattack after defending against the heavy hitter.
+*The [[Zappies]] can almost permanently stun an approaching Evolved P.E.K.K.A. Placing them beside the Crown Tower will make them line up vertically and efficiently stagger the timing of their stuns, leaving the Evolved P.E.K.K.A nearly immobile. However, they are weak to [[Fireball]] and Poison.
+*Against an [[Electro Giant]], the Evolved P.E.K.K.A. can be paired with the Electro Wizard to counter him. If timed right, the Electro Wizard's attacks will stun the Electro Giant on the same time span that the Evolved P.E.K.K.A. attacks him, causing her to take no damage from the Electro Giant's reflection.
+*If you place a tank in the back, and the opponent responds with a Evolved P.E.K.K.A. in the back, you can lure the Evolved P.E.K.K.A. into the other lane with a Miner. Although the [[Miner]] will be easily obliterated by the Evolved P.E.K.K.A., she will have switched lanes, allowing your tank to continue on its lane unharmed.
+*Players can use a [[Sparky]] to counter the Evolved P.E.K.K.A. However, if the Evolved P.E.K.K.A is at least two Levels higher than Sparky, it could be risky as the Evolved P.E.K.K.A will survive 3 blasts from her and eventually destroy Sparky due to her very high damage and hitpoints.
+*Due to her low speed, she can be pushed by fast charging units like the [[Dark Prince]], Prince, [[Battle Ram]], [[Ram Rider]], and [[Golden Knight]], allowing her to connect to a more valuable target.
+*Pairing the Evolved P.E.K.K.A. and the [[Mighty Miner]] is a good choice for a push. Deploy them together and when they reach the opponent's side, the opponent is sure to defend this push. To create tension on both sides, activate the Mighty Miner's ability. This push could easily take a crown or two unless it is defended properly.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved P.E.K.K.A. Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.8 sec||0.5 sec||Slow (45)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="fandom-table wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between pulses<br />{{Icon|I = Time}}
+|-
+|1||1 pulses every 0.55 sec||0.5
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3760 }}
+{{#vardefine: maks_hp_11 | 5640 }}
+{{#vardefine: 1_heal_11 | 160 }}
+{{#vardefine: 1_hp_11 | 990 }}
+{{#vardefine: 2_heal_11 | 305 }}
+{{#vardefine: 2_hp_11 | 1991 }}
+{{#vardefine: 3_heal_11 |577 }}
+{{#vardefine: dmg_11 | 842 }}
+{{#vardefine: atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Max Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Heal Per Death (Stage 1)<br />{{Icon|I=HPS}}
+! scope="col" |Hitpoint Threshold (Stage 1)<br />{{Icon|I=Hitpoint}}
+! scope="col" |Heal Per Death (Stage 2)<br />{{Icon|I=HPS}}
+! scope="col" |Hitpoint Threshold (Stage 2)<br />{{Icon|I=Hitpoint}}
+! scope="col" |Heal Per Death (Stage 3)<br />{{Icon|I=HPS}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:maks_hp_11}} || {{#var:1_heal_11}} || {{#var:1_hp_11}} || {{#var:2_heal_11}} || {{#var:2_hp_11}} || {{#var:3_heal_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:1_heal_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:1_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:2_heal_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:2_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:3_heal_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==Gallery==
+<gallery>
+File:Evolved P.E.K.K.A. card render.png|Current card render.
+File:Evolved P.E.K.K.A. Preview.gif|Current card preview
+File:PEKKAEvoShard.png|Evolution Shard
+File:Evolved P.E.K.K.A. 1.png|Evolved P.E.K.K.A
+</gallery>
+
+==History==
+2024
+*The P.E.K.K.A's Evolution was made available on 30/8/2024, before its release date, as an unintended glitch. Supercell fixed this glitch with a maintenance break.
+*The P.E.K.K.A's Evolution [[Cards|card]] was added to the game on 2/9/2024, in the [[Version History#Pass Royale and more (2/9/2024)|September 2024 Update]].
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Evolved P.E.K.K.A's healing per KO to 10% (from 12.5%).
+*On 14/11/2024, a [[Version History#Balance Changes (14/11/2024)|Balance Update]], decreased the Evolved P.E.K.K.A'S healing per KO to 7.5% (from 10%).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved P.E.K.K.A after death.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], made it so that Evolved P.E.K.K.A's healing per KO would be based on the target's hitpoints instead of healing the same amount from all troops.
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], corrected the Evolved P.E.K.K.A's healing per KO value.
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Evolved P.E.K.K.A's range to 1.2 tiles (from 1.6 tiles), now classified as Melee: Medium.
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], increased the Evolved P.E.K.K.A.'s healing per small unit by 13%, healing per medium unit by 8%, and healing per large unit by 2%.
+2026
+
+* On 2/2/2026, increased the Evolved P.E.K.K.A.'s Heal per Kill from all forms by 5%.
+* On 6/7/2026, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], increased the Evolved P.E.K.K.A's damage by 3%
+
+==Trivia==
+*P.E.K.K.A's name derives from the Finnish name for "''Peter''", which in turn comes from the Greek name "''Petros''", meaning stone.
+*The acronym for P.E.K.K.A doesn't officially stand for anything in particular originally. Supercell held a Facebook contest on 22 August 2012 to see who could come up with the best written-out name for P.E.K.K.A as judged by the number of likes the comment received. The name "''Perfectly Enraged Knight Killer of Assassins''" was the winner. The person who submitted the acronym was called Víctor in the [https://www.facebook.com/ClashofClans/photos/478339952190333 Facebook announcement].
+*The P.E.K.K.A's Evolution is tied with the [[Royal Recruits/Evolution|Royal Recruits]] and [[Mega Knight/Evolution|Mega Knight]] for the most expensive [[:Category:1-Cycles Evolutions|1-Cycle]] [[Card Evolution|Evolution]], costing 7 [[Elixir]]. They are also the most expensive Evolution overall.
+*Among all evolved [[:Category:Troop Cards|troops]] with overheal hitpoints, the Evolved P.E.K.K.A has the highest overheal hitpoints in the game, with 8,212 hitpoints at Level 15.
+*The P.E.K.K.A is 1 of 2 evolved troops that has been featured under the [[Ruler Ability#Clash Melee|Clash Melee]] [[Ruler Ability|ruler ability]], the other being Mega Knight.
+*P.E.K.K.A's gender has been confirmed as female, as one of the Loading Screen Hints in Clash of Clans states, ''"The armor on P.E.K.K.A is so heavy that Spring Traps don't affect her"'', and also several videos from the official YouTube. In Clash Royale, the P.E.K.K.A. Protector [[Battle Banners|Decoration]]'s description says "''No one messes with her butterfly''".
+**However, in the Arabic, Persian, and Finnish language setting of the game, the P.E.K.K.A is referred to as male, according to her card description.
+*According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] is the P.E.K.K.A's child.
+*In the card's description, the "''Floats like a butterfly, stings like a bee.''" line is a reference to a quote mentioned by [https://en.wikipedia.org/wiki/Muhammad_Ali Muhammad Ali].
+*When deployed, the Evolved P.E.K.K.A will briefly say ''"Butterfly"'' in a deep robotic voice.
+**The P.E.K.K.A is 1 of 9 evolved troops that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], Mega Knight, and [[Lumberjack/Evolution|Lumberjack]].
+*The P.E.K.K.A's Evolution is the subject of 2 [[Emotes]].
+*The P.E.K.K.A's Evolution has had balance changes that were planned for it but were not added to the game. More specifically:
+**The initial balance change for Evolved P.E.K.K.A on the [[Version History#Balance Changes (8/10/2024)|8/10/2024 balance changes]] was a healing per KO decrease to 11% (from 12.5%), but it was lowered to 10% [https://royaleapi.com/blog/season-64-balance-wip last minute].
+**The initial balance change for Evolved P.E.K.K.A on the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] was a 13% healing per medium unit KO, and a 13% healing per large unit KO, but the healing per medium unit KO lowered to 8% and the healing per large unit KO lowered to 2% [https://royaleapi.com/blog/season-71-balance-wip-may-2025 last minute].
+*Before the P.E.K.K.A's Evolution card was released, the Evolved P.E.K.K.A's healing per KO was increased to 12.5% (from 10%).
+
+{{Navigation|Card}}

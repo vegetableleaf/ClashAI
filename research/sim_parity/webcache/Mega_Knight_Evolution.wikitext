@@ -1,0 +1,160 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Mega Knight</span>}}
+{{Evolved Card Infobox|Cost=7|CycleCost=1|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=14 September 2024}}
+{{Quote|Mega Knight's other great love, besides his mustache, is boxing. With each attack, this Evolution uppercuts his target and sends them flying toward the nearest enemy Crown Tower.}}
+
+The Mega Knight's Evolution is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Mega Knight with identical stats to the original. Every time he attacks, the Evolved Mega Knight will do an uppercut, launching the targeted troop back 4 tiles towards the nearest enemy Crown Tower. He resembles a [[Knight/Evolution|Knight]] with magenta eyes, black eyebrows, and glowing pink sclerae, clothed in heavy, massive amethyst armor, a helmet with a team-colored feather on top, large, purple-spiked maces with golden frames and handles as their base, purple chainmail with gold linings, and a team-colored belt with golden spikes and a [[Card Evolution]] symbol in the middle. The Mega Knight’s Evolution costs 7 [[Elixir]] and requires 1 cycle to deploy.  
+
+==Strategy==
+*The Evolved Mega Knight is an extremely powerful defensive wall, capable of defending most large tank pushes with ease. The bulk of this power comes from his uppercut, hurling bulky win conditions far behind their support troops. In many cases, this will utterly destroy the foundation of the opponent’s offense and result in a positive Elixir trade.
+*The pushback dealt by the Mega Knight's uppercut puts the targeted troop within the distance required for his jump to trigger, allowing for an uppercut-jump combo in many cases. If the targeted troop is within jumping range and there aren't other units in the way, the Mega Knight will bypass the charging time and immediately jump.
+**Due to this, the Evolved Mega Knight is extremely effective when used against a single tank like a [[Royal Giant]]. He will repeatedly deal pushback and jump on the troop until he reaches the enemy [[:Category:Crown Towers|Crown Tower]].
+*His spawn damage is slightly less than a [[Royal Delivery]], which makes him useful for quickly defeating [[cards]] with similar health to a [[Musketeer]], [[Electro Wizard]], [[Ice Wizard]], [[Barbarians/Evolution|Evolved Barbarians]], or [[Wizard]]. He will then only require two more regular attacks to defeat them fully.
+**His spawn damage does less damage than his jumping attack. For example, when you are fighting troops that can survive the spawn impact but not the jump, such as [[Zappies]], [[Magic Archer]], or [[Mother Witch]], you may want to deploy them further instead of on top of them for more damage.
+*The Evolved Mega Knight should never be ignored under essentially all circumstances; a tower trade being the only exception. Doing so will result a Crown Tower loss and notable damage to the [[King's Tower|King Tower]].
+*Although the Evolved Mega Knight’s uppercuts deal area damage, only the troop he's targeting will be dealt pushback. Thus, if heavy ground swarms, such as [[Barbarians]] or [[Royal Recruits]], are used against him, he will only pushback one Barbarian or Royal Recruit at a time while the rest will continue attacking him. This will prevent the Evolved Mega Knight from jumping and deal enough DPS to fully counter him with the Crown Tower’s help. Make sure that either swarm surrounds the Mega Knight, to prevent the troops from getting too much damage.
+*When using him to counter a reactive pack of Royal Recruits, be careful for the other side of the Royal Recruits approaching. Alternatively, you can use an [[Ice Golem]] to bring them all together, so that the Mega Knight can spawn right on top of all of them.
+*The Evolved Mega Knight’s pushback always launches a troop towards the enemy Crown Tower in a straight line regardless of the position. Cards with piercing attacks like [[Magic Archer]], [[Executioner]], [[Bowler]], [[Firecracker]], and [[Bomber/Evolution|Evolved Bomber]] can easily take advantage of this, allowing them to hit the Crown Tower from the opposite side with ease.
+*The Evolved Mega Knight is helpless against air troops such as [[Minions]] and [[Bats]], so it is best to pair him with other troops that can attack air, by using such as the [[Archers]], [[Spear Goblins]], [[Musketeer]], [[Wizard]], [[Princess]], [[Mega Minion]], [[Skeleton Dragons]], Flying Machine, Magic Archer, [[Archer Queen]], [[Hunter]], [[Dart Goblin]], [[Witch]], [[Baby Dragon]], Firecracker, [[Zappies]], [[Phoenix]], [[Electro Dragon]], or the Executioner. Alternatively, you can have a cheap spell such as [[Arrows]] or [[Zap]] in hand to deal with most air swarms.
+*Unlike the regular [[Mega Knight]], the Evolved Mega Knight can’t be fully countered with any sort of mini tank, with the exception of [[Mini P.E.K.K.A.]]. His 4 tile pushback will consistently interrupt their attack and leave them susceptible to his jump. Over time, this cycle will be repeated, leaving the Evolved Mega Knight healthy by the end of the interaction.
+**However, if the user is using the [[Cannoneer]], all the Champions, with their abilities, except for [[Mighty Miner]], can just barely fully counter him when deployed properly.
+*The Evolved Mega Knight can force any troop off the Crown Tower with his pushback, saving it from taking any further damage while he’s still in the [[Arenas|arena]]. This is especially useful against [[Giant Skeleton]], [[Golem]], and [[P.E.K.K.A.|P.E.K.K.A]], due to their death damage, high health, and high DPS respectively being highly threatening to the Crown Tower.
+*The Evolved Mega Knight can be used to counter a [[Goblin Barrel]] but it requires precise timing. His spawn damage can defeat all three [[Goblins]] if timed correctly; ideally, he should be deployed at the back of the Tower when the Goblin Barrel’s shadow crosses the river. This is, again, 7 Elixir for 3, but the counterpush potential is huge. Be cautious.
+**If you find this too hard to execute, you can deploy the Evolved Mega Knight between two Goblins which will prevent most of the damage dealt to your Tower. This is done by placing the Evolved Mega Knight in between the top Goblin and the one at the bottom. Be aware of tricky barrels, however.
+*The Evolved Mega Knight can be a potential counter to the [[Sparky]]. If the Sparky has low enough health and is about to cross the bridge, the spawn damage from the Evolved Mega Knight might be able to knock her out. If you time it correctly, the Evolved Mega Knight will absorb the Sparky's shot and with the help of a Tower, be able to destroy the Sparky. This will leave you with a relatively high health Mega Knight to do a counterattack with. However, if the Sparky somehow manages to defeat the Evolved Mega Knight, then it is a negative trade of 1 Elixir for you.
+**If a Sparky is placed behind a tank such as the Giant Skeleton, place the Evolved Mega Knight behind the combo. This will cause the Evolved Mega Knight to spawn on top of the Sparky while forcing the Giant Skeleton to walk into the splash radius of the Evolved Mega Knight.
+**If a Sparky is placed behind a building-targeting tank such as the [[Giant]] or Golem, place the Evolved Mega Knight to the side of the combo and make sure the Sparky is closest to the Evolved Mega Knight. The Evolved Mega Knight will spawn on both troops while distracting the Sparky, allowing you to counter the Giant or Golem with troops that will otherwise be destroyed by the Sparky.
+*The [[Inferno Tower]] is easily the best single card counter to the Evolved Mega Knight. As a building, the Inferno Tower can’t take pushback from the Evolved Mega Knight’s uppercuts or jump. The incredibly high DPS, when fully charged, can also rapidly deplete his hitpoints, fully counter in tithe Evolved Mega Knight for a +2 Elixir trade.
+**It’s extremely important to pay attention to the opponent’s [[Deck Builder|deck]] in order to maintain the consistency of this interaction. Cards that stun or do heavy damage to buildings, like [[Zap]], [[Lightning]], [[Rocket]], and [[Earthquake]], can completely alter this interaction into the opponent’s favor.
+**A similar, more cost effective strategy works with the [[Inferno Dragon]]. However, it has a smaller range and as a flying troop, it won’t distract the Mega Knight. Therefore, it’s recommended to use another card, such as an [[Ice Spirit/Evolution|Evolved Ice Spirit]], to give the Inferno Dragon more time.
+**Unlike the Inferno Tower and Inferno Dragon, the [[Mighty Miner]] is a poor counter to the Evolved Mega Knight. The Evolved Mega Knight’s pushback will constantly interrupt his drill charge, keeping the Mighty Miner at stage one throughout the entire interaction.
+**Unlike the regular Mega Knight, the Evolved Mega Knight should never be used alongside the Inferno Dragon and Mighty Miner. This is because the Evolved Mega Knight will constantly push away the cards that the Inferno Dragon or Mighty Miner attack, forcing them to reset their charge. An exception can apply for the Inferno Dragon to cards that the Evolved Mega Knight cannot target, such as other air troops.
+*[[Bats]] and [[Cannon]] (or any other defensive tower), can counter Evolved Mega Knight pretty well if he gets distracted by a defensive tower. When he is distracted, Bats can be placed to swarm the Evolved Mega Knight and eventually take him out. This strategy is only recommended when the Evolved Mega Knight has taken prior damage since Bats isn't the best damage dealer and can't usually take out a tank by itself.
+**Conversely, Bats also synergise rather well with the Evolved Mega Knight. The Bats provide DPS and air coverage for the Mega Knight, while the Evolved Mega Knight takes out swarms, mini-tanks and tanks tower shots for the Bats. This combination can be both defensively effective and offensively deadly if played correctly.
+*A powerful combo is pairing him with the [[Ram Rider]], as he’ll instantly destroy stun cards, like [[Zappies]], [[Electro Wizard]], [[Goblinstein]], and [[Tesla/Evolution|Evolved Tesla]], that will stop the Ram Rider. They also cannot distract both simultaneously with troops, which is important as the opponent will likely have to overcommit to prevent the Ram Rider from getting damage on the Crown Tower. Furthermore, the Ram Rider’s snares put many defensive troops within the Evolved Mega Knight’s jump damage threshold, wiping them out quicker. Lastly, the Evolved Mega Knight’s pushback will significantly aid in crushing counters to the Ram Rider, such as [[Bowler]] and [[Monk]], allowing her to reach the Crown Tower with more hitpoints.
+**A similar, more cost effective strategy works with the [[Hog Rider]] and [[Battle Ram]]. However, their lack of snare makes this combo slightly easier to counter.
+*The defender can use the Evolved Mega Knight's jump mechanic against him and activate their [[King's Tower]] with an [[Ice Spirit]] and Skeletons. The player should wait for the Evolved Mega Knight to approach their Crown Tower, and when he is about to jump, deploy the Ice Spirit four tiles from the King's Tower and one tile into his lane to redirect his jump. Afterwards, they should place Skeletons one tile from the King's Tower and one tile away from his lane, right before he jumps a second time. If done correctly, he will head towards the King's Tower after jumping onto the Skeletons, activating it. This will deal significant damage to the player's King's Tower however, so it is not recommended to perform this more than once.
+*Likewise, [[Tombstone]] can also lure the Evolved Mega Knight into activating King's Tower, given the Tombstone is deployed right in front of the King's Tower to the Evolved Mega Knight side (7-2 placement). The Evolved Mega Knight will jump closer to the Tombstone and eventually destroy it, targeting the King's Tower afterward. For a slightly more expensive, but more consistent King activation, the Tombstone can be placed higher up, such as with a placement 5 tiles from the river and 2 tiles from the Crown Tower. After its destruction, the player can place a troop that is OHKOed by the Evolved Mega Knight's jump close to the King's Tower.
+*When you suspect that your opponent is running an Evolved Mega Knight, it is not advised to clump up troops together in a small area proactively, as he will reap massive value. To play around him when proactively playing an offensive card like [[Royal Hogs]], splitting them in the middle of the Arena is always an option.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Mega Knight Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.7 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||1.3||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Throwback Range<br />{{Icon|I=Dash Range}}
+|-
+|1
+|4
+|}
+
+{{StatisticsSubheader|Jump Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Jump Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Jump Speed<br />{{Icon|I=Speed}}
+! scope="col" |Jump Range<br />{{Icon|I=Dash Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|0.9 sec||250||3.5-5||2.2||Ground||Air
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3993 }}
+{{#vardefine: dmg_11 | 268 }}
+{{#vardefine: atk_speed | 1.7 }}
+{{#vardefine: spawn_11 | 430 }}
+{{#vardefine: jump_11 | 537 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spawn Damage<br />{{Icon|I=Damage}}
+! scope="col" |Jump Damage<br />{{Icon|I=Boost}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:spawn_11}} || {{#var:jump_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Mega Knight’s Evolution was made available on 30/8/2024, before its release date, as an unintended glitch. Supercell fixed this glitch with a maintenance break.
+*The Mega Knight's Evolution [[Cards|card]] was added to the game on 14/9/2024.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]] added a sound effect to the Evolved Mega Knight after death. It also fixed various bugs with the Evolved Mega Knight.
+2025
+*On 15/1/2025, a [[Version History#Maintenance Break (15/1/2025)|maintenance break]] made it so that Evolved Mega Knight would no longer jump on enemies that were knocked back by his attack.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] increased the Evolved Mega Knight's spawn damage by 0.23%. It also fixed a few bugs where [[Electro Giant]] would not always be knocked back when hit by Evolved Mega Knight and ground [[:Category:Troop Cards|troops]] being able to cross the river after being knocked up by Evolved Mega Knight.
+*On 6/10/2025, a Balance Update, made it so that the Evolved Mega Knight would no longer be grabbed by the [[Goblin Cage/Evolution|Evolved Goblin Cage]] while it is jumping in mid-air
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Evolved Mega Knight's knockback against large troops to 2.5 tiles (from 4 tiles)
+* On 4/8/2026, a Balance Update, made it so that the Evolved Mega Knight knocks back troops every 2 hits instead of every hit. It also increased the Evolved Mega Knight's knockback against large troops to 4 tiles (from 2.5 tiles)
+
+==Gallery==
+<gallery>
+File:Evolved Mega Knight card render.png|Current card render.
+File:Evolved Mega Knight Preview.gif|Current card preview
+File:MegaKnightEvoShard.png|Evolution Shard.
+File:Evolved Mega Knight 1.png|Evolved Mega Knight
+</gallery>
+
+==Trivia==
+*The word "Knight" comes from the German "Knecht", meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+**In the Chinese and Vietnamese language settings of the game, the Mega Knight's name translates to "Super Knight". In the Italian and Arabic language settings of the game, the Mega Knight's name translates to "Great Knight" and "Giant Knight" respectively
+*The Mega Knight’s Evolution was the first {{Rarity|Legendary}} [[Cards|card]] to receive a [[Card Evolution]].
+*The Mega Knight is 1 of 2 evolved troops that has been featured under the [[Ruler Ability#Clash Melee|Clash Melee]] [[Ruler Ability|ruler ability]], the other being P.E.K.K.A.
+*When the Evolved Mega Knight is defeated, his maces fall to the ground.
+*Upon deployment, the Evolved Mega Knight yells “''Mega Knight!''”.
+**The Mega Knight is 1 of 9 evolved troops that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], P.E.K.K.A., [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], and [[Lumberjack/Evolution|Lumberjack]].
+***Also, the Mega Knight is 1 of 6 evolved troops whose regular troop do not speak distinct words when on the field, the others being Bomber, Goblin Brawler, Witch, Hunter, and Executioner.
+*The Mega Knight’s Evolution is the subject of 2 [[Emotes]].
+*In [[Touchdown]], the Evolved Mega Knight will push troops towards the center where the [[King's Tower|King Tower]] would be located, despite the lack of it.
+*When an Evolved Mega Knight uppercuts a troop, that troop will stretch horizontally and take on a pink shade. This effect can stack up. Therefore, if multiple Evolved Mega Knights uppercut the same troop at the same time, the hit troop will become very stretched and pink while in the air.
+
+{{Navigation|Card}}

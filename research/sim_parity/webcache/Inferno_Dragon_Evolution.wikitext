@@ -1,0 +1,115 @@
+{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Cycles=2|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=2 June 2025}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Inferno Dragon</span>}}
+{{Quote|With the new and improved InfernoTank2.0™, Inferno Dragon Evolution keeps its beam charged and deadly even when it has nothing to melt. But even the best tank doesn't last forever.}}
+
+The Inferno Dragon's Evolution is a {{Rarity|Legendary}} [[Cards|card]] unlocked with 6 Evolution Shards. It spawns an Inferno Dragon with identical stats to the original. Once the Evolved Inferno Dragon defeats a troop on whatever damage stage it was in, it remains on that damage state until 9 seconds of duration if the Evolved Inferno Dragon doesn't hit a troop, or it is reset by a stun attack. After 20 seconds of damage, the Evolved Inferno Dragon will reach a 4th damage stage which deals twice the damage of the 3rd stage. It resembles a [[Baby Dragon/Evolution|Baby Dragon]] with a helmet that have golden spikes, a silver-rimmed, team-colored goggles with glowing lens and a golden button, a transparent, team-colored fuel tank on its back with a hose, two stubby magenta wings, hands, feet and spikes on its back, and fires a magenta beam. The Inferno Dragon's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Unlike the regular Inferno Dragon, the Evolved Inferno Dragon is more effective when paired with [[cards]] that have pull and pushback effects, like the [[Tornado]], [[Fisherman]], [[Valkyrie/Evolution|Evolved Valkyrie]], [[Monk]], and [[Mega Knight/Evolution|Evolved Mega Knight]], as their effects on enemy units will not reset its charge after the targeted troop leaves its range.
+*Since the Evolved Inferno Dragon's charge does not reset when knocked back or pulled, cards like [[Fireball]], [[Valkyrie/Evolution|Evolved Valkyrie]], [[Giant Snowball]], [[Tornado]], and [[Executioner/Evolution|Evolved Executioner]] will not stop him. Instead, the player must either wait 9 seconds so its charge goes away, or, if they can't wait for that long or if there are a lot of troops in the field, a cheap stun card, like the [[Zap]], [[Ice Spirit]], or [[Electro Spirit]], or cards with a continuous stun effect, like [[Electro Wizard]], [[Electro Dragon]], [[Goblinstein]], and [[Zappies]], can easily counter it by preventing it from fully charging. If placed on top, an [[Electro Giant]] can stop it in a similar way.
+**[[Guards]], [[Royal Recruits]], or [[Dark Prince]] are also unable to reset its charge damage when their shields are down.
+**If the Evolved Inferno Dragon is near him, the [[Hunter/Evolution|Evolved Hunter]]'s net will reset its charge and quickly take it down due to his own attack. If not, the Evolved Inferno Dragon will be at a very low health anyways.
+**It's worth noting that the [[Giant Snowball/Evolution|Evolved Giant Snowball]] will be able to reset the Evolved Inferno Dragon's charge when it absorbs the troop.
+**Although knockback cards do not reset its charge damage, they stop it from getting value from it for a while, giving units more time to defeat it.
+*The Evolved Inferno Dragon is extremely effective against the [[Knight/Evolution|Evolved Knight]]. While the Evolved Knight will take little damage, the Evolved Inferno Dragon, being an air troop, can take advantage of that and allow itself to fully charge up easily, maintain it, and prepare itself for further takedowns.
+*A [[Rocket]] will OHKO the Evolved Inferno Dragon, completely eliminating it, but for a -2 Elixir trade. Consider doing this if you lack better counters. Always make sure to check if here are other cards besides it that are OHKOed by the Rocket, such as [[Mini P.E.K.K.A.]], [[Elixir Collector]], [[Sparky]], or [[Elite Barbarians]], which are more valuable. [[Lightning]] also works, but the Evolved Inferno Dragon will survive with a silver of health.
+*The Evolved Inferno Dragon excels at decks with heavy cards and their supports, as its charged state will allow it to defeat the tanky troop's support units after taking down the heavy unit itself. For example, the Evolved Inferno Dragon will easily melt a [[Balloon]] or [[Lumberjack]] after it takes a [[Lava Hound]] down, or a [[Prince]] or [[Sparky]] after a [[Giant]] or [[Golem]] is melted down. Additional cheap [[:Category:Spell Cards|spells]] such as [[Arrows]], Zap, or Giant Snowball are needed to clear the resulting death troops, like [[Spear Goblins]] from a [[Goblin Giant]] or Lava Pups from a Lava Hound.
+**The Evolved Inferno Dragon, as a result, is also useful to take down the [[Golem]] and [[Elixir Golem]]'s multiple stages, bypassing their health. For the, Elixir Blobs, a spell is most useful.
+**One must be aware that those decks carry [[Lightning]], Electro Wizard, and/or Electro Dragon as their reset cards. While the former leaves it alive (but with a silver of health), the middle and latter will keep stunning it. [[Zap/Evolution|Evolved Zap]] will also delay its charge for longer. When using the Evolved Inferno Dragon, one must try to bait out the spells with stun effects before giving it maximum value, and also address the other stun cards.
+*Ranged units like the [[Archers]], [[Musketeer]], [[Wizard]], [[Flying Machine]], [[Hunter]], [[Firecracker]], [[Magic Archer]], [[Archer Queen]], and [[Executioner]], will take the Evolved Inferno Dragon before its charge becomes a problem. Even when charged, their superior range allows them to deplete its hitpoints before dying. [[Minions]] and [[Bats]] are also good counters to it, as even when it's charged, they will stall the Evolved Inferno Dragon for long enough so that a [[:Category:Crown Towers|Crown Tower]] will defeat it. [[Minion Horde]] also works, but they're a -1 Elixir trade. The [[Skeleton Army]], [[Goblins]], [[Royal Recruits]], [[Barbarians]], and [[Guards]] are also good options if the player manages to distract the Inferno Dragon.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|4||0.4 sec||Medium (60)||1 sec||3.5||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+|-
+|2
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1295 }}
+{{#vardefine: 1_dmg_11 | 35 }}
+{{#vardefine: 2_dmg_11 | 120 }}
+{{#vardefine: 3_dmg_11 | 422 }}
+{{#vardefine: 4_dmg_11 | 844 }}
+{{#vardefine: atk_speed | 0.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|1 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|1 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|2 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|2 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|3 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|3 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|4 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|4 stage Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:1_dmg_11}} || {{Dps|{{#var:1_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:2_dmg_11}} || {{Dps|{{#var:2_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:3_dmg_11}} || {{Dps|{{#var:3_dmg_11}}|{{#var:atk_speed}} }} || {{#var:4_dmg_11}} || {{Dps|{{#var:4_dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:4_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:4_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Inferno Dragon's Evolution [[Cards|card]] was added on 2/6/2025, in the [[Version History#Pass Royale and more (2/6/2025)|June 2025 Update]].
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Evo Inferno Dragon's ability duration to 7 seconds (from 9 seconds)
+
+==Gallery==
+<gallery>
+File:Evolved Inferno Dragon Card Render.png|Current card render.
+File:Evolved Inferno Dragon Preview.gif|Current card preview
+File:InfernoDragonEvoShard.png|Evolution Shard
+File:Evolved Inferno Dragon.png|Evolved Inferno Dragon
+</gallery>
+
+==Trivia==
+*The Inferno Dragon resembles [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures]. being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire.
+**The Inferno Dragon is of the same breed as the [[Baby Dragon]], but the Inferno Dragon moves slower, and has slightly more hitpoints, possibly because it carries extra equipment and wears a helmet. However, they are otherwise identical in terms of animations and deployment sound effects.
+**A Trainer in the [[Training Camp]] is called Trainer Dragon and uses 2 dragon [[cards]] in their [[Battle Decks|deck]], one of them being Inferno Dragon, and the other being Baby Dragon.
+*The word "''Inferno''" comes from the Latin "''inferus''", meaning underworld.
+**In the French, Turkish, Chinese, Persian, and Malaysian language settings of the game, the Inferno Dragon's name translates to "Hell Dragon". In the Portuguese language settings of the game, the Inferno Dragon's name translates to "Infernal Dragon". In the Russian and Arabic language settings of the game, the Inferno Dragon's name translates to "Fiery Dragon".
+*The Inferno Dragon's Evolution is the subject of 2 [[Emotes]].
+*The inferno Dragon's Evolution sounds like Godzilla charging up for his atomic breath.
+
+{{Navigation|Card}}

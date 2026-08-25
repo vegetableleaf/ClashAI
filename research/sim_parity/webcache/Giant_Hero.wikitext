@@ -1,0 +1,144 @@
+{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=5|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=December 1 2025|AbilityCost=2}}{{Quote|A titan amidst Goblins...a Hero among men. Hero Giant wastes no time showing his enemies who’s boss and who’s lost on their journey to the King Tower.}}
+
+The Hero Giant is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 200 hero fragments. It spawns one single-target, ground-targeting, melee, and ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Heroic Giant takes the appearance of a colossal humanoid creature with glowing yellow eyes, blonde mutton chops, hair and eyebrows, wearing darker brown pants, a golden headband, and a team-colored belt with a golden base and details along with the [[Heroes|Hero]] Shard in the center, while being bare-chested and wielding a pair of brass knuckles as his weapon with pearl and gold armbands. A Heroic Giant card costs 5 {{Icon|I=Elixir}} to deploy, and his ability costs an additional 2{{Icon|I=Elixir}} to activate.
+
+==Ability: Heroic Hurl==
+{{Quote|Throws the highest-hitpoint enemy troop in reach across the Arena}}{{Hero Ability|2=Giant-Heroic}}
+The Hero Giant has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay and when a unit gets in range, the Hero Giant activates his “Heroic Hurl”, grabbing the highest HP enemy [[:Category:Troop Cards|troop]] within 2 tiles around him and throws them horizontally, also dealing damage to them when they land. While on the air, these troops are untargetable by ground-targeting troops and the [[Earthquake]], but can still take damage from other spells. Air troops can be affected by the ability, but will take no damage when they land. The Heroic Hurl ability costs 2 [[Elixir]] to activate.
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Heroic Giant and his activated Ability count as 7 Elixir, as the player must play the 5 Elixir Heroic Giant and then spend a further 2 on his Ability.
+*This card would be good in Giant Graveyard decks as with its ability, it could prevent a knockback unit like the [[Mega Knight/Evolution|Evolved Mega Knight]] and the [[Monk]] from knocking it out of range of the Princess tower, so then the skeletons from the [[Graveyard]] can take the tower.
+*It would also be good on Giant Double Prince decks as the Giant can stil act as a tank, but now, it is able to add DPS to a troop with extra from the two brothers, so that if the unit is strong and a major threat, like the [[Mega Knight/Evolution|Evolved Mega Knight]] or [[Monk]], you can use the Ability to knock it onto the other lane, which makes sure it can't hinder your troops' progress towards a 3 crown.
+*The Heroic Giant is completely ineffective against swarms, as he has no way to attack them directly, besides using his ability, which will only launch one unit.
+*He is also easily countered by any building, as the ability will do nothing against them. Even against the [[Barbarian Hut]], it will, at worst, send one [[Barbarians|Barbarian]] away, while the remaining ones take him down.
+*When using the [[Fisherman]] against the Heroic Giant, he should be placed closer to the edge of the Arena instead of the center, This will cause the Heroic Giant to throw him to the other lane, but still be in range to pull the Heroic Giant to the other lane.
+*When using the Heroic Giant, it is always important to attack the same lane as the opponent. This allows the Heroic Giant to send their offensive card into the other lane, leaving it unsupported and easy to defeat , while their support troops are defeated by the Heroic Giant's support troops.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|5||1.5 sec||0.5 sec||Slow (45)||1 sec||Melee: Medium (1.2)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Heroic Hurl Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Throwback Range
+{{Icon|I=Dash Range}}
+!scope="col"|Cast Time<br/>{{Icon|I=Time}}
+!scope="col"|Units Affected
+{{Icon|I=Troop Count}}
+!Ability Target
+{{Icon|I=Targets}}
+!Unit Stun Duration
+|-
+|2|| 9||0.933 sec||1
+| Air & Ground
+|2 secs
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3968 }}
+{{#vardefine: dmg_11 | 253 }}
+{{#vardefine: atk_speed | 1.5 }}
+{{#vardefine: imp_dmg_11 | 135 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|Impact Damage<br/>{{Icon|I=Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}|| {{#var:imp_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:imp_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+==History==
+2025
+* On 1/12/2025 with the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]], the Hero Giant was added to the game along with 3 other Heroes: [[Knight/Hero|Knight]], [[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]], and [[Musketeer/Hero|Musketeer]]{{Balance|Add}}.
+2026
+*On 2/2/2026 the [[Version History#Pass Royale and more (2/2/2026)|February 2026 update]] reduced hero giants hitpoints by 3%{{Balance|Nerf}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], made the ability single use (from 14sec cooldown){{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:Heroic Giant Card Render.png|The current card render of the Heroic Giant
+File:Heroic Giant Card Render Stance.png|First Image of the Hero Giant in a battle pose.
+File:Heroic Giant Card Render Stance 2.png|Second Image of the Hero Giant in a battle pose.
+File:GiantHeroShard.png|The Gem for the Heroic Giant
+</gallery>
+
+==Trivia==
+
+* The Giant is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+** The Heroic Giant mostly resembles the Level 13 Giant from Clash of Clans. His [[Star Points|Star Level 2 skin]] resembles the Level 5 Giant from Clash of Clans.
+* The Giant is 1 of 7 [[cards]] that are already unlocked for the player when they start playing the game, the others being the Minions, Archers, [[Knight]], [[Arrows]], [[Tower Princess]], and [[Fireball]]. Despite this, the game recognizes that those cards are unlocked in the [[Training Camp]].
+* The Giant is one of the first troops to be featured in Clash-A-Rama, alongside the Minions, Goblins, and Barbarians.
+* The Giant is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, Knight, [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.]], [[Musketeer]], Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A., [[Prince]], and Balloon.
+* The Giant is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A., Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+* The Giant is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], Zappies, [[Guards]], Giant Skeleton, Goblin Giant, Electro Dragon, Wall Breakers, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], [[Sparky]], and Royal Ghost.
+** He is the first troop to be featured with a buff.
+* The Giant is 1 of 3 troops that has had its Melee range classification changed, the others being Mini P.E.K.K.A. and P.E.K.K.A..
+* According to The Art of Supercell, the Giant was originally supposed to be blue.
+* The Giant shares the first part of his description with the Golem.
+* The Giant is 1 of 15 [[:Category:Troop Cards|troops]] which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him and applause when he's destroyed, the others include [[Royal Giant]], P.E.K.K.A., Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, Bowler, Electro Wizard, [[Inferno Dragon]], Sparky, Lava Hound, Night Witch, [[Super Lava Hound]], and the [[Monk]].
+* The Giant, along with the Goblins, Barbarians, Valkyrie, Wizard, Hog Rider, Witch, P.E.K.K.A., and the Archer Queen, was featured as a non-playable opponent in [https://www.chess.com/ Chess].
+* The Giant, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A., Musketeer, Wizard, Hog Rider, Witch, Prince, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater].
+* In [[Pass Royale|Fisherman's Float]], Giants can be seen sitting in the audience.
+* The Giant is the subject of a few [[Emotes]].
+* The Giant was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+** The Giant was featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+** The Giant was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+
+* The Heroic Giant is no longer 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the Royal Giant, Hog Rider, Royal Hogs, Elixir Golem, and Rune Giant.
+
+* Before the Giant's card release, the Giant's Hitpoints were increased by 11%, and his Damage was increased by 4%.
+
+* The Heroic Knight was one of the first [[Heroes]] to be added in the game, alongside the [[Knight/Hero|Knight]], [[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]], and [[Musketeer/Hero|Musketeer]].
+
+{{Navigation|Card}}

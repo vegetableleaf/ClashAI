@@ -1,0 +1,131 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Cannon</span>}}
+{{Evolved_Card_Infobox|Cost=3|CycleCost=2|Rarity=Common|Arena=Barbarian Bowl|Type=Building}}
+{{Quote|When this Evolution is deployed, it barrages both sides of the Arena, dealing damage and knocking enemies back. Who doesn't love the smell of gunpowder in the morning?}}
+
+The Cannon's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Cannon with identical stats to the original. After deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row and 4 on the bottom, which deals area damage and inflicts knockback. It appears as a large dark metal barrel mounted on a four-legged wooden mount with a purple metal plate, legs and supports reinforced with gold chains, with a purple muzzle, two team-colored ridges, one midway and the other at the rear, along with a [[Card Evolution]] symbol in between, and a metal wing attached to both sides. The Cannon's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Cannon can be used offensively to snipe buildings and troops on the opponents side of the [[Arenas|Arena]].
+*The knock back can push units towards the Cannon, making it great on defense.
+*When a tower is down, placing the Cannon on the opponent's side would actually hit the other towers (however, it does reduced damage to them, but this is still beneficial, especially during Sudden Death).
+*Against the [[Goblin Barrel/Evolution|Evolved Goblin Barrel]], the Evolved Cannon can prevent all but one hit on either [[:Category:Crown Towers|Crown Tower]] when using the [[Tower Princess]]. However, it has to be placed in front of the [[King's Tower|King Tower]] to do this, which will prevent it from distracting any other incoming troop, either from the Evolved Goblin Barrel push or from follow-up attacks.
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||1 sec||1 sec||30 sec||5.5||1000||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Barrage Radius<br />{{Icon|I=Radius}}
+! scope="col" |Barrage Count<br />{{Icon|I=Troop Count}}
+|-
+|2||2||9
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 824 }}
+{{#vardefine: dmg_11 | 212 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 1 }}
+{{#vardefine: bar_dmg_11 | 304 }}
+{{#vardefine: bar_crown_dmg_11 | 89 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Barrage Damage<br />{{Icon|I=Damage}}
+! scope="col" |Barrage Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(2-11)) round 0 }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:bar_dmg_11}} || {{#var:bar_crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bar_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:bar_crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Cannon's Evolution [[Cards|card]] was added to the game on 15/11/2024.
+*On 14/11/2024, a [[Version History#Balance Changes (14/11/2024)|Balance Update]], decreased the Evolved Cannon's Barrage Tower damage by 75%.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Evolved Cannon's Barrage damage by 10%.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Evolved Cannon's attack time interval to 1 second (from 0.9 second).
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], decreased the Evolved Cannon's Barrage radius to 2 tiles (from 2.5 tiles).
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]], decreased the Evolved Cannon's Barrage damage by 14%.
+*On 1/12/2025, the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]], decreased the Evolved Cannon's Barrage damage by 8%.
+2026
+
+* On 6/4/2026, a Balance Update, decreased the Evolved Cannon's damage by 5%
+
+==Gallery==
+<gallery>
+File:Evolved Cannon Card Render.png|Current card render.
+File:Evolved Cannon Preview.gif|Current card preview
+File:CannonEvoShard.png|Evolution Shard
+File:Evolved Cannon 1.png|Evolved Cannon
+</gallery>
+
+==Trivia==
+*The word "''Cannon''" comes from the Akkadian word "''𒄀''" (''qanû''), meaning reed. Cannons were invented in China during the twelfth century. It was most likely developed in parallel or as an evolution of an earlier gunpowder weapon called the fire lance. Cannons were used for warfare by the late thirteenth century in the Yuan dynasty and spread throughout Eurasia in the fourteenth century. During the late Middle Ages, large and small cannons were developed for siege and field battles. The cannon replaced prior siege weapons such as the trebuchet. After the late Middle Ages, most large cannons were abandoned in favor of greater numbers of lighter, more maneuverable field artillery.
+*The Evolved Cannon's ability is inspired by the Eagle Artillery from Clash of Clans, similarly to its wings.
+*Among all evolved [[:Category:Building Cards|buildings]] that can attack, the Evolved Cannon is tied with [[Tesla/Evolution|Tesla]] for the shortest range of all buildings, with a range of 5.5 tiles.
+*Although Cannons themselves can only target ground [[:Category:Troop Cards|troops]], the [[King's Tower|King Tower]]'s cannon can target both air and ground troops. This might be because the cannon is elevated on the tower.
+*The Cannon is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+** It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+** It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Cannon’s Evolution is the subject of an [[Emotes|Emote]].
+*The initial balance change for Evolved Cannon on the [[Version History#Balance Changes (4/3/2025)|4/3/2025 balance changes]] was a 6% damage decrease, but it was changed to an attack time interval increase to 1 second (from 0.9 seconds) [https://royaleapi.com/blog/season-69-balance-wip-march-2025 last minute].
+*Before the Cannon Evolution's release, it was made it so that the Evolved Cannon's barrage damage would only deal 25% of its full damage to [[:Category:Crown Towers|Crown Towers]].
+
+{{Navigation|Card}}

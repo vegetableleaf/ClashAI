@@ -1,0 +1,78 @@
+key: ice_golem_hero
+base_card: ice_golem
+page: Ice Golem/Hero
+revid: 437514
+fetched: "2026-08-25"
+release_date: "2026-01-05"   # infobox ReleaseDate="5 January 2026"; History "added ... on 5/1/2026 with the January 2026 Update" (d/m/yyyy)
+
+body_stat_deltas: none stated (one wording discrepancy vs snapshot, see below)
+# Hero body attributes table vs base ice_golem snapshot row:
+#   hp 1315 (vardefine hp_11) = base 1315; damage 84 (dmg_11) = base 84;
+#   death damage 84 (death_11) = base 84.0; hit_speed 2.5 = base 2.5;
+#   speed Slow (45) = base slow; deploy_time 1 sec = base 1.0;
+#   target Buildings = base buildings_only; count x1, transport Ground, rarity Rare — equal.
+#   first hit speed 1.5 sec matches base load_time_s 1.5.
+# DISCREPANCY (not asserted as a hero delta): hero page Range = "Melee: Medium (1.2)" while the
+#   snapshot base row says range_tiles 0.75 — but that snapshot row is verified:false, so this is
+#   at least as likely a snapshot error as a real body delta. Queued in open_questions.
+
+ability:
+  name: Snowstorm            # section title "Ability: Snowstorm" and Heroes master table; ability prose calls it 'his "Blizzard" ability' — naming inconsistency on the page
+  elixir_cost: 2             # infobox AbilityCost=2; prose "an additional 2 Elixir" and "costs 2 Elixir"; ability attributes table Cost=2 — all agree
+  uses: 1                    # History 4/8/2026: "made the ability single use (from 17 sec cooldown)"
+  cooldown_s: null           # single use since 4/8/2026; was 17 s before (History)
+  cast_delay_s: 1            # prose: "After a 1-second delay, the Hero Ice Golem activates his 'Blizzard' ability"
+
+mechanic_prose: |
+  [Ability: Snowstorm — card quote]
+  "Conjures a blizzard that damages and slows enemies."
+
+  [Section "Ability: Snowstorm"]
+  "The Hero Ice Golem has a special ability accessible from whatever side of the screen was put
+  in, just above the player's card slots in battle. After a 1-second delay, the Hero Ice Golem
+  activates his "Blizzard" ability, which generates a 4-tile aura radius that has 3 pulses, with
+  each one slowing down enemy troops and dealing damage. The Snowstorm ability costs 2 Elixir to
+  activate."
+
+  [Section "Strategy", damage benchmark]
+  "All 3 blast are enough to kill Goblins."
+
+numbers:
+  body_cost_elixir: {value: 2, source: "infobox Cost=2; body attributes table Cost=2"}
+  ability_cost_elixir: {value: 2, source: "infobox AbilityCost=2; prose; Snowstorm attributes table Cost=2 — all agree"}
+  body_hp_lvl11: {value: 1315, source: "vardefine hp_11"}
+  body_damage_lvl11: {value: 84, source: "vardefine dmg_11"}
+  body_death_damage_lvl11: {value: 84, source: "vardefine death_11; stat table column 'Death Damage'"}
+  body_hit_speed_s: {value: 2.5, source: "vardefine atk_speed; attributes table 'Hit Speed 2.5 sec'"}
+  body_first_hit_speed_s: {value: 1.5, source: "attributes table 'First Hit Speed 1.5 sec'"}
+  body_speed: {value: "Slow (45)", source: "attributes table Speed"}
+  body_deploy_time_s: {value: 1, source: "attributes table 'Deploy Time 1 sec'"}
+  body_range: {value: "Melee: Medium (1.2)", source: "attributes table Range (see body_stat_deltas discrepancy note)"}
+  body_target: {value: "Buildings", source: "attributes table Target"}
+  cast_delay_s: {value: 1, source: "prose: 'After a 1-second delay'"}
+  aura_radius_tiles: {value: 4, source: "prose '4-tile aura radius'; ability attributes table Radius=4 — agree"}
+  pulses: {value: 3, source: "prose '3 pulses'; ability attributes table Blasts=3; stat table renders damage as 'x3'"}
+  slowdown_pct: {value: 30, source: "ability attributes table Slowdown 30%"}
+  slowdown_duration_s:
+    value_ability_attributes_table: 2
+    value_history: 1.5
+    source: "CONFLICT — ability attributes table 'Slowdown Duration 2 seconds' vs History 2/3/2026 'decreased Freeze duration to 1.5sec (from 2sec)'. Also ambiguous whether that History line refers to this slow or to the (since-removed) 3rd-blast freeze effect."
+  pulse_damage_lvl11: {value: 69, source: "vardefine bliz_11; stat table column 'Blizzard Pulse Damage' (69 x3 = 207 at lvl 11 per on-page formula). Unclear whether this already includes the 4/8/2026 '+82% blast damage' buff — see open_questions."}
+  pulse_damage_total_lvl11: {value: 207, source: "derived on-page: stat table renders bliz_11 x3 (69*3)"}
+  ability_target: {value: "Air & Ground", source: "ability attributes table Target"}
+  historical_cooldown_s: {value: 17, source: "History 4/8/2026: 'made the ability single use (from 17 sec cooldown)' — no longer live"}
+  historical_third_blast_freeze: {value: "removed 4/8/2026", source: "History 4/8/2026: 'the 3rd Blast Effect went from being a freeze effect to a slowdown effect'"}
+  historical_pushback_removed: {value: "7/4/2026", source: "History 7/4/2026: 'the pushback on the Hero Ice Golem was removed entirely' — which pushback is unstated"}
+  historical_blast_damage_buff_pct: {value: 82, source: "History 4/8/2026: 'the blast damage was increased by 82%'"}
+  level_scaling: {value: "stat * 1.1^(level-11)", source: "stat table #expr formulas (page warns of rounding)"}
+
+proposed_ability_kind: zone
+
+open_questions:
+  - "Slow duration: 2 s (attributes table) vs 1.5 s (History 2/3/2026 nerf, phrased as 'Freeze duration'). Which is live, and did that nerf target this slow or the removed 3rd-blast freeze? In-game check."
+  - "Does bliz_11=69 include the 4/8/2026 +82% blast damage buff, or is it the pre-buff value (69*1.82 = 126)? Verify pulse damage in-game; the Strategy line 'All 3 blast are enough to kill Goblins' is a usable benchmark."
+  - "Pulse interval and total blizzard duration are unstated — null, in-game check."
+  - "Does the aura follow the moving Ice Golem or stay where it was cast? 'Aura' suggests attached to the body; not stated."
+  - "Which pushback was removed on 7/4/2026 — a blast knockback, or the base card's death-damage pushback? Unstated."
+  - "Body melee range: hero page 'Melee: Medium (1.2)' vs snapshot base range_tiles 0.75 (snapshot row verified:false). Verify whether hero range genuinely differs from base or the snapshot row is wrong."
+  - "Page naming inconsistency: section/master-table say 'Snowstorm', ability prose says 'Blizzard' — same ability, record for detector label mapping."

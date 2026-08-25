@@ -1,0 +1,145 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Bats</span>}}
+{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Troop|Arena=Builder's Workshop|ReleaseDate=2 October 2023}}
+{{Quote|What's cooler than Bats? VAMPIRE BATS. These creatures of the night heal with each attack and can increase their Hitpoints past their maximum!}}
+
+The Bats' Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 5 Bats with hitpoints 50% higher than the original. Every time they attack, they heal themselves, having two healing pulses with a 0.5 second interval. The healing can overheal them, allowing their hitpoints to reach up to double of their initial ones. They resemble small, indigo bats with glowing pink eyes, fangs, brighter pink ears, snouts and lower wings, and purple underbellies and upper wings. The Bats' Evolution costs 2 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Bats used alone should not be ignored when the [[Tower Princess]] is used as they will take 2 hits to take out by the [[:Category:Tower Troop Cards|Crown Tower]], causing a few Bats to hit the Crown Tower and overheal, eventually dealing over half of the Crown Tower's health for 2 [[Elixir]]. A similar situation happens with the [[Cannoneer]].
+**If the [[Dagger Duchess]] is in use, she will be able to take out all the Bats with just 10 daggers. Allowing the user to usually ignore them.
+*Despite their notably higher hitpoints than the regular Bats, they can still be countered with weak [[:Category:Spell Cards|spells]] such as [[Zap]] or [[Giant Snowball|Giant Snowball.]] However, these spells do not work if the Evolved Bats have already healed themselves to full; in this case, [[Arrows]] or [[Zap/Evolution|Evolved Zap]] would be necessary.
+*Their initial hitpoints are enough for them to survive one attack from anything as strong as [[Minions]]. Because of this, they can be safely placed on top of these [[:Category:Troop Cards|troops]] without them being killed before they get the chance to attack. Against anything stronger than that, it is recommended to distract the troops with something else before deploying the Evolved Bats.
+**A good way to mitigate this is to deploy them against lone troops that cannot target air troops, like the [[Knight]] or the [[Valkyrie]]. This will give them enough time to heal themselves to full, preparing the player for a more effective follow-up defense or for a counterattack.
+*The Evolved Bats have great synergy with large tanks, like the [[Giant Skeleton]], [[P.E.K.K.A]], [[Golem]], [[Lava Hound]], [[Electro Giant]], and [[Mega Knight|Mega Knight.]] The tank takes hits as the Evolved Bats help take out opposing defensive units. This will allow the tank to connect to the Crown Tower more easily. Tanks that only attack buildings also benefit from the Bats, as their assistance will help them survive longer and thus deal more damage to the Crown Tower.
+*Similarly, the Evolved Bats has great synergy with the [[Miner|Miner.]] The Miner distracts the opposing Crown Tower while the Evolved Bats does the majority of the damage. This also activates their overheal.
+*Air-targeting ranged units that attack fast or have area damage, such as the [[Firecracker]], [[Princess]], [[Magic Archer]], Ice Wizard, [[Wizard]], [[Executioner]], [[Witch]], [[Musketeer]], [[Flying Machine]], [[Hunter]], [[Skeleton Dragons]], and [[Dart Goblin]], are very good counters to the Evolved Bats as these troops can prevent them from activating their overheal due to their high range.
+*Similarly, units with spawn damage that can hit air targets such as the [[Electro Wizard]] can be very good at stopping the Evolved Bats as he deals enough damage to instantly wipe them out without their overheal. Spawn damage that doesn't do enough damage or only hits ground targets such as the Mega Knight's and [[Ice Wizard]]'s spawn damage cannot mimic this result.
+*The Evolved Bats can make a great distraction for an [[Inferno Tower]] during a push with a [[Giant]] or [[Golem|Golem.]] Their increased health makes the Inferno Tower take slightly longer to take out each Bat than the regular Bats.
+*The Evolved Bats is a much better counter to [[Skeleton Barrel]] than the regular Bats due to their ability to take the Skeleton Barrel's death damage while still being able to take out the Skeletons that come out of it.
+*The [[Balloon|Balloon's]] death damage can not take out the Evolved Bats if they're at their maximum hitpoints.
+*The Evolved Bats can be used to greatly assist the user at taking out large tanks, such as P.E.K.K.A, [[Giant]], and [[Elixir Golem]], due to their high DPS. In addition to their high DPS, they can stay alive whilst doing so due to their ability to potentially survive small spells most commonly paired with these tanks.
+*[[Rage]] synergizes quite well with the Evolved Bats as the Rage will cause them to activate and maintain their overheal in a much shorter time. This combination will take out the Crown Tower if not addressed.
+*If used in combination with an [[Ice Spirit]] or [[Ice Spirit/Evolution|Evolved Ice Spirit]], the Evolved Bats can mostly/fully counter a [[Goblin Giant]] depending on how early the user places both cards. The Ice Spirit should be played first to tank for the [[Spear Goblins]] as not doing so will result in 1 Evolved Bat dying during its 1-second deploy time. Reducing the DPS and counter push potential.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Bat Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.3 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Medium (1.2)||Air & Ground||x5||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between Pulses<br />{{Icon|I = Time}}
+|-
+|2||2 pulses every 1 sec||0.5 sec
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 122 }}
+{{#vardefine: Max hp_11 | 244 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.3 }}
+{{#vardefine: Heal_11 | 38 }}
+{{#vardefine: Heal sec | 0.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Max Hitpoints<br />{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Healing per pulse<br />{{Icon|I=Hitpoint}}
+! scope="col" |Healing per second<br />{{Icon|I=HPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(1-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(2-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(3-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(4-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(5-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(6-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(7-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(8-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(9-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(10-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:Max hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:Heal_11}} || {{Dps|{{#var:Heal_11}}|{{#var:Heal sec}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(12-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(13-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(14-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(15-11)) round 0 }}|{{#var:Heal sec}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Max hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:Heal_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:Heal_11}} * (1.1^(16-11)) round 0 }}|{{#var:Heal sec}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div></center>
+
+==History==
+2023
+*The Bats' Evolution [[Cards|card]] was added to the game on 2/10/2023, in the [[Version History#Pass Royale and more (2/10/2023)|October 2023 Update]].
+*On 13/11/2023, a [[Version History#Minor Update (13/11/2023)|Minor Update]], decreased the Evolved Bats' first attack time interval to 0.3 seconds (from 0.6 seconds).
+2024
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Bats' first attack time interval to 0.6 seconds (from 0.3 seconds).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Bats after death.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Evolved Bats' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed
+2026
+
+* On 2/3/2026, a Balance Update, decreased the Evolved Bats' hitpoints to 1.2 seconds (from 1.3 seconds).
+
+==Gallery==
+<gallery>
+File:Evolved Bats card render.png|Current card render.
+File:Evolved Bats Preview.gif|Current card preview
+File:BatsEvoShard.png|Evolution Shard.
+</gallery>
+
+==Trivia==
+*The Bats resemble the in-life bat species called "''Desmodus rotundus"'', also known as the "[https://en.wikipedia.org/wiki/Common_vampire_bat Common Vampire Bat]". The Common Vampire Bat is a [https://en.wikipedia.org/wiki/Hematophagy hematophagous] bat species that primarily feeds on the blood of livestock, which is done by biting their prey while they're sleeping. In Clash Royale, Bats attack in a similar way by biting their enemies.
+**In the Japanese language settings of the game, the Bats' name translates to "Swarm of Bats"
+*Even though the [[Cards|card]] spawns 5 Bats, the card render displays only 3 Bats.
+*The Bats' Evolution is 1 of 3 evolved cards without the diamond evolution symbol anywhere on their card render, the others being [[Ice Spirit/Evolution|Ice Spirit]] and [[Giant Snowball/Evolution|Giant Snowball]].
+*The Bats' Evolution is the subject of certain cosmetics in the game. More specifically:
+**The Bats' Evolution is the subject of an [[Emotes|Emote]].
+**The Bats' Evolution is the subject of a [[King's Tower|Tower Skin]].
+***It is the only evolved card to be the subject of a Tower Skin.
+
+{{Navigation|Card}}
+
+[[ru:Летучие Мыши/Эволюция]]

@@ -1,0 +1,206 @@
+{{Protection}}{{MagicWords}}{{Heroic Card Infobox|Cost=3|Rarity=Rare|Type=Building|Arena=Bone Pit|ReleaseDate=1 June 2026|AbilityCost=5}}
+
+
+==Strategy==
+*For the purposes of determining [[Elixir]] trades, the Heroic Tombstone and its activated Ability count as 8 Elixir, as the player must play the 3 Elixir Heroic Tombstone and then spend a further 5 on his Ability.
+*Do not place a Heroic Tombstone in a position where you would never place a regular Tombstone. This is because it can easily reveal to the opponent that the ability will be used, incentivizing them to destroy it before the ability can be used.
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Tombstone Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Spawn Speed
+{{Icon|I=Time}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime
+{{Icon|I=Time}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|3
+|4 sec
+|1 sec
+|30 sec
+|[[:Category:Building Cards|Building]]
+|{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+|-
+|1.1 sec
+|0.5 sec
+|Fast (90)
+|Melee: Short (0.5)
+|Ground
+|Ground
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> {{#vardefine: tomb_hp_11|529}} {{#vardefine: life|30}} {{#vardefine: hp_11|81}} {{#vardefine: dmg_11|81}} {{#vardefine: atk_speed|1.1}} {{#vardefine: queen_hp_11|4224}} {{#vardefine: queen_dmg_11|422}} 
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second
+{{Icon|I=Time}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Damage
+{{Icon|I=Damage}}
+! scope="col" |Damage Per Second
+{{Icon|I=DPS}}
+!Queen Hitpoints
+{{Icon|I=Hitpoint}}
+!Queen Damage
+{{Icon|I=Damage}}
+|-
+|3
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(3-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(3-11)) round 0}}
+|-
+|4
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(4-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(4-11)) round 0}}
+|-
+|5
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(5-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(5-11)) round 0}}
+|-
+|6
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:tomb_hp_11}}
+|{{#expr: {{#var:tomb_hp_11}} / {{#var:life}} round 1}}
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:queen_hp_11}}
+|{{#var:queen_dmg_11}}
+|-
+|12
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:tomb_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1}}
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:queen_hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:queen_dmg_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div></center>
+
+== History ==
+* On 1/6/2026, the Hero Tombstone was added in the game, along with [[Princess/Evolution|Evo Princess]]
+* On 6/7/2026, a Balance Update, increased the Tomb Queen's Hitpoints by 20%, decreased the ability cost to 5 elixir (from 6), and her continuous skeleton spawn was removed entirely
+* On 4/8/2026, a Balance Update, increased the Tomb Queen's Damage by 32%, increased her sight range to 7 tiles (from 5.5 tiles), and increased her hitpoints by 4%

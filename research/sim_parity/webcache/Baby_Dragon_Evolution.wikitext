@@ -1,0 +1,109 @@
+{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=1 September 2025}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Baby Dragon</span>}}
+{{Quote|That's a big baby! While attacking, Evo Baby Dragon creates a gust of wind that speeds up friendly troops and slows down enemies in the area. It's a wind-win situation!}}
+
+The Baby Dragon's Evolution is a {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Baby Dragon with identical stats to the original. The Evolved Baby Dragon produces a 8x9 square area of a gust of wind around it that slows enemy troops by 30% and speeds up allies by 30%. After death, the wind will linger for about 2 seconds. The Baby Dragon is a small, spring green dragon with short, stubby, darker team-colored wings, feet and tongue, plum eyes, horns and larger spikes on its wings and back, yellow sclera, and a purple back, and fires a bright, glowing fireball that leaves a purple trail. The Baby Dragon's evolution card costs 4 Elixir to deploy and requires 2 cycle to deploy.
+
+==Strategy==
+*The Baby Dragon's synergy with the [[Balloon]] is even greater. Now, the Evolved Baby Dragon is able to tank for the Balloon and speed it up, allowing it to have a greater chance reaching the opponent's tower.
+*The Evolved Baby Dragon pairs well with building-targeting tanks, such as the [[Golem]], [[Electro Giant]], [[Elixir Golem]], [[Lava Hound]], or the [[Giant]]. You can deploy the tank at the back and slowly deploy more troops behind of it, and once they reach the bridge, you can use the Evolved Baby Dragon to speed up all of them.
+*With its slowdown effect, the Evolved Baby Dragon can now defend against [[Wall Breakers]], [[Skeleton Barrel]], and [[Barbarians]] by itself, and then be used as a counterpush.
+**It can also stop the [[Battle Ram]] and Balloon from reaching the tower, although the Barbarians and the Balloon's death bomb will still damage it.
+
+<center>
+<div class="table-back" id="unit-statistics">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.5 sec||0.3 sec||Fast (90)||1 sec||3.5||1.5||500||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Enemy Movement Speed Reduction<br />{{Icon|I=Speed}}
+! scope="col" |Troops Movement Speed Buff<br />{{Icon|I=Speed}}
+|-
+|2||-30%||+30%
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1152 }}
+{{#vardefine: dmg_11 | 168 }}
+{{#vardefine: atk_speed | 1.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*On 14/08/2025, the Evolution accidentally appeared in the game but were quickly removed afterwards. It is currently unknown if players who had unlocked the Evolution could still be able to use it.
+*On 1/9/2025, the Baby Dragon Evolution was added to the game on 1/9/2025, in the September 2025 Update.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the cycles required to 2 (from 1). It also fixed a bug where his Deployment Visual Effects would not show.
+*On 1/12/2025, a Balance Update decreased the Baby Dragon's friendly troop speedup by 20%, from 50% down to 30%.
+2026
+
+* On 6/7/2026, a Balance Update, increased the Evolved Baby Dragon's damage by 4%
+
+==Gallery ==
+<gallery>
+Evolved Baby Dragon card render.png|Current card render.
+Evolved Baby Dragon Preview.gif|Current card preview
+BabyDragonEvoShard.png|Evolution Shard.
+Evolved Baby Dragon 1.png|Evolved Baby Dragon 
+Evolved Baby Dragon concept art.png|[https://www.youtube.com/post/UgkxTD_03CGym6MWfZHG07aiiRzsiD9F-JrF Concept art] shared by Clash Royale on YouTube.
+EvolvedBabyDragonSprites.png|Evolved Baby Dragon's in-game sprites
+</gallery>
+
+==Trivia==
+*The purple skin on the Baby Dragon's back makes it appear as if it's growing into the [[w:c:clashofclans:Dragon|Dragon]] from Clash of Clans.
+**Although, In the "[[w:c:clasharama:Clash-A-Rama!|Clash-A-Rama!]]" episode "[https://youtu.be/GncXJbwaoZk?si=oSuaE3Z9Eu4WEqdJ&t=292 Bringing Up Baby Dragon]" it's shown that Baby Dragons mature into a different Dragon than the ones in Clash of Clans. So, this is just an allusion.
+
+{{Navigation|Card}}

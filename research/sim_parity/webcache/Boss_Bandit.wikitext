@@ -1,0 +1,189 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-champion";">Boss Bandit</span>}}
+
+{{Card Infobox|Cost=6|AbilityCost=1|Rarity=Champion|Type=Troop|Arena=Royal Crypt|ReleaseDate=7 April 2025}}
+
+{{Quote|The boss of the Forest Gang finally shows her face...kind of. Boss Bandit dashes to her targets and is invulnerable while dashing. When things get tough, her pair of grenades are at the ready.}}
+
+The Boss Bandit is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Crypt (Arena 17)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. If there are ground units between 3.5 and 6 tiles of her, she will stop moving and begin charging a dash attack which takes 0.8 seconds to execute, and will deal double damage. The Boss Bandit's ability allows her to get invisible for one second, then teleport 6 tiles behind her current spot. She appears as a woman who has teal eyes, light red hair in a ponytail and eyebrows, wields a wooden bat with three large golden bands, carries grenades, and wears a teal suit and a mask which covers her lower face, a dark brown cape with brass-colored linings, a golden headpiece, a team-colored waistcloth, brown gloves with team-colored handles and sandals, and long black socks. A Boss Bandit card costs 6 Elixir to deploy.
+
+==Ability: Getaway Grenade==
+{{Quote|Briefly becomes invisible and teleports backwards!}}
+{{Champion Ability}}
+The Boss Bandit has a special ability, accessible from the rightmost side of the screen just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1 second delay, the Boss Bandit becomes invisible for 1 second, then teleports 6 tiles behind her original position. This allows her to escape any form of damage, as well as give her another dash if the troops are far away enough. The ability goes on a 3 second cooldown after the duration ends, but it can only be activated twice. The Getaway Grenade ability costs 1 Elixir to activate.
+
+==Strategies==
+{{Battle Deck with Card|:Category:Battle Decks using the Boss Bandit Card}}
+*For the purposes of determining [[Elixir]] trades, the Boss Bandit and her activated Ability count as 7 Elixir, as the player must play the 6 Elixir Boss Bandit and then spend a further 1 on her Ability.
+*The Boss Bandit and her ability should be used cautiously, as her hefty cost could easily allow the opponent to play punish cards such as the [[Cannon Cart]], [[Elite Barbarians]], [[Hog Rider]], [[Wall Breakers]], and the [[Lumberjack]]. It could also lead to an overcommitment, as a player would have to spend up to 8 Elixir in order to get maximum value out of her. Still, being able to take out all [[:Category:Tower Troop Cards|tower troops]] alone with ease and being quite deadly on one-on-one interactions, the Boss Bandit will also force out high Elixir investments on the opponent's side to counter her.
+*Compared to the [[Bandit]], her normal damage OHKOes anything up to a [[Princess]], [[Dart Goblin]], or a [[Rascals|Rascal Girl]], and her dash damage OHKOes [[Zappies]], [[Magic Archer]], and [[Mother Witch]]. Since both her attacks and dashes deal the same amount of damage as the [[Mega Knight]]'s attacks and jumps respectively at equal levels.
+*She also serves as a great tank to support troops, as her hitpoints are close to the [[Royal Giant]]'s for the same Elixir cost.
+*Her dash invulnerability will allow her to nullify charge damage from the [[Dark Prince]] and the [[Prince]], as well as the first attack of the [[Valkyrie]] and the [[Fisherman]], since they hit during the Boss Bandit's dash time, allowing her to be more efficient against them.
+*Even though anti-tank cards like the [[Mini P.E.K.K.A.]] and the Lumberjack are able to cripple her hitpoints quick enough, the Boss Bandit can use her ability to escape the troop and dash towards them again, easily taking the anti-tank card down. It can also be used preemptively, and can even be activated a second time if another anti-tank card is used. As such, troops with far higher hitpoints, such as the [[P.E.K.K.A.]], Prince, [[Giant Skeleton]], [[Mega Knight]], or the [[Goblin Machine]], should be used, as they could withstand all of the Boss Bandit's dash and normal damage outputs.
+**When using cheaper anti-tank cards, an [[Ice Spirit]] can be used to stall the Boss Bandit for 1.2 seconds, stopping her from dealing damage and use her ability in the meantime, possibly shutting down her first ability usage. If positioned at the right time, it may even cause her to dash into it while still freezing her.
+**A lone Boss Bandit that has crossed the bridge can be countered by a Mini P.E.K.K.A. played above her. He will do sufficient damage to cripple her hitpoints below half quick enough, while also walking fast enough to reach the Boss Bandit after her first ability usage, stopping her from dashing into him. The outcome will be either Mini P.E.K.K.A. surviving with a slither of health or another ability activation from the Boss Bandit, being an even worse Elixir overcommitment. The Lumberjack can also have a similar effect.
+*Alone, a [[Skeleton Army]] is the cheapest counter to her, as the [[Skeletons]] spawned from the card is enough to keep her distracted and take her down even with her three ability activations. [[Skeletons/Evolution|Evolved Skeletons]] can have a similar effect. However, one must watch out for 2-Elixir [[:Category:Spell Cards|Spells]], [[Bomber]], Princess, [[Firecracker]], [[Ice Wizard]], and the Magic Archer, which are anti-swarm cards cheap enough to support the Boss Bandit and allow her to use her abilities. Heftier AoE cards used after defending opposing pushes or during Double/Triple Elixir period, such as the Valkyrie, [[Wizard]], [[Baby Dragon]], [[Witch]], Dark Prince, [[Sparky]], [[Mega Knight/Evolution|Evolved Mega Knight]], [[Goblin Demolisher]], [[Royal Ghost]], [[Bowler]], [[Executioner]], and the [[Skeleton King]], also need to be accounted.
+**The [[Rage]] is a good tool when removing swarms, as it will also boost the Boss Bandit's attack speed and reduce the dash time, allowing her to use her ability and dash faster.
+*A mini-tank like the [[Knight]], Valkyrie, [[Battle Healer]], [[Golden Knight]], Skeleton King, or the [[Monk]] paired with [[Goblins]] or [[Guards]], will cripple her down. The mini-tank would receive the first dash, then, when the swarm is played, tank her normal damage, while the swarm quickly chips her HP down and tank her post-ability dashes.
+**If the Golden Knight is taking the role of mini-tank, his own ability will be able to nullify her dash when timed properly and at a distance from her, but Boss Bandit's dash also nullifies the Golden Knight's ability, making a pretty cool interaction. The Skeleton King can also nullify her dash by activating his ability.
+**If Guards are taking the role of swarms, the Boss Bandit will have to take the shields down first, stalling her for even longer.
+*The [[Mighty Miner]] might distract her long enough to quickly deplete her hitpoints with his ramp-up damage. His hitpoints are also high enough to withstand her dashes, but if needed, a cheap distraction such as the Skeletons or Goblins can tank them for the Mighty Miner.
+*For a -1 Elixir trade, the Boss Bandit can escape a [[Rocket]] when timed right, allowing her hitpoints to be preserved. If she was targeting something, she'll be able to dash into the target again. This is easy to time, as the Rocket moves slowly, but one must also note that it takes 1 second to activate her ability, and she also takes around 0.9 seconds to teleport backwards.
+*The Boss Bandit can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, she is unable to use her ability. As such, she should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Boss Bandit Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|6||1.1 sec||0.4 sec||Fast (90)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Dash Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+!scope="col"|Dash Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Dash Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Dash Range<br/>{{Icon|I=Dash Range}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+|-
+|0.8 sec||500||3.5-6||Ground||Ground
+|}
+
+{{StatisticsSubheader|Getaway Grenade Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Cast Time<br/>{{Icon|I=Time}}
+!scope="col"|Invisibility Duration<br/>{{Icon|I=Time}}
+!scope="col"|Teleport Range<br/>{{Icon|I=Dash Range}}
+!scope="col"|Ability Cooldown<br/>{{Icon|I=Time}}
+!scope="col"|Ability Count<br/>{{Icon|I=Count}}
+|-
+|1||0.933 sec||1 sec||6||3 sec||2
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2624 }}
+{{#vardefine: dmg_11 | 244 }}
+{{#vardefine: dash_11 | 489 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br/>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br/>{{Icon|I=Damage}}
+!scope="col"|Dash Damage<br/>{{Icon|I=Boost}}
+!scope="col"|Damage per second<br/>{{Icon|I=DPS}}
+|-
+| 11 || {{#var:hp_11}}  || {{#var:dmg_11}} || {{#var:dash_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="25%"|Type
+!width="10%"|Level/Tier
+!width="40%"|Objective
+!width="25%"|Rewards
+|-
+|rowspan="3"|Damage Dealer <br/> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 300,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{PAGENAME}} card<br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 900,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,500,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>150 {{Icon|I=XP}}
+|-
+|rowspan="3"|CHARGE!!! <br/> [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 280 Troops or buildings with the Charge ability 
+|15,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 800 Troops or buildings with the Charge ability
+|100 {{Icon|I=Gem}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 1,400 Troops or buildings with the Charge ability
+|25,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2025
+*The Boss Bandit card was added to the game on 7/4/2024, in the [[Version History#Pass Royale and more (7/4/2025)|April 2025 Update]].
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Boss Bandit's hitpoints by 3%.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], changed the way the Getaway Grenade operates. The Getaway Grenade can be activated a total of 2 times independent on Boss Bandit's hitpoints, with a 3-second cooldown between its uses. The same update also decreased the Boss Bandit's hitpoints by 4%.
+*On 12/1/2026, a Balance Update, decreased the Boss Bandit's damage and dash damage by 9%, and increased it's attack speed to 1.1 (from 1.2)
+
+==Gallery==
+<gallery>
+Boss Bandit card render.png|Current card render.
+Boss Bandit Preview.gif|Current card preview
+ChampionBigBandit Pose1 4k FX.png|Boss Bandit pose.
+Boss Bandit concept art 1.png|[https://www.youtube.com/post/UgkxcgPmJW0wXMyk_ipm1oImJ5PjyFvtt7L4 Concept art] shared by Clash Royale on YouTube.
+Boss Bandit concept art 2.png|Ditto.
+Boss Bandit concept art 3.png|Ditto.
+</gallery>
+
+==Trivia==
+*The Boss Bandit may be inspired by [https://en.wikipedia.org/wiki/Robin_Hood Robin Hood], an English outlaw known from robbing from wealthy families and distributing that wealth to poorer ones.
+*The word "''Bandit''" comes from the Latin "''bannio''", meaning 'to ban'.
+**The Boss Bandit is 1 of 4 [[cards]] associated with outlawry, with the others being [[Goblin Gang]], [[Rascals]], and [[Bandit]].
+**Along with the [[Firecracker]], Rascals, [[Magic Archer]], and Bandit, the Boss Bandit belongs to the Forest Gang.
+**In the Turkish language setting of the game, the word "Boss" is not translated, making Boss Bandit the only card with a word from an foreign language in the Turkish language setting.
+*The Boss Bandit is the most expensive {{Rarity|Champion}} card, costing 6 [[Elixir]].
+**Along with the [[Golden Knight]], [[Archer Queen]], [[Mighty Miner]], [[Monk]], and the [[Terry]], she also has the cheapest ability cost, costing 1 Elixir.
+**Also along with the [[Goblinstein]], she also has the most expensive combined Elixir cost of '''{{Rarity|Champion}}''' and ability, costing 7 Elixir.
+*The Boss Bandit is the first {{Rarity|Champion}} to have a limited number of ability uses, with a maximum of two uses per deployment.
+*If the Boss Bandit's ability is used up, the crown symbol is currently not automatically removed. 
+*Upon deployment, the Boss Bandit exclaims "''In and out, just like that!''", "''Let's make this quick.''", or "''Let's steal the show!''". When attacking a troop, she may say "''Hey! Knife to meet you!''", or "''The crown is calling me''". When Getaway Grenade is activated, she may say "''Catch me if you can!''", "''Too slow!''", "''You lost me!''", "''Eyes on me!''", or "''Lost me again!''". She will also whistle before dashing, and may say "''Hah! Now you see me!''". When idle or attacking, she may say "''You wanna win the crown for me? Really?''".
+**The Boss Bandit is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], [[Ram Rider]], [[Electro Wizard]], [[Princess]], [[Ice Wizard]], Magic Archer, [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+**The Boss Bandit has unique lines that only play on specific occasions, which override her normal lines:
+***If the Boss Bandit takes down an opposing Bandit, she may say "''This is why I'm the boss!''". If the Boss Bandit is taken down by an opposing Bandit, she may say "''Beaten by you?''" If the Boss Bandit is played when an allied Bandit is on the field, she says "''Bandit, watch and learn!''".
+***If the Boss Bandit is played when an allied Firecracker is on the field, she says "''You fire, I dash!''".
+***If the Boss Bandit is played when an allied Magic Archer is on the field, she says "''Cover me, sharp eyes!''".
+***If the Boss Bandit is played when allied Rascals are on the field, she says "''Trouble squad, I'm in!''".
+***If the Boss Bandit is played when 2 or more allied Forest Gang members are on the field, she says "''Forest Gang, roll out!''" or "''Troublemakers, party time!''".
+
+* The Boss Bandit is 1 of 10 cards to have an alliterative name, the others being the [[Royal Recruits]], Goblin Gang, Mega Minion, [[Goblin Giant]], [[Cannon Cart]], [[Barbarian Barrel]], Ram Rider, [[Dagger Duchess]], and the Mighty Miner.
+* The Boss Bandit is the subject of a few cosmetics in the game. More specifically:
+**The Boss Bandit is the subject of 3 [[Emotes]].
+**The Boss Bandit is the subject of a few [[Battle Banners|Battle Banner]] Decorations, including an animated one.
+*The initial balance change for Boss Bandit on the [[Version History#Balance Changes (8/7/2025)|8/7/2025 balance changes]] was an addition of a 5-second cooldown to Getaway Grenade, but it was lowered to 3 seconds [https://royaleapi.com/blog/season-73-balance-wip-july-2025 last minute].
+
+{{Navigation|Card}}

@@ -1,0 +1,147 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Witch</span>}}
+{{Evolved Card Infobox|Cost=5|CycleCost=1|Cycles=1|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=5 May 2025}}
+{{Quote|Your Skeletons are willing to sacrifice themselves for their beloved Witch, lending their souls and healing her when they're destroyed.}}
+
+The Witch's Evolution is an {{Rarity|Epic}} [[Cards|card]] unlocked with 6 Evolution Shards. It spawns a Witch with identical stats to the original. Once a Skeleton that the Evolved Witch has spawned is defeated, she is healed. This healing can overheal, allowing her to achieve 24% more hitpoints at its maximum capacity. The Evolved Witch takes an appearance as a woman who has glowing pink eyes and violet eyebrows, wears a violet cloak with gold linings, a ram face on top and two horns on the sides and dress, a dark gray top, team-colored armlets, darker purple lipstick, and a belt with the [[Card Evolution]] symbol in the middle, and wields a staff with a skull on top. The Witch's Evolution costs 5 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*Due to the Witch costing only 5 [[Elixir]] and requiring only 1 cycle to evolve, the player can evolve her multiple times in a match.
+*The Evolved Witch naturally spawns [[Skeletons]] every 7 seconds. Due to her slower movement speed than the spawned Skeletons, the Evolved Witch would heal herself once her spawns cross the bridge when played behind the [[King's Tower]], allowing her to gain an advantage before engaging in fights against enemy units.
+*A total of 3 Skeletons need to be defeated in order to have the Evolved Witch to from base health full overheal hitpoints, which can happen with just her first wave. This increases to total of 14 Skeleton that need to be defeated in order to have the Evolved Witch from 1 hitpoint to full overheal hitpoints, requiring a total of 4 waves, assuming no healing is wasted.
+*Lighter [[:Category:Spell Cards|spells]] are less effective, as they'll usually defeat the Skeletons spawned around her, which can heal the Evolved Witch enough so that she has a decent amount of hitpoints. [[Poison]] in particular would take out two waves of Skeletons, which heal her even more. Trying to use [[Zap]] on her spawned Skeletons in order for a troop to break through her is also not very effective, as her health will be healed by their defeat. On the contrary, [[Rocket]] and [[Lightning]] are a far more effective way of taking her out, even though they are a -1 Elixir trade, as they will defeat her even if she is already at her maximum hitpoints.
+*Playing her behind slow-moving units, like a [[Giant]], [[P.E.K.K.A.]], [[Giant Skeleton]], [[Golem]], or an [[Elixir Golem]] will allow her to support those cards with the spawned Skeletons, while also healing herself from their death, as they also move faster than the slow-moving troop of choice.
+*Although splash units are great at wiping out her spawned Skeletons as well as other troops around her, they will have a harder time in defeating the Evolved Witch herself, since she would heal back with every Skeleton death, while she chips the opposing unit's health down. The [[Valkyrie]] is slightly more effective, as her hitpoints are elevated enough to survive the Evolved Witch's attacks.
+*The Evolved Witch can also be played on decks with [[Balloon]] and [[Lava Hound]]. Her possible value will either bait Rocket or Lightning for the Balloon or support the Lava Hound + Balloon push with herself and her Skeletons.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Witch Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<b/>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Spawn Speed<br/>{{Icon|I=Time}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Splash Radius<br/>{{Icon|I=Radius}}
+!scope="col"|Projectile Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|5||1.1 sec||0.7 sec||Medium (60)||1 sec||7 sec||5.5||1.5||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Skeleton Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+|-
+|1.1 sec||0.5 sec||Fast (90)||Melee: Short (0.5)||Ground||Ground||[[:Category:Troop Cards|Troop]]
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+|-
+|1
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 839 }}
+{{#vardefine: maks_hp_11 | 1039 }}
+{{#vardefine: dmg_11 | 135 }}
+{{#vardefine: atk_speed | 1.1 }}
+{{#vardefine: heal_11 | 76 }}
+{{#vardefine: skel_hp_11 | 81 }}
+{{#vardefine: skel_dmg_11 | 81 }}
+{{#vardefine: skel_atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br/>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Max Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Area Damage<br/>{{Icon|I=Area Damage}}
+!scope="col"|Damage per second<br/>{{Icon|I=DPS}}
+!scope="col"|Skeleton Death Heal<br/>{{Icon|I=HPS}}
+!scope="col"|Skeleton Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Skeleton Damage<br/>{{Icon|I=Damage}}
+!scope="col"|Skeleton Damage per second<br/>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}  || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:maks_hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:heal_11}} || {{#var:skel_hp_11}} || {{#var:skel_dmg_11}} || {{Dps|{{#var:skel_dmg_11}}|{{#var:skel_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:maks_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Witch's Evolution [[Cards|card]] was added to the game on 5/5/2025, in the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] {{Balance|Add}}.
+*On 6/5/2025, a maintenance break, decreased the Evolved Witch's overheal hitpoints to 124% (from 125%) {{Balance|Nerf}}.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Evolved Witch's healing per [[Skeletons|Skeleton]] defeated by 12% {{Balance|Nerf}}.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], decreased the Evolved Witch's healing per Skeleton defeated by 12% {{Balance|Nerf}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Evolved Witch's healing per Skeleton defeated by 36% {{Balance|Buff}}, and made it so that can only be healed by defeated Skeletons that she spawns instead of any Skeleton {{Balance|Neutral}}. It also made it so that she can no longer be healed by defeated [[Skeletons/Evolution|Evolved Skeletons]] or [[Guards]] {{Balance|Neutral}}.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds), and decreased heal per skeleton by 21%.
+2026
+
+* On 2/2/2026, a Balance Update, decreased the Evolved Witch's heal per skeleton by 11%
+* On 4/8/2026, a Balance Update, increased the Evolved Witch's heal per skeleton by 189%, increased her max hitpoints by 40%, increased her overheal ratio to x1.73 (from x1.24), and made it to where she can only be healed by the first 4 skeletons that she spawns.
+
+==Gallery==
+<gallery>
+File:Evolved Witch card render.png|Current card render.
+File:Witch Preview.gif|Current card preview
+File:WitchEvoShard.png|Witch's Evolution Shard.
+File:Evolved Witch 1.png|Evolved Witch
+</gallery>
+
+==Trivia==
+*The Witch is shown to make the practice of [https://en.wikipedia.org/wiki/Necromancy necromancy]. Necromancy is a form of magic involving communication with the deceased; either by summoning their spirit as an apparition or raising them bodily.
+**In the Japanese language setting of the game, the Witch's name translates to "Necromancer".
+*The Witch's Evolution resembles the [https://clashofclans.fandom.com/wiki/Super_Witch Super Witch] from Clash of Clans.
+*The Witch is 1 of 6 evolved [[cards]] associated with [[Skeletons]], with the others being [[Bomber/Evolution|Bomber]], [[Skeleton Barrel/Evolution|Skeleton Barrel]], [[Skeleton Army/Evolution|Skeleton Army]], [[Wall Breakers/Evolution|Wall Breakers]], and of course, [[Skeletons/Evolution|Skeletons]].
+*When deployed, the Evolved Witch cackles. When summoning [[Skeletons]], the Evolved Witch may scream or say "''Skeleton!''".
+**The Witch is 1 of 9 evolved [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], [[Mega Knight/Evolution|Mega Knight]], and [[Lumberjack/Evolution|Lumberjack]].
+***Also, the Witch is 1 of 6 evolved troops whose regular troop do not speak distinct words when on the field, the others being Bomber, Goblin Brawler, Hunter, Executioner, and Mega Knight.
+*The Witch's Evolution is the subject of certain cosmetics in the game. More specifically:
+**The Witch's Evolution is the subject of 2 [[Emotes]].
+**The Witch's Evolution is the subject of a few [[Battle Banners|Battle Banner]] decorations, including an animated one.
+*Before the Witch's Evolution's release, the Evolved Witch's healing per Skeleton defeated was decreased by 33%, and her overheal hitpoints were decreased to 125% (from 130%).
+
+{{Navigation|Card}}
