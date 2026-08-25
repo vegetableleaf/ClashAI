@@ -2735,6 +2735,37 @@ of the raised baseline -- making idling look WORSE in advantage terms than befor
 existed. If that is right, a bigger dose does not fix it and may invert it further; the term would
 need to be uncapped or moved off the idle step entirely.
 
+### FIXES 2+3 — FAIL their pre-committed criterion (paired, n=30), and in the predicted way
+
+```
+                 control@2600   fix23@2600   paired delta   sigma
+xbow_lock            8.93          3.20         -5.73        2.1   <-- WRONG WAY
+chip_linear          9.23          3.33         -5.90        2.1   <-- WRONG WAY
+xbow_defends         6.93          4.40         -2.53        1.0
+xbow_no_lock         0.27          0.07         -0.20        1.8
+plays               11.7%         11.0%
+elixir median        2.57          2.79
+```
+
+Criterion was "`xbow_lock`/`chip_linear` UP, `xbow_no_lock` present, `xbow_defends` firing, >=2
+sigma". **Both primary terms moved DOWN at 2.1 sigma** -- a 64% fall in bow uptime and in the bow's
+damage lane.
+
+**The policy is not playing BETTER bows, it is playing FEWER bows.** `xbow_no_lock` did fall
+(0.27 -> 0.07) -- fewer useless bows -- but `xbow_lock` fell just as hard, so the useless bows were
+removed by removing bows, not by improving them.
+
+⚠ **THIS WAS PREDICTED IN WRITING BEFORE THE RUN**, in fix23.py's own docstring and in the note to
+the owner: *"There is no existing penalty for a blocked bow (S4a corrected that belief), so 2a
+already removes a credit; stacking a large penalty on top would suppress bow play further while
+x_bow share is ALREADY collapsing."* The dose was deliberately kept small (-0.5) for exactly this
+reason and it was still enough. **Penalising a bad OUTCOME of an action suppresses the ACTION** --
+the policy cannot tell "play a better bow" from "stop playing bows", and the second is cheaper.
+
+If this is retried, the penalty has to be removed and only the CREDIT GATE (2a) kept, so a useless
+bow earns nothing rather than costing something -- or the penalty has to be conditioned on a bow
+that was placed in range, so it cannot be avoided by simply not playing the card.
+
 ### ⚠ MEASUREMENT BUG CAUGHT BEFORE IT PRODUCED A VERDICT
 
 The first run of this comparison reported `restraint_hold 0.00` in BOTH arms. The probe reads the

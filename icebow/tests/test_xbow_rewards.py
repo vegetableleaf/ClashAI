@@ -52,15 +52,29 @@ class XbowRewardTests(unittest.TestCase):
                            "the bow's DoT must flow through the linear lane")
 
     def test_overcommit_credit_on_bow_death(self):
+        """A bow that THREATENED and then drew heavy answers still earns the draw credit.
+
+        ⚠ THE BOW MOVED, 2026-08-24, and the move is the point. This test used to deploy at
+        y=0.60 -- 12.7 tiles from the enemy princess, against the X-Bow's 11.7 range -- so the bow
+        it was crediting could never have reached a tower at all. Under fix 2a that placement now
+        earns nothing (see `test_overcommit_withheld_when_offensive_bow_never_locked`), so the
+        deploy moved to the siege spot the sibling lock test uses. The ASSERTION is unchanged
+        because the doctrine is unchanged: forcing the opponent to overspend is worth paying for.
+        What changed is that the bow now has to have been a threat first.
+        """
         env = _quiet_env(seed=44)
         bow = build_spec(env.eng.db, "x_bow", 11)
         env.eng.elixir[0] = 10.0
-        assert env.eng.deploy(0, bow, 0.50, 0.60)
+        assert env.eng.deploy(0, bow, 0.20, 0.53)          # in siege range -> it can actually lock
         bow_u = [u for u in env.eng.units if u.team == 0 and u.spec.base == "x_bow"][-1]
+        for _ in range(6):                                 # let it lock the tower
+            env.eng.elixir[0] = 5.0
+            env.step((False, 0, 0))
+        self.assertGreater(_total(env, "xbow_lock"), 0.0, "fixture must produce a real lock")
         env.eng.elixir[1] = 10.0
-        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.50, 0.575)   # 7 elixir
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.20, 0.505)   # 7 elixir
         env.eng.elixir[1] = 10.0
-        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.52, 0.575)  # +3 = 10
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.22, 0.505)  # +3 = 10
         env.step((False, 0, 0))                   # they lock onto the bow -> ledger records them
         env.step((False, 0, 0))
         bow_u.hp = 0.0                            # the bow is thwarted...
@@ -68,6 +82,69 @@ class XbowRewardTests(unittest.TestCase):
         got = _total(env, "xbow_overcommit")
         self.assertGreater(got, 0.2, "10 elixir spent on a 6-elixir bow must credit the draw")
         self.assertLessEqual(got, env.bow_over_cap + 1e-6)
+
+    def test_overcommit_withheld_when_offensive_bow_never_locked(self):
+        """FIX 2a: `led["cost"]` accrues independently of `led["lock"]`, so before this an
+        OFFENSIVE bow that never once aimed at a tower still collected the overcommit credit --
+        the reward actively PAID for the owner's signature failure case."""
+        env = _quiet_env(seed=44)
+        bow = build_spec(env.eng.db, "x_bow", 11)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, bow, 0.50, 0.60)          # forward by the doctrine test, but 12.7
+        bow_u = [u for u in env.eng.units if u.team == 0 and u.spec.base == "x_bow"][-1]
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.50, 0.575)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.52, 0.575)
+        env.step((False, 0, 0))
+        env.step((False, 0, 0))
+        bow_u.hp = 0.0
+        env.step((False, 0, 0))
+        self.assertEqual(_total(env, "xbow_lock"), 0.0, "fixture must NOT lock (out of range)")
+        self.assertEqual(_total(env, "xbow_overcommit"), 0.0,
+                         "a bow that never threatened a tower must not be paid for the draw")
+        self.assertLess(_total(env, "xbow_no_lock"), 0.0,
+                        "FIX 2b: an offensive bow with zero lock over its life must be penalised")
+
+    def test_no_lock_penalty_and_draw_credit_exempt_the_defensive_bow(self):
+        """A DEFENSIVE bow is not judged on locking a tower -- that was never its job. Gating all
+        overcommit on a lock (the first cut of fix 2a) stripped the draw credit from a bow doing
+        exactly what defence asks of it; the suite caught that."""
+        env = _quiet_env(seed=46)
+        bow = build_spec(env.eng.db, "x_bow", 11)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, bow, 0.50, 0.72)          # deep own half -> defensive band
+        bow_u = [u for u in env.eng.units if u.team == 0 and u.spec.base == "x_bow"][-1]
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.50, 0.695)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.52, 0.695)
+        env.step((False, 0, 0))
+        env.step((False, 0, 0))
+        bow_u.hp = 0.0
+        env.step((False, 0, 0))
+        self.assertEqual(_total(env, "xbow_no_lock"), 0.0,
+                         "a defensive bow must NOT take the no-lock penalty")
+        self.assertGreater(_total(env, "xbow_overcommit"), 0.0,
+                           "a defensive bow that drew heavy answers keeps the draw credit")
+
+    def test_defensive_bow_earns_dps_credit_on_troops(self):
+        """FIX 3: `xbow_lock` requires `hasattr(u.target, "king")`, so a bow shooting TROOPS -- the
+        defensive bow's actual job -- earned nothing and showed up only diffusely in elixir_trade."""
+        env = _quiet_env(seed=47)
+        bow = build_spec(env.eng.db, "x_bow", 11)
+        env.eng.elixir[0] = 10.0
+        assert env.eng.deploy(0, bow, 0.50, 0.72)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "giant", 11), 0.50, 0.66)
+        for _ in range(25):
+            env.eng.elixir[0] = 5.0
+            env.step((False, 0, 0))
+        dps = _total(env, "xbow_defends")
+        self.assertGreater(dps, 0.0, "a bow shooting an enemy troop must earn defensive credit")
+        self.assertLessEqual(dps, env.bow_dps_cap + 1e-6, "per-bow defensive cap must hold")
+        self.assertEqual(_total(env, "xbow_lock"), 0.0,
+                         "troop fire must NOT feed the tower-lock counter (fix 2a gates on it)")
 
     def test_wincon_context_modifiers(self):
         env = _quiet_env(seed=45)
