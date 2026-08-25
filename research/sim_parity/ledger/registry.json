@@ -1,0 +1,690 @@
+{
+ "meta": {
+  "seeded": "2026-08-25",
+  "sources_rule": "wiki page existence + release documentation decide 'live'; official CR API is base-card existence only (forward-declares AND lags evos, measured 2026-08-25); owner in-game observation is final authority"
+ },
+ "evolutions": [
+  {
+   "key": "archers_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "baby_dragon_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "barbarians_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "bats_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "battle_ram_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "bomber_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "cannon_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "dart_goblin_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "electro_dragon_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "elite_barbarians_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "executioner_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "firecracker_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "furnace_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "giant_snowball_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblin_barrel_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblin_cage_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblin_drill_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblin_giant_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "hunter_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "ice_spirit_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "inferno_dragon_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "knight_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "lumberjack_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "mega_knight_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "minion_horde_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "mortar_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "musketeer_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "pekka_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "princess_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "royal_ghost_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "royal_giant_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "royal_hogs_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "royal_recruits_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "skeleton_army_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "skeletons_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "tesla_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "valkyrie_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "wall_breakers_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "witch_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "wizard_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "zap_evo",
+   "family": "evolution",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  }
+ ],
+ "heroes": [
+  {
+   "key": "balloon_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "barbarian_barrel_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "berserker_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "bowler_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "dark_prince_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "giant_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblins_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "ice_golem_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "knight_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "magic_archer_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "mega_minion_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "mini_pekka_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "musketeer_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "tombstone_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "valkyrie_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "wizard_hero",
+   "family": "hero",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  }
+ ],
+ "hero_abilities_in_taxonomy": [
+  "balloon_hero_ability",
+  "barbarian_barrel_hero_ability",
+  "berserker_hero_ability",
+  "bowler_hero_ability",
+  "dark_prince_hero_ability",
+  "giant_hero_ability",
+  "goblins_hero_ability",
+  "ice_golem_hero_ability",
+  "knight_hero_ability",
+  "magic_archer_hero_ability",
+  "mega_minion_hero_ability",
+  "mini_pekka_hero_ability",
+  "musketeer_hero_ability",
+  "tombstone_hero_ability",
+  "valkyrie_hero_ability",
+  "wizard_hero_ability"
+ ],
+ "champions": [
+  {
+   "key": "archer_queen",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "boss_bandit",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "goblinstein",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "golden_knight",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "little_prince",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "mighty_miner",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "monk",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  },
+  {
+   "key": "skeleton_king",
+   "family": "champion",
+   "status": "unconfirmed",
+   "wiki_url": null,
+   "revid": null,
+   "fetched": null,
+   "release_date": null,
+   "notes": null
+  }
+ ]
+}

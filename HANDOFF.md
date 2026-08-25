@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-24**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-25**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -3284,6 +3284,61 @@ play/wait asymmetry to correct).
 `ARM_clipfix.pt`, 2600 episodes, A4 config, matched against `ARM_control4.pt`. Un-inverting the
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
+
+## 4p. 2026-08-25 — SIM PARITY PROJECT OPENED (plan approved; research running, implementation parked until the PPO is up)
+
+Owner goal: bring the sim to parity with the current game — add missing evolutions, ALL heroes and
+champions with full-fidelity abilities, remove phantom evos, refresh stale stats, close mechanic
+gaps. Full plan: `research/sim_parity/PLAN.md`. Owner rulings locked: enemy-side only (no
+action-space change), stat conflicts vs `verified:true`/curated rows are flagged for batch review
+(never auto-overturned), all ~24 abilities at FULL fidelity (meta frequency sets order, not depth).
+
+### ⚠⚠ THE "berserker evo / giant evo" DEBUGGER SIGHTING — PHANTOM EVOS, MEASURED
+`build_spec` (icebow engine.py:501-518) fabricates a spec for ANY `<x>_evo` key: a missing evo row
+merges nothing, so the base card comes back wearing the evo name. `opponents.py:81-97` picks the
+opponent evo as "first deck card whose `_evo` builds" — nothing ever raises, so it is ALWAYS slot
+0. **287/400 meta decks field a phantom** (arrows_evo x80, berserker_evo x56, giant_evo x6);
+sim_view labels units by spec.key, which is what the owner saw. Fix = plan stage I2 (build_spec
+raises on unknown `_evo`; picker checks row existence; `tools/evo_audit.py` gate 0/400). DO NOT
+ship it into the live tree mid-PPO.
+
+### Electro Dragon chain: WORKS (owner report contradicted), but the range is a parity gap
+Measured: 3 clumped knights, one attack -> all three took 266.8 and all three stunned (multi_kind
+chain, multi_hits 3, stun rides every arc). BUT `_CHAIN_TILES = 3.0` (engine.py:98) is one global
+for every chain card and the evo's own KB comment says 3.5 — marginal arcs die in-sim that connect
+live, which on realistic boards LOOKS like "the chain doesn't work". Per-card `chain_tiles` is in
+the stat sweep (R3) and lands in plan stage I5.
+
+### Champion lifecycle CHANGED (owner): no hand-lock
+Champions are NO LONGER removed from the hand while their body is alive — you can cycle back and
+play another. The mechanics audit had "body-blocks-replay" queued as a mechanic to ADD; it is now
+a mechanic to NOT build. Open semantics being sourced in R1c (multi-body coexistence, which body
+the ability drives, per-body uses, refunds) — current master pages + version history ONLY;
+pre-March-2026 text (incl. DOCTRINE.md:161's slot-rule note) is suspect; owner is final authority.
+
+### Source reliability, measured 2026-08-25
+Official CR API `maxEvolutionLevel` FORWARD-DECLARES unreleased evos (claims Berserker + Giant)
+AND LAGS real ones (missing Elite Barbarians, which is live with a wiki page). The API is a
+base-card-existence oracle only. Fandom api.php works via python urllib + custom UA (page fetches
+402; api.php does not). WebFetch 402s on both — use urllib.
+
+### State
+* R0 DONE: `research/sim_parity/` scaffold; `ledger/current_db_snapshot.json` (179 merged keys =
+  137 base + 42 evo; 8 champions; 21 null-hp; 56 unverified) reconciles the audits;
+  `ledger/registry.json` seeded (42 evo / 16 taxonomy-hero / 8 champion rows, all unconfirmed).
+* R1 RUNNING (background workflow `sim-parity-r1`): 3 family chains, enumerate -> specs ->
+  independent verify + completeness critic; every claim carries page+revid+date; raw wikitext
+  archived to `research/sim_parity/webcache/` (these become the I4 importer fixtures).
+* Three audit reports (card DB inventory / import tooling / engine mechanics) are digested into
+  PLAN.md's context section. Headline engine facts: ~200-field CardSpec, only 9 per-card special
+  cases; hogeq strictly ahead of icebow (champion_ability path, spell_build_dmg,
+  zone_first_tick_now, recoil, spark_end_dmg, 4 cards.py fixes); stale `1.1**(level-11)` scaler
+  still in `CardDB.deck()` BOTH decks; friendly-target spells absent entirely; drills never cycle
+  evos; enemy-only cards are ~free, our-deck cards break checkpoints.
+* Phase I (worktree `ClashBot-parity`) starts only after the long PPO launches; merge only at a
+  declared PPO restart; the merge counts as that experiment's ONE training change.
+
+---
 
 ## 4. The central problem, and where it stands
 

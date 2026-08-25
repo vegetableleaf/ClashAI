@@ -1,0 +1,401 @@
+{{Protection}}{{MagicWords}}[[File:Card Evolution.png|thumb|300x300px|center]]
+
+Card Evolution is a feature that allows specific [[Cards]] placed in the Evolution slots to become more powerful. Card Evolution and the Evolution slot are both unlocked at [[Arenas#Trophy Road|Arena]] 3, with the Wild slot, that lets you choose if you want to activate an Evolution, or a Hero version of a Card at Arena 10. A card evolves after a certain number of Cycles. Cycles are the amount of times the original card must be deployed into the Arena to obtain the Card Evolution. For Instance, if a card requires 2 Cycles to evolve, every 3rd of that card would be its Card Evolution. This can be tracked as once you deploy the card, a diamond above the card art will be filled in the next time it comes into your hand. Every card with an Evolution takes 6 [[Magic Items|Evolution Shards]] or [[Magic Items|Wild Shards]] to be used in [[Basics of Battle|battle]]. When a Card Evolution is deployed, a special deploy sound will play while a purple light temporarily shines down on them. When you obtain a Card Evolution in a match, a guitar riff will play. All Card Evolutions have a special ability that the original card doesn't have. In addition to the ability, some Card Evolutions have increased stats to compensate for their appearance in battle.
+
+==Obtaining Evolutions==
+===Evolution Shards===
+Evolution Shards can be obtained from [[Shop]] offers, Community Events, [[Tournament/Special Event Challenges|Special Challenges]], [[Pass Royale]], 5-Star [[Lucky Chests]], [[Pass Royale]], [[Chests#Evolution Box|Evolution Boxes]], and every other [[Chests|Level Up Chest]] past [[Experience|King Level 50]]. 5-Star Lucky Chests have a 4.3% chance to drop a full Evolution, while events contain 3 Evolution Shards of an Evolution that appeared four months prior, and Pass royale unlocks the current season's Evolution in the paid side of tier 1. If you obtain an Evolution Shard via Shop Offers, Pass Royale or Community Events for an Evolution you already have, they'll convert into a significant amount of extra cards for the regular form of the Evolution. This amount varies based on the card’s rarity, with the conversion rates being 1,000 {{Rarity|Common}} cards, 250 {{Rarity|Rare}} cards, 40 {{Rarity|Epic}} cards, and 2 {{Rarity|Legendary}} cards. If an Evolution Shard is obtained for a card that the player does not own, the card is unlocked for them automatically.
+
+===Wild Shards===
+[[File:Wild Shard.png|thumb|80x80px]]
+Wild Shards can be obtained from Shop Offers, Special Challenges, Pass Royale, and 4-Star Lucky Chests. The Pass Royale will always contain 2 Wild Shards and 4-Star Lucky Drops have a 3% chance to drop one. Unlike Evolution Shards, Wild Shards are capable of being used on any card with an Evolution, and go beyond the player's limit.
+
+==List of Evolutions==
+{|class="fandom-table"
+!Card[[File:Cards.png|center|50x50px]]
+!Cost[[File:Elixir.png|center|50x50px]]
+!Cycles[[File:Cycles.png|center|50x50px]]
+!Total Cost[[File:Elixir.png|center|50x50px]]
+!Stat Boosts
+!Special Ability
+|-
+|[[Barbarians/Evolution|Barbarians]]<br>[[File:BarbariansEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+| '''Blade Rage''' - +35% Attack Period and Movement Speed every time they attack, lasting 5 seconds. This 5-second timer resets if they keep attacking.
+|-
+|[[Royal Giant/Evolution|Royal Giant]]<br>[[File:RoyalGiantEvoShard.png|80x80px]]
+|6
+|1
+|12
+|Identical Stats
+|'''Royal Shockwave''' - Every time the Royal Giant attacks, a 2.5-tile radius, low damage, and a 1-tile knockback-inducing shockwave briefly appears around him. Can only affect ground.
+|-
+|[[Firecracker/Evolution|Firecracker]]<br>[[File:FirecrackerEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Spark Attack''' - Sparks that deal very low damage every 0.25 seconds appear after the initial attack is finished. Lasting 3 seconds. The center spark has a 2.5-tile radius while the shrapnel sparks have a 1.2-tile radius. Additionally, these sparks will slow the movement speed of all troops in their radius by 15%.
+|-
+|[[Skeletons/Evolution|Skeletons]]<br>[[File:SkeletonsEvoShard.png|80x80px]]
+|1
+|2
+|3
+|Identical Stats
+|'''Skele-Cloning''' - Every time a Skeletons attacks, another Skeleton spawns right next to it. Stops replicating at 8 Skeletons.
+|-
+|[[Mortar/Evolution|Mortar]]<br>[[File:MortarEvoShard.png|80x80px]]
+|4
+|2
+|12
+| Identical Stats
+|'''Green Siege''' - Every time a Mortar shot lands, a [[Goblins|Goblin]] spawns with it. 
+|-
+|[[Knight/Evolution|Knight]]<br>[[File:KnightEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats 
+|'''Elbow Reflection''' - While the Knight is moving or deploying, a shield is applied that reduces all sources of damage coming towards him by 60%. This shield loses its effect once the Knight lands a hit on an enemy unit.
+|-
+|[[Royal Recruits/Evolution|Royal Recruits]]<br>[[File:RoyalRecruitsEvoShard.png|80x80px]]
+|7
+|1
+|14
+|Identical Stats
+|'''Charge Squad''' - When the shield on a Royal Recruit is knocked off and the troop has traveled 2.5 tiles, it will charge at a Very Fast movement speed and will do 2x damage once connected to an opposing troop. These attributes apply to all 6 Royal Recruits.
+|-
+|[[Bats/Evolution|Bats]]<br>[[File:BatsEvoShard.png|80x80px]]
+|2
+|2
+|6
+| +50% Hitpoints
+|'''Life Leech''' - Every time the Bats attack, they'll start healing at a rate of 2 pulses every second. This heal goes beyond their health bar and acts as an overheal, doubling their max health.
+|-
+|[[Archers/Evolution|Archers]]<br>[[File:ArchersEvoShard.png|80x80px]]
+|3
+|2
+|9
+| +1 tile Range
+|'''Power Shot''' - Deals 25% bonus damage to an opposing troop if they're 4-6 tiles away from the Archers.
+|-
+|[[Ice Spirit/Evolution|Ice Spirit]]<br>[[File:IceSpiritEvoShard.png|80x80px]]
+|1
+|2
+|3
+| +0.5 tiles Splash Radius
+|'''Frost Blast''' - Once the Ice Spirit jumps on an opposing troop, it freezes them for 1.1 seconds. After 3 seconds, it freezes the troop for another 1.1 seconds. If the troop is defeated midway through, a 2-tile radius is left behind, maintaining the same pattern on the ground. 
+|-
+|[[Valkyrie/Evolution|Valkyrie]]<br>[[File:ValkyrieEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Whirlwind Axe''' - Every time the Valkyrie attacks, she summons a Tornado which pulls all troops within a 5.5-tile radius into the Valkyrie. This Tornado lasts for 0.5 seconds and deals very low damage to all ground and air troops in its radius, including Crown Towers.
+|-
+|[[Bomber/Evolution|Bomber]]<br>[[File:BomberEvoShard.png|80x80px]]
+|2
+|2
+|6
+|Identical Stats
+|'''Bomb Bounce''' - Every time the Bomber attacks, the bomb he throws bounces twice after the initial attack. Each damage radius is 2.5 tiles apart. The bomb cannot hit the same troop more than once.
+|-
+|[[Wall Breakers/Evolution|Wall Breakers]]<br>[[File:WallBreakersEvoShard.png|80x80px]]
+|2
+|2
+|6
+|Identical Stats
+|'''Powder Barrels''' - If the Wall Breakers are initially defeated, the barrels they roll on break. Dealing moderately damage (reduced to crown towers) in a 1.5-tile radius. After, they continue to run to the nearest building at a Very Fast movement speed. Dealing 50% of the original damage in a 1.5-tile radius once connecting to the nearest building.
+|-
+|[[Tesla/Evolution|Tesla]]<br>[[File:TeslaEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Pulsating Voltage''' - After surfacing and during deployment, a pulse of electricity comes out from the Tesla. This pulse deals low damage and inflicts a stun. The stun lasts for 0.5 seconds and has a 6 tile radius.
+|-
+|[[Zap/Evolution|Zap]]<br>[[File:ZapEvoShard.png|80x80px]]
+|2
+|2
+|6
+|Identical Stats
+|'''Short-Circuit''' - Once the initial Zap is used, the radius stays in the arena, growing 0.5 tiles and doing the same stun and twice the damage of the initial Zap.
+|-
+|[[Battle Ram/Evolution|Battle Ram]]<br>[[File:BattleRamEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Head-First Ram''' - Once the Battle Ram starts charging, anything that comes in contact with it will be hit with moderate damage while small to medium troops will be knocked back 2 tiles. Additionally, upon connecting with its target, the Battle Ram will knock itself back and deal double of its regular connection damage, constantly ramming into its target until either the Battle Ram or its target is destroyed. This will deal the same double damage for every connection made. Once the Battle Ram breaks, 2 Evolved Barbarians will be revealed from underneath.
+|-
+|[[Wizard/Evolution|Wizard]]<br>[[File:WizardEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+|'''Fiery Field''' - Spawns with a shield equal to 25% of his health. It protects him from damage, and once destroyed it deals normal attack damage and knockback to all small to medium troops within its 3-tile radius.
+|-
+|[[Goblin Barrel/Evolution|Goblin Barrel]]<br>[[File:GoblinBarrelEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Decoy Barrel''' - Spawns 2 Goblin Barrels with identical appearances, with the Decoy glowing for 1 second, with the placement mirroring each other in their respective lanes. The Goblin Barrel manually deployed by the player will contain 3 Goblins while the other Goblin Barrel will contain 3 Decoy Goblins. These are identical to Goblins, but they have 53% of a Goblin's damage and 60% of a Goblin's hitpoints.
+|-
+|[[Goblin Giant/Evolution|Goblin Giant]]<br>[[File:GoblinGiantEvoShard.png|80x80px]]
+|6
+|1
+|12
+|Identical Stats
+|'''Tricky Sack''' - After the Goblin Giant reaches 50% of his original hitpoints, a Goblin will spawn 2.5 tiles behind him every 2.2 seconds.
+|-
+|[[Goblin Drill/Evolution|Goblin Drill]]<br>[[File:GoblinDrillEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Whack-A-Drill''' - After the Goblin Drill reaches 66% of its original hitpoints, it'll go back underground and spawn 2 Goblins. Afterwards, it'll emerge 90 degrees around the Crown Tower from where it originally was. After reaching 33% of its original hitpoints, it'll rotate another 90 degrees around the Crown Tower and spawn another Goblin. The spawn damage and pushback upon emerging is done only once (when initially deployed). If it hasn't been placed next to the Crown Tower, it'll emerge in the same spot all 3 times.
+|-
+|[[Goblin Cage/Evolution|Goblin Cage]]<br>[[File:GoblinCageEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+| '''Rage Cage''' - once a ground troop comes within 3 tiles of the Goblin Cage, they’re dragged into the Cage and the Brawler will hit the troop every 1 second. During this time, the troop is unable to attack and the Goblin Brawler is immune to all forms damage (except [[Electro Giant]]'s Zap Pack.
+|-
+|[[P.E.K.K.A./Evolution|P.E.K.K.A.]]<br>[[File:PEKKAEvoShard.png|80x80px]]
+|7
+|1
+|14
+|Identical Stats
+|'''Butter-Heal''' - After the P.E.K.K.A. deals the final blow to any troop or building, a butterfly will spawn around her sword. This butterfly will heal her depending on the defeated unit's hitpoints. Additionally, if she is already at full health, she can overheal to add 66% more hitpoints until it reaches its maximum capacity.
+|-
+|[[Mega Knight/Evolution|Mega Knight]]<br>[[File:MegaKnightEvoShard.png|80x80px]]
+|7
+|1
+|14
+|Identical Stats
+|'''Mega Uppercut''' - On first and ever second attack, the Mega Knight will do an uppercut, dealing a 4-tile knockback to the targeted troop The troop will always be hit in the direction of the nearest enemy Crown Tower, even if the Mega Knight is directly between the tower and the targeted troop.
+|-
+|[[Electro Dragon/Evolution|Electro Dragon]]<br>[[File:ElectroDragonEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+|'''Infini-Shock''' - The Electro Dragon's bolts can now infinitely chain across units multiple times as long as they're 4 tiles from each other. After the 3rd chain, the bolts lose their stun effect, the damage gets reduced by 33%, and the lightning moves 20% slower until they dissipate.
+|-
+|[[Musketeer/Evolution|Musketeer]]<br>[[File:MusketeerEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Sniper Shot''' - The Musketeer gets 3 limited sniper shots that deal 80% more damage to anything she hits. Her sniper shot range is vertically infinitely long and has a horizontal reach of 2 tiles. She cannot target Crown Towers.
+|-
+|[[Cannon/Evolution|Cannon]]<br>[[File:CannonEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Barrage Carnage''' - When deployed, 9 bombs (4 on the player's side and 5 on the opponent's side) will rain from the sky, dealing damage and knockback to air and ground units.
+|-
+|[[Giant Snowball/Evolution|Giant Snowball]]<br>[[File:GiantSnowballEvoShard.png|80x80px]]
+|2
+|2
+|6
+|Identical Stats
+|'''Snow Roll''' - The Giant Snowball will sacrifice the knockback for a 4 tile roll; pulling all troops in its path.
+|-
+|[[Dart Goblin/Evolution|Dart Goblin]]<br>[[File:DartGoblinEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Noxious Darts''' - The Dart Goblin's attacks add a poison effect to the troop that lasts until they are defeating, leaving behind an area-damage poison trail that lasts 1 second when walking. His poison effect increases to level 2 after the Dart Goblin hits the target 4 times, and to level 3 if he hits it 7 times.
+|-
+|[[Lumberjack/Evolution|Lumberjack]]<br>[[File:LumberjackEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''After-Life Rage''' - After the Lumberjack gets defeated, his Ghost will spawn. His Ghost has unlimited health and cannot be targeted by troops, but is affected by spells and chain attacks. The Ghost will disappear shortly after moving away from his [[Rage]], or when his Rage expires. While the Lumberjack's range can be increased with another Rage, the one he dropped decides the lifetime of the Ghost.
+|-
+|[[Hunter/Evolution|Hunter]]<br>[[File:HunterEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Netting Trap''' - The Hunter throws a net at the closest troop, making them unable to move or attack. If that troop is flying, it brings them to the ground and can be attacked as if it was on the ground. The net lasts only for 3 seconds and recharges after 5 seconds.
+|-
+|[[Executioner/Evolution|Executioner]]<br>[[File:ExecutionerEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+|'''Axe Smash''' - The Executioner throws an axe that at 2.5 tiles or less, deals 35% extra damage and knockback, pushing troops back 1.5 tiles. The axe does not deal knockback when returning to the Executioner, and its knockback does not work against heavy units.
+|-
+|[[Witch/Evolution|Witch]]<br>[[File:WitchEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+|'''Boned-aid''' - Whenever the first wave of Skeletons are defeated, the Witch heals a set amount of hitpoints. Additionally, if she is already at full health, she can overheal to add 73% more hitpoints until it reaches its maximum capacity.
+|-
+|[[Inferno Dragon/Evolution|Inferno Dragon]]<br>[[File:InfernoDragonEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Beam Momentum''' - After the Inferno Dragon attacks something and gets to a damage stage, it will keep the that stage on the following troops until after 7 seconds pass by without it hitting a troop or it is hit by a stun attack. After 20 seconds of attacking, it will have a 4th damage stage, which deals double damage of the 3rd stage.
+|-
+|[[Skeleton Barrel/Evolution|Skeleton Barrel]]<br>[[File:SkeletonBarrelEvoShard.png|80x80px]]
+|3
+|2
+|9
+| +61% Death Damage<br>+25% Hitpoints
+|'''Double Trouble''' - After the Skeleton Barrel reaches 75% of its original hitpoints, 1 of the 2 barrels will drop. When all of its hitpoints have been depleted, the second barrel will drop. Each barrel deals death damage while spawning 7 Skeletons.
+|-
+|[[Furnace/Evolution|Furnace]]<br>[[File:FurnaceEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Hot Spawn''' - While the Furnace attacks, its [[Fire Spirit]] spawn period is decreased to 2.4 seconds, with the Fire Spirits alternating between spawning to the left and to the right.
+|-
+|[[Baby Dragon/Evolution|Baby Dragon]]<br>[[File:BabyDragonEvoShard.png|80x80px]]
+|4
+|2
+|12
+|Identical Stats
+|'''Wind Gush''' - A burst of wind is created in a 8x9 area, reducing enemies' movement speed by 30% and increasing troops' movement speed by 30%. The wind burst lasts for 5 seconds, but if the Baby Dragon is defeated, it will only last 2.5 seconds.
+|-
+|[[Skeleton Army/Evolution|Skeleton Army]]<br>[[File:SkeletonArmyEvoShard.png|80x80px]]
+|3
+|2
+|9
+| +1 Skeleton
+|'''Un-Undead''' - A Skeleton General spawns alongside the Skeleton Army. When the Skeletons are defeated, they will become invisible and unable to be targeted, but still able to attack, as well as becoming invincible until the Skeleton General dies. The Skeleton General himself has a shield with the same hitpoints as a normal Skeleton.
+|-
+|[[Royal Ghost/Evolution|Royal Ghost]]<br>[[File:RoyalGhostEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Souldier Summoning''' - Every time he attacks while on his invisible state, the Royal Ghost spawns two Souldiers that deal spawn damage on the area the Royal Ghost attacked. The Souldiers' stats are identical to the Royal Ghost's, except that they deal 31% damage and have 6.7% hitpoints compared to the Royal Ghost.
+|-
+|[[Royal Hogs/Evolution|Royal Hogs]]<br>[[File:RoyalHogsEvoShard.png|80x80px]]
+|5
+|2
+|15
+|Identical Stats
+|'''Hog Flight''' - Each of the Royal Hog spawns flying. When attacking, they fall to the ground, dealing fall damage that is 58% of their normal damage.
+|-
+|[[Minion Horde/Evolution|Minion Horde]]<br>[[File:MinionHordeEvoShard.png|80x80px]]
+|5
+|1
+|10
+|Identical Stats
+|'''Dark Guard''' - When the Minion Horde gets hit by a troop or a spell, it turns them invisible, then it stays like that for 3 seconds (reducing attack speed and move speed). After 3 seconds, they will be visible again and can still be vulnerable to attacks and spells that can kill them.
+|-
+|[[Princess/Evolution|Princess]]<br>[[File:PrincessEvoShard.png|80x80px]]
+|3
+|2
+|9
+|Identical Stats
+|'''Ice Arrows''' - Once the Evolved Princess spawns, her first shot will slow down enemies within a 3-tile radius (by 30%, just like the Ice Wizard) for 5.5 seconds. After this first shot, she will fire one normal shots, and the second one will slow them down. Additionally, when the Evolved Princess dies, she leaves behind a 3-tile area-damaging slowdown zone that also lasts 5.5 seconds.
+|-
+|[[Elite Barbarians/Evolution|Elite Barbarians]]<br>[[File:EliteBarbariansEvoShard.png|80x80px]]
+|6
+|1
+|12
+|Identical Stats
+|'''Rage Spears''' - Each Elite Barbarian spawns with a spear. Once a ground troop is within 3.5-5 tiles, they will throws the spear. Dealing damage while leaving a rage trail that boosts movement and attack speed. Gains a new spear after 5 seconds.
+|}
+
+==History==
+2023
+*{{Balance|Add}} 4 cards were allowed to evolve during the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] on 19/6/2023, those being the [[Barbarians]], [[Royal Giant]], [[Firecracker]], and [[Skeletons]].
+*{{Balance|Add}} On 3/7/2023, the [[Version History#Pass Royale and more (3/7/2023)|July 2023 Update]] allowed the [[Mortar]] to evolve.
+*{{Balance|Add}} On 7/8/2023, the [[Version History#Pass Royale and more (7/8/2023)|August 2023 Update]] allowed the [[Knight]] to evolve.
+*{{Balance|Add}} On 4/9/2023, the [[Version History#Pass Royale and more (4/9/2023)|September 2023 Update]] allowed the [[Royal Recruits]] to evolve.
+*{{Balance|Add}} On 2/10/2023, the [[Version History#Pass Royale and more (2/10/2023)|October 2023 Update]] allowed the [[Bats]] to evolve.
+*{{Balance|Add}} On 6/11/2023, the [[Version History#Pass Royale and more (6/11/2023)|November 2023 Update]] allowed the [[Archers]] to evolve.
+*{{Balance|Add}} On 4/12/2023, the [[Version History#Pass Royale and more (4/12/2023)|December 2023 Update]] allowed the [[Ice Spirit]] to evolve.
+*{{Balance|Buff}} Starting from 8/12/2023, [[Tournament|Global Tournaments]] were allowed to have [[Battle Decks|decks]] with 2 Evolutions.
+2024
+*{{Balance|Add}} On 1/1/2024, the [[Version History#Pass Royale and more (1/1/2024)|January 2024 Update]] allowed the [[Valkyrie]] to evolve.
+*{{Balance|Add}} On 5/2/2024, the [[Version History#Pass Royale and more (5/2/2024)|February 2024 Update]] allowed the [[Bomber]] to evolve.
+*{{Balance|Buff}} On 6/2/2024, a [[Version History#Maintenance Break (6/2/2024)|maintenance break]] allowed [[Experience|King Level]] 54 players to make decks with 2 Evolutions.
+*{{Balance|Add}} On 14/2/2024, the [[Wall Breakers]] were allowed to evolve.
+*{{Balance|Add}} On 4/3/2024, the [[Version History#Pass Royale and more (/3/2024)|March 2024 Update]] allowed the [[Tesla]] to evolve.
+*{{Balance|Add}} On 11/3/2024, the [[Zap]] was allowed to evolve.
+*{{Balance|Add}} On 1/4/2024, the [[Version History#Pass Royale and more (1/4/2024)|April 2024 Update]] allowed the [[Battle Ram]] to evolve.
+*{{Balance|Add}} On 6/5/2024, the [[Version History#Pass Royale and more (6/5/2024)|May 2024 Update]] allowed the [[Wizard]] to evolve.
+*{{Balance|Add}} On 3/6/2024, the [[Version History#Pass Royale and more (3/6/2024)|June 2024 Update]] allowed the [[Goblin Barrel]] to evolve.
+*{{Balance|Add}} On 1/7/2024, the [[Version History#Pass Royale and more (1/7/2024)|July 2024 Update]] allowed the [[Goblin Giant]] to evolve.
+*{{Balance|Add}} On 15/7/2024, the [[Goblin Drill]] was allowed to evolve.
+*{{Balance|Add}} On 5/8/2024, the [[Version History#Pass Royale and more (5/8/2024)|August 2024 Update]] allowed the [[Goblin Cage]] to evolve.
+*{{Balance|Temp}} On 26/8/2024, the first [[Tournament/Special Event Challenges|Evo Bonanza Event]] started.
+*{{Balance|Add}} On 2/9/2024, the [[Version History#Pass Royale and more (2/9/2024)|September 2024 Update]] allowed the [[P.E.K.K.A.]] to evolve.
+*{{Balance|Add}} On 14/9/2024, the [[Mega Knight]] was allowed to evolve.
+*{{Balance|Buff}} On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]] moved the second Evolution slot to King Level 30 (from 54).
+*{{Balance|Add}} On 7/10/2024, the [[Version History#Pass Royale and more (7/10/2024)|October 2024 Update]] allowed the [[Electro Dragon]] to evolve.
+*{{Balance|Add}} On 4/11/2024, the [[Version History#Pass Royale and more (4/11/2024)|November 2024 Update]] allowed the [[Musketeer]] to evolve.
+*{{Balance|Add}} On 15/11/2024, the [[Cannon]] was allowed to evolve.
+*{{Balance|Add}} On 2/12/2024, the [[Version History#Pass Royale and more (2/12/2024)|December 2024 Update]] allowed the [[Giant Snowball]] to evolve.
+2025
+*{{Balance|Add}} On 6/1/2025, the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]] allowed the [[Dart Goblin]] to evolve.
+*{{Balance|Add}} On 3/2/2025, the [[Version History#Pass Royale and more (3/2/2025)|February 2025 Update]] allowed the [[Lumberjack]] to evolve.
+*{{Balance|Add}} On 3/2/2025, the [[Version History#Pass Royale and more (3/3/2025)|March 2025 Update]] allowed the [[Hunter]] to evolve.
+*{{Balance|Add}} On 7/4/2025, the [[Version History#Pass Royale and more (7/4/2025)|April 2025 Update]] allowed the [[Executioner]] to evolve.
+*{{Balance|Add}} On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] allowed the [[Witch]] to evolve.
+*{{Balance|Add}} On 2/6/2025, the [[Version History#Pass Royale and more (2/6/2025)|June 2025 Update]] allowed the [[Inferno Dragon]] to evolve.
+*{{Balance|Add}} On 7/7/2025, the [[Version History#Pass Royale and more (7/7/2025)|July 2025 Update]] allowed the [[Skeleton Barrel]] to evolve.
+*{{Balance|Add}} On 4/8/2025, the [[Version History#Pass Royale and more (4/8/2025)|August 2025 Update]] allowed the [[Furnace]] to evolve.
+*{{Balance|Add}} On 1/9/2025, the [[Version History#Pass Royale and more (1/9/2025)|September 2025 Update]] allowed the [[Baby Dragon]] to evolve.
+*{{Balance|Add}} On 6/10/2025, the [[Version History#Pass Royale and more (6/10/2025)|October 2025 Update]] allowed the [[Skeleton Army]] to evolve.
+*{{Balance|Add}} On 17/10/2025, the [[Royal Ghost]] was allowed to evolve.
+*{{Balance|Add}} On 3/11/2025, the [[Version History#Pass Royale and more (3/11/2025)|November 2025 Update]] allowed the [[Royal Hogs]] to evolve.
+2026
+*{{Balance|Neutral}}On 16/3/2026 the [[Version History#2026 Mid-March Update (16/3/2026)|2026 Mid-March Update]] changed the format of Evolution and Hero slots into one Evolution, one Hero and one Wild (from 2 evo and 2 hero) .
+*{{Balance|Add}} On 6/4/2026, the [[Version History#Pass Royale and more (6/4/2026)|April 2026 Update]] allowed the [[Minion Horde]] to evolve.
+*{{Balance|Add}} On 1/6/2026, the [[Version History#Pass Royale and more (1/6/2026)|June 2026 Update]] allowed the [[Princess]] to evolve.
+*{{Balance|Add}} On 3/8/2026, the [[Version History#Pass Royale and more (3/8/2026)|August 2026 Update]] allowed the [[Elite Barbarians]] to evolve.
+
+
+==Sound Effects==
+{|class="wikitable"
+!Soundtrack
+!Description
+|-
+|[[File:Evo Hero.wav]]
+|Plays when a [[Card]] is placed in an Evolution slot.
+|}
+
+==Trivia==
+*The number of possible [[Battle Decks|decks]] that can be created with 2 evolutions is 28, assuming that all 8 [[cards]] in the deck can evolve.
+*The [[Ice Spirit/Evolution|Ice Spirit]] and [[Bats/Evolution|Bats]] are the only evolutions without a purple diamond being represented on their card renders.
+*The [[Battle Ram/Evolution|Battle Ram]] is the only evolution to spawn another evolved troop as a part of its mechanics.
+*The [[Skeletons/Evolution|Skeletons]] and [[Ice Spirit/Evolution|Ice Spirit]] are the cheapest evolutions and require the least amount Elixir to fully cycle, costing 1 [[Elixir]] alone and 3 Elixir when fully cycled (excluding Elixir spent from playing other cards).
+*The [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Royal Recruits/Evolution|Royal Recruits]], and [[Mega Knight/Evolution|Mega Knight]] are the costliest evolutions, costing 7 Elixir alone.
+*The [[Royal Hogs/Evolution|Royal Hogs]] require the most amount of Elixir to fully cycle, costing 15 Elixir when fully cycled (excluding Elixir spent from playing other cards).
+*The [[Barbarians/Evolution|Barbarians]] were the first evolution to be fully revealed.
+*Some [[:Category:Troop Cards|troops]] and [[:Category:Building Cards|buildings]] resemble Super Troops from Clash of Clans. More specifically:
+**The Evolved Barbarians resemble the Super Barbarian.
+**The [[Cannon/Evolution|Evolved Cannon]] resembles the Eagle Artillery.
+**The [[Valkyrie/Evolution|Evolved Valkyrie]] resembles the Super Valkyrie.
+**The [[Witch/Evolution|Evolved Witch]] resembles the Super Witch.
+**The [[Wizard/Evolution|Evolved Wizard]] resembles the Super Wizard.
+*The [[Bomber/Evolution|Evolved Bomber]]'s ability is the same mechanic as the one used by the Bomber from the Clash of Clans Builder Base.
+*The P.E.K.K.A. and Mega Knight's abilities resemble old upgrades from Clash Mini.
+*The [[Elite Barbarians/Evolution|Elite Barbarians]]' abilities are based on the the common modifier in [[C.H.A.O.S.]].
+*Card Evolutions do not have alternative skins that take [[Star Points]]. This can be seen with the [[Skeleton Barrel/Evolution|Evolved Skeleton Barrel]]; the Skeletons spawned on death will not show a Star Level.
+*All Card Evolutions are 3-D models when deployed into the arena. This is different from the 2-D sprites used in their regular forms.
+**The only exception to this rule is the Ice Spirit, which re-uses its base form's sprite, except that it now has a purple tint.
+
+{{Navigation|Battle}}
+
+[[Category:Cards]]
+[[Category:Basics]]

@@ -1,0 +1,161 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+Heroes are a feature rarity that allow specific [[Cards]] placed in the {{Rarity|Champion}} slots to gain an ability. Heroes and the first {{Rarity|Champion}} slot are both unlocked at [[Arenas#Trophy Road|Arena]] 5. Every card with a Hero variation requires 200 {{Icon|I=Hero Shard}} to be unlocked. All Heroes have an ability that the original card doesn't have, similar to {{Rarity|Champion}} cards.
+
+==Summary==
+*The {{Rarity|Champion}} slot is unlocked at Arena 5, while the Wild slot is unlocked at Arena 10.
+*Heroes have a unique gimmick which is shared with {{Rarity|Champion}} cards. Just like {{Rarity|Champion}} cards, Abilities are accessible just above the player's “hand” in [[Basics of Battle|battle]]. They cost [[Elixir]] to cast, granting the last played Heroic cards their special ability depending on the Hero, and will only stay as long as the selected Hero that you want to use the ability of is alive.
+**The average Elixir cost in the [[Battle Decks|deck]] menu only counts the base Elixir cost instead of both the base and the ability.
+*Only two Heroes can be in a deck at a time, and only in the Hero and Wild slots. Those slots are also shared with {{Rarity|Champion}} card, which means that the player can have 1 Hero and 1 {{Rarity|Champion}} at the same time.
+*[[Clone]] can be used on a Heroic card, but the Heroic card's ability will only be used by the original.
+*When a Hero activates their ability, but did not start casting it before they are defeated, the Elixir spent on the ability will be refunded once they are defeated.
+*Heroes can be upgraded by the base card's Wild Cards of respective rarity.
+
+==List of Heroes==
+{|class="fandom-table" style="text-align: center"
+!Card<br/>[[File:Cards.png|center|50x50px|link=]]
+!Cost<br/>[[File:Elixir.png|center|40x40px|link=]]
+!Ability Cost<br/>[[File:Hero Shard.png|center|40x40px|link=]]
+!Total Elixir Cost<br>[[File:Elixir.png|center|40x40px|link=]]
+!Ability
+|-
+|[[Knight/Hero|Knight]][[File:KnightHeroShard.png|thumb|center|80px|link=Knight/Hero]]
+|3
+|2
+|5
+|'''Triumphant Taunt''' -
+
+Gains a shield and taunts nearby enemies, forcing them to attack him.
+|-
+|[[Giant/Hero|Giant]][[File:GiantHeroShard.png|thumb|center|80px|link=Giant/Hero]]
+|5
+|2
+|7
+|'''Heroic Hurl''' -
+
+Throws the highest-hitpoint enemy troop in reach across the Arena.
+|-
+|[[Mini P.E.K.K.A./Hero|Mini P.E.K.K.A.]][[File:MiniPEKKAHeroShard.png|thumb|center|80px|link=Mini P.E.K.K.A./Hero]]
+|4
+|1
+|5
+|'''Breakfast Boost''' -
+
+Eats pancakes to level up. The longer you wait, the more pancakes he cooks!
+|-
+|[[Musketeer/Hero|Musketeer]][[File:MusketeerHeroShard.png|thumb|center|80px|link=Musketeer/Hero]]
+|4
+|3
+|7
+|'''Trusty Turret''' -
+
+Spawns a short-range, rapid-firing auto-turret that deals landing damage in front of the Musketeer.
+|-
+|[[Ice Golem/Hero|Ice Golem]] [[File:IceGolemHeroShard.png|thumb|center|80px|link=Ice Golem/Hero]]
+|2
+|2
+|4
+|'''Snowstorm''' -
+
+Conjures a blizzard that damages and slows nearby enemies.
+|-
+|[[Wizard/Hero|Wizard]] [[File:WizardHeroShard.png|thumb|center|80px|link=Wizard/Hero]]
+|5
+|1
+|6
+|'''Fiery Flight''' -
+
+Launches into the air and throws fearsome fire tornadoes.
+|-
+|[[Goblins/Hero|Goblins]] [[File:GoblinsHeroShard.png|thumb|center|80px|link=Goblins/Hero]]
+|2
+|1
+|3
+|'''Banner Brigade''' - <br>The last Goblin standing drops a banner that calls in reinforcements.
+|-
+|[[Mega Minion/Hero|Mega Minion]] [[File:MegaMinionHeroShard.png|thumb|center|80px|link=Mega Minion/Hero]]
+|3
+|2
+|5
+|'''Wounding Warp''' - <br>Warps to the lowest-hitpoint enemy, dealing damage on arrival. 
+|-
+|[[Barbarian Barrel/Hero|Barbarian Barrel]] [[File:BarbarianBarrelHeroShard.png|thumb|center|80px|link=BarbarianBarrel/Hero]]
+|2
+|1
+|3
+|'''Rowdy Reroll''' - <br>Barrels down the lane a second time for maximum impact.
+|-
+|[[Magic Archer/Hero|Magic Archer]] [[File:MagicArcherHeroShard.png|thumb|center|80px|link=Magic Archer/Hero]]
+|4
+|2
+|6
+|'''Triple Threat''' - <br>Summons a decoy while darting back and fires a triple shot on his next attack.
+|-
+|[[Balloon/Hero|Balloon]] [[File:BalloonHeroShard.png|center|thumb|98x98px]]
+|5
+|2
+|7
+|'''Coffin Cadet''' -
+A Skeletrooper soars to the nearest enemy on the ground, dealing landing damage.
+|-
+|[[Bowler/Hero|Bowler]] [[File:BowlerHeroShard.png|center|thumb|98x98px]]
+|5
+|2
+|7
+|'''Stone Swish''' -
+Plants his feet and throws boulders with increased range.
+|-
+|[[Dark Prince/Hero|Dark Prince]] [[File:DarkPrinceHeroShard.png|center|thumb|98x98px]]
+|4
+|3
+|7
+|'''Destructive Dismount''' -
+Dismount doing damage, attacking on foot while Rhino charges buildings.
+|-
+|[[Tombstone/Hero|Tombstone]] [[File:TombstoneHeroShard.png|center|thumb|98x98px]]
+|3
+|5
+|8
+|'''Regal Revive''' -
+Tomb Queen rises from the earth, targeting buildings.
+|-
+|[[Berserker/Hero|Berserker]] [[File:BerserkerHeroShard.png|center|thumb|98x98px]]
+|2
+|3
+|5
+|'''Savage Survival''' -
+A Bear spirit emerges through her, making her attacks go rapid and preventing her health from going below 1 HP while dealing reduced damage to Crown Towers.
+|-
+|[[Valkyrie/Hero|Valkyrie]] [[File:ValkyrieHeroShard.png|center|thumb|98x98px]]
+|4
+|3
+|7
+|'''Wild Whirlwind''' -
+Spins rapidly, dealing damage and increasing her movement speed while taking less damage.
+|}
+
+==History==
+2025
+*{{Balance|Add}}4 [[Cards]] had Hero variants in the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] on 1/12/2025, those being the [[Knight]], [[Giant]], [[Mini P.E.K.K.A.]], and [[Musketeer]].
+*On 22/12/2025, a [[Version History#Maintenance Break (22/12/2025)|Maintenance Break]], made it so that you will always get a new hero{{Balance|Buff}}. Additionaly only 1 Hero Slot is available in Classic 1v1s, Classic 2v2s, Classic Challenges, and Grand Challenges{{Balance|Remove}}.
+
+2026
+* {{Balance|Add}}On 5/1/2026, the [[Version History#Pass Royale and more (5/1/2026)|January 2026 Update]] allowed the [[Wizard]] and [[Ice Golem]] to have a hero form.
+* {{Balance|Add}}On 2/2/2026, the [[Version History#Pass Royale and more (2/2/2026)|February 2026 Update]] allowed the [[Goblins]] and [[Mega Minion]] to have a hero form.
+*On 23/2/2026 the [[Version History#2026 Q1 Update (23/2/2026)|2026 Q1 Update]], moved the hero slot to arena 5{{Balance|Neutral}}.  This also removed the Hero Box{{Balance|Remove}}.
+* {{Balance|Add}} On 2/3/2026, the [[Version History#Pass Royale and more (2/3/2026)|March 2026 Update]] allowed the [[Barbarian Barrel]] and [[Magic Archer]] to have a hero form.
+* On 16/3/2026 the [[Version History#2026 Mid-March Update (16/3/2026)|2026 Mid-March Update]], made it so you can chose the hero (instead of random){{Balance|Buff}} . This also changed the format of Evolution and Hero slots into one Evolution, one Hero and one Wild (from 2 evo and 2 hero){{Balance|Neutral}} .
+* {{Balance|Add}} On 6/4/2026, the [[Version History#Pass Royale and more (6/4/2026)|April 2026 Update]] allowed the [[Balloon]] to have a hero form.
+* {{Balance|Add}} On 4/5/2026, the [[Version History#Pass Royale and more (4/5/2026)|May 2026 Update]] allowed the [[Dark Prince]] and [[Bowler]] to have a hero form.
+* {{Balance|Add}} On 1/6/2026, the [[Version History#Pass Royale and more (1/6/2026)|June 2026 Update]] allowed the [[Tombstone]] to have a hero form.
+* {{Balance|Add}} On 3/8/2026, the [[Version History#Pass Royale and more (3/8/2026)|August 2026 Update]] allowed the [[Berserker]] and [[Valkyrie]] to have a hero form.
+* {{Balance|Nerf}} On 4/8/2026 the [[Version History#Balance Changes (4/8/2026)|Balance Update]] made every ability single-use
+
+==Trivia==
+*Heroes have the same defeat sound effect as [[Card Evolution|Evolutions]] and also leave similar puddles, except that they're colored golden.
+*Every new seasons arrived, the previous season newest Heroes' golden glowing eyes will replaced with white sclera with golden pupils (but some exceptions like the [[Ice Golem]] and [[Mini P.E.K.K.A.]]). 
+
+{{Navigation|Battle}}
+
+[[Category:Basics]]
+[[Category:Cards]]
