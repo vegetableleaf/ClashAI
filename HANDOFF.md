@@ -2953,6 +2953,50 @@ the same, and its waiter should treat 'no telemetry at all' as a FAILURE, not as
 form where there is no waiter at all. **A launch is not complete until its waiter is running.** Treat
 `launch_arm.sh` and `wait_eps.py` as a single operation, never two.
 
+## 4j. 2026-08-25 — FIX 1 DROPPED (not deleted). Kept armed behind one config line.
+
+Owner's decision, on the evidence below: **drop it, but keep it available in case later runs go
+sideways.** It is already in exactly that state -- `_restraint_hold` remains in `env.py` and is INERT
+because `rewards.restraint_hold: 0.0`. **Re-enabling is one config line; there is no patch to
+re-apply and nothing to reconstruct.**
+
+### Why it was dropped
+
+```
+                          m=26000   OLD control   fix1 arm   control4 (4+5+6+7)
+elixir median               2.14      2.57-2.64     2.14         2.79
+restraint behaviour/match   0.63        1.30        0.50         1.40
+threat_miss_idle /match    -2.87       -4.67       -2.60        -3.32
+```
+
+**With NO restraint credit, the corrected reward produces 2.8x the restraint behaviour fix 1
+achieved (1.40 vs 0.50) and the best banking measured in this project (2.79).**
+
+Fix 1 was a COUNTERWEIGHT to `threat_miss_idle` being over-sized. Fix 7 corrected that term at the
+source -- measured on control4, it now fires at an average **-0.573**, not a flat -1.0, and its
+per-match magnitude fell -4.67 -> -3.32 despite MORE fires (5.80 vs 4.67). So the thing fix 1 was
+built to offset no longer exists at the size that motivated it, and its own measured failure mode
+(reward a state -> get LESS of it, -0.70 at 2.9 sigma) makes a retry likely to misfire again.
+
+⚠ **HONEST LIMIT ON THIS EVIDENCE.** control4 carries fixes 5+6+7 TOGETHER, so this is not a clean
+isolation of fix 7, and it is not a paired comparison -- different arms, different seeds. Strong
+evidence, not proof. The asymmetry is what decides it: shipping an unneeded reward term makes it
+uncontrolled noise in every future experiment, while dropping it costs nothing measurable.
+
+### RE-ENABLE IT IF, AND ONLY IF, THESE APPEAR
+
+Set `rewards.restraint_hold: 1.0` (cap 2.0) again if a later run shows BOTH:
+1. **elixir median falling back toward ~2.1-2.3** (the dumping signature), AND
+2. **restraint behaviour/match dropping below ~0.8** measured with the probe's instrument FORCED ON
+   (`PROBE_RESTRAINT_W=1.0`, cap lifted -- otherwise the counter is off and reads 0.00 whatever the
+   policy does; see the trap in 4f).
+
+⚠ If they do appear, DO NOT simply raise the dose. The measured failure was directional, not
+magnitude-limited, and the standing hypothesis is that a capped positive term on idle steps inflates
+the CRITIC'S BASELINE for those states until idling looks worse in advantage terms than before the
+credit existed. Change the SHAPE first: pay once when an ignored threat expires harmlessly, rather
+than per idle tick.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
