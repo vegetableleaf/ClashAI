@@ -136,6 +136,71 @@ class RangedDefenderAttributionTests(unittest.TestCase):
                            "the bow FOUGHT it (combat stamp), so the kill credits at any range")
 
 
+class ThreatPositionTests(unittest.TestCase):
+    """`_threat_pos` must name the MOST DANGEROUS body, not the deepest one.
+
+    THE BUG (fixed 2026-08-25): `_threat_response` grades the CARD against `_threat_id_true`, which
+    ranks by `ignore_cost_frac`, and the PLACEMENT against `_threat_pos`, which ranked by DEPTH. A
+    counter placed in front of a Pekka earned NOTHING while the same counter dropped in a lone
+    Skeletons' lane earned full credit -- the reward PAID to defend the wrong lane, so training
+    reinforced it and no amount of further training could unlearn it.
+    """
+
+    def _board(self, danger_x, danger_y, trickle_x, trickle_y, seed=7):
+        env = _quiet_env(seed=seed)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), danger_x, danger_y)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), trickle_x, trickle_y)
+        env.step((False, 0, 0))
+        return env
+
+    def test_lane_follows_the_dangerous_body_not_the_deepest(self):
+        """The owner's reported board: a tank shallow, a trickle DEEPER in the other lane."""
+        env = self._board(0.25, 0.55, 0.75, 0.70)
+        tx, _ = env._threat_pos()
+        self.assertLess(abs(tx - 0.25), env.intercept_lane,
+                        "the intercept lane must point at the PEKKA, not the deeper skeletons")
+        self.assertGreater(abs(tx - 0.75), env.intercept_lane,
+                           "the trickle's lane must NOT earn intercept credit")
+
+    def test_identity_and_position_describe_the_SAME_body(self):
+        """The property that was missing. The 2026-08-20 fix corrected the identity half only, and
+        nothing asserted the two halves agreed -- which is why the symptom survived it."""
+        env = self._board(0.25, 0.55, 0.75, 0.70)
+        tid = env._threat_id_true
+        tx, _ = env._threat_pos()
+        self.assertGreaterEqual(tid[1], 0.5, "identity must recognise the tank")
+        self.assertLess(abs(tx - 0.25), env.intercept_lane,
+                        "identity says TANK, so the position must be the tank's")
+
+    def test_depth_still_breaks_a_tie_between_equal_threats(self):
+        """Depth was not wrong, it was only the wrong PRIMARY key. Among equally dangerous bodies
+        the deepest is the most urgent, and that must survive the fix."""
+        env = _quiet_env(seed=9)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.30, 0.55)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "knight", 11), 0.70, 0.68)
+        env.step((False, 0, 0))
+        tx, ty = env._threat_pos()
+        self.assertLess(abs(tx - 0.70), env.intercept_lane,
+                        "equal danger -> the DEEPER knight is the one to intercept")
+
+    def test_a_lone_trickle_is_still_named_when_it_is_all_there_is(self):
+        """Negative control: the danger ranking must not make a board with only cheap bodies read
+        as 'no threat'. Triage decides whether it is worth answering (bodies_ignore_frac); this
+        function's job is only to say WHERE."""
+        env = _quiet_env(seed=11)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), 0.72, 0.66)
+        env.step((False, 0, 0))
+        tx, ty = env._threat_pos()
+        self.assertNotEqual((round(tx, 3), round(ty, 3)), (0.5, 0.5),
+                            "a real body on our half must not report the centre-of-board default")
+        self.assertLess(abs(tx - 0.72), 0.12, "it must name the trickle that IS there")
+
+
 class ThreatTimingTests(unittest.TestCase):
     def _lit_env(self, seed=50, cards=1):
         """`cards` is the SIZE OF THE PUSH, and it is load-bearing for the budget test.

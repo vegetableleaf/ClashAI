@@ -2673,7 +2673,29 @@ the symptom survived, which is why the owner is still reporting it four days lat
 **Fixing LIVE would not have helped.** Live feeds the policy the correct danger-ranked identity
 vector; the observation was never wrong. The learned habit is, and it came from the reward.
 
-### FIX 5 (QUEUED, NOT APPLIED)
+### FIX 5 — SHIPPED 2026-08-25
+
+`_threat_pos` now ranks on the SAME `ignore_cost_frac` the identity vector ranks on, ties broken on
+depth -- `max(key=(danger, depth))`, character-for-character the rule `identity_threat_vector` uses
+for its primary. Both halves of `_threat_response` describe the same unit BY CONSTRUCTION.
+
+VERIFIED on the exact board that demonstrated the bug:
+
+```
+                              BEFORE          AFTER
+POSITION returns              x=0.75          x=0.25   (the pekka)
+counter in the pekka's lane   no credit       CREDIT
+counter in the trickle's lane CREDIT          no credit
+```
+
+**4 tests added** (`ThreatPositionTests`), and the NEGATIVE CONTROL was run: 2 of the 4 FAIL on the
+unpatched `_threat_pos`, so they genuinely detect the bug rather than merely passing. The other two
+(depth-as-tie-break, and a lone trickle still being named) are true of both versions by design.
+`test_identity_and_position_describe_the_SAME_body` is the one that matters -- the 2026-08-20 repair
+fixed the identity half and survived four days *because nothing asserted the two halves agreed*.
+icebow 629 tests OK.
+
+### FIX 5 (original diagnosis, kept for the record)
 
 Rank `_threat_pos()` on the same `ignore_cost_frac` the identity vector uses, breaking ties on
 depth, so both halves of `_threat_response` describe the SAME unit. It is the same three-line shape

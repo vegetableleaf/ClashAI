@@ -814,11 +814,35 @@ class SimMatchEnv:
         return -allowed
 
     def _threat_pos(self):
-        """(x, y) of the deepest enemy troop on YOUR half (the threat to intercept); centre if none."""
+        """(x, y) of the MOST DANGEROUS enemy troop on YOUR half; centre if none.
+
+        ⚠ THIS USED TO RETURN THE DEEPEST UNIT, AND THAT WAS THE BUG (fixed 2026-08-25).
+        `_threat_response` grades the CARD against `_threat_id_true`, which ranks by DANGER, and
+        the PLACEMENT against this lane. While the two disagreed, the reward asked "did you play
+        the right counter to the DANGEROUS threat, in the lane of the DEEPEST one?" -- and MEASURED
+        on a pekka (ignore_cost_frac 1.907) shallow beside a skeletons trickle (0.004) deeper, a
+        counter placed in the pekka's lane earned NOTHING while one placed in the trickle's lane
+        earned full credit. The reward PAID to defend the wrong lane, so training reinforced it.
+
+        The ranking here is character-for-character the one `identity_threat_vector` uses for its
+        primary -- `max(key=(danger, depth))` -- so the two halves of `_threat_response` now
+        describe the SAME unit BY CONSTRUCTION rather than by coincidence. That is the property
+        that matters; a merely "better" heuristic here would leave the same class of bug open.
+
+        DEPTH REMAINS THE TIE-BREAK on purpose: among equally dangerous bodies the deepest is the
+        most urgent, which is the one case the old rule got right.
+        """
         onside = [u for u in self.eng.units if u.team == 1 and u.spec.kind != "spell" and u.y >= 0.5]
         if not onside:
             return 0.5, 0.5
-        u = max(onside, key=lambda u: u.y)               # deepest = closest to your king
+
+        def _danger(unit):
+            try:
+                return float(threat_value.ignore_cost_frac(self.db, unit.spec.base))
+            except Exception:  # noqa: BLE001 -- an unpriced card is not automatically harmless,
+                return 0.0     # but it must not outrank a card the KB actually prices either.
+
+        u = max(onside, key=lambda unit: (_danger(unit), unit.y))
         return float(u.x), float(u.y)
 
     def _leaking_first(self, spend: float = 0.0) -> bool:
