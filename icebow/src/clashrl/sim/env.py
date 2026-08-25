@@ -309,6 +309,10 @@ class SimMatchEnv:
         self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
         self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
         self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
+        # FIX 3: the DEFENSIVE bow's real job -- DPS onto troops. Same rate as the tower lock, own
+        # cap, and deliberately NOT added to led["lock"] (see the module docstring).
+        self.w_bow_dps = r("xbow_defends_tick", 0.02)
+        self.bow_dps_cap = float(cfg.get("rewards", "xbow_defends_cap", default=0.3))
         self.w_bow_chip = r("xbow_chip_linear", 0.15)         # LINEAR chip lane while a bow stands
         self.bow_first_frac = float(cfg.get("rewards", "xbow_first_play_frac", default=0.25))
         self.bow_hostile_frac = float(cfg.get("rewards", "xbow_hostile_frac", default=0.6))
@@ -2620,7 +2624,12 @@ class SimMatchEnv:
                 continue
             bid = id(u)
             bow_alive.add(bid)
-            led = self._bow_ledger.setdefault(bid, {"ids": set(), "cost": 0.0, "lock": 0.0})
+            # "off" = a FORWARD bow, by the same test `_xbow_into_push` and
+            # `_xbow_overaggression` use, so all three agree on what "offensive" means. A building
+            # does not move, so u.y IS its placement row.
+            led = self._bow_ledger.setdefault(bid, {
+                "ids": set(), "cost": 0.0, "lock": 0.0, "dps": 0.0,
+                "off": ((u.y - 0.5) * 32.0 <= self.bow_forward_tiles)})
             for e in self.eng.units:                      # enemies the opponent SPENT to answer this bow
                 # `e.age < u.age` = deployed AFTER the bow. Without it the term counted any enemy
                 # whose current target happened to be the bow, which is not the same thing at all:
@@ -2638,17 +2647,40 @@ class SimMatchEnv:
                         and e.age <= u.age):
                     led["ids"].add(id(e))
                     led["cost"] += float(e.spec.elixir) / max(1, e.spec.squad_count or e.spec.count)
-            if (u.deploy_left <= 0.0 and u.attacking and hasattr(u.target, "king")
-                    and led["lock"] < self.bow_lock_cap):
-                tick = min(self.w_bow_lock * self.agent_dt, self.bow_lock_cap - led["lock"])
-                led["lock"] += tick
-                reward += self.rw_stats.add("xbow_lock", tick)
+            if u.deploy_left <= 0.0 and u.attacking and u.target is not None:
+                if hasattr(u.target, "king"):
+                    if led["lock"] < self.bow_lock_cap:
+                        tick = min(self.w_bow_lock * self.agent_dt, self.bow_lock_cap - led["lock"])
+                        led["lock"] += tick
+                        reward += self.rw_stats.add("xbow_lock", tick)
+                elif (getattr(u.target, "team", None) == 1 and getattr(u.target, "hp", 0) > 0
+                        and led["dps"] < self.bow_dps_cap):
+                    # FIX 3: the bow is shooting TROOPS. That is the defensive bow doing its job,
+                    # and nothing priced it before. Separate counter -- see the docstring.
+                    tick = min(self.w_bow_dps * self.agent_dt, self.bow_dps_cap - led["dps"])
+                    led["dps"] += tick
+                    reward += self.rw_stats.add("xbow_defends", tick)
         for bid in [b for b in self._bow_ledger if b not in bow_alive]:
             led = self._bow_ledger.pop(bid)
             over = max(0.0, led["cost"] - 6.0)            # "they paid more than the bow to stop it"
-            if over > 0.0:
+            # FIX 2a: the draw only "did its job" if the bow was ever actually a THREAT. led["cost"]
+            # accumulated independently of led["lock"], so without this gate a bow that never once
+            # aimed at a tower still collected the overcommit credit.
+            #
+            # ⚠ DEFENSIVE BOWS ARE EXEMPT, and the test suite caught this: gating ALL overcommit on
+            # a tower lock strips the credit from a defensive bow, whose job was never to lock a
+            # tower -- it is to absorb and to DPS (that is fix 3). Only a bow placed as a WIN
+            # CONDITION is judged on whether it threatened one.
+            if over > 0.0 and (led["lock"] > 0.0 or not led.get("off")):
                 reward += self.rw_stats.add("xbow_overcommit",
                                             min(self.bow_over_cap, over * self.w_bow_over))
+            # FIX 2b REMOVED IN THE RETRY (2026-08-25). MEASURED: with the -0.5 penalty in place,
+            # xbow_lock fell 8.93 -> 3.20 and chip_linear 9.23 -> 3.33, both at 2.1 sigma -- a 64%
+            # collapse in bow uptime. xbow_no_lock DID fall (0.27 -> 0.07), but so did xbow_lock, so
+            # the useless bows were removed BY REMOVING BOWS. Penalising a bad OUTCOME suppresses
+            # the ACTION: the policy cannot tell "play a better bow" from "stop playing bows", and
+            # the second is cheaper. The GATE (2a) survives -- a bow that never threatened earns
+            # NOTHING, which is the correction that was wanted; it just must not COST anything.
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.rw_stats.add("leak", self.w_leak)

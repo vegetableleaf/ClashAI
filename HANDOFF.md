@@ -3142,6 +3142,71 @@ The port was correct; the flag it depended on was not.
 
 icebow 639 OK. hogeq 706, 42 pre-existing failures, unchanged.
 
+## 4n. 2026-08-25 — FIX 2+3 RETRY SHIPPED (unproven), ROYAL HOGS ABREAST, and ⚠ THE LOG IS THE WRONG WIDTH IN BOTH SIM AND LIVE
+
+### FIX 2+3 RETRY — shipped on CORRECTNESS, not on a measured win
+
+```
+fix23 paired, n=30, control4 vs fix23b, both @2600 eps
+  xbow_lock     5.37 -> 7.73   +2.37   1.1 sigma
+  chip_linear   5.63 -> 8.57   +2.93   1.3 sigma
+  xbow_defends  8.63 -> 7.97   -0.67   0.3 sigma
+  xbow_no_lock  0.00 -> 0.00    0.00         (penalty removed; correctly never fires)
+VERDICT: NO MEASUREMENT
+```
+
+The DIRECTION reversed -- the original was **-5.73 at 2.1 sigma (harmful)**, the retry **+2.37 at
+1.1 sigma** -- an +8.1 swing in bow uptime confirming the -0.5 penalty was what suppressed bow play.
+Nothing clears 2 sigma, so this is not a demonstrated benefit.
+
+⚠ **THE EXPERIMENT WAS UNDER-POWERED BY CONSTRUCTION, AND THAT IS MY ERROR.** `xbow_overcommit` is
+worth **0.07-0.08 per match**; gating it moves ~0.04 against a total reward magnitude of ~50, i.e.
+**~0.08%**. No feasible sample size resolves that. A 1.5 h training arm was spent on a question the
+instrument could never answer -- **compute the detectable effect size BEFORE running the arm**, not
+after reading the result. "NO MEASUREMENT" here means the wrong instrument, not the absence of an
+effect.
+
+Shipped anyway because the GATE corrects a real defect (`led["cost"]` accrued independently of
+`led["lock"]`, so a bow that never threatened still collected the credit) -- demonstrated
+behaviourally, same basis as fixes 5/6/7.
+
+### ROYAL HOGS SPAWN ABREAST (owner) — both decks
+
+`cols = ceil(sqrt(n))` made the four hogs a 2x2. They enter in a HORIZONTAL LINE and fan into
+separate lanes. Fixed DATA-DRIVEN via a `line_formation` flag rather than special-casing the card,
+preserving the engine's "one rule, the card declares which" design. MEASURED: 4 distinct X, 1
+distinct Y, span **3.96 tiles** against a 2x2's **~1.32**. Negative control: ordinary swarms still
+grid.
+
+⚠ **A PATCH-AUTHORING TRAP, recorded because it corrupted a file**: the anchor
+`"    cols = int(math.ceil(math.sqrt(n)))"` (4 spaces) matches as a SUBSTRING of the real 8-space
+line and replaces only part of it. Anchor on the full line INCLUDING its newlines.
+
+### ⚠⚠ OPEN: THE LOG'S WIDTH IS WRONG IN BOTH SIM AND LIVE, AND THEY DISAGREE BY 1.9x
+
+Surfaced when the owner corrected a claim of mine. **The real Log is 3.90 tiles wide.**
+
+```
+owner (real game)                      3.90 tiles
+SIM   _LOG_ROLL_HALFW 2.2      ->      4.40 tiles    ~13% TOO WIDE
+LIVE  log_half_width 0.064     ->      2.30 tiles    ~41% TOO NARROW
+```
+
+Wrong in OPPOSITE directions, so they cannot both be reasoned about with one mental model:
+* **LIVE too narrow** -- the whiff verdict and the aim assist believe the Log covers half of what it
+  does, so a cast that would really connect is scored a WHIFF and the assist demands precision the
+  card does not need. This is the §4.2 family: "it knows it in sim but not live".
+* **SIM too wide** -- over-credits the Log, teaching the policy it clips troops it would miss.
+
+**PROPOSED (not yet applied):** set both to 3.90 -- sim `_LOG_ROLL_HALFW = 1.95`, live
+`log_half_width = 1.95/18 = 0.1083`. NOT shipped in this batch because it moves a reward-relevant
+quantity in the sim and belongs in its own change, and because the published width should be sourced
+from the wiki first the way the spawn intervals were.
+
+⚠ My original claim -- "four abreast exceed the Log's width" -- was WRONG twice: it quoted the LIVE
+number in a SIM context, and that number is itself wrong. At 3.96 vs a real 3.90 the outer hogs sit
+right AT the edge. The formation fix stands; that justification for it did not.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

@@ -381,3 +381,52 @@ class ThreatTimingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)
+
+
+class RoyalHogsFormationTests(unittest.TestCase):
+    """Royal Hogs enter ABREAST and fan into separate lanes -- not as a 2x2 block (owner
+    2026-08-25). The swarm layout is derived (`cols = ceil(sqrt(n))`), which is right for
+    Skeletons/Minions/Barbarians and wrong here, so the card declares `line_formation` and the
+    engine keeps applying one rule.
+
+    ⚠ NOT COSMETIC: formation decides SPLASH GEOMETRY. Measured, four abreast span ~3.96 tiles
+    against a 2x2's ~1.32 -- wider than the Log -- so a block model lets ONE cheap spell clip all
+    four and over-values the spell answer.
+    """
+
+    def _spawn(self, base, seed=5):
+        env = _quiet_env(seed=seed)
+        for u in list(env.eng.units):
+            u.hp = -1.0
+        env.eng.elixir[1] = 10.0
+        sp = build_spec(env.eng.db, base, 11)
+        assert env.eng.deploy(1, sp, 0.50, 0.30)
+        return [(round(u.x, 4), round(u.y, 4)) for u in env.eng.units
+                if u.spec.base == base and u.hp > 0]
+
+    def test_royal_hogs_spawn_in_one_row(self):
+        pts = self._spawn("royal_hogs")
+        self.assertGreaterEqual(len(pts), 4, "royal hogs field four bodies")
+        self.assertEqual(len({p[1] for p in pts}), 1, "all four must share ONE row (abreast)")
+        self.assertEqual(len({p[0] for p in pts}), len(pts), "each hog gets its own column")
+
+    def test_the_line_is_much_wider_than_a_block_would_be(self):
+        """The point of the fix: a 2x2 sits well inside one cheap spell, a line does not.
+
+        ⚠ MEASURED span is ~3.96 tiles against a 2x2's ~1.32. Do NOT restate this as "wider than
+        the Log" -- the owner corrected that: the real Log is 3.90 tiles, so the outer hogs sit
+        right AT its edge, not outside it. (The sim currently models the Log at 4.40 and live at
+        2.30; both are wrong and they disagree with each other -- see the open item in HANDOFF.)
+        What this test actually asserts is the block-vs-line difference, which is ~3x.
+        """
+        xs = [p[0] for p in self._spawn("royal_hogs")]
+        span_tiles = (max(xs) - min(xs)) * 18.0
+        self.assertGreater(span_tiles, 3.0,
+                           "four abreast must span >3 tiles, against a 2x2's ~1.3")
+
+    def test_an_ordinary_swarm_is_UNCHANGED(self):
+        """Negative control. Only cards that DECLARE line_formation may change shape; a plain
+        swarm must still use the derived grid."""
+        pts = self._spawn("skeletons")
+        self.assertGreater(len({p[1] for p in pts}), 1,
+                           "skeletons must still spawn as a grid, not a line")

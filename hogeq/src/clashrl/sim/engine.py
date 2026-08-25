@@ -479,6 +479,9 @@ class CardSpec:
     # share -- so billing by that would charge Rascals 5/1 for the boy PLUS 5/2 each for the girls,
     # i.e. 10 elixir for a 5-elixir card, inflating every position/counterfactual reading.
     squad_count: int = 0
+    # Spawn this card's bodies ABREAST (one row) instead of the derived sqrt grid. See the swarm
+    # formation block -- this changes SPLASH GEOMETRY, not just appearance.
+    line_formation: bool = False
 
     def __deepcopy__(self, memo):
         # SHARED ACROSS ENGINE FORKS ON PURPOSE. A spec is immutable in practice: every runtime
@@ -549,6 +552,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     count = int(c.get("count") or 1)
     building_only = ("building_targeting" in flags) or (c.get("targets") == "buildings_only")
     siege = "siege" in flags
+    line_formation = "line_formation" in flags
     # Spell blast radius, live from the wiki (Fireball 2.5, Rocket 2.0, Arrows 3.5, Zap 2.5) -- the old
     # flat 2.9 default was wrong for every one of them.
     spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
@@ -647,6 +651,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = None
     spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
+        line_formation=line_formation,
         count=count, flying=(c.get("movement") == "air" if c.get("movement") else db.is_flying(base)),
         attacks_air=db.attacks_air(base),
         # splash: the stats import OR the curated flag. Testing only db.has_splash silently
@@ -1575,7 +1580,13 @@ class SimEngine:
         #  (0.97, 0.97) clamp corner. Every multi-unit card in the game was affected -- your own
         #  Skeletons, and the opponents' Archers / Barbarians / Minions / Minion Horde / Skeleton
         #  Army -- and for team 1 the doubling threw their swarms across the river into YOUR half.)
-        cols = int(math.ceil(math.sqrt(n)))
+        # ABREAST CARDS (owner 2026-08-25): Royal Hogs enter in a HORIZONTAL LINE and fan into
+        # separate lanes -- they are not a 2x2 block. Declared PER CARD rather than special-cased
+        # here, so the engine keeps applying one rule and the card says which one it wants.
+        # ⚠ This is not cosmetic: formation decides SPLASH GEOMETRY. A 2x2 of hogs fits inside one
+        # Log/Arrows radius; four abreast span ~4 tiles and cannot all be hit by one cheap spell,
+        # so modelling them as a block over-values the spell answer.
+        cols = n if getattr(spec, "line_formation", False) else int(math.ceil(math.sqrt(n)))
         step = max(0.4, spec.radius * 2.2)            # touching-but-not-overlapping bodies (TILES)
         # Lay the members out row by row (each row centred), then subtract the cluster's mean so the
         # formation is centred on the drop point EXACTLY -- a partly-filled last row (3 bodies in a
