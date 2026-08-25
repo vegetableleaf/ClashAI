@@ -58,3 +58,9 @@ raw/
 s_tmp.py
 align_tmp.py
 wr_eval_tmp.py
+
+# unlazy gate ledger (ephemeral, session-local)
+/scratch/
+/GATES.md
+.unlazy/
+.unlazy-hook-state.json

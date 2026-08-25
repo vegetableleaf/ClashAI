@@ -2671,6 +2671,57 @@ to 1.5 s -- two to three tiles of travel on a real push. ⚠ Turning it off rest
 The real choice is "no advice" vs "stale advice". Advice is exploration-only either way and never
 gates the policy's own action.
 
+## 4f. 2026-08-25 OVERNIGHT — MATCHED-CONTROL RESULTS (the design this project never had)
+
+Three arms from the SAME init (`policy_BEST_m26000_20260823.pt`), matched at the same episode
+count, differing in exactly one thing each. The warm-start critic dip is present in ALL arms, so it
+CANCELS -- which is precisely what every earlier reward experiment here was missing.
+
+```
+arm        restraint_hold   env.py       episodes
+control         0.0         unpatched      2600 / 3600
+fix 1           1.0         unpatched      2600 / 3600
+fix 2+3         0.0         PATCHED        2600
+fix 4            -          -              no run (validated synthetically)
+```
+
+### FIX 1 — FAILS its pre-committed criterion (paired, n=30)
+
+```
+                   control@2600   fix1@2600   paired delta   sigma
+restraint_hold        1.30           0.60        -0.70        2.9   <-- WRONG WAY
+threat_miss_idle      4.67           2.60        -2.07        2.8
+plays                11.4%          13.0%
+elixir median         2.64           2.14
+```
+
+Criterion was "`restraint_hold` fires MORE and `threat_miss_idle` does not rise, >=2 sigma".
+**Clause 1 FAILS at 2.9 sigma in the wrong direction**: the policy trained WITH the restraint credit
+performs the credited behaviour LESS THAN HALF as often as the control. Clause 2 passes -- missed
+threats fell 2.07 (2.8 sigma), so it is not defensively harmful.
+
+The picture is coherent: fix 1 made the policy MORE ACTIVE, not more restrained. It plays more
+(13.0% vs 11.4%), banks less (elixir 2.14 vs 2.64), and therefore has fewer of BOTH idle-event
+types. **Paying for restraint produced less restraint.**
+
+⚠ MECHANISM NOT ESTABLISHED, only the effect. A plausible candidate worth testing before any
+re-dose: a positive term available on idle steps raises the CRITIC'S BASELINE for those states, and
+since the credit is small and capped (2.0/match, realised ~0.5), the realised return can fall SHORT
+of the raised baseline -- making idling look WORSE in advantage terms than before the credit
+existed. If that is right, a bigger dose does not fix it and may invert it further; the term would
+need to be uncapped or moved off the idle step entirely.
+
+### ⚠ MEASUREMENT BUG CAUGHT BEFORE IT PRODUCED A VERDICT
+
+The first run of this comparison reported `restraint_hold 0.00` in BOTH arms. The probe reads the
+CURRENT config, and the control arm trains at `restraint_hold: 0.0` -- so the TERM WAS DISABLED IN
+THE EVALUATION ENV and could not fire whatever policy was loaded. The instrument was switched off,
+not the behaviour absent (same shape as `air_bases` and `--drill-frac 0.0`).
+Fixed by forcing `e.w_restraint` on the ENV INSTANCE (`PROBE_RESTRAINT_W`), never by editing
+config.yaml: workers call `Config.load()` in their own processes, so a mid-run edit would have been
+picked up by a respawn and contaminated the control. The cap is lifted for counting too -- at
+w=1.0/cap=2.0 the count saturates at 2/match and cannot tell "restrained twice" from "nine times".
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
