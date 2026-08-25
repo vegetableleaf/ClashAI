@@ -2775,6 +2775,29 @@ If this is retried, the penalty has to be removed and only the CREDIT GATE (2a) 
 bow earns nothing rather than costing something -- or the penalty has to be conditioned on a bow
 that was placed in range, so it cannot be avoided by simply not playing the card.
 
+### FIX 4 — PASSES, and it is SHIPPED (the only fix of the three that worked)
+
+Re-measured on the shipped code by replaying the controller's exact arithmetic against a synthetic
+winrate held CONSTANT, so every difficulty move is by construction pure noise response:
+
+```
+noise-driven move rate:  current 52.5%  ->  deadband 0.06  0.2%
+lag on a REAL step change (8% -> 20%):  current 236 matches  ->  0.06  199 matches
+```
+
+**Strictly better on both axes**: it removes 99.6% of the noise-driven movement AND tracks a real
+change FASTER, because the rate limit is no longer being spent on coin flips. That is why it ships
+as one line with no trade-off to weigh.
+
+Widening the sensor window 50 -> 200 was measured and **REJECTED**: +0.1pp of noise immunity for
+1.8x the tracking lag (199 -> 353 matches). The first draft of this fix contained it.
+
+⚠ Validated SYNTHETICALLY, not by a training run -- deliberately. In a live run the policy and the
+controller move together, so no difficulty change is attributable, and this run's difficulty spent
+long stretches pinned at the 0.15 floor where the defect cannot appear at all. Replaying the
+controller in isolation is the stronger evidence here, not the weaker. Harness: `scratchpad/curr_sim.py`
+-- re-run it before ever changing `curriculum_deadband`.
+
 ### ⚠ MEASUREMENT BUG CAUGHT BEFORE IT PRODUCED A VERDICT
 
 The first run of this comparison reported `restraint_hold 0.00` in BOTH arms. The probe reads the

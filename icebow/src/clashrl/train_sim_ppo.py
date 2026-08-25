@@ -763,6 +763,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
     _curr = {"d": float(cfg.get("sim", "curriculum_start", default=0.3))}
     full_wr = float(cfg.get("sim", "curriculum_full_wr", default=35.0))
+    # FIX 4 (2026-08-24): see scratchpad/fix4.py. At 0.02 the controller moved on 52.5% of updates
+    # with the true winrate HELD CONSTANT -- over half of all difficulty changes were noise.
+    _curr_deadband = float(cfg.get("sim", "curriculum_deadband", default=0.06))
 
     def opponent_provider_cur(env):
         # CURRICULUM: below-ladder tier while the winrate is on the floor (0/40 measured --
@@ -1603,7 +1606,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 _curr["wr_ema"] = wr_now if ema is None else 0.7 * ema + 0.3 * wr_now
                 d_tgt = min(1.0, max(0.15, _curr["wr_ema"] / full_wr))
                 d_new = min(_curr["d"] + 0.10, max(_curr["d"] - 0.05, d_tgt))
-                if abs(d_new - _curr["d"]) > 0.02:
+                # FIX 4: 0.02 sat below the sampling noise in d_tgt, so the controller moved on
+                # 52.5% of updates in response to nothing (measured: constant true winrate, 8%,
+                # d sd 0.058 across a 0.296 range). At 0.06 that falls to 0.2% AND a real step
+                # change is tracked FASTER -- 199 matches against 236 -- because the rate limit is
+                # no longer being spent on noise. Widening the sensor window was measured and
+                # REJECTED: +0.1pp immunity for 1.8x the lag.
+                if abs(d_new - _curr["d"]) > _curr_deadband:
                     _curr["d"] = d_new
                     if remote:
                         rpool.set_difficulty(d_new)
