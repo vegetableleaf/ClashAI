@@ -2831,6 +2831,59 @@ config.yaml: workers call `Config.load()` in their own processes, so a mid-run e
 picked up by a respawn and contaminated the control. The cap is lifted for counting too -- at
 w=1.0/cap=2.0 the count saturates at 2/match and cannot tell "restrained twice" from "nine times".
 
+## 4g. 2026-08-25 — FIX 6 SHIPPED: the cheap answer in the OTHER lane was worth nothing
+
+Owner's doctrine, and he is right: prioritising the greater threat must not mean IGNORING the
+lesser one. Golem + support one side, a Mini Pekka the other -- the golem is the bigger threat, but
+the mini pekka still needs an answer, cheaply (Skeletons usually suffice).
+
+MEASURED on exactly that board, BEFORE the fix:
+
+```
+threat_response for the correct Skeletons in the mini-pekka lane   +0.000
+threat_miss_idle fires, answered vs ignored                         5 vs 5
+TOTAL dense step reward, both lanes vs golem only                  +0.05
+our princess HP, both lanes vs golem only                          +2266
+```
+
+**The correct play saved ~2266 tower HP and the dense reward paid +0.05 for it.** Two causes:
+* `_threat_response` requires the card to counter the PRIMARY identity in the PRIMARY lane, so a
+  correct second-lane answer scores exactly zero;
+* `_threat_miss_idle`'s waiver is GLOBAL -- `any(our unit counters tid)`, no lane test -- so once
+  the golem is answered, ignoring the mini pekka is free.
+
+That left only the DELAYED tower-survival outcome, which is the long-horizon credit assignment this
+critic handles worst -- see the whole warm-start/critic-dip story.
+
+### The fix, and what it deliberately does NOT do
+
+`_secondary_lane_response` pays for a correct answer to a committed threat in a lane OTHER than the
+primary, judged on that lane's OWN identity, OWN triage and OWN danger:
+
+```
+                              BEFORE     AFTER
+skeletons in mini-pekka lane   0.000    +0.949     (= mini_pekka 0.667 / golem 0.703)
+skeletons in the GOLEM lane      -       0.000     (primary is _threat_response's job)
+empty lane                       -       0.000
+TRICKLE in the second lane       -       0.000     (triage refuses it)
+```
+
+⚠ **IT ADDS A CREDIT AND DOES NOT TOUCH THE PENALTY.** Making `_threat_miss_idle` lane-aware would
+make it fire MORE, and that term has been the dominant negative in this ledger TWICE (-152.00 over
+152 fires in 323 steps; 1595 fires / 100 matches) -- both times teaching the policy to empty its
+bar, the exact failure this project has spent a week undoing. If the credit proves insufficient,
+the waiver is the NEXT lever, not this one.
+
+The credit is the SAME for skeletons, knight and tesla, on purpose: "cheapest sufficient answer" is
+enforced by the credit BUDGET (`min(threat_credit_budget, n_cards)`, added in `a925d88` precisely to
+stop over-answering paying) plus elixir cost, not by varying this term.
+
+**6 tests added; all 6 ERROR on the unpatched tree, so they detect the fix rather than merely
+passing.** icebow 635 tests OK.
+
+⚠ **THIS INVALIDATES ANY CONTROL ARM TRAINED BEFORE IT** (owner flagged this). `ARM_control2.pt` was
+stopped mid-run and discarded; the adjustment round needs a fresh control on the fix 4+5+6 tree.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding

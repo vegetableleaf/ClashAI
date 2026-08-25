@@ -201,6 +201,72 @@ class ThreatPositionTests(unittest.TestCase):
         self.assertLess(abs(tx - 0.72), 0.12, "it must name the trickle that IS there")
 
 
+class SecondaryLaneTests(unittest.TestCase):
+    """FIX 6: prioritising the greater threat must not mean IGNORING the lesser one.
+
+    Owner's board: Golem + support one side, Mini Pekka the other. The golem is the bigger threat
+    and fix 5 correctly points the primary lane at it -- but the mini pekka still needs a cheap
+    answer. MEASURED before fix 6: the correct Skeletons scored `threat_response` +0.000 while
+    saving ~2266 tower HP, so the only incentive was the delayed outcome term.
+    """
+
+    def _two_lane(self, second="mini_pekka", seed=21):
+        env = _quiet_env(seed=seed)
+        for name, x, y in (("golem", 0.25, 0.56), ("mega_minion", 0.27, 0.54), (second, 0.75, 0.58)):
+            env.eng.elixir[1] = 10.0
+            assert env.eng.deploy(1, build_spec(env.eng.db, name, 11), x, y)
+        env.step((False, 0, 0))
+        return env, {c: i for i, c in enumerate(env.deck_keys)}
+
+    def test_cheap_answer_in_the_other_lane_is_paid(self):
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertGreater(env._secondary_lane_response(ix["skeletons"], 0.75, 0.62), 0.5,
+                           "a correct answer to the mini pekka must be worth something")
+
+    def test_primary_lane_is_left_to_threat_response(self):
+        """No double-paying: the primary lane is _threat_response's job, not this term's."""
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.25, 0.62), 0.0)
+
+    def test_a_lane_with_nothing_in_it_pays_nothing(self):
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.50, 0.62), 0.0)
+
+    def test_triage_refuses_a_second_lane_not_worth_a_card(self):
+        """The doctrine's tier above every counter rule. A trickle in the other lane is not a
+        second threat, and paying for answering it would teach exactly the over-answering that
+        `min(threat_credit_budget, n_cards)` was added to stop."""
+        env = _quiet_env(seed=31)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "pekka", 11), 0.25, 0.56)
+        env.eng.elixir[1] = 10.0
+        assert env.eng.deploy(1, build_spec(env.eng.db, "skeletons", 11), 0.75, 0.60)
+        env.step((False, 0, 0))
+        ix = {c: i for i, c in enumerate(env.deck_keys)}
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.75, 0.62), 0.0)
+
+    def test_credit_scales_with_the_lane_s_own_danger(self):
+        """A near-equal threat pays near-full; the price IS the doctrine, not a flat bonus."""
+        big, ixb = self._two_lane("mini_pekka")
+        big._threat_credits = 0
+        v_big = big._secondary_lane_response(ixb["skeletons"], 0.75, 0.62)
+        small, ixs = self._two_lane("spear_goblins", seed=23)
+        small._threat_credits = 0
+        v_small = small._secondary_lane_response(ixs["skeletons"], 0.75, 0.62)
+        self.assertGreater(v_big, v_small,
+                           "a mini pekka must be worth more to answer than spear goblins")
+
+    def test_an_offensive_placement_earns_nothing(self):
+        """This is a DEFENSIVE term. A play on the enemy half is graded by wincon_exec."""
+        env, ix = self._two_lane()
+        env._threat_credits = 0
+        self.assertEqual(env._secondary_lane_response(ix["skeletons"], 0.75, 0.30), 0.0)
+
+
 class ThreatTimingTests(unittest.TestCase):
     def _lit_env(self, seed=50, cards=1):
         """`cards` is the SIZE OF THE PUSH, and it is load-bearing for the budget test.
