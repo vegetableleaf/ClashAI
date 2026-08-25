@@ -101,7 +101,11 @@ _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Heali
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
 _LOG_ROLL_LEN = 9.6       # how far forward it rolls (tiles)
-_LOG_ROLL_HALFW = 2.2     # corridor half-width (tiles, ~a lane)
+_LOG_ROLL_HALFW = 1.95    # corridor HALF-width (tiles) -> 3.90 wide. Was 2.2
+                          # (= 4.40 wide, ~13% too wide, over-crediting the roll).
+                          # 3.90 is the owner's in-game reading, 2026-08-25; the
+                          # wiki carries no usable published width. LIVE uses the
+                          # same figure via env.log_half_width (normalised).
 _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corridor
 # KNOCKBACK fallback for a card the wiki says HAS pushback but publishes no range for (Rocket).
 # 1 tile is Fireball's CURRENT published value (2/8/2022 balance: "decreased the Fireball's pushback

@@ -1167,15 +1167,30 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # Giving each head its own ratio and its own clip removes the coupling: the
                     # cell head can still be clipped for its own excursions, and the gate is judged
                     # only on how far the GATE moved.
-                    def _surr(r):
-                        return torch.min(r * a_b, torch.clamp(r, 1.0 - clip_eps, 1.0 + clip_eps) * a_b)
+                    def _surr(r, eps):
+                        # PER-SAMPLE BOUND. `eps` is a tensor, exactly as the joint path's `eps_b`
+                        # already is -- torch.clamp takes tensor bounds, so this needs no new
+                        # machinery, only the argument that was missing.
+                        return torch.min(r * a_b, torch.clamp(r, 1.0 - eps, 1.0 + eps) * a_b)
                     op = oldp_f[mb_t]
                     r_g = (lp_g.gather(1, g_b.view(-1, 1)).squeeze(1) - op[:, 0]).exp()
                     r_c = (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1) - op[:, 1]).exp()
                     r_q = (lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1) - op[:, 2]).exp()
                     # mean over the heads that ACTED: 1 for a wait, 3 for a play, so a play does
                     # not silently get 3x the gradient magnitude of a wait.
-                    per = _surr(r_g) + play * (_surr(r_c) + _surr(r_q))
+                    # THE GATE GETS THE WIDENED BOUND (`eps_b`, which embeds
+                    # ppo_clip_play_mult); card and cell keep the base one. Two DIFFERENT
+                    # asymmetries are in play and per-head only fixes the first:
+                    #   (1) three-head coupling -- a play's JOINT ratio is gate x card x cell while a
+                    #       wait's is the gate alone. Per-head ratios fix that.
+                    #   (2) minority-action volatility -- d(log p)/d(logit) is ~1 for the MINORITY
+                    #       action and ~p for the majority, so the same logit move swings a play's
+                    #       log-ratio ~1/p harder. MEASURED on the SAME head: gate log-ratio sd
+                    #       0.518 on plays vs 0.027 on waits, 19x. Per-head does NOTHING about this,
+                    #       which is why it measured "no improvement, inside noise" on its own.
+                    # Card/cell exist ONLY on play steps, so they carry no play/wait asymmetry and
+                    # widening them would just loosen the trust region for nothing.
+                    per = _surr(r_g, eps_b) + play * (_surr(r_c, clip_eps) + _surr(r_q, clip_eps))
                     pl = -(per / (1.0 + 2.0 * play)).mean()
                 vl = F.mse_loss(val, r_b)
                 if _warm["left"] > 0:

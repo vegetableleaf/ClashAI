@@ -3207,6 +3207,84 @@ from the wiki first the way the spawn intervals were.
 number in a SIM context, and that number is itself wrong. At 3.96 vs a real 3.90 the outer hogs sit
 right AT the edge. The formation fix stands; that justification for it did not.
 
+## 4o. 2026-08-25 — ⚠⚠ THE GATE'S GRADIENT IS INVERTED BY CLIPPING, AND TWO LEVERS FIX DIFFERENT HALVES
+
+### The finding (supersedes §4a's "the bow is unaffordable, not unwanted")
+
+```
+gate P(play) by elixir (control4)          %steps with PLAY masked to -inf
+  elixir:   0     1     2     3   ...  10        0: 97.9%   1: 82.5%   2: 61.4%   3+: 0.0%
+  P(play): .473  .416  .353  .265  ...  .085
+```
+
+The gate's apparent enthusiasm lives ENTIRELY where it cannot act. At 0-2 elixir, 62-98% of steps
+have zero affordable cards, so PLAY is masked and the output is inert. **Where every decision is
+real (3+ elixir) it plays 9-27% of the time, falling monotonically as elixir rises.** The x_bow
+costs 6 and can only be played there -> 0.75 bows/match, and raising affordability 4.6%
+(2.7% -> 12.4%) moved usage 0.70 -> 0.75. **The card head PREFERS the bow at 1.48x fair share
+(0.370 vs 0.250).** It is not unwanted and no longer unaffordable -- THE GATE WILL NOT ACT.
+
+⚠ This also retires the "gate wants to play 57%" figure quoted earlier: that average is dominated
+by masked steps where the output means nothing.
+
+### The refusal is IRRATIONAL under its own reward
+
+```
+NEVER play                  -0.2127 /step        holding is 6.7x worse than playing
+play only at elixir >= 6    -0.0316 /step
+play whenever affordable    -0.0278 /step
+```
+
+And every loss term pushes the gate TOWARD playing (parameter-path probe, comparable units):
+`VALUE +77.25 | POLICY GRAD (unclipped) +56.35 | ENTROPY +3.48`.
+
+⚠ **The in-trainer probe (`CLASHRL_GATE_PROBE`) CANNOT SEE THE VALUE TERM** -- it takes
+`autograd.grad(term, gate_logits)`, and the critic reaches the gate through shared-trunk PARAMETERS,
+not through the gate logits. It returns `value +nan` on every sample. That is a good explanation for
+why the previous investigation stalled: its instrument was blind to the largest candidate. Use
+`scratchpad/gate_param_probe.py`, which measures `-<d(logit gap)/dtheta, d(term)/dtheta>` instead.
+
+### STAGE A SWEEP — the two levers fix DIFFERENT HALVES, and neither works alone
+
+```
+arm  per_head  mult   clipPLAY  clipWAIT  sign-agree  mean clipped  verdict
+A0   false     1.0      0.621     0.008      1/6        -0.00106    fail   (inversion reproduced)
+A1   true      1.0      0.668     0.011      5/6        +0.00338    fail
+A2   false     4.0      0.169     0.011      1/5        +0.00012    fail
+A3   true      2.0      0.507     0.014      5/6        +0.00395    fail
+A4   true      4.0      0.170     0.014      4/5        +0.00430    PASS
+```
+
+* **`ppo_clip_per_head` fixes the SIGN** (3-head coupling: a play's joint ratio is gate x card x
+  cell, a wait's is the gate alone). A1 flips sign-agreement 1/6 -> 5/6 and the mean clipped
+  pressure -0.00106 -> +0.00338 -- but leaves `clipPLAY` at 0.668, so the corrected gradient is
+  censored on two thirds of plays.
+* **`ppo_clip_play_mult` fixes the FREQUENCY** (minority-action volatility: d(log p)/d(logit) is ~1
+  for the minority action and ~p for the majority, so the same logit move swings a play's log-ratio
+  ~1/p harder -- MEASURED, gate log-ratio sd 0.518 on plays vs 0.027 on waits). A2 collapses
+  `clipPLAY` 0.621 -> 0.169 but leaves the sign wrong, because the joint ratio still couples heads.
+* **Only A4 gets both.** Dose 2.0 (A3) fails the clip-rate bar at 0.507, so 4.0 is the smallest that
+  works, not the largest that passes.
+
+**THIS RECONCILES THE OLD VERDICT.** HANDOFF recorded per-head as "no improvement, inside noise" and
+that was not wrong, it was INCOMPLETE: A1 un-inverts the sign while still clipping 67% of plays, so
+the corrected gradient barely reaches the gate.
+
+### ⚠ THE LEVERS WERE MUTUALLY EXCLUSIVE UNTIL TODAY
+
+`_surr` used the base `clip_eps` and the per-head branch OVERWRITES `pl`, so setting both applied
+only per-head and `ppo_clip_play_mult` was a SILENT NO-OP. Fourth member of the family after
+`--drill-frac 0.0`, `--workers 0` and `CLASHRL_DRILL_PLAY_OUT=0`. **The combination that passes
+could not have been tested before this was fixed.** `_surr(r, eps)` now takes a per-sample bound;
+the gate gets `eps_b`, card/cell keep `clip_eps` (they exist only on play steps, so they carry no
+play/wait asymmetry to correct).
+
+### STATUS: Stage B running — mechanism is NOT outcome
+
+`ARM_clipfix.pt`, 2600 episodes, A4 config, matched against `ARM_control4.pt`. Un-inverting the
+gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
+on the paired probe or it is reported as NO MEASUREMENT.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
