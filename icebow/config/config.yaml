@@ -548,7 +548,7 @@ rewards:
   # 1.0 so a correct hold is worth what a missed answer costs, PER FIRE. The asymmetry is preserved
   # where it belongs instead: this is CAPPED at 2.0/match while threat_miss_idle is uncapped, so
   # ignoring real pushes still scales without limit and restraint cannot be farmed past the cap.
-  restraint_hold: 1.0
+  restraint_hold: 0.0
   restraint_hold_cap: 2.0
   # -- (2) ELIXIR-TRADE correctness (the honest economy: value removed - elixir spent) --
   elixir_trade: 1.0        # x [ (signed potential-based enemy value/mass eliminated, clipped) - elixir spent ] / value_norm. Telescopes -> idling can't farm it.
@@ -819,7 +819,15 @@ train:
   # Ask in a BACKGROUND thread and spend the answer a decision or two later, instead of blocking
   # a 600 ms act_period on a ~590 ms call while the bot is blind. Measured: ask_async returns in
   # ~2-5 ms, so the loop runs at full speed and the answer is collected when it lands.
-  llm_advisor_async: true
+  # REVERTED to false 2026-08-24 on the owner's report that async makes the model react to
+  # threats too slowly. That is the expected cost of the design, not a bug in it: an async answer
+  # is deliberately spent a DECISION LATER than the board it was asked about, so at act_period 0.6s
+  # every advised play is >=0.6s stale, and `llm_advisor_max_age_s: 1.5` permits up to 1.5s. On a
+  # push that is two to three tiles of travel. Async was introduced because the SYNC path measured
+  # 0% answered (565ms mean against a 0.55s budget), so turning it off restores that 0% unless the
+  # budget is also raised -- the real choice is "no advice" vs "stale advice", and the owner has
+  # seen both. Advice is exploration-only; it never gates the policy's own action.
+  llm_advisor_async: false
   # The background call's OWN budget. It is NOT llm_advisor_timeout_s -- leaving that 0.55 here
   # would keep timing out at ~565 ms exactly as the sync path does, and the change would be a
   # no-op. Bounded by usefulness, not by act_period: anything older than llm_advisor_max_age_s is

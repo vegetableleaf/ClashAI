@@ -2610,6 +2610,67 @@ floor, so the correlation is not clean, and the config comment records that a FI
 the head at maximum entropy and it never learned. This needs its own A/B (floor 0.008 vs ~0.02, or a
 15k-episode anneal), run AFTER fix 4 so the controller is not also moving.
 
+## 4e. 2026-08-24 — ⚠ THE REWARD PAYS FOR DEFENDING THE WRONG LANE (fix 5, QUEUED — do not ship mid-experiment)
+
+Owner reported that the model answers the DEEPEST enemy threat rather than the most DANGEROUS, and
+asked whether that is incomplete PPO or a live-only problem. **It is neither. It is a sim reward
+bug, and PPO learned it faithfully.**
+
+`_threat_response` grades two things against TWO DIFFERENT THREATS:
+
+```
+WHICH CARD you played  -> judged against `_threat_id_true`, which ranks by DANGER
+                          (`ignore_cost_frac`) -- correct, fixed 2026-08-20
+WHERE you put it       -> judged against `_threat_pos()`, which returns
+                          `max(onside, key=lambda u: u.y)` -- the DEEPEST unit
+```
+
+MEASURED on the owner's exact board (a dangerous card in one lane, a trickle DEEPER in the other):
+
+```
+danger (ignore_cost_frac):   pekka 1.907    skeletons 0.004     (477x apart)
+IDENTITY says (danger-ranked):  tank=1                <- the pekka, correct
+POSITION says (depth-ranked):   x=0.75                <- the SKELETONS' lane
+counter placed in the PEKKA's lane     -> intercept credit: False
+counter placed in the SKELETONS' lane  -> intercept credit: True
+```
+
+**The reward PAYS for putting the anti-tank card in the trickle's lane and REFUSES credit for
+putting it in front of the tank.** So this is not ignorance the policy can train out of -- more
+training makes it worse, because the gradient points at it. Same family as `_hog_wincon` (S8): a
+reward measured against a board that is not the one being answered.
+
+**The 2026-08-20 "PRIORITISE, DO NOT BLEND" fix caught HALF of this.** Its own comment describes
+the identical failure -- *"a Golem at the bridge beside a lone Skeletons walking deep ... answering
+the vector meant answering the Skeletons (the reported behaviour)"* -- and repaired
+`identity_threat_vector`. `_threat_pos()` was never touched, so the POSITION half kept the bug and
+the symptom survived, which is why the owner is still reporting it four days later.
+
+**Fixing LIVE would not have helped.** Live feeds the policy the correct danger-ranked identity
+vector; the observation was never wrong. The learned habit is, and it came from the reward.
+
+### FIX 5 (QUEUED, NOT APPLIED)
+
+Rank `_threat_pos()` on the same `ignore_cost_frac` the identity vector uses, breaking ties on
+depth, so both halves of `_threat_response` describe the SAME unit. It is the same three-line shape
+as the 2026-08-20 repair, applied to the other half.
+
+⚠ **DELIBERATELY NOT SHIPPED TONIGHT.** The control and fixes-2+3 arms are mid-flight and BOTH
+carry this bug, so it cancels in their comparison and tonight's verdicts stay valid. Shipping it
+now would confound them and break the one-change-at-a-time rule. It is the FIRST thing to ship
+after the overnight queue, ahead of the queued reward tweaks -- it has been mistraining every run
+in this project's history.
+
+### ALSO 2026-08-24: `llm_advisor_async` REVERTED to false
+
+Owner reports async makes live reaction too slow. That is the design's expected cost, not a defect
+in it: an async answer is spent a DECISION LATER than the board it was asked about, so at
+`act_period` 0.6 s every advised play is >= 0.6 s stale and `llm_advisor_max_age_s: 1.5` permits up
+to 1.5 s -- two to three tiles of travel on a real push. ⚠ Turning it off restores the measured
+**0% answered** (565 ms mean against a 0.55 s budget) unless `llm_advisor_timeout_s` is also raised.
+The real choice is "no advice" vs "stale advice". Advice is exploration-only either way and never
+gates the policy's own action.
+
 ## 4. The central problem, and where it stands
 
 The user's recurring complaint, across both decks: **"it's doing NOTHING correctly"** — hoarding
