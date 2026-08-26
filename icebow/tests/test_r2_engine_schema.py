@@ -16,7 +16,8 @@ for _p in (str(SRC), str(ROOT / "tests")):
         sys.path.insert(0, _p)
 
 from test_sim_status_effects import _make_engine                     # noqa: E402
-from clashrl.sim.engine import Unit, build_spec, _TILES_Y            # noqa: E402
+from clashrl.sim.engine import (Unit, build_spec, replace,           # noqa: E402
+                                _TILES_Y)
 
 LVL = 11
 
@@ -182,11 +183,16 @@ class FurnaceIsATroopTests(unittest.TestCase):
         s = build_spec(eng.db, "furnace", LVL)
         u = Unit(spec=s, team=0, x=0.50, y=0.80, hp=s.hp)
         eng.units.append(u)
-        seen, x0, y0 = set(), u.x, u.y
+        # Identity, and STRONG references: a spirit is a kamikaze that dies within a second or
+        # two, and CPython reuses the freed address, so a set of id() values silently merged
+        # distinct spirits and made this test flaky (it failed roughly one run in five).
+        seen, x0, y0 = [], u.x, u.y
         for _ in range(160):                     # 16 s -> three 5 s periods
             u.x, u.y = x0, y0
             eng.advance(0.1)
-            seen.update(id(z) for z in eng.units if z.spec.base == "fire_spirit")
+            for z in eng.units:
+                if z.spec.base == "fire_spirit" and not any(z is w for w in seen):
+                    seen.append(z)
         self.assertGreaterEqual(len(seen), 3, "16 s at a 5 s period is at least three spirits")
 
     def test_real_buildings_keep_their_lifetime(self):
@@ -386,6 +392,102 @@ class TargetCellParseTests(unittest.TestCase):
             with self.subTest(page=page):
                 self.assertEqual(_parse_attr_tables(f.read_text(encoding="utf-8")).get("attacks"),
                                  attacks)
+
+
+class LittlePrinceRampGraceTests(unittest.TestCase):
+    """The Little Prince keeps his ramp through a SHORT move.
+
+    Wiki (Little_Prince.wikitext rev 437347): "On 4/8/2026, a Balance Update, ... The Little Prince
+    will now maintain his charged-up Hit Speed for up to 0.3 seconds while moving."
+    That is a grace window on the base behaviour, not a removal of it: 14/12/2023 "fixed a bug
+    where the Little Prince's hit speed would not reset after moving", and the page's strategy
+    prose still lists The Log, Zap, Fireball and Giant Snowball as ramp resets.
+    Owner: R2 #8 item 5.
+
+    MEASURED BEFORE: `_move_toward` reset ramp_shots on the FIRST non-zero step, with no window.
+    """
+
+    def _saturated(self, grace=None):
+        """Pin him on his firing spot until the ramp is at its top stage."""
+        eng = _make_engine()
+        s = build_spec(eng.db, "little_prince", LVL)
+        if grace is not None:
+            s = replace(s, ramp_move_grace=grace)
+        t = build_spec(eng.db, "giant", LVL)
+        lp = Unit(spec=s, team=0, x=0.50, y=0.55, hp=s.hp)
+        tg = Unit(spec=t, team=1, x=0.50, y=0.55 - (s.reach * 0.6 + t.radius) / _TILES_Y,
+                  hp=t.hp * 900)
+        eng.units += [lp, tg]
+        spot = (lp.x, lp.y, tg.x, tg.y)
+        for _ in range(120):
+            lp.x, lp.y, tg.x, tg.y = spot
+            eng.advance(0.1)
+        self.assertGreaterEqual(lp.ramp_shots, 6, "not saturated: the probe would prove nothing")
+        return eng, lp, tg, spot
+
+    def test_the_card_publishes_the_grace_window(self):
+        eng = _make_engine()
+        self.assertAlmostEqual(build_spec(eng.db, "little_prince", LVL).ramp_move_grace, 0.3,
+                               delta=1e-9, msg="MEASURED BEFORE: no such field")
+
+    def _after_moving(self, ticks, grace=None):
+        eng, lp, _tg, _spot = self._saturated(grace)
+        before = lp.ramp_shots
+        for _ in range(ticks):
+            eng._move_toward(lp, 0.50, 0.20, 0.1, 1.0)
+        return before, lp.ramp_shots
+
+    def test_a_brief_move_keeps_the_ramp(self):
+        for ticks in (1, 2, 3):                        # 0.1 s .. 0.3 s
+            with self.subTest(moved_s=ticks * 0.1):
+                before, after = self._after_moving(ticks)
+                self.assertEqual(after, before, "the ramp must survive up to 0.3 s of movement")
+
+    def test_a_longer_move_still_resets_it(self):
+        for ticks in (4, 6, 10):                       # 0.4 s and up
+            with self.subTest(moved_s=ticks * 0.1):
+                _before, after = self._after_moving(ticks)
+                self.assertEqual(after, 0)
+
+    def test_the_window_includes_exactly_three_tenths(self):
+        """Three 0.1 s ticks sum to 0.30000000000000004, so a bare `>` expired the window a whole
+        tick early. "Up to 0.3 seconds" includes 0.3."""
+        self.assertNotEqual(self._after_moving(3)[1], 0)
+        self.assertEqual(self._after_moving(4)[1], 0)
+
+    def test_cards_with_no_grace_reset_on_the_first_step(self):
+        """The control: the pre-4/8/2026 behaviour, which is still every other card's."""
+        for ticks in (1, 2, 3):
+            with self.subTest(moved_s=ticks * 0.1):
+                self.assertEqual(self._after_moving(ticks, grace=0.0)[1], 0)
+
+    def test_displacement_is_a_hard_reset_that_ignores_the_grace(self):
+        """Log / Zap / Fireball / Giant Snowball. Named on the card's own page as the counterplay,
+        so the grace must not protect him from a shove."""
+        eng, lp, _tg, _spot = self._saturated()
+        before = lp.ramp_shots
+        eng._knock(lp, build_spec(eng.db, "the_log", LVL), lp.x, lp.y + 0.05)
+        self.assertGreater(before, 0)
+        self.assertEqual(lp.ramp_shots, 0)
+        self.assertEqual(lp.ramp_move_t, 0.0)
+
+    def test_the_grace_is_worth_real_damage(self):
+        """The ramp is a HIT SPEED, so keeping it has to show up as output, not just as a counter.
+        MEASURED over the 3 s after the move, back on his firing spot:
+        no move 835, moved 0.3 s 835, moved 0.4 s 313, moved 1.0 s 313."""
+        def dealt(ticks):
+            eng, lp, tg, spot = self._saturated()
+            for _ in range(ticks):
+                eng._move_toward(lp, 0.50, 0.20, 0.1, 1.0)
+            lp.x, lp.y = spot[0], spot[1]
+            hp0 = tg.hp
+            for _ in range(30):
+                lp.x, lp.y, tg.x, tg.y = spot
+                eng.advance(0.1)
+            return hp0 - tg.hp
+        kept, lost = dealt(3), dealt(4)
+        self.assertAlmostEqual(kept, dealt(0), delta=1.0, msg="0.3 s of movement costs nothing")
+        self.assertGreater(kept, lost * 2.0, "and losing the ramp has to hurt")
 
 
 if __name__ == "__main__":

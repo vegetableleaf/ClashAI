@@ -360,6 +360,11 @@ class CardSpec:
     # (1.2s -> 0.8s -> 0.4s = 1x/1.5x/3x). ANY movement or displacement resets it.
     atk_ramp_per: int = 0
     atk_ramp_mults: tuple = ()
+    # LITTLE PRINCE, 4/8/2026: "will now maintain his charged-up Hit Speed for up to 0.3 seconds
+    # while moving". Seconds of CONTINUOUS movement the ramp survives before it resets. 0 = the
+    # base behaviour the 14/12/2023 maintenance break established ("fixed a bug where the Little
+    # Prince's hit speed would not reset after moving"), i.e. any step at all resets it.
+    ramp_move_grace: float = 0.0
     # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
     # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
     # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
@@ -713,6 +718,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hit_heal=float(c.get("hit_heal") or 0.0) * sc,
         atk_ramp_per=int((c.get("attack_ramp") or {}).get("per_stage") or 0),
         atk_ramp_mults=tuple(float(m) for m in (c.get("attack_ramp") or {}).get("mults") or ()),
+        ramp_move_grace=float(c.get("ramp_move_grace_s") or 0.0),
         sniper_shots=int(c.get("sniper_shots") or 0),
         sniper_mult=float(c.get("sniper_mult") or 0.0),
         power_mult=float(c.get("power_mult") or 0.0),
@@ -920,6 +926,7 @@ class Unit:
     rage_self_left: float = 0.0  # EVO BARBARIANS: seconds of self-rage left (refreshed per swing)
     mid_drop_done: bool = False  # EVO SKEL BARREL: the 75%-hp barrel has been spent
     ramp_shots: int = 0          # LITTLE PRINCE: attacks landed since he last moved/was displaced
+    ramp_move_t: float = 0.0     # ...and seconds of CONTINUOUS movement since, against ramp_move_grace
     sniper_left: int = 0         # EVO MUSKETEER: infinite-range rounds remaining
     javelin_left: float = 0.0    # EVO E-BARBS: cooldown until the next spear
     net_left: float = 0.0        # EVO HUNTER: cooldown until the next net
@@ -1864,7 +1871,20 @@ class SimEngine:
         step = min(spd * spd_mult * dt, d)
         u.charge_dist += step                                # tiles covered without swinging -> arms a charge
         if step > 1e-9 and u.ramp_shots:
-            u.ramp_shots = 0                                 # Little Prince: MOVING resets the ramp
+            # MOVING RESETS THE RAMP -- but not instantly any more. 4/8/2026: "The Little Prince will
+            # now maintain his charged-up Hit Speed for up to 0.3 seconds while moving." The clock
+            # counts CONTINUOUS movement and is zeroed the moment he plants and swings again (see
+            # the attacking branch), so a shuffle keeps the ramp and a real walk still loses it.
+            # A card with no grace (every other ramper) behaves exactly as before: the first
+            # non-zero step trips it. DISPLACEMENT stays a HARD reset regardless of grace -- the
+            # page's own strategy prose lists Log/Zap/Fireball/Snowball as ramp resets.
+            u.ramp_move_t += dt
+            # Tolerance, not decoration: three 0.1 s ticks sum to 0.30000000000000004, so a bare
+            # `>` made a 0.3 s grace expire one whole tick early. "Up to 0.3 seconds" has to
+            # INCLUDE 0.3.
+            if u.ramp_move_t > u.spec.ramp_move_grace + 1e-9:
+                u.ramp_shots = 0
+                u.ramp_move_t = 0.0
         u.x += (dxt / d) * step / _TILES_X
         u.y += (dyt / d) * step / _TILES_Y
 
@@ -2435,6 +2455,7 @@ class SimEngine:
             if gap <= reach + slop:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
+                u.ramp_move_t = 0.0                         # planted again: the move-grace clock restarts
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
                 if self.load_time_on and not u.loaded and u.spec.load_time > 0.0:
                     # WEAPON WIND-UP, paid once per engagement. A Musketeer that has just walked
@@ -3613,6 +3634,7 @@ class SimEngine:
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
         e.ramp_shots = 0                                 # displacement resets the Little Prince ramp too
+        e.ramp_move_t = 0.0                              # ...and it is a HARD reset, grace or not
         e.charge_dist = 0.0                              # ...and DISARMS a charge (2026-08-15): a Log/
                                                          # Snowball hit drops a Prince/Ram back to walking
                                                          # pace; the run-up tiles must be earned again

@@ -1711,6 +1711,11 @@ cards:
     hit_speed: 1.2
     charge_damage: 0
     attack_ramp: {per_stage: 3, mults: [1.0, 1.5, 3.0]}
+    # 4/8/2026 Balance Update: "The Little Prince will now maintain his charged-up Hit Speed for up
+    # to 0.3 seconds while moving." A GRACE WINDOW on the 14/12/2023 reset-on-move, not a removal
+    # of it -- and displacement (Log/Zap/Fireball/Snowball, per this page's own strategy prose)
+    # is still a hard reset that ignores the grace.
+    ramp_move_grace_s: 0.3
     verified: true
   magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
   # Mother Witch page carries two unit rows (witch + cursed hog). The importer currently binds the
